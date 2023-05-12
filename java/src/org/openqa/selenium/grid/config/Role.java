@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class Role implements Comparable<Role> {
 

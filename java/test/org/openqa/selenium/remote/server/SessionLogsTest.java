@@ -17,8 +17,22 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -35,21 +49,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
@@ -96,8 +95,9 @@ class SessionLogsTest extends JupiterTestBase {
         SessionLogHandler.getSessionLogs(getValueForPostRequest(server.getWebDriverUrl()));
     for (SessionLogs sessionLogs : sessionMap.values()) {
       for (String logType : logTypes) {
-        assertTrue(String.format("Session logs should include available log type %s", logType),
-                   sessionLogs.getLogTypes().contains(logType));
+        assertTrue(
+            String.format("Session logs should include available log type %s", logType),
+            sessionLogs.getLogTypes().contains(logType));
       }
     }
   }

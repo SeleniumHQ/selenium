@@ -19,11 +19,12 @@ package org.openqa.selenium.interactions;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-@SelectClasses({DefaultKeyboardTest.class,
+@SelectClasses({
+  DefaultKeyboardTest.class,
   DefaultMouseTest.class,
   CombinedInputActionsTest.class,
   CompositeActionTest.class,
-  DragAndDropTest.class})
+  DragAndDropTest.class
+})
 @Suite
-class InteractionTests {
-}
+class InteractionTests {}

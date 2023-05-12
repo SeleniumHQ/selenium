@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.docker;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-
 import java.util.Optional;
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 public class Docker {
 
@@ -48,8 +47,8 @@ public class Docker {
     LOG.info("Obtaining image: " + name);
 
     return getDocker()
-      .map(protocol -> protocol.getImage(name))
-      .orElseThrow(() -> new DockerException("Unable to get image " + name));
+        .map(protocol -> protocol.getImage(name))
+        .orElseThrow(() -> new DockerException("Unable to get image " + name));
   }
 
   public Container create(ContainerConfig config) {
@@ -58,8 +57,8 @@ public class Docker {
     LOG.fine("Creating image from " + config);
 
     return getDocker()
-      .map(protocol -> protocol.create(config))
-      .orElseThrow(() -> new DockerException("Unable to create container: " + config));
+        .map(protocol -> protocol.create(config))
+        .orElseThrow(() -> new DockerException("Unable to create container: " + config));
   }
 
   public Optional<ContainerInfo> inspect(ContainerId id) {
@@ -71,9 +70,10 @@ public class Docker {
       return Optional.empty();
     }
 
-    return Optional.of(getDocker()
-      .map(protocol -> protocol.inspectContainer(id))
-      .orElseThrow(() -> new DockerException("Unable to inspect container: " + id)));
+    return Optional.of(
+        getDocker()
+            .map(protocol -> protocol.inspectContainer(id))
+            .orElseThrow(() -> new DockerException("Unable to inspect container: " + id)));
   }
 
   private Optional<DockerProtocol> getDocker() {

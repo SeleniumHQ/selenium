@@ -17,14 +17,9 @@
 
 package dev.selenium.tools.javadoc;
 
-import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.tools.DocumentationTool;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +41,12 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import javax.tools.DocumentationTool;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class JavadocJarMaker {
 
@@ -76,11 +75,13 @@ public class JavadocJarMaker {
     }
 
     if (sourceJars.isEmpty()) {
-      throw new IllegalArgumentException("At least one input just must be specified via the --in flag");
+      throw new IllegalArgumentException(
+          "At least one input just must be specified via the --in flag");
     }
 
     if (out == null) {
-      throw new IllegalArgumentException("The output jar location must be specified via the --out flag");
+      throw new IllegalArgumentException(
+          "The output jar location must be specified via the --out flag");
     }
 
     TemporaryFilesystem tmpFS = TemporaryFilesystem.getDefaultTmpFS();
@@ -89,9 +90,12 @@ public class JavadocJarMaker {
     tempDirs.add(dir);
 
     DocumentationTool tool = ToolProvider.getSystemDocumentationTool();
-    try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), UTF_8)) {
+    try (StandardJavaFileManager fileManager =
+        tool.getStandardFileManager(null, Locale.getDefault(), UTF_8)) {
       fileManager.setLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT, List.of(dir));
-      fileManager.setLocation(StandardLocation.CLASS_PATH, classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
+      fileManager.setLocation(
+          StandardLocation.CLASS_PATH,
+          classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
 
       Set<JavaFileObject> sources = new HashSet<>();
       Set<String> topLevelPackages = new HashSet<>();
@@ -99,12 +103,13 @@ public class JavadocJarMaker {
       File unpackTo = tmpFS.createTempDir("unpacked-sources", "");
       tempDirs.add(unpackTo);
       Set<String> fileNames = new HashSet<>();
-      readSourceFiles(unpackTo.toPath(), fileManager, sourceJars, sources, topLevelPackages, fileNames);
+      readSourceFiles(
+          unpackTo.toPath(), fileManager, sourceJars, sources, topLevelPackages, fileNames);
 
       // True if we're just exporting a set of modules
       if (sources.isEmpty()) {
         try (OutputStream os = Files.newOutputStream(out);
-             ZipOutputStream zos = new ZipOutputStream(os)) {
+            ZipOutputStream zos = new ZipOutputStream(os)) {
           // It's enough to just create the thing
         }
         return;
@@ -113,10 +118,21 @@ public class JavadocJarMaker {
       List<String> options = new ArrayList<>();
       if (!classpath.isEmpty()) {
         options.add("-cp");
-        options.add(classpath.stream().map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
+        options.add(
+            classpath.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(File.pathSeparator)));
       }
-      options.addAll(List.of("-html5", "--frames", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
-
+      options.addAll(
+          List.of(
+              "-html5",
+              "--frames",
+              "-notimestamp",
+              "-use",
+              "-quiet",
+              "-Xdoclint:-missing",
+              "-encoding",
+              "UTF8"));
 
       File outputTo = tmpFS.createTempDir("output-dir", "");
       tempDirs.add(outputTo);
@@ -127,7 +143,8 @@ public class JavadocJarMaker {
       sources.forEach(obj -> options.add(obj.getName()));
 
       Writer writer = new StringWriter();
-      DocumentationTool.DocumentationTask task = tool.getTask(writer, fileManager, null, null, options, sources);
+      DocumentationTool.DocumentationTask task =
+          tool.getTask(writer, fileManager, null, null, options, sources);
       Boolean result = task.call();
       if (result == null || !result) {
         System.err.println("javadoc " + String.join(" ", options));
@@ -136,33 +153,34 @@ public class JavadocJarMaker {
       }
 
       try (OutputStream os = Files.newOutputStream(out);
-           ZipOutputStream zos = new ZipOutputStream(os);
-           Stream<Path> walk = Files.walk(outputToPath)) {
+          ZipOutputStream zos = new ZipOutputStream(os);
+          Stream<Path> walk = Files.walk(outputToPath)) {
         walk.sorted(Comparator.naturalOrder())
-          .forEachOrdered(path -> {
-            if (path.equals(outputToPath)) {
-              return;
-            }
+            .forEachOrdered(
+                path -> {
+                  if (path.equals(outputToPath)) {
+                    return;
+                  }
 
-            try {
-              if (Files.isDirectory(path)) {
-                String name = outputToPath.relativize(path) + "/";
-                ZipEntry entry = new StableZipEntry(name);
-                zos.putNextEntry(entry);
-                zos.closeEntry();
-              } else {
-                String name = outputToPath.relativize(path).toString();
-                ZipEntry entry = new StableZipEntry(name);
-                zos.putNextEntry(entry);
-                try (InputStream is = Files.newInputStream(path)) {
-                  is.transferTo(zos);
-                }
-                zos.closeEntry();
-              }
-            } catch (IOException e) {
-              throw new UncheckedIOException(e);
-            }
-          });
+                  try {
+                    if (Files.isDirectory(path)) {
+                      String name = outputToPath.relativize(path) + "/";
+                      ZipEntry entry = new StableZipEntry(name);
+                      zos.putNextEntry(entry);
+                      zos.closeEntry();
+                    } else {
+                      String name = outputToPath.relativize(path).toString();
+                      ZipEntry entry = new StableZipEntry(name);
+                      zos.putNextEntry(entry);
+                      try (InputStream is = Files.newInputStream(path)) {
+                        is.transferTo(zos);
+                      }
+                      zos.closeEntry();
+                    }
+                  } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                  }
+                });
       }
     }
 
@@ -170,12 +188,13 @@ public class JavadocJarMaker {
   }
 
   private static void readSourceFiles(
-    Path unpackTo,
-    StandardJavaFileManager fileManager,
-    Set<Path> sourceJars,
-    Set<JavaFileObject> sources,
-    Set<String> topLevelPackages,
-    Set<String> fileNames) throws IOException {
+      Path unpackTo,
+      StandardJavaFileManager fileManager,
+      Set<Path> sourceJars,
+      Set<JavaFileObject> sources,
+      Set<String> topLevelPackages,
+      Set<String> fileNames)
+      throws IOException {
 
     for (Path jar : sourceJars) {
       if (!Files.exists(jar)) {

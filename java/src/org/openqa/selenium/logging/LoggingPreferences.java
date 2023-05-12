@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.logging;
 
-import org.openqa.selenium.Beta;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,17 +24,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import org.openqa.selenium.Beta;
 
 /**
  * Represents the logging preferences.
  *
- * Sample usage:
- *  DesiredCapabilities caps = DesiredCapabilities.firefox();
- *  LoggingPreferences logs = new LoggingPreferences();
- *  logs.enable(LogType.DRIVER, Level.INFO);
- *  caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
+ * <p>Sample usage: DesiredCapabilities caps = DesiredCapabilities.firefox(); LoggingPreferences
+ * logs = new LoggingPreferences(); logs.enable(LogType.DRIVER, Level.INFO);
+ * caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
  *
- *  WebDriver driver = new FirefoxDriver(caps);
+ * <p>WebDriver driver = new FirefoxDriver(caps);
  */
 public class LoggingPreferences implements Serializable {
 
@@ -47,6 +44,7 @@ public class LoggingPreferences implements Serializable {
 
   /**
    * Enables logging for the given log type at the specified level and above.
+   *
    * @param logType String the logType. Can be any of {@link LogType}.
    * @param level {@link Level} the level.
    */
@@ -63,16 +61,15 @@ public class LoggingPreferences implements Serializable {
 
   /**
    * @param logType The log type.
-   * @return the {@link Level} for the given {@link LogType} if enabled.
-   *     Otherwise returns {@link Level#OFF}.
+   * @return the {@link Level} for the given {@link LogType} if enabled. Otherwise returns {@link
+   *     Level#OFF}.
    */
   public Level getLevel(String logType) {
     return prefs.get(logType) == null ? Level.OFF : prefs.get(logType);
   }
 
   /**
-   * Adds the given logging preferences giving them precedence over existing
-   * preferences.
+   * Adds the given logging preferences giving them precedence over existing preferences.
    *
    * @param prefs The logging preferences to add.
    * @return A references to this object.

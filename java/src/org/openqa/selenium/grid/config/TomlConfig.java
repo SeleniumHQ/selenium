@@ -19,14 +19,10 @@ package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
-
-import org.openqa.selenium.internal.Require;
-
 import io.ous.jtoml.JToml;
 import io.ous.jtoml.ParseException;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -36,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.openqa.selenium.internal.Require;
 
 public class TomlConfig implements Config {
 
@@ -48,9 +45,9 @@ public class TomlConfig implements Config {
       throw new ConfigException("Unable to read TOML.", e);
     } catch (ParseException e) {
       throw new ConfigException(
-        e.getCause() +
-        "\n Validate the config using https://www.toml-lint.com/. " +
-        "\n Refer to https://toml.io/en/ for TOML usage guidance. ");
+          e.getCause()
+              + "\n Validate the config using https://www.toml-lint.com/. "
+              + "\n Refer to https://toml.io/en/ for TOML usage guidance. ");
     }
   }
 
@@ -92,17 +89,20 @@ public class TomlConfig implements Config {
       if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
         List<String> toReturn = new ArrayList<>();
         collection.stream()
-          .map(item -> (TomlTable)item)
-          .forEach(tomlTable -> tomlTable.toMap().entrySet().stream()
-            .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-            .sorted()
-            .forEach(toReturn::add));
+            .map(item -> (TomlTable) item)
+            .forEach(
+                tomlTable ->
+                    tomlTable.toMap().entrySet().stream()
+                        .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                        .sorted()
+                        .forEach(toReturn::add));
         return Optional.of(toReturn);
       }
-      List<String> values = collection.stream()
-        .filter(item -> (!(item instanceof Collection)))
-        .map(String::valueOf)
-        .collect(ImmutableList.toImmutableList());
+      List<String> values =
+          collection.stream()
+              .filter(item -> (!(item instanceof Collection)))
+              .map(String::valueOf)
+              .collect(ImmutableList.toImmutableList());
 
       return Optional.of(values);
     }

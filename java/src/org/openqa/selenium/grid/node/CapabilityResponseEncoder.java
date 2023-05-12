@@ -20,17 +20,15 @@ package org.openqa.selenium.grid.node;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
-
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class CapabilityResponseEncoder {
 
@@ -90,14 +88,9 @@ public class CapabilityResponseEncoder {
       return apply(session, ImmutableMap.of());
     }
 
-    /**
-     * Create a UTF-8 encoded response for a given dialect for use with the New Session command.
-     */
+    /** Create a UTF-8 encoded response for a given dialect for use with the New Session command. */
     private static byte[] encodeAsResponse(
-        Dialect dialect,
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+        Dialect dialect, SessionId id, Capabilities capabilities, Map<String, Object> metadata) {
 
       Map<String, Object> toEncode;
 
@@ -114,14 +107,14 @@ public class CapabilityResponseEncoder {
     }
 
     private static Map<String, Object> encodeW3C(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+        SessionId id, Capabilities capabilities, Map<String, Object> metadata) {
       return ImmutableMap.<String, Object>builder()
           .putAll(metadata)
-          .put("value", ImmutableMap.of(
-              "sessionId", id,
-              "capabilities", capabilities))
+          .put(
+              "value",
+              ImmutableMap.of(
+                  "sessionId", id,
+                  "capabilities", capabilities))
           .build();
     }
   }

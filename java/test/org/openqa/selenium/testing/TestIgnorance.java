@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.testing;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.testing.drivers.Browser;
+import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
+import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,13 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.testing.drivers.Browser;
 
-import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
-import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
-
-/**
- * Class that decides whether a test class or method should be ignored.
- */
+/** Class that decides whether a test class or method should be ignored. */
 class TestIgnorance {
 
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
@@ -44,8 +41,11 @@ class TestIgnorance {
   private Set<String> ignoreClasses = new HashSet<>();
 
   public TestIgnorance(Browser driver) {
-    ignoreComparator.addDriver(Require.argument("Driver", driver).nonNull(
-      "Browser to use must be set. Do this by setting the 'selenium.browser' system property"));
+    ignoreComparator.addDriver(
+        Require.argument("Driver", driver)
+            .nonNull(
+                "Browser to use must be set. Do this by setting the 'selenium.browser' system"
+                    + " property"));
 
     String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
@@ -77,10 +77,12 @@ class TestIgnorance {
     List<Ignore> ignoreClass = findRepeatableAnnotations(testClass, Ignore.class);
     Optional<IgnoreList> ignoreListMethod = findAnnotation(testMethod, IgnoreList.class);
     List<Ignore> ignoreMethod = findRepeatableAnnotations(testMethod, Ignore.class);
-    boolean ignored = (ignoreListClass.isPresent() && ignoreComparator.shouldIgnore(ignoreListClass.get())) ||
-      (!ignoreClass.isEmpty() && ignoreComparator.shouldIgnore(ignoreClass.stream())) ||
-      (ignoreListMethod.isPresent() && ignoreComparator.shouldIgnore(ignoreListMethod.get())) ||
-      (!ignoreMethod.isEmpty() && ignoreComparator.shouldIgnore(ignoreMethod.stream()));
+    boolean ignored =
+        (ignoreListClass.isPresent() && ignoreComparator.shouldIgnore(ignoreListClass.get()))
+            || (!ignoreClass.isEmpty() && ignoreComparator.shouldIgnore(ignoreClass.stream()))
+            || (ignoreListMethod.isPresent()
+                && ignoreComparator.shouldIgnore(ignoreListMethod.get()))
+            || (!ignoreMethod.isEmpty() && ignoreComparator.shouldIgnore(ignoreMethod.stream()));
 
     // Ignored because of Jupiter's @Disabled
     ignored |= findAnnotation(testClass, Disabled.class).isPresent();
@@ -98,10 +100,9 @@ class TestIgnorance {
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(Class<?> testClass, Method testMethod) {
-    return (!only.isEmpty() && !only.contains(testClass.getSimpleName())) ||
-      (!methods.isEmpty() && !methods.contains(testMethod.getName())) ||
-      ignoreClasses.contains(testClass.getSimpleName()) ||
-      ignoreMethods.contains(testMethod.getName());
+    return (!only.isEmpty() && !only.contains(testClass.getSimpleName()))
+        || (!methods.isEmpty() && !methods.contains(testMethod.getName()))
+        || ignoreClasses.contains(testClass.getSimpleName())
+        || ignoreMethods.contains(testMethod.getName());
   }
-
 }

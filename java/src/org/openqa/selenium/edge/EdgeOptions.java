@@ -16,17 +16,18 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
 
-import static org.openqa.selenium.remote.Browser.EDGE;
-
 /**
  * Class to manage options specific to {@link EdgeDriver}.
  *
  * <p>Example usage:
+ *
  * <pre><code>
  * EdgeOptions options = new EdgeOptions()
  * options.addExtensions(new File("/path/to/extension.crx"))
@@ -40,15 +41,12 @@ import static org.openqa.selenium.remote.Browser.EDGE;
  *     new URL("http://localhost:4444/"),
  *     new EdgeOptions());
  * </code></pre>
- *
  */
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
-  /**
-   * Key used to store a set of EdgeOptions in a {@link Capabilities}
-   * object.
-   */
+  /** Key used to store a set of EdgeOptions in a {@link Capabilities} object. */
   public static final String CAPABILITY = "ms:edgeOptions";
+
   public static final String LOGGING_PREFS = "ms:loggingPrefs";
 
   public EdgeOptions() {

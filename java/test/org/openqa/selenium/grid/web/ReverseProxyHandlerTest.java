@@ -17,9 +17,21 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,20 +43,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-
 
 class ReverseProxyHandlerTest {
 
@@ -84,26 +82,28 @@ class ReverseProxyHandlerTest {
       url = new URL("http", address, port, "/ok");
 
       server = HttpServer.create(new InetSocketAddress(address, port), 0);
-      server.createContext("/ok", ex -> {
-        lastRequest = new HttpRequest(
-            HttpMethod.valueOf(ex.getRequestMethod()),
-            ex.getRequestURI().getPath());
-        Headers headers = ex.getRequestHeaders();
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-          for (String value : entry.getValue()) {
-            lastRequest.addHeader(entry.getKey().toLowerCase(), value);
-          }
-        }
-        try (InputStream in = ex.getRequestBody()) {
-          lastRequest.setContent(bytes(ByteStreams.toByteArray(in)));
-        }
+      server.createContext(
+          "/ok",
+          ex -> {
+            lastRequest =
+                new HttpRequest(
+                    HttpMethod.valueOf(ex.getRequestMethod()), ex.getRequestURI().getPath());
+            Headers headers = ex.getRequestHeaders();
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+              for (String value : entry.getValue()) {
+                lastRequest.addHeader(entry.getKey().toLowerCase(), value);
+              }
+            }
+            try (InputStream in = ex.getRequestBody()) {
+              lastRequest.setContent(bytes(ByteStreams.toByteArray(in)));
+            }
 
-        byte[] payload = "I like cheese".getBytes(UTF_8);
-        ex.sendResponseHeaders(HTTP_OK, payload.length);
-        try (OutputStream out = ex.getResponseBody()) {
-          out.write(payload);
-        }
-      });
+            byte[] payload = "I like cheese".getBytes(UTF_8);
+            ex.sendResponseHeaders(HTTP_OK, payload.length);
+            try (OutputStream out = ex.getResponseBody()) {
+              out.write(payload);
+            }
+          });
       server.start();
     }
 
@@ -111,5 +111,4 @@ class ReverseProxyHandlerTest {
       server.stop(0);
     }
   }
-
 }

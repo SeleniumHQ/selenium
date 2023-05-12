@@ -20,10 +20,10 @@ package org.openqa.selenium.remote.server.log;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-@SelectClasses({PerSessionLogHandlerUnitTest.class,
+@SelectClasses({
+  PerSessionLogHandlerUnitTest.class,
   LoggingManagerUnitTest.class,
   ShortTermMemoryHandlerUnitTest.class
 })
 @Suite
-class LoggingTests {
-}
+class LoggingTests {}

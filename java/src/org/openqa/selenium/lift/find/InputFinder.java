@@ -21,9 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.Matchers.attribute;
 import static org.openqa.selenium.lift.Matchers.value;
 
-/**
- * {@link Finder} for HTML input tags.
- */
+/** {@link Finder} for HTML input tags. */
 public class InputFinder extends HtmlTagFinder {
 
   @Override

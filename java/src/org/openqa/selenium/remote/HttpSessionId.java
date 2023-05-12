@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-
 import java.util.Optional;
 
 public class HttpSessionId {
