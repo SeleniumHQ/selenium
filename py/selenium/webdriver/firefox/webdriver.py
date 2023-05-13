@@ -195,10 +195,7 @@ class WebDriver(RemoteWebDriver):
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
-        executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url, ignore_proxy=options._ignore_local_proxy
-        )
-        super().__init__(command_executor=executor, options=options, keep_alive=True)
+        super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
 
         self._is_remote = False
 

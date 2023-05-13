@@ -101,16 +101,7 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            super().__init__(
-                command_executor=ChromiumRemoteConnection(
-                    remote_server_addr=self.service.service_url,
-                    browser_name=browser_name,
-                    vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive,
-                    ignore_proxy=_ignore_proxy,
-                ),
-                options=options,
-            )
+            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive,)
         except Exception:
             self.quit()
             raise
