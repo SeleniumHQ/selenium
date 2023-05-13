@@ -106,7 +106,28 @@ module Selenium
           }.to have_warning(:selenium_manager)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-version', 1)
+            .with('selenium-manager',
+                  '--browser', 'chrome',
+                  '--output', 'json',
+                  '--browser-version', 1)
+        end
+
+        it 'uses proxy if specified' do
+          proxy = Selenium::WebDriver::Proxy.new(ssl: 'proxy')
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome(proxy: proxy)
+
+          expect {
+            described_class.driver_path(options)
+          }.to have_warning(:selenium_manager)
+
+          expect(described_class).to have_received(:run)
+            .with('selenium-manager',
+                  '--browser', 'chrome',
+                  '--output', 'json',
+                  '--proxy', 'proxy')
         end
 
         it 'uses browser location if specified' do
