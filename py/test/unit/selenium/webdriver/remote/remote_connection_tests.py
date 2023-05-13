@@ -21,6 +21,7 @@ import pytest
 import urllib3
 
 from selenium import __version__
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
@@ -49,26 +50,30 @@ def test_get_remote_connection_headers_adds_keep_alive_if_requested():
 
 def test_get_proxy_url_http(mock_proxy_settings):
     proxy = "http://http_proxy.com:8080"
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     proxy_url = remote_connection._get_proxy_url()
     assert proxy_url == proxy
 
 
 def test_get_proxy_url_https(mock_proxy_settings):
     proxy = "http://https_proxy.com:8080"
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("https://remote", client_config=client_config)
     proxy_url = remote_connection._get_proxy_url()
     assert proxy_url == proxy
 
 
 def test_get_proxy_url_none(mock_proxy_settings_missing):
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("https://remote", client_config=client_config)
     proxy_url = remote_connection._get_proxy_url()
     assert proxy_url is None
 
 
 def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     proxy_url = remote_connection._get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "http://user:password@http_proxy.com:8080"
@@ -77,7 +82,8 @@ def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
 
 
 def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("https://remote", client_config=client_config)
     proxy_url = remote_connection._get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "https://user:password@https_proxy.com:8080"
@@ -86,14 +92,16 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 
 
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, urllib3.PoolManager)
 
 
 def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
     monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)  # Class state; leaks into subsequent tests.
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
@@ -101,19 +109,21 @@ def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
 
 
 def test_default_socket_timeout_is_correct():
-    remote_connection = RemoteConnection("http://remote", keep_alive=True)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] is None
 
 
 def test_get_connection_manager_with_proxy(mock_proxy_settings):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
-    remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection_https = RemoteConnection("https://remote", client_config=client_config)
     conn = remote_connection_https._get_connection_manager()
     assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
@@ -123,14 +133,15 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
 
 def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
     proxy_auth_header = urllib3.make_headers(proxy_basic_auth="user:password")
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
     assert conn.proxy_headers == proxy_auth_header
-    remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection_https = RemoteConnection("https://remote", client_config=client_config)
     conn = remote_connection_https._get_connection_manager()
     assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "https"
@@ -164,7 +175,8 @@ def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
-    remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
+    client_config = ClientConfig(keep_alive=False)
+    remote_connection = RemoteConnection("http://remote", client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, urllib3.PoolManager)
 

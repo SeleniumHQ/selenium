@@ -21,6 +21,7 @@ from selenium.webdriver.common import utils
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
@@ -30,7 +31,6 @@ DEFAULT_PORT = 0
 DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_SERVICE_LOG_PATH = None
-DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(RemoteWebDriver):
@@ -49,7 +49,8 @@ class WebDriver(RemoteWebDriver):
         options: Options = None,
         service: Service = None,
         desired_capabilities=None,
-        keep_alive=DEFAULT_KEEP_ALIVE,
+        keep_alive=None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Creates a new instance of the Ie driver.
 
@@ -102,12 +103,6 @@ class WebDriver(RemoteWebDriver):
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if keep_alive != DEFAULT_KEEP_ALIVE:
-            warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        else:
-            keep_alive = True
 
         self.host = host
         self.port = port
@@ -127,7 +122,12 @@ class WebDriver(RemoteWebDriver):
         self.iedriver.path = DriverFinder.get_path(self.iedriver, options)
         self.iedriver.start()
 
-        super().__init__(command_executor=self.iedriver.service_url, options=options, keep_alive=keep_alive)
+        super().__init__(
+            command_executor=self.iedriver.service_url,
+            options=options,
+            keep_alive=keep_alive,
+            client_config=client_config,
+        )
         self._is_remote = False
 
     def quit(self) -> None:

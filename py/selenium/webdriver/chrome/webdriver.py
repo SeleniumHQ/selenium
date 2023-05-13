@@ -20,13 +20,13 @@ from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
-DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(ChromiumDriver):
@@ -46,7 +46,8 @@ class WebDriver(ChromiumDriver):
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         chrome_options=None,
         service: Service = None,
-        keep_alive=DEFAULT_KEEP_ALIVE,
+        keep_alive=None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Creates a new instance of the chrome driver. Starts the service and
         then creates new instance of chrome driver.
@@ -69,12 +70,6 @@ class WebDriver(ChromiumDriver):
         if chrome_options:
             warnings.warn("use options instead of chrome_options", DeprecationWarning, stacklevel=2)
             options = chrome_options
-        if keep_alive != DEFAULT_KEEP_ALIVE:
-            warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        else:
-            keep_alive = True
         if not options:
             options = self.create_options()
         if not service:
@@ -91,6 +86,7 @@ class WebDriver(ChromiumDriver):
             service_log_path,
             service,
             keep_alive,
+            client_config,
         )
 
     def create_options(self) -> Options:

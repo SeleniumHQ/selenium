@@ -42,6 +42,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.virtual_authenticator import Credential
 from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
@@ -51,6 +53,7 @@ from selenium.webdriver.common.virtual_authenticator import (
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 from .bidi_connection import BidiConnection
+from .client_config import ClientConfig
 from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector
@@ -130,42 +133,42 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-def get_remote_connection(browser_name, command_executor, keep_alive, ignore_local_proxy=False):
+def get_remote_connection(browser_name, command_executor, client_config):
     if browser_name == "chrome":
         from selenium.webdriver.chromium.remote_connection import (
-            ChromiumRemoteConnection
+            ChromiumRemoteConnection,
         )
-        return ChromiumRemoteConnection(command_executor,
-                                        vendor_prefix="goog",
-                                        browser_name=browser_name,
-                                        keep_alive=keep_alive,
-                                        ignore_proxy=ignore_local_proxy)
+
+        return ChromiumRemoteConnection(
+            command_executor,
+            vendor_prefix="goog",
+            browser_name=browser_name,
+            client_config=client_config,
+        )
 
     elif browser_name == "MicrosoftEdge":
         from selenium.webdriver.chromium.remote_connection import (
-            ChromiumRemoteConnection
+            ChromiumRemoteConnection,
         )
-        return ChromiumRemoteConnection(command_executor,
-                                        vendor_prefix="ms",
-                                        browser_name=browser_name,
-                                        keep_alive=keep_alive,
-                                        ignore_proxy=ignore_local_proxy)
+
+        return ChromiumRemoteConnection(
+            command_executor,
+            vendor_prefix="ms",
+            browser_name=browser_name,
+            client_config=client_config,
+        )
 
     elif browser_name == "firefox":
         from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
-        return FirefoxRemoteConnection(command_executor,
-                                       keep_alive=keep_alive,
-                                       ignore_proxy=ignore_local_proxy)
+
+        return FirefoxRemoteConnection(command_executor, client_config=client_config)
 
     elif browser_name == "safari":
         from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
-        return SafariRemoteConnection(command_executor,
-                                       keep_alive=keep_alive,
-                                       ignore_proxy=ignore_local_proxy)
+
+        return SafariRemoteConnection(command_executor, client_config=client_config)
     else:
-        return RemoteConnection(command_executor,
-                                keep_alive=keep_alive,
-                                ignore_proxy=ignore_local_proxy)
+        return RemoteConnection(command_executor, client_config=client_config)
 
 
 def create_matches(options: List[BaseOptions]) -> Dict:
@@ -232,9 +235,10 @@ class WebDriver(BaseWebDriver):
         desired_capabilities=None,
         browser_profile=None,
         proxy=None,
-        keep_alive=True,
+        keep_alive=None,
         file_detector=None,
         options: Union[BaseOptions, List[BaseOptions]] = None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -272,22 +276,24 @@ class WebDriver(BaseWebDriver):
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if not keep_alive:
+        if keep_alive is not None:
             warnings.warn(
-                "keep_alive has been deprecated. We will be using True as the default value as we start removing it.",
+                "setting keep_alive directly in WebDriver has been deprecated, pass it in with ClientConfig instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
+            client_config.keep_alive = keep_alive
+
         capabilities = {}
         # If we get a list we can assume that no capabilities
         # have been passed in
         if isinstance(options, list):
             capabilities = create_matches(options)
         else:
-            _ignore_local_proxy = False
             if options:
                 capabilities = options.to_capabilities()
-                _ignore_local_proxy = options._ignore_local_proxy
+                if options._ignore_local_proxy:
+                    client_config.proxy = Proxy({"ProxyType": ProxyType.DIRECT})
             if desired_capabilities:
                 if not isinstance(desired_capabilities, dict):
                     raise WebDriverException("Desired Capabilities must be a dictionary")
@@ -297,8 +303,7 @@ class WebDriver(BaseWebDriver):
             self.command_executor = get_remote_connection(
                 capabilities.get("browserName"),
                 command_executor=command_executor,
-                keep_alive=keep_alive,
-                ignore_local_proxy=_ignore_local_proxy,
+                client_config=client_config,
             )
         self._is_remote = True
         self.session_id = None

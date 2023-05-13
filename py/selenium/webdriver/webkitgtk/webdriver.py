@@ -35,7 +35,7 @@ class WebDriver(RemoteWebDriver):
         options=None,
         desired_capabilities=None,
         service_log_path=None,
-        keep_alive=False,
+        keep_alive=None,
     ):
         """Creates a new instance of the WebKitGTK driver.
 

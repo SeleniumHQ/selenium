@@ -22,8 +22,8 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
+from ..remote.client_config import ClientConfig
 from .options import Options
-from .remote_connection import SafariRemoteConnection
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
@@ -40,10 +40,11 @@ class WebDriver(RemoteWebDriver):
         reuse_service=False,
         desired_capabilities=DEFAULT_SAFARI_CAPS,
         quiet=False,
-        keep_alive=True,
+        keep_alive=None,
         service_args=None,
         options: Options = None,
         service: Service = None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Creates a new Safari driver instance and launches or finds a running
         safaridriver service.
@@ -54,8 +55,7 @@ class WebDriver(RemoteWebDriver):
          - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
          - quiet - If True, the driver's stdout and stderr is suppressed.
-         - keep_alive - Whether to configure SafariRemoteConnection to use
-             HTTP keep-alive. Defaults to True.
+         - keep_alive - Deprecated: Whether to configure SafariRemoteConnection to use HTTP keep-alive.
          - service_args : List of args to pass to the safaridriver service
          - service - Service object for handling the browser driver if you need to pass extra details
         """
@@ -86,12 +86,6 @@ class WebDriver(RemoteWebDriver):
             warnings.warn(
                 "quiet has been deprecated, please use the Service class to set it", DeprecationWarning, stacklevel=2
             )
-        if not keep_alive:
-            warnings.warn(
-                "keep_alive has been deprecated, please use the Service class to set it",
-                DeprecationWarning,
-                stacklevel=2,
-            )
 
         if service_args:
             warnings.warn(
@@ -105,7 +99,12 @@ class WebDriver(RemoteWebDriver):
         if not reuse_service:
             self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+        super().__init__(
+            command_executor=self.service.service_url,
+            options=options,
+            keep_alive=keep_alive,
+            client_config=client_config,
+        )
 
         self._is_remote = False
 

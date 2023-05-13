@@ -20,6 +20,7 @@ from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
@@ -44,7 +45,8 @@ class WebDriver(ChromiumDriver):
         capabilities=None,
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         service: Service = None,
-        keep_alive=False,
+        keep_alive=None,
+        client_config: ClientConfig = ClientConfig(),
         verbose=False,  # Todo: Why is this now unused?
     ) -> None:
         """Creates a new instance of the edge driver. Starts the service and
@@ -59,7 +61,7 @@ class WebDriver(ChromiumDriver):
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
          - service - Service object for handling the browser driver if you need to pass extra details
-         - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - verbose - whether to set verbose logging in the service.
         """
         if executable_path != "msedgedriver":
@@ -83,6 +85,7 @@ class WebDriver(ChromiumDriver):
             service_log_path,
             service,
             keep_alive,
+            client_config,
         )
 
     def create_options(self) -> Options:

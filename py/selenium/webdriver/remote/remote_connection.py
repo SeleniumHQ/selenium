@@ -27,8 +27,10 @@ import certifi
 import urllib3
 
 from selenium import __version__
+from selenium.webdriver.common.proxy import ProxyType
 
 from . import utils
+from .client_config import ClientConfig
 from .command import Command
 from .errorhandler import ErrorCode
 
@@ -38,8 +40,7 @@ LOGGER = logging.getLogger(__name__)
 class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
-    Communicates with the server using the WebDriver wire protocol:
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+    Communicates with the server using the w3c WebDriver protocol:
     """
 
     browser_name = None
@@ -116,10 +117,16 @@ class RemoteConnection:
         return headers
 
     def _get_proxy_url(self):
-        if self._url.startswith("https://"):
-            return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
-        if self._url.startswith("http://"):
-            return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
+        if self._proxy.proxyType == ProxyType.SYSTEM:
+            if self._url.startswith("https://"):
+                return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
+            if self._url.startswith("http://"):
+                return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
+        else:
+            if self._url.startswith("https://"):
+                return self._proxy.sslProxy
+            if self._url.startswith("http://"):
+                return self._proxy.http_proxy
 
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
@@ -152,9 +159,16 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
-        self.keep_alive = keep_alive
+    def __init__(self, remote_server_addr: str, client_config: ClientConfig = ClientConfig()):
         self._url = remote_server_addr
+
+        if client_config.timeout:
+            self.set_timeout(client_config.timeout)
+        if client_config.certificate_path:
+            self.set_certificate_bundle_path(client_config.certificate_path)
+        self.keep_alive = client_config.keep_alive
+        ignore_proxy = client_config.proxy.proxyType == ProxyType.DIRECT
+        self._proxy = client_config.proxy
 
         # Env var NO_PROXY will override this part of the code
         _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
@@ -176,7 +190,7 @@ class RemoteConnection:
                         break
 
         self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
-        if keep_alive:
+        if self.keep_alive:
             self._conn = self._get_connection_manager()
 
         self._commands = {

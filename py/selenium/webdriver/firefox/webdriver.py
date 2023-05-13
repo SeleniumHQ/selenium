@@ -27,10 +27,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
+from ..remote.client_config import ClientConfig
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
-from .remote_connection import FirefoxRemoteConnection
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
@@ -58,7 +58,8 @@ class WebDriver(RemoteWebDriver):
         service=None,
         desired_capabilities=None,
         log_path=DEFAULT_LOG_PATH,
-        keep_alive=True,  # Todo: Why is this now unused?
+        keep_alive=None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Starts a new local session of Firefox.
 
@@ -106,7 +107,7 @@ class WebDriver(RemoteWebDriver):
         :param desired_capabilities: Deprecated: alias of capabilities. In future
             versions of this library, this will replace 'capabilities'.
             This will make the signature consistent with RemoteWebDriver.
-        :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
+        :param keep_alive - Deprecated: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive.
         """
 
@@ -195,7 +196,12 @@ class WebDriver(RemoteWebDriver):
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+        super().__init__(
+            command_executor=self.service.service_url,
+            options=options,
+            keep_alive=keep_alive,
+            client_config=client_config,
+        )
 
         self._is_remote = False
 

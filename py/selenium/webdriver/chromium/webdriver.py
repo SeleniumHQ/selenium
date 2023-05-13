@@ -18,15 +18,14 @@
 import warnings
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
-DEFAULT_KEEP_ALIVE = None
 
 
 class ChromiumDriver(RemoteWebDriver):
@@ -43,7 +42,8 @@ class ChromiumDriver(RemoteWebDriver):
         desired_capabilities=None,
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         service: Service = None,
-        keep_alive=DEFAULT_KEEP_ALIVE,
+        keep_alive=None,
+        client_config: ClientConfig = ClientConfig(),
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
@@ -74,25 +74,15 @@ class ChromiumDriver(RemoteWebDriver):
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
-            warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        else:
-            keep_alive = True
 
         self.vendor_prefix = vendor_prefix
 
-        _ignore_proxy = None
         if not options:
             options = self.create_options()
 
         if desired_capabilities:
             for key, value in desired_capabilities.items():
                 options.set_capability(key, value)
-
-        if options._ignore_local_proxy:
-            _ignore_proxy = options._ignore_local_proxy
 
         if not service:
             raise AttributeError("service cannot be None")
@@ -101,7 +91,12 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive,)
+            super().__init__(
+                command_executor=self.service.service_url,
+                options=options,
+                keep_alive=keep_alive,
+                client_config=client_config,
+            )
         except Exception:
             self.quit()
             raise
