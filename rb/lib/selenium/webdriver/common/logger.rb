@@ -41,7 +41,7 @@ module Selenium
                      :debug?,
                      :info?,
                      :warn?,
-                     :error, :error?,
+                     :error?,
                      :fatal, :fatal?,
                      :level
 
@@ -135,6 +135,17 @@ module Selenium
         end
 
         discard_or_log(:info, message, id, &block)
+      end
+
+      #
+      # Used to supply information that suggests an error occurred
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def error(message, id: [], &block)
+        discard_or_log(:error, message, id, &block)
       end
 
       #
