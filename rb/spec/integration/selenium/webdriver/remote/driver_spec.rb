@@ -44,6 +44,27 @@ module Selenium
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
         end
+
+        it 'downloads a file' do
+          reset_driver!(enable_downloads: true) do |driver|
+            driver.navigate.to url_for('downloads/download.html')
+            driver.find_element(id: 'file-1').click
+            file_name = 'file_1.txt'
+
+            loop do
+              @files = driver.downloadable_files
+              break if @files.include?(file_name)
+            end
+
+            expect(@files.size).to eq 1
+
+            dir = Dir.mktmpdir 'se_download'
+            at_exit { FileUtils.rm_f(dir) }
+
+            driver.download_file(file_name, dir)
+            expect(File.exist?("#{dir}/#{file_name}")).to be true
+          end
+        end
       end
     end # Remote
   end # WebDriver

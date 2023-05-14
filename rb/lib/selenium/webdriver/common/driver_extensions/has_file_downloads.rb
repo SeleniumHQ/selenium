@@ -19,11 +19,28 @@
 
 module Selenium
   module WebDriver
-    module IE
-      autoload :Features, 'selenium/webdriver/ie/features'
-      autoload :Driver,   'selenium/webdriver/ie/driver'
-      autoload :Options,  'selenium/webdriver/ie/options'
-      autoload :Service,  'selenium/webdriver/ie/service'
-    end # IE
+    module DriverExtensions
+      module HasFileDownloads
+        def downloadable_files
+          @bridge.downloadable_files['names']
+        end
+
+        def download_file(file_name, path = '')
+          response = @bridge.download_file(file_name)
+          contents = response['contents']
+
+          File.open("#{file_name}.zip", 'wb') { |f| f << Base64.decode64(contents) }
+
+          begin
+            path = "#{path}/" if !path.empty? && path[-1] != '/'
+            Zip::File.open("#{file_name}.zip") do |zip|
+              zip.each { |entry| zip.extract(entry, "#{path}#{file_name}") }
+            end
+          ensure
+            FileUtils.rm_f("#{file_name}.zip")
+          end
+        end
+      end # HasFileDownloads
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

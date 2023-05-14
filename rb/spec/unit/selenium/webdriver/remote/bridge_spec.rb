@@ -100,7 +100,9 @@ module Selenium
         describe '#upload' do
           it 'raises WebDriverError if uploading non-files' do
             expect {
-              described_class.new(url: 'http://localhost').upload('NotAFile')
+              bridge = described_class.new(url: 'http://localhost')
+              bridge.extend(WebDriver::Remote::Features)
+              bridge.upload('NotAFile')
             }.to raise_error(Error::WebDriverError)
           end
         end
