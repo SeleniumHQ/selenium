@@ -95,7 +95,7 @@ def selenium_java_deps():
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.7.1",
-            "org.mockito:mockito-core:5.3.1",
+            "org.mockito:mockito-core:4.11.0",
             "org.slf4j:slf4j-api:2.0.7",
             "org.slf4j:slf4j-jdk14:2.0.7",
             "org.testng:testng:7.7.1",
