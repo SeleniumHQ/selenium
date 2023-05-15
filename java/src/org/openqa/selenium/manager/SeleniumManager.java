@@ -21,6 +21,7 @@ import com.google.common.io.CharStreams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
@@ -216,6 +217,17 @@ public class SeleniumManager {
       if (browserBinary != null && !browserBinary.isEmpty()) {
         commandList.add("--browser-path");
         commandList.add(browserBinary);
+      }
+
+      Proxy proxy = (Proxy) options.getCapability("proxy");
+      if (proxy != null) {
+        if (proxy.getSslProxy() != null) {
+          commandList.add("--proxy");
+          commandList.add(proxy.getSslProxy());
+        } else if (proxy.getHttpProxy() != null) {
+          commandList.add("--proxy");
+          commandList.add(proxy.getHttpProxy());
+        }
       }
 
       if (getLogLevel().intValue() <= Level.FINE.intValue()) {
