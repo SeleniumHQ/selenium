@@ -83,9 +83,6 @@ namespace OpenQA.Selenium
         /// </returns>
         public static string DriverPath(DriverOptions options)
         {
-            var binaryFile = binaryFullPath;
-            if (binaryFile == null) return null;
-
             StringBuilder argsBuilder = new StringBuilder();
             argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
             argsBuilder.Append(" --output json");
@@ -101,7 +98,7 @@ namespace OpenQA.Selenium
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
             }
 
-            return RunCommand(binaryFile, argsBuilder.ToString());
+            return RunCommand(binaryFullPath, argsBuilder.ToString());
         }
 
 
