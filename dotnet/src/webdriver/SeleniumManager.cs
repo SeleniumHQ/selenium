@@ -49,11 +49,6 @@ namespace OpenQA.Selenium
             var currentDirectory = AppContext.BaseDirectory;
 #endif
 
-            if (string.IsNullOrEmpty(currentDirectory) )
-            {
-                currentDirectory = ".";
-            }
-
             string binary;
 #if NET45 || NET46 || NET47
                 binary = "selenium-manager/windows/selenium-manager.exe";
