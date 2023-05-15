@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
@@ -233,6 +234,17 @@ public class SeleniumManager {
 
     if (getLogLevel().intValue() <= Level.FINE.intValue()) {
       commandList.add("--debug");
+    }
+
+    Proxy proxy = (Proxy) options.getCapability("proxy");
+    if (proxy != null) {
+      if (proxy.getSslProxy() != null) {
+        commandList.add("--proxy");
+        commandList.add(proxy.getSslProxy());
+      } else if (proxy.getHttpProxy() != null) {
+        commandList.add("--proxy");
+        commandList.add(proxy.getHttpProxy());
+      }
     }
 
     String path = runCommand(commandList.toArray(new String[0]));
