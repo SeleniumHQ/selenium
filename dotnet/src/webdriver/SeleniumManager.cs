@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 #if !NET45 && !NET46 && !NET47
@@ -38,8 +39,45 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
-        private static string basePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        private static string binary;
+        private readonly static string binaryFullPath;
+
+        static SeleniumManager()
+        {
+#if !NET45
+            var currentDirectory = AppContext.BaseDirectory;
+#else
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+#endif
+
+            if (string.IsNullOrEmpty(currentDirectory) )
+            {
+                currentDirectory = ".";
+            }
+
+            string binary;
+#if NET45 || NET46 || NET47
+                binary = "selenium-manager/windows/selenium-manager.exe";
+#else
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    binary = "selenium-manager/windows/selenium-manager.exe";
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    binary = "selenium-manager/linux/selenium-manager";
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    binary = "selenium-manager/macos/selenium-manager";
+                }
+                else
+                {
+                    throw new WebDriverException("Selenium Manager did not find supported operating system");
+                }
+#endif
+
+            binaryFullPath = Path.Combine(currentDirectory, binary);
+        }
 
         /// <summary>
         /// Determines the location of the correct driver.
@@ -50,7 +88,7 @@ namespace OpenQA.Selenium
         /// </returns>
         public static string DriverPath(DriverOptions options)
         {
-            var binaryFile = Binary;
+            var binaryFile = binaryFullPath;
             if (binaryFile == null) return null;
 
             StringBuilder argsBuilder = new StringBuilder();
@@ -67,7 +105,6 @@ namespace OpenQA.Selenium
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
             }
-
 
             return RunCommand(binaryFile, argsBuilder.ToString());
         }
@@ -96,40 +133,6 @@ namespace OpenQA.Selenium
             return null;
         }
 
-        /// <summary>
-        /// Gets the location of the correct Selenium Manager binary.
-        /// </summary>
-        private static string Binary
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(binary))
-                {
-#if NET45 || NET46 || NET47
-                    binary = "selenium-manager/windows/selenium-manager.exe";
-#else
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        binary = "selenium-manager/windows/selenium-manager.exe";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        binary = "selenium-manager/linux/selenium-manager";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    {
-                        binary = "selenium-manager/macos/selenium-manager";
-                    }
-                    else
-                    {
-                        throw new WebDriverException("Selenium Manager did not find supported operating system");
-                    }
-#endif
-                }
-
-                return binary;
-            }
-        }
 
         /// <summary>
         /// Executes a process with the given arguments.
@@ -142,7 +145,7 @@ namespace OpenQA.Selenium
         private static string RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
-            process.StartInfo.FileName = $"{basePath}/{fileName}";
+            process.StartInfo.FileName = binaryFullPath;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
@@ -151,7 +154,6 @@ namespace OpenQA.Selenium
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
-            int processExitCode;
 
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
 
@@ -164,6 +166,13 @@ namespace OpenQA.Selenium
                 process.BeginOutputReadLine();
 
                 process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
+
+                    throw new WebDriverException($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}\n{outputBuilder}");
+                }
             }
             catch (Exception ex)
             {
@@ -171,7 +180,6 @@ namespace OpenQA.Selenium
             }
             finally
             {
-                processExitCode = process.ExitCode;
                 process.OutputDataReceived -= outputHandler;
             }
 
@@ -186,13 +194,6 @@ namespace OpenQA.Selenium
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
-            }
-
-            // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
-
-            if (processExitCode != 0)
-            {
-                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{result}");
             }
 
             return result;
