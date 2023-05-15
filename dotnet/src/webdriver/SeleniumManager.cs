@@ -43,10 +43,10 @@ namespace OpenQA.Selenium
 
         static SeleniumManager()
         {
-#if !NET45
-            var currentDirectory = AppContext.BaseDirectory;
-#else
+#if NET45
             var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+#else
+            var currentDirectory = AppContext.BaseDirectory;
 #endif
 
             if (string.IsNullOrEmpty(currentDirectory) )
