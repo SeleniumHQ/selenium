@@ -20,16 +20,17 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.WebDriverException;
 
 /**
- * Indicates there was a problem communicating with the browser being
- * controlled or the Selenium server.
+ * Indicates there was a problem communicating with the browser being controlled or the Selenium
+ * server.
  *
- * The most common causes for this exception are:
+ * <p>The most common causes for this exception are:
+ *
  * <ul>
- *   <li> The provided server address to RemoteWebDriver is invalid, so the
- *    connection could not be established.
- *   </li>
- *   <li> The browser has died mid-test. </li>
+ *   <li>The provided server address to RemoteWebDriver is invalid, so the connection could not be
+ *       established.
+ *   <li>The browser has died mid-test.
  * </ul>
+ *
  * 1)
  */
 public class UnreachableBrowserException extends WebDriverException {

@@ -20,15 +20,6 @@ package org.openqa.selenium.firefox;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -47,6 +37,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
@@ -59,10 +57,10 @@ public class FileExtension implements Extension {
 
   @Override
   public void writeTo(File extensionsDir) throws IOException {
-    if (!toInstall.isDirectory() &&
-        !FileHandler.isZipped(toInstall.getAbsolutePath())) {
+    if (!toInstall.isDirectory() && !FileHandler.isZipped(toInstall.getAbsolutePath())) {
       throw new IOException(
-          String.format("Can only install from a zip file, an XPI or a directory: %s",
+          String.format(
+              "Can only install from a zip file, an XPI or a directory: %s",
               toInstall.getAbsolutePath()));
     }
 
@@ -104,8 +102,8 @@ public class FileExtension implements Extension {
   private File obtainRootDirectory(File extensionToInstall) throws IOException {
     File root = extensionToInstall;
     if (!extensionToInstall.isDirectory()) {
-      try (BufferedInputStream bis = new BufferedInputStream(
-          new FileInputStream(extensionToInstall))) {
+      try (BufferedInputStream bis =
+          new BufferedInputStream(new FileInputStream(extensionToInstall))) {
         root = Zip.unzipToTempDir(bis, "unzip", "stream");
       }
     }
@@ -130,7 +128,7 @@ public class FileExtension implements Extension {
     final String MANIFEST_JSON_FILE = "manifest.json";
     File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
     try (Reader reader = Files.newBufferedReader(manifestJsonFile.toPath(), UTF_8);
-         JsonInput json = new Json().newInput(reader)) {
+        JsonInput json = new Json().newInput(reader)) {
       String addOnId = null;
 
       Map<String, Object> manifestObject = json.read(MAP_TYPE);
@@ -145,8 +143,10 @@ public class FileExtension implements Extension {
       }
 
       if (addOnId == null || addOnId.isEmpty()) {
-        addOnId = ((String) manifestObject.get("name")).replaceAll(" ", "") +
-          "@" + manifestObject.get("version");
+        addOnId =
+            ((String) manifestObject.get("name")).replaceAll(" ", "")
+                + "@"
+                + manifestObject.get("version");
       }
 
       return addOnId;
@@ -169,28 +169,29 @@ public class FileExtension implements Extension {
       Document doc = builder.parse(installRdf);
 
       XPath xpath = XPathFactory.newInstance().newXPath();
-      xpath.setNamespaceContext(new NamespaceContext() {
-        @Override
-        public String getNamespaceURI(String prefix) {
-          if ("em".equals(prefix)) {
-            return EM_NAMESPACE_URI;
-          } else if ("RDF".equals(prefix)) {
-            return "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-          }
+      xpath.setNamespaceContext(
+          new NamespaceContext() {
+            @Override
+            public String getNamespaceURI(String prefix) {
+              if ("em".equals(prefix)) {
+                return EM_NAMESPACE_URI;
+              } else if ("RDF".equals(prefix)) {
+                return "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+              }
 
-          return XMLConstants.NULL_NS_URI;
-        }
+              return XMLConstants.NULL_NS_URI;
+            }
 
-        @Override
-        public String getPrefix(String uri) {
-          throw new UnsupportedOperationException("getPrefix");
-        }
+            @Override
+            public String getPrefix(String uri) {
+              throw new UnsupportedOperationException("getPrefix");
+            }
 
-        @Override
-        public Iterator<String> getPrefixes(String uri) {
-          throw new UnsupportedOperationException("getPrefixes");
-        }
-      });
+            @Override
+            public Iterator<String> getPrefixes(String uri) {
+              throw new UnsupportedOperationException("getPrefixes");
+            }
+          });
 
       Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
 

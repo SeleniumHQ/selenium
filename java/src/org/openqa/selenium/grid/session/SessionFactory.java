@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.grid.session;
 
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 
 public interface SessionFactory
-    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<ActiveSession>> {
-}
+    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<ActiveSession>> {}

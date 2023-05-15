@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-/**
- * {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class.
- */
+/** {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class. */
 class ShortTermMemoryHandlerUnitTest {
 
   @Test
@@ -172,7 +169,6 @@ class ShortTermMemoryHandlerUnitTest {
 
     handler = new ShortTermMemoryHandler(1, Level.INFO, null);
     assertEquals("", handler.formattedRecords());
-
   }
 
   @Test
@@ -182,20 +178,20 @@ class ShortTermMemoryHandlerUnitTest {
     final LogRecord secondLogRecord;
     final Formatter formatter;
 
-    formatter = new Formatter() {
-      @Override
-      public String format(LogRecord record) {
-        return "[FORMATTED] " + record.getMessage();
-      }
-    };
+    formatter =
+        new Formatter() {
+          @Override
+          public String format(LogRecord record) {
+            return "[FORMATTED] " + record.getMessage();
+          }
+        };
     handler = new ShortTermMemoryHandler(2, Level.INFO, formatter);
     firstLogRecord = new LogRecord(Level.INFO, "First log message");
     secondLogRecord = new LogRecord(Level.INFO, "Second log message");
     handler.publish(firstLogRecord);
     handler.publish(secondLogRecord);
-    assertEquals("[FORMATTED] First log message\n" +
-        "[FORMATTED] Second log message\n", handler.formattedRecords());
-
+    assertEquals(
+        "[FORMATTED] First log message\n" + "[FORMATTED] Second log message\n",
+        handler.formattedRecords());
   }
-
 }

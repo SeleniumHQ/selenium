@@ -17,12 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
 import static com.google.common.base.Joiner.on;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -32,12 +26,19 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+
 class TypingTest extends JupiterTestBase {
 
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
-    assertThat(element.getText().trim()).contains(
-      String.format("down: %1$d", expectedKeyCode),
-      String.format("up: %1$d", expectedKeyCode));
+    assertThat(element.getText().trim())
+        .contains(
+            String.format("down: %1$d", expectedKeyCode),
+            String.format("up: %1$d", expectedKeyCode));
   }
 
   private static String getValueText(WebElement el) {
@@ -317,9 +318,10 @@ class TypingTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Final assertion isn't 16 since keyUp not sent from shift",
-    issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Final assertion isn't 16 since keyUp not sent from shift",
+      issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -346,9 +348,10 @@ class TypingTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Final assertion isn't 16 since keyUp not sent from shift",
-    issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Final assertion isn't 16 since keyUp not sent from shift",
+      issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -363,9 +366,10 @@ class TypingTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Final assertion isn't 16 since keyUp not sent from shift",
-    issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Final assertion isn't 16 since keyUp not sent from shift",
+      issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -373,8 +377,8 @@ class TypingTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     String allPrintable =
-        "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
-        "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO"
+            + "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     element.sendKeys(allPrintable);
 
     assertThat(element.getAttribute("value")).isEqualTo(allPrintable);
@@ -387,23 +391,46 @@ class TypingTest extends JupiterTestBase {
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
-                     Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
+    element.sendKeys(
+        "a"
+            + Keys.LEFT
+            + "b"
+            + Keys.RIGHT
+            + Keys.UP
+            + Keys.DOWN
+            + Keys.PAGE_UP
+            + Keys.PAGE_DOWN
+            + "1");
     assertThat(element.getAttribute("value")).isEqualTo("ba1");
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Firefox can't type at beginning of field",
-    issue = "https://github.com/mozilla/geckodriver/issues/2015")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Firefox can't type at beginning of field",
+      issue = "https://github.com/mozilla/geckodriver/issues/2015")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    element.sendKeys("abc" + homeKey() + "0" + Keys.LEFT + Keys.RIGHT +
-                     Keys.PAGE_UP + Keys.PAGE_DOWN + endKey() + "1" + homeKey() +
-                     "0" + Keys.PAGE_UP + endKey() + "111" + homeKey() + "00");
+    element.sendKeys(
+        "abc"
+            + homeKey()
+            + "0"
+            + Keys.LEFT
+            + Keys.RIGHT
+            + Keys.PAGE_UP
+            + Keys.PAGE_DOWN
+            + endKey()
+            + "1"
+            + homeKey()
+            + "0"
+            + Keys.PAGE_UP
+            + endKey()
+            + "111"
+            + homeKey()
+            + "00");
     assertThat(element.getAttribute("value")).isEqualTo("0000abc1111");
   }
 
@@ -440,10 +467,21 @@ class TypingTest extends JupiterTestBase {
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    element.sendKeys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-                     Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-                     Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-                     Keys.NUMPAD3 + "abcd");
+    element.sendKeys(
+        "abcd"
+            + Keys.MULTIPLY
+            + Keys.SUBTRACT
+            + Keys.ADD
+            + Keys.DECIMAL
+            + Keys.SEPARATOR
+            + Keys.NUMPAD0
+            + Keys.NUMPAD9
+            + Keys.ADD
+            + Keys.SEMICOLON
+            + Keys.EQUALS
+            + Keys.DIVIDE
+            + Keys.NUMPAD3
+            + "abcd");
     assertThat(element.getAttribute("value")).isEqualTo("abcd*-+.,09+;=/3abcd");
   }
 
@@ -491,9 +529,10 @@ class TypingTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Firefox can't type at beginning of field",
-    issue = "https://github.com/mozilla/geckodriver/issues/2015")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Firefox can't type at beginning of field",
+      issue = "https://github.com/mozilla/geckodriver/issues/2015")
   public void testChordReverseShiftHomeSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -518,9 +557,10 @@ class TypingTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Firefox can't type at beginning of field",
-    issue = "https://github.com/mozilla/geckodriver/issues/2015")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Firefox can't type at beginning of field",
+      issue = "https://github.com/mozilla/geckodriver/issues/2015")
   public void testChordControlCutAndPaste() {
     driver.get(pages.javascriptPage);
 
@@ -625,22 +665,22 @@ class TypingTest extends JupiterTestBase {
     assertThat(log.getAttribute("value")).isEmpty();
 
     input.sendKeys("b");
-    assertThat(getValueText(log)).isEqualTo(on('\n').join(
-        "keydown (target)",
-        "keyup (target)",
-        "keyup (body)"));
+    assertThat(getValueText(log))
+        .isEqualTo(on('\n').join("keydown (target)", "keyup (target)", "keyup (body)"));
 
     input.sendKeys("a");
 
     // Some drivers (IE, Firefox) do not always generate the final keyup event since the element
     // is removed from the DOM in response to the keypress (note, this is a product of how events
     // are generated and does not match actual user behavior).
-    String expected = String.join("\n",
-        "keydown (target)",
-        "keyup (target)",
-        "keyup (body)",
-        "keydown (target)",
-        "a pressed; removing");
+    String expected =
+        String.join(
+            "\n",
+            "keydown (target)",
+            "keyup (target)",
+            "keyup (body)",
+            "keydown (target)",
+            "a pressed; removing");
     assertThat(getValueText(log)).isIn(expected, expected + "\nkeyup (body)");
   }
 

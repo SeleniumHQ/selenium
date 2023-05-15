@@ -21,7 +21,6 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.net.MediaType;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
 import javax.servlet.ReadListener;
@@ -49,8 +47,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
-public class FakeHttpServletRequest extends HeaderContainer
-    implements HttpServletRequest {
+public class FakeHttpServletRequest extends HeaderContainer implements HttpServletRequest {
 
   private final UrlInfo requestUrl;
   private final Map<String, Object> attributes;
@@ -64,7 +61,7 @@ public class FakeHttpServletRequest extends HeaderContainer
     this.parameters = new HashMap<>();
     this.method = method.toUpperCase();
     this.requestUrl = requestUrl;
-    //Input stream should only be constructed when there's a valid body set from outside.
+    // Input stream should only be constructed when there's a valid body set from outside.
     this.inputStream = null;
   }
 
@@ -74,35 +71,36 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public void setBody(final String data) {
-    this.inputStream = new ServletInputStream() {
-      private final ByteArrayInputStream delegate =
-          new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+    this.inputStream =
+        new ServletInputStream() {
+          private final ByteArrayInputStream delegate =
+              new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 
-      @Override
-      public void close() throws IOException {
-        delegate.close();
-      }
+          @Override
+          public void close() throws IOException {
+            delegate.close();
+          }
 
-      @Override
-      public int read() {
-        return delegate.read();
-      }
+          @Override
+          public int read() {
+            return delegate.read();
+          }
 
-      @Override
-      public boolean isFinished() {
-        return false;
-      }
+          @Override
+          public boolean isFinished() {
+            return false;
+          }
 
-      @Override
-      public boolean isReady() {
-        return true;
-      }
+          @Override
+          public boolean isReady() {
+            return true;
+          }
 
-      @Override
-      public void setReadListener(ReadListener readListener) {
-        throw new UnsupportedOperationException();
-      }
-    };
+          @Override
+          public void setReadListener(ReadListener readListener) {
+            throw new UnsupportedOperationException();
+          }
+        };
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -237,7 +235,7 @@ public class FakeHttpServletRequest extends HeaderContainer
 
   @Override
   public void setCharacterEncoding(String s) {
-  throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -435,7 +433,7 @@ public class FakeHttpServletRequest extends HeaderContainer
 
   @Override
   public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
-    throws IllegalStateException {
+      throws IllegalStateException {
     throw new UnsupportedOperationException();
   }
 

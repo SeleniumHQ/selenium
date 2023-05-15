@@ -22,9 +22,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-/**
- * Reads information about how the current application was built.
- */
+/** Reads information about how the current application was built. */
 public class BuildInfo {
 
   private static final Properties BUILD_PROPERTIES = loadBuildProperties();
@@ -42,20 +40,24 @@ public class BuildInfo {
     return properties;
   }
 
-  /** @return The embedded release label or "unknown". */
+  /**
+   * @return The embedded release label or "unknown".
+   */
   public String getReleaseLabel() {
     return read("Selenium-Version");
   }
 
-  /** @return The embedded build revision or "unknown". */
+  /**
+   * @return The embedded build revision or "unknown".
+   */
   public String getBuildRevision() {
     return read("Build-Revision");
   }
 
   @Override
   public String toString() {
-    return String.format("Build info: version: '%s', revision: '%s'",
-        getReleaseLabel(), getBuildRevision());
+    return String.format(
+        "Build info: version: '%s', revision: '%s'", getReleaseLabel(), getBuildRevision());
   }
 
   private String read(String propertyName) {

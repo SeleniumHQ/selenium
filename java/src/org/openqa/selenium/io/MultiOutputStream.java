@@ -20,9 +20,7 @@ package org.openqa.selenium.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
- * Output stream demultiplexer
- */
+/** Output stream demultiplexer */
 public class MultiOutputStream extends OutputStream {
 
   private final OutputStream mandatory;

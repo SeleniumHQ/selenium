@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.json;
 
-import org.openqa.selenium.internal.Require;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
+import org.openqa.selenium.internal.Require;
 
 public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
 
@@ -32,9 +31,7 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
   private final Collector<Object, ?, ? extends T> collector;
 
   public CollectionCoercer(
-      Class<T> stereotype,
-      JsonTypeCoercer coercer,
-      Collector<Object, ?, T> collector) {
+      Class<T> stereotype, JsonTypeCoercer coercer, Collector<Object, ?, T> collector) {
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.collector = Require.nonNull("Collector", collector);
@@ -60,9 +57,11 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
 
     return (jsonInput, setting) -> {
       jsonInput.beginArray();
-      T toReturn = new JsonInputIterator(jsonInput).asStream()
-          .map(in -> coercer.coerce(in, valueType, setting))
-          .collect(collector);
+      T toReturn =
+          new JsonInputIterator(jsonInput)
+              .asStream()
+              .map(in -> coercer.coerce(in, valueType, setting))
+              .collect(collector);
       jsonInput.endArray();
 
       return toReturn;

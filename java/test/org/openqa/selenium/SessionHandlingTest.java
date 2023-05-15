@@ -75,5 +75,4 @@ class SessionHandlingTest extends JupiterTestBase {
       e.printStackTrace();
     }
   }
-
 }

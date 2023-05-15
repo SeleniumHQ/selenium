@@ -18,9 +18,6 @@ package org.openqa.selenium.net;
 
 import static org.openqa.selenium.net.NetworkInterface.isIpv6;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
@@ -31,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 
 public class NetworkUtils {
 
@@ -84,7 +83,8 @@ public class NetworkUtils {
    */
   public String getNonLoopbackAddressOfThisMachine() {
     InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
-    if (!Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
+    if (!Objects.equals(
+        cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
       cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
       cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostAddress();
     }
@@ -135,11 +135,11 @@ public class NetworkUtils {
     }
 
     throw new WebDriverException(
-        "Unable to resolve local loopback address, please file an issue with the full message of this error:\n"
-            +
-            getNetWorkDiags() + "\n==== End of error message");
+        "Unable to resolve local loopback address, please file an issue with the full message of"
+            + " this error:\n"
+            + getNetWorkDiags()
+            + "\n==== End of error message");
   }
-
 
   private InetAddress grabFirstNetworkAddress() {
     NetworkInterface firstInterface =
@@ -181,7 +181,7 @@ public class NetworkUtils {
     for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
       for (InetAddress addr : iface.getInetAddresses()) {
         // filter out Inet6 Addr Entries
-        if (addr.isLoopbackAddress() && !isIpv6(addr))  {
+        if (addr.isLoopbackAddress() && !isIpv6(addr)) {
           localAddresses.add(addr);
         }
       }
@@ -212,10 +212,9 @@ public class NetworkUtils {
     StringBuilder result = new StringBuilder();
     DefaultNetworkInterfaceProvider defaultNetworkInterfaceProvider =
         new DefaultNetworkInterfaceProvider();
-    for (NetworkInterface networkInterface : defaultNetworkInterfaceProvider
-        .getNetworkInterfaces()) {
+    for (NetworkInterface networkInterface :
+        defaultNetworkInterfaceProvider.getNetworkInterfaces()) {
       dumpToConsole(result, networkInterface);
-
     }
     NetworkInterface byName = defaultNetworkInterfaceProvider.getLoInterface();
     if (byName != null) {
@@ -257,9 +256,9 @@ public class NetworkUtils {
     // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
     // amazingly slow. That's less than ideal. Figure things out and cache.
 
-    String host = System.getenv("HOSTNAME");  // Most OSs
+    String host = System.getenv("HOSTNAME"); // Most OSs
     if (host == null) {
-      host = System.getenv("COMPUTERNAME");  // Windows
+      host = System.getenv("COMPUTERNAME"); // Windows
     }
     if (host == null && Platform.getCurrent().is(Platform.MAC)) {
       try {
@@ -271,8 +270,9 @@ public class NetworkUtils {
           process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
-          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(), Charset.defaultCharset());
-               BufferedReader reader = new BufferedReader(isr)) {
+          try (InputStreamReader isr =
+                  new InputStreamReader(process.getInputStream(), Charset.defaultCharset());
+              BufferedReader reader = new BufferedReader(isr)) {
             host = reader.readLine();
           }
         }
@@ -288,7 +288,7 @@ public class NetworkUtils {
       try {
         host = InetAddress.getLocalHost().getHostName();
       } catch (Exception e) {
-        host = "localhost";  // At least we tried.
+        host = "localhost"; // At least we tried.
       }
     }
 

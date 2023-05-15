@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.grid.node;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.Instant;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.time.Instant;
 
 public abstract class BaseActiveSession implements ActiveSession {
 
@@ -36,13 +35,13 @@ public abstract class BaseActiveSession implements ActiveSession {
   private final Dialect upstream;
 
   protected BaseActiveSession(
-    SessionId id,
-    URL url,
-    Dialect downstream,
-    Dialect upstream,
-    Capabilities stereotype,
-    Capabilities capabilities,
-    Instant startTime) {
+      SessionId id,
+      URL url,
+      Dialect downstream,
+      Dialect upstream,
+      Capabilities stereotype,
+      Capabilities capabilities,
+      Instant startTime) {
     URI uri;
     try {
       uri = Require.nonNull("URL", url).toURI();
@@ -50,12 +49,13 @@ public abstract class BaseActiveSession implements ActiveSession {
       throw new IllegalArgumentException(e);
     }
 
-    this.session = new Session(
-      Require.nonNull("Session id", id),
-      uri,
-      ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype)),
-      ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)),
-      Require.nonNull("Start time", startTime));
+    this.session =
+        new Session(
+            Require.nonNull("Session id", id),
+            uri,
+            ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype)),
+            ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)),
+            Require.nonNull("Start time", startTime));
 
     this.downstream = Require.nonNull("Downstream dialect", downstream);
     this.upstream = Require.nonNull("Upstream dialect", upstream);

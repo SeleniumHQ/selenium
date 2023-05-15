@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import org.openqa.selenium.remote.SessionId;
-
 import java.io.File;
+import org.openqa.selenium.remote.SessionId;
 
 public class DockerAssetsPath {
 

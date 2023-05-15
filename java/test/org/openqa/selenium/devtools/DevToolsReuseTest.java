@@ -43,7 +43,10 @@ class DevToolsReuseTest extends DevToolsTestBase {
   }
 
   private static void addConsoleLogListener(DevTools devTools) {
-    devTools.getDomains().events().addConsoleListener(
-      consoleEvent -> assertThat(consoleEvent.getMessages()).contains("Hello, world!"));
+    devTools
+        .getDomains()
+        .events()
+        .addConsoleListener(
+            consoleEvent -> assertThat(consoleEvent.getMessages()).contains("Hello, world!"));
   }
 }

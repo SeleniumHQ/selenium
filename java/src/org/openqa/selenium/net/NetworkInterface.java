@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import static java.util.Collections.list;
+
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -27,8 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static java.util.Collections.list;
 
 public class NetworkInterface {
 
@@ -44,8 +44,9 @@ public class NetworkInterface {
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
     this.name = name;
-    this.inetAddresses = StreamSupport.stream(inetAddresses.spliterator(), false)
-      .collect(Collectors.toCollection(LinkedHashSet::new));
+    this.inetAddresses =
+        StreamSupport.stream(inetAddresses.spliterator(), false)
+            .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   NetworkInterface(String name, InetAddress... inetAddresses) {

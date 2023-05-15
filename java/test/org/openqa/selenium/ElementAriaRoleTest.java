@@ -30,9 +30,11 @@ class ElementAriaRoleTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnExplicitlySpecifiedRole() {
-    driver.get(appServer.create(
-      new Page().withTitle("Testing Aria Role")
-        .withBody("<div role='heading' aria-level='1'>Level 1 Header</div>")));
+    driver.get(
+        appServer.create(
+            new Page()
+                .withTitle("Testing Aria Role")
+                .withBody("<div role='heading' aria-level='1'>Level 1 Header</div>")));
     WebElement header1 = driver.findElement(By.cssSelector("div"));
     assertThat(header1.getAriaRole()).isEqualTo("heading");
   }
@@ -40,9 +42,9 @@ class ElementAriaRoleTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnImplicitRoleDefinedByTagName() {
-    driver.get(appServer.create(
-      new Page().withTitle("Testing Aria Role")
-        .withBody("<h1>Level 1 Header</h1>")));
+    driver.get(
+        appServer.create(
+            new Page().withTitle("Testing Aria Role").withBody("<h1>Level 1 Header</h1>")));
     WebElement header1 = driver.findElement(By.cssSelector("h1"));
     assertThat(header1.getAriaRole()).isEqualTo("heading");
   }
@@ -50,9 +52,11 @@ class ElementAriaRoleTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnExplicitRoleEvenIfItContradictsTagName() {
-    driver.get(appServer.create(
-      new Page().withTitle("Testing Aria Role")
-        .withBody("<h1 role='alert'>Level 1 Header</h1>")));
+    driver.get(
+        appServer.create(
+            new Page()
+                .withTitle("Testing Aria Role")
+                .withBody("<h1 role='alert'>Level 1 Header</h1>")));
     WebElement header1 = driver.findElement(By.cssSelector("h1"));
     assertThat(header1.getAriaRole()).isEqualTo("alert");
   }

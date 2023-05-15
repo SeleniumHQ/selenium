@@ -57,7 +57,8 @@ public class Page {
   }
 
   public String toString() {
-    return String.join("\n",
+    return String.join(
+        "\n",
         "<html>",
         "<head>",
         String.format("<title>%s</title>", title),
@@ -71,7 +72,7 @@ public class Page {
         String.format(
             "<body %s %s>",
             onLoad == null ? "" : String.format("onload='%s'", onLoad),
-            onBeforeUnload ==  null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload)),
+            onBeforeUnload == null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload)),
         String.join("\n", bodyParts),
         "</body>",
         "</html>");

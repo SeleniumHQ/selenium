@@ -20,10 +20,9 @@ package org.openqa.selenium.docker;
 import org.openqa.selenium.internal.Require;
 
 /**
- * Models simple version strings. Does not attempt to be semver compatible,
- * and gleefully fails to handle non-numerical values, except accidentally.
- * This is sufficient for handling the version strings we care about from
- * Docker.
+ * Models simple version strings. Does not attempt to be semver compatible, and gleefully fails to
+ * handle non-numerical values, except accidentally. This is sufficient for handling the version
+ * strings we care about from Docker.
  */
 class Version {
 
