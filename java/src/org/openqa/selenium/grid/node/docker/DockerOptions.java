@@ -36,6 +36,7 @@ import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.HostIdentifier;
@@ -124,7 +125,7 @@ public class DockerOptions {
   public Map<Capabilities, Collection<SessionFactory>> getDockerSessionFactories(
     Tracer tracer,
     HttpClient.Factory clientFactory,
-    Duration sessionTimeout) {
+    NodeOptions options) {
 
     HttpClient client = clientFactory.createClient(
       ClientConfig.defaultConfig().baseUri(getDockerUri()));
@@ -144,7 +145,7 @@ public class DockerOptions {
       if (i == allConfigs.size()) {
         throw new DockerException("Unable to find JSON config");
       }
-      Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
+      Capabilities stereotype = options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
 
       kinds.put(imageName, stereotype);
     }
@@ -176,7 +177,7 @@ public class DockerOptions {
           new DockerSessionFactory(
             tracer,
             clientFactory,
-            sessionTimeout,
+            options.getSessionTimeout(),
             docker,
             getDockerUri(),
             image,

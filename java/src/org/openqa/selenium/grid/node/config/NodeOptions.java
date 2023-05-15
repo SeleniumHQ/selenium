@@ -626,7 +626,7 @@ public class NodeOptions {
     return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
   }
 
-  private Capabilities enhanceStereotype(Capabilities capabilities) {
+  public Capabilities enhanceStereotype(Capabilities capabilities) {
     if (capabilities.getPlatformName() == null) {
       capabilities = new PersistentCapabilities(capabilities)
         .setCapability("platformName", CURRENT_PLATFORM);

@@ -83,7 +83,7 @@ public class LocalNodeFactory {
       .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
-      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory, sessionTimeout)
+      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory, nodeOptions)
         .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
