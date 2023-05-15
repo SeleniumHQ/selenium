@@ -794,7 +794,7 @@ public class CdpClientGenerator {
     public String getTypeToken() {
       if (type.equals("object")) {
         return "new com.google.common.reflect.TypeToken<java.util.Map<String, Object>>()"
-                   + " {}.getType()";
+            + " {}.getType()";
       } else {
         return getJavaType() + ".class";
       }
@@ -908,7 +908,7 @@ public class CdpClientGenerator {
           return "input.read(Object.class)";
         case "object":
           return "input.read(new com.google.common.reflect.TypeToken<java.util.Map<String,"
-                     + " Object>>() {}.getType())";
+              + " Object>>() {}.getType())";
         case "array":
           return "input.nextString()";
         default:

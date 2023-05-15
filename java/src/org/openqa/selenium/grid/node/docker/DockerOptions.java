@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -137,7 +136,8 @@ public class DockerOptions {
       if (i == allConfigs.size()) {
         throw new DockerException("Unable to find JSON config");
       }
-      Capabilities stereotype = options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+      Capabilities stereotype =
+          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
 
       kinds.put(imageName, stereotype);
     }

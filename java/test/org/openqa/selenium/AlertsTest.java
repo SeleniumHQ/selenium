@@ -75,7 +75,7 @@ class AlertsTest extends JupiterTestBase {
                 "}",
                 defaultText == null
                     ? "function displayPrompt() { setInnerText('text', prompt('Enter something'));"
-                          + " }"
+                        + " }"
                     : "function displayPrompt() { setInnerText('text', prompt('Enter something', '"
                         + defaultText
                         + "')); }")
