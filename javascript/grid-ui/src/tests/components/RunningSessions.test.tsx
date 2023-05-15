@@ -104,7 +104,7 @@ it('renders detailed session information', async () => {
 it('search field works as expected for normal fields', async () => {
   const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
   const user = userEvent.setup()
-  await user.type(getByPlaceholderText('search sessions...'), 'browserName=edge')
+  await user.type(getByPlaceholderText('Search…'), 'browserName=edge')
   expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
   expect(getByText(sessions[1].id)).toBeInTheDocument()
   expect(queryByText(sessions[2].id)).not.toBeInTheDocument()
@@ -113,7 +113,7 @@ it('search field works as expected for normal fields', async () => {
 it('search field works as expected for capabilities', async () => {
   const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
   const user = userEvent.setup()
-  await user.type(getByPlaceholderText('search sessions...'), 'capabilities,se:random_cap=test_func')
+  await user.type(getByPlaceholderText('Search…'), 'capabilities,se:random_cap=test_func')
   expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
   expect(queryByText(sessions[1].id)).not.toBeInTheDocument()
   expect(getByText(sessions[2].id)).toBeInTheDocument()
@@ -122,7 +122,7 @@ it('search field works as expected for capabilities', async () => {
 it('search field works for multiple results', async () => {
   const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
   const user = userEvent.setup()
-  await user.type(getByPlaceholderText('search sessions...'), 'nodeId=h9x799f4-4397-4fbb-9344-1d5a3074695e')
+  await user.type(getByPlaceholderText('Search…'), 'nodeId=h9x799f4-4397-4fbb-9344-1d5a3074695e')
   expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
   expect(getByText(sessions[1].id)).toBeInTheDocument()
   expect(getByText(sessions[2].id)).toBeInTheDocument()
@@ -131,8 +131,8 @@ it('search field works for multiple results', async () => {
 it('search field works for lazy search', async () => {
   const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
   const user = userEvent.setup()
-  await user.type(getByPlaceholderText('search sessions...'), 'browserName')
-  expect(getByPlaceholderText('search sessions...')).toHaveValue('browserName')
+  await user.type(getByPlaceholderText('Search…'), 'browserName')
+  expect(getByPlaceholderText('Search…')).toHaveValue('browserName')
   expect(queryByText(sessions[0].id)).toBeInTheDocument()
   expect(getByText(sessions[1].id)).toBeInTheDocument()
   expect(getByText(sessions[2].id)).toBeInTheDocument()
