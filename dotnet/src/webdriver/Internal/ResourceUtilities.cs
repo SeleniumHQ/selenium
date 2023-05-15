@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Internal
             {
                 if (string.IsNullOrEmpty(assemblyVersion))
                 {
-                    Assembly executingAssembly = Assembly.GetCallingAssembly();
+                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
                     Version versionResource = executingAssembly.GetName().Version;
                     assemblyVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", versionResource.Major, versionResource.Minor, versionResource.Revision);
                 }
