@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools.v111;
 
+import java.util.Optional;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
@@ -25,8 +26,6 @@ import org.openqa.selenium.devtools.v111.page.Page;
 import org.openqa.selenium.devtools.v111.page.model.ScriptIdentifier;
 import org.openqa.selenium.devtools.v111.runtime.Runtime;
 import org.openqa.selenium.devtools.v111.runtime.model.BindingCalled;
-
-import java.util.Optional;
 
 public class v111Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 

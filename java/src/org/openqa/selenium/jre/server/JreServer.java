@@ -19,19 +19,18 @@ package org.openqa.selenium.jre.server;
 
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpServer;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class JreServer implements Server<JreServer> {
 
@@ -52,20 +51,24 @@ public class JreServer implements Server<JreServer> {
 
     server.setExecutor(null);
     server.createContext(
-      "/", httpExchange -> {
-        HttpRequest req = JreMessages.asRequest(httpExchange);
+        "/",
+        httpExchange -> {
+          HttpRequest req = JreMessages.asRequest(httpExchange);
 
-        HttpResponse res = handler.execute(req);
+          HttpResponse res = handler.execute(req);
 
-        res.getHeaderNames().forEach(
-          name -> res.getHeaders(name).forEach(value -> httpExchange.getResponseHeaders().add(name, value)));
-        httpExchange.sendResponseHeaders(res.getStatus(), 0);
+          res.getHeaderNames()
+              .forEach(
+                  name ->
+                      res.getHeaders(name)
+                          .forEach(value -> httpExchange.getResponseHeaders().add(name, value)));
+          httpExchange.sendResponseHeaders(res.getStatus(), 0);
 
-        try (InputStream in = res.getContent().get();
-             OutputStream out = httpExchange.getResponseBody()) {
-          ByteStreams.copy(in, out);
-        }
-      });
+          try (InputStream in = res.getContent().get();
+              OutputStream out = httpExchange.getResponseBody()) {
+            ByteStreams.copy(in, out);
+          }
+        });
   }
 
   @Override

@@ -17,7 +17,12 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
+import java.util.HashMap;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -27,12 +32,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-import java.util.HashMap;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 class NewNodeSession implements HttpHandler {
 
@@ -48,8 +47,7 @@ class NewNodeSession implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
-    Either<WebDriverException, CreateSessionResponse> result =
-      node.newSession(incoming);
+    Either<WebDriverException, CreateSessionResponse> result = node.newSession(incoming);
 
     HashMap<String, Object> value = new HashMap<>();
 
@@ -58,9 +56,11 @@ class NewNodeSession implements HttpHandler {
       response.put("sessionResponse", result.right());
     } else {
       WebDriverException exception = result.left();
-      response.put("exception", ImmutableMap.of(
-        "error", exception.getClass(),
-        "message", exception.getMessage()));
+      response.put(
+          "exception",
+          ImmutableMap.of(
+              "error", exception.getClass(),
+              "message", exception.getMessage()));
     }
 
     value.put("value", response);

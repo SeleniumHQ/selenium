@@ -23,15 +23,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.List;
+import java.util.logging.Level;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
 
 class PerformanceLoggingMockTest {
 
@@ -40,11 +37,11 @@ class PerformanceLoggingMockTest {
     final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
 
     when(executeMethod.execute(
-        DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenReturn(List.of(ImmutableMap.of(
-          "level", Level.INFO.getName(),
-          "timestamp", 1L,
-          "message", "second")));
+            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+        .thenReturn(
+            List.of(
+                ImmutableMap.of(
+                    "level", Level.INFO.getName(), "timestamp", 1L, "message", "second")));
 
     LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(singleton(LogType.PROFILER));
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);

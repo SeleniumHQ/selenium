@@ -30,5 +30,4 @@ public class NoSuchWindowException extends NotFoundException {
   public NoSuchWindowException(String reason, Throwable cause) {
     super(reason, cause);
   }
-
 }

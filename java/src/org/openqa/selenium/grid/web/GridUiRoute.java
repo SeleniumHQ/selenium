@@ -17,11 +17,16 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static org.openqa.selenium.remote.http.Route.get;
+
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -29,12 +34,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-
-import java.net.URL;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static org.openqa.selenium.remote.http.Route.get;
 
 public class GridUiRoute implements Routable {
 
@@ -50,16 +49,13 @@ public class GridUiRoute implements Routable {
     URL uiRoot = GridUiRoute.class.getResource(GRID_RESOURCE_WITH_PREFIX);
     if (uiRoot != null) {
       ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
-      HttpResponse uiRedirect = new HttpResponse()
-        .setStatus(HTTP_MOVED_TEMP)
-        .addHeader("Location", prefix.concat("/ui"));
+      HttpResponse uiRedirect =
+          new HttpResponse().setStatus(HTTP_MOVED_TEMP).addHeader("Location", prefix.concat("/ui"));
 
       Supplier<HttpHandler> redirectHandler = () -> req -> uiRedirect;
 
-      Routable appendRoute = Route.combine(
-        consoleRoute(prefix, redirectHandler),
-        uiRoute(prefix, () -> uiHandler)
-      );
+      Routable appendRoute =
+          Route.combine(consoleRoute(prefix, redirectHandler), uiRoute(prefix, () -> uiHandler));
       if (!prefix.isEmpty()) {
         appendRoute = Route.combine(appendRoute, redirectRoute(prefix, redirectHandler));
       }
@@ -84,32 +80,21 @@ public class GridUiRoute implements Routable {
 
   private static Routable uiRoute(String prefix, Supplier<HttpHandler> handler) {
     return buildRoute(
-      "/ui",
-      prefix,
-      path -> Route.prefix(path).to(Route.matching(req -> true).to(handler))
-    );
+        "/ui", prefix, path -> Route.prefix(path).to(Route.matching(req -> true).to(handler)));
   }
 
   private static Routable consoleRoute(String prefix, Supplier<HttpHandler> handler) {
-    return buildRoute(
-      "/grid/console",
-      prefix,
-      path -> get(path).to(handler)
-    );
+    return buildRoute("/grid/console", prefix, path -> get(path).to(handler));
   }
 
   private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
-    List<String> subPaths = prefix.isEmpty()
-      ? Collections.singletonList(url)
-      : Arrays.asList(prefix + url, url);
-    return subPaths.stream()
-      .map(mapper)
-      .reduce(Route::combine)
-      .get();
+    List<String> subPaths =
+        prefix.isEmpty() ? Collections.singletonList(url) : Arrays.asList(prefix + url, url);
+    return subPaths.stream().map(mapper).reduce(Route::combine).get();
   }
 
-  private static Routable redirectRoute(String prefix, Supplier<HttpHandler> handler ) {
-    prefix = prefix.endsWith("/") ? prefix.substring(0, prefix.length() -1) : prefix;
+  private static Routable redirectRoute(String prefix, Supplier<HttpHandler> handler) {
+    prefix = prefix.endsWith("/") ? prefix.substring(0, prefix.length() - 1) : prefix;
     return get(prefix).to(handler);
   }
 }

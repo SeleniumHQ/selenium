@@ -17,15 +17,10 @@
 
 package org.openqa.selenium.grid.server;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.jre.server.JreServer;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DefaultTestTracer;
-import org.openqa.selenium.remote.tracing.Tracer;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,17 +31,21 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.jre.server.JreServer;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 class NetworkOptionsTest {
   /**
-   * An initial version of our wrapper around OpenTracing caused exceptions
-   * to be thrown when spans were closed prematurely and out of order. This
-   * test was written to both demonstrate that problem and to resolve it.
+   * An initial version of our wrapper around OpenTracing caused exceptions to be thrown when spans
+   * were closed prematurely and out of order. This test was written to both demonstrate that
+   * problem and to resolve it.
    */
   @Test
   void triggerFailureInTracing() {
@@ -72,7 +71,8 @@ class NetworkOptionsTest {
       Tracer tracer = DefaultTestTracer.createTracer();
       HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
-      Server<?> server = new JreServer(new BaseServerOptions(config), req -> new HttpResponse()).start();
+      Server<?> server =
+          new JreServer(new BaseServerOptions(config), req -> new HttpResponse()).start();
       try (HttpClient client = clientFactory.createClient(server.getUrl())) {
         client.execute(new HttpRequest(GET, "/version"));
       }
@@ -96,7 +96,9 @@ class NetworkOptionsTest {
     @Override
     public void publish(LogRecord record) {
       if (record.getLoggerName().startsWith(loggerNamePrefix)) {
-        recordedMessages.computeIfAbsent(record.getLevel(), level -> new ArrayList<>()).add(record.getMessage());
+        recordedMessages
+            .computeIfAbsent(record.getLevel(), level -> new ArrayList<>())
+            .add(record.getMessage());
       }
     }
 

@@ -50,13 +50,12 @@ public interface CommandCodec<T> {
    */
   Command decode(T encodedCommand);
 
-  /**
-   * Enhance this command codec with additional commands.
-   */
+  /** Enhance this command codec with additional commands. */
   void defineCommand(String name, HttpMethod method, String pathPattern);
 
   /**
    * Allow commands to have aliases.
+   *
    * @param commandName The command being added.
    * @param isAnAliasFor The command name that this is an alias for.
    */

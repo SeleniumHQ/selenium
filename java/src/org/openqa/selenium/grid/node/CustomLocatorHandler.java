@@ -17,10 +17,19 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -51,36 +60,19 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.locators.CustomLocator;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 class CustomLocatorHandler implements Routable {
 
   private static final Logger LOG = Logger.getLogger(CustomLocatorHandler.class.getName());
   private static final Json JSON = new Json();
   private static final UrlTemplate FIND_ELEMENT = new UrlTemplate("/session/{sessionId}/element");
   private static final UrlTemplate FIND_ELEMENTS = new UrlTemplate("/session/{sessionId}/elements");
-  private static final UrlTemplate
-    FIND_CHILD_ELEMENT =
-    new UrlTemplate("/session/{sessionId}/element/{elementId}/element");
-  private static final UrlTemplate
-    FIND_CHILD_ELEMENTS =
-    new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
+  private static final UrlTemplate FIND_CHILD_ELEMENT =
+      new UrlTemplate("/session/{sessionId}/element/{elementId}/element");
+  private static final UrlTemplate FIND_CHILD_ELEMENTS =
+      new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
   // These are derived from the w3c webdriver spec
-  private static final Set<String> W3C_STRATEGIES = ImmutableSet.of(
-    "css selector",
-    "link text",
-    "partial link text",
-    "tag name",
-    "xpath");
+  private static final Set<String> W3C_STRATEGIES =
+      ImmutableSet.of("css selector", "link text", "partial link text", "tag name", "xpath");
   private final HttpHandler toNode;
   private final Map<String, Function<Object, By>> extraLocators;
 
@@ -91,12 +83,15 @@ class CustomLocatorHandler implements Routable {
     Require.nonNull("Extra locators", extraLocators);
 
     HttpHandler nodeHandler = node::executeWebDriverCommand;
-    this.toNode = nodeHandler.with(new AddSeleniumUserAgent())
-      .with(new AddWebDriverSpecHeaders())
-      .with(new AddSecretFilter(registrationSecret));
+    this.toNode =
+        nodeHandler
+            .with(new AddSeleniumUserAgent())
+            .with(new AddWebDriverSpecHeaders())
+            .with(new AddSecretFilter(registrationSecret));
 
-    this.extraLocators = extraLocators.stream()
-      .collect(Collectors.toMap(CustomLocator::getLocatorName, locator -> locator::createBy));
+    this.extraLocators =
+        extraLocators.stream()
+            .collect(Collectors.toMap(CustomLocator::getLocatorName, locator -> locator::createBy));
   }
 
   @Override
@@ -105,10 +100,10 @@ class CustomLocatorHandler implements Routable {
       return false;
     }
 
-    return FIND_ELEMENT.match(req.getUri()) != null ||
-      FIND_ELEMENTS.match(req.getUri()) != null ||
-      FIND_CHILD_ELEMENT.match(req.getUri()) != null ||
-      FIND_CHILD_ELEMENTS.match(req.getUri()) != null;
+    return FIND_ELEMENT.match(req.getUri()) != null
+        || FIND_ELEMENTS.match(req.getUri()) != null
+        || FIND_CHILD_ELEMENT.match(req.getUri()) != null
+        || FIND_CHILD_ELEMENTS.match(req.getUri()) != null;
   }
 
   @Override
@@ -121,12 +116,15 @@ class CustomLocatorHandler implements Routable {
     Object using = contents.get("using");
     if (!(using instanceof String)) {
       return new HttpResponse()
-        .setStatus(HTTP_BAD_REQUEST)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "error", "invalid argument",
-            "message", "Unable to determine element locating strategy",
-            "stacktrace", ""))));
+          .setStatus(HTTP_BAD_REQUEST)
+          .setContent(
+              Contents.asJson(
+                  ImmutableMap.of(
+                      "value",
+                      ImmutableMap.of(
+                          "error", "invalid argument",
+                          "message", "Unable to determine element locating strategy",
+                          "stacktrace", ""))));
     }
 
     if (W3C_STRATEGIES.contains(using)) {
@@ -137,38 +135,48 @@ class CustomLocatorHandler implements Routable {
     Object value = contents.get("value");
     if (value == null) {
       return new HttpResponse()
-        .setStatus(HTTP_BAD_REQUEST)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "error", "invalid argument",
-            "message", "Unable to determine element locator arguments",
-            "stacktrace", ""))));
+          .setStatus(HTTP_BAD_REQUEST)
+          .setContent(
+              Contents.asJson(
+                  ImmutableMap.of(
+                      "value",
+                      ImmutableMap.of(
+                          "error", "invalid argument",
+                          "message", "Unable to determine element locator arguments",
+                          "stacktrace", ""))));
     }
 
     Function<Object, By> customLocator = extraLocators.get(using);
     if (customLocator == null) {
       LOG.warning(
-        () -> String.format(
-          "No custom locator found for '%s', the remote end will determine if the locator is valid.",
-          using));
+          () ->
+              String.format(
+                  "No custom locator found for '%s', the remote end will determine if the locator"
+                      + " is valid.",
+                  using));
       return toNode.execute(req);
     }
 
     String usingLocator = String.valueOf(using);
     if ("id".equalsIgnoreCase(usingLocator) || "name".equalsIgnoreCase(usingLocator)) {
       LOG.warning(
-        () -> String.format(
-          "Custom conversion to a CSS locator from '%s' will be removed "
-          + "soon. Please switch to a valid W3C WebDriver locator strategy https://www.w3.org/TR/webdriver1/#locator-strategies",
-          using));
+          () ->
+              String.format(
+                  "Custom conversion to a CSS locator from '%s' will be removed soon. Please switch"
+                      + " to a valid W3C WebDriver locator strategy"
+                      + " https://www.w3.org/TR/webdriver1/#locator-strategies",
+                  using));
     }
 
     CommandExecutor executor = new NodeWrappingExecutor(toNode);
-    RemoteWebDriver driver = new CustomWebDriver(
-      executor,
-      HttpSessionId.getSessionId(req.getUri())
-        .orElseThrow(
-          () -> new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
+    RemoteWebDriver driver =
+        new CustomWebDriver(
+            executor,
+            HttpSessionId.getSessionId(req.getUri())
+                .orElseThrow(
+                    () ->
+                        new IllegalArgumentException(
+                            "Cannot locate session ID from " + req.getUri())));
 
     SearchContext context = null;
     RemoteWebElement element;
@@ -216,8 +224,7 @@ class CustomLocatorHandler implements Routable {
       toReturn = context.findElement(by);
     }
 
-    return new HttpResponse()
-      .setContent(Contents.asJson(ImmutableMap.of("value", toReturn)));
+    return new HttpResponse().setContent(Contents.asJson(ImmutableMap.of("value", toReturn)));
   }
 
   private static class NodeWrappingExecutor implements CommandExecutor {

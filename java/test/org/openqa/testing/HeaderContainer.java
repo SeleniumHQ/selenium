@@ -19,7 +19,6 @@ package org.openqa.testing;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
@@ -57,8 +56,7 @@ class HeaderContainer {
   public long getDateHeader(String name) {
     String value = getHeader(name);
     try {
-      return value == null ? -1 :
-          DateFormat.getDateInstance().parse(value).getTime();
+      return value == null ? -1 : DateFormat.getDateInstance().parse(value).getTime();
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }

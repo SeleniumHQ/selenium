@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import java.io.UncheckedIOException;
+import java.util.ServiceLoader;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -37,20 +46,10 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
-import java.util.ServiceLoader;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.StreamSupport;
-
-public class SessionSlot implements
-  HttpHandler,
-  Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
-  Predicate<Capabilities> {
+public class SessionSlot
+    implements HttpHandler,
+        Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
+        Predicate<Capabilities> {
 
   private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
@@ -139,8 +138,9 @@ public class SessionSlot implements
     }
 
     if (!test(sessionRequest.getDesiredCapabilities())) {
-      return Either.left(new SessionNotCreatedException("New session request capabilities do not "
-                                                        + "match the stereotype."));
+      return Either.left(
+          new SessionNotCreatedException(
+              "New session request capabilities do not " + "match the stereotype."));
     }
 
     try {
@@ -168,14 +168,14 @@ public class SessionSlot implements
 
   private boolean isSlotSupportingCdp(Capabilities stereotype) {
     return StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-      .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
-      .anyMatch(WebDriverInfo::isSupportingCdp);
+        .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+        .anyMatch(WebDriverInfo::isSupportingCdp);
   }
 
   private boolean isSlotSupportingBiDi(Capabilities stereotype) {
     return StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-      .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
-      .anyMatch(WebDriverInfo::isSupportingBiDi);
+        .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+        .anyMatch(WebDriverInfo::isSupportingBiDi);
   }
 
   public boolean hasRelayFactory() {
@@ -185,5 +185,4 @@ public class SessionSlot implements
   public boolean isRelayServiceUp() {
     return hasRelayFactory() && ((RelaySessionFactory) factory).isServiceUp();
   }
-
 }

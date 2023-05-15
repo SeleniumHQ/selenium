@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Collections.unmodifiableMap;
 
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Collections.unmodifiableMap;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class NewSessionResponse {
 
@@ -33,13 +32,11 @@ public class NewSessionResponse {
   private final byte[] downstreamEncodedResponse;
 
   public NewSessionResponse(
-    RequestId requestId,
-     Session session,
-     byte[] downstreamEncodedResponse) {
+      RequestId requestId, Session session, byte[] downstreamEncodedResponse) {
     this.requestId = Require.nonNull("Request Id", requestId);
     this.session = Require.nonNull("Session", session);
-    this.downstreamEncodedResponse = Require.nonNull
-        ("Downstream encoded response", downstreamEncodedResponse);
+    this.downstreamEncodedResponse =
+        Require.nonNull("Downstream encoded response", downstreamEncodedResponse);
   }
 
   public RequestId getRequestId() {
@@ -58,7 +55,8 @@ public class NewSessionResponse {
     Map<String, Object> toReturn = new LinkedHashMap<>();
     toReturn.put("requestId", requestId);
     toReturn.put("session", session);
-    toReturn.put("downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
+    toReturn.put(
+        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
     return unmodifiableMap(toReturn);
   }
 
@@ -91,5 +89,4 @@ public class NewSessionResponse {
 
     return new NewSessionResponse(requestId, session, downstreamResponse);
   }
-
 }

@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
+import java.util.Collections;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.util.Collections;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class GetSessionQueue implements HttpHandler {
 
@@ -46,9 +45,10 @@ class GetSessionQueue implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.contents")) {
       HTTP_REQUEST.accept(span, req);
 
-      HttpResponse response = new HttpResponse()
-        .setContent(asJson(Collections.singletonMap(
-          "value", newSessionQueue.getQueueContents())));
+      HttpResponse response =
+          new HttpResponse()
+              .setContent(
+                  asJson(Collections.singletonMap("value", newSessionQueue.getQueueContents())));
 
       HTTP_RESPONSE.accept(span, response);
 
@@ -56,4 +56,3 @@ class GetSessionQueue implements HttpHandler {
     }
   }
 }
-

@@ -22,15 +22,14 @@ import static org.openqa.selenium.json.JsonType.END;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.ErrorCodec;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.ErrorCodec;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class Values {
 
@@ -39,7 +38,7 @@ public class Values {
 
   public static <T> T get(HttpResponse response, Type typeOfT) {
     try (Reader reader = reader(response);
-         JsonInput input = JSON.newInput(reader)) {
+        JsonInput input = JSON.newInput(reader)) {
 
       // Alright then. We might be dealing with the object we expected, or we might have an
       // error. We shall assume that a non-200 http status code indicates that something is

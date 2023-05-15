@@ -18,14 +18,15 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
-
 import java.util.Map;
 import java.util.logging.Level;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 /**
- * <a href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
- *   Log levels</a> defined by ChromeDriver
+ * <a
+ * href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
+ * Log levels</a> defined by ChromeDriver
+ *
  * @deprecated use {@link ChromiumDriverLogLevel}
  */
 @Deprecated
@@ -37,17 +38,17 @@ public enum ChromeDriverLogLevel {
   SEVERE,
   OFF;
 
-  private static final Map<Level, ChromeDriverLogLevel> logLevelToChromeLevelMap
-    = new ImmutableMap.Builder<Level, ChromeDriverLogLevel>()
-    .put(Level.ALL, ALL)
-    .put(Level.FINEST, DEBUG)
-    .put(Level.FINER, DEBUG)
-    .put(Level.FINE, DEBUG)
-    .put(Level.INFO, INFO)
-    .put(Level.WARNING, WARNING)
-    .put(Level.SEVERE, SEVERE)
-    .put(Level.OFF, OFF)
-    .build();
+  private static final Map<Level, ChromeDriverLogLevel> logLevelToChromeLevelMap =
+      new ImmutableMap.Builder<Level, ChromeDriverLogLevel>()
+          .put(Level.ALL, ALL)
+          .put(Level.FINEST, DEBUG)
+          .put(Level.FINER, DEBUG)
+          .put(Level.FINE, DEBUG)
+          .put(Level.INFO, INFO)
+          .put(Level.WARNING, WARNING)
+          .put(Level.SEVERE, SEVERE)
+          .put(Level.OFF, OFF)
+          .build();
 
   @Override
   public String toString() {

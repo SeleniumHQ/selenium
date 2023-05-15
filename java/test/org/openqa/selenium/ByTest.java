@@ -17,13 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.json.Json;
-
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -39,6 +32,12 @@ import static org.openqa.selenium.By.ByPartialLinkText;
 import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.json.Json;
 
 @Tag("UnitTests")
 class ByTest {
@@ -94,19 +93,20 @@ class ByTest {
   // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2917
   @Test
   void testHashCodeDoesNotFallIntoEndlessRecursion() {
-    By locator = new By() {
-      @Override
-      public List<WebElement> findElements(SearchContext context) {
-        return null;
-      }
-    };
+    By locator =
+        new By() {
+          @Override
+          public List<WebElement> findElements(SearchContext context) {
+            return null;
+          }
+        };
     assertThatNoException().isThrownBy(locator::hashCode);
   }
 
   @Test
   void ensureMultipleClassNamesAreNotAccepted() {
     assertThatExceptionOfType(InvalidSelectorException.class)
-      .isThrownBy(() -> By.className("one two"));
+        .isThrownBy(() -> By.className("one two"));
   }
 
   @Test
@@ -118,8 +118,8 @@ class ByTest {
     Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
 
     assertThat(blob)
-      .hasSize(2)
-      .containsEntry("using", "css selector")
-      .containsEntry("value", "#one\\ two");
+        .hasSize(2)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "#one\\ two");
   }
 }
