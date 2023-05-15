@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.bidi.log;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+// @see <a
+// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class BaseLogEntry {
 
   private final LogLevel level;
@@ -41,10 +42,7 @@ public class BaseLogEntry {
     return stackTrace;
   }
 
-  public BaseLogEntry(LogLevel level,
-                      String text,
-                      long timestamp,
-                      StackTrace stackTrace) {
+  public BaseLogEntry(LogLevel level, String text, long timestamp, StackTrace stackTrace) {
     this.level = level;
     this.text = text;
     this.timestamp = timestamp;

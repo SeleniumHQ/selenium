@@ -19,8 +19,6 @@ package org.openqa.selenium.net;
 
 import static java.util.logging.Level.WARNING;
 
-import org.openqa.selenium.Platform;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -29,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.openqa.selenium.Platform;
 
 public class HostIdentifier {
   private static final Logger log = Logger.getLogger(HostIdentifier.class.getName());
@@ -40,9 +39,9 @@ public class HostIdentifier {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
     // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
     // amazingly slow. That's less than ideal. Figure things out and cache.
-    String host = System.getenv("HOSTNAME");  // Most OSs
+    String host = System.getenv("HOSTNAME"); // Most OSs
     if (host == null) {
-      host = System.getenv("COMPUTERNAME");  // Windows
+      host = System.getenv("COMPUTERNAME"); // Windows
     }
     if (host == null && Platform.getCurrent().is(Platform.MAC)) {
       try {
@@ -54,9 +53,9 @@ public class HostIdentifier {
           process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
-          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(),
-                                                             Charset.defaultCharset());
-               BufferedReader reader = new BufferedReader(isr)) {
+          try (InputStreamReader isr =
+                  new InputStreamReader(process.getInputStream(), Charset.defaultCharset());
+              BufferedReader reader = new BufferedReader(isr)) {
             host = reader.readLine();
           }
         }
@@ -74,7 +73,7 @@ public class HostIdentifier {
       try {
         host = InetAddress.getLocalHost().getHostName();
       } catch (Throwable e) {
-        host = "Unknown";  // At least we tried.
+        host = "Unknown"; // At least we tried.
         log.log(WARNING, "Failed to resolve host name", e);
       }
     }

@@ -18,7 +18,7 @@
 package org.openqa.selenium.safari;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -31,22 +31,18 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.util.Map;
-
 /**
- * A WebDriver implementation that controls Safari using a browser extension
- * (consequently, only Safari 5.1+ is supported).
+ * A WebDriver implementation that controls Safari using a browser extension (consequently, only
+ * Safari 5.1+ is supported).
  *
- * This driver can be configured using the {@link SafariOptions} class.
+ * <p>This driver can be configured using the {@link SafariOptions} class.
  */
 public class SafariDriver extends RemoteWebDriver implements HasPermissions, HasDebugger {
 
   private final HasPermissions permissions;
   private final HasDebugger debugger;
 
-  /**
-   * Initializes a new SafariDriver} class with default {@link SafariOptions}.
-   */
+  /** Initializes a new SafariDriver} class with default {@link SafariOptions}. */
   public SafariDriver() {
     this(new SafariOptions());
   }
@@ -57,10 +53,11 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    this(safariOptions.getUseTechnologyPreview() ?
-        SafariTechPreviewDriverService.createDefaultService() :
-        SafariDriverService.createDefaultService(),
-      safariOptions);
+    this(
+        safariOptions.getUseTechnologyPreview()
+            ? SafariTechPreviewDriverService.createDefaultService()
+            : SafariDriverService.createDefaultService(),
+        safariOptions);
   }
 
   /**
@@ -88,7 +85,8 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  private static SafariDriverCommandExecutor generateExecutor(DriverService service, SafariOptions options, ClientConfig clientConfig) {
+  private static SafariDriverCommandExecutor generateExecutor(
+      DriverService service, SafariOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
@@ -125,8 +123,8 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
-      "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
+        "Setting the file detector only works on remote webdriver instances obtained "
+            + "via RemoteWebDriver");
   }
 
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
@@ -136,9 +134,9 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(new AddHasPermissions().getAdditionalCommands())
-        .putAll(new AddHasDebugger().getAdditionalCommands())
-        .build();
+          .putAll(new AddHasPermissions().getAdditionalCommands())
+          .putAll(new AddHasDebugger().getAdditionalCommands())
+          .build();
     }
   }
 }

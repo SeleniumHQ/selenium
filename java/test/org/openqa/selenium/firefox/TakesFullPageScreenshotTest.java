@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.collect.Sets;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.testing.JupiterTestBase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import javax.imageio.ImageIO;
+import com.google.common.collect.Sets;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -32,26 +29,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import javax.imageio.ImageIO;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 /**
  * Test screenshot feature.
  *
- * 1. check output for all possible types
+ * <p>1. check output for all possible types
  *
- * 2. check screenshot image
+ * <p>2. check screenshot image
  *
- * Logic of screenshot check test is simple:
- * - open page with fixed amount of fixed sized and coloured areas
- * - take screenshot
- * - calculate expected colors as in tested HTML page
- * - scan screenshot for actual colors * compare
+ * <p>Logic of screenshot check test is simple: - open page with fixed amount of fixed sized and
+ * coloured areas - take screenshot - calculate expected colors as in tested HTML page - scan
+ * screenshot for actual colors * compare
  *
  * @see org.openqa.selenium.TakesScreenshotTest
- *
  */
 
 // TODO(user): verify expected behaviour after frame switching
@@ -59,7 +55,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 // TODO(user): test screenshots at guaranteed maximized browsers
 // TODO(user): test screenshots at guaranteed non maximized browsers
 // TODO(user): test screenshots at guaranteed minimized browsers
-// TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
+// TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform
+// specific)
 
 class TakesFullPageScreenshotTest extends JupiterTestBase {
 
@@ -107,14 +104,15 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
 
     BufferedImage screenshot = getImage();
 
-    Set<String> actualColors = scanActualColors(screenshot,
-                                                /* stepX in pixels */ 5,
-                                                /* stepY in pixels */ 5);
+    Set<String> actualColors =
+        scanActualColors(screenshot, /* stepX in pixels */ 5, /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                         /* color step */ 1000,
-                                                         /* grid X size */ 6,
-                                                         /* grid Y size */ 6);
+    Set<String> expectedColors =
+        generateExpectedColors(
+            /* initial color */ 0x0F0F0F,
+            /* color step */ 1000,
+            /* grid X size */ 6,
+            /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
@@ -125,14 +123,15 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
 
     BufferedImage screenshot = getImage();
 
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 5,
-                                               /* stepY in pixels */ 50);
+    Set<String> actualColors =
+        scanActualColors(screenshot, /* stepX in pixels */ 5, /* stepY in pixels */ 50);
 
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
+    Set<String> expectedColors =
+        generateExpectedColors(
+            /* initial color */ 0x0F0F0F,
+            /* color step*/ 1000,
+            /* grid X size */ 6,
+            /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
@@ -146,16 +145,14 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     BufferedImage image = null;
     try {
       byte[] imageData = screenshooter.getFullPageScreenshotAs(OutputType.BYTES);
-      assertThat(imageData)
-        .isNotNull()
-        .isNotEmpty();
+      assertThat(imageData).isNotNull().isNotEmpty();
       image = ImageIO.read(new ByteArrayInputStream(imageData));
       assertThat(image).isNotNull();
     } catch (IOException e) {
       fail("Image screenshot file is invalid: " + e.getMessage());
     }
 
-    //saveImageToTmpFile(image);
+    // saveImageToTmpFile(image);
     return image;
   }
 
@@ -163,21 +160,22 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
    * generate expected colors as in checked page.
    *
    * @param initialColor - initial color of first (right top) cell of grid
-   * @param stepColor    - step b/w grid colors as number
-   * @param nX           - grid size at X dimension
-   * @param nY           - grid size at Y dimension
+   * @param stepColor - step b/w grid colors as number
+   * @param nX - grid size at X dimension
+   * @param nY - grid size at Y dimension
    * @return set of colors in string hex presentation
    */
-  private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
-                                             final int nX, final int nY) {
+  private Set<String> generateExpectedColors(
+      final int initialColor, final int stepColor, final int nX, final int nY) {
     Set<String> colors = new TreeSet<>();
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
         int color = initialColor + (cnt * stepColor);
         String hex =
-            String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
-                          ((color & 0x0000FF)));
+            String.format(
+                "#%02x%02x%02x",
+                ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8), ((color & 0x0000FF)));
         colors.add(hex);
         cnt++;
       }
@@ -206,10 +204,12 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
       Raster raster = image.getRaster();
       for (int i = 0; i < width; i = i + stepX) {
         for (int j = 0; j < height; j = j + stepY) {
-          String hex = String.format("#%02x%02x%02x",
-                              (raster.getSample(i, j, 0)),
-                              (raster.getSample(i, j, 1)),
-                              (raster.getSample(i, j, 2)));
+          String hex =
+              String.format(
+                  "#%02x%02x%02x",
+                  (raster.getSample(i, j, 0)),
+                  (raster.getSample(i, j, 1)),
+                  (raster.getSample(i, j, 2)));
           colors.add(hex);
         }
       }
@@ -226,7 +226,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
    * Compares sets of colors are same.
    *
    * @param expectedColors - set of expected colors
-   * @param actualColors   - set of actual colors
+   * @param actualColors - set of actual colors
    */
   private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
     assertThat(onlyBlack(actualColors)).as("Only black").isFalse();
@@ -237,14 +237,16 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 
-    if (! expectedColors.containsAll(cleanActualColors)) {
-      fail("There are unexpected colors on the screenshot: " +
-           Sets.difference(cleanActualColors, expectedColors));
+    if (!expectedColors.containsAll(cleanActualColors)) {
+      fail(
+          "There are unexpected colors on the screenshot: "
+              + Sets.difference(cleanActualColors, expectedColors));
     }
 
-    if (! cleanActualColors.containsAll(expectedColors)) {
-      fail("There are expected colors not present on the screenshot: " +
-           Sets.difference(expectedColors, cleanActualColors));
+    if (!cleanActualColors.containsAll(expectedColors)) {
+      fail(
+          "There are expected colors not present on the screenshot: "
+              + Sets.difference(expectedColors, cleanActualColors));
     }
   }
 
@@ -264,12 +266,11 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
   @SuppressWarnings("unused")
   private void saveImageToTmpFile(String methodName, BufferedImage im) {
 
-    File outputfile = new File( methodName + "_image.png");
+    File outputfile = new File(methodName + "_image.png");
     try {
       ImageIO.write(im, "png", outputfile);
     } catch (IOException e) {
       fail("Unable to write image to file: " + e.getMessage());
     }
   }
-
 }

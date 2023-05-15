@@ -20,8 +20,8 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class LoadableComponentTest {
@@ -43,9 +43,7 @@ class LoadableComponentTest {
   void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad() {
     LoadsOk ok = new LoadsOk(false);
 
-    assertThatExceptionOfType(Error.class)
-        .isThrownBy(ok::get)
-        .withMessage("Expected failure");
+    assertThatExceptionOfType(Error.class).isThrownBy(ok::get).withMessage("Expected failure");
   }
 
   private static class DetonatingComponent extends LoadableComponent<DetonatingComponent> {

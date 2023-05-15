@@ -18,17 +18,15 @@
 package org.openqa.selenium.bidi;
 
 import com.google.auto.service.AutoService;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 @AutoService(AugmenterProvider.class)
 public class BiDiProvider implements AugmenterProvider<HasBiDi> {
@@ -46,8 +44,7 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
 
-    URI wsUri = getBiDiUrl(caps).orElseThrow(
-      () -> new BiDiException("BiDi not supported"));
+    URI wsUri = getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
@@ -59,14 +56,15 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {
     Optional<String> webSocketUrl =
-      Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
+        Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
 
-    return webSocketUrl.map(uri -> {
-      try {
-        return new URI(uri);
-      } catch (URISyntaxException e) {
-        return null;
-      }
-    });
+    return webSocketUrl.map(
+        uri -> {
+          try {
+            return new URI(uri);
+          } catch (URISyntaxException e) {
+            return null;
+          }
+        });
   }
 }

@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.internal.Require;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.openqa.selenium.internal.Require;
 
 public class Configs {
 
@@ -45,6 +44,7 @@ public class Configs {
     }
 
     throw new ConfigException(
-      "Unable to determine file type. The file extension must be one of '.toml' or '.json' " + path);
+        "Unable to determine file type. The file extension must be one of '.toml' or '.json' "
+            + path);
   }
 }

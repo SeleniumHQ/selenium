@@ -17,14 +17,21 @@
 
 package org.openqa.selenium.ie;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
+
+import java.awt.*;
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -32,14 +39,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.awt.*;
-import java.time.Duration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 class InternetExplorerDriverTest extends JupiterTestBase {
 
@@ -58,17 +57,24 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = InternetExplorerDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout())
+        .isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
   @NoDriverBeforeTest
   public void driverOverridesDefaultClientConfig() {
-    assertThatThrownBy(() -> {
-      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
-      localDriver = new InternetExplorerDriver(InternetExplorerDriverService.createDefaultService(),
-        new InternetExplorerOptions(), clientConfig);
-    }).isInstanceOf(SessionNotCreatedException.class);
+    assertThatThrownBy(
+            () -> {
+              ClientConfig clientConfig =
+                  ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+              localDriver =
+                  new InternetExplorerDriver(
+                      InternetExplorerDriverService.createDefaultService(),
+                      new InternetExplorerOptions(),
+                      clientConfig);
+            })
+        .isInstanceOf(SessionNotCreatedException.class);
   }
 
   @Test
@@ -77,8 +83,8 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     RemoteWebDriverBuilder builder = InternetExplorerDriver.builder().config(clientConfig);
 
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(builder::build)
-      .withMessage("ClientConfig instances do not work for Local Drivers");
+        .isThrownBy(builder::build)
+        .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test

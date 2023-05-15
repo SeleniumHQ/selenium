@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.support;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-
 
 /**
  * Factory class to make using Page Objects simpler and easier.
@@ -36,27 +34,27 @@ import java.lang.reflect.Field;
 public class PageFactory {
   /**
    * Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
-   * List&lt;WebElement&gt; fields that have been declared, assuming that the field
-   * name is also the HTML element's "id" or "name". This means that for the class:
+   * List&lt;WebElement&gt; fields that have been declared, assuming that the field name is also the
+   * HTML element's "id" or "name". This means that for the class:
    *
    * <pre><code> public class Page { private WebElement submit; } </code></pre>
    *
    * there will be an element that can be located using the xpath expression "//*[@id='submit']" or
    * "//*[@name='submit']"
-   * <p>
-   * By default, the element or the list is looked up each and every time a method is called upon
+   *
+   * <p>By default, the element or the list is looked up each and every time a method is called upon
    * it. To change this behaviour, simply annotate the field with the {@link CacheLookup}. To change
    * how the element is located, use the {@link FindBy} annotation.
-   * <p>
-   * This method will attempt to instantiate the class given to it, preferably using a constructor
-   * which takes a WebDriver instance as its only argument or falling back on a no-arg constructor.
-   * An exception will be thrown if the class cannot be instantiated.
    *
-   * @param searchContext    The search context that will be used to look up the elements
+   * <p>This method will attempt to instantiate the class given to it, preferably using a
+   * constructor which takes a WebDriver instance as its only argument or falling back on a no-arg
+   * constructor. An exception will be thrown if the class cannot be instantiated.
+   *
+   * @param searchContext The search context that will be used to look up the elements
    * @param pageClassToProxy A class which will be initialised.
-   * @param <T>              Class of the PageObject
-   * @return An instantiated instance of the class with WebElement and List&lt;WebElement&gt;
-   * fields proxied
+   * @param <T> Class of the PageObject
+   * @return An instantiated instance of the class with WebElement and List&lt;WebElement&gt; fields
+   *     proxied
    * @see FindBy
    * @see CacheLookup
    */
@@ -71,8 +69,8 @@ public class PageFactory {
    * instantiated Page Object.
    *
    * @param searchContext The driver that will be used to look up the elements
-   * @param page   The object with WebElement and List&lt;WebElement&gt; fields that
-   *               should be proxied.
+   * @param page The object with WebElement and List&lt;WebElement&gt; fields that should be
+   *     proxied.
    */
   public static void initElements(SearchContext searchContext, Object page) {
     initElements(new DefaultElementLocatorFactory(searchContext), page);
@@ -84,7 +82,7 @@ public class PageFactory {
    * null then the field won't be decorated.
    *
    * @param factory The factory to use
-   * @param page    The object to decorate the fields of
+   * @param page The object to decorate the fields of
    */
   public static void initElements(ElementLocatorFactory factory, Object page) {
     initElements(new DefaultFieldDecorator(factory), page);
@@ -95,7 +93,7 @@ public class PageFactory {
    * for decorating each of the fields.
    *
    * @param decorator the decorator to use
-   * @param page      The object to decorate the fields of
+   * @param page The object to decorate the fields of
    */
   public static void initElements(FieldDecorator decorator, Object page) {
     Class<?> proxyIn = page.getClass();

@@ -17,23 +17,23 @@
 
 package org.openqa.selenium.grid.security;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import java.net.HttpURLConnection;
+import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.net.HttpURLConnection;
-import java.util.Base64;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class BasicAuthenticationFilterTest {
 
   @Test
   void shouldAskAnUnauthenticatedRequestToAuthenticate() {
-    HttpHandler handler = new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
+    HttpHandler handler =
+        new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/"));
 
@@ -44,11 +44,16 @@ class BasicAuthenticationFilterTest {
 
   @Test
   void shouldAllowAuthenticatedTrafficThrough() {
-    HttpHandler handler = new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
+    HttpHandler handler =
+        new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
 
-    HttpResponse res = handler.execute(
-      new HttpRequest(GET, "/")
-        .setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString("cheese:cheddar".getBytes(UTF_8))));
+    HttpResponse res =
+        handler.execute(
+            new HttpRequest(GET, "/")
+                .setHeader(
+                    "Authorization",
+                    "Basic "
+                        + Base64.getEncoder().encodeToString("cheese:cheddar".getBytes(UTF_8))));
 
     assertThat(res.isSuccessful()).isTrue();
   }

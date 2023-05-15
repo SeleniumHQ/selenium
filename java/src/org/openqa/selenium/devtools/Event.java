@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.devtools;
 
+import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
-
-import java.util.function.Function;
 
 public class Event<X> {
 

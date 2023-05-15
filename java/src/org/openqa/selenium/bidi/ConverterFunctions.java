@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.bidi;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class ConverterFunctions {
 

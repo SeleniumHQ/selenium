@@ -136,6 +136,13 @@
       },
       "version": "2.11.0"
     },
+    "com.google.googlejavaformat:google-java-format": {
+      "shasums": {
+        "jar": "631ba54c39f6c20df027dc1420736df2e5e43c581880efdd1e46ddb4ce050e3e",
+        "sources": "75db73d4bc603e30ee28d2109dee973bf26dfc065499e18e086ddf90e1e90d6e"
+      },
+      "version": "1.17.0"
+    },
     "com.google.guava:failureaccess": {
       "shasums": {
         "jar": "a171ee4c734dd2da837e4b16be9df4661afab72a41adaf31eb84dfdaf936ca26",
@@ -1143,6 +1150,9 @@
     "com.google.auto:auto-common": [
       "com.google.guava:guava"
     ],
+    "com.google.googlejavaformat:google-java-format": [
+      "com.google.guava:guava"
+    ],
     "com.google.guava:guava": [
       "com.google.code.findbugs:jsr305",
       "com.google.errorprone:error_prone_annotations",
@@ -1847,6 +1857,13 @@
     "com.google.errorprone:error_prone_annotations": [
       "com.google.errorprone.annotations",
       "com.google.errorprone.annotations.concurrent"
+    ],
+    "com.google.googlejavaformat:google-java-format": [
+      "com.google.googlejavaformat",
+      "com.google.googlejavaformat.java",
+      "com.google.googlejavaformat.java.filer",
+      "com.google.googlejavaformat.java.java17",
+      "com.google.googlejavaformat.java.javadoc"
     ],
     "com.google.guava:failureaccess": [
       "com.google.common.util.concurrent.internal"
@@ -3637,6 +3654,8 @@
       "com.google.code.gson:gson:jar:sources",
       "com.google.errorprone:error_prone_annotations",
       "com.google.errorprone:error_prone_annotations:jar:sources",
+      "com.google.googlejavaformat:google-java-format",
+      "com.google.googlejavaformat:google-java-format:jar:sources",
       "com.google.guava:failureaccess",
       "com.google.guava:failureaccess:jar:sources",
       "com.google.guava:guava",
@@ -3954,6 +3973,8 @@
       "com.google.code.gson:gson:jar:sources",
       "com.google.errorprone:error_prone_annotations",
       "com.google.errorprone:error_prone_annotations:jar:sources",
+      "com.google.googlejavaformat:google-java-format",
+      "com.google.googlejavaformat:google-java-format:jar:sources",
       "com.google.guava:failureaccess",
       "com.google.guava:failureaccess:jar:sources",
       "com.google.guava:guava",

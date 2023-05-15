@@ -19,15 +19,12 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * An incredibly bad implementation of URL Templates, but enough for our needs.
- */
+/** An incredibly bad implementation of URL Templates, but enough for our needs. */
 public class UrlTemplate {
 
   private static final Pattern GROUP_NAME = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
@@ -54,7 +51,8 @@ public class UrlTemplate {
         names.add(groupNameMatcher.group(1));
       }
 
-      fragments.add(new Matches(Pattern.compile(Matcher.quoteReplacement(toCompile)), names.build()));
+      fragments.add(
+          new Matches(Pattern.compile(Matcher.quoteReplacement(toCompile)), names.build()));
     }
     this.template = fragments.build();
   }

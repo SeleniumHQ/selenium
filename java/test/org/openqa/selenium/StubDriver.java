@@ -17,10 +17,9 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.logging.Logs;
-
 import java.util.List;
 import java.util.Set;
+import org.openqa.selenium.logging.Logs;
 
 public class StubDriver implements WebDriver, JavascriptExecutor {
 

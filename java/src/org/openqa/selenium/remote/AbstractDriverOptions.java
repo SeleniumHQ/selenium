@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
-import org.openqa.selenium.internal.Require;
-
-import java.time.Duration;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
@@ -40,18 +26,28 @@ import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABIL
 import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
-public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
+import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.internal.Require;
+
+public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions>
+    extends MutableCapabilities {
   public DO setBrowserVersion(String browserVersion) {
-    setCapability(
-      BROWSER_VERSION,
-      Require.nonNull("Browser version", browserVersion));
+    setCapability(BROWSER_VERSION, Require.nonNull("Browser version", browserVersion));
     return (DO) this;
   }
 
   public DO setPlatformName(String platformName) {
-    setCapability(
-      PLATFORM_NAME,
-      Require.nonNull("Platform Name", platformName));
+    setCapability(PLATFORM_NAME, Require.nonNull("Platform Name", platformName));
     return (DO) this;
   }
 
@@ -80,16 +76,13 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
   }
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
-    setCapability(
-        PAGE_LOAD_STRATEGY,
-        Require.nonNull("Page load strategy", strategy));
+    setCapability(PAGE_LOAD_STRATEGY, Require.nonNull("Page load strategy", strategy));
     return (DO) this;
   }
 
   public DO setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
-        UNHANDLED_PROMPT_BEHAVIOUR,
-        Require.nonNull("Unhandled prompt behavior", behaviour));
+        UNHANDLED_PROMPT_BEHAVIOUR, Require.nonNull("Unhandled prompt behavior", behaviour));
     return (DO) this;
   }
 
@@ -140,12 +133,14 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
     Map<String, Number> newTimeouts = new HashMap<>();
     Object raw = getCapability(TIMEOUTS);
     if (raw != null) {
-      ((Map<?, ?>) raw).forEach((key, value) -> {
-        if (key instanceof String && value instanceof Number) {
-          newTimeouts.put((String) key, (Number) value);
-        }
-      });
+      ((Map<?, ?>) raw)
+          .forEach(
+              (key, value) -> {
+                if (key instanceof String && value instanceof Number) {
+                  newTimeouts.put((String) key, (Number) value);
+                }
+              });
     }
-      return newTimeouts;
+    return newTimeouts;
   }
 }

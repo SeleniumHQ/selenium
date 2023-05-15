@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.logging;
 
-import org.openqa.selenium.InvalidArgumentException;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.InvalidArgumentException;
 
 public class SessionLogHandler {
 
   /**
-   * Creates a session logs map, with session logs mapped to session IDs, given
-   * a raw session log map as a JSON object.
+   * Creates a session logs map, with session logs mapped to session IDs, given a raw session log
+   * map as a JSON object.
    *
    * @param rawSessionMap The raw session map.
    * @return The session logs mapped to session IDs.

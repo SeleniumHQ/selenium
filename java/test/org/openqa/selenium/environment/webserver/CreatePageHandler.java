@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -29,14 +25,15 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 /**
- * Simple API to create pages on server.
- * Request format (JSON):
- * {"content" : "... code of the page..."}
- * Response body contains the address of the created page.
+ * Simple API to create pages on server. Request format (JSON): {"content" : "... code of the
+ * page..."} Response body contains the address of the created page.
  */
 class CreatePageHandler implements HttpHandler {
 
@@ -64,13 +61,11 @@ class CreatePageHandler implements HttpHandler {
       }
 
       return new HttpResponse()
-        .setHeader("Content-Type", "text/plain")
-        .setContent(Contents.utf8String(String.format(
-          "http://%s:%d/common%s/%s",
-          hostname,
-          port,
-          path,
-          target.getFileName())));
+          .setHeader("Content-Type", "text/plain")
+          .setContent(
+              Contents.utf8String(
+                  String.format(
+                      "http://%s:%d/common%s/%s", hostname, port, path, target.getFileName())));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
