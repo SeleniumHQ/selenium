@@ -33,6 +33,10 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.grid.config.DescribedOption;
+import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.server.HelpFlags;
 
 @AutoService(CliCommand.class)
 public class CompletionCommand implements CliCommand {
