@@ -19,14 +19,13 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.openqa.selenium.remote.ErrorFilter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
@@ -40,9 +39,10 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) {
-    EXECUTOR.submit(() -> {
-      HttpResponse res = seleniumHandler.execute(msg);
-      ctx.writeAndFlush(res);
-    });
+    EXECUTOR.submit(
+        () -> {
+          HttpResponse res = seleniumHandler.execute(msg);
+          ctx.writeAndFlush(res);
+        });
   }
 }

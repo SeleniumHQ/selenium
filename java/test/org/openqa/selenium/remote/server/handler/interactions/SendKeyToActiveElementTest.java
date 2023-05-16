@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+
+import org.junit.jupiter.api.Test;
 
 class SendKeyToActiveElementTest {
 
@@ -29,5 +29,4 @@ class SendKeyToActiveElementTest {
     SendKeyToActiveElement sendKeys = new SendKeyToActiveElement(mock(Session.class));
     assertEquals("[send keys to active: []]", sendKeys.toString());
   }
-
 }

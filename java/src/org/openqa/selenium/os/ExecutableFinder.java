@@ -21,8 +21,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.openqa.selenium.Platform;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,10 +28,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Platform;
 
 public class ExecutableFinder {
-  private static final List<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
-      Arrays.asList("", ".cmd", ".exe", ".com", ".bat") : singletonList("");
+  private static final List<String> ENDINGS =
+      Platform.getCurrent().is(WINDOWS)
+          ? Arrays.asList("", ".cmd", ".exe", ".com", ".bat")
+          : singletonList("");
 
   /**
    * Find the executable by scanning the file system and the PATH. In the case of Windows this

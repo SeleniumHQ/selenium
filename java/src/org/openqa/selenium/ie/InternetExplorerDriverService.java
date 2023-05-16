@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.remote.Browser.IE;
+
 import com.google.auto.service.AutoService;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverService;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -30,14 +29,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.service.DriverService;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.Browser.IE;
-
-/**
- * Manages the life and death of an IEDriverServer.
- */
+/** Manages the life and death of an IEDriverServer. */
 public class InternetExplorerDriverService extends DriverService {
 
   public static final String IE_DRIVER_NAME = "IEDriverServer";
@@ -60,38 +56,36 @@ public class InternetExplorerDriverService extends DriverService {
    */
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
-  /**
-   * System property that defines host to which will be bound IEDriverServer.
-   */
+  /** System property that defines host to which will be bound IEDriverServer. */
   public static final String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
 
-  /**
-   * System property that defines path to which will be extracted IEDriverServer library.
-   */
+  /** System property that defines path to which will be extracted IEDriverServer library. */
   public static final String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
 
-  /**
-   * System property that defines logging to stdout for IEDriverServer.
-   */
+  /** System property that defines logging to stdout for IEDriverServer. */
   public static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   * @param executable  The IEDriverServer executable.
-   * @param port        Which port to start the IEDriverServer on.
-   * @param timeout     Timeout waiting for driver server to start.
-   * @param args        The arguments to the launched server.
+   * @param executable The IEDriverServer executable.
+   * @param port Which port to start the IEDriverServer on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public InternetExplorerDriverService(
-    File executable,
-    int port,
-    Duration timeout,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment)
+      throws IOException {
+    super(
+        executable,
+        port,
+        timeout,
+        unmodifiableList(new ArrayList<>(args)),
+        unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -110,10 +104,9 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default
    * configuration. In this configuration, the service will use the IEDriverServer executable
-   * identified by the
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current
-   * system.
+   * identified by the {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
+   * Capabilities)}. Each service created by this method will be configured to use a free port on
+   * the current system.
    *
    * @return A new InternetExplorerDriverService using the default configuration.
    */
@@ -131,12 +124,11 @@ public class InternetExplorerDriverService extends DriverService {
     return findExePath(IE_DRIVER_NAME, IE_DRIVER_EXE_PROPERTY) != null;
   }
 
-  /**
-   * Builder used to configure new {@link InternetExplorerDriverService} instances.
-   */
+  /** Builder used to configure new {@link InternetExplorerDriverService} instances. */
   @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<
-    InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
+  public static class Builder
+      extends DriverService.Builder<
+          InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
     private String host = null;
@@ -236,7 +228,6 @@ public class InternetExplorerDriverService extends DriverService {
       }
     }
 
-
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
@@ -260,14 +251,10 @@ public class InternetExplorerDriverService extends DriverService {
 
     @Override
     protected InternetExplorerDriverService createDriverService(
-      File exe,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) {
+        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        InternetExplorerDriverService service = new InternetExplorerDriverService(exe, port,
-          timeout, args, environment);
+        InternetExplorerDriverService service =
+            new InternetExplorerDriverService(exe, port, timeout, args, environment);
         service.sendOutputTo(getLogOutput(IE_DRIVER_LOGFILE_PROPERTY));
         return service;
       } catch (IOException e) {

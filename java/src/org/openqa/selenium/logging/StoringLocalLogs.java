@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * LocalLogs instance that has its own storage. This should be used for explicit storing
- * of logs, such as for profiling.
+ * LocalLogs instance that has its own storage. This should be used for explicit storing of logs,
+ * such as for profiling.
  */
 class StoringLocalLogs extends LocalLogs {
   private final Map<String, List<LogEntry>> localLogs = new HashMap<>();
@@ -54,7 +54,7 @@ class StoringLocalLogs extends LocalLogs {
    * Add a new log entry to the local storage.
    *
    * @param logType the log type to store
-   * @param entry   the entry to store
+   * @param entry the entry to store
    */
   @Override
   public void addEntry(String logType, LogEntry entry) {

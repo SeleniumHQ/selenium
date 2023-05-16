@@ -160,7 +160,6 @@ class ElementSelectingTest extends JupiterTestBase {
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
   }
 
-
   private void assertNotSelected(WebElement element) {
     assertSelected(element, UNSELECTED);
   }
@@ -172,8 +171,9 @@ class ElementSelectingTest extends JupiterTestBase {
   private void assertSelected(WebElement element, boolean isSelected) {
     wait.until(ExpectedConditions.elementSelectionStateToBe(element, isSelected));
     assertThat(element.isSelected())
-        .describedAs("Expected element %s to be %s",
-                     describe(element), selectedToString(isSelected), selectedToString(!isSelected))
+        .describedAs(
+            "Expected element %s to be %s",
+            describe(element), selectedToString(isSelected), selectedToString(!isSelected))
         .isEqualTo(isSelected);
   }
 
@@ -217,15 +217,15 @@ class ElementSelectingTest extends JupiterTestBase {
     element.click();
     boolean isNowSelected = element.isSelected();
     assertThat(isNowSelected)
-        .describedAs("Expected element %s to have been toggled to %s",
-                     describe(element), selectedToString(!originalState))
+        .describedAs(
+            "Expected element %s to have been toggled to %s",
+            describe(element), selectedToString(!originalState))
         .isEqualTo(!(originalState));
     assertSelected(element, !originalState);
   }
 
   // TODO: Test disabled multi-selects
   // TODO: Test selecting options
-
 
   private WebElement enabledUnselectedCheckbox() {
     return driver.findElement(By.id("checky"));

@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,9 +31,6 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-
-import java.io.IOException;
-import java.util.List;
 
 class BrowsingContextTest {
 
@@ -65,9 +63,8 @@ class BrowsingContextTest {
 
   @Test
   void canCreateAWindowWithAReferenceContext() {
-    BrowsingContext
-      browsingContext =
-      new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
+    BrowsingContext browsingContext =
+        new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
@@ -79,9 +76,8 @@ class BrowsingContextTest {
 
   @Test
   void canCreateATabWithAReferenceContext() {
-    BrowsingContext
-      browsingContext =
-      new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
+    BrowsingContext browsingContext =
+        new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 

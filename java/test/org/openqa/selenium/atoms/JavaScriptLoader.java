@@ -21,21 +21,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.common.io.Resources;
-
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Utility class for loading JavaScript resources.
- */
+/** Utility class for loading JavaScript resources. */
 class JavaScriptLoader {
-  private JavaScriptLoader() {}  // Utility class.
+  private JavaScriptLoader() {} // Utility class.
 
   static String loadResource(String resourcePath) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
     assumeThat(resourceUrl)
-      .withFailMessage("Resource %s not found; are you running with `bazel test`? ", resourcePath)
-      .isNotNull();
+        .withFailMessage("Resource %s not found; are you running with `bazel test`? ", resourcePath)
+        .isNotNull();
     return Resources.toString(resourceUrl, UTF_8);
   }
 }

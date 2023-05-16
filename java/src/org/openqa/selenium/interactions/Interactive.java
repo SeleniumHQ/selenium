@@ -20,10 +20,11 @@ package org.openqa.selenium.interactions;
 import java.util.Collection;
 
 /**
- * Indicates that a class can be used with the W3C WebDriver
- * <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.
+ * Indicates that a class can be used with the W3C WebDriver <a
+ * href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.
  */
 public interface Interactive {
   void perform(Collection<Sequence> actions);
+
   void resetInputState();
 }

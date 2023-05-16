@@ -17,9 +17,8 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.support.ui.ExpectedCondition;
-
 import java.util.Set;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class WaitingConditions {
 
@@ -27,7 +26,7 @@ public class WaitingConditions {
     // utility class
   }
 
-  private static abstract class ElementTextComparator implements ExpectedCondition<String> {
+  private abstract static class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
     private final WebElement element;
     private final String expectedValue;
@@ -89,7 +88,6 @@ public class WaitingConditions {
 
         return null;
       }
-
 
       @Override
       public String toString() {
@@ -176,8 +174,11 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return driver -> driver.getWindowHandles().stream()
-        .filter(handle -> ! originalHandles.contains(handle)).findFirst().orElse(null);
+    return driver ->
+        driver.getWindowHandles().stream()
+            .filter(handle -> !originalHandles.contains(handle))
+            .findFirst()
+            .orElse(null);
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {

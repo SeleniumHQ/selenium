@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.json;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.logging.LogLevelMapping;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.io.Closeable;
 import java.io.File;
@@ -44,14 +43,15 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.logging.LogLevelMapping;
 
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
   private static final int MAX_DEPTH = 10;
 
   private static final Predicate<Class<?>> GSON_ELEMENT;
+
   static {
     Predicate<Class<?>> gsonElement;
     try {
@@ -71,6 +71,7 @@ public class JsonOutput implements Closeable {
   // It's legal to escape any character, so to be nice to HTML parsers,
   // we'll also escape "<" and "&"
   private static final Map<Integer, String> ESCAPES;
+
   static {
     // increased initial capacity to avoid hash collisions, especially for the following ranges:
     // '0' to '9', 'a' to 'z', 'A' to 'Z'
@@ -129,22 +130,32 @@ public class JsonOutput implements Closeable {
     builder.put(Objects::isNull, (obj, depth) -> append("null"));
     builder.put(CharSequence.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
     builder.put(Number.class::isAssignableFrom, (obj, depth) -> append(obj.toString()));
-    builder.put(Boolean.class::isAssignableFrom, (obj, depth) -> append((Boolean) obj ? "true" : "false"));
-    builder.put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
-    builder.put(Instant.class::isAssignableFrom, (obj, depth) -> append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
+    builder.put(
+        Boolean.class::isAssignableFrom, (obj, depth) -> append((Boolean) obj ? "true" : "false"));
+    builder.put(
+        Date.class::isAssignableFrom,
+        (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
+    builder.put(
+        Instant.class::isAssignableFrom,
+        (obj, depth) -> append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
     builder.put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
-    builder.put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()));
+    builder.put(
+        File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()));
     builder.put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())));
-    builder.put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())));
+    builder.put(
+        URL.class::isAssignableFrom,
+        (obj, depth) -> append(asString(((URL) obj).toExternalForm())));
     builder.put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(obj.toString())));
-    builder.put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))));
+    builder.put(
+        Level.class::isAssignableFrom,
+        (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))));
     builder.put(
         GSON_ELEMENT,
         (obj, depth) -> {
           LOG.log(
               Level.WARNING,
               "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
-              + "Diagnostic stacktrace follows",
+                  + "Diagnostic stacktrace follows",
               new JsonException("Stack trace to determine cause of warning"));
           append(obj.toString());
         });
@@ -164,9 +175,10 @@ public class JsonOutput implements Closeable {
         Collection.class::isAssignableFrom,
         (obj, depth) -> {
           beginArray();
-          ((Collection<?>) obj).stream()
-            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-            .forEach(o -> write(o, depth - 1));
+          ((Collection<?>) obj)
+              .stream()
+                  .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+                  .forEach(o -> write(o, depth - 1));
           endArray();
         });
 
@@ -174,13 +186,14 @@ public class JsonOutput implements Closeable {
         Map.class::isAssignableFrom,
         (obj, depth) -> {
           beginObject();
-          ((Map<?, ?>) obj).forEach(
-              (key, value) -> {
-                if (value instanceof Optional && !((Optional) value).isPresent()) {
-                  return;
-                }
-                name(String.valueOf(key)).write(value, depth - 1);
-              });
+          ((Map<?, ?>) obj)
+              .forEach(
+                  (key, value) -> {
+                    if (value instanceof Optional && !((Optional) value).isPresent()) {
+                      return;
+                    }
+                    name(String.valueOf(key)).write(value, depth - 1);
+                  });
           endObject();
         });
     builder.put(
@@ -188,20 +201,22 @@ public class JsonOutput implements Closeable {
         (obj, depth) -> {
           beginArray();
           Stream.of((Object[]) obj)
-            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-            .forEach(o -> write(o, depth - 1));
+              .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+              .forEach(o -> write(o, depth - 1));
           endArray();
         });
 
-    builder.put(Optional.class::isAssignableFrom, (obj, depth) -> {
-      Optional<?> optional = (Optional<?>) obj;
-      if (!optional.isPresent()) {
-        append("null");
-        return;
-      }
+    builder.put(
+        Optional.class::isAssignableFrom,
+        (obj, depth) -> {
+          Optional<?> optional = (Optional<?>) obj;
+          if (!optional.isPresent()) {
+            append("null");
+            return;
+          }
 
-      write(optional.get(), depth);
-    });
+          write(optional.get(), depth);
+        });
 
     // Finally, attempt to convert as an object
     builder.put(cls -> true, (obj, depth) -> mapObject(obj, depth - 1));
@@ -314,14 +329,15 @@ public class JsonOutput implements Closeable {
 
     String.valueOf(obj)
         .chars()
-        .forEach(i -> {
-          String escaped = ESCAPES.get(i);
-          if (escaped != null) {
-            toReturn.append(escaped);
-          } else {
-            toReturn.append((char) i);
-          }
-        });
+        .forEach(
+            i -> {
+              String escaped = ESCAPES.get(i);
+              if (escaped != null) {
+                toReturn.append(escaped);
+              } else {
+                toReturn.append((char) i);
+              }
+            });
 
     toReturn.append('"');
 
@@ -341,8 +357,7 @@ public class JsonOutput implements Closeable {
       return getMethod(clazz.getSuperclass(), methodName);
     } catch (SecurityException e) {
       throw new JsonException(
-          "Unable to find the method because of a security constraint: " + methodName,
-          e);
+          "Unable to find the method because of a security constraint: " + methodName, e);
     }
   }
 
@@ -350,10 +365,8 @@ public class JsonOutput implements Closeable {
     try {
       Method method = getMethod(toConvert.getClass(), methodName);
       if (method == null) {
-        throw new JsonException(String.format(
-            "Unable to read object %s using method %s",
-            toConvert,
-            methodName));
+        throw new JsonException(
+            String.format("Unable to read object %s using method %s", toConvert, methodName));
       }
       Object value = method.invoke(toConvert);
 
@@ -425,8 +438,7 @@ public class JsonOutput implements Closeable {
     }
   }
 
-  private class JsonCollection extends Node {
-  }
+  private class JsonCollection extends Node {}
 
   private class JsonObject extends Node {
     private boolean isNameNext = true;

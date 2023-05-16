@@ -41,14 +41,14 @@ class SvgDocumentTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   public void testExecuteScriptInSvgDocument() {
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
     assertThat(rect.getAttribute("fill")).isEqualTo("blue");
-    ((JavascriptExecutor) driver).executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
+    ((JavascriptExecutor) driver)
+        .executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
     assertThat(rect.getAttribute("fill")).isEqualTo("yellow");
   }
-
 }

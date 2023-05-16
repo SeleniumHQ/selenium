@@ -17,13 +17,10 @@
 
 package org.openqa.selenium;
 
-/**
- * Thrown by any command being called after {@link WebDriver#quit() WebDriver.quit()}.
- */
+/** Thrown by any command being called after {@link WebDriver#quit() WebDriver.quit()}. */
 public class NoSuchSessionException extends WebDriverException {
 
-  public NoSuchSessionException() {
-  }
+  public NoSuchSessionException() {}
 
   public NoSuchSessionException(String reason) {
     super(reason);
@@ -32,5 +29,4 @@ public class NoSuchSessionException extends WebDriverException {
   public NoSuchSessionException(String reason, Throwable cause) {
     super(reason, cause);
   }
-
 }

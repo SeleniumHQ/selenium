@@ -19,12 +19,10 @@ package org.openqa.selenium.docker.internal;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Objects;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.internal.Require;
-
-import java.util.Objects;
 
 @Beta
 public class Reference {
@@ -72,8 +70,8 @@ public class Reference {
     }
 
     if (!name.toLowerCase().equals(name)) {
-      throw new DockerException(String.format(
-        "Invalid reference format: repository name (%s) must be lowercase", name));
+      throw new DockerException(
+          String.format("Invalid reference format: repository name (%s) must be lowercase", name));
     }
 
     return new Reference(domain, name, tag, digest);
@@ -84,9 +82,11 @@ public class Reference {
     String remainder;
     int domSep = name.indexOf("/");
     String possibleDomain = domSep == -1 ? "" : name.substring(0, domSep);
-    if (domSep == -1 || (!possibleDomain.contains(".") && !possibleDomain.contains(":")
-                         && !"localhost".equalsIgnoreCase(possibleDomain)
-                         && possibleDomain.toLowerCase().equals(possibleDomain))) {
+    if (domSep == -1
+        || (!possibleDomain.contains(".")
+            && !possibleDomain.contains(":")
+            && !"localhost".equalsIgnoreCase(possibleDomain)
+            && possibleDomain.toLowerCase().equals(possibleDomain))) {
       remainder = name;
       domain = DEFAULT_DOMAIN;
     } else {
@@ -144,12 +144,20 @@ public class Reference {
 
   @Override
   public String toString() {
-    return "Reference{" +
-      "domain='" + domain + '\'' +
-      ", name='" + name + '\'' +
-      ", tag='" + tag + '\'' +
-      ", digest='" + digest + '\'' +
-      '}';
+    return "Reference{"
+        + "domain='"
+        + domain
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", tag='"
+        + tag
+        + '\''
+        + ", digest='"
+        + digest
+        + '\''
+        + '}';
   }
 
   @Override
@@ -159,10 +167,10 @@ public class Reference {
     }
 
     Reference that = (Reference) o;
-    return this.domain.equals(that.domain) &&
-           this.name.equals(that.name) &&
-           Objects.equals(tag, that.tag) &&
-           Objects.equals(digest, that.digest);
+    return this.domain.equals(that.domain)
+        && this.name.equals(that.name)
+        && Objects.equals(tag, that.tag)
+        && Objects.equals(digest, that.digest);
   }
 
   @Override

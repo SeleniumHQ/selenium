@@ -23,7 +23,8 @@ public interface Propagator {
 
   <C> void inject(TraceContext toInject, C carrier, Setter<C> setter);
 
-  <C> TraceContext extractContext(TraceContext existing, C carrier, BiFunction<C, String, String> getter);
+  <C> TraceContext extractContext(
+      TraceContext existing, C carrier, BiFunction<C, String, String> getter);
 
   interface Setter<C> {
     void set(C carrier, String key, String value);

@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class StatusHandler implements HttpHandler {
 
@@ -40,11 +39,16 @@ class StatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     NodeStatus status = node.getStatus();
 
-    ImmutableMap<String, Object> report = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            "ready", status.hasCapacity(),
-            "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "node", status));
+    ImmutableMap<String, Object> report =
+        ImmutableMap.of(
+            "value",
+            ImmutableMap.of(
+                "ready",
+                status.hasCapacity(),
+                "message",
+                status.hasCapacity() ? "Ready" : "No free slots available",
+                "node",
+                status));
 
     return new HttpResponse().setContent(asJson(report));
   }

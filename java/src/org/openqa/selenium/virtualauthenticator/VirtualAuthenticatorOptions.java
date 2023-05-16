@@ -23,7 +23,9 @@ import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
- * @see <a href="https://w3c.github.io/webauthn/#sctn-automation">https://w3c.github.io/webauthn/#sctn-automation</a>
+ *
+ * @see <a
+ *     href="https://w3c.github.io/webauthn/#sctn-automation">https://w3c.github.io/webauthn/#sctn-automation</a>
  */
 public class VirtualAuthenticatorOptions {
 
@@ -58,7 +60,7 @@ public class VirtualAuthenticatorOptions {
   private boolean isUserConsenting = true;
   private boolean isUserVerified = false;
 
-  public VirtualAuthenticatorOptions() { }
+  public VirtualAuthenticatorOptions() {}
 
   public VirtualAuthenticatorOptions setProtocol(Protocol protocol) {
     this.protocol = protocol;

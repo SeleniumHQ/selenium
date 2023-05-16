@@ -20,8 +20,8 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.WebDriverException;
 
 /**
- * Indicates that the target provided to the actions move() method is invalid - outside of
- * the size of the window.
+ * Indicates that the target provided to the actions move() method is invalid - outside of the size
+ * of the window.
  */
 public class MoveTargetOutOfBoundsException extends WebDriverException {
   public MoveTargetOutOfBoundsException(String message) {

@@ -17,25 +17,22 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.TimeoutException;
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
+import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import com.google.common.collect.ImmutableMap;
-
 import dev.failsafe.Failsafe;
 import dev.failsafe.Fallback;
 import dev.failsafe.RetryPolicy;
-
 import java.net.ConnectException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
-
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
-import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.http.Contents.asJson;
+import org.openqa.selenium.TimeoutException;
 
 public class RetryRequest implements Filter {
 
@@ -46,64 +43,78 @@ public class RetryRequest implements Filter {
 
   // Retry on connection error.
   private static final RetryPolicy<Object> connectionFailurePolicy =
-    RetryPolicy.builder()
-      .handleIf(failure -> failure.getCause() instanceof ConnectException)
-      .withMaxRetries(3)
-      .onRetry(e -> LOG.log(
-        getDebugLogLevel(),
-        "Connection failure #{0}. Retrying.",
-        e.getAttemptCount()))
-      .onRetriesExceeded(e -> fallBackResponse.set(
-        new HttpResponse()
-          .setStatus(HTTP_CLIENT_TIMEOUT)
-          .setContent(
-            asJson(ImmutableMap.of("value", ImmutableMap.of(
-              "message", "Connection failure"))))))
-      .build();
+      RetryPolicy.builder()
+          .handleIf(failure -> failure.getCause() instanceof ConnectException)
+          .withMaxRetries(3)
+          .onRetry(
+              e ->
+                  LOG.log(
+                      getDebugLogLevel(),
+                      "Connection failure #{0}. Retrying.",
+                      e.getAttemptCount()))
+          .onRetriesExceeded(
+              e ->
+                  fallBackResponse.set(
+                      new HttpResponse()
+                          .setStatus(HTTP_CLIENT_TIMEOUT)
+                          .setContent(
+                              asJson(
+                                  ImmutableMap.of(
+                                      "value", ImmutableMap.of("message", "Connection failure"))))))
+          .build();
 
   // Retry on read timeout.
   private static final RetryPolicy<Object> readTimeoutPolicy =
-    RetryPolicy.builder()
-      .handle(TimeoutException.class)
-      .withMaxRetries(3)
-      .onRetry(e -> LOG.log(
-        getDebugLogLevel(),
-        "Read timeout #{0}. Retrying.",
-        e.getAttemptCount()))
-      .onRetriesExceeded(e -> fallBackResponse.set(
-        new HttpResponse()
-          .setStatus(HTTP_GATEWAY_TIMEOUT)
-          .setContent(
-            asJson(ImmutableMap.of("value", ImmutableMap.of(
-              "message", "Read timeout"))))))
-      .build();
+      RetryPolicy.builder()
+          .handle(TimeoutException.class)
+          .withMaxRetries(3)
+          .onRetry(
+              e -> LOG.log(getDebugLogLevel(), "Read timeout #{0}. Retrying.", e.getAttemptCount()))
+          .onRetriesExceeded(
+              e ->
+                  fallBackResponse.set(
+                      new HttpResponse()
+                          .setStatus(HTTP_GATEWAY_TIMEOUT)
+                          .setContent(
+                              asJson(
+                                  ImmutableMap.of(
+                                      "value", ImmutableMap.of("message", "Read timeout"))))))
+          .build();
 
   // Retry if server is unavailable or an internal server error occurs without response body.
   private static final RetryPolicy<Object> serverErrorPolicy =
-    RetryPolicy.builder()
-      .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_INTERNAL_ERROR &&
-                                  Integer.parseInt(((HttpResponse)response).getHeader(CONTENT_LENGTH)) == 0)
-      .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_UNAVAILABLE)
-      .withMaxRetries(2)
-      .onRetry(e -> LOG.log(
-        getDebugLogLevel(),
-        "Failure due to server error #{0}. Retrying.",
-        e.getAttemptCount()))
-      .onRetriesExceeded(e -> fallBackResponse.set(
-        new HttpResponse()
-          .setStatus(((HttpResponse)e.getResult()).getStatus())
-          .setContent(
-            asJson(ImmutableMap.of("value", ImmutableMap.of(
-              "message", "Internal server error"))))))
-      .build();
+      RetryPolicy.builder()
+          .handleResultIf(
+              response ->
+                  ((HttpResponse) response).getStatus() == HTTP_INTERNAL_ERROR
+                      && Integer.parseInt(((HttpResponse) response).getHeader(CONTENT_LENGTH)) == 0)
+          .handleResultIf(response -> ((HttpResponse) response).getStatus() == HTTP_UNAVAILABLE)
+          .withMaxRetries(2)
+          .onRetry(
+              e ->
+                  LOG.log(
+                      getDebugLogLevel(),
+                      "Failure due to server error #{0}. Retrying.",
+                      e.getAttemptCount()))
+          .onRetriesExceeded(
+              e ->
+                  fallBackResponse.set(
+                      new HttpResponse()
+                          .setStatus(((HttpResponse) e.getResult()).getStatus())
+                          .setContent(
+                              asJson(
+                                  ImmutableMap.of(
+                                      "value",
+                                      ImmutableMap.of("message", "Internal server error"))))))
+          .build();
 
   @Override
   public HttpHandler apply(HttpHandler next) {
-    return req -> Failsafe
-      .with(fallback)
-      .compose(serverErrorPolicy)
-      .compose(readTimeoutPolicy)
-      .compose(connectionFailurePolicy)
-      .get(() -> next.execute(req));
+    return req ->
+        Failsafe.with(fallback)
+            .compose(serverErrorPolicy)
+            .compose(readTimeoutPolicy)
+            .compose(connectionFailurePolicy)
+            .get(() -> next.execute(req));
   }
 }

@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.testing;
 
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.internal.Debug.isDebugging;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -33,9 +36,6 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.internal.Debug.isDebugging;
-
 class CaptureLoggingRule {
 
   List<Handler> handlers;
@@ -48,9 +48,10 @@ class CaptureLoggingRule {
     Logger logger = LogManager.getLogManager().getLogger("");
 
     // Capture the original log handlers
-    handlers = Arrays.stream(logger.getHandlers())
-      .filter(handler -> handler instanceof ConsoleHandler)
-      .collect(toList());
+    handlers =
+        Arrays.stream(logger.getHandlers())
+            .filter(handler -> handler instanceof ConsoleHandler)
+            .collect(toList());
 
     // Remove them from the logger
     handlers.forEach(logger::removeHandler);
@@ -66,9 +67,9 @@ class CaptureLoggingRule {
 
     Logger logger = LogManager.getLogManager().getLogger("");
     Arrays.stream(logger.getHandlers())
-      .filter(handler -> handler instanceof RecordingHandler)
-      .map(handler -> (RecordingHandler) handler)
-      .forEach(RecordingHandler::write);
+        .filter(handler -> handler instanceof RecordingHandler)
+        .map(handler -> (RecordingHandler) handler)
+        .forEach(RecordingHandler::write);
   }
 
   public void endLogCapture() {
@@ -78,10 +79,11 @@ class CaptureLoggingRule {
 
     // Find our recording handler
     Logger logger = LogManager.getLogManager().getLogger("");
-    List<RecordingHandler> recordingHandlers = Arrays.stream(logger.getHandlers())
-      .filter(handler -> handler instanceof RecordingHandler)
-      .map(handler -> (RecordingHandler) handler)
-      .collect(toList());
+    List<RecordingHandler> recordingHandlers =
+        Arrays.stream(logger.getHandlers())
+            .filter(handler -> handler instanceof RecordingHandler)
+            .map(handler -> (RecordingHandler) handler)
+            .collect(toList());
 
     recordingHandlers.forEach(logger::removeHandler);
   }
@@ -118,13 +120,19 @@ class CaptureLoggingRule {
     @Override
     public String format(LogRecord record) {
       StringBuilder buffer = new StringBuilder();
-      LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault());
+      LocalDateTime dateTime =
+          LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault());
       buffer.append(dateFormat.format(dateTime));
       buffer.append(' ');
       buffer.append(record.getLevel());
       if (record.getSourceClassName() != null) {
         String[] parts = record.getSourceClassName().split("\\.");
-        buffer.append(" [").append(parts[parts.length - 1]).append(".").append(record.getSourceMethodName()).append("]");
+        buffer
+            .append(" [")
+            .append(parts[parts.length - 1])
+            .append(".")
+            .append(record.getSourceMethodName())
+            .append("]");
       }
       buffer.append(" - ");
       buffer.append(formatMessage(record)).append(System.getProperty("line.separator"));

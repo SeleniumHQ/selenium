@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.json;
 
-import org.openqa.selenium.internal.Require;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Similar to a {@link Reader} but with the ability to peek a single character ahead.
- * <p>
- * For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
+ *
+ * <p>For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
  * read characters in the input buffer.
  */
 class Input {

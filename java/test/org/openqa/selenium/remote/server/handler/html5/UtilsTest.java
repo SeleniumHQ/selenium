@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import com.google.common.collect.ImmutableMap;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -32,15 +37,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-/**
- * Tests for the {@link Utils} class.
- */
+/** Tests for the {@link Utils} class. */
 class UtilsTest {
 
   @Test
@@ -76,16 +73,15 @@ class UtilsTest {
     localStorage.setItem("foo", "bar");
     sessionStorage.setItem("bim", "baz");
 
-    verify(driver).execute(DriverCommand.SET_LOCAL_STORAGE_ITEM, ImmutableMap.of(
-        "key", "foo", "value", "bar"));
-    verify(driver).execute(DriverCommand.SET_SESSION_STORAGE_ITEM, ImmutableMap.of(
-        "key", "bim", "value", "baz"));
+    verify(driver)
+        .execute(
+            DriverCommand.SET_LOCAL_STORAGE_ITEM, ImmutableMap.of("key", "foo", "value", "bar"));
+    verify(driver)
+        .execute(
+            DriverCommand.SET_SESSION_STORAGE_ITEM, ImmutableMap.of("key", "bim", "value", "baz"));
   }
 
-  interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {
-  }
+  interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {}
 
-  interface Html5Driver extends WebDriver, LocationContext, WebStorage {
-
-  }
+  interface Html5Driver extends WebDriver, LocationContext, WebStorage {}
 }

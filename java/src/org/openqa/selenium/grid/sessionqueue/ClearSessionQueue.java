@@ -24,7 +24,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -56,16 +55,19 @@ public class ClearSessionQueue implements HttpHandler {
       HttpResponse response = new HttpResponse();
       if (value != 0) {
         response.setContent(
-          asJson(ImmutableMap.of(
-            "value", value,
-            "message", "Cleared the new session request queue",
-            "cleared_requests", value)));
+            asJson(
+                ImmutableMap.of(
+                    "value", value,
+                    "message", "Cleared the new session request queue",
+                    "cleared_requests", value)));
       } else {
         response.setContent(
-          asJson(ImmutableMap.of(
-            "value", value,
-            "message",
-            "New session request queue empty. Nothing to clear.")));
+            asJson(
+                ImmutableMap.of(
+                    "value",
+                    value,
+                    "message",
+                    "New session request queue empty. Nothing to clear.")));
       }
 
       span.setAttribute("requests.cleared", value);
@@ -74,10 +76,17 @@ public class ClearSessionQueue implements HttpHandler {
     } catch (Exception e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.INTERNAL);
-      HttpResponse response = new HttpResponse().setStatus((HTTP_INTERNAL_ERROR)).setContent(
-        asJson(ImmutableMap.of(
-          "value", 0,
-          "message", "Error while clearing the queue. Full queue may not have been cleared.")));
+      HttpResponse response =
+          new HttpResponse()
+              .setStatus((HTTP_INTERNAL_ERROR))
+              .setContent(
+                  asJson(
+                      ImmutableMap.of(
+                          "value",
+                          0,
+                          "message",
+                          "Error while clearing the queue. Full queue may not have been"
+                              + " cleared.")));
 
       HTTP_RESPONSE.accept(span, response);
       return response;

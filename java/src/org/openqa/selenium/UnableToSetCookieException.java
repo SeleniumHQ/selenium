@@ -23,8 +23,7 @@ package org.openqa.selenium;
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class UnableToSetCookieException extends WebDriverException {
-  public UnableToSetCookieException() {
-  }
+  public UnableToSetCookieException() {}
 
   public UnableToSetCookieException(String message) {
     super(message);
