@@ -116,7 +116,6 @@ import org.openqa.selenium.status.HasReadyState;
 @ManagedService(
     objectName = "org.seleniumhq.grid:type=Distributor,name=LocalDistributor",
     description = "Grid 4 node distributor")
-
 public class LocalDistributor extends Distributor implements AutoCloseable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
@@ -599,7 +598,6 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
             EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
-
       }
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.ABORTED);
