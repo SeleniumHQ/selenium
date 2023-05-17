@@ -22,6 +22,7 @@ import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -37,7 +38,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -62,6 +62,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
@@ -715,6 +716,27 @@ class JsonOutputTest {
     obj = JsonParser.parseString(json).getAsJsonObject();
     assertThat(obj.has("class")).isFalse();
     assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
+  }
+
+  @Test
+  void shouldRespectMaxDepth() {
+    StringBuilder builder = new StringBuilder();
+
+    JsonOutput jsonOutput = new Json().newOutput(builder);
+    jsonOutput.beginArray();
+
+    Object value = emptyList();
+
+    for (int i = 0; i < 10; i++) {
+      jsonOutput.write(value);
+
+      value = singletonList(value);
+    }
+
+    Object finalValue = value;
+
+    assertThatExceptionOfType(JsonException.class)
+      .isThrownBy(() -> jsonOutput.write(finalValue));
   }
 
   private String convert(Object toConvert) {
