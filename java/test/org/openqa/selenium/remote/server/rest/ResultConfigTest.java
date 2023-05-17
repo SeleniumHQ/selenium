@@ -21,16 +21,15 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.SessionId;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.SessionId;
 
 class ResultConfigTest {
   private Logger LOG = Logger.getLogger(ResultConfigTest.class.getName());
@@ -45,14 +44,14 @@ class ResultConfigTest {
   @Test
   void testShouldNotAllowNullToBeUsedForTheHandler() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, LOG));
+        .isThrownBy(
+            () -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, LOG));
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG
-    );
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     assertNull(config.getRootExceptionCause(null));
   }
 
@@ -60,15 +59,14 @@ class ResultConfigTest {
   @Test
   void testCanPeelNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
-    InvocationTargetException invocation = new InvocationTargetException(runtime,
-        "Got Runtime Exception");
-    WebDriverException webdriverException = new WebDriverException("Invocation problems",
-        invocation);
-    ExecutionException execution = new ExecutionException("General WebDriver error",
-        webdriverException);
+    InvocationTargetException invocation =
+        new InvocationTargetException(runtime, "Got Runtime Exception");
+    WebDriverException webdriverException =
+        new WebDriverException("Invocation problems", invocation);
+    ExecutionException execution =
+        new ExecutionException("General WebDriver error", webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG
-    );
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
   }
@@ -81,10 +79,8 @@ class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG
-    );
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
   }
-
 }
