@@ -107,6 +107,7 @@ public class ErrorHandler {
         try {
           rawErrorData = (Map<String, Object>) rawErrorData.get("value");
         } catch (ClassCastException cce) {
+          message = String.valueOf(cce);
         }
       }
       try {
