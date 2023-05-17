@@ -108,33 +108,38 @@ public class ChromiumDriver extends RemoteWebDriver
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
-    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
-      .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
+    Optional<URI> cdpUri =
+        CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
+            .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
 
     try {
-      connection = cdpUri.map(uri -> new Connection(
-        factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-        uri.toString()));
+      connection =
+          cdpUri.map(
+              uri ->
+                  new Connection(
+                      factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+                      uri.toString()));
     } catch (ConnectionFailedException e) {
       LOG.warning("Unable to establish websocket connection to " + cdpUri.get());
       connection = Optional.empty();
     }
 
-    CdpInfo cdpInfo = new CdpVersionFinder().match(originalCapabilities.getBrowserVersion())
-      .orElseGet(() -> {
-        LOG.warning(
-          String.format(
-            "Unable to find version of CDP to use for %s. You may need to " +
-              "include a dependency on a specific version of the CDP using " +
-              "something similar to " +
-              "`org.seleniumhq.selenium:selenium-devtools-v86:%s` where the " +
-              "version (\"v86\") matches the version of the chromium-based browser " +
-              "you're using and the version number of the artifact is the same " +
-              "as Selenium's.",
-            capabilities.getBrowserVersion(),
-            new BuildInfo().getReleaseLabel()));
-        return new NoOpCdpInfo();
-      });
+    CdpInfo cdpInfo =
+        new CdpVersionFinder()
+            .match(originalCapabilities.getBrowserVersion())
+            .orElseGet(
+                () -> {
+                  LOG.warning(
+                      String.format(
+                          "Unable to find version of CDP to use for %s. You may need to include a"
+                              + " dependency on a specific version of the CDP using something"
+                              + " similar to `org.seleniumhq.selenium:selenium-devtools-v86:%s`"
+                              + " where the version (\"v86\") matches the version of the"
+                              + " chromium-based browser you're using and the version number of the"
+                              + " artifact is the same as Selenium's.",
+                          capabilities.getBrowserVersion(), new BuildInfo().getReleaseLabel()));
+                  return new NoOpCdpInfo();
+                });
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
