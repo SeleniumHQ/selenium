@@ -593,19 +593,15 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
             EventAttribute.setValue("Will retry session " + request.getRequestId()));
 
-        span.setAttribute(AttributeKey.ERROR.getKey(), true);
-        span.setStatus(Status.ABORTED);
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       } else {
         EXCEPTION.accept(attributeMap, lastFailure);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
             EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
-
-        span.setAttribute(AttributeKey.ERROR.getKey(), true);
-        span.setStatus(Status.ABORTED);
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       }
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.ABORTED);
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       return Either.left(lastFailure);
     } catch (SessionNotCreatedException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
