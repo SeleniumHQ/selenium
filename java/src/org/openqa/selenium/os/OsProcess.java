@@ -45,7 +45,7 @@ import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
 
 class OsProcess {
-  private static final Logger log = Logger.getLogger(OsProcess.class.getName());
+  private static final Logger LOG = Logger.getLogger(OsProcess.class.getName());
 
   private final CircularOutputStream inputOut = new CircularOutputStream(32768);
   private volatile String allInput;
@@ -132,7 +132,7 @@ class OsProcess {
         watchdog.waitForTerminationAfterDestroy(1, SECONDS);
       }
     } else {
-      log.warning("Tried to destory a process which never started.");
+      LOG.warning("Tried to destory a process which never started.");
     }
 
     // Make a best effort to drain the streams.
@@ -144,7 +144,7 @@ class OsProcess {
         streamHandler.stop();
       } catch (IOException e) {
         // Ignore and destroy the process anyway.
-        log.log(
+        LOG.log(
             Level.INFO,
             "Unable to drain process streams. Ignoring but the exception being swallowed follows.",
             e);
@@ -155,7 +155,7 @@ class OsProcess {
       return getExitCode();
     }
 
-    log.severe(String.format("Unable to kill process %s", watchdog.process));
+    LOG.severe(String.format("Unable to kill process %s", watchdog.process));
     int exitCode = -1;
     executor.setExitValue(exitCode);
     return exitCode;
@@ -199,7 +199,7 @@ class OsProcess {
 
   public void checkForError() {
     if (handler.getException() != null) {
-      log.severe(handler.getException().toString());
+      LOG.severe(handler.getException().toString());
     }
   }
 

@@ -38,7 +38,7 @@ import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 import org.openqa.selenium.internal.Require;
 
 public class DevTools implements Closeable {
-  private static final Logger log = Logger.getLogger(DevTools.class.getName());
+  private static final Logger LOG = Logger.getLogger(DevTools.class.getName());
 
   private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(10);
@@ -71,7 +71,7 @@ public class DevTools implements Closeable {
             timeout);
       } catch (Exception e) {
         // Exceptions should not prevent closing the connection and the web driver
-        log.warning("Exception while detaching from target: " + e.getMessage());
+        LOG.warning("Exception while detaching from target: " + e.getMessage());
       }
     }
   }
@@ -143,7 +143,7 @@ public class DevTools implements Closeable {
                   .send(cdpSession, getDomains().log().clear())
                   .exceptionally(
                       t -> {
-                        log.log(Level.SEVERE, t.getMessage(), t);
+                        LOG.log(Level.SEVERE, t.getMessage(), t);
                         return null;
                       }))
           .get(timeout.toMillis(), MILLISECONDS);

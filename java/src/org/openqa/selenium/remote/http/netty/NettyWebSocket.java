@@ -46,7 +46,7 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 class NettyWebSocket implements WebSocket {
 
-  private static final Logger log = Logger.getLogger(NettyWebSocket.class.getName());
+  private static final Logger LOG = Logger.getLogger(NettyWebSocket.class.getName());
 
   private final org.asynchttpclient.ws.WebSocket socket;
 
@@ -106,7 +106,7 @@ class NettyWebSocket implements WebSocket {
               .toCompletableFuture()
               .exceptionally(
                   t -> {
-                    log.log(Level.WARNING, t.getMessage(), t);
+                    LOG.log(Level.WARNING, t.getMessage(), t);
                     return null;
                   })
               .get();
@@ -117,7 +117,7 @@ class NettyWebSocket implements WebSocket {
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      log.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
+      LOG.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
       throw new ConnectionFailedException("NettyWebSocket initial request interrupted", e);
     } catch (ExecutionException | MalformedURLException | URISyntaxException e) {
       throw new ConnectionFailedException("NettyWebSocket initial request execution error", e);

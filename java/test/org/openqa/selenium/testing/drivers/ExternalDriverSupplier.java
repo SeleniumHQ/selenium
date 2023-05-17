@@ -54,7 +54,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  * </dl>
  */
 class ExternalDriverSupplier implements Supplier<WebDriver> {
-  private static final Logger logger = Logger.getLogger(ExternalDriverSupplier.class.getName());
+  private static final Logger LOG = Logger.getLogger(ExternalDriverSupplier.class.getName());
 
   private static final String DELEGATE_SUPPLIER_CLASS_PROPERTY = "selenium.external.supplierClass";
   private static final String EXTERNAL_SERVER_URL_PROPERTY = "selenium.external.serverUrl";
@@ -77,7 +77,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       Capabilities desiredCapabilities, Optional<Supplier<WebDriver>> delegate) {
     String externalUrl = System.getProperty(EXTERNAL_SERVER_URL_PROPERTY);
     if (externalUrl != null) {
-      logger.info("Using external WebDriver server: " + externalUrl);
+      LOG.info("Using external WebDriver server: " + externalUrl);
       URL url;
       try {
         url = new URL(externalUrl);
@@ -96,7 +96,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     Optional<Class<? extends Supplier<WebDriver>>> supplierClass = getDelegateClass();
     if (supplierClass.isPresent()) {
       Class<? extends Supplier<WebDriver>> clazz = supplierClass.get();
-      logger.info("Using delegate supplier: " + clazz.getName());
+      LOG.info("Using delegate supplier: " + clazz.getName());
       try {
         @SuppressWarnings("unchecked")
         Constructor<Supplier<WebDriver>> ctor =
@@ -116,7 +116,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     String delegateClassName = System.getProperty(DELEGATE_SUPPLIER_CLASS_PROPERTY);
     if (delegateClassName != null) {
       try {
-        logger.info("Loading custom supplier: " + delegateClassName);
+        LOG.info("Loading custom supplier: " + delegateClassName);
         Class<? extends Supplier<WebDriver>> clazz =
             (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
         return Optional.of(clazz);
@@ -144,9 +144,9 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     @Override
     public WebDriver get() {
       try {
-        logger.info("Waiting for server to be ready at " + serverUrl);
+        LOG.info("Waiting for server to be ready at " + serverUrl);
         new UrlChecker().waitUntilAvailable(60, SECONDS, new URL(serverUrl + "/status"));
-        logger.info("Server is ready");
+        LOG.info("Server is ready");
       } catch (UrlChecker.TimeoutException e) {
         throw new RuntimeException("The external server is not accepting commands", e);
       } catch (MalformedURLException e) {

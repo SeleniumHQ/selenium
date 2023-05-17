@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.openqa.selenium.Platform;
 
 public class Build {
-  private static final Logger log = Logger.getLogger(Build.class.getName());
+  private static final Logger LOG = Logger.getLogger(Build.class.getName());
 
   private final List<String> targets = new ArrayList<>();
 
@@ -44,7 +44,7 @@ public class Build {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
-      log.info("Not in dev mode. Ignoring attempt to build: " + targets);
+      LOG.info("Not in dev mode. Ignoring attempt to build: " + targets);
       return;
     }
 

@@ -28,14 +28,14 @@ import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.InProject;
 
 class StaticResources {
-  private static Logger log = Logger.getLogger(StaticResources.class.getName());
+  private static Logger LOG = Logger.getLogger(StaticResources.class.getName());
 
   static void ensureAvailable() {
     if (!isInDevMode()) {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
-      log.info("Not in dev mode. Ignoring attempt to copy static resources");
+      LOG.info("Not in dev mode. Ignoring attempt to copy static resources");
       return;
     }
 

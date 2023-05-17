@@ -32,7 +32,7 @@ import org.openqa.selenium.internal.Require;
 
 public class AddHasAuthentication implements AugmenterProvider<HasAuthentication> {
 
-  private static final Logger logger = Logger.getLogger(AddHasAuthentication.class.getName());
+  private static final Logger LOG = Logger.getLogger(AddHasAuthentication.class.getName());
   private static final Predicate<String> IS_CHROMIUM_BROWSER =
       name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
 

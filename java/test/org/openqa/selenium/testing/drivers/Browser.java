@@ -134,7 +134,7 @@ public enum Browser {
   },
   SAFARI(new SafariOptions(), new SafariDriverInfo().getDisplayName(), false);
 
-  private static final Logger log = Logger.getLogger(Browser.class.getName());
+  private static final Logger LOG = Logger.getLogger(Browser.class.getName());
   private final Capabilities canonicalCapabilities;
   private final String displayName;
   private final boolean supportsCdp;
@@ -148,7 +148,7 @@ public enum Browser {
   public static Browser detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-      log.info("No browser detected, returning null");
+      LOG.info("No browser detected, returning null");
       return null;
     }
 

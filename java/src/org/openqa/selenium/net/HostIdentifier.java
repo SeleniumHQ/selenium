@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.openqa.selenium.Platform;
 
 public class HostIdentifier {
-  private static final Logger log = Logger.getLogger(HostIdentifier.class.getName());
+  private static final Logger LOG = Logger.getLogger(HostIdentifier.class.getName());
 
   private static volatile String hostName;
   private static volatile String hostAddress;
@@ -60,12 +60,12 @@ public class HostIdentifier {
           }
         }
       } catch (InterruptedException e) {
-        log.log(WARNING, "Failed to resolve host name", e);
+        LOG.log(WARNING, "Failed to resolve host name", e);
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
       } catch (Throwable e) {
         // fall through
-        log.log(WARNING, "Failed to resolve host name", e);
+        LOG.log(WARNING, "Failed to resolve host name", e);
       }
     }
     if (host == null) {
@@ -74,7 +74,7 @@ public class HostIdentifier {
         host = InetAddress.getLocalHost().getHostName();
       } catch (Throwable e) {
         host = "Unknown"; // At least we tried.
-        log.log(WARNING, "Failed to resolve host name", e);
+        LOG.log(WARNING, "Failed to resolve host name", e);
       }
     }
 
@@ -95,7 +95,7 @@ public class HostIdentifier {
         }
       } catch (Throwable e) {
         // Fall through and go the slow way.
-        log.log(WARNING, "Failed to resolve host address", e);
+        LOG.log(WARNING, "Failed to resolve host address", e);
       }
     }
     if (address == null) {
@@ -104,7 +104,7 @@ public class HostIdentifier {
         address = InetAddress.getLocalHost().getHostAddress();
       } catch (Throwable e) {
         address = "Unknown";
-        log.log(WARNING, "Failed to resolve host address", e);
+        LOG.log(WARNING, "Failed to resolve host address", e);
       }
     }
 

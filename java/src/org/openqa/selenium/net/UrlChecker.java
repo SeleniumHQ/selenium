@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 /** Polls a URL until a HTTP 200 response is received. */
 public class UrlChecker {
 
-  private static final Logger log = Logger.getLogger(UrlChecker.class.getName());
+  private static final Logger LOG = Logger.getLogger(UrlChecker.class.getName());
 
   static final int CONNECT_TIMEOUT_MS = 500;
   private static final int READ_TIMEOUT_MS = 1000;
@@ -56,7 +56,7 @@ public class UrlChecker {
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.fine("Waiting for " + Arrays.toString(urls));
+    LOG.fine("Waiting for " + Arrays.toString(urls));
     try {
       Future<Void> callback =
           EXECUTOR.submit(
@@ -70,7 +70,7 @@ public class UrlChecker {
                   }
                   for (URL url : urls) {
                     try {
-                      log.fine("Polling " + url);
+                      LOG.fine("Polling " + url);
                       connection = connectToUrl(url);
                       if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                         return null;
@@ -106,7 +106,7 @@ public class UrlChecker {
   public void waitUntilUnavailable(long timeout, TimeUnit unit, final URL url)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.fine("Waiting for " + url);
+    LOG.fine("Waiting for " + url);
     try {
       Future<Void> callback =
           EXECUTOR.submit(
@@ -116,7 +116,7 @@ public class UrlChecker {
                 long sleepMillis = MIN_POLL_INTERVAL_MS;
                 while (true) {
                   try {
-                    log.fine("Polling " + url);
+                    LOG.fine("Polling " + url);
                     connection = connectToUrl(url);
                     if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                       return null;

@@ -42,7 +42,7 @@ public class RemoteLogs implements Logs {
   private static final String TIMESTAMP = "timestamp";
   private static final String MESSAGE = "message";
 
-  private static final Logger logger = Logger.getLogger(RemoteLogs.class.getName());
+  private static final Logger LOG = Logger.getLogger(RemoteLogs.class.getName());
 
   protected ExecuteMethod executeMethod;
 
@@ -63,8 +63,7 @@ public class RemoteLogs implements Logs {
       } catch (WebDriverException e) {
         // An exception may be thrown if the WebDriver server does not recognize profiler logs.
         // In this case, the user should be able to see the local profiler logs.
-        logger.log(
-            Level.WARNING, "Remote profiler logs are not available and have been omitted.", e);
+        LOG.log(Level.WARNING, "Remote profiler logs are not available and have been omitted.", e);
       }
 
       return LogCombiner.combine(remoteEntries, getLocalEntries(logType));

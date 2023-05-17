@@ -36,7 +36,7 @@ import org.openqa.selenium.os.CommandLine;
 
 class OutOfProcessSeleniumServer {
 
-  private static final Logger log = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 
   private String baseUrl;
   private CommandLine command;
@@ -54,9 +54,9 @@ class OutOfProcessSeleniumServer {
    * @return The new server.
    */
   public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
-    log.info("Got a request to start a new selenium server");
+    LOG.info("Got a request to start a new selenium server");
     if (command != null) {
-      log.info("Server already started");
+      LOG.info("Server already started");
       throw new RuntimeException("Server already started");
     }
 
@@ -91,18 +91,18 @@ class OutOfProcessSeleniumServer {
     }
 
     command.copyOutputTo(System.err);
-    log.info("Starting selenium server: " + command.toString());
+    LOG.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 
     try {
       URL url = new URL(baseUrl + "/status");
-      log.info("Waiting for server status on URL " + url);
+      LOG.info("Waiting for server status on URL " + url);
       new UrlChecker().waitUntilAvailable(10, SECONDS, url);
-      log.info("Server is ready");
+      LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
-      log.severe("Server failed to start: " + e.getMessage());
+      LOG.severe("Server failed to start: " + e.getMessage());
       command.destroy();
-      log.severe(command.getStdOut());
+      LOG.severe(command.getStdOut());
       command = null;
       throw new RuntimeException(e);
     } catch (MalformedURLException e) {
@@ -126,9 +126,9 @@ class OutOfProcessSeleniumServer {
     if (command == null) {
       return;
     }
-    log.info("Stopping selenium server");
+    LOG.info("Stopping selenium server");
     command.destroy();
-    log.info("Selenium server stopped");
+    LOG.info("Selenium server stopped");
     command = null;
   }
 

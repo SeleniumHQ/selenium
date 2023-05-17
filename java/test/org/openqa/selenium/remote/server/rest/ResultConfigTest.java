@@ -32,26 +32,26 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
 
 class ResultConfigTest {
-  private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
+  private Logger LOG = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
 
   @Test
   void testShouldNotAllowNullToBeUsedAsTheUrl() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, logger));
+        .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, LOG));
   }
 
   @Test
   void testShouldNotAllowNullToBeUsedForTheHandler() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(
-            () -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, logger));
+            () -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, LOG));
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     assertNull(config.getRootExceptionCause(null));
   }
 
@@ -66,7 +66,7 @@ class ResultConfigTest {
     ExecutionException execution =
         new ExecutionException("General WebDriver error", webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
   }
@@ -79,7 +79,7 @@ class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, LOG);
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
   }

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /** Detects files on the local disk. */
 public class LocalFileDetector implements FileDetector {
 
-  private static final Logger log = Logger.getLogger(LocalFileDetector.class.getName());
+  private static final Logger LOG = Logger.getLogger(LocalFileDetector.class.getName());
 
   @Override
   public File getLocalFile(CharSequence... keys) {
@@ -48,7 +48,7 @@ public class LocalFileDetector implements FileDetector {
     }
     File toUpload = new File(parentDir, file.getName());
 
-    log.fine("Detected local file: " + toUpload.exists());
+    LOG.fine("Detected local file: " + toUpload.exists());
 
     return toUpload.exists() && toUpload.isFile() ? toUpload : null;
   }
