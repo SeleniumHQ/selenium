@@ -58,12 +58,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
- * It is used as the base class for Chromium-based browser drivers (Chrome, Edgium).
+ * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
 public class ChromiumDriver extends RemoteWebDriver
     implements HasAuthentication,
@@ -89,7 +90,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  private final Optional<Connection> connection;
+  private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
   protected HasCasting casting;
   protected HasCdp cdp;
@@ -111,12 +112,17 @@ public class ChromiumDriver extends RemoteWebDriver
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
             .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
 
-    connection =
-        cdpUri.map(
-            uri ->
-                new Connection(
-                    factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-                    uri.toString()));
+    try {
+      connection =
+          cdpUri.map(
+              uri ->
+                  new Connection(
+                      factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+                      uri.toString()));
+    } catch (ConnectionFailedException e) {
+      LOG.warning("Unable to establish websocket connection to " + cdpUri.get());
+      connection = Optional.empty();
+    }
 
     CdpInfo cdpInfo =
         new CdpVersionFinder()
