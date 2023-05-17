@@ -53,22 +53,22 @@ namespace OpenQA.Selenium
 #if NET45 || NET46 || NET47
                 binary = "selenium-manager/windows/selenium-manager.exe";
 #else
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    binary = "selenium-manager/windows/selenium-manager.exe";
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    binary = "selenium-manager/linux/selenium-manager";
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    binary = "selenium-manager/macos/selenium-manager";
-                }
-                else
-                {
-                    throw new WebDriverException("Selenium Manager did not find supported operating system");
-                }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                binary = "selenium-manager/windows/selenium-manager.exe";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                binary = "selenium-manager/linux/selenium-manager";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                binary = "selenium-manager/macos/selenium-manager";
+            }
+            else
+            {
+                throw new WebDriverException("Selenium Manager did not find supported operating system");
+            }
 #endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
@@ -111,14 +111,11 @@ namespace OpenQA.Selenium
             string[] vendorOptionsCapabilities = { "moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions" };
             foreach (string vendorOptionsCapability in vendorOptionsCapabilities)
             {
-                try
+                IDictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as IDictionary<string, object>;
+
+                if (vendorOptions != null && vendorOptions.TryGetValue("binary", out object browserBinaryPath))
                 {
-                    Dictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as Dictionary<string, object>;
-                    return vendorOptions["binary"] as string;
-                }
-                catch (Exception)
-                {
-                    // no-op, it would be ideal to at least log the exception but the C# do not log anything at the moment 
+                    return browserBinaryPath as string;
                 }
             }
 
