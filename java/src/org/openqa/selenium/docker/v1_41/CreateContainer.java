@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerId;
@@ -30,17 +40,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class CreateContainer {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(CreateContainer.class.getName());
@@ -53,13 +52,14 @@ class CreateContainer {
   }
 
   public Container apply(ContainerConfig info) {
-    HttpResponse res = DockerMessages.throwIfNecessary(
-      client.execute(
-        new HttpRequest(POST, String.format("/v%s/containers/create", DOCKER_API_VERSION))
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(asJson(info))),
-      "Unable to create container: ",
-      info);
+    HttpResponse res =
+        DockerMessages.throwIfNecessary(
+            client.execute(
+                new HttpRequest(POST, String.format("/v%s/containers/create", DOCKER_API_VERSION))
+                    .addHeader("Content-Type", JSON_UTF_8)
+                    .setContent(asJson(info))),
+            "Unable to create container: ",
+            info);
 
     try {
       Map<String, Object> rawContainer = JSON.toType(Contents.string(res), MAP_TYPE);
@@ -72,12 +72,11 @@ class CreateContainer {
       if (rawContainer.get("Warnings") instanceof Collection) {
         Collection<?> warnings = (Collection<?>) rawContainer.get("Warnings");
         if (warnings.size() > 0) {
-          String allWarnings = warnings.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining("\n", " * ", ""));
+          String allWarnings =
+              warnings.stream().map(String::valueOf).collect(Collectors.joining("\n", " * ", ""));
 
           LOG.warning(
-            String.format("Warnings while creating %s from %s: %s", id, info, allWarnings));
+              String.format("Warnings while creating %s from %s: %s", id, info, allWarnings));
         }
       }
 

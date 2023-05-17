@@ -30,9 +30,9 @@ class ElementAccessibleNameTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnAccessibleName() {
-    driver.get(appServer.create(
-      new Page().withTitle("Testing Aria Role")
-        .withBody("<h1>Level 1 Header</h1>")));
+    driver.get(
+        appServer.create(
+            new Page().withTitle("Testing Aria Role").withBody("<h1>Level 1 Header</h1>")));
     WebElement header1 = driver.findElement(By.cssSelector("h1"));
     assertThat(header1.getAccessibleName()).isEqualTo("Level 1 Header");
   }

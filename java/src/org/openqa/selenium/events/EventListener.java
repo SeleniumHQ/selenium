@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.events;
 
-import org.openqa.selenium.internal.Require;
-
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
+import org.openqa.selenium.internal.Require;
 
 public class EventListener<X> implements Consumer<Event> {
 

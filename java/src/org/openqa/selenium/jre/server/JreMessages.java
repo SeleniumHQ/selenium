@@ -17,40 +17,42 @@
 
 package org.openqa.selenium.jre.server;
 
-import com.sun.net.httpserver.HttpExchange;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
+import com.sun.net.httpserver.HttpExchange;
 import java.util.AbstractMap;
 import java.util.Arrays;
-
-import static org.openqa.selenium.remote.http.Contents.memoize;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 class JreMessages {
 
   static HttpRequest asRequest(HttpExchange exchange) {
-    HttpRequest request = new HttpRequest(
-      HttpMethod.valueOf(exchange.getRequestMethod()),
-      exchange.getRequestURI().getPath());
+    HttpRequest request =
+        new HttpRequest(
+            HttpMethod.valueOf(exchange.getRequestMethod()), exchange.getRequestURI().getPath());
 
     String query = exchange.getRequestURI().getQuery();
     if (query != null) {
       Arrays.stream(query.split("&"))
-        .map(q -> {
-          int i = q.indexOf("=");
-          if (i == -1) {
-            return new AbstractMap.SimpleImmutableEntry<>(q, "");
-          }
-          return new AbstractMap.SimpleImmutableEntry<>(q.substring(0, i), q.substring(i + 1));
-        })
-        .forEach(entry -> request.addQueryParameter(entry.getKey(), entry.getValue()));
+          .map(
+              q -> {
+                int i = q.indexOf("=");
+                if (i == -1) {
+                  return new AbstractMap.SimpleImmutableEntry<>(q, "");
+                }
+                return new AbstractMap.SimpleImmutableEntry<>(
+                    q.substring(0, i), q.substring(i + 1));
+              })
+          .forEach(entry -> request.addQueryParameter(entry.getKey(), entry.getValue()));
     }
 
-    exchange.getRequestHeaders().forEach((name, values) -> values.forEach(value -> request.addHeader(name, value)));
+    exchange
+        .getRequestHeaders()
+        .forEach((name, values) -> values.forEach(value -> request.addHeader(name, value)));
 
     request.setContent(memoize(exchange::getRequestBody));
 
     return request;
   }
-
 }

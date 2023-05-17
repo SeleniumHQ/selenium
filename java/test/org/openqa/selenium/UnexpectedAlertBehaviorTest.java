@@ -26,14 +26,13 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-
-import java.time.Duration;
 
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
 class UnexpectedAlertBehaviorTest extends JupiterTestBase {
@@ -44,7 +43,8 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canAcceptUnhandledAlert() {
-    runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY, "This is a default value", false);
+    runScenarioWithUnhandledAlert(
+        UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY, "This is a default value", false);
   }
 
   @Test
@@ -87,28 +87,27 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Ignore(value = EDGE, reason = "Unstable Chrome behavior")
   @NoDriverBeforeTest
   public void canIgnoreUnhandledAlert() {
-    assertThatExceptionOfType(UnhandledAlertException.class).isThrownBy(
-        () -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
+    assertThatExceptionOfType(UnhandledAlertException.class)
+        .isThrownBy(() -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
     driver.switchTo().alert().dismiss();
   }
 
   private void runScenarioWithUnhandledAlert(
-      UnexpectedAlertBehaviour behaviour,
-      String expectedAlertText,
-      boolean silently) {
-    Capabilities caps = behaviour == null
-                        ? new ImmutableCapabilities()
-                        : new ImmutableCapabilities(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+      UnexpectedAlertBehaviour behaviour, String expectedAlertText, boolean silently) {
+    Capabilities caps =
+        behaviour == null
+            ? new ImmutableCapabilities()
+            : new ImmutableCapabilities(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
     createNewDriver(caps);
 
     driver.get(pages.alertsPage);
     driver.findElement(By.id("prompt-with-default")).click();
 
-    Wait<WebDriver> wait1
-        = silently
-        ? wait
-        : new WebDriverWait(driver, Duration.ofSeconds(10))
-              .ignoring(UnhandledAlertException.class);
+    Wait<WebDriver> wait1 =
+        silently
+            ? wait
+            : new WebDriverWait(driver, Duration.ofSeconds(10))
+                .ignoring(UnhandledAlertException.class);
     wait1.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 }

@@ -17,24 +17,25 @@
 
 package org.openqa.selenium.grid.web;
 
+import java.util.Collection;
+import java.util.Set;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-
-import java.util.Collection;
-import java.util.Set;
 
 public class EnsureSpecCompliantHeaders implements Filter {
 
   private final Filter filter;
 
-  public EnsureSpecCompliantHeaders(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
+  public EnsureSpecCompliantHeaders(
+      Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
     Require.nonNull("URLs to skip checks on", skipChecksOn);
 
-    filter = new CheckOriginHeader(allowedOriginHosts, skipChecksOn)
-      .andThen(new CheckContentTypeHeader(skipChecksOn))
-      .andThen(new EnsureSpecCompliantResponseHeaders());
+    filter =
+        new CheckOriginHeader(allowedOriginHosts, skipChecksOn)
+            .andThen(new CheckContentTypeHeader(skipChecksOn))
+            .andThen(new EnsureSpecCompliantResponseHeaders());
   }
 
   @Override

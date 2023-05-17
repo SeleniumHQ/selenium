@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.Map;
+import java.util.function.BiConsumer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -24,9 +26,6 @@ import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
-
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class RemoteTags {
 
@@ -37,20 +36,21 @@ public class RemoteTags {
   }
 
   public static final BiConsumer<Span, Capabilities> CAPABILITIES =
-    (span, caps) ->
-      span.setAttribute(AttributeKey.SESSION_CAPABILITIES.getKey(), convertCapsToJsonString(caps));
+      (span, caps) ->
+          span.setAttribute(
+              AttributeKey.SESSION_CAPABILITIES.getKey(), convertCapsToJsonString(caps));
 
-  public static final BiConsumer<Span, SessionId> SESSION_ID = (span, id) ->
-      span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
+  public static final BiConsumer<Span, SessionId> SESSION_ID =
+      (span, id) -> span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
 
   public static final BiConsumer<Map<String, EventAttributeValue>, Capabilities>
-    CAPABILITIES_EVENT =
-    (map, caps) ->
-      map.put(AttributeKey.SESSION_CAPABILITIES.getKey(),
-      EventAttribute.setValue(convertCapsToJsonString(caps)));
+      CAPABILITIES_EVENT =
+          (map, caps) ->
+              map.put(
+                  AttributeKey.SESSION_CAPABILITIES.getKey(),
+                  EventAttribute.setValue(convertCapsToJsonString(caps)));
 
-  public static final BiConsumer<Map<String, EventAttributeValue>, SessionId>
-      SESSION_ID_EVENT =
+  public static final BiConsumer<Map<String, EventAttributeValue>, SessionId> SESSION_ID_EVENT =
       (map, id) ->
           map.put(AttributeKey.SESSION_ID.getKey(), EventAttribute.setValue(String.valueOf(id)));
 

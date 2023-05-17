@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.post;
+
+import java.net.URI;
+import java.util.Map;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
@@ -29,18 +35,12 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.net.URI;
-import java.util.Map;
-
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.post;
-
 /**
  * Provides a stable API for looking up where on the Grid a particular webdriver instance is
  * running.
- * <p>
- * This class responds to the following URLs:
+ *
+ * <p>This class responds to the following URLs:
+ *
  * <table summary="HTTP commands the SessionMap understands">
  * <tr>
  *   <th>Verb</th>
@@ -88,15 +88,15 @@ public abstract class SessionMap implements HasReadyState, Routable {
     this.tracer = Require.nonNull("Tracer", tracer);
 
     Json json = new Json();
-    routes = combine(
-        Route.get("/se/grid/session/{sessionId}/uri")
-            .to(params -> new GetSessionUri(this, sessionIdFrom(params))),
-        post("/se/grid/session")
-            .to(() -> new AddToSessionMap(tracer, json, this)),
-        Route.get("/se/grid/session/{sessionId}")
-            .to(params -> new GetFromSessionMap(tracer, this, sessionIdFrom(params))),
-        delete("/se/grid/session/{sessionId}")
-            .to(params -> new RemoveFromSession(tracer, this, sessionIdFrom(params))));
+    routes =
+        combine(
+            Route.get("/se/grid/session/{sessionId}/uri")
+                .to(params -> new GetSessionUri(this, sessionIdFrom(params))),
+            post("/se/grid/session").to(() -> new AddToSessionMap(tracer, json, this)),
+            Route.get("/se/grid/session/{sessionId}")
+                .to(params -> new GetFromSessionMap(tracer, this, sessionIdFrom(params))),
+            delete("/se/grid/session/{sessionId}")
+                .to(params -> new RemoveFromSession(tracer, this, sessionIdFrom(params))));
   }
 
   private SessionId sessionIdFrom(Map<String, String> params) {

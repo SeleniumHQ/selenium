@@ -25,21 +25,22 @@ import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.ContinuationWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import org.openqa.selenium.remote.http.BinaryMessage;
-import org.openqa.selenium.remote.http.CloseMessage;
-import org.openqa.selenium.remote.http.Message;
-import org.openqa.selenium.remote.http.TextMessage;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
+import org.openqa.selenium.remote.http.BinaryMessage;
+import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.Message;
+import org.openqa.selenium.remote.http.TextMessage;
 
 class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame> {
 
   private enum Continuation {
-    Text, Binary, None
+    Text,
+    Binary,
+    None
   }
 
   private static final Logger LOG = Logger.getLogger(MessageInboundConverter.class.getName());

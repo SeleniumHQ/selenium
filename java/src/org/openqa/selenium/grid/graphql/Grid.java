@@ -18,6 +18,14 @@
 package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -30,15 +38,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class Grid {
 
   private static final Json JSON = new Json();
@@ -48,19 +47,14 @@ public class Grid {
   private final List<Set<Capabilities>> queueInfoList;
   private final String version;
 
-  public Grid(
-    Distributor distributor,
-    NewSessionQueue newSessionQueue,
-    URI uri,
-    String version) {
+  public Grid(Distributor distributor, NewSessionQueue newSessionQueue, URI uri, String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     NewSessionQueue sessionQueue = Require.nonNull("New session queue", newSessionQueue);
-    this.queueInfoList = sessionQueue
-      .getQueueContents()
-      .stream()
-      .map(SessionRequestCapability::getDesiredCapabilities)
-      .collect(Collectors.toList());
+    this.queueInfoList =
+        sessionQueue.getQueueContents().stream()
+            .map(SessionRequestCapability::getDesiredCapabilities)
+            .collect(Collectors.toList());
     this.distributorStatus = distributor.getStatus();
     this.version = Require.nonNull("Grid's version", version);
   }
@@ -91,21 +85,23 @@ public class Grid {
         stereotypes.put(slot.getStereotype(), count);
       }
 
-      OsInfo osInfo = new OsInfo(
-        status.getOsInfo().get("arch"),
-        status.getOsInfo().get("name"),
-        status.getOsInfo().get("version"));
+      OsInfo osInfo =
+          new OsInfo(
+              status.getOsInfo().get("arch"),
+              status.getOsInfo().get("name"),
+              status.getOsInfo().get("version"));
 
-      toReturn.add(new Node(
-        status.getNodeId(),
-        status.getExternalUri(),
-        status.getAvailability(),
-        status.getMaxSessionCount(),
-        status.getSlots().size(),
-        stereotypes,
-        sessions,
-        status.getVersion(),
-        osInfo));
+      toReturn.add(
+          new Node(
+              status.getNodeId(),
+              status.getExternalUri(),
+              status.getAvailability(),
+              status.getMaxSessionCount(),
+              status.getSlots().size(),
+              stereotypes,
+              sessions,
+              status.getVersion(),
+              osInfo));
     }
 
     return toReturn.build();
@@ -117,24 +113,20 @@ public class Grid {
 
   public int getSessionCount() {
     return distributorStatus.getNodes().stream()
-      .map(NodeStatus::getSlots)
-      .flatMap(Collection::stream)
-      .filter(slot -> slot.getSession()!=null)
-      .filter(slot -> !slot.getSession().getId().equals(RESERVED))
-      .mapToInt(slot -> 1)
-      .sum();
+        .map(NodeStatus::getSlots)
+        .flatMap(Collection::stream)
+        .filter(slot -> slot.getSession() != null)
+        .filter(slot -> !slot.getSession().getId().equals(RESERVED))
+        .mapToInt(slot -> 1)
+        .sum();
   }
 
   public int getTotalSlots() {
-    return distributorStatus.getNodes().stream()
-      .mapToInt(status -> status.getSlots().size())
-      .sum();
+    return distributorStatus.getNodes().stream().mapToInt(status -> status.getSlots().size()).sum();
   }
 
   public int getMaxSession() {
-    return distributorStatus.getNodes().stream()
-      .mapToInt(NodeStatus::getMaxSessionCount)
-      .sum();
+    return distributorStatus.getNodes().stream().mapToInt(NodeStatus::getMaxSessionCount).sum();
   }
 
   public int getSessionQueueSize() {
@@ -142,11 +134,12 @@ public class Grid {
   }
 
   public List<String> getSessionQueueRequests() {
-    // TODO: The Grid UI expects there to be a single capability per new session request, which is not correct
+    // TODO: The Grid UI expects there to be a single capability per new session request, which is
+    // not correct
     return queueInfoList.stream()
-      .map(set -> set.isEmpty() ? new ImmutableCapabilities() : set.iterator().next())
-      .map(JSON::toJson)
-      .collect(Collectors.toList());
+        .map(set -> set.isEmpty() ? new ImmutableCapabilities() : set.iterator().next())
+        .map(JSON::toJson)
+        .collect(Collectors.toList());
   }
 
   public List<Session> getSessions() {
@@ -156,19 +149,17 @@ public class Grid {
         if (slot.getSession() != null && !slot.getSession().getId().equals(RESERVED)) {
           org.openqa.selenium.grid.data.Session session = slot.getSession();
           sessions.add(
-            new org.openqa.selenium.grid.graphql.Session(
-              session.getId().toString(),
-              session.getCapabilities(),
-              session.getStartTime(),
-              session.getUri(),
-              status.getNodeId().toString(),
-              status.getExternalUri(),
-              slot)
-          );
+              new org.openqa.selenium.grid.graphql.Session(
+                  session.getId().toString(),
+                  session.getCapabilities(),
+                  session.getStartTime(),
+                  session.getUri(),
+                  status.getNodeId().toString(),
+                  status.getExternalUri(),
+                  slot));
         }
       }
     }
     return sessions;
   }
-
 }

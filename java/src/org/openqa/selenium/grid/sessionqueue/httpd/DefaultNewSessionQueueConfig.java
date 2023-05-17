@@ -18,14 +18,11 @@
 package org.openqa.selenium.grid.sessionqueue.httpd;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultNewSessionQueueConfig extends MapConfig {
 
   DefaultNewSessionQueueConfig() {
-    super(ImmutableMap.of(
-        "server", ImmutableMap.of(
-            "port", 5559)));
+    super(ImmutableMap.of("server", ImmutableMap.of("port", 5559)));
   }
 }

@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.chromium;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.OPERA;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -51,39 +62,25 @@ import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.Browser.OPERA;
-
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
-public class ChromiumDriver extends RemoteWebDriver implements
-  HasAuthentication,
-  HasCasting,
-  HasCdp,
-  HasDevTools,
-  HasLaunchApp,
-  HasLogEvents,
-  HasNetworkConditions,
-  HasPermissions,
-  LocationContext,
-  NetworkConnection,
-  WebStorage {
+public class ChromiumDriver extends RemoteWebDriver
+    implements HasAuthentication,
+        HasCasting,
+        HasCdp,
+        HasDevTools,
+        HasLaunchApp,
+        HasLogEvents,
+        HasNetworkConditions,
+        HasPermissions,
+        LocationContext,
+        NetworkConnection,
+        WebStorage {
 
-  public static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
-    CHROME.is(name) ||
-    EDGE.is(name) ||
-    OPERA.is(name);
+  public static final Predicate<String> IS_CHROMIUM_BROWSER =
+      name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;
@@ -98,13 +95,15 @@ public class ChromiumDriver extends RemoteWebDriver implements
   protected HasCasting casting;
   protected HasCdp cdp;
 
-  protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
+  protected ChromiumDriver(
+      CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
-    networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
+    networkConditions =
+        new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
     launch = new AddHasLaunchApp().getImplementation(getCapabilities(), getExecuteMethod());
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
@@ -139,12 +138,16 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
-    this.capabilities = cdpUri.map(uri -> new ImmutableCapabilities(
-        new PersistentCapabilities(originalCapabilities)
-            .setCapability("se:cdp", uri.toString())
-            .setCapability(
-                "se:cdpVersion", originalCapabilities.getBrowserVersion())))
-        .orElse(new ImmutableCapabilities(originalCapabilities));
+    this.capabilities =
+        cdpUri
+            .map(
+                uri ->
+                    new ImmutableCapabilities(
+                        new PersistentCapabilities(originalCapabilities)
+                            .setCapability("se:cdp", uri.toString())
+                            .setCapability(
+                                "se:cdpVersion", originalCapabilities.getBrowserVersion())))
+            .orElse(new ImmutableCapabilities(originalCapabilities));
   }
 
   @Override
@@ -155,8 +158,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
-      "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
+        "Setting the file detector only works on remote webdriver instances obtained "
+            + "via RemoteWebDriver");
   }
 
   @Override

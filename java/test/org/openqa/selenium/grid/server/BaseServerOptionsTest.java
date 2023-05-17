@@ -19,17 +19,16 @@ package org.openqa.selenium.grid.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
-
-import java.util.Map;
 
 class BaseServerOptionsTest {
 
   @Test
   void readingThePortTwiceShouldGiveTheSameResult() {
-    BaseServerOptions options = new BaseServerOptions(
-      new MapConfig(Map.of("server", Map.of("port", -1))));
+    BaseServerOptions options =
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", -1))));
 
     int first = options.getPort();
     int second = options.getPort();
@@ -39,11 +38,9 @@ class BaseServerOptionsTest {
 
   @Test
   void serverConfigBindsToHostByDefault() {
-    BaseServerOptions options = new BaseServerOptions(
-      new MapConfig(Map.of("server", Map.of("port", 4444))));
+    BaseServerOptions options =
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", 4444))));
 
     assertThat(options.getBindHost()).isEqualTo(true);
   }
-
-
 }

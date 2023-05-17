@@ -17,6 +17,4 @@
 
 package org.openqa.selenium.devtools;
 
-public class Reply {
-
-}
+public class Reply {}

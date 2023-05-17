@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.lift;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,9 +28,6 @@ import org.mockito.Mockito;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  * Unit test for {@link HamcrestWebDriverTestCase}.
@@ -88,5 +88,4 @@ class HamcrestWebdriverTestCaseTest {
       }
     };
   }
-
 }

@@ -20,11 +20,9 @@ package org.openqa.selenium.netty.server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.AttributeKey;
-
+import java.util.function.Consumer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Message;
-
-import java.util.function.Consumer;
 
 class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
 
@@ -42,14 +40,15 @@ class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
 
     Consumer<Message> handler = ctx.channel().attr(key).get();
 
-    ctx.executor().execute(() -> {
-      try {
-        handler.accept(msg);
-        ctx.flush();
-      } catch (Throwable t) {
-        ctx.fireExceptionCaught(t);
-      }
-    });
+    ctx.executor()
+        .execute(
+            () -> {
+              try {
+                handler.accept(msg);
+                ctx.flush();
+              } catch (Throwable t) {
+                ctx.fireExceptionCaught(t);
+              }
+            });
   }
-
 }

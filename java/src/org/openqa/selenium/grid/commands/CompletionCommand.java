@@ -17,16 +17,13 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.util.stream.Collectors.joining;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.internal.DefaultConsole;
 import com.google.auto.service.AutoService;
-import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.config.DescribedOption;
-import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.server.HelpFlags;
-
 import java.io.PrintStream;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -36,9 +33,10 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static java.util.stream.Collectors.joining;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.grid.config.DescribedOption;
+import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.server.HelpFlags;
 
 @AutoService(CliCommand.class)
 public class CompletionCommand implements CliCommand {
@@ -68,11 +66,8 @@ public class CompletionCommand implements CliCommand {
 
     Zsh zsh = new Zsh();
 
-    JCommander commander = JCommander.newBuilder()
-      .programName("selenium")
-      .addObject(help)
-      .addCommand(zsh)
-      .build();
+    JCommander commander =
+        JCommander.newBuilder().programName("selenium").addObject(help).addCommand(zsh).build();
     commander.setConsole(new DefaultConsole(out));
 
     return () -> {
@@ -128,10 +123,14 @@ public class CompletionCommand implements CliCommand {
     out.println("      cmds=(");
 
     allCommands.keySet().stream()
-      .sorted(Comparator.comparing(CliCommand::getName))
-      .forEach(cmd -> {
-        out.println(String.format("        '%s:%s'", cmd.getName(), cmd.getDescription().replace("'", "'\\''")));
-      });
+        .sorted(Comparator.comparing(CliCommand::getName))
+        .forEach(
+            cmd -> {
+              out.println(
+                  String.format(
+                      "        '%s:%s'",
+                      cmd.getName(), cmd.getDescription().replace("'", "'\\''")));
+            });
 
     out.println("      )");
     out.println("      _describe 'commands' cmds");
@@ -140,51 +139,57 @@ public class CompletionCommand implements CliCommand {
     out.println("      case ${words[1]} in");
 
     allCommands.keySet().stream()
-      .sorted(Comparator.comparing(CliCommand::getName))
-      .forEach(cmd -> {
-        String shellName = cmd.getName().replace('-', '_');
-        out.println(String.format("        (%s)", cmd.getName()));
-        out.println(String.format("          _selenium_%s", shellName));
-        out.println("          ;;");
-      });
+        .sorted(Comparator.comparing(CliCommand::getName))
+        .forEach(
+            cmd -> {
+              String shellName = cmd.getName().replace('-', '_');
+              out.println(String.format("        (%s)", cmd.getName()));
+              out.println(String.format("          _selenium_%s", shellName));
+              out.println("          ;;");
+            });
 
     out.println("      esac");
     out.println("      ;;");
     out.println("  esac");
     out.println("}\n\n");
 
-    allCommands.forEach((cmd, options) -> {
-      out.println(String.format("_selenium_%s() {", cmd.getName().replace('-', '_')));
-      out.println("  args=(");
+    allCommands.forEach(
+        (cmd, options) -> {
+          out.println(String.format("_selenium_%s() {", cmd.getName().replace('-', '_')));
+          out.println("  args=(");
 
-      options.stream()
-        .filter(opt -> !opt.flags().isEmpty())
-        .sorted(Comparator.comparing(opt -> opt.flags().iterator().next()))
-        .forEach(opt -> {
-          String quotedDesc = opt.description().replace("'", "'\\''");
-          int index = quotedDesc.indexOf("\n");
-          if (index != -1) {
-            quotedDesc = quotedDesc.substring(0, index);
-          }
+          options.stream()
+              .filter(opt -> !opt.flags().isEmpty())
+              .sorted(Comparator.comparing(opt -> opt.flags().iterator().next()))
+              .forEach(
+                  opt -> {
+                    String quotedDesc = opt.description().replace("'", "'\\''");
+                    int index = quotedDesc.indexOf("\n");
+                    if (index != -1) {
+                      quotedDesc = quotedDesc.substring(0, index);
+                    }
 
-          if (opt.flags().size() == 1) {
-            out.println(String.format("    '%s[%s]%s'", opt.flags().iterator().next(), quotedDesc, getZshType(opt)));
-          } else {
-            out.print("    '");
-            out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
-            out.print("'");
-            out.print(opt.flags.stream().collect(joining(",", "{", "}")));
-            out.print("'");
-            out.print(String.format("[%s]", quotedDesc));
-            out.print(getZshType(opt));
-            out.print("'\n");
-          }
+                    if (opt.flags().size() == 1) {
+                      out.println(
+                          String.format(
+                              "    '%s[%s]%s'",
+                              opt.flags().iterator().next(), quotedDesc, getZshType(opt)));
+                    } else {
+                      out.print("    '");
+                      out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
+                      out.print("'");
+                      out.print(opt.flags.stream().collect(joining(",", "{", "}")));
+                      out.print("'");
+                      out.print(String.format("[%s]", quotedDesc));
+                      out.print(getZshType(opt));
+                      out.print("'\n");
+                    }
+                  });
+
+          out.println("  )");
+          out.println("  _arguments $args && return");
+          out.println("}\n\n");
         });
-
-      out.println("  )");
-      out.println("  _arguments $args && return");
-      out.println("}\n\n");
-    });
   }
 
   private String getZshType(DescribedOption option) {
@@ -214,10 +219,12 @@ public class CompletionCommand implements CliCommand {
 
   private Map<CliCommand, Set<DescribedOption>> listKnownCommands() {
     return StreamSupport.stream(ServiceLoader.load(CliCommand.class).spliterator(), true)
-      .map(command -> new AbstractMap.SimpleEntry<>(
-        command,
-        DescribedOption.findAllMatchingOptions(command.getConfigurableRoles())))
-      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .map(
+            command ->
+                new AbstractMap.SimpleEntry<>(
+                    command,
+                    DescribedOption.findAllMatchingOptions(command.getConfigurableRoles())))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Parameters(commandNames = "zsh", commandDescription = "Create autocompletions for zsh")

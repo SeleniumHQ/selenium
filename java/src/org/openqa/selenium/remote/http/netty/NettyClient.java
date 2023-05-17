@@ -18,7 +18,12 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.auto.service.AutoService;
-
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
@@ -33,14 +38,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timer;
-import io.netty.util.concurrent.DefaultThreadFactory;
-
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-
 public class NettyClient implements HttpClient {
 
   private static final Timer TIMER;
@@ -48,11 +45,12 @@ public class NettyClient implements HttpClient {
 
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
-    TIMER = new HashedWheelTimer(
-      threadFactory,
-      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
-      TimeUnit.MILLISECONDS,
-      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
+    TIMER =
+        new HashedWheelTimer(
+            threadFactory,
+            AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
+            TimeUnit.MILLISECONDS,
+            AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
   }
 
   private final ClientConfig config;
@@ -66,8 +64,8 @@ public class NettyClient implements HttpClient {
   }
 
   /**
-   * Converts a long to an int, clamping the maximum and minimum values to
-   * fit in an integer without overflowing.
+   * Converts a long to an int, clamping the maximum and minimum values to fit in an integer without
+   * overflowing.
    */
   static int toClampedInt(long value) {
     return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
@@ -75,21 +73,21 @@ public class NettyClient implements HttpClient {
 
   private static AsyncHttpClient createHttpClient(ClientConfig config) {
     DefaultAsyncHttpClientConfig.Builder builder =
-      new DefaultAsyncHttpClientConfig.Builder()
-        .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
-        .setUseInsecureTrustManager(true)
-        .setAggregateWebSocketFrameFragments(true)
-        .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
-        .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
-        .setNettyTimer(TIMER)
-        .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
-        .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
-        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
-        .setFollowRedirect(true)
-        .setMaxRedirects(100)
-        .setUseProxyProperties(true)
-        .setUseProxySelector(true)
-        .setMaxRequestRetry(0);
+        new DefaultAsyncHttpClientConfig.Builder()
+            .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
+            .setUseInsecureTrustManager(true)
+            .setAggregateWebSocketFrameFragments(true)
+            .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
+            .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
+            .setNettyTimer(TIMER)
+            .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
+            .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
+            .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
+            .setFollowRedirect(true)
+            .setMaxRedirects(100)
+            .setUseProxyProperties(true)
+            .setUseProxySelector(true)
+            .setMaxRequestRetry(0);
 
     return Dsl.asyncHttpClient(builder);
   }

@@ -17,45 +17,45 @@
 
 package org.openqa.selenium.bidi.log;
 
+import java.io.StringReader;
+import java.util.Optional;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
-import java.io.StringReader;
-import java.util.Optional;
-
 public class Log {
 
   private Log() {
-    // A utility class for Log events that returns the event and adds a consumer to map the event response
+    // A utility class for Log events that returns the event and adds a consumer to map the event
+    // response
   }
 
   private static final Json JSON = new Json();
 
   public static Event<LogEntry> entryAdded() {
     return new Event<>(
-      "log.entryAdded",
-      params -> {
-        String type = (String) params.get("type");
+        "log.entryAdded",
+        params -> {
+          String type = (String) params.get("type");
 
-        Optional<GenericLogEntry> genericLogEntry = Optional.empty();
-        Optional<ConsoleLogEntry> consoleLogEntry = Optional.empty();
-        Optional<JavascriptLogEntry> javascriptLogEntry = Optional.empty();
+          Optional<GenericLogEntry> genericLogEntry = Optional.empty();
+          Optional<ConsoleLogEntry> consoleLogEntry = Optional.empty();
+          Optional<JavascriptLogEntry> javascriptLogEntry = Optional.empty();
 
-        if (type != null) {
-          try (StringReader reader = new StringReader(JSON.toJson(params));
-               JsonInput input = JSON.newInput(reader)) {
-            if ("console".equals(type)) {
-              consoleLogEntry = Optional.ofNullable(input.read(ConsoleLogEntry.class));
-            } else if ("javascript".equals(type)) {
-              javascriptLogEntry = Optional.ofNullable(input.read(JavascriptLogEntry.class));
-            } else {
-              genericLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
+          if (type != null) {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              if ("console".equals(type)) {
+                consoleLogEntry = Optional.ofNullable(input.read(ConsoleLogEntry.class));
+              } else if ("javascript".equals(type)) {
+                javascriptLogEntry = Optional.ofNullable(input.read(JavascriptLogEntry.class));
+              } else {
+                genericLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
+              }
             }
           }
-        }
 
-        return new LogEntry(genericLogEntry, consoleLogEntry, javascriptLogEntry);
-      });
+          return new LogEntry(genericLogEntry, consoleLogEntry, javascriptLogEntry);
+        });
   }
 }

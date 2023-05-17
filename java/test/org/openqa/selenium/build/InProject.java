@@ -19,15 +19,14 @@ package org.openqa.selenium.build;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 
 public class InProject {
   /**
@@ -36,26 +35,33 @@ public class InProject {
    * @param paths path to file to locate from root of project
    * @return file being sought, if it exists
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not
-   *         be found
+   *     be found
    */
   public static Path locate(String... paths) {
     return Stream.of(paths)
-      .map(Paths::get)
-      .filter(Files::exists)
-      .findFirst()
-      .map(Path::toAbsolutePath)
-      .orElseGet(() -> {
-        Path root = findProjectRoot();
-        return Stream.of(paths)
-          .map(path -> {
-            Path needle = root.resolve(path);
-            return Files.exists(needle) ? needle : null;
-          })
-          .filter(Objects::nonNull)
-          .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
-            String.format("Could not find any of %s in the project",
-                          String.join(",", paths)))));
-      });
+        .map(Paths::get)
+        .filter(Files::exists)
+        .findFirst()
+        .map(Path::toAbsolutePath)
+        .orElseGet(
+            () -> {
+              Path root = findProjectRoot();
+              return Stream.of(paths)
+                  .map(
+                      path -> {
+                        Path needle = root.resolve(path);
+                        return Files.exists(needle) ? needle : null;
+                      })
+                  .filter(Objects::nonNull)
+                  .findFirst()
+                  .orElseThrow(
+                      () ->
+                          new WebDriverException(
+                              new FileNotFoundException(
+                                  String.format(
+                                      "Could not find any of %s in the project",
+                                      String.join(",", paths)))));
+            });
   }
 
   public static Path findProjectRoot() {
@@ -78,7 +84,8 @@ public class InProject {
     }
 
     if (dir == null) {
-      throw new IllegalStateException(String.format("Unable to find root of project in %s when looking", pwd));
+      throw new IllegalStateException(
+          String.format("Unable to find root of project in %s when looking", pwd));
     }
 
     return dir.normalize();

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.print;
 
-
 public class PageSize {
 
   private final double height;
@@ -33,6 +32,7 @@ public class PageSize {
     this.height = height;
     this.width = width;
   }
+
   public double getHeight() {
     return height;
   }
