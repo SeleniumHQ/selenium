@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.SearchContext;
-
 import java.lang.reflect.Field;
+import org.openqa.selenium.SearchContext;
 
 public class AjaxElementLocatorFactory implements ElementLocatorFactory {
   private final SearchContext searchContext;

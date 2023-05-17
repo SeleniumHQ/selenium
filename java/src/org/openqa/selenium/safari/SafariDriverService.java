@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+
 import com.google.auto.service.AutoService;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.service.DriverService;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -32,15 +31,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.service.DriverService;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-
-/**
- * Manages the life and death of SafariDriver.
- */
+/** Manages the life and death of SafariDriver. */
 public class SafariDriverService extends DriverService {
 
   public static final String SAFARI_DRIVER_NAME = "safaridriver";
@@ -56,39 +52,41 @@ public class SafariDriverService extends DriverService {
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
 
   /**
-   * @param executable  The SafariDriver executable.
-   * @param port        Which port to start the SafariDriver on.
-   * @param args        The arguments to the launched server.
+   * @param executable The SafariDriver executable.
+   * @param port Which port to start the SafariDriver on.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    * @deprecated use {@link SafariDriverService#SafariDriverService(File, int, Duration, List, Map)}
    */
   @Deprecated
   public SafariDriverService(
-    File executable,
-    int port,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
+      File executable, int port, List<String> args, Map<String, String> environment)
+      throws IOException {
     this(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
   /**
-   * @param executable  The SafariDriver executable.
-   * @param port        Which port to start the SafariDriver on.
-   * @param timeout     Timeout waiting for driver server to start.
-   * @param args        The arguments to the launched server.
+   * @param executable The SafariDriver executable.
+   * @param port Which port to start the SafariDriver on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public SafariDriverService(
-    File executable,
-    int port,
-    Duration timeout,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment)
+      throws IOException {
+    super(
+        executable,
+        port,
+        timeout,
+        unmodifiableList(new ArrayList<>(args)),
+        unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -110,10 +108,9 @@ public class SafariDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link SafariDriverService} using the default configuration. In
-   * this configuration, the service will use the SafariDriver executable identified by the
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current
-   * system.
+   * this configuration, the service will use the SafariDriver executable identified by the {@link
+   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
+   * service created by this method will be configured to use a free port on the current system.
    *
    * @return A new SafariDriverService using the default configuration.
    */
@@ -128,8 +125,8 @@ public class SafariDriverService extends DriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath(SAFARI_DRIVER_EXECUTABLE.getAbsolutePath(),
-      SAFARI_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(SAFARI_DRIVER_EXECUTABLE.getAbsolutePath(), SAFARI_DRIVER_EXE_PROPERTY)
+        != null;
   }
 
   @Override
@@ -141,12 +138,10 @@ public class SafariDriverService extends DriverService {
     }
   }
 
-  /**
-   * Builder used to configure new {@link SafariDriverService} instances.
-   */
+  /** Builder used to configure new {@link SafariDriverService} instances. */
   @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<
-    SafariDriverService, SafariDriverService.Builder> {
+  public static class Builder
+      extends DriverService.Builder<SafariDriverService, SafariDriverService.Builder> {
 
     private Boolean diagnose;
 
@@ -169,7 +164,8 @@ public class SafariDriverService extends DriverService {
     @Override
     public Builder withLogFile(File logFile) {
       throw new WebDriverException(
-        "Can not set log location for Safari; use withLogging(true) and locate log in ~/Library/Logs/com.apple.WebDriver/");
+          "Can not set log location for Safari; use withLogging(true) and locate log in"
+              + " ~/Library/Logs/com.apple.WebDriver/");
     }
 
     @Override
@@ -181,8 +177,7 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected List<String> createArgs() {
-      List<String> args = new ArrayList<>(
-        Arrays.asList("--port", String.valueOf(getPort())));
+      List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
       if (diagnose != null && diagnose.equals(Boolean.TRUE)) {
         args.add("--diagnose");
       }
@@ -191,11 +186,7 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected SafariDriverService createDriverService(
-      File exe,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) {
+        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
         return new SafariDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

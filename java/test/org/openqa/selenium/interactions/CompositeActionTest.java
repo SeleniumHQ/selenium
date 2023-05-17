@@ -19,8 +19,8 @@ package org.openqa.selenium.interactions;
 
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 

@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import com.google.common.collect.ImmutableMap;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,15 +45,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 public abstract class WebSocketTestBase {
 
   private HttpClient client;
@@ -56,20 +55,25 @@ public abstract class WebSocketTestBase {
 
   @BeforeAll
   public static void setUp() {
-    server = new NettyServer(
-      defaultOptions(),
-      req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")),
-      (uri, sink) -> {
-        if ("/text".equals(uri)) {
-          return Optional.of(msg -> sink.accept(new TextMessage(String.format("Hello, %s!", ((TextMessage) msg).text()))));
-        }
+    server =
+        new NettyServer(
+            defaultOptions(),
+            req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")),
+            (uri, sink) -> {
+              if ("/text".equals(uri)) {
+                return Optional.of(
+                    msg ->
+                        sink.accept(
+                            new TextMessage(
+                                String.format("Hello, %s!", ((TextMessage) msg).text()))));
+              }
 
-        if ("/binary".equals(uri)) {
-          return Optional.of(msg -> sink.accept(new BinaryMessage("brie".getBytes(UTF_8))));
-        }
+              if ("/binary".equals(uri)) {
+                return Optional.of(msg -> sink.accept(new BinaryMessage("brie".getBytes(UTF_8))));
+              }
 
-        return Optional.of(msg -> sink.accept(new TextMessage("Nope")));
-      });
+              return Optional.of(msg -> sink.accept(new TextMessage("Nope")));
+            });
     server.start();
   }
 
@@ -93,13 +97,14 @@ public abstract class WebSocketTestBase {
     AtomicReference<String> message = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
-    WebSocket.Listener listener = new WebSocket.Listener() {
-      @Override
-      public void onText(CharSequence data) {
-        message.set(data.toString());
-        latch.countDown();
-      }
-    };
+    WebSocket.Listener listener =
+        new WebSocket.Listener() {
+          @Override
+          public void onText(CharSequence data) {
+            message.set(data.toString());
+            latch.countDown();
+          }
+        };
 
     try (WebSocket socket = client.openSocket(new HttpRequest(HttpMethod.GET, "/text"), listener)) {
       socket.sendText("World");
@@ -114,16 +119,17 @@ public abstract class WebSocketTestBase {
     AtomicReference<byte[]> message = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
-    WebSocket.Listener listener = new WebSocket.Listener() {
-      @Override
-      public void onBinary(byte[] data) {
-        message.set(data);
-        latch.countDown();
-      }
+    WebSocket.Listener listener =
+        new WebSocket.Listener() {
+          @Override
+          public void onBinary(byte[] data) {
+            message.set(data);
+            latch.countDown();
+          }
+        };
 
-    };
-
-    try (WebSocket socket = client.openSocket(new HttpRequest(HttpMethod.GET, "/binary"), listener)) {
+    try (WebSocket socket =
+        client.openSocket(new HttpRequest(HttpMethod.GET, "/binary"), listener)) {
       socket.sendBinary("cheese".getBytes(UTF_8));
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
@@ -132,9 +138,8 @@ public abstract class WebSocketTestBase {
   }
 
   private static BaseServerOptions defaultOptions() {
-    return new BaseServerOptions(new MapConfig(
-      ImmutableMap.of("server", ImmutableMap.of(
-        "port", PortProber.findFreePort()
-      ))));
+    return new BaseServerOptions(
+        new MapConfig(
+            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
   }
 }

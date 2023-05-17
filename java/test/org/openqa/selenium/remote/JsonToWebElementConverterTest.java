@@ -17,18 +17,17 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.SearchContext;
-
-import java.util.UUID;
-
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
+
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SearchContext;
 
 @Tag("UnitTests")
 class JsonToWebElementConverterTest {
@@ -37,22 +36,23 @@ class JsonToWebElementConverterTest {
 
   @BeforeEach
   public void createIdleDriver() {
-    driver = new RemoteWebDriver(cmd -> new Response(), new ImmutableCapabilities()) {
-      @Override
-      protected void startSession(Capabilities capabilities) {
-        // Do nothing
-      }
-    };
+    driver =
+        new RemoteWebDriver(cmd -> new Response(), new ImmutableCapabilities()) {
+          @Override
+          protected void startSession(Capabilities capabilities) {
+            // Do nothing
+          }
+        };
   }
 
   @Test
   void shouldConvertShadowRootsToSearchContexts() {
     UUID rootId = UUID.randomUUID();
 
-    Object result = new JsonToWebElementConverter(driver)
-      .apply(singletonMap(W3C.getShadowRootElementKey(), rootId.toString()));
+    Object result =
+        new JsonToWebElementConverter(driver)
+            .apply(singletonMap(W3C.getShadowRootElementKey(), rootId.toString()));
 
     assertThat(result).isInstanceOf(SearchContext.class);
   }
-
 }

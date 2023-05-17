@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.sessionqueue.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.Optional;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -24,13 +28,9 @@ import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.util.Optional;
-
-@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
-  description = "New session queue config")
+@ManagedService(
+    objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
+    description = "New session queue config")
 public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
@@ -48,17 +48,23 @@ public class NewSessionQueueOptions {
 
   public URI getSessionQueueUri() {
 
-    Optional<URI> host = config.get(SESSION_QUEUE_SECTION, "host").map(str -> {
-      try {
-        URI sessionQueueUri = new URI(str);
-        if (sessionQueueUri.getHost() == null || sessionQueueUri.getPort() == -1) {
-          throw new ConfigException("Undefined host or port in SessionQueue server URI: " + str);
-        }
-        return sessionQueueUri;
-      } catch (URISyntaxException e) {
-        throw new ConfigException("Session queue server URI is not a valid URI: " + str);
-      }
-    });
+    Optional<URI> host =
+        config
+            .get(SESSION_QUEUE_SECTION, "host")
+            .map(
+                str -> {
+                  try {
+                    URI sessionQueueUri = new URI(str);
+                    if (sessionQueueUri.getHost() == null || sessionQueueUri.getPort() == -1) {
+                      throw new ConfigException(
+                          "Undefined host or port in SessionQueue server URI: " + str);
+                    }
+                    return sessionQueueUri;
+                  } catch (URISyntaxException e) {
+                    throw new ConfigException(
+                        "Session queue server URI is not a valid URI: " + str);
+                  }
+                });
 
     if (host.isPresent()) {
       return host.get();
@@ -72,57 +78,57 @@ public class NewSessionQueueOptions {
     }
 
     try {
-      return new URI(
-        "http",
-        null,
-        hostname.get(),
-        port.get(),
-        "",
-        null,
-        null);
+      return new URI("http", null, hostname.get(), port.get(), "", null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
-        "Session queue server uri configured through host (%s) and port (%d) is not a valid URI",
-        hostname.get(),
-        port.get());
+          "Session queue server uri configured through host (%s) and port (%d) is not a valid URI",
+          hostname.get(), port.get());
     }
   }
 
   public Duration getSessionRequestTimeout() {
     // If the user sets 0 or less, we default to 1s.
-    int timeout = Math.max(
-      config.getInt(SESSION_QUEUE_SECTION, "session-request-timeout")
-        .orElse(DEFAULT_REQUEST_TIMEOUT),
-      1);
+    int timeout =
+        Math.max(
+            config
+                .getInt(SESSION_QUEUE_SECTION, "session-request-timeout")
+                .orElse(DEFAULT_REQUEST_TIMEOUT),
+            1);
 
     return Duration.ofSeconds(timeout);
   }
 
   public Duration getSessionRequestTimeoutPeriod() {
     // If the user sets 0 or less, we default to 1s.
-    int timeout = Math.max(
-      config.getInt(SESSION_QUEUE_SECTION, "session-request-timeout-period")
-        .orElse(DEFAULT_REQUEST_TIMEOUT_PERIOD),
-      1);
+    int timeout =
+        Math.max(
+            config
+                .getInt(SESSION_QUEUE_SECTION, "session-request-timeout-period")
+                .orElse(DEFAULT_REQUEST_TIMEOUT_PERIOD),
+            1);
 
     return Duration.ofSeconds(timeout);
   }
 
   public Duration getSessionRequestRetryInterval() {
     // If the user sets 0 or less, we default to DEFAULT_RETRY_INTERVAL (in milliseconds).
-    int interval = Math.max(
-      config.getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
-        .orElse(DEFAULT_RETRY_INTERVAL),
-      DEFAULT_RETRY_INTERVAL);
+    int interval =
+        Math.max(
+            config
+                .getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
+                .orElse(DEFAULT_RETRY_INTERVAL),
+            DEFAULT_RETRY_INTERVAL);
     return Duration.ofMillis(interval);
   }
 
   public int getBatchSize() {
     // If the user sets 0 or less, we default to 10.
-    int batchSize = Math.max(
-      config.getInt(SESSION_QUEUE_SECTION, "sessionqueue-batch-size")
-        .orElse(DEFAULT_BATCH_SIZE),
-      1);
+    int batchSize =
+        Math.max(
+            config
+                .getInt(SESSION_QUEUE_SECTION, "sessionqueue-batch-size")
+                .orElse(DEFAULT_BATCH_SIZE),
+            1);
 
     return batchSize;
   }
@@ -138,7 +144,7 @@ public class NewSessionQueueOptions {
   }
 
   public NewSessionQueue getSessionQueue(String implementation) {
-    return config
-      .getClass(SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
+    return config.getClass(
+        SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
   }
 }

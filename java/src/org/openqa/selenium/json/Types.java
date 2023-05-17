@@ -25,7 +25,6 @@ class Types {
     // Utility class
   }
 
-
   static Class<?> narrow(Type type) {
     if (type instanceof Class) {
       return (Class<?>) type;

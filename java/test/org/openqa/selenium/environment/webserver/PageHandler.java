@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+import java.io.UncheckedIOException;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 class PageHandler implements HttpHandler {
 
@@ -31,16 +30,15 @@ class PageHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
 
     int lastIndex = req.getUri().lastIndexOf('/');
-    String pageNumber =
-        (lastIndex == -1 ? "Unknown" : req.getUri().substring(lastIndex + 1));
-    String body = String.format("<html><head><title>Page%s</title></head>" +
-                               "<body>Page number <span id=\"pageNumber\">%s</span>" +
-                               "<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>" +
-                               "</body></html>",
-                               pageNumber, pageNumber);
+    String pageNumber = (lastIndex == -1 ? "Unknown" : req.getUri().substring(lastIndex + 1));
+    String body =
+        String.format(
+            "<html><head><title>Page%s</title></head>"
+                + "<body>Page number <span id=\"pageNumber\">%s</span>"
+                + "<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>"
+                + "</body></html>",
+            pageNumber, pageNumber);
 
-    return new HttpResponse()
-      .setHeader("Content-Type", "text/html")
-      .setContent(utf8String(body));
+    return new HttpResponse().setHeader("Content-Type", "text/html").setContent(utf8String(body));
   }
 }

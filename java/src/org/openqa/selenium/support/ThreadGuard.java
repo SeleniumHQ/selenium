@@ -16,21 +16,20 @@
 // under the License.
 package org.openqa.selenium.support;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 /**
- * Multithreaded client code should use this to assert that it accesses webdriver in a
- * thread-safe manner.
+ * Multithreaded client code should use this to assert that it accesses webdriver in a thread-safe
+ * manner.
  *
- * Wrap WebDriver instances as follows:
+ * <p>Wrap WebDriver instances as follows:
  *
  * <pre class="code">
  * WebDriver driver = ThreadGuard.protect(new FirefoxDriver());
@@ -39,16 +38,16 @@ import java.util.Set;
  * Threading issues related to incorrect client threading may have mysterious and hard to diagnose
  * errors. Using this wrapper prevents this category of errors. It is recommended for all
  * multithreaded usage. This class has no overhead of any importance.
- *
  */
 public class ThreadGuard {
 
   public static WebDriver protect(WebDriver actualWebDriver) {
     WebDriverInvocationHandler invocationHandler = new WebDriverInvocationHandler(actualWebDriver);
-    return (WebDriver) java.lang.reflect.Proxy
-        .newProxyInstance(actualWebDriver.getClass().getClassLoader(),
-                          getInterfaces(actualWebDriver),
-                          invocationHandler);
+    return (WebDriver)
+        java.lang.reflect.Proxy.newProxyInstance(
+            actualWebDriver.getClass().getClassLoader(),
+            getInterfaces(actualWebDriver),
+            invocationHandler);
   }
 
   private static Class<?>[] getInterfaces(Object target) {
@@ -62,7 +61,6 @@ public class ThreadGuard {
       base = base.getSuperclass();
     }
     return interfaces.toArray(new Class[0]);
-
   }
 
   static class WebDriverInvocationHandler implements InvocationHandler {
@@ -70,7 +68,6 @@ public class ThreadGuard {
     private final long threadId;
     private final Object underlying;
     private final String threadName;
-
 
     public WebDriverInvocationHandler(Object underlyingWebDriver) {
       Thread thread = Thread.currentThread();
@@ -85,10 +82,11 @@ public class ThreadGuard {
         if (Thread.currentThread().getId() != threadId) {
           Thread currentThread = Thread.currentThread();
           throw new WebDriverException(
-              String.format("Thread safety error; this instance of WebDriver was constructed on " +
-                            "thread %s (id %d) and is being accessed by thread %s (id %d)" +
-                            "This is not permitted and *will* cause undefined behaviour",
-                            threadName, threadId, currentThread.getName(), currentThread.getId()));
+              String.format(
+                  "Thread safety error; this instance of WebDriver was constructed on "
+                      + "thread %s (id %d) and is being accessed by thread %s (id %d)"
+                      + "This is not permitted and *will* cause undefined behaviour",
+                  threadName, threadId, currentThread.getName(), currentThread.getId()));
         }
         return invokeUnderlying(method, args);
       } catch (InvocationTargetException e) {
@@ -101,5 +99,4 @@ public class ThreadGuard {
       return method.invoke(underlying, args);
     }
   }
-
 }

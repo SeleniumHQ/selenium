@@ -20,15 +20,14 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class CookieTest {
@@ -41,15 +40,13 @@ class CookieTest {
   @Test
   void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     Cookie cookie = new Cookie("hi;hi", "value", null, null, null, false);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(cookie::validate);
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(cookie::validate);
   }
 
   @Test
   void testShouldThrowAnExceptionTheNameIsNull() {
     Cookie cookie = new Cookie(null, "value", null, null, null, false);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(cookie::validate);
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(cookie::validate);
   }
 
   @Test

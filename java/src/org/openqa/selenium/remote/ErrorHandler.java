@@ -21,10 +21,6 @@ import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.base.Throwables;
 import com.google.common.primitives.Ints;
-
-import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.WebDriverException;
-
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,10 +29,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriverException;
 
-/**
- * Maps exceptions to status codes for sending over the wire.
- */
+/** Maps exceptions to status codes for sending over the wire. */
 public class ErrorHandler {
 
   private static final String MESSAGE = "message";
@@ -61,7 +57,7 @@ public class ErrorHandler {
 
   /**
    * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
-   *        information is available.
+   *     information is available.
    */
   public ErrorHandler(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
@@ -70,7 +66,7 @@ public class ErrorHandler {
 
   /**
    * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
-   *        information is available.
+   *     information is available.
    * @param codes The ErrorCodes object to use for linking error codes to exceptions.
    */
   public ErrorHandler(ErrorCodes codes, boolean includeServerErrors) {
@@ -110,7 +106,9 @@ public class ErrorHandler {
       if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
         try {
           rawErrorData = (Map<String, Object>) rawErrorData.get("value");
-        } catch (ClassCastException cce) {}
+        } catch (ClassCastException cce) {
+          message = String.valueOf(cce);
+        }
       }
       try {
         message = (String) rawErrorData.get(MESSAGE);
@@ -154,27 +152,29 @@ public class ErrorHandler {
 
     WebDriverException toThrow = null;
 
-    if (outerErrorType.equals(UnhandledAlertException.class)
-        && value instanceof Map) {
+    if (outerErrorType.equals(UnhandledAlertException.class) && value instanceof Map) {
       toThrow = createUnhandledAlertException(value);
     }
 
     if (toThrow == null) {
-      toThrow = createThrowable(outerErrorType,
-                                new Class<?>[] {String.class, Throwable.class, Integer.class},
-                                new Object[] {message, cause, response.getStatus()});
+      toThrow =
+          createThrowable(
+              outerErrorType,
+              new Class<?>[] {String.class, Throwable.class, Integer.class},
+              new Object[] {message, cause, response.getStatus()});
     }
 
     if (toThrow == null) {
-      toThrow = createThrowable(outerErrorType,
-          new Class<?>[] {String.class, Throwable.class},
-          new Object[] {message, cause});
+      toThrow =
+          createThrowable(
+              outerErrorType,
+              new Class<?>[] {String.class, Throwable.class},
+              new Object[] {message, cause});
     }
 
     if (toThrow == null) {
-      toThrow = createThrowable(outerErrorType,
-          new Class<?>[] {String.class},
-          new Object[] {message});
+      toThrow =
+          createThrowable(outerErrorType, new Class<?>[] {String.class}, new Object[] {message});
     }
 
     if (toThrow == null) {
@@ -195,7 +195,8 @@ public class ErrorHandler {
           alertText = alert.get("text");
         }
       }
-      return createThrowable(UnhandledAlertException.class,
+      return createThrowable(
+          UnhandledAlertException.class,
           new Class<?>[] {String.class, String.class},
           new Object[] {rawErrorData.get("message"), alertText});
     }
@@ -207,7 +208,9 @@ public class ErrorHandler {
     if (duration < 1000) {
       return prefix + duration + " milliseconds";
     }
-    return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP)) + " seconds";
+    return prefix
+        + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP))
+        + " seconds";
   }
 
   private <T extends Throwable> T createThrowable(
@@ -252,10 +255,8 @@ public class ErrorHandler {
     } else if (Throwable.class.isAssignableFrom(clazz)) {
       @SuppressWarnings({"unchecked"})
       Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
-      toReturn = createThrowable(
-          throwableType,
-          new Class<?>[] {String.class},
-          new Object[] {message});
+      toReturn =
+          createThrowable(throwableType, new Class<?>[] {String.class}, new Object[] {message});
     }
 
     if (toReturn == null) {
@@ -270,19 +271,18 @@ public class ErrorHandler {
       List<Map<String, Object>> stackTraceInfo =
           (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
 
-      stackTrace = stackTraceInfo.stream()
-          .map(entry -> new FrameInfoToStackFrame().apply(entry))
-          .filter(Objects::nonNull)
-          .toArray(StackTraceElement[]::new);
+      stackTrace =
+          stackTraceInfo.stream()
+              .map(entry -> new FrameInfoToStackFrame().apply(entry))
+              .filter(Objects::nonNull)
+              .toArray(StackTraceElement[]::new);
     }
 
     toReturn.setStackTrace(stackTrace);
     return toReturn;
   }
 
-  /**
-   * Exception used as a place holder if the server returns an error without a stack trace.
-   */
+  /** Exception used as a place holder if the server returns an error without a stack trace. */
   public static class UnknownServerException extends WebDriverException {
     private UnknownServerException(String s) {
       super(s);
@@ -317,18 +317,20 @@ public class ErrorHandler {
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...
-      String className = frameInfo.containsKey(CLASS_NAME) ?
-                         toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
-      String methodName = frameInfo.containsKey(METHOD_NAME) ?
-                          toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
-      String fileName = frameInfo.containsKey(FILE_NAME) ?
-                        toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
+      String className =
+          frameInfo.containsKey(CLASS_NAME)
+              ? toStringOrNull(frameInfo.get(CLASS_NAME))
+              : UNKNOWN_CLASS;
+      String methodName =
+          frameInfo.containsKey(METHOD_NAME)
+              ? toStringOrNull(frameInfo.get(METHOD_NAME))
+              : UNKNOWN_METHOD;
+      String fileName =
+          frameInfo.containsKey(FILE_NAME)
+              ? toStringOrNull(frameInfo.get(FILE_NAME))
+              : UNKNOWN_FILE;
 
-      return new StackTraceElement(
-          className,
-          methodName,
-          fileName,
-          lineNumber);
+      return new StackTraceElement(className, methodName, fileName, lineNumber);
     }
 
     private static String toStringOrNull(Object o) {

@@ -28,8 +28,7 @@ public class Response {
   private volatile Integer status;
   private volatile String state;
 
-  public Response() {
-  }
+  public Response() {}
 
   public Response(SessionId sessionId) {
     this.sessionId = String.valueOf(sessionId);
@@ -69,7 +68,9 @@ public class Response {
 
   @Override
   public String toString() {
-    return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(), getStatus(), getValue());
+    return String.format(
+        "(Response: SessionID: %s, Status: %s, Value: %s)",
+        getSessionId(), getStatus(), getValue());
   }
 
   @Override
@@ -79,10 +80,10 @@ public class Response {
     }
 
     Response that = (Response) o;
-    return Objects.equals(value, that.value) &&
-           Objects.equals(sessionId, that.sessionId) &&
-           Objects.equals(status, that.status) &&
-           Objects.equals(state, that.state);
+    return Objects.equals(value, that.value)
+        && Objects.equals(sessionId, that.sessionId)
+        && Objects.equals(status, that.status)
+        && Objects.equals(state, that.state);
   }
 
   @Override

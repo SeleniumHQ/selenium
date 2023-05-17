@@ -21,7 +21,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -54,6 +53,4 @@ public class Slot {
   public String getLastStarted() {
     return DATE_TIME_FORMATTER.format(lastStarted);
   }
-
 }
-

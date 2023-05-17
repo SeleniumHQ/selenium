@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-/**
- * Indicates that a user has tried to access an alert when one is not present.
- */
+/** Indicates that a user has tried to access an alert when one is not present. */
 public class NoAlertPresentException extends NotFoundException {
   public NoAlertPresentException() {
     this("No alert was present");

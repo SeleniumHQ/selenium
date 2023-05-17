@@ -18,16 +18,14 @@
 // Generated source.
 package org.openqa.selenium.lift;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import org.hamcrest.Description;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.BaseFinder;
 import org.openqa.selenium.lift.find.Finder;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
 
 public class Finders {
 

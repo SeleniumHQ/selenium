@@ -19,13 +19,12 @@ package org.openqa.selenium.build;
 
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.CommandLine;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.CommandLine;
 
 public class BazelBuild {
   private static final Logger LOG = Logger.getLogger(BazelBuild.class.getName());

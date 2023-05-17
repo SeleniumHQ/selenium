@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -35,17 +45,6 @@ import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-
 public class LocalSessionMap extends SessionMap {
 
   private static final Logger LOG = Logger.getLogger(LocalSessionMap.class.getName());
@@ -59,28 +58,37 @@ public class LocalSessionMap extends SessionMap {
 
     this.bus = Require.nonNull("Event bus", bus);
 
-    bus.addListener(SessionClosedEvent.listener(id -> {
-      try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.remove")) {
-        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-        attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                         EventAttribute.setValue(getClass().getName()));
-        SESSION_ID.accept(span, id);
-        SESSION_ID_EVENT.accept(attributeMap, id);
-        knownSessions.remove(id);
-        String sessionDeletedMessage = "Deleted session from local Session Map";
-        span.addEvent(sessionDeletedMessage, attributeMap);
-        LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
-      }
-    }));
+    bus.addListener(
+        SessionClosedEvent.listener(
+            id -> {
+              try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.remove")) {
+                Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+                attributeMap.put(
+                    AttributeKey.LOGGER_CLASS.getKey(),
+                    EventAttribute.setValue(getClass().getName()));
+                SESSION_ID.accept(span, id);
+                SESSION_ID_EVENT.accept(attributeMap, id);
+                knownSessions.remove(id);
+                String sessionDeletedMessage = "Deleted session from local Session Map";
+                span.addEvent(sessionDeletedMessage, attributeMap);
+                LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
+              }
+            }));
 
-    bus.addListener(NodeRemovedEvent.listener(nodeStatus -> nodeStatus.getSlots().stream()
-      .filter(slot -> slot.getSession() != null)
-      .map(slot -> slot.getSession().getId())
-      .forEach(knownSessions::remove)));
+    bus.addListener(
+        NodeRemovedEvent.listener(
+            nodeStatus ->
+                nodeStatus.getSlots().stream()
+                    .filter(slot -> slot.getSession() != null)
+                    .map(slot -> slot.getSession().getId())
+                    .forEach(knownSessions::remove)));
 
-    bus.addListener(NodeRestartedEvent.listener(nodeStatus -> knownSessions.values()
-      .removeIf(value -> value.getUri().equals(nodeStatus.getExternalUri()))));
-
+    bus.addListener(
+        NodeRestartedEvent.listener(
+            nodeStatus ->
+                knownSessions
+                    .values()
+                    .removeIf(value -> value.getUri().equals(nodeStatus.getExternalUri()))));
   }
 
   public static SessionMap create(Config config) {
@@ -103,8 +111,8 @@ public class LocalSessionMap extends SessionMap {
     writeLock.lock();
     try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.add")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-        EventAttribute.setValue(getClass().getName()));
+      attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
       SessionId id = session.getId();
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);

@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.internal.Require;
-
 import java.time.Duration;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 class InitialHandshakeResponse {
   private final Duration requestDuration;

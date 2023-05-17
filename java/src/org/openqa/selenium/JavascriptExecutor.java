@@ -17,49 +17,44 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.
  *
- * <p>
- * Because of cross domain policies browsers enforce your script execution may fail unexpectedly
- * and without adequate error messaging. This is particularly pertinent when creating your own
- * XHR request or when trying to access another frame. Most times when troubleshooting failure it's
- * best to view the browser's console after executing the WebDriver request.
+ * <p>Because of cross domain policies browsers enforce your script execution may fail unexpectedly
+ * and without adequate error messaging. This is particularly pertinent when creating your own XHR
+ * request or when trying to access another frame. Most times when troubleshooting failure it's best
+ * to view the browser's console after executing the WebDriver request.
  */
 public interface JavascriptExecutor {
   /**
    * Executes JavaScript in the context of the currently selected frame or window. The script
    * fragment provided will be executed as the body of an anonymous function.
    *
-   * <p>
-   * Within the script, use <code>document</code> to refer to the current document. Note that local
-   * variables will not be available once the script has finished executing, though global variables
-   * will persist.
+   * <p>Within the script, use <code>document</code> to refer to the current document. Note that
+   * local variables will not be available once the script has finished executing, though global
+   * variables will persist.
    *
-   * <p>
-   * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
-   * then the following steps will be taken:
+   * <p>If the script has a return value (i.e. if the script contains a <code>return</code>
+   * statement), then the following steps will be taken:
    *
    * <ul>
-   * <li>For an HTML element, this method returns a WebElement</li>
-   * <li>For a decimal, a Double is returned</li>
-   * <li>For a non-decimal number, a Long is returned</li>
-   * <li>For a boolean, a Boolean is returned</li>
-   * <li>For all other cases, a String is returned.</li>
-   * <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
-   * support nested lists.</li>
-   * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
-   * <li>Unless the value is null or there is no return value, in which null is returned</li>
+   *   <li>For an HTML element, this method returns a WebElement
+   *   <li>For a decimal, a Double is returned
+   *   <li>For a non-decimal number, a Long is returned
+   *   <li>For a boolean, a Boolean is returned
+   *   <li>For all other cases, a String is returned.
+   *   <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+   *       support nested lists.
+   *   <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.
+   *   <li>Unless the value is null or there is no return value, in which null is returned
    * </ul>
    *
-   * <p>
-   * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
+   * <p>Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
    * the above. An exception will be thrown if the arguments do not meet these criteria. The
    * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
    * the function were called via "Function.apply"
@@ -77,68 +72,67 @@ public interface JavascriptExecutor {
    * provided callback. This callback is always injected into the executed function as the last
    * argument.
    *
-   * <p>
-   * The first argument passed to the callback function will be used as the script's result. This
+   * <p>The first argument passed to the callback function will be used as the script's result. This
    * value will be handled as follows:
    *
    * <ul>
-   * <li>For an HTML element, this method returns a WebElement</li>
-   * <li>For a number, a Long is returned</li>
-   * <li>For a boolean, a Boolean is returned</li>
-   * <li>For all other cases, a String is returned.</li>
-   * <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
-   * support nested lists.</li>
-   * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
-   * <li>Unless the value is null or there is no return value, in which null is returned</li>
+   *   <li>For an HTML element, this method returns a WebElement
+   *   <li>For a number, a Long is returned
+   *   <li>For a boolean, a Boolean is returned
+   *   <li>For all other cases, a String is returned.
+   *   <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+   *       support nested lists.
+   *   <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.
+   *   <li>Unless the value is null or there is no return value, in which null is returned
    * </ul>
    *
-   * <p>
-   * The default timeout for a script to be executed is 0ms. In most cases, including the examples
-   * below, one must set the script timeout
-   * {@link WebDriver.Timeouts#scriptTimeout(java.time.Duration)} beforehand
-   * to a value sufficiently large enough.
+   * <p>The default timeout for a script to be executed is 0ms. In most cases, including the
+   * examples below, one must set the script timeout {@link
+   * WebDriver.Timeouts#scriptTimeout(java.time.Duration)} beforehand to a value sufficiently large
+   * enough.
    *
-   * <p>
-   * Example #1: Performing a sleep in the browser under test. <pre>{@code
-   *   long start = System.currentTimeMillis();
-   *   ((JavascriptExecutor) driver).executeAsyncScript(
-   *       "window.setTimeout(arguments[arguments.length - 1], 500);");
-   *   System.out.println(
-   *       "Elapsed time: " + (System.currentTimeMillis() - start));
+   * <p>Example #1: Performing a sleep in the browser under test.
+   *
+   * <pre>{@code
+   * long start = System.currentTimeMillis();
+   * ((JavascriptExecutor) driver).executeAsyncScript(
+   *     "window.setTimeout(arguments[arguments.length - 1], 500);");
+   * System.out.println(
+   *     "Elapsed time: " + (System.currentTimeMillis() - start));
    * }</pre>
    *
-   * <p>
-   * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
-   *   WebElement composeButton = driver.findElement(By.id("compose-button"));
-   *   composeButton.click();
-   *   ((JavascriptExecutor) driver).executeAsyncScript(
-   *       "var callback = arguments[arguments.length - 1];" +
-   *       "mailClient.getComposeWindowWidget().onload(callback);");
-   *   driver.switchTo().frame("composeWidget");
-   *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
+   * <p>Example #2: Synchronizing a test with an AJAX application:
+   *
+   * <pre>{@code
+   * WebElement composeButton = driver.findElement(By.id("compose-button"));
+   * composeButton.click();
+   * ((JavascriptExecutor) driver).executeAsyncScript(
+   *     "var callback = arguments[arguments.length - 1];" +
+   *     "mailClient.getComposeWindowWidget().onload(callback);");
+   * driver.switchTo().frame("composeWidget");
+   * driver.findElement(By.id("to")).sendKeys("bog@example.com");
    * }</pre>
    *
-   * <p>
-   * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
-   *   Object response = ((JavascriptExecutor) driver).executeAsyncScript(
-   *       "var callback = arguments[arguments.length - 1];" +
-   *       "var xhr = new XMLHttpRequest();" +
-   *       "xhr.open('GET', '/resource/data.json', true);" +
-   *       "xhr.onreadystatechange = function() {" +
-   *       "  if (xhr.readyState == 4) {" +
-   *       "    callback(xhr.responseText);" +
-   *       "  }" +
-   *       "};" +
-   *       "xhr.send();");
-   *   JsonObject json = new JsonParser().parse((String) response);
-   *   assertEquals("cheese", json.get("food").getAsString());
+   * <p>Example #3: Injecting a XMLHttpRequest and waiting for the result:
+   *
+   * <pre>{@code
+   * Object response = ((JavascriptExecutor) driver).executeAsyncScript(
+   *     "var callback = arguments[arguments.length - 1];" +
+   *     "var xhr = new XMLHttpRequest();" +
+   *     "xhr.open('GET', '/resource/data.json', true);" +
+   *     "xhr.onreadystatechange = function() {" +
+   *     "  if (xhr.readyState == 4) {" +
+   *     "    callback(xhr.responseText);" +
+   *     "  }" +
+   *     "};" +
+   *     "xhr.send();");
+   * JsonObject json = new JsonParser().parse((String) response);
+   * assertEquals("cheese", json.get("food").getAsString());
    * }</pre>
    *
-   * <p>
-   * Script arguments must be a number, a boolean, a String, WebElement, or a List of any
+   * <p>Script arguments must be a number, a boolean, a String, WebElement, or a List of any
    * combination of the above. An exception will be thrown if the arguments do not meet these
-   * criteria. The arguments will be made available to the JavaScript via the "arguments"
-   * variable.
+   * criteria. The arguments will be made available to the JavaScript via the "arguments" variable.
    *
    * @param script The JavaScript to execute.
    * @param args The arguments to the script. May be empty.
@@ -148,12 +142,11 @@ public interface JavascriptExecutor {
   Object executeAsyncScript(String script, Object... args);
 
   /**
-   * Commonly used scripts may be "pinned" to the WebDriver session,
-   * allowing them to be called efficiently by their handle rather than
-   * sending the entire script across the wire for every call.
-   * <p>
-   * The default implementation of this adheres to the API's expectations
-   * but is inefficient.
+   * Commonly used scripts may be "pinned" to the WebDriver session, allowing them to be called
+   * efficiently by their handle rather than sending the entire script across the wire for every
+   * call.
+   *
+   * <p>The default implementation of this adheres to the API's expectations but is inefficient.
    *
    * @see #executeScript(ScriptKey, Object...)
    * @param script The Javascript to execute.
@@ -166,15 +159,13 @@ public interface JavascriptExecutor {
   }
 
   /**
-   * Deletes the reference to a script that has previously been pinned.
-   * Subsequent calls to {@link #executeScript(ScriptKey, Object...)} will
-   * fail for the given {@code key}.
+   * Deletes the reference to a script that has previously been pinned. Subsequent calls to {@link
+   * #executeScript(ScriptKey, Object...)} will fail for the given {@code key}.
    */
   default void unpin(ScriptKey key) {
     Require.nonNull("Key to unpin", key);
     Require.stateCondition(
-      key instanceof UnpinnedScriptKey,
-      "Script key should have been generated by this driver");
+        key instanceof UnpinnedScriptKey, "Script key should have been generated by this driver");
 
     UnpinnedScriptKey.unpin(this, (UnpinnedScriptKey) key);
   }
@@ -183,22 +174,21 @@ public interface JavascriptExecutor {
    * @return The {@link ScriptKey}s of all currently pinned scripts.
    */
   default Set<ScriptKey> getPinnedScripts() {
-    return Collections.unmodifiableSet(UnpinnedScriptKey.getPinnedScripts(this).stream()
-      .map(key -> (ScriptKey) key)
-      .collect(Collectors.toSet()));
+    return Collections.unmodifiableSet(
+        UnpinnedScriptKey.getPinnedScripts(this).stream()
+            .map(key -> (ScriptKey) key)
+            .collect(Collectors.toSet()));
   }
 
   /**
-   * Calls a script by the {@link ScriptKey} returned by {@link #pin(String)}.
-   * This can be thought of as inlining the pinned script and simply calling
-   * {@link #executeScript(String, Object...)}.
+   * Calls a script by the {@link ScriptKey} returned by {@link #pin(String)}. This can be thought
+   * of as inlining the pinned script and simply calling {@link #executeScript(String, Object...)}.
    *
    * @see #executeScript(String, Object...)
    */
   default Object executeScript(ScriptKey key, Object... args) {
     Require.stateCondition(
-      key instanceof UnpinnedScriptKey,
-      "Script key should have been generated by this driver");
+        key instanceof UnpinnedScriptKey, "Script key should have been generated by this driver");
 
     if (!getPinnedScripts().contains(key)) {
       throw new JavascriptException("Script is unpinned");

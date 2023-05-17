@@ -26,25 +26,22 @@ import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_STRUCTURED_LOG
 import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_TRACING_ENABLED;
 import static org.openqa.selenium.grid.log.LoggingOptions.LOGGING_SECTION;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
+import java.util.Set;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
-
-import java.util.Set;
 
 @SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
 public class LoggingFlags implements HasRoles {
 
   @Parameter(
-    description = "Configure logging",
-    hidden = true,
-    names = "--configure-logging",
-    arity = 1)
+      description = "Configure logging",
+      hidden = true,
+      names = "--configure-logging",
+      arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "enable", example = "true")
   private Boolean configureLogging = DEFAULT_CONFIGURE_LOGGING;
 
@@ -60,33 +57,49 @@ public class LoggingFlags implements HasRoles {
   @ConfigValue(section = LOGGING_SECTION, name = "tracing", example = "true")
   private Boolean enableTracing = DEFAULT_TRACING_ENABLED;
 
-  @Parameter(description = "Enable http logging. Tracing should be enabled to log http logs.", names = "--http-logs", arity = 1)
+  @Parameter(
+      description = "Enable http logging. Tracing should be enabled to log http logs.",
+      names = "--http-logs",
+      arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "http-logs", example = "true")
   private Boolean httpLogs = DEFAULT_HTTP_LOGS;
 
-  @Parameter(description = "File to write out logs. "
-                           + "Ensure the file path is compatible with the operating system's file path. "
-                           + "Windows path example: \\\\path\\to\\file\\gridlog.log OR "
-                           + "C:\\path\\path\\to\\file\\gridlog.log "
-                           + "Linux/Unix/MacOS path example: /path/to/file/gridlog.log"
-    , names = "--log", arity = 1)
-  @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = {"'\\\\path\\to\\file\\gridlog.log'",
-                                                                        "'C:\\path\\path\\to\\file\\gridlog.log'",
-                                                                        "'/path/to/file/gridlog.log'"})
+  @Parameter(
+      description =
+          "File to write out logs. "
+              + "Ensure the file path is compatible with the operating system's file path. "
+              + "Windows path example: \\\\path\\to\\file\\gridlog.log OR "
+              + "C:\\path\\path\\to\\file\\gridlog.log "
+              + "Linux/Unix/MacOS path example: /path/to/file/gridlog.log",
+      names = "--log",
+      arity = 1)
+  @ConfigValue(
+      section = LOGGING_SECTION,
+      name = "log-file",
+      example = {
+        "'\\\\path\\to\\file\\gridlog.log'",
+        "'C:\\path\\path\\to\\file\\gridlog.log'",
+        "'/path/to/file/gridlog.log'"
+      })
   private String logFile;
 
   @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-encoding", example = "\"UTF-8\"")
   private String logEncoding;
 
-  @Parameter(description =
-    "Log level. Default logging level is INFO. Log levels are described here " +
-    "https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html",
-    names = "--log-level", arity = 1)
+  @Parameter(
+      description =
+          "Log level. Default logging level is INFO. Log levels are described here "
+              + "https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html",
+      names = "--log-level",
+      arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-level", example = "INFO")
   private String logLevel = DEFAULT_LOG_LEVEL;
 
-  @Parameter(description = "Format of the timestamp in log output", names = "--log-timestamp-format", arity = 1)
+  @Parameter(
+      description = "Format of the timestamp in log output",
+      names = "--log-timestamp-format",
+      arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-timestamp-format", example = "HH:mm:ss.SSS")
   private String logTimestampFormat;
 

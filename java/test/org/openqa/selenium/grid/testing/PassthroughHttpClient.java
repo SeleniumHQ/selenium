@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.grid.testing;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.WebSocket;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
 
 public class PassthroughHttpClient implements HttpClient {
 

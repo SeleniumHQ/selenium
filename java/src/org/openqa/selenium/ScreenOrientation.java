@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-/**
- * Represents possible screen orientations.
- */
+/** Represents possible screen orientations. */
 public enum ScreenOrientation {
   LANDSCAPE("landscape"),
   PORTRAIT("portrait");

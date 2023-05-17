@@ -19,12 +19,12 @@ package org.openqa.selenium.bidi.log;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.json.JsonInput;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-script-StackFrame">https://w3c.github.io/webdriver-bidi/#types-script-StackFrame</a>
+// @see <a
+// href="https://w3c.github.io/webdriver-bidi/#types-script-StackFrame">https://w3c.github.io/webdriver-bidi/#types-script-StackFrame</a>
 public class StackFrame {
 
   private final String url;

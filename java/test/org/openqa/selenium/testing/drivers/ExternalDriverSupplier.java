@@ -19,13 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.LocalFileDetector;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -33,27 +26,31 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * Supports providing WebDriver instances from an external source using the following system
  * properties:
+ *
  * <dl>
- *   <dt>selenium.external.serverUrl</dt>
- *   <dd>Defines the fully qualified URL of an external WebDriver server to send commands to.
- *       This server <i>must</i> be compliant with the
- *       <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">JSON wire protocol</a>.
- *       If only this property is provided, then this supplier will provide a new
- *       {@link RemoteWebDriver} instance pointed at the designated server. Otherwise, if a
- *       custom supplier is also defined (see below), this supplier will wait for the server to
- *       be accepting commands before delegating to the designated class for the actual client
- *       creation.
- *   </dd>
- *   <dt>selenium.external.supplierClass</dt>
+ *   <dt>selenium.external.serverUrl
+ *   <dd>Defines the fully qualified URL of an external WebDriver server to send commands to. This
+ *       server <i>must</i> be compliant with the <a
+ *       href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">JSON wire protocol</a>.
+ *       If only this property is provided, then this supplier will provide a new {@link
+ *       RemoteWebDriver} instance pointed at the designated server. Otherwise, if a custom supplier
+ *       is also defined (see below), this supplier will wait for the server to be accepting
+ *       commands before delegating to the designated class for the actual client creation.
+ *   <dt>selenium.external.supplierClass
  *   <dd>Specifies the fully qualified name of another class on the classpath. This class must
- *       implement {@code Supplier<WebDriver>} and have a public constructor that accepts two
- *       {@link Capabilities} objects as arguments (for the desired and required capabilities,
+ *       implement {@code Supplier<WebDriver>} and have a public constructor that accepts two {@link
+ *       Capabilities} objects as arguments (for the desired and required capabilities,
  *       respectively).
- *   </dd>
  * </dl>
  */
 class ExternalDriverSupplier implements Supplier<WebDriver> {
@@ -73,12 +70,11 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     Optional<Supplier<WebDriver>> delegate = createDelegate(desiredCapabilities);
     delegate = createForExternalServer(desiredCapabilities, delegate);
 
-    return delegate.orElse(()-> null).get();
+    return delegate.orElse(() -> null).get();
   }
 
   private static Optional<Supplier<WebDriver>> createForExternalServer(
-      Capabilities desiredCapabilities,
-      Optional<Supplier<WebDriver>> delegate) {
+      Capabilities desiredCapabilities, Optional<Supplier<WebDriver>> delegate) {
     String externalUrl = System.getProperty(EXTERNAL_SERVER_URL_PROPERTY);
     if (externalUrl != null) {
       LOG.info("Using external WebDriver server: " + externalUrl);
@@ -89,8 +85,8 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         throw new RuntimeException("Invalid server URL: " + externalUrl, e);
       }
       Supplier<WebDriver> defaultSupplier = new DefaultRemoteSupplier(url, desiredCapabilities);
-      Supplier<WebDriver> supplier = new ExternalServerDriverSupplier(
-          url, delegate.orElse(defaultSupplier));
+      Supplier<WebDriver> supplier =
+          new ExternalServerDriverSupplier(url, delegate.orElse(defaultSupplier));
       return Optional.of(supplier);
     }
     return delegate;
@@ -132,16 +128,15 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   }
 
   /**
-   * Waits for an external WebDriver server to be ready before delegating to another supplier
-   * for driver creation.
+   * Waits for an external WebDriver server to be ready before delegating to another supplier for
+   * driver creation.
    */
   private static class ExternalServerDriverSupplier implements Supplier<WebDriver> {
 
     private final URL serverUrl;
     private final Supplier<WebDriver> delegateSupplier;
 
-    private ExternalServerDriverSupplier(
-        URL serverUrl, Supplier<WebDriver> delegateSupplier) {
+    private ExternalServerDriverSupplier(URL serverUrl, Supplier<WebDriver> delegateSupplier) {
       this.serverUrl = serverUrl;
       this.delegateSupplier = delegateSupplier;
     }
@@ -161,9 +156,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     }
   }
 
-  /**
-   * Creates basic {@link RemoteWebDriver} instances.
-   */
+  /** Creates basic {@link RemoteWebDriver} instances. */
   private static class DefaultRemoteSupplier implements Supplier<WebDriver> {
     private final URL url;
     private final Capabilities desiredCapabilities;

@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collector;
-
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collector.Characteristics.UNORDERED;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.json.JsonInput;
 
 public class CapabilityCount {
 
@@ -43,18 +42,23 @@ public class CapabilityCount {
 
   private Object toJson() {
     return counts.entrySet().stream()
-      .map(entry -> {
-        Map<Object, Object> toReturn = new HashMap<>();
-        toReturn.put("capabilities", entry.getKey());
-        toReturn.put("count", entry.getValue());
-        return toReturn;
-      })
-      .collect(Collector.of(
-        ArrayList::new,
-        ArrayList::add,
-        (l, r) -> { l.addAll(r); return l; },
-        Collections::unmodifiableList,
-        UNORDERED));
+        .map(
+            entry -> {
+              Map<Object, Object> toReturn = new HashMap<>();
+              toReturn.put("capabilities", entry.getKey());
+              toReturn.put("count", entry.getValue());
+              return toReturn;
+            })
+        .collect(
+            Collector.of(
+                ArrayList::new,
+                ArrayList::add,
+                (l, r) -> {
+                  l.addAll(r);
+                  return l;
+                },
+                Collections::unmodifiableList,
+                UNORDERED));
   }
 
   private static CapabilityCount fromJson(JsonInput input) {
@@ -88,5 +92,4 @@ public class CapabilityCount {
 
     return new CapabilityCount(toReturn);
   }
-
 }

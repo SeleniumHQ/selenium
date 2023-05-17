@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.devtools.idealized;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.internal.Require;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class Events<CONSOLEEVENT, EXCEPTIONTHROWN> {
 
@@ -63,22 +62,20 @@ public abstract class Events<CONSOLEEVENT, EXCEPTIONTHROWN> {
     devtools.send(enableRuntime());
 
     devtools.addListener(
-      consoleEvent(),
-      event -> {
-        ConsoleEvent consoleEvent = toConsoleEvent(event);
+        consoleEvent(),
+        event -> {
+          ConsoleEvent consoleEvent = toConsoleEvent(event);
 
-        consoleListeners.forEach(l -> l.accept(consoleEvent));
-      }
-    );
+          consoleListeners.forEach(l -> l.accept(consoleEvent));
+        });
 
     devtools.addListener(
-      exceptionThrownEvent(),
-      event -> {
-        JavascriptException exception = toJsException(event);
+        exceptionThrownEvent(),
+        event -> {
+          JavascriptException exception = toJsException(event);
 
-        exceptionListeners.forEach(l -> l.accept(exception));
-      }
-    );
+          exceptionListeners.forEach(l -> l.accept(exception));
+        });
 
     consoleListenersEnabled = true;
   }

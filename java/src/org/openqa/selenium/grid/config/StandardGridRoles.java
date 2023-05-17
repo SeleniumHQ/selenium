@@ -35,13 +35,14 @@ public class StandardGridRoles {
   public static final Role SESSION_MAP_ROLE = Role.of("grid-session-map");
   public static final Role SESSION_QUEUE_ROLE = Role.of("grid-new-session-queue");
 
-  public static final Set<Role> ALL_ROLES = Collections.unmodifiableSet(
-    new TreeSet<>(
-      Arrays.asList(
-        DISTRIBUTOR_ROLE,
-        EVENT_BUS_ROLE,
-        NODE_ROLE,
-        ROUTER_ROLE,
-        SESSION_MAP_ROLE,
-        SESSION_QUEUE_ROLE)));
+  public static final Set<Role> ALL_ROLES =
+      Collections.unmodifiableSet(
+          new TreeSet<>(
+              Arrays.asList(
+                  DISTRIBUTOR_ROLE,
+                  EVENT_BUS_ROLE,
+                  NODE_ROLE,
+                  ROUTER_ROLE,
+                  SESSION_MAP_ROLE,
+                  SESSION_QUEUE_ROLE)));
 }

@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
+import java.util.Objects;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-import java.util.Objects;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 public class DrainNode implements HttpHandler {
 
@@ -45,14 +44,18 @@ public class DrainNode implements HttpHandler {
 
     if (value) {
       response.setContent(
-        asJson(ImmutableMap.of(
-          "value", value,
-          "message", "Node status was successfully set to draining.")));
+          asJson(
+              ImmutableMap.of(
+                  "value", value, "message", "Node status was successfully set to draining.")));
     } else {
       response.setContent(
-        asJson(ImmutableMap.of(
-          "value", value,
-          "message", "Unable to drain node. Please check the node exists by using /status. If so, try again.")));
+          asJson(
+              ImmutableMap.of(
+                  "value",
+                  value,
+                  "message",
+                  "Unable to drain node. Please check the node exists by using /status. If so, try"
+                      + " again.")));
     }
 
     return response;

@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.jupiter.api.Test;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import org.junit.jupiter.api.Test;
 
 class DumpHttpExchangeFilterTest {
 
@@ -30,15 +30,18 @@ class DumpHttpExchangeFilterTest {
   void shouldIncludeRequestAndResponseHeaders() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
-    String reqLog = dumpFilter.requestLogMessage(
-      new HttpRequest(GET, "/foo").addHeader("Peas", "and Sausages"));
+    String reqLog =
+        dumpFilter.requestLogMessage(
+            new HttpRequest(GET, "/foo").addHeader("Peas", "and Sausages"));
 
     assertThat(reqLog).contains("Peas");
     assertThat(reqLog).contains("and Sausages");
 
-    String resLog = dumpFilter.responseLogMessage(new HttpResponse()
-      .addHeader("Cheese", "Brie")
-      .setContent(string("Hello, World!", UTF_8)));
+    String resLog =
+        dumpFilter.responseLogMessage(
+            new HttpResponse()
+                .addHeader("Cheese", "Brie")
+                .setContent(string("Hello, World!", UTF_8)));
 
     assertThat(resLog).contains("Cheese");
     assertThat(resLog).contains("Brie");
@@ -48,8 +51,9 @@ class DumpHttpExchangeFilterTest {
   void shouldIncludeRequestContentInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
-    String reqLog = dumpFilter.requestLogMessage(
-      new HttpRequest(GET, "/foo").setContent(Contents.string("Cheese is lovely", UTF_8)));
+    String reqLog =
+        dumpFilter.requestLogMessage(
+            new HttpRequest(GET, "/foo").setContent(Contents.string("Cheese is lovely", UTF_8)));
 
     assertThat(reqLog).contains("Cheese is lovely");
   }
@@ -58,8 +62,7 @@ class DumpHttpExchangeFilterTest {
   void shouldIncludeResponseCodeInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
-    String resLog = dumpFilter.responseLogMessage(
-      new HttpResponse().setStatus(505));
+    String resLog = dumpFilter.responseLogMessage(new HttpResponse().setStatus(505));
 
     assertThat(resLog).contains("505");
   }
@@ -68,8 +71,9 @@ class DumpHttpExchangeFilterTest {
   void shouldIncludeBodyOfResponseInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
-    String resLog = dumpFilter.responseLogMessage(
-      new HttpResponse().setContent(Contents.string("Peas", UTF_8)));
+    String resLog =
+        dumpFilter.responseLogMessage(
+            new HttpResponse().setContent(Contents.string("Peas", UTF_8)));
 
     assertThat(resLog).contains("Peas");
   }

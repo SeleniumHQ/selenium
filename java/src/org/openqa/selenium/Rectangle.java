@@ -105,11 +105,10 @@ public class Rectangle {
 
     Rectangle rectangle = (Rectangle) o;
 
-    if (! getPoint().equals(rectangle.getPoint())) {
+    if (!getPoint().equals(rectangle.getPoint())) {
       return false;
     }
     return getDimension().equals(rectangle.getDimension());
-
   }
 
   @Override

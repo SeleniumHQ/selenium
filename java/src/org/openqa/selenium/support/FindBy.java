@@ -17,35 +17,33 @@
 
 package org.openqa.selenium.support;
 
-import org.openqa.selenium.By;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import org.openqa.selenium.By;
 
 /**
- * <p>Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
- * element or a list of elements. Used in conjunction with
- * {@link org.openqa.selenium.support.PageFactory}
- * this allows users to quickly and easily create PageObjects.</p>
+ * Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
+ * element or a list of elements. Used in conjunction with {@link
+ * org.openqa.selenium.support.PageFactory} this allows users to quickly and easily create
+ * PageObjects.
  *
- * <p>It can be used on a types as well, but will not be processed by default.</p>
+ * <p>It can be used on a types as well, but will not be processed by default.
  *
- * <p>
- * You can either use this annotation by specifying both "how" and "using" or by specifying one of
- * the location strategies (eg: "id") with an appropriate value to use. Both options will delegate
- * down to the matching {@link org.openqa.selenium.By} methods in By class.</p>
+ * <p>You can either use this annotation by specifying both "how" and "using" or by specifying one
+ * of the location strategies (eg: "id") with an appropriate value to use. Both options will
+ * delegate down to the matching {@link org.openqa.selenium.By} methods in By class.
  *
- * <p>For example, these two annotations point to the same element:</p>
+ * <p>For example, these two annotations point to the same element:
  *
  * <pre class="code">
  * &#64;FindBy(id = "foobar") WebElement foobar;
  * &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
  * </pre>
  *
- * <p>and these two annotations point to the same list of elements:</p>
+ * <p>and these two annotations point to the same list of elements:
  *
  * <pre class="code">
  * &#64;FindBy(tagName = "a") List&lt;WebElement&gt; links;
@@ -88,9 +86,6 @@ public @interface FindBy {
       }
 
       return ans;
-
     }
-
   }
-
 }

@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.testing;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
+
+import java.time.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,14 +33,9 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 public abstract class JupiterTestBase {
 
-  @RegisterExtension
-  static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension static SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;

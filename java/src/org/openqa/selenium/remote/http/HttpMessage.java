@@ -24,9 +24,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.net.MediaType;
-
-import org.openqa.selenium.internal.Require;
-
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -35,8 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.openqa.selenium.internal.Require;
 
-abstract class HttpMessage<M extends HttpMessage<M>>  {
+abstract class HttpMessage<M extends HttpMessage<M>> {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
   private final Map<String, Object> attributes = new HashMap<>();
@@ -102,9 +100,11 @@ abstract class HttpMessage<M extends HttpMessage<M>>  {
   }
 
   public M removeHeader(String name) {
-    String toRemove = headers.keySet().stream()
-      .filter(header -> header.equalsIgnoreCase(name))
-      .findFirst().orElse(name);
+    String toRemove =
+        headers.keySet().stream()
+            .filter(header -> header.equalsIgnoreCase(name))
+            .findFirst()
+            .orElse(name);
     headers.removeAll(toRemove);
     return self();
   }
@@ -137,4 +137,3 @@ abstract class HttpMessage<M extends HttpMessage<M>>  {
     return (M) this;
   }
 }
-

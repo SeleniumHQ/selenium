@@ -21,18 +21,6 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.apache.commons.exec.DaemonExecutor;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.io.CircularOutputStream;
-import org.openqa.selenium.io.MultiOutputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +32,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.exec.DaemonExecutor;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.CircularOutputStream;
+import org.openqa.selenium.io.MultiOutputStream;
 
 class OsProcess {
   private static final Logger LOG = Logger.getLogger(OsProcess.class.getName());
@@ -62,7 +61,8 @@ class OsProcess {
 
   public OsProcess(String executable, String... args) {
     String actualExe = new ExecutableFinder().find(executable);
-    Require.state("Actual executable", actualExe).nonNull("Unable to find executable for: %s", executable);
+    Require.state("Actual executable", actualExe)
+        .nonNull("Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }
@@ -72,8 +72,8 @@ class OsProcess {
       throw new IllegalArgumentException("Cannot have a null environment variable name!");
     }
     if (value == null) {
-      throw new IllegalArgumentException("Cannot have a null value for environment variable " +
-                                         name);
+      throw new IllegalArgumentException(
+          "Cannot have a null value for environment variable " + name);
     }
     env.put(name, value);
   }
@@ -89,7 +89,9 @@ class OsProcess {
   }
 
   private ByteArrayInputStream getInputStream() {
-    return allInput != null ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset())) : null;
+    return allInput != null
+        ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset()))
+        : null;
   }
 
   public void executeAsync() {
@@ -110,15 +112,15 @@ class OsProcess {
   }
 
   private OutputStream getOutputStream() {
-    return drainTo == null ? inputOut
-        : new MultiOutputStream(inputOut, drainTo);
+    return drainTo == null ? inputOut : new MultiOutputStream(inputOut, drainTo);
   }
 
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
 
     if (watchdog.waitForProcessStarted(2, TimeUnit.MINUTES)) {
-      // I literally have no idea why we don't try and kill the process nicely on Windows. If you do,
+      // I literally have no idea why we don't try and kill the process nicely on Windows. If you
+      // do,
       // answers on the back of a postcard to SeleniumHQ, please.
       if (!Platform.getCurrent().is(WINDOWS)) {
         watchdog.destroyProcess();
@@ -190,8 +192,7 @@ class OsProcess {
 
   public int getExitCode() {
     if (isRunning()) {
-      throw new IllegalStateException(
-          "Cannot get exit code before executing command line: " + cl);
+      throw new IllegalStateException("Cannot get exit code before executing command line: " + cl);
     }
     return handler.getExitValue();
   }

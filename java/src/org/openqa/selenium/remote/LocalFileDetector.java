@@ -20,9 +20,7 @@ package org.openqa.selenium.remote;
 import java.io.File;
 import java.util.logging.Logger;
 
-/**
- * Detects files on the local disk.
- */
+/** Detects files on the local disk. */
 public class LocalFileDetector implements FileDetector {
 
   private static final Logger LOG = Logger.getLogger(LocalFileDetector.class.getName());
@@ -38,7 +36,7 @@ public class LocalFileDetector implements FileDetector {
 
     // If empty string, no file is meant to be sent
     if (filepath.isEmpty()) {
-        return null;
+      return null;
     }
 
     File file = new File(filepath);
