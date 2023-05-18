@@ -54,7 +54,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
+pub const REQUEST_TIMEOUT_SEC: u64 = 180; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
