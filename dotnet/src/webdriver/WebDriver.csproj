@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>..\..\..\build\cli\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <AssemblyTitle>WebDriver</AssemblyTitle>
     <Description>Selenium WebDriver API .NET Bindings</Description>
     <Company>Selenium Committers</Company>
