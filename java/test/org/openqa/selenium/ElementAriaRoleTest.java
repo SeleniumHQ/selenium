@@ -28,7 +28,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 class ElementAriaRoleTest extends JupiterTestBase {
 
   @Test
-  @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnExplicitlySpecifiedRole() {
     driver.get(
         appServer.create(
@@ -40,7 +39,6 @@ class ElementAriaRoleTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnImplicitRoleDefinedByTagName() {
     driver.get(
         appServer.create(
@@ -50,7 +48,6 @@ class ElementAriaRoleTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnExplicitRoleEvenIfItContradictsTagName() {
     driver.get(
         appServer.create(

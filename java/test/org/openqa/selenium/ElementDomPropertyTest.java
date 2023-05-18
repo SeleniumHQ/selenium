@@ -89,7 +89,7 @@ class ElementDomPropertyTest extends JupiterTestBase {
     WebElement heading = driver.findElement(By.cssSelector(".nameA"));
     assertThat(heading.getDomProperty("class")).isNull();
     assertThat(heading.getDomProperty("className")).isEqualTo("nameA nameBnoise   nameC");
-    assertThat(heading.getDomProperty("classList")).contains("nameA nameBnoise   nameC");
+    assertThat(heading.getDomProperty("classList")).isEqualTo("[nameA, nameBnoise, nameC]");
   }
 
   @Test
