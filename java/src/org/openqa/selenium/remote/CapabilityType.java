@@ -25,11 +25,6 @@ public interface CapabilityType {
    */
   @Deprecated String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
 
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
-
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
   String BROWSER_VERSION = "browserVersion";

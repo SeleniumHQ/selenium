@@ -21,7 +21,6 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 import static org.openqa.selenium.remote.Browser.OPERA;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -37,8 +36,7 @@ public class AddWebStorage implements AugmenterProvider<WebStorage> {
         FIREFOX.is(caps)
             || CHROME.is(caps)
             || EDGE.is(caps)
-            || OPERA.is(caps)
-            || caps.is(SUPPORTS_WEB_STORAGE);
+            || OPERA.is(caps);
   }
 
   @Override
