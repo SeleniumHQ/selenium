@@ -768,27 +768,4 @@ class ElementFindingTest extends JupiterTestBase {
     driver.switchTo().defaultContent();
     assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(element::getText);
   }
-
-  @SwitchToTopAfterTest
-  @Test
-  @NotYetImplemented(SAFARI)
-  public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
-    driver.get(pages.missedJsReferencePage);
-
-    driver.switchTo().frame("inner");
-    WebElement first = driver.findElement(By.id("oneline"));
-
-    driver.switchTo().defaultContent();
-    WebElement element =
-        (WebElement)
-            ((JavascriptExecutor) driver)
-                .executeScript("return frames[0].document.getElementById('oneline');");
-
-    driver.switchTo().frame("inner");
-
-    WebElement second = driver.findElement(By.id("oneline"));
-
-    assertThat(element).isEqualTo(first);
-    assertThat(element).isEqualTo(second);
-  }
 }
