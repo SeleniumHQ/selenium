@@ -175,7 +175,8 @@ public class JsonOutput implements Closeable {
         Collection.class::isAssignableFrom,
         (obj, depth) -> {
           if (depth < 1) {
-            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+            throw new JsonException(
+                "Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
           }
           beginArray();
           ((Collection<?>) obj)
@@ -189,7 +190,8 @@ public class JsonOutput implements Closeable {
         Map.class::isAssignableFrom,
         (obj, depth) -> {
           if (depth < 1) {
-            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+            throw new JsonException(
+                "Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
           }
           beginObject();
           ((Map<?, ?>) obj)
@@ -206,7 +208,8 @@ public class JsonOutput implements Closeable {
         Class::isArray,
         (obj, depth) -> {
           if (depth < 1) {
-            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+            throw new JsonException(
+                "Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
           }
           beginArray();
           Stream.of((Object[]) obj)
@@ -228,12 +231,15 @@ public class JsonOutput implements Closeable {
         });
 
     // Finally, attempt to convert as an object
-    builder.put(cls -> true, (obj, depth) -> {
-      if (depth < 1) {
-        throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
-      }
-      mapObject(obj, depth - 1);
-    });
+    builder.put(
+        cls -> true,
+        (obj, depth) -> {
+          if (depth < 1) {
+            throw new JsonException(
+                "Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+          }
+          mapObject(obj, depth - 1);
+        });
 
     this.converters = Collections.unmodifiableMap(builder);
   }

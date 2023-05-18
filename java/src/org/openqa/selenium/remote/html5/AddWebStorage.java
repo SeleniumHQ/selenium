@@ -32,11 +32,7 @@ public class AddWebStorage implements AugmenterProvider<WebStorage> {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps ->
-        FIREFOX.is(caps)
-            || CHROME.is(caps)
-            || EDGE.is(caps)
-            || OPERA.is(caps);
+    return caps -> FIREFOX.is(caps) || CHROME.is(caps) || EDGE.is(caps) || OPERA.is(caps);
   }
 
   @Override
