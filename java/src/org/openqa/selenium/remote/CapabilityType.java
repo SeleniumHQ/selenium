@@ -20,11 +20,6 @@ package org.openqa.selenium.remote;
 /** Commonly seen remote webdriver capabilities. */
 public interface CapabilityType {
 
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
-
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
   String BROWSER_VERSION = "browserVersion";
