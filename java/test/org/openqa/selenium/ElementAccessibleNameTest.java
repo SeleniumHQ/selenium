@@ -28,7 +28,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 class ElementAccessibleNameTest extends JupiterTestBase {
 
   @Test
-  @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnAccessibleName() {
     driver.get(
         appServer.create(

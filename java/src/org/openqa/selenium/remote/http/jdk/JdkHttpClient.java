@@ -211,7 +211,31 @@ public class JdkHttpClient implements HttpClient {
                   }
                 });
 
-    java.net.http.WebSocket underlyingSocket = webSocketCompletableFuture.join();
+    java.net.http.WebSocket underlyingSocket;
+
+    try {
+      underlyingSocket = webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
+    } catch (CancellationException e) {
+      throw new WebDriverException(e.getMessage(), e);
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+
+      if (cause instanceof HttpTimeoutException) {
+        throw new TimeoutException(cause);
+      } else if (cause instanceof IOException) {
+        throw new UncheckedIOException((IOException) cause);
+      } else if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+
+      throw new WebDriverException((cause != null) ? cause : e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (java.util.concurrent.TimeoutException e) {
+      webSocketCompletableFuture.cancel(true);
+      throw new TimeoutException(e);
+    }
 
     this.websocket =
         new WebSocket() {
@@ -340,7 +364,31 @@ public class JdkHttpClient implements HttpClient {
       // - not run into https://bugs.openjdk.org/browse/JDK-8304701
       for (int i = 0; i < 100; i++) {
         java.net.http.HttpRequest request = messages.createRequest(req, rawUri);
-        java.net.http.HttpResponse<byte[]> response = client.send(request, byteHandler);
+        java.net.http.HttpResponse<byte[]> response;
+
+        // use sendAsync to not run into https://bugs.openjdk.org/browse/JDK-8258397
+        CompletableFuture<java.net.http.HttpResponse<byte[]>> future = client.sendAsync(request, byteHandler);
+
+        try {
+          response = future.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (CancellationException e) {
+          throw new WebDriverException(e.getMessage(), e);
+        } catch (ExecutionException e) {
+          Throwable cause = e.getCause();
+
+          if (cause instanceof HttpTimeoutException) {
+            throw new TimeoutException(cause);
+          } else if (cause instanceof IOException) {
+            throw (IOException) cause;
+          } else if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
+          }
+
+          throw new WebDriverException((cause != null) ? cause : e);
+        } catch (java.util.concurrent.TimeoutException e) {
+          future.cancel(true);
+          throw new TimeoutException(e);
+        }
 
         switch (response.statusCode()) {
           case 301:
@@ -376,8 +424,6 @@ public class JdkHttpClient implements HttpClient {
       }
 
       throw new ProtocolException("Too many redirects: 101");
-    } catch (HttpTimeoutException e) {
-      throw new TimeoutException(e);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     } catch (InterruptedException e) {
