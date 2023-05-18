@@ -82,8 +82,6 @@ class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   public void testShouldGetClassPropertiesOfAnElement() {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.cssSelector(".nameA"));
