@@ -32,6 +32,7 @@ namespace OpenQA.Selenium.Internal
     internal static class ResourceUtilities
     {
         private static string assemblyVersion;
+        private static string productVersion;
         private static string platformFamily;
 
         /// <summary>
@@ -45,10 +46,27 @@ namespace OpenQA.Selenium.Internal
                 {
                     Assembly executingAssembly = Assembly.GetExecutingAssembly();
                     Version versionResource = executingAssembly.GetName().Version;
-                    assemblyVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", versionResource.Major, versionResource.Minor, versionResource.Revision);
+                    assemblyVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", versionResource.Major, versionResource.Minor, versionResource.Build);
                 }
 
                 return assemblyVersion;
+            }
+        }
+
+        /// <summary>
+        /// Gets a string representing the informational version of the Selenium product.
+        /// </summary>
+        public static string ProductVersion
+        {
+            get
+            {
+                if (productVersion == null)
+                {
+                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                    productVersion = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                }
+
+                return productVersion;
             }
         }
 
