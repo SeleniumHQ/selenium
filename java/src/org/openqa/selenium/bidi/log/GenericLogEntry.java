@@ -21,19 +21,16 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.openqa.selenium.json.JsonInput;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+// @see <a
+// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class GenericLogEntry extends BaseLogEntry {
 
   private final String type;
 
-  public GenericLogEntry(LogLevel level,
-                         String text,
-                         long timestamp,
-                         String type,
-                         StackTrace stackTrace) {
+  public GenericLogEntry(
+      LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
     super(level, text, timestamp, stackTrace);
     this.type = type;
   }
@@ -93,5 +90,4 @@ public class GenericLogEntry extends BaseLogEntry {
 
     return unmodifiableMap(toReturn);
   }
-
 }

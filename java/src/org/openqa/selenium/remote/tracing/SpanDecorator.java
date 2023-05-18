@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.util.function.Function;
 
 public class SpanDecorator implements Filter {
 

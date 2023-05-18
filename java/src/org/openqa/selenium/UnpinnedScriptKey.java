@@ -25,7 +25,8 @@ import java.util.WeakHashMap;
 
 class UnpinnedScriptKey extends ScriptKey {
 
-  private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts = new WeakHashMap<>();
+  private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts =
+      new WeakHashMap<>();
   private final String script;
 
   static UnpinnedScriptKey pin(JavascriptExecutor executor, String script) {

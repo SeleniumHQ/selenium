@@ -30,5 +30,4 @@ public class NoSuchFrameException extends NotFoundException {
   public NoSuchFrameException(String reason, Throwable cause) {
     super(reason, cause);
   }
-
 }

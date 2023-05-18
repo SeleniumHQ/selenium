@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.grid.node.DefaultActiveSession;
@@ -26,15 +34,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class DockerSession extends DefaultActiveSession {
 
   private static final Logger LOG = Logger.getLogger(DockerSession.class.getName());
@@ -43,18 +42,18 @@ public class DockerSession extends DefaultActiveSession {
   private final DockerAssetsPath assetsPath;
 
   DockerSession(
-    Container container,
-    Container videoContainer,
-    Tracer tracer,
-    HttpClient client,
-    SessionId id,
-    URL url,
-    Capabilities stereotype,
-    Capabilities capabilities,
-    Dialect downstream,
-    Dialect upstream,
-    Instant startTime,
-    DockerAssetsPath assetsPath) {
+      Container container,
+      Container videoContainer,
+      Tracer tracer,
+      HttpClient client,
+      SessionId id,
+      URL url,
+      Capabilities stereotype,
+      Capabilities capabilities,
+      Dialect downstream,
+      Dialect upstream,
+      Instant startTime,
+      DockerAssetsPath assetsPath) {
     super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
     this.videoContainer = videoContainer;

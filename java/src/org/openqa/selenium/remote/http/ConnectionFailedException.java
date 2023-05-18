@@ -28,5 +28,4 @@ public class ConnectionFailedException extends WebDriverException {
   public ConnectionFailedException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

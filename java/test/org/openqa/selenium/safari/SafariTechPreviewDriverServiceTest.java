@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.safari;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.time.Duration;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
+import java.io.File;
+import java.time.Duration;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class SafariTechPreviewDriverServiceTest {
@@ -39,7 +38,7 @@ class SafariTechPreviewDriverServiceTest {
     Duration customTimeout = Duration.ofSeconds(60);
 
     SafariTechPreviewDriverService.Builder builderMock =
-      spy(MockSafariTechPreviewDriverServiceBuilder.class);
+        spy(MockSafariTechPreviewDriverServiceBuilder.class);
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
@@ -50,7 +49,7 @@ class SafariTechPreviewDriverServiceTest {
   }
 
   public static class MockSafariTechPreviewDriverServiceBuilder
-    extends SafariTechPreviewDriverService.Builder {
+      extends SafariTechPreviewDriverService.Builder {
 
     @Override
     public SafariTechPreviewDriverService.Builder usingDriverExecutable(File file) {

@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.mobile;
 
-
 /**
- * Control a device's network connection <p> Example usage:
+ * Control a device's network connection
+ *
+ * <p>Example usage:
  *
  * <pre>
  * NetworkConnection mobileDriver = (NetworkConnection) driver;
@@ -33,6 +34,7 @@ public interface NetworkConnection {
 
   /**
    * ConnectionType is a bitmask to represent a device's network connection
+   *
    * <pre>
    * Data  | WIFI | Airplane
    * 0       0      1         == 1
@@ -117,7 +119,7 @@ public interface NetworkConnection {
    * Query the driver for the Airplane Mode setting state
    *
    * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} indicating if the
-   * device is in Airplane Mode
+   *     device is in Airplane Mode
    */
   ConnectionType getNetworkConnection();
 
@@ -127,8 +129,7 @@ public interface NetworkConnection {
    *
    * @param type ConnectionType of what the network connection should be
    * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} of what the
-   * device's network connection is
+   *     device's network connection is
    */
   ConnectionType setNetworkConnection(ConnectionType type);
-
 }

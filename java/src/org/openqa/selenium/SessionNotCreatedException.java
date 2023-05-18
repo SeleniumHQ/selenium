@@ -17,17 +17,20 @@
 
 package org.openqa.selenium;
 
-/**
- * Indicates that a session could not be created.
- */
+/** Indicates that a session could not be created. */
 public class SessionNotCreatedException extends WebDriverException {
   public SessionNotCreatedException(String msg) {
-    super("Could not start a new session. " + msg +
-          (msg != null && msg.contains("Host info") ? "" : " \n" + getHostInformation()));
+    super(
+        "Could not start a new session. "
+            + msg
+            + (msg != null && msg.contains("Host info") ? "" : " \n" + getHostInformation()));
   }
 
   public SessionNotCreatedException(String msg, Throwable cause) {
-    super("Could not start a new session. " + msg +
-          (msg != null && msg.contains("Host info") ? "" : " \n" + getHostInformation()), cause);
+    super(
+        "Could not start a new session. "
+            + msg
+            + (msg != null && msg.contains("Host info") ? "" : " \n" + getHostInformation()),
+        cause);
   }
 }

@@ -18,18 +18,15 @@
 package org.openqa.selenium.grid.server;
 
 import com.google.common.io.ByteStreams;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.function.Supplier;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 class ServletResponseWrappingHttpResponse extends HttpResponse {
 
@@ -88,7 +85,7 @@ class ServletResponseWrappingHttpResponse extends HttpResponse {
     resp.setContentLength(bytes.length);
 
     try (InputStream is = supplier.get();
-         ServletOutputStream os = resp.getOutputStream()) {
+        ServletOutputStream os = resp.getOutputStream()) {
       ByteStreams.copy(is, os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

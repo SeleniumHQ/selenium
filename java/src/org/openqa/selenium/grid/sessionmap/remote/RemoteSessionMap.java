@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URI;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
@@ -32,16 +41,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URI;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteSessionMap extends SessionMap {
 

@@ -17,7 +17,7 @@
 package org.openqa.selenium.edge;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
@@ -30,13 +30,12 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.util.Map;
-
 /**
- * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
- * It requires an <code>edgedriver</code> executable to be available in PATH.
+ * A {@link WebDriver} implementation that controls an Edge browser running on the local machine. It
+ * requires an <code>edgedriver</code> executable to be available in PATH.
  *
- * @see <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft WebDriver</a>
+ * @see <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft
+ *     WebDriver</a>
  */
 public class EdgeDriver extends ChromiumDriver {
 
@@ -62,7 +61,8 @@ public class EdgeDriver extends ChromiumDriver {
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  private static EdgeDriverCommandExecutor generateExecutor(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
+  private static EdgeDriverCommandExecutor generateExecutor(
+      EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
@@ -85,9 +85,9 @@ public class EdgeDriver extends ChromiumDriver {
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(new AddHasCasting().getAdditionalCommands())
-        .putAll(new AddHasCdp().getAdditionalCommands())
-        .build();
+          .putAll(new AddHasCasting().getAdditionalCommands())
+          .putAll(new AddHasCdp().getAdditionalCommands())
+          .build();
     }
   }
 }

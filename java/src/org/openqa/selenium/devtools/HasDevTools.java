@@ -22,9 +22,9 @@ import java.util.Optional;
 public interface HasDevTools {
 
   default DevTools getDevTools() {
-    return maybeGetDevTools().orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
+    return maybeGetDevTools()
+        .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
   }
 
   Optional<DevTools> maybeGetDevTools();
-
 }

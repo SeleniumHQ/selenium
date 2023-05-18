@@ -17,6 +17,13 @@
 
 package dev.selenium.tools.modules;
 
+import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
+import static net.bytebuddy.jar.asm.Opcodes.ASM9;
+
 import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -34,14 +41,6 @@ import com.github.javaparser.ast.modules.ModuleProvidesDirective;
 import com.github.javaparser.ast.modules.ModuleRequiresDirective;
 import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import net.bytebuddy.jar.asm.ClassReader;
-import net.bytebuddy.jar.asm.ClassVisitor;
-import net.bytebuddy.jar.asm.ClassWriter;
-import net.bytebuddy.jar.asm.MethodVisitor;
-import net.bytebuddy.jar.asm.ModuleVisitor;
-import net.bytebuddy.jar.asm.Type;
-import org.openqa.selenium.io.TemporaryFilesystem;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -80,13 +79,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
-import static net.bytebuddy.jar.asm.Opcodes.ASM9;
+import net.bytebuddy.jar.asm.ClassReader;
+import net.bytebuddy.jar.asm.ClassVisitor;
+import net.bytebuddy.jar.asm.ClassWriter;
+import net.bytebuddy.jar.asm.MethodVisitor;
+import net.bytebuddy.jar.asm.ModuleVisitor;
+import net.bytebuddy.jar.asm.Type;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class ModuleGenerator {
 

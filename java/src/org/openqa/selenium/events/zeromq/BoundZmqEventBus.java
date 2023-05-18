@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.events.zeromq;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
@@ -27,14 +34,6 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 class BoundZmqEventBus implements EventBus {
 
   private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
@@ -43,7 +42,8 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+  BoundZmqEventBus(
+      ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -60,11 +60,13 @@ class BoundZmqEventBus implements EventBus {
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
-    executor = Executors.newSingleThreadExecutor(r -> {
-      Thread thread = new Thread(r, "Message Bus Proxy");
-      thread.setDaemon(true);
-      return thread;
-    });
+    executor =
+        Executors.newSingleThreadExecutor(
+            r -> {
+              Thread thread = new Thread(r, "Message Bus Proxy");
+              thread.setDaemon(true);
+              return thread;
+            });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
     delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
@@ -119,7 +121,7 @@ class BoundZmqEventBus implements EventBus {
 
     boolean isAddressIPv6 = false;
     try {
-      if (InetAddress.getByName(host) instanceof Inet6Address ) {
+      if (InetAddress.getByName(host) instanceof Inet6Address) {
         isAddressIPv6 = true;
         if (!host.startsWith("[")) {
           host = String.format("[%s]", host);
@@ -129,17 +131,14 @@ class BoundZmqEventBus implements EventBus {
       LOG.log(Level.WARNING, "Could not determine if host address is IPv6 or IPv4", e);
     }
 
-    return new Addresses(
-        connection,
-        String.format("tcp://%s:%d", host, port),
-        isAddressIPv6
-    );
+    return new Addresses(connection, String.format("tcp://%s:%d", host, port), isAddressIPv6);
   }
 
   private static class Addresses {
     String bindTo;
     String advertise;
     boolean isIPv6;
+
     Addresses(String bindTo, String advertise, boolean isIPv6) {
       this.bindTo = bindTo;
       this.advertise = advertise;

@@ -23,8 +23,8 @@ import static org.openqa.selenium.Keys.LEFT;
 import static org.openqa.selenium.Keys.chord;
 import static org.openqa.selenium.Keys.getKeyFromUnicode;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class KeysTest {
@@ -66,5 +66,4 @@ class KeysTest {
     Keys key = Keys.LEFT;
     assertThat((CharSequence) getKeyFromUnicode(key.charAt(0))).isEqualTo(key);
   }
-
 }

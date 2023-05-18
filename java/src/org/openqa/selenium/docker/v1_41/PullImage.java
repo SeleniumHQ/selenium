@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import java.util.Map;
+import java.util.logging.Logger;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.internal.Require;
@@ -25,14 +32,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class PullImage {
   private static final Json JSON = new Json();
@@ -49,9 +48,10 @@ class PullImage {
     LOG.info("Pulling " + ref);
 
     String image = String.format("%s/%s", ref.getDomain(), ref.getName());
-    HttpRequest req = new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
-      .addHeader("Content-Type", JSON_UTF_8)
-      .addQueryParameter("fromImage", image);
+    HttpRequest req =
+        new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
+            .addHeader("Content-Type", JSON_UTF_8)
+            .addQueryParameter("fromImage", image);
 
     if (ref.getDigest() != null) {
       req.addQueryParameter("tag", ref.getDigest());

@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
+import org.openqa.selenium.internal.Require;
 
 public class NodeId implements Comparable<NodeId>, Serializable {
 

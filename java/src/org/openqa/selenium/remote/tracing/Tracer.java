@@ -26,5 +26,4 @@ public interface Tracer {
   Propagator getPropagator();
 
   void setOpenTelemetryContext(Context context);
-
 }

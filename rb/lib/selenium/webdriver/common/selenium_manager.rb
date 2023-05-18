@@ -40,16 +40,7 @@ module Selenium
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
           end
 
-          command = [binary, '--browser', options.browser_name, '--output', 'json']
-          if options.browser_version
-            command << '--browser-version'
-            command << options.browser_version
-          end
-          if options.respond_to?(:binary) && !options.binary.nil?
-            command << '--browser-path'
-            command << options.binary.gsub('\\', '\\\\\\')
-          end
-          command << '--debug' if WebDriver.logger.debug?
+          command = generate_command(binary, options)
 
           location = run(*command)
           WebDriver.logger.debug("Driver found at #{location}", id: :selenium_manager)
@@ -59,6 +50,24 @@ module Selenium
         end
 
         private
+
+        def generate_command(binary, options)
+          command = [binary, '--browser', options.browser_name, '--output', 'json']
+          if options.browser_version
+            command << '--browser-version'
+            command << options.browser_version
+          end
+          if options.respond_to?(:binary) && !options.binary.nil?
+            command << '--browser-path'
+            command << options.binary.gsub('\\', '\\\\\\')
+          end
+          if options.proxy
+            command << '--proxy'
+            (command << options.proxy.ssl) || options.proxy.http
+          end
+          command << '--debug' if WebDriver.logger.debug?
+          command
+        end
 
         # @return [String] the path to the correct selenium manager
         def binary
@@ -92,12 +101,12 @@ module Selenium
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
           end
 
-          if status.exitstatus.positive?
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
+          (json_output&.fetch('logs') || []).each do |log|
+            WebDriver.logger.send(log['level'].downcase, log['message'], id: :selenium_manager)
           end
 
-          json_output['logs'].each do |log|
-            WebDriver.logger.send(log['level'].downcase, log['message'], id: :selenium_manager)
+          if status.exitstatus.positive?
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
           end
 
           result
