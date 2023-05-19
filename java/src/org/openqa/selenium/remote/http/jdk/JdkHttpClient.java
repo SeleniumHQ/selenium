@@ -55,6 +55,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpClientName;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Message;
@@ -357,6 +358,7 @@ public class JdkHttpClient implements HttpClient {
 
     BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
     try {
+      HttpMethod method = req.getMethod();
       URI rawUri = messages.getRawUri(req);
 
       // We need a custom handling of redirects to:
@@ -364,7 +366,7 @@ public class JdkHttpClient implements HttpClient {
       // - avoid a downgrade of POST requests, see the javadoc of j.n.h.HttpClient.Redirect
       // - not run into https://bugs.openjdk.org/browse/JDK-8304701
       for (int i = 0; i < 100; i++) {
-        java.net.http.HttpRequest request = messages.createRequest(req, rawUri);
+        java.net.http.HttpRequest request = messages.createRequest(req, method, rawUri);
         java.net.http.HttpResponse<byte[]> response;
 
         // use sendAsync to not run into https://bugs.openjdk.org/browse/JDK-8258397
@@ -393,9 +395,11 @@ public class JdkHttpClient implements HttpClient {
         }
 
         switch (response.statusCode()) {
+          case 303:
+            method = HttpMethod.GET;
+            // fall-through
           case 301:
           case 302:
-          case 303:
           case 307:
           case 308:
             URI location =

@@ -31,6 +31,7 @@ import java.util.stream.StreamSupport;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -44,7 +45,7 @@ class JdkHttpMessages {
     this.config = Objects.requireNonNull(config, "Client config");
   }
 
-  public java.net.http.HttpRequest createRequest(HttpRequest req, URI rawUri) {
+  public java.net.http.HttpRequest createRequest(HttpRequest req, HttpMethod method, URI rawUri) {
     String rawUrl = rawUri.toString();
 
     // Add query string if necessary
@@ -69,7 +70,7 @@ class JdkHttpMessages {
     java.net.http.HttpRequest.Builder builder =
         java.net.http.HttpRequest.newBuilder().uri(URI.create(rawUrl));
 
-    switch (req.getMethod()) {
+    switch (method) {
       case DELETE:
         builder = builder.DELETE();
         break;
