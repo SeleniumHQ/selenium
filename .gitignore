@@ -80,6 +80,7 @@ selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
+dotnet/**/bin/
 obj/
 *.opensdf
 *.suo
