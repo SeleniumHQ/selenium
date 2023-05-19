@@ -148,7 +148,7 @@ class WebElement(BaseWebElement):
         """
         return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
 
-    def get_attribute(self, name) -> str:
+    def get_attribute(self, name) -> str | None:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -266,7 +266,7 @@ class WebElement(BaseWebElement):
         cause the element to be scrolled into view.
 
         Returns the top lefthand corner location on the screen, or
-        ``None`` if the element is not visible.
+        zero coordinates if the element is not visible.
         """
         old_loc = self._execute(
             Command.W3C_EXECUTE_SCRIPT,
