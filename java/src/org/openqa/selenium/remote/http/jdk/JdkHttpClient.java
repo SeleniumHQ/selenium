@@ -214,7 +214,8 @@ public class JdkHttpClient implements HttpClient {
     java.net.http.WebSocket underlyingSocket;
 
     try {
-      underlyingSocket = webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
+      underlyingSocket =
+          webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (CancellationException e) {
       throw new WebDriverException(e.getMessage(), e);
     } catch (ExecutionException e) {
@@ -367,7 +368,8 @@ public class JdkHttpClient implements HttpClient {
         java.net.http.HttpResponse<byte[]> response;
 
         // use sendAsync to not run into https://bugs.openjdk.org/browse/JDK-8258397
-        CompletableFuture<java.net.http.HttpResponse<byte[]>> future = client.sendAsync(request, byteHandler);
+        CompletableFuture<java.net.http.HttpResponse<byte[]>> future =
+            client.sendAsync(request, byteHandler);
 
         try {
           response = future.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);

@@ -21,7 +21,6 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -471,12 +470,6 @@ public class RemoteWebDriver
 
   @Override
   public Object executeScript(String script, Object... args) {
-    if (!isJavascriptEnabled()) {
-      throw new UnsupportedOperationException(
-          "You must be using an underlying instance of WebDriver that supports executing"
-              + " javascript");
-    }
-
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
@@ -485,20 +478,10 @@ public class RemoteWebDriver
 
   @Override
   public Object executeAsyncScript(String script, Object... args) {
-    if (!isJavascriptEnabled()) {
-      throw new UnsupportedOperationException(
-          "You must be using an underlying instance of "
-              + "WebDriver that supports executing javascript");
-    }
-
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
     return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT(script, convertedArgs)).getValue();
-  }
-
-  private boolean isJavascriptEnabled() {
-    return getCapabilities().is(SUPPORTS_JAVASCRIPT);
   }
 
   @Override

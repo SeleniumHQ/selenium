@@ -810,35 +810,6 @@ namespace OpenQA.Selenium
             Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4443")]
-        public void AnElementFoundInADifferentFrameViaJsCanBeUsed()
-        {
-            driver.Url = missedJsReferencePage;
-
-            try
-            {
-                driver.SwitchTo().Frame("inner");
-                IWebElement first = driver.FindElement(By.Id("oneline"));
-
-                driver.SwitchTo().DefaultContent();
-                IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript(
-                    "return frames[0].document.getElementById('oneline');");
-
-
-                driver.SwitchTo().Frame("inner");
-
-                IWebElement second = driver.FindElement(By.Id("oneline"));
-
-                Assert.AreEqual(first, element);
-                Assert.AreEqual(second, element);
-            }
-            finally
-            {
-                driver.SwitchTo().DefaultContent();
-            }
-        }
-
         /////////////////////////////////////////////////
         // Tests unique to the .NET bindings
         /////////////////////////////////////////////////

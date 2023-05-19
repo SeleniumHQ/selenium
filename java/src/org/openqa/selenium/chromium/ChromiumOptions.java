@@ -366,7 +366,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
         Map<String, Object> options = (Map<String, Object>) object;
 
         @SuppressWarnings("unchecked")
-        List<String> arguments = (List<String>) (options.getOrDefault("args", new HashMap<>()));
+        List<String> arguments = (List<String>) (options.getOrDefault("args", new ArrayList<>()));
         @SuppressWarnings("unchecked")
         List<Object> extensionList =
             (List<Object>) (options.getOrDefault("extensions", new ArrayList<>()));
