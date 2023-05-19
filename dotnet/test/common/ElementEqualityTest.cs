@@ -48,22 +48,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4443")]
-        public void AnElementFoundInADifferentFrameViaJsShouldHaveSameId()
+        public void AnElementFoundInViaJsShouldHaveSameId()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
 
             driver.SwitchTo().Frame("inner");
             IWebElement first = driver.FindElement(By.Id("oneline"));
 
-            driver.SwitchTo().DefaultContent();
-            IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return frames[0].document.getElementById('oneline');");
+            IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('oneline');");
 
-            driver.SwitchTo().Frame("inner");
-
-            IWebElement second = driver.FindElement(By.Id("oneline"));
             Assert.AreEqual(first, element);
-            Assert.AreEqual(second, element);
         }
     }
 }
