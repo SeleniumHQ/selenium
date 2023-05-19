@@ -35,14 +35,28 @@ module Selenium
           # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
           # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
-          def initialize(open_timeout: nil, read_timeout: nil)
+          # @param [Proxy] proxy - Where to route HTTP calls sent by client.
+          def initialize(open_timeout: nil, read_timeout: nil, proxy: nil)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
+            @proxy = proxy
             super()
           end
 
           def close
             @http&.finish
+          end
+
+          def proxy
+            @proxy ||= begin
+              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
+              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
+
+              if proxy
+                proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+                Proxy.new(http: proxy, no_proxy: no_proxy)
+              end
+            end
           end
 
           private
@@ -132,18 +146,6 @@ module Selenium
               Net::HTTP.new(server_url.host, server_url.port, proxy.host, proxy.port, proxy.user, proxy.password)
             else
               Net::HTTP.new server_url.host, server_url.port
-            end
-          end
-
-          def proxy
-            @proxy ||= begin
-              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
-              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
-
-              if proxy
-                proxy = "http://#{proxy}" unless proxy.start_with?('http://')
-                Proxy.new(http: proxy, no_proxy: no_proxy)
-              end
             end
           end
 

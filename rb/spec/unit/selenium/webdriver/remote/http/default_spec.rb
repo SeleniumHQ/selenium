@@ -24,6 +24,7 @@ module Selenium
     module Remote
       module Http
         describe Default do
+          let(:proxy) { Proxy.new(http: 'http://foo:bar@proxy.org:8080') }
           let(:client) do
             client = described_class.new
             client.server_url = URI.parse('http://example.com')
@@ -39,7 +40,7 @@ module Selenium
           end
 
           describe '#initialize' do
-            let(:client) { described_class.new(read_timeout: 22, open_timeout: 23) }
+            let(:client) { described_class.new(read_timeout: 22, open_timeout: 23, proxy: proxy) }
 
             it 'accepts read timeout options' do
               expect(client.open_timeout).to eq 23
@@ -48,10 +49,14 @@ module Selenium
             it 'accepts open timeout options' do
               expect(client.read_timeout).to eq 22
             end
+
+            it 'accepts a proxy' do
+              expect(client.send(:proxy)).to eq proxy
+            end
           end
 
           it 'uses the specified proxy' do
-            client.proxy = Proxy.new(http: 'http://foo:bar@proxy.org:8080')
+            client.proxy = proxy
             http = client.send :http
 
             expect(http).to be_proxy
