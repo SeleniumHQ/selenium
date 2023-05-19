@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.grid.config.Config;
 
-class DockerOptionsTest {
+class DockerOptionDevicesTest {
 
   public static Stream<Arguments> data() {
     return Arrays.stream(

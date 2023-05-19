@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,6 +145,8 @@ public class DockerOptions {
 
     List<Device> devicesMapping = getDevicesMapping();
 
+    Map<String, String> volumesMapping = getVolumesMapping();
+
     // If Selenium Server is running inside a Docker container, we can inspect that container
     // to get the information from it.
     // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
@@ -178,6 +181,7 @@ public class DockerOptions {
                     image,
                     caps,
                     devicesMapping,
+                    volumesMapping,
                     videoImage,
                     assetsPath,
                     networkName,
@@ -213,6 +217,26 @@ public class DockerOptions {
       }
     }
     return deviceMapping;
+  }
+
+  protected Map<String, String> getVolumesMapping() {
+    Pattern linuxDeviceMappingWithDefaultPermissionsPattern =
+      Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
+
+    List<String> volumes =
+      config.getAll(DOCKER_SECTION, "volumes").orElseGet(Collections::emptyList);
+
+    Map<String, String> volumesMapping = new HashMap<>();
+    for (int i = 0; i < volumes.size(); i++) {
+      String deviceMappingDefined = volumes.get(i).trim();
+      Matcher matcher =
+        linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+
+      if (matcher.matches()) {
+        volumesMapping.put(matcher.group(1), matcher.group(2));
+      }
+    }
+    return volumesMapping;
   }
 
   private Image getVideoImage(Docker docker) {

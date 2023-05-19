@@ -98,6 +98,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Image browserImage;
   private final Capabilities stereotype;
   private final List<Device> devices;
+  private final Map<String, String> volumes;
   private final Image videoImage;
   private final DockerAssetsPath assetsPath;
   private final String networkName;
@@ -113,6 +114,7 @@ public class DockerSessionFactory implements SessionFactory {
       Image browserImage,
       Capabilities stereotype,
       List<Device> devices,
+      Map<String, String> volumes,
       Image videoImage,
       DockerAssetsPath assetsPath,
       String networkName,
@@ -126,6 +128,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.networkName = Require.nonNull("Docker network name", networkName);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.devices = Require.nonNull("Container devices", devices);
+    this.volumes = Require.nonNull("Container volumes", volumes);
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
@@ -292,7 +295,8 @@ public class DockerSessionFactory implements SessionFactory {
             .env(browserContainerEnvVars)
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
-            .devices(devices);
+            .devices(devices)
+            .bind(volumes);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }

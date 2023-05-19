@@ -85,6 +85,21 @@ public class DockerFlags implements HasRoles {
   private List<String> devices;
 
   @Parameter(
+    names = {"--docker-volumes"},
+    description =
+      "Exposes volumes to a container. Each volume mapping declaration must have the"
+      + " path of the volume in both host and container separated by a colon like in this"
+      + " example: /path/in/host:/path/in/container",
+    arity = 1,
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
+  @ConfigValue(
+    section = DockerOptions.DOCKER_SECTION,
+    name = "volumes",
+    example = "[\"/mnt/disk:/mnt/custom-files\"]")
+  private List<String> volumes;
+
+  @Parameter(
       names = {"--docker-video-image"},
       description = "Docker image to be used when video recording is enabled")
   @ConfigValue(
