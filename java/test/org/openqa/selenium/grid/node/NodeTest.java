@@ -639,41 +639,42 @@ class NodeTest {
     }
   }
 
-
-
   @Test
   @DisplayName("DownloadsTestCase")
   void ensureImmunityToSessionTimeOutsForFileDownloads() throws InterruptedException {
-    Consumer<HttpResponse> DOWNLOAD_RSP_VALIDATOR = response -> {
-      Map<String, Object> map = new Json().toType(string(response), Json.MAP_TYPE);
-      assertThat(map).isNotNull();
-      List<String> files = Optional.ofNullable(map.get("value"))
-        .map(data -> (Map<String, Object>) data)
-        .map(data -> (List<String>) data.get("names"))
-        .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
-      assertThat(files).isEmpty();
-    };
+    Consumer<HttpResponse> DOWNLOAD_RSP_VALIDATOR =
+        response -> {
+          Map<String, Object> map = new Json().toType(string(response), Json.MAP_TYPE);
+          assertThat(map).isNotNull();
+          List<String> files =
+              Optional.ofNullable(map.get("value"))
+                  .map(data -> (Map<String, Object>) data)
+                  .map(data -> (List<String>) data.get("names"))
+                  .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+          assertThat(files).isEmpty();
+        };
 
-    Function<Session, HttpResponse> TRIGGER_LIST_FILES = session -> {
-      HttpRequest req = new HttpRequest(GET,
-        String.format("/session/%s/se/files", session.getId()));
-      HttpResponse response = node.execute(req);
-      assertThat(response.getStatus()).isEqualTo(200);
-      return response;
-    };
+    Function<Session, HttpResponse> TRIGGER_LIST_FILES =
+        session -> {
+          HttpRequest req =
+              new HttpRequest(GET, String.format("/session/%s/se/files", session.getId()));
+          HttpResponse response = node.execute(req);
+          assertThat(response.getStatus()).isEqualTo(200);
+          return response;
+        };
 
     Either<WebDriverException, CreateSessionResponse> response =
-      node.newSession(createSessionRequest(caps));
+        node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
     try {
       HttpResponse rsp = TRIGGER_LIST_FILES.apply(session);
-      //Totally we will try list files 3 times, each with a gap of 900 ms.
+      // Totally we will try list files 3 times, each with a gap of 900 ms.
       // The session timeout is defined as 1 second. So we try and ensure that
       // even after trying to download 3 times, we don't hit any errors.
-      for(int i = 0; i < 3; i++) {
+      for (int i = 0; i < 3; i++) {
         DOWNLOAD_RSP_VALIDATOR.accept(rsp);
-        node.isSessionOwner(session.getId()); //Keep session active so that we dont timeout
+        node.isSessionOwner(session.getId()); // Keep session active so that we dont timeout
         TimeUnit.MILLISECONDS.sleep(700);
       }
     } finally {

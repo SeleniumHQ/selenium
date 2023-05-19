@@ -182,55 +182,60 @@ public class LocalNode extends Node {
             }
             : healthCheck;
 
-    //Do not clear this cache automatically using a timer.
-    //It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
+    // Do not clear this cache automatically using a timer.
+    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
     this.uploadsTempFileSystem =
         CacheBuilder.newBuilder()
             .removalListener(
                 (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification -> Optional.ofNullable(notification.getValue())
-                      .ifPresent(tempFS -> {
-                          tempFS.deleteTemporaryFiles();
-                          tempFS.deleteBaseDir();
-                        }
-                        )
-            )
+                    notification ->
+                        Optional.ofNullable(notification.getValue())
+                            .ifPresent(
+                                tempFS -> {
+                                  tempFS.deleteTemporaryFiles();
+                                  tempFS.deleteBaseDir();
+                                }))
             .build();
 
-    //Do not clear this cache automatically using a timer.
-    //It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
+    // Do not clear this cache automatically using a timer.
+    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
     this.downloadsTempFileSystem =
         CacheBuilder.newBuilder()
             .removalListener(
                 (RemovalListener<UUID, TemporaryFilesystem>)
-                    notification -> Optional.ofNullable(notification.getValue())
-                        .ifPresent(fs -> {
-                          fs.deleteTemporaryFiles();
-                          fs.deleteBaseDir();
-                        }
-                        )
-                    )
+                    notification ->
+                        Optional.ofNullable(notification.getValue())
+                            .ifPresent(
+                                fs -> {
+                                  fs.deleteTemporaryFiles();
+                                  fs.deleteBaseDir();
+                                }))
             .build();
 
-    //Do not clear this cache automatically using a timer.
-    //It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
+    // Do not clear this cache automatically using a timer.
+    // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.sessionToDownloadsDir =
         CacheBuilder.newBuilder()
             .removalListener(
                 (RemovalListener<SessionId, UUID>)
-                  notification -> {
-                    Optional.ofNullable(notification.getValue())
-                      .ifPresent(value -> {
-                        downloadsTempFileSystem.invalidate(value);
-                        LOG.warning("Removing Downloads folder associated with "+ notification.getKey());
-                      });
-                    Optional.ofNullable(notification.getKey())
-                      .ifPresent(value -> {
-                        uploadsTempFileSystem.invalidate(value);
-                        LOG.warning("Removing Uploads folder associated with "+ notification.getKey());
-                      });
-                  }
-            )
+                    notification -> {
+                      Optional.ofNullable(notification.getValue())
+                          .ifPresent(
+                              value -> {
+                                downloadsTempFileSystem.invalidate(value);
+                                LOG.warning(
+                                    "Removing Downloads folder associated with "
+                                        + notification.getKey());
+                              });
+                      Optional.ofNullable(notification.getKey())
+                          .ifPresent(
+                              value -> {
+                                uploadsTempFileSystem.invalidate(value);
+                                LOG.warning(
+                                    "Removing Uploads folder associated with "
+                                        + notification.getKey());
+                              });
+                    })
             .build();
 
     this.currentSessions =
