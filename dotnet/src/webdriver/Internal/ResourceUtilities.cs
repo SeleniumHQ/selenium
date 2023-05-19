@@ -36,24 +36,6 @@ namespace OpenQA.Selenium.Internal
         private static string platformFamily;
 
         /// <summary>
-        /// Gets a string representing the version of the Selenium assembly.
-        /// </summary>
-        public static string AssemblyVersion
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(assemblyVersion))
-                {
-                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                    Version versionResource = executingAssembly.GetName().Version;
-                    assemblyVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", versionResource.Major, versionResource.Minor, versionResource.Build);
-                }
-
-                return assemblyVersion;
-            }
-        }
-
-        /// <summary>
         /// Gets a string representing the informational version of the Selenium product.
         /// </summary>
         public static string ProductVersion
