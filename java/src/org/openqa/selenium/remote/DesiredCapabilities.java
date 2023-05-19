@@ -21,7 +21,6 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
@@ -68,14 +67,6 @@ public class DesiredCapabilities extends MutableCapabilities {
 
   public void setPlatform(Platform platform) {
     setCapability(PLATFORM_NAME, platform);
-  }
-
-  /**
-   * @deprecated This setting has no effect in W3C sessions, and JWP support is going away soon.
-   */
-  @Deprecated
-  public void setJavascriptEnabled(boolean javascriptEnabled) {
-    setCapability(SUPPORTS_JAVASCRIPT, javascriptEnabled);
   }
 
   public boolean acceptInsecureCerts() {
