@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
@@ -97,17 +95,10 @@ public class Node {
         .collect(ImmutableList.toImmutableList());
   }
 
-  public String getStereotypes() {
-    List<Map<String, Object>> toReturn = new ArrayList<>();
-
-    for (Map.Entry<Capabilities, Integer> entry : stereotypes.entrySet()) {
-      Map<String, Object> details = new HashMap<>();
-      details.put("stereotype", entry.getKey());
-      details.put("slots", entry.getValue());
-      toReturn.add(details);
-    }
-
-    return JSON.toJson(toReturn);
+  public List<Stereotype> getStereotypes() {
+    return stereotypes.entrySet().stream()
+      .map(stereotype -> new Stereotype(stereotype.getKey(), stereotype.getValue()))
+      .collect(ImmutableList.toImmutableList());
   }
 
   public Availability getStatus() {
