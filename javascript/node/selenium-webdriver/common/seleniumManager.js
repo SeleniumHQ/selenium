@@ -24,7 +24,7 @@
 const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const spawnSync = require('child_process').spawnSync
 
 /**
  * currently supported browsers for selenium-manager
@@ -47,7 +47,14 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  const filePath = path.join(__dirname, '..', '/bin', directory, file)
+  let seleniumManagerBasePath
+  if (process.env.SELENIUM_MANAGER_BASE_PATH) {
+    seleniumManagerBasePath = process.env.SELENIUM_MANAGER_BASE_PATH
+  } else {
+    seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+  }
+
+  const filePath = path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager`)
@@ -69,7 +76,7 @@ function driverLocation(options) {
     )
   }
 
-  let args = [getBinary(), '--browser', options.getBrowserName(), '--output', 'json']
+  let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
     args.push("--browser-version", options.getBrowserVersion())
@@ -81,22 +88,30 @@ function driverLocation(options) {
     args.push("--browser-path", '"' + vendorOptions.binary + '"')
   }
 
+  const smBinary = getBinary()
+  const spawnResult = spawnSync(smBinary, args)
   let output
-  try {
-    output = JSON.parse(execSync(args.join(' ')).toString())
-  } catch (e) {
-    let error
-    try {
-      error = JSON.parse(e.stdout.toString()).result.message
-    } catch (e) {
-      if (e instanceof SyntaxError) {
-        error = e.stdout.toString()
-      } else {
-        error = e.toString()
+  if (spawnResult.status) {
+    let errorMessage
+    if (spawnResult.stderr.toString()) {
+      errorMessage = spawnResult.stderr.toString()
+    }
+    if (spawnResult.stdout.toString()) {
+      try {
+        output = JSON.parse(spawnResult.stdout.toString())
+        errorMessage = output.result.message
+      } catch (e) {
+        errorMessage = e.toString()
       }
     }
-    throw new Error(`Error executing command with ${args}: ${error}`)
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${errorMessage}`)
   }
+  try {
+    output = JSON.parse(spawnResult.stdout.toString())
+  } catch (e) {
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
+  }
+
 
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {

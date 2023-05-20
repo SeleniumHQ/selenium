@@ -68,9 +68,11 @@ module Selenium
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::WebDriverError,
-                           /Unable to locate the #{driver} executable; for more information on how to install drivers/)
+            expect {
+              described_class.path(options, service)
+            }.to raise_error(WebDriver::Error::WebDriverError,
+                             /Unable to locate the #{driver} executable; for more information on how to install/)
+          }.to have_warning(:selenium_manager)
         end
       end
 
@@ -120,9 +122,11 @@ module Selenium
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::WebDriverError,
-                           /Unable to locate the #{driver} executable; for more information on how to install drivers/)
+            expect {
+              described_class.path(options, service)
+            }.to raise_error(WebDriver::Error::WebDriverError,
+                             /Unable to locate the #{driver} executable; for more information on how to install/)
+          }.to have_warning(:selenium_manager)
         end
       end
 
@@ -172,9 +176,11 @@ module Selenium
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::WebDriverError,
-                           /Unable to locate the #{driver} executable; for more information on how to install drivers/)
+            expect {
+              described_class.path(options, service)
+            }.to raise_error(WebDriver::Error::WebDriverError,
+                             /Unable to locate the #{driver} executable; for more information on how to install/)
+          }.to have_warning(:selenium_manager)
         end
       end
 
@@ -224,9 +230,11 @@ module Selenium
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::WebDriverError,
-                           /Unable to locate the #{driver} executable; for more information on how to install drivers/)
+            expect {
+              described_class.path(options, service)
+            }.to raise_error(WebDriver::Error::WebDriverError,
+                             /Unable to locate the #{driver} executable; for more information on how to install/)
+          }.to have_warning(:selenium_manager)
         end
       end
 
@@ -276,9 +284,11 @@ module Selenium
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::WebDriverError,
-                           /Unable to locate the #{driver} executable; for more information on how to install drivers/)
+            expect {
+              described_class.path(options, service)
+            }.to raise_error(WebDriver::Error::WebDriverError,
+                             /Unable to locate the #{driver} executable; for more information on how to install/)
+          }.to have_warning(:selenium_manager)
         end
       end
     end

@@ -54,7 +54,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
+pub const REQUEST_TIMEOUT_SEC: u64 = 180; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -170,7 +170,8 @@ pub trait SeleniumManager {
                         Ok(out) => out,
                         Err(_e) => continue,
                     };
-                    let full_browser_version = parse_version(output).unwrap_or_default();
+                    let full_browser_version =
+                        parse_version(output, self.get_logger()).unwrap_or_default();
                     if full_browser_version.is_empty() {
                         continue;
                     }
@@ -218,8 +219,8 @@ pub trait SeleniumManager {
                 None => {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version}' not found"));
-                    } else {
-                        self.get_logger().debug(format!(
+                    } else if !self.is_iexplorer() {
+                        self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
                         ));
@@ -254,7 +255,7 @@ pub trait SeleniumManager {
             .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
         {
             Ok(output) => {
-                let parsed_version = parse_version(output).unwrap_or_default();
+                let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
                     let which_command = if WINDOWS.is(self.get_os()) {
                         WHERE_COMMAND
@@ -293,6 +294,10 @@ pub trait SeleniumManager {
 
     fn is_safari(&self) -> bool {
         self.get_browser_name().contains(SAFARI_NAME)
+    }
+
+    fn is_iexplorer(&self) -> bool {
+        self.get_browser_name().eq(IE_NAMES[0])
     }
 
     fn is_browser_version_unstable(&self) -> bool {

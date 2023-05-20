@@ -28,8 +28,6 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
     // escaping.
     return String.format(
         "{\"event\": \"%s\", \"command\": \"%s\", \"startorend\": \"%s\"}",
-        eventType.toString(),
-        commandName,
-        isStart ? "start" : "end");
+        eventType.toString(), commandName, isStart ? "start" : "end");
   }
 }

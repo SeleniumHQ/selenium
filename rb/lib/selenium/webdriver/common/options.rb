@@ -128,7 +128,7 @@ module Selenium
 
         unless options.empty?
           msg = 'These options are not w3c compliant and will result in failures in a future release'
-          WebDriver.logger.warn("#{msg}: #{options}")
+          WebDriver.logger.warn("#{msg}: #{options}", id: :w3c_options)
           browser_options.merge!(options)
         end
 

@@ -36,7 +36,7 @@ Options:
       --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 120]
+          Timeout for network requests (in seconds) [default: 180]
       --driver-ttl <DRIVER_TTL>
           Driver TTL (time-to-live) [default: 86400]
       --browser-ttl <BROWSER_TTL>
@@ -80,6 +80,10 @@ INFO	/home/boni/.cache/selenium/chromedriver/linux64/106.0.5249.61/chromedriver
 ```
 
 Alternatively, you can replace `cargo run` with `bazel run //rust:selenium-manager`, for example `bazel run //rust:selenium-manager -- --browser chrome --debug`
+
+### Windows ARM
+
+There are issues when building on Windows ARM64. To workaround, use `cargo` with `--config Cargo.aarch64-pc-windows-msvc.toml` flag.
 
 ## Roadmap
 The implementation of Selenium Manager has been planned to be incremental. In the beginning, it should be a component that each Selenium language binding can optionally use to manage the local browser infrastructure. In the mid-term, and as long as it becomes more stable and complete, it could be used as the default tool for automated browser and driver management. All in all, the milestone we propose are the following:

@@ -273,6 +273,7 @@ class WebDriver(RemoteWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
+        :param temporary: allows you to load browser extensions temporarily during a session
         :param path: Absolute path to the addon that will be installed.
 
         :Usage:

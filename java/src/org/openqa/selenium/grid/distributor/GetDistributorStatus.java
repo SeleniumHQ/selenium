@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class GetDistributorStatus implements HttpHandler {
 

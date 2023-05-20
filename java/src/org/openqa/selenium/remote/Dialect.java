@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import java.util.ServiceLoader;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
-
-import java.util.ServiceLoader;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public enum Dialect {
   W3C {
@@ -48,18 +47,26 @@ public enum Dialect {
   };
 
   public abstract CommandCodec<HttpRequest> getCommandCodec();
+
   public abstract ResponseCodec<HttpResponse> getResponseCodec();
+
   public abstract String getEncodedElementKey();
+
   public abstract String getShadowRootElementKey();
 
-  private static CommandCodec<HttpRequest> bindAdditionalCommands(CommandCodec<HttpRequest> toCodec) {
-    ServiceLoader.load(AdditionalHttpCommands.class).forEach(cmds -> {
-      cmds.getAdditionalCommands().forEach((name, info) -> {
-        if (!toCodec.isSupported(name)) {
-          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
-        }
-      });
-    });
+  private static CommandCodec<HttpRequest> bindAdditionalCommands(
+      CommandCodec<HttpRequest> toCodec) {
+    ServiceLoader.load(AdditionalHttpCommands.class)
+        .forEach(
+            cmds -> {
+              cmds.getAdditionalCommands()
+                  .forEach(
+                      (name, info) -> {
+                        if (!toCodec.isSupported(name)) {
+                          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
+                        }
+                      });
+            });
 
     return toCodec;
   }

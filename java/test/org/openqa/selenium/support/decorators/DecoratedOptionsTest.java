@@ -17,24 +17,23 @@
 
 package org.openqa.selenium.support.decorators;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.logging.Logs;
-
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.Logs;
 
 @Tag("UnitTests")
 class DecoratedOptionsTest {
@@ -54,8 +53,8 @@ class DecoratedOptionsTest {
     verifyNoMoreInteractions(fixture.original);
   }
 
-  private <R> void verifyDecoratingFunction(Function<WebDriver.Options, R> f, R result,
-                                            Consumer<R> p) {
+  private <R> void verifyDecoratingFunction(
+      Function<WebDriver.Options, R> f, R result, Consumer<R> p) {
     Fixture fixture = new Fixture();
     when(f.apply(fixture.original)).thenReturn(result);
 
@@ -104,8 +103,8 @@ class DecoratedOptionsTest {
   @Test
   void timeouts() {
     WebDriver.Timeouts timeouts = mock(WebDriver.Timeouts.class);
-    verifyDecoratingFunction(WebDriver.Options::timeouts, timeouts,
-                             t -> t.implicitlyWait(Duration.ofSeconds(10)));
+    verifyDecoratingFunction(
+        WebDriver.Options::timeouts, timeouts, t -> t.implicitlyWait(Duration.ofSeconds(10)));
   }
 
   @Test
@@ -135,5 +134,4 @@ class DecoratedOptionsTest {
       decorated = decoratedDriver.manage();
     }
   }
-
 }

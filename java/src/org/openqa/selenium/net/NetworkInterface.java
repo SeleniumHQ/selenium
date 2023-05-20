@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import static java.util.Collections.list;
+
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -28,9 +30,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.list;
-
 public class NetworkInterface {
+  private static final Logger LOG = Logger.getLogger(NetworkInterface.class.getName());
 
   private final String name;
   private java.net.NetworkInterface networkInterface;
@@ -44,8 +45,9 @@ public class NetworkInterface {
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
     this.name = name;
-    this.inetAddresses = StreamSupport.stream(inetAddresses.spliterator(), false)
-      .collect(Collectors.toCollection(LinkedHashSet::new));
+    this.inetAddresses =
+        StreamSupport.stream(inetAddresses.spliterator(), false)
+            .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   NetworkInterface(String name, InetAddress... inetAddresses) {
@@ -64,7 +66,7 @@ public class NetworkInterface {
         // from java.net.NetworkInterface API
         isLoopback = networkInterface.isLoopback();
       } catch (SocketException ex) {
-        Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        LOG.log(Level.WARNING, null, ex);
         // If a SocketException is caught, determine whether this NetworkInterface
         // instance is loopback from computation from its inetAddresses
         isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));

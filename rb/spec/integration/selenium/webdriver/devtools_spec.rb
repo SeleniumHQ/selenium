@@ -29,29 +29,10 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
-      context 'when the devtools version is too high' do
-        let(:existing_devtools_version) { driver.send(:devtools_version) }
-        let(:imaginary_devtools_version) { existing_devtools_version + 1 }
-
-        before do
-          # set the devtools version to a newer one than exists
-          allow(driver).to receive(:devtools_version).and_return(imaginary_devtools_version)
-
-          # forget what the actual version was
-          Selenium::DevTools.remove_instance_variable(:@version)
-        end
-
-        it 'can fall back to an older devtools if necessary' do
-          expect { driver.devtools }
-            .to output(
-              a_string_matching(
-                /
-                  Could\ not\ load\ selenium-devtools\ v#{imaginary_devtools_version}.\ Trying\ older\ versions.\n
-                  Using\ selenium-devtools\ version\ v\d+,\ some\ features\ may\ not\ work\ as\ expected.\n
-                /x
-              )
-            ).to_stderr
-        end
+      it 'maps methods to classes' do
+        expect(driver.devtools.css).not_to be_nil
+        expect(driver.devtools.dom).not_to be_nil
+        expect(driver.devtools.dom_debugger).not_to be_nil
       end
 
       it 'supports events', except: {browser: :firefox,

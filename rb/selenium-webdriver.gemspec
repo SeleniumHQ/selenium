@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 2.7')
+  s.required_ruby_version = Gem::Requirement.new('>= 3.0')
 
   s.files = [
     'CHANGES',
@@ -53,7 +53,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
-  s.add_development_dependency 'pry', ['~> 0.14']
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rubocop', ['~> 1.42']

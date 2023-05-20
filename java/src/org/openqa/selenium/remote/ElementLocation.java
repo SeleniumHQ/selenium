@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidArgumentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Require;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidArgumentException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Require;
 
 // Very deliberately kept package private.
 class ElementLocation {
@@ -45,10 +44,10 @@ class ElementLocation {
   }
 
   public WebElement findElement(
-    RemoteWebDriver driver,
-    SearchContext context,
-    BiFunction<String, Object, CommandPayload> createPayload,
-    By locator) {
+      RemoteWebDriver driver,
+      SearchContext context,
+      BiFunction<String, Object, CommandPayload> createPayload,
+      By locator) {
 
     Require.nonNull("WebDriver", driver);
     Require.nonNull("Context for finding elements", context);
@@ -63,7 +62,8 @@ class ElementLocation {
     // We prefer to use the remote version if possible
     if (locator instanceof By.Remotable) {
       try {
-        WebElement element = ElementFinder.REMOTE.findElement(driver, context, createPayload, locator);
+        WebElement element =
+            ElementFinder.REMOTE.findElement(driver, context, createPayload, locator);
         finders.put(locator.getClass(), ElementFinder.REMOTE);
         return element;
       } catch (NoSuchElementException e) {
@@ -77,7 +77,8 @@ class ElementLocation {
     // But if that's not an option, then default to using the locator
     // itself for finding things.
     try {
-      WebElement element = ElementFinder.CONTEXT.findElement(driver, context, createPayload, locator);
+      WebElement element =
+          ElementFinder.CONTEXT.findElement(driver, context, createPayload, locator);
       finders.put(locator.getClass(), ElementFinder.CONTEXT);
       return element;
     } catch (NoSuchElementException e) {
@@ -87,10 +88,10 @@ class ElementLocation {
   }
 
   public List<WebElement> findElements(
-    RemoteWebDriver driver,
-    SearchContext context,
-    BiFunction<String, Object, CommandPayload> createPayload,
-    By locator) {
+      RemoteWebDriver driver,
+      SearchContext context,
+      BiFunction<String, Object, CommandPayload> createPayload,
+      By locator) {
 
     Require.nonNull("WebDriver", driver);
     Require.nonNull("Context for finding elements", context);
@@ -105,7 +106,8 @@ class ElementLocation {
     // We prefer to use the remote version if possible
     if (locator instanceof By.Remotable) {
       try {
-        List<WebElement> element = ElementFinder.REMOTE.findElements(driver, context, createPayload, locator);
+        List<WebElement> element =
+            ElementFinder.REMOTE.findElements(driver, context, createPayload, locator);
         finders.put(locator.getClass(), ElementFinder.REMOTE);
         return element;
       } catch (NoSuchElementException e) {
@@ -118,7 +120,8 @@ class ElementLocation {
 
     // But if that's not an option, then default to using the locator
     // itself for finding things.
-    List<WebElement> elements = ElementFinder.CONTEXT.findElements(driver, context, createPayload, locator);
+    List<WebElement> elements =
+        ElementFinder.CONTEXT.findElements(driver, context, createPayload, locator);
 
     // Only store the finder if we actually completed successfully.
     finders.put(locator.getClass(), ElementFinder.CONTEXT);
@@ -129,33 +132,33 @@ class ElementLocation {
     CONTEXT {
       @Override
       WebElement findElement(
-        RemoteWebDriver driver,
-        SearchContext context,
-        BiFunction<String, Object, CommandPayload> createPayload,
-        By locator) {
+          RemoteWebDriver driver,
+          SearchContext context,
+          BiFunction<String, Object, CommandPayload> createPayload,
+          By locator) {
         WebElement element = locator.findElement(context);
         return massage(driver, context, element, locator);
       }
 
       @Override
       List<WebElement> findElements(
-        RemoteWebDriver driver,
-        SearchContext context,
-        BiFunction<String, Object, CommandPayload> createPayload,
-        By locator) {
+          RemoteWebDriver driver,
+          SearchContext context,
+          BiFunction<String, Object, CommandPayload> createPayload,
+          By locator) {
         List<WebElement> elements = locator.findElements(context);
         return elements.stream()
-          .map(e -> massage(driver, context, e, locator))
-          .collect(Collectors.toList());
+            .map(e -> massage(driver, context, e, locator))
+            .collect(Collectors.toList());
       }
     },
     REMOTE {
       @Override
       WebElement findElement(
-        RemoteWebDriver driver,
-        SearchContext context,
-        BiFunction<String, Object, CommandPayload> createPayload,
-        By locator) {
+          RemoteWebDriver driver,
+          SearchContext context,
+          BiFunction<String, Object, CommandPayload> createPayload,
+          By locator) {
         By.Remotable.Parameters params = ((By.Remotable) locator).getRemoteParameters();
         CommandPayload commandPayload = createPayload.apply(params.using(), params.value());
 
@@ -169,40 +172,41 @@ class ElementLocation {
 
       @Override
       List<WebElement> findElements(
-        RemoteWebDriver driver,
-        SearchContext context,
-        BiFunction<String, Object, CommandPayload> createPayload,
-        By locator) {
+          RemoteWebDriver driver,
+          SearchContext context,
+          BiFunction<String, Object, CommandPayload> createPayload,
+          By locator) {
         By.Remotable.Parameters params = ((By.Remotable) locator).getRemoteParameters();
         CommandPayload commandPayload = createPayload.apply(params.using(), params.value());
 
         Response response = driver.execute(commandPayload);
-        @SuppressWarnings("unchecked") List<WebElement> elements = (List<WebElement>) response.getValue();
+        @SuppressWarnings("unchecked")
+        List<WebElement> elements = (List<WebElement>) response.getValue();
 
         if (elements == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
           return Collections.emptyList();
         }
 
         return elements.stream()
-          .map(e -> massage(driver, context, e, locator))
-          .collect(Collectors.toList());
+            .map(e -> massage(driver, context, e, locator))
+            .collect(Collectors.toList());
       }
-    }
-    ;
+    };
 
     abstract WebElement findElement(
-      RemoteWebDriver driver,
-      SearchContext context,
-      BiFunction<String, Object, CommandPayload> createPayload,
-      By locator);
+        RemoteWebDriver driver,
+        SearchContext context,
+        BiFunction<String, Object, CommandPayload> createPayload,
+        By locator);
 
     abstract List<WebElement> findElements(
-      RemoteWebDriver driver,
-      SearchContext context,
-      BiFunction<String, Object, CommandPayload> createPayload,
-      By locator);
+        RemoteWebDriver driver,
+        SearchContext context,
+        BiFunction<String, Object, CommandPayload> createPayload,
+        By locator);
 
-    protected WebElement massage(RemoteWebDriver driver, SearchContext context, WebElement element, By locator) {
+    protected WebElement massage(
+        RemoteWebDriver driver, SearchContext context, WebElement element, By locator) {
       if (!(element instanceof RemoteWebElement)) {
         return element;
       }

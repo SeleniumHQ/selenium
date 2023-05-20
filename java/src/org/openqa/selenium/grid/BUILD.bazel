@@ -33,9 +33,9 @@ java_binary(
     data = select({
         "//common:linux": [
             "@linux_chromedriver//:chromedriver",
-            "@linux_chrome//:chrome-linux",
+            "@linux_chrome//:chrome-linux/chrome",
             "@linux_geckodriver//:geckodriver",
-            "@linux_firefox//:firefox",
+            "@linux_firefox//:firefox/firefox",
         ],
         "//common:macos": [
             "@mac_chromedriver//:chromedriver",
@@ -48,9 +48,9 @@ java_binary(
     jvm_flags = select({
         "//common:linux": [
             "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
-            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux/chrome)",
             "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
-            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
         ],
         "//common:macos": [
             "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",

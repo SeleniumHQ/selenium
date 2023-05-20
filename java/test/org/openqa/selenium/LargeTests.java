@@ -20,12 +20,6 @@ package org.openqa.selenium;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-@SelectClasses({
-    ByTest.class,
-    CookieImplementationTest.class,
-    ExecutingAsyncJavascriptTest.class
-})
+@SelectClasses({ByTest.class, CookieImplementationTest.class, ExecutingAsyncJavascriptTest.class})
 @Suite
-class LargeTests {
-
-}
+class LargeTests {}

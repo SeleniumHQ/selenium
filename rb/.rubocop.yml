@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   NewCops: enable
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
@@ -42,6 +42,7 @@ Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/support/color.rb'
+    - 'lib/selenium/webdriver/common/logger.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -62,6 +63,7 @@ Metrics/PerceivedComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/common/local_driver.rb'
+    - 'lib/selenium/webdriver/common/logger.rb'
 
 Naming/FileName:
   Exclude:

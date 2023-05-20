@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Filter;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.net.HttpURLConnection;
 import java.util.Base64;
 import java.util.logging.Logger;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class BasicAuthenticationFilter implements Filter {
 
@@ -48,8 +47,8 @@ public class BasicAuthenticationFilter implements Filter {
           LOG.info("Unauthorized request to " + req);
         }
         return new HttpResponse()
-          .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
-          .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");
+            .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
+            .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");
       }
 
       return next.execute(req);

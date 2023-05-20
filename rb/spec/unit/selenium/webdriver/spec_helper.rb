@@ -17,6 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+begin
+  require 'debug/session'
+  DEBUGGER__::CONFIG[:fork_mode] = :parent
+  DEBUGGER__.open(nonstop: true)
+rescue LoadError
+  # not supported on JRuby and TruffleRuby
+end
+
 require 'rubygems'
 require 'time'
 require 'rspec'
@@ -43,9 +51,14 @@ RSpec.configure do |c|
   c.define_derived_metadata do |meta|
     meta[:aggregate_failures] = true
   end
-  Selenium::WebDriver.logger(ignored: [:logger_info])
+  Selenium::WebDriver.logger(ignored: :logger_info)
 
   c.include Selenium::WebDriver::UnitSpecHelper
 
   c.filter_run focus: true if ENV['focus']
+
+  c.before do
+    # https://github.com/ruby/debug/issues/797
+    allow(File).to receive(:exist?).and_call_original
+  end
 end

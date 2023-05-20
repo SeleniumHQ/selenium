@@ -12,7 +12,17 @@ def pin_browsers():
         name = "linux_firefox",
         url = "https://ftp.mozilla.org/pub/firefox/releases/109.0.1/linux-x86_64/en-US/firefox-109.0.1.tar.bz2",
         sha256 = "487a18ecbb0b3b91e402b55424f429d2e4e6127696ee48bb0e60ce7f9879d581",
-        build_file_content = "exports_files([\"firefox\"])",
+        build_file_content = """
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["firefox/firefox"],
+)
+""",
     )
 
     dmg_archive(
@@ -64,7 +74,17 @@ def pin_browsers():
         name = "linux_chrome",
         url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1070019/chrome-linux.zip",
         sha256 = "735f46d06fe00fac95ed0d51630e38ba12b255621df2011750ff94eba9024b93",
-        build_file_content = "exports_files([\"chrome-linux\"])",
+        build_file_content = """
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["chrome-linux/chrome"],
+)
+""",
     )
 
     http_archive(
