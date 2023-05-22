@@ -166,6 +166,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Set<RequestId> ids;
     try {
       ids = requests.entrySet().stream()
+        .filter(
+                  entry ->
+                      queue.stream()
+                          .anyMatch(
+                              sessionRequest ->
+                                  sessionRequest.getRequestId().equals(entry.getKey())))
         .filter(entry -> isTimedOut(now, entry.getValue()))
         .map(Map.Entry::getKey)
         .collect(ImmutableSet.toImmutableSet());
@@ -445,7 +451,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     private boolean complete;
 
     public Data(Instant enqueued) {
-      this.endTime = enqueued.plus(requestTimeout).plus(Duration.ofSeconds(5));
+      this.endTime = enqueued.plus(requestTimeout);
       this.result = Either.left(new SessionNotCreatedException("Session not created"));
     }
 
