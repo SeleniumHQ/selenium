@@ -265,8 +265,8 @@ class WebElement(BaseWebElement):
         on the screen an element is so that we can click it. This method should
         cause the element to be scrolled into view.
 
-        Returns the top lefthand corner location on the screen, or
-        zero coordinates if the element is not visible.
+        Returns the top lefthand corner location on the screen, or zero
+        coordinates if the element is not visible.
         """
         old_loc = self._execute(
             Command.W3C_EXECUTE_SCRIPT,
