@@ -75,8 +75,10 @@ public class Rectangle {
 
     Rectangle rectangle = (Rectangle) o;
 
-    return x == rectangle.x && y == rectangle.y && height == rectangle.height
-           && width == rectangle.width;
+    return x == rectangle.x
+        && y == rectangle.y
+        && height == rectangle.height
+        && width == rectangle.width;
   }
 
   @Override

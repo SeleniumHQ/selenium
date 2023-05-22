@@ -164,16 +164,17 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     readLock.lock();
     Set<RequestId> ids;
     try {
-      ids = requests.entrySet().stream()
-        .filter(
+      ids =
+          requests.entrySet().stream()
+              .filter(
                   entry ->
                       queue.stream()
                           .anyMatch(
                               sessionRequest ->
                                   sessionRequest.getRequestId().equals(entry.getKey())))
-        .filter(entry -> isTimedOut(now, entry.getValue()))
-        .map(Map.Entry::getKey)
-        .collect(ImmutableSet.toImmutableSet());
+              .filter(entry -> isTimedOut(now, entry.getValue()))
+              .map(Map.Entry::getKey)
+              .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
     }
@@ -323,9 +324,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     readLock.lock();
 
     try {
-      Optional<SessionRequest> result =  queue.stream()
-        .filter(req -> req.getRequestId().equals(requestId))
-        .findAny();
+      Optional<SessionRequest> result =
+          queue.stream().filter(req -> req.getRequestId().equals(requestId)).findAny();
       return result.isPresent();
     } finally {
       readLock.unlock();
