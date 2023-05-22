@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import java.util.Objects;
+
 public class Rectangle {
 
   public int x;
@@ -73,16 +75,14 @@ public class Rectangle {
 
     Rectangle rectangle = (Rectangle) o;
 
-    if (!getPoint().equals(rectangle.getPoint())) {
-      return false;
-    }
-    return getDimension().equals(rectangle.getDimension());
+    return x == rectangle.x
+        && y == rectangle.y
+        && height == rectangle.height
+        && width == rectangle.width;
   }
 
   @Override
   public int hashCode() {
-    int result = getPoint().hashCode();
-    result = 31 * result + getDimension().hashCode();
-    return result;
+    return Objects.hash(x, y, height, width);
   }
 }
