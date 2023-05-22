@@ -164,11 +164,16 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     readLock.lock();
     Set<RequestId> ids;
     try {
-      ids =
-          requests.entrySet().stream()
-              .filter(entry -> isTimedOut(now, entry.getValue()))
-              .map(Map.Entry::getKey)
-              .collect(ImmutableSet.toImmutableSet());
+      ids = requests.entrySet().stream()
+        .filter(
+                  entry ->
+                      queue.stream()
+                          .anyMatch(
+                              sessionRequest ->
+                                  sessionRequest.getRequestId().equals(entry.getKey())))
+        .filter(entry -> isTimedOut(now, entry.getValue()))
+        .map(Map.Entry::getKey)
+        .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
     }
@@ -187,7 +192,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     TraceContext context = TraceSessionRequest.extract(tracer, request);
     try (Span ignored = context.createSpan("sessionqueue.add_to_queue")) {
       contexts.put(request.getRequestId(), context);
-
       Data data = injectIntoQueue(request);
 
       if (isTimedOut(Instant.now(), data)) {
@@ -196,7 +200,13 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
       Either<SessionNotCreatedException, CreateSessionResponse> result;
       try {
-        if (data.latch.await(requestTimeout.toMillis(), MILLISECONDS)) {
+
+        boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
+        if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
+          sessionCreated = data.latch.await(5000, MILLISECONDS);
+        }
+
+        if (sessionCreated) {
           result = data.result;
         } else {
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
@@ -305,6 +315,20 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       return Optional.empty();
     } finally {
       writeLock.unlock();
+    }
+  }
+
+  private boolean isRequestInQueue(RequestId requestId) {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+
+    try {
+      Optional<SessionRequest> result =  queue.stream()
+        .filter(req -> req.getRequestId().equals(requestId))
+        .findAny();
+      return result.isPresent();
+    } finally {
+      readLock.unlock();
     }
   }
 
