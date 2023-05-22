@@ -17,6 +17,23 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -49,24 +66,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 public class DriverServiceSessionFactory implements SessionFactory {
 
   private static final Logger LOG = Logger.getLogger(DriverServiceSessionFactory.class.getName());
@@ -80,12 +79,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final SessionCapabilitiesMutator sessionCapabilitiesMutator;
 
   public DriverServiceSessionFactory(
-    Tracer tracer,
-    HttpClient.Factory clientFactory,
-    Duration sessionTimeout,
-    Capabilities stereotype,
-    Predicate<Capabilities> predicate,
-    DriverService.Builder<?, ?> builder) {
+      Tracer tracer,
+      HttpClient.Factory clientFactory,
+      Duration sessionTimeout,
+      Capabilities stereotype,
+      Predicate<Capabilities> predicate,
+      DriverService.Builder<?, ?> builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -112,16 +111,17 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     if (!test(sessionRequest.getDesiredCapabilities())) {
-      return Either.left(new SessionNotCreatedException("New session request capabilities do not "
-                                                        + "match the stereotype."));
+      return Either.left(
+          new SessionNotCreatedException(
+              "New session request capabilities do not " + "match the stereotype."));
     }
 
     Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try {
 
-      Capabilities capabilities = sessionCapabilitiesMutator
-        .apply(sessionRequest.getDesiredCapabilities());
+      Capabilities capabilities =
+          sessionCapabilitiesMutator.apply(sessionRequest.getDesiredCapabilities());
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
@@ -130,21 +130,19 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                       EventAttribute.setValue(this.getClass().getName()));
+      attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
 
       DriverService service = builder.build();
       try {
         service.start();
 
         URL serviceURL = service.getUrl();
-        attributeMap.put(AttributeKey.DRIVER_URL.getKey(),
-                         EventAttribute.setValue(serviceURL.toString()));
+        attributeMap.put(
+            AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
 
-        ClientConfig clientConfig = ClientConfig
-          .defaultConfig()
-          .readTimeout(sessionTimeout)
-          .baseUrl(serviceURL);
+        ClientConfig clientConfig =
+            ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceURL);
         HttpClient client = clientFactory.createClient(clientConfig);
 
         Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
@@ -153,18 +151,20 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
         Dialect upstream = result.getDialect();
-        Dialect downstream = downstreamDialects.contains(result.getDialect()) ?
-                             result.getDialect() :
-                             downstreamDialects.iterator().next();
+        Dialect downstream =
+            downstreamDialects.contains(result.getDialect())
+                ? result.getDialect()
+                : downstreamDialects.iterator().next();
 
         Response response = result.createResponse();
 
-        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(),
-                         EventAttribute.setValue(upstream.toString()));
-        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(),
-                         EventAttribute.setValue(downstream.toString()));
-        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
-                         EventAttribute.setValue(response.toString()));
+        attributeMap.put(
+            AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
+        attributeMap.put(
+            AttributeKey.DOWNSTREAM_DIALECT.getKey(),
+            EventAttribute.setValue(downstream.toString()));
+        attributeMap.put(
+            AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
 
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
         if (platformName.isPresent()) {
@@ -177,32 +177,34 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         span.addEvent("Driver service created session", attributeMap);
         return Either.right(
-          new DefaultActiveSession(
-            tracer,
-            client,
-            new SessionId(response.getSessionId()),
-            service.getUrl(),
-            downstream,
-            upstream,
-            stereotype,
-            caps,
-            Instant.now()) {
-            @Override
-            public void stop() {
-              service.stop();
-              client.close();
-            }
-          });
+            new DefaultActiveSession(
+                tracer,
+                client,
+                new SessionId(response.getSessionId()),
+                service.getUrl(),
+                downstream,
+                upstream,
+                stereotype,
+                caps,
+                Instant.now()) {
+              @Override
+              public void stop() {
+                service.stop();
+                client.close();
+              }
+            });
       } catch (Exception e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
-        String errorMessage = "Error while creating session with the driver service. "
-                              + "Stopping driver service: " + e.getMessage();
+        String errorMessage =
+            "Error while creating session with the driver service. "
+                + "Stopping driver service: "
+                + e.getMessage();
         LOG.warning(errorMessage);
 
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue(errorMessage));
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         service.stop();
         return Either.left(new SessionNotCreatedException(errorMessage));
@@ -211,11 +213,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.CANCELLED);
       EXCEPTION.accept(attributeMap, e);
-      String errorMessage = "Error while creating session with the driver service. " + e.getMessage();
+      String errorMessage =
+          "Error while creating session with the driver service. " + e.getMessage();
       LOG.warning(errorMessage);
 
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                       EventAttribute.setValue(errorMessage));
+      attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage()));
@@ -235,29 +238,33 @@ public class DriverServiceSessionFactory implements SessionFactory {
       }
     }
 
-    Function<Capabilities, Optional<DevToolsInfo>> chrome = c ->
-      CdpEndpointFinder.getReportedUri("goog:chromeOptions", c)
-        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+    Function<Capabilities, Optional<DevToolsInfo>> chrome =
+        c ->
+            CdpEndpointFinder.getReportedUri("goog:chromeOptions", c)
+                .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
-    Function<Capabilities, Optional<DevToolsInfo>> edge = c ->
-      CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
-        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+    Function<Capabilities, Optional<DevToolsInfo>> edge =
+        c ->
+            CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
+                .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
-    Function<Capabilities, Optional<DevToolsInfo>> firefox = c ->
-      CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
-        .map(uri -> new DevToolsInfo(uri, "85.0"));
+    Function<Capabilities, Optional<DevToolsInfo>> firefox =
+        c ->
+            CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
+                .map(uri -> new DevToolsInfo(uri, "85.0"));
 
-    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
-      .map(finder -> finder.apply(caps))
-      .filter(Optional::isPresent)
-      .map(Optional::get)
-      .findFirst();
+    Optional<DevToolsInfo> maybeInfo =
+        Stream.of(chrome, edge, firefox)
+            .map(finder -> finder.apply(caps))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
 
     if (maybeInfo.isPresent()) {
       DevToolsInfo info = maybeInfo.get();
       return new PersistentCapabilities(caps)
-        .setCapability("se:cdp", info.cdpEndpoint)
-        .setCapability("se:cdpVersion", info.version);
+          .setCapability("se:cdp", info.cdpEndpoint)
+          .setCapability("se:cdpVersion", info.version);
     }
     return caps;
   }
@@ -265,20 +272,21 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private Capabilities readBiDiEndpoint(Capabilities caps) {
 
     Optional<String> webSocketUrl =
-      Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
+        Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
 
-    Optional<URI> websocketUri = webSocketUrl.map(uri -> {
-      try {
-        return new URI(uri);
-      } catch (URISyntaxException e) {
-        LOG.warning(e.getMessage());
-      }
-      return null;
-    });
+    Optional<URI> websocketUri =
+        webSocketUrl.map(
+            uri -> {
+              try {
+                return new URI(uri);
+              } catch (URISyntaxException e) {
+                LOG.warning(e.getMessage());
+              }
+              return null;
+            });
 
     if (websocketUri.isPresent()) {
-      return new PersistentCapabilities(caps)
-        .setCapability("se:bidi", websocketUri.get());
+      return new PersistentCapabilities(caps).setCapability("se:bidi", websocketUri.get());
     }
 
     return caps;
@@ -292,9 +300,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
     if (Boolean.parseBoolean(seVncEnabled) && !vncLocalAddressSet) {
       String seNoVncPort = String.valueOf(requestedCaps.getCapability(seNoVncPortCap));
       String vncLocalAddress = String.format("ws://%s:%s", getHost(), seNoVncPort);
-      returnedCaps = new PersistentCapabilities(returnedCaps)
-        .setCapability("se:vncLocalAddress", vncLocalAddress)
-        .setCapability(seVncEnabledCap, true);
+      returnedCaps =
+          new PersistentCapabilities(returnedCaps)
+              .setCapability("se:vncLocalAddress", vncLocalAddress)
+              .setCapability(seVncEnabledCap, true);
     }
     return returnedCaps;
   }
@@ -317,6 +326,5 @@ public class DriverServiceSessionFactory implements SessionFactory {
     } catch (WebDriverException e) {
       return HostIdentifier.getHostName();
     }
-
   }
 }

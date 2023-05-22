@@ -46,44 +46,12 @@ public class Rectangle {
     return y;
   }
 
-  /**
-   * @deprecated Rectangle objects are supposed to be immutable, all setters will be removed soon
-   */
-  @Deprecated
-  public void setX(int x) {
-    this.x = x;
-  }
-
-  /**
-   * @deprecated Rectangle objects are supposed to be immutable, all setters will be removed soon
-   */
-  @Deprecated
-  public void setY(int y) {
-    this.y = y;
-  }
-
   public int getHeight() {
     return height;
   }
 
-  /**
-   * @deprecated Rectangle objects are supposed to be immutable, all setters will be removed soon
-   */
-  @Deprecated
-  public void setHeight(int height) {
-    this.height = height;
-  }
-
   public int getWidth() {
     return width;
-  }
-
-  /**
-   * @deprecated Rectangle objects are supposed to be immutable, all setters will be removed soon
-   */
-  @Deprecated
-  public void setWidth(int width) {
-    this.width = width;
   }
 
   public Point getPoint() {
@@ -105,11 +73,10 @@ public class Rectangle {
 
     Rectangle rectangle = (Rectangle) o;
 
-    if (! getPoint().equals(rectangle.getPoint())) {
+    if (!getPoint().equals(rectangle.getPoint())) {
       return false;
     }
     return getDimension().equals(rectangle.getDimension());
-
   }
 
   @Override

@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
+
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Predicate;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -38,21 +46,12 @@ import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.io.UncheckedIOException;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.post;
-
 /**
- * Responsible for being the central place where the {@link Node}s
- * on which {@link Session}s run
- * are determined.
- * <p>
- * This class responds to the following URLs:
+ * Responsible for being the central place where the {@link Node}s on which {@link Session}s run are
+ * determined.
+ *
+ * <p>This class responds to the following URLs:
+ *
  * <table summary="HTTP commands the Distributor understands">
  * <tr>
  *   <th>Verb</th>
@@ -89,9 +88,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   protected final Tracer tracer;
 
   protected Distributor(
-    Tracer tracer,
-    HttpClient.Factory httpClientFactory,
-    Secret registrationSecret) {
+      Tracer tracer, HttpClient.Factory httpClientFactory, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
 
@@ -100,29 +97,31 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Json json = new Json();
-    routes = Route.combine(
-      post("/se/grid/distributor/node")
-          .to(() ->
-                new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
-          .with(requiresSecret),
-      post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) ->
-                new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-          .with(requiresSecret),
-      delete("/se/grid/distributor/node/{nodeId}")
-          .to(params ->
-                new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-          .with(requiresSecret),
-      post("/se/grid/distributor/session")
-        .to(() -> new CreateSession(this))
-        .with(requiresSecret),
-    get("/se/grid/distributor/status")
-          .to(() -> new GetDistributorStatus(this))
-          .with(new SpanDecorator(tracer, req -> "distributor.status")));
+    routes =
+        Route.combine(
+            post("/se/grid/distributor/node")
+                .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+                .with(requiresSecret),
+            post("/se/grid/distributor/node/{nodeId}/drain")
+                .to(
+                    (Map<String, String> params) ->
+                        new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+                .with(requiresSecret),
+            delete("/se/grid/distributor/node/{nodeId}")
+                .to(
+                    params ->
+                        new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+                .with(requiresSecret),
+            post("/se/grid/distributor/session")
+                .to(() -> new CreateSession(this))
+                .with(requiresSecret),
+            get("/se/grid/distributor/status")
+                .to(() -> new GetDistributorStatus(this))
+                .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public abstract Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
-    throws SessionNotCreatedException;
+  public abstract Either<SessionNotCreatedException, CreateSessionResponse> newSession(
+      SessionRequest request) throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 

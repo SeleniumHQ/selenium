@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Contents.string;
+
+import java.util.stream.Collectors;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.Node;
@@ -29,10 +32,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.util.stream.Collectors;
-
-import static org.openqa.selenium.remote.http.Contents.string;
 
 class AddNode implements HttpHandler {
 
@@ -59,13 +58,14 @@ class AddNode implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     NodeStatus status = json.toType(string(req), NodeStatus.class);
 
-    Node node = new RemoteNode(
-        tracer,
-        httpFactory,
-        status.getNodeId(),
-        status.getExternalUri(),
-        registrationSecret,
-        status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
+    Node node =
+        new RemoteNode(
+            tracer,
+            httpFactory,
+            status.getNodeId(),
+            status.getExternalUri(),
+            registrationSecret,
+            status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
 
     distributor.add(node);
 

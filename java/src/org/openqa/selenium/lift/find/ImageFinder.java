@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.lift.find;
 
-/**
- * {@link Finder} for HTML image tags.
- */
+/** {@link Finder} for HTML image tags. */
 public class ImageFinder extends HtmlTagFinder {
 
   @Override

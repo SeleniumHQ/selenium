@@ -20,18 +20,17 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.jupiter.api.Test;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 
 @Tag("UnitTests")
 class WheelInputTest {
@@ -43,19 +42,18 @@ class WheelInputTest {
     WebElement element = new WrappedWebElement(innerElement);
 
     WheelInput wheelInput = new WheelInput("wheel");
-    Interaction scroll = wheelInput.createScroll(
-      new Point(20, 30),
-      0,
-      0,
-      Duration.ofMillis(100),
-      WheelInput.ScrollOrigin.fromElement(element));
+    Interaction scroll =
+        wheelInput.createScroll(
+            new Point(20, 30),
+            0,
+            0,
+            Duration.ofMillis(100),
+            WheelInput.ScrollOrigin.fromElement(element));
     Sequence sequence = new Sequence(wheelInput, 0).addAction(scroll);
 
     String rawJson = new Json().toJson(sequence);
-    ActionSequenceJson json = new Json().toType(
-      rawJson,
-      ActionSequenceJson.class,
-      PropertySetting.BY_FIELD);
+    ActionSequenceJson json =
+        new Json().toType(rawJson, ActionSequenceJson.class, PropertySetting.BY_FIELD);
 
     assertThat(json.actions).hasSize(1);
     ActionJson firstAction = json.actions.get(0);
@@ -67,31 +65,26 @@ class WheelInputTest {
     WheelInput wheelInput = new WheelInput("test-wheel");
     Map<String, Object> encodedResult = wheelInput.encode();
 
-    assertThat(encodedResult)
-      .containsEntry("id", "test-wheel")
-      .containsEntry("type", "wheel");
+    assertThat(encodedResult).containsEntry("id", "test-wheel").containsEntry("type", "wheel");
   }
 
   @Test
   void shouldEncodeScrollInteractionWithViewPortOrigin() {
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
-      25,
-      50,
-      30,
-      60,
-      Duration.ofSeconds(1),
-      WheelInput.ScrollOrigin.fromViewport());
+    WheelInput.ScrollInteraction interaction =
+        (WheelInput.ScrollInteraction)
+            wheelInput.createScroll(
+                25, 50, 30, 60, Duration.ofSeconds(1), WheelInput.ScrollOrigin.fromViewport());
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
-      .containsEntry("type", "scroll")
-      .containsEntry("x", 25)
-      .containsEntry("y", 50)
-      .containsEntry("deltaX", 30)
-      .containsEntry("deltaY", 60)
-      .containsEntry("duration", 1000L)
-      .containsEntry("origin", "viewport");
+        .containsEntry("type", "scroll")
+        .containsEntry("x", 25)
+        .containsEntry("y", 50)
+        .containsEntry("deltaX", 30)
+        .containsEntry("deltaY", 60)
+        .containsEntry("duration", 1000L)
+        .containsEntry("origin", "viewport");
   }
 
   @Test
@@ -100,22 +93,24 @@ class WheelInputTest {
     innerElement.setId("12345");
 
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
-      new Point(25, 50),
-      30,
-      60,
-      Duration.ofSeconds(1),
-      WheelInput.ScrollOrigin.fromElement(innerElement));
+    WheelInput.ScrollInteraction interaction =
+        (WheelInput.ScrollInteraction)
+            wheelInput.createScroll(
+                new Point(25, 50),
+                30,
+                60,
+                Duration.ofSeconds(1),
+                WheelInput.ScrollOrigin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
-      .containsEntry("type", "scroll")
-      .containsEntry("x", 25)
-      .containsEntry("y", 50)
-      .containsEntry("deltaX", 30)
-      .containsEntry("deltaY", 60)
-      .containsEntry("duration", 1000L)
-      .containsEntry("origin", innerElement);
+        .containsEntry("type", "scroll")
+        .containsEntry("x", 25)
+        .containsEntry("y", 50)
+        .containsEntry("deltaX", 30)
+        .containsEntry("deltaY", 60)
+        .containsEntry("duration", 1000L)
+        .containsEntry("origin", innerElement);
   }
 
   private static class ActionSequenceJson {

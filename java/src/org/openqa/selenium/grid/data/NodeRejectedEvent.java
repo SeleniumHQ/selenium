@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
+import java.net.URI;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventName;
-
-import java.net.URI;
 
 public class NodeRejectedEvent extends Event {
 

@@ -19,8 +19,7 @@ package org.openqa.selenium;
 
 public class NotFoundException extends WebDriverException {
 
-  public NotFoundException() {
-  }
+  public NotFoundException() {}
 
   public NotFoundException(String message) {
     super(message);
@@ -33,5 +32,4 @@ public class NotFoundException extends WebDriverException {
   public NotFoundException(Throwable cause) {
     super(cause);
   }
-
 }

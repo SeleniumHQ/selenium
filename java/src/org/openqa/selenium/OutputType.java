@@ -30,75 +30,74 @@ import java.util.Base64;
  * @param <T> Type for the screenshot output.
  */
 public interface OutputType<T> {
-  /**
-   * Obtain the screenshot as base64 data.
-   */
-  OutputType<String> BASE64 = new OutputType<String>() {
-    @Override
-    public String convertFromBase64Png(String base64Png) {
-      return base64Png;
-    }
+  /** Obtain the screenshot as base64 data. */
+  OutputType<String> BASE64 =
+      new OutputType<String>() {
+        @Override
+        public String convertFromBase64Png(String base64Png) {
+          return base64Png;
+        }
 
-    @Override
-    public String convertFromPngBytes(byte[] png) {
-      return Base64.getEncoder().encodeToString(png);
-    }
+        @Override
+        public String convertFromPngBytes(byte[] png) {
+          return Base64.getEncoder().encodeToString(png);
+        }
 
-    public String toString() {
-      return "OutputType.BASE64";
-    }
-  };
+        public String toString() {
+          return "OutputType.BASE64";
+        }
+      };
 
-  /**
-   * Obtain the screenshot as raw bytes.
-   */
-  OutputType<byte[]> BYTES = new OutputType<byte[]>() {
-    @Override
-    public byte[] convertFromBase64Png(String base64Png) {
-      return Base64.getDecoder().decode(base64Png);
-    }
+  /** Obtain the screenshot as raw bytes. */
+  OutputType<byte[]> BYTES =
+      new OutputType<byte[]>() {
+        @Override
+        public byte[] convertFromBase64Png(String base64Png) {
+          return Base64.getDecoder().decode(base64Png);
+        }
 
-    @Override
-    public byte[] convertFromPngBytes(byte[] png) {
-      return png;
-    }
+        @Override
+        public byte[] convertFromPngBytes(byte[] png) {
+          return png;
+        }
 
-    public String toString() {
-      return "OutputType.BYTES";
-    }
-  };
+        public String toString() {
+          return "OutputType.BYTES";
+        }
+      };
 
   /**
    * Obtain the screenshot into a temporary file that will be deleted once the JVM exits. It is up
    * to users to make a copy of this file.
    */
-  OutputType<File> FILE = new OutputType<File>() {
-    @Override
-    public File convertFromBase64Png(String base64Png) {
-      return save(BYTES.convertFromBase64Png(base64Png));
-    }
+  OutputType<File> FILE =
+      new OutputType<File>() {
+        @Override
+        public File convertFromBase64Png(String base64Png) {
+          return save(BYTES.convertFromBase64Png(base64Png));
+        }
 
-    @Override
-    public File convertFromPngBytes(byte[] data) {
-      return save(data);
-    }
+        @Override
+        public File convertFromPngBytes(byte[] data) {
+          return save(data);
+        }
 
-    private File save(byte[] data) {
-      try {
-        Path tmpFilePath = Files.createTempFile("screenshot", ".png");
-        File tmpFile = tmpFilePath.toFile();
-        tmpFile.deleteOnExit();
-        Files.write(tmpFilePath, data);
-        return tmpFile;
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-    }
+        private File save(byte[] data) {
+          try {
+            Path tmpFilePath = Files.createTempFile("screenshot", ".png");
+            File tmpFile = tmpFilePath.toFile();
+            tmpFile.deleteOnExit();
+            Files.write(tmpFilePath, data);
+            return tmpFile;
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
 
-    public String toString() {
-      return "OutputType.FILE";
-    }
-  };
+        public String toString() {
+          return "OutputType.FILE";
+        }
+      };
 
   /**
    * Convert the given base64 png to a requested format.

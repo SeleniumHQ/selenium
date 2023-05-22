@@ -46,9 +46,10 @@ public interface Config {
     String clazz = get(section, option).orElse(defaultClazz);
 
     // We don't declare a constant on the interface, natch.
-    Logger.getLogger(Config.class.getName()).fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
+    Logger.getLogger(Config.class.getName())
+        .fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
 
-    try{
+    try {
       return ClassCreation.callCreateMethod(clazz, typeOfClass, this);
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);

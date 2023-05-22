@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.net;
 
-
-public class FixedIANAPortRange implements EphemeralPortRangeDetector
-{
+public class FixedIANAPortRange implements EphemeralPortRangeDetector {
   @Override
   public int getLowestEphemeralPort() {
     return 49152;

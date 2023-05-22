@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.docker.v1_41;
 
-import com.google.common.collect.ImmutableMap;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.ImageSummary;
 import org.openqa.selenium.docker.internal.Reference;
@@ -29,20 +37,11 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class ListImages {
 
   private static final Json JSON = new Json();
-  private static final Type SET_OF_IMAGE_SUMMARIES = new TypeToken<Set<ImageSummary>>() {}.getType();
+  private static final Type SET_OF_IMAGE_SUMMARIES =
+      new TypeToken<Set<ImageSummary>>() {}.getType();
 
   private final HttpHandler client;
 
@@ -57,19 +56,17 @@ class ListImages {
     Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));
 
     // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
-    HttpRequest req = new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
-      .addHeader("Content-Type", JSON_UTF_8)
-      .addQueryParameter("filters", JSON.toJson(filters));
+    HttpRequest req =
+        new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
+            .addHeader("Content-Type", JSON_UTF_8)
+            .addQueryParameter("filters", JSON.toJson(filters));
 
-    HttpResponse response = DockerMessages.throwIfNecessary(
-      client.execute(req),
-      "Unable to list images for %s", reference);
+    HttpResponse response =
+        DockerMessages.throwIfNecessary(
+            client.execute(req), "Unable to list images for %s", reference);
 
-    Set<ImageSummary> images =
-      JSON.toType(string(response), SET_OF_IMAGE_SUMMARIES);
+    Set<ImageSummary> images = JSON.toType(string(response), SET_OF_IMAGE_SUMMARIES);
 
-    return images.stream()
-      .map(org.openqa.selenium.docker.Image::new)
-      .collect(toImmutableSet());
+    return images.stream().map(org.openqa.selenium.docker.Image::new).collect(toImmutableSet());
   }
 }

@@ -17,22 +17,20 @@
 
 package org.openqa.testing;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Locale;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-class FakeHttpServletResponse extends HeaderContainer
-    implements HttpServletResponse {
+class FakeHttpServletResponse extends HeaderContainer implements HttpServletResponse {
 
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =

@@ -54,7 +54,8 @@ public class DefaultDecorated<T> implements Decorated<T> {
   }
 
   @Override
-  public Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  public Object onError(Method method, InvocationTargetException e, Object[] args)
+      throws Throwable {
     return getDecorator().onError(this, method, args, e);
   }
 

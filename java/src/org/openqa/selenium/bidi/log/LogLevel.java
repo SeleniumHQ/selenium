@@ -21,7 +21,7 @@ public enum LogLevel {
   DEBUG("debug"),
   ERROR("error"),
   INFO("info"),
-  WARNING("warning");
+  WARNING("warn");
 
   private final String level;
 

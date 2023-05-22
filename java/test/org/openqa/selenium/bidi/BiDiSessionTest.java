@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.bidi;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-
-import java.util.Collections;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class BiDiSessionTest {
 
@@ -40,7 +39,8 @@ class BiDiSessionTest {
 
     BiDi biDi = driver.getBiDi();
 
-    BiDiSessionStatus status = biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+    BiDiSessionStatus status =
+        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
     assertThat(status).isNotNull();
     assertThat(status.getMessage()).isEqualTo("Session already started");
   }

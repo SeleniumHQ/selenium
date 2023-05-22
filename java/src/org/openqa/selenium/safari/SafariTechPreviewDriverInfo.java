@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import com.google.auto.service.AutoService;
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -26,11 +29,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.service.DriverFinder;
-
-import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @SuppressWarnings("unused")
 @AutoService(WebDriverInfo.class)
@@ -53,9 +51,9 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari:"))
-      .reduce(Boolean::logicalOr)
-      .orElse(false);
+        .map(key -> key.startsWith("safari:"))
+        .reduce(Boolean::logicalOr)
+        .orElse(false);
   }
 
   @Override
@@ -71,8 +69,8 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      DriverFinder.getPath(SafariTechPreviewDriverService.createDefaultService(),
-                           getCanonicalCapabilities());
+      DriverFinder.getPath(
+          SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
@@ -91,7 +89,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

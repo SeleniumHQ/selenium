@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class NewSessionErrorResponse {
 
@@ -74,5 +73,4 @@ public class NewSessionErrorResponse {
 
     return new NewSessionErrorResponse(requestId, message);
   }
-
 }

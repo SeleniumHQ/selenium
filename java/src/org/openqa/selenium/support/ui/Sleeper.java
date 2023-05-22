@@ -19,9 +19,7 @@ package org.openqa.selenium.support.ui;
 
 import java.time.Duration;
 
-/**
- * Abstraction around {@link Thread#sleep(long)} to permit better testability.
- */
+/** Abstraction around {@link Thread#sleep(long)} to permit better testability. */
 public interface Sleeper {
 
   Sleeper SYSTEM_SLEEPER = duration -> Thread.sleep(duration.toMillis());

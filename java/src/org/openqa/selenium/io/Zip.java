@@ -47,7 +47,8 @@ public class Zip {
     }
   }
 
-  private static void addToZip(String basePath, ZipOutputStream zos, File toAdd) throws IOException {
+  private static void addToZip(String basePath, ZipOutputStream zos, File toAdd)
+      throws IOException {
     if (toAdd.isDirectory()) {
       File[] files = toAdd.listFiles();
       if (files != null) {
@@ -62,7 +63,6 @@ public class Zip {
         ZipEntry entry = new ZipEntry(name.replace('\\', '/'));
         zos.putNextEntry(entry);
 
-
         int len;
         byte[] buffer = new byte[4096];
         while ((len = fis.read(buffer)) != -1) {
@@ -74,7 +74,8 @@ public class Zip {
     }
   }
 
-  public static File unzipToTempDir(String source, String prefix, String suffix) throws IOException {
+  public static File unzipToTempDir(String source, String prefix, String suffix)
+      throws IOException {
     File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir(prefix, suffix);
     Zip.unzip(source, output);
     return output;
@@ -88,7 +89,8 @@ public class Zip {
     }
   }
 
-  public static File unzipToTempDir(InputStream source, String prefix, String suffix) throws IOException {
+  public static File unzipToTempDir(InputStream source, String prefix, String suffix)
+      throws IOException {
     File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir(prefix, suffix);
     Zip.unzip(source, output);
     return output;

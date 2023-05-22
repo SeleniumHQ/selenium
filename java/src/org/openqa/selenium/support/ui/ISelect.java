@@ -17,21 +17,20 @@
 
 package org.openqa.selenium.support.ui;
 
-import org.openqa.selenium.WebElement;
-
 import java.util.List;
+import org.openqa.selenium.WebElement;
 
 /**
  * Created by evgeniyat on 13.05.16
  *
- * ISelect interface makes a protocol for all kind of select elements (standard html and custom
+ * <p>ISelect interface makes a protocol for all kind of select elements (standard html and custom
  * model)
  */
 public interface ISelect {
 
   /**
    * @return Whether this select element supports selecting multiple options at the same time? This
-   * is done by checking the value of the "multiple" attribute.
+   *     is done by checking the value of the "multiple" attribute.
    */
   boolean isMultiple();
 
@@ -47,7 +46,7 @@ public interface ISelect {
 
   /**
    * @return The first selected option in this select tag (or the currently selected option in a
-   * normal select)
+   *     normal select)
    */
   WebElement getFirstSelectedOption();
 
@@ -55,7 +54,7 @@ public interface ISelect {
    * Select all options that display text matching the argument. That is, when given "Bar" this
    * would select an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param text The visible text to match against
    */
@@ -73,7 +72,7 @@ public interface ISelect {
    * Select all options that have a value matching the argument. That is, when given "foo" this
    * would select an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param value The value to match against
    */
@@ -88,7 +87,7 @@ public interface ISelect {
    * Deselect all options that have a value matching the argument. That is, when given "foo" this
    * would deselect an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param value The value to match against
    */
@@ -106,7 +105,7 @@ public interface ISelect {
    * Deselect all options that display text matching the argument. That is, when given "Bar" this
    * would deselect an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param text The visible text to match against
    */

@@ -74,5 +74,4 @@ class PrintPageTest extends JupiterTestBase {
     Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
-
 }
