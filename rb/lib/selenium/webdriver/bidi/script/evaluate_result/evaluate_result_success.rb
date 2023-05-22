@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# frozen_string_literal = true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,18 +22,13 @@
 module Selenium
   module WebDriver
     class BiDi
-      module NonPrimitiveType
-        ARRAY = 'array'
-        DATE = 'date'
-        MAP = 'map'
-        OBJECT = 'object'
-        REGULAR_EXPRESSION = 'regexp'
-        SET = 'set'
+      class EvaluateResultSuccess
+        attr_accessor :result_type, :realm_id, :result
 
-        def self.find_by_name(name)
-          NonPrimitiveType.constants.each do |type|
-            return true if name.casecmp(type)
-          end
+        def initialize(realm_id, value)
+          @result_type = EvaluateResultType::SUCCESS
+          @realm_id = realm_id
+          @result = value
         end
       end
     end

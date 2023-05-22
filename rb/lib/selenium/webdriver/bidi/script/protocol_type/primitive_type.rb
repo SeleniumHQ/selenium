@@ -1,4 +1,4 @@
-# frozen_string_literal = true
+# frozen_string_literal: true
 
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -20,27 +20,19 @@
 module Selenium
   module WebDriver
     class BiDi
-      module RemoteType
-        SYMBOL = 'symbol'
-        FUNCTION = 'function'
-        WEAK_MAP = 'weakmap'
-        WEAK_SET = 'weakset'
-        ITERATOR = 'iterator'
-        GENERATOR = 'generator'
-        ERROR = 'error'
-        PROXY = 'proxy'
-        PROMISE = 'promise'
-        TYPED_ARRAY = 'typedarray'
-        ARRAY_BUFFER = 'arraybuffer'
-        NODE_LIST = 'nodelist'
-        HTML_COLLECTION = 'htmlcollection'
-        NODE = 'node'
-        WINDOW = 'window'
+      module PrimitiveType
+        UNDEFINED = 'undefined'
+        NULL = 'null'
+        STRING = 'string'
+        NUMBER = 'number'
+        SPECIAL_NUMBER = 'number'
+        BOOLEAN = 'boolean'
+        BIGINT = 'bigint'
 
         def self.find_by_name(name)
-          RemoteType.constants.each do |type|
-            return true if name.casecmp(type)
-          end
+          PrimitiveType.constants.each do |type|
+            return PrimitiveType.const_get(type) if name.casecmp?(PrimitiveType.const_get(type))
+          end; nil
         end
       end
     end

@@ -20,19 +20,26 @@
 module Selenium
   module WebDriver
     class BiDi
-      module PrimitiveType
-        UNDEFINED = 'undefined'
-        NULL = 'null'
-        STRING = 'string'
-        NUMBER = 'number'
-        SPECIAL_NUMBER = 'number'
-        BOOLEAN = 'boolean'
-        BIGINT = 'bigint'
+      class ReferenceValue
+        REMOTE_REFERENCE_TYPE = {
+          HANDLE: 'handle',
+          SHARED_ID: 'shareId'
+        }.freeze
 
-        def self.find_by_name(name)
-          PrimitiveType.constants.each do |type|
-            return true if name.casecmp(type)
+        def initialize(handle, share_id)
+          if handle.eql? REMOTE_REFERENCE_TYPE[:HANDLE]
+            @handle = share_id
+          else
+            @handle = handle
+            @share_id = share_id
           end
+        end
+
+        def as_map
+          to_return = {}
+          to_return[REMOTE_REFERENCE_TYPE[:HANDLE]] = @handle unless @handle.nil?
+          to_return[REMOTE_REFERENCE_TYPE[:SHARED_ID]] = @share_id unless @share_id.nil?
+          to_return
         end
       end
     end
