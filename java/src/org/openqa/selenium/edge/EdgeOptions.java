@@ -56,12 +56,11 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
   }
 
   /**
-   * Changes the browser name to 'webview2' to enable
-   * <a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">
-   *   test automation of WebView2 apps with Microsoft Edge WebDriver
-   * </a>
+   * Changes the browser name to 'webview2' to enable <a
+   * href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">test
+   * automation of WebView2 apps with Microsoft Edge WebDriver </a>
    *
-   * @param enable  boolean flag to enable or disable the 'webview2' usage
+   * @param enable boolean flag to enable or disable the 'webview2' usage
    */
   public void useWebView(boolean enable) {
     String browserName = enable ? WEBVIEW2_BROWSER_NAME : EDGE.browserName();
