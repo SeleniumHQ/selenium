@@ -26,13 +26,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/**
- * A wrapper around temporary filesystem behaviour.
- */
-public class
-TemporaryFilesystem {
+/** A wrapper around temporary filesystem behaviour. */
+public class TemporaryFilesystem {
 
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
+
   private final File baseDir;
   // Thread safety reviewed
   private final Thread shutdownHook = new Thread(this::deleteTemporaryFiles);
@@ -65,7 +63,6 @@ TemporaryFilesystem {
     return new TemporaryFilesystem(directory);
   }
 
-
   private TemporaryFilesystem(File baseDir) {
     this.baseDir = baseDir;
 
@@ -79,7 +76,6 @@ TemporaryFilesystem {
       throw new UncheckedIOException(
           new IOException("Unable to write to tmp dir: " + baseDir.getAbsolutePath()));
     }
-
   }
 
   /**
@@ -132,9 +128,7 @@ TemporaryFilesystem {
     }
   }
 
-  /**
-   * Perform the operation that a shutdown hook would have.
-   */
+  /** Perform the operation that a shutdown hook would have. */
   public void deleteTemporaryFiles() {
     if (!shouldReap()) {
       return;
@@ -165,5 +159,9 @@ TemporaryFilesystem {
       Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
     return wasDeleted;
+  }
+
+  public File getBaseDir() {
+    return baseDir;
   }
 }

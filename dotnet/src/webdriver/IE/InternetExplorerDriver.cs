@@ -17,8 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -77,7 +75,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(), options)
+            : this(InternetExplorerDriverService.CreateDefaultService(options), options)
         {
         }
 
@@ -142,7 +140,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(new DriverServiceCommandExecutor(DriverFinder.VerifyDriverServicePath(service, options), commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
 

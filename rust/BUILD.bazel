@@ -1,5 +1,5 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_test")
 
 rust_binary(
     # Yes, this name is very similar to the library. Note the dash
@@ -23,3 +23,31 @@ rust_library(
     edition = "2021",
     deps = all_crate_deps(normal = True),
 )
+
+rust_test(
+    name = "unit",
+    size = "small",
+    srcs = glob(["src/**/*.rs"]),
+    crate = ":selenium_manager",
+    tags = ["no-sandbox"],
+)
+
+[
+    rust_test(
+        name = file[:-3],
+        size = "small",
+        srcs = [file],
+        data = [":selenium-manager"],
+        edition = "2021",
+        tags = [
+            "exclusive",
+            "no-sandbox",
+            "requires-network",
+        ],
+        deps = [":selenium_manager"] + all_crate_deps(
+            normal = True,
+            normal_dev = True,
+        ),
+    )
+    for file in glob(["tests/**/*.rs"])
+]

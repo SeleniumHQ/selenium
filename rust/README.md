@@ -21,34 +21,38 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 
 Usage: selenium-manager [OPTIONS]
 Options:
-  -b, --browser <BROWSER>
+      --browser <BROWSER>
           Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
-  -d, --driver <DRIVER>
+      --driver <DRIVER>
           Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
-  -v, --driver-version <DRIVER_VERSION>
+      --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
-  -B, --browser-version <BROWSER_VERSION>
+      --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
-  -P, --browser-path <BROWSER_PATH>
+      --browser-path <BROWSER_PATH>
           Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-  -p, --proxy <PROXY>
+      --output <OUTPUT>
+          Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like) [default: LOGGER]
+      --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
-  -t, --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 120]
-  -D, --debug
+      --timeout <TIMEOUT>
+          Timeout for network requests (in seconds) [default: 180]
+      --driver-ttl <DRIVER_TTL>
+          Driver TTL (time-to-live) [default: 86400]
+      --browser-ttl <BROWSER_TTL>
+          Browser TTL (time-to-live) [default: 0]
+      --clear-cache
+          Clear cache folder (~/.cache/selenium)
+      --clear-metadata
+          Clear metadata file (~/.cache/selenium/selenium-manager.json)
+      --debug
           Display DEBUG messages
-  -T, --trace
+      --trace
           Display TRACE messages
-  -c, --clear-cache
-          Clear driver cache
   -h, --help
-          Print help information
+          Print help
   -V, --version
-          Print version information
-  --driver_ttl <TTL IN SECONDS>
-          Set custom TTL for driver in seconds. Default value is 86400
-  --browser_ttl <TTL IN SECONDS>
-          Set custom TTL for browser in seconds default value is 0
+          Print version
 ```
 
 For instance, the command required to manage chromedriver is the following:
@@ -76,6 +80,10 @@ INFO	/home/boni/.cache/selenium/chromedriver/linux64/106.0.5249.61/chromedriver
 ```
 
 Alternatively, you can replace `cargo run` with `bazel run //rust:selenium-manager`, for example `bazel run //rust:selenium-manager -- --browser chrome --debug`
+
+### Windows ARM
+
+There are issues when building on Windows ARM64. To workaround, use `cargo` with `--config Cargo.aarch64-pc-windows-msvc.toml` flag.
 
 ## Roadmap
 The implementation of Selenium Manager has been planned to be incremental. In the beginning, it should be a component that each Selenium language binding can optionally use to manage the local browser infrastructure. In the mid-term, and as long as it becomes more stable and complete, it could be used as the default tool for automated browser and driver management. All in all, the milestone we propose are the following:

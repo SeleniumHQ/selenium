@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+import java.io.UncheckedIOException;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.UrlPath;
-
-import java.io.UncheckedIOException;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class RedirectHandler implements HttpHandler {
 
@@ -34,8 +33,8 @@ public class RedirectHandler implements HttpHandler {
     String targetLocation = UrlPath.relativeToContext(req, "resultPage.html");
 
     return new HttpResponse()
-      .setStatus(HTTP_MOVED_TEMP)
-      .setHeader("Location", targetLocation)
-      .setContent(utf8String(""));
+        .setStatus(HTTP_MOVED_TEMP)
+        .setHeader("Location", targetLocation)
+        .setContent(utf8String(""));
   }
 }

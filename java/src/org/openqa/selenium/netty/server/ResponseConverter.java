@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.netty.server;
 
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
+import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+
 import com.google.common.io.ByteStreams;
-
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,13 +34,8 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpChunkedInput;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.stream.ChunkedStream;
-
 import java.io.InputStream;
-
-import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
-import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
@@ -69,17 +66,16 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     DefaultHttpResponse first;
     if (byteCount < CHUNK_SIZE) {
       is.close();
-      first = new DefaultFullHttpResponse(
-          HTTP_1_1,
-          HttpResponseStatus.valueOf(seResponse.getStatus()),
-          Unpooled.wrappedBuffer(ary, 0, byteCount));
+      first =
+          new DefaultFullHttpResponse(
+              HTTP_1_1,
+              HttpResponseStatus.valueOf(seResponse.getStatus()),
+              Unpooled.wrappedBuffer(ary, 0, byteCount));
       first.headers().addInt(CONTENT_LENGTH, byteCount);
       copyHeaders(seResponse, first);
       ctx.write(first);
     } else {
-      first = new DefaultHttpResponse(
-          HTTP_1_1,
-          HttpResponseStatus.valueOf(seResponse.getStatus()));
+      first = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(seResponse.getStatus()));
       first.headers().set(TRANSFER_ENCODING, CHUNKED);
       copyHeaders(seResponse, first);
       ctx.write(first);
@@ -89,16 +85,18 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
       HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is, CHUNK_SIZE));
       ChannelFuture future = ctx.write(writer);
-      future.addListener(ignored -> {
-        is.close();
-        ctx.flush();
-      });
+      future.addListener(
+          ignored -> {
+            is.close();
+            ctx.flush();
+          });
     }
   }
 
   private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
     for (String name : seResponse.getHeaderNames()) {
-      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name) || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
+      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name)
+          || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
         continue;
       }
       for (String value : seResponse.getHeaders(name)) {

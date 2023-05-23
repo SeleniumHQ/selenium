@@ -21,10 +21,6 @@ import static java.lang.System.getProperty;
 import static java.util.Collections.emptySet;
 
 import com.google.common.base.Splitter;
-
-import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.internal.Require;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,11 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.internal.Require;
 
-
-/**
- * Builder for test suites that run JavaScript tests.
- */
+/** Builder for test suites that run JavaScript tests. */
 class TestFileLocator {
 
   private static final String TEST_DIRECTORY_PROPERTY = "js.test.dir";
@@ -50,27 +45,29 @@ class TestFileLocator {
   }
 
   private static List<Path> findTestFiles(Path directory, Set<Path> excludedFiles)
-    throws IOException {
+      throws IOException {
     return Files.find(
-      directory,
-      Integer.MAX_VALUE,
-      (path, basicFileAttributes) -> {
-        String name = path.getFileName().toString();
-        return name.endsWith("_test.html");
-        // TODO: revive support for _test.js files.
-//        Path sibling = path.resolveSibling(name.replace(".js", ".html"));
-//        return name.endsWith("_test.html")
-//               || (name.endsWith("_test.js") && !Files.exists(sibling));
-      })
-      .filter(path -> !excludedFiles.contains(path))
-      .collect(Collectors.toList());
+            directory,
+            Integer.MAX_VALUE,
+            (path, basicFileAttributes) -> {
+              String name = path.getFileName().toString();
+              return name.endsWith("_test.html");
+              // TODO: revive support for _test.js files.
+              //        Path sibling = path.resolveSibling(name.replace(".js", ".html"));
+              //        return name.endsWith("_test.html")
+              //               || (name.endsWith("_test.js") && !Files.exists(sibling));
+            })
+        .filter(path -> !excludedFiles.contains(path))
+        .collect(Collectors.toList());
   }
 
   private static Path getTestDirectory() {
-    String testDirName = Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
-                                 "You must specify the test directory with the %s system property",
-                                 TEST_DIRECTORY_PROPERTY);
-    
+    String testDirName =
+        Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY))
+            .nonNull(
+                "You must specify the test directory with the %s system property",
+                TEST_DIRECTORY_PROPERTY);
+
     Path runfiles = InProject.findRunfilesRoot();
     Path testDir;
     if (runfiles != null) {
@@ -95,13 +92,17 @@ class TestFileLocator {
     Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
 
     return StreamSupport.stream(splitExcludes.spliterator(), false)
-        .map(testDirectory::resolve).collect(Collectors.toSet());
+        .map(testDirectory::resolve)
+        .collect(Collectors.toSet());
   }
 
   public static String getTestFilePath(Path baseDir, Path testFile) {
-    String path = testFile.toAbsolutePath().toString()
-        .replace(baseDir.toAbsolutePath().toString() + File.separator, "")
-        .replace(File.separator, "/");
+    String path =
+        testFile
+            .toAbsolutePath()
+            .toString()
+            .replace(baseDir.toAbsolutePath().toString() + File.separator, "")
+            .replace(File.separator, "/");
     if (path.endsWith(".js")) {
       path = "common/generated/" + path;
     }

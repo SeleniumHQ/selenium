@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
+import logging
 import os
 import warnings
 import zipfile
@@ -23,6 +24,7 @@ from io import BytesIO
 from shutil import rmtree
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .firefox_binary import FirefoxBinary
@@ -31,6 +33,8 @@ from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
+
+logger = logging.getLogger(__name__)
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None
@@ -188,6 +192,7 @@ class WebDriver(RemoteWebDriver):
 
         if not self.service:
             self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
+        self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(
@@ -212,8 +217,24 @@ class WebDriver(RemoteWebDriver):
                 rmtree(self.profile.path)
                 if self.profile.tempfolder:
                     rmtree(self.profile.tempfolder)
-            except Exception as e:
-                print(str(e))
+            except Exception:
+                logger.exception("Unable to remove profile specific paths.")
+
+        self._close_binary_file_handle()
+
+    def _close_binary_file_handle(self) -> None:
+        """Attempts to close the underlying file handles for `FirefoxBinary`
+        instances if they are used and open.
+
+        To keep inline with other cleanup raising here is swallowed and
+        will not cause a runtime error.
+        """
+        try:
+            if isinstance(self.binary, FirefoxBinary):
+                if hasattr(self.binary._log_file, "close"):
+                    self.binary._log_file.close()
+        except Exception:
+            logger.exception("Unable to close open file handle for firefox binary log file.")
 
     @property
     def firefox_profile(self):
@@ -252,6 +273,7 @@ class WebDriver(RemoteWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
+        :param temporary: allows you to load browser extensions temporarily during a session
         :param path: Absolute path to the addon that will be installed.
 
         :Usage:

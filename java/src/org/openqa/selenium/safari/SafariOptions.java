@@ -17,22 +17,22 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
+import java.util.Collections;
+import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
-import java.util.Collections;
-import java.util.Set;
-
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 /**
  * Class to manage options specific to {@link SafariDriver}.
  *
  * <p>Example usage:
+ *
  * <pre><code>
  * SafariOptions options = new SafariOptions()
  * options.setUseTechnologyPreview(true);
@@ -67,7 +67,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
    * @throws WebDriverException If an error occurred during the reconstruction of the options
    */
   public static SafariOptions fromCapabilities(Capabilities capabilities)
-    throws WebDriverException {
+      throws WebDriverException {
     if (capabilities instanceof SafariOptions) {
       return (SafariOptions) capabilities;
     }
@@ -81,8 +81,9 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     SafariOptions newInstance = new SafariOptions();
 
     getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
-    extraCapabilities.getCapabilityNames()
-      .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
+    extraCapabilities
+        .getCapabilityNames()
+        .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
 
     return newInstance;
   }
@@ -92,11 +93,11 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   /**
-   * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
-   * the automatic inspection. Defaults to disabling the automatic inspection.
+   * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable the
+   * automatic inspection. Defaults to disabling the automatic inspection.
    *
    * @param automaticInspection If true, the SafariDriver will enable the Automation Inspection,
-   *                            otherwise will disable.
+   *     otherwise will disable.
    */
   public SafariOptions setAutomaticInspection(boolean automaticInspection) {
     setCapability(Option.AUTOMATIC_INSPECTION, automaticInspection);
@@ -108,11 +109,11 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   /**
-   * Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
-   * the automatic profiling. Defaults to disabling the automatic profiling.
+   * Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable the
+   * automatic profiling. Defaults to disabling the automatic profiling.
    *
    * @param automaticProfiling If true, the SafariDriver will enable the Automation Profiling,
-   *                           otherwise will disable.
+   *     otherwise will disable.
    */
   public SafariOptions setAutomaticProfiling(boolean automaticProfiling) {
     setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
@@ -128,13 +129,13 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
    * release version of Safari. Defaults to using the release version of Safari.
    *
    * @param useTechnologyPreview If true, the SafariDriver will use the Safari Technology Preview,
-   *                             otherwise will use the release version of Safari.
+   *     otherwise will use the release version of Safari.
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     // Use an object here, rather than a boolean to avoid a stack overflow
-    super.setCapability(BROWSER_NAME,
-                        useTechnologyPreview ?
-                        SAFARI_TECH_PREVIEW.browserName() : SAFARI.browserName());
+    super.setCapability(
+        BROWSER_NAME,
+        useTechnologyPreview ? SAFARI_TECH_PREVIEW.browserName() : SAFARI.browserName());
     return this;
   }
 

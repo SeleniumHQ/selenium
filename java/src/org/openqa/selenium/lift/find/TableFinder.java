@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.lift.find;
 
-/**
- * A {@link Finder} for HTML table tags.
- *
- */
+/** A {@link Finder} for HTML table tags. */
 public class TableFinder extends HtmlTagFinder {
 
-  private TableFinder() {
-  }
+  private TableFinder() {}
 
   @Override
   protected String tagName() {

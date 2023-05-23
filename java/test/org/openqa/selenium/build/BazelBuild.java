@@ -19,16 +19,15 @@ package org.openqa.selenium.build;
 
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.CommandLine;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.CommandLine;
 
 public class BazelBuild {
-  private static final Logger log = Logger.getLogger(BazelBuild.class.getName());
+  private static final Logger LOG = Logger.getLogger(BazelBuild.class.getName());
 
   public static File findBinRoot(File dir) {
     if ("bin".equals(dir.getName())) {
@@ -43,7 +42,7 @@ public class BazelBuild {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
-      log.info("Not in dev mode. Ignoring attempt to build: " + target);
+      LOG.info("Not in dev mode. Ignoring attempt to build: " + target);
       return;
     }
 
@@ -57,7 +56,7 @@ public class BazelBuild {
     if (target == null || "".equals(target)) {
       throw new IllegalStateException("No targets specified");
     }
-    log.info("\nBuilding " + target + " ...");
+    LOG.info("\nBuilding " + target + " ...");
 
     CommandLine commandLine = new CommandLine("bazel", "build", target);
     commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());

@@ -39,10 +39,17 @@ class Service(service.Service):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        **kwargs,
     ):
         self.service_args = service_args or []
         log_file = open(log_path, "wb") if log_path else None
-        super().__init__(executable=executable_path, port=port, log_file=log_file, env=env)  # type: ignore
+        super().__init__(
+            executable=executable_path,
+            port=port,
+            log_file=log_file,
+            env=env,
+            **kwargs,
+        )  # type: ignore
 
     def command_line_args(self) -> typing.List[str]:
         return ["-p", f"{self.port}"] + self.service_args

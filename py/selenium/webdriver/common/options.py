@@ -44,7 +44,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: the version of the browser if set, otherwise None.
         """
-        return self._caps["browserVersion"]
+        return self._caps.get("browserVersion")
 
     @browser_version.setter
     def browser_version(self, version: str) -> None:
@@ -127,7 +127,7 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
-        if all(x in timeouts.keys() for x in ("implicit", "pageLoad", "script")):
+        if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
             self.set_capability("timeouts", timeouts)
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")

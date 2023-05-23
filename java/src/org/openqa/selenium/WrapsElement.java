@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-/**
- * Indicates that there is an underlying element that can be used
- */
+/** Indicates that there is an underlying element that can be used */
 @FunctionalInterface
 public interface WrapsElement {
   WebElement getWrappedElement();

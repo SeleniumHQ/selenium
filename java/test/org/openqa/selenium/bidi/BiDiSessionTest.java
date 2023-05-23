@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -24,13 +27,12 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-import java.util.Collections;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 class BiDiSessionTest extends JupiterTestBase {
+
+  private FirefoxDriver driver;
 
   @Test
   @NotYetImplemented(SAFARI)
@@ -38,7 +40,8 @@ class BiDiSessionTest extends JupiterTestBase {
   void shouldBeAbleToCreateABiDiSession() {
     BiDi biDi = ((HasBiDi) driver).getBiDi();
 
-    BiDiSessionStatus status = biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+    BiDiSessionStatus status =
+        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
     assertThat(status).isNotNull();
     assertThat(status.getMessage()).isNotEmpty();
   }

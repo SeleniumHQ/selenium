@@ -24,7 +24,7 @@ class WheelActions(Interaction):
             source = WheelInput("wheel")
         super().__init__(source)
 
-    def pause(self, duration=0):
+    def pause(self, duration: float = 0):
         self.source.create_pause(duration)
         return self
 

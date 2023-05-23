@@ -48,8 +48,9 @@ body:
     attributes:
       label: Relevant log output
       description: |
-        Please copy and paste any relevant log output. This will be automatically formatted, so
-        no need for backticks.
+        Please copy and paste any relevant log output.
+        Ideally, turn on more detailed logging: https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/
+        This will be automatically formatted, so no need for backticks.
       render: shell
     validations:
       required: true

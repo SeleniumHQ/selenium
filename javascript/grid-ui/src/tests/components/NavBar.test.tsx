@@ -18,13 +18,11 @@
 import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 import NavBar from '../../components/NavBar/NavBar'
-import { createMemoryHistory } from 'history'
-import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
 it('renders menu options names', () => {
-  const history = createMemoryHistory()
   render(
-    <HistoryRouter history={history}>
+    <MemoryRouter initialEntries={['/']}>
       <NavBar
         open
         maxSession={10}
@@ -32,7 +30,7 @@ it('renders menu options names', () => {
         nodeCount={1}
         sessionQueueSize={0}
       />
-    </HistoryRouter>
+    </MemoryRouter>
   )
   expect(screen.getByText('Sessions')).toBeInTheDocument()
   expect(screen.getByText('Overview')).toBeInTheDocument()
@@ -41,10 +39,8 @@ it('renders menu options names', () => {
 
 it('overall concurrency is not rendered on root path with a single node',
   () => {
-    const history = createMemoryHistory()
-    history.push('/')
     render(
-      <HistoryRouter history={history}>
+      <MemoryRouter initialEntries={['/']}>
         <NavBar
           open
           maxSession={0}
@@ -52,17 +48,15 @@ it('overall concurrency is not rendered on root path with a single node',
           nodeCount={1}
           sessionQueueSize={0}
         />
-      </HistoryRouter>
+      </MemoryRouter>
     )
     expect(screen.queryByTestId('overall-concurrency')).not.toBeInTheDocument()
   })
 
 it('overall concurrency is rendered on root path with more than one node',
   () => {
-    const history = createMemoryHistory()
-    history.push('/')
     render(
-      <HistoryRouter history={history}>
+      <MemoryRouter initialEntries={['/']}>
         <NavBar
           open
           maxSession={0}
@@ -70,17 +64,15 @@ it('overall concurrency is rendered on root path with more than one node',
           nodeCount={2}
           sessionQueueSize={0}
         />
-      </HistoryRouter>
+      </MemoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()
   })
 
 it('overall concurrency is rendered on root path with more than one node',
   () => {
-    const history = createMemoryHistory()
-    history.push('/')
     render(
-      <HistoryRouter history={history}>
+      <MemoryRouter initialEntries={['/']}>
         <NavBar
           open
           maxSession={0}
@@ -88,17 +80,15 @@ it('overall concurrency is rendered on root path with more than one node',
           nodeCount={2}
           sessionQueueSize={0}
         />
-      </HistoryRouter>
+      </MemoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()
   })
 
 it('overall concurrency is rendered on a path different than and one node',
   () => {
-    const history = createMemoryHistory()
-    history.push('/sessions')
     render(
-      <HistoryRouter history={history}>
+      <MemoryRouter initialEntries={['/sessions']}>
         <NavBar
           open
           maxSession={0}
@@ -106,7 +96,7 @@ it('overall concurrency is rendered on a path different than and one node',
           nodeCount={1}
           sessionQueueSize={0}
         />
-      </HistoryRouter>
+      </MemoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()
   })

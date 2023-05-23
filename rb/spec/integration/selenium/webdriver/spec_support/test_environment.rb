@@ -27,7 +27,7 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          WebDriver.logger.ignore(:logger_info)
+          WebDriver.logger.ignore(%i[logger_info selenium_manager])
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
@@ -86,7 +86,8 @@ module Selenium
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
-            timeout: 60
+            timeout: 60,
+            args: %w[--selenium-manager true]
           )
         end
 

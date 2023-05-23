@@ -27,7 +27,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.8.2",
+    'version': "4.9.1",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
@@ -71,7 +71,7 @@ setup_args = {
                  'selenium.webdriver.support', ],
     'include_package_data': True,
     'install_requires': [
-        "urllib3[socks]~=1.26",
+        "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",

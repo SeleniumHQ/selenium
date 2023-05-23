@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.chromium;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.AbstractDriverOptions;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,18 +31,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
-
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toList;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 
 /**
  * Class to manage options specific to {@link ChromiumDriver}.
  *
  * <p>Example usage:
+ *
  * <pre><code>
  * ChromeOptions options = new ChromeOptions()
  * options.addExtensions(new File("/path/to/extension.crx"))
@@ -60,7 +61,8 @@ import static java.util.stream.Collectors.toList;
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDriverOptions<ChromiumOptions<?>> {
+public class ChromiumOptions<T extends ChromiumOptions<?>>
+    extends AbstractDriverOptions<ChromiumOptions<?>> {
 
   private String binary;
   private final List<String> args = new ArrayList<>();
@@ -74,12 +76,19 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
     setCapability(capabilityType, browserType);
+    if (!"jdk-http-client".equalsIgnoreCase(System.getProperty("webdriver.http.factory", ""))) {
+      // Allowing any origin "*" might sound risky but an attacker would need to know
+      // the port used to start DevTools to establish a connection. Given these sessions
+      // are relatively short-lived, the risk is reduced. Only set when the Java 11 client
+      // is not used.
+      addArguments("--remote-allow-origins=*");
+    }
   }
 
   /**
-   * Sets the path to the Chrome executable. This path should exist on the
-   * machine which will launch Chrome. The path should either be absolute or
-   * relative to the location of running ChromeDriver server.
+   * Sets the path to the Chrome executable. This path should exist on the machine which will launch
+   * Chrome. The path should either be absolute or relative to the location of running ChromeDriver
+   * server.
    *
    * @param path Path to Chrome executable.
    */
@@ -89,9 +98,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Sets the path to the Chrome executable. This path should exist on the
-   * machine which will launch Chrome. The path should either be absolute or
-   * relative to the location of running ChromeDriver server.
+   * Sets the path to the Chrome executable. This path should exist on the machine which will launch
+   * Chrome. The path should either be absolute or relative to the location of running ChromeDriver
+   * server.
    *
    * @param path Path to Chrome executable.
    */
@@ -110,21 +119,32 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Adds additional command line arguments to be used when starting Chrome.
-   * For example:
+   * Adds additional command line arguments to be used when starting Chrome. For example:
+   *
    * <pre><code>
-   *   options.setArguments(
+   *   options.addArguments(
    *       "load-extension=/path/to/unpacked_extension",
    *       "allow-outdated-plugins");
    * </code></pre>
    *
-   * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimited with an "=":
-   * "foo=bar".
+   * <p>Each argument may contain an option "--" prefix: "--foo" or "foo". Arguments with an
+   * associated value should be delimited with an "=": "foo=bar".
    *
    * @param arguments The arguments to use when starting Chrome.
    */
   public T addArguments(List<String> arguments) {
+    /*
+     --remote-allow-origins is being added by default since Chrome 111. We need to check
+     if the argument already exists and then remove it.
+    */
+    String remoteAllowOrigins = "remote-allow-origins";
+    Optional<String> newArg =
+        arguments.stream().filter(arg -> arg.contains(remoteAllowOrigins)).findFirst();
+    Optional<String> existingArg =
+        args.stream().filter(arg -> arg.contains(remoteAllowOrigins)).findFirst();
+    if (newArg.isPresent() && existingArg.isPresent()) {
+      args.remove(existingArg.get());
+    }
     args.addAll(arguments);
     return (T) this;
   }
@@ -139,8 +159,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Adds a new Chrome extension to install on browser startup. Each path should
-   * specify a packed Chrome extension (CRX file).
+   * Adds a new Chrome extension to install on browser startup. Each path should specify a packed
+   * Chrome extension (CRX file).
    *
    * @param paths Paths to the extensions to install.
    */
@@ -160,8 +180,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Adds a new Chrome extension to install on browser startup. Each string data should
-   * specify a Base64 encoded string of packed Chrome extension (CRX file).
+   * Adds a new Chrome extension to install on browser startup. Each string data should specify a
+   * Base64 encoded string of packed Chrome extension (CRX file).
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
@@ -174,12 +194,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Sets an experimental option. Useful for new ChromeDriver options not yet
-   * exposed through the {@link ChromiumOptions} API.
+   * Sets an experimental option. Useful for new ChromeDriver options not yet exposed through the
+   * {@link ChromiumOptions} API.
    *
    * @param name Name of the experimental option.
-   * @param value Value of the experimental option, which must be convertible
-   *     to JSON.
+   * @param value Value of the experimental option, which must be convertible to JSON.
    */
   public T setExperimentalOption(String name, Object value) {
     experimentalOptions.put(Require.nonNull("Option name", name), value);
@@ -187,10 +206,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * @deprecated Use {@link #addArguments(String...)}.
-   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
-   * Recommended to use '--headless=new' as argument for browsers v109+.
-   * Example: `addArguments("--headless=new")`.
+   * @deprecated Use {@link #addArguments(String...)}. Recommended to use '--headless=chrome' as
+   *     argument for browsers v94-108. Recommended to use '--headless=new' as argument for browsers
+   *     v109+. Example: `addArguments("--headless=new")`.
    */
   @Deprecated
   public T setHeadless(boolean headless) {
@@ -221,8 +239,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   /**
-   * Process name of the Activity hosting the WebView (as given by ps).
-   * If not set, the process name is assumed to be the same as androidPackage.
+   * Process name of the Activity hosting the WebView (as given by ps). If not set, the process name
+   * is assumed to be the same as androidPackage.
    */
   public T setAndroidProcess(String processName) {
     Require.nonNull("Android process name", processName);
@@ -260,18 +278,21 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     options.put("args", unmodifiableList(new ArrayList<>(args)));
 
     options.put(
-      "extensions",
-      unmodifiableList(Stream.concat(
-        extensionFiles.stream()
-          .map(file -> {
-            try {
-              return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-            } catch (IOException e) {
-              throw new SessionNotCreatedException(e.getMessage(), e);
-            }
-          }),
-        extensions.stream()
-      ).collect(toList())));
+        "extensions",
+        unmodifiableList(
+            Stream.concat(
+                    extensionFiles.stream()
+                        .map(
+                            file -> {
+                              try {
+                                return Base64.getEncoder()
+                                    .encodeToString(Files.readAllBytes(file.toPath()));
+                              } catch (IOException e) {
+                                throw new SessionNotCreatedException(e.getMessage(), e);
+                              }
+                            }),
+                    extensions.stream())
+                .collect(toList())));
 
     options.putAll(androidOptions);
 
@@ -288,24 +309,26 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
 
       if (name.equals("args") && capabilities.getCapability(name) != null) {
         List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
-        arguments.forEach(arg -> {
-          if (!args.contains(arg)) {
-            addArguments(arg);
-          }
-        });
+        arguments.forEach(
+            arg -> {
+              if (!args.contains(arg)) {
+                addArguments(arg);
+              }
+            });
       }
 
       if (name.equals("extensions") && capabilities.getCapability(name) != null) {
         List<Object> extensionList = (List<Object>) (capabilities.getCapability(("extensions")));
-        extensionList.forEach(extension -> {
-          if (!extensions.contains(extension)) {
-            if (extension instanceof File) {
-              addExtensions((File) extension);
-            } else if (extension instanceof String) {
-              addEncodedExtensions((String) extension);
-            }
-          }
-        });
+        extensionList.forEach(
+            extension -> {
+              if (!extensions.contains(extension)) {
+                if (extension instanceof File) {
+                  addExtensions((File) extension);
+                } else if (extension instanceof String) {
+                  addEncodedExtensions((String) extension);
+                }
+              }
+            });
       }
 
       if (name.equals("binary") && capabilities.getCapability(name) != null) {
@@ -339,29 +362,32 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
       Object object = capabilities.getCapability(capabilityName);
 
       if (object instanceof Map) {
-        @SuppressWarnings("unchecked") Map<String, Object> options = (Map<String, Object>) object;
+        @SuppressWarnings("unchecked")
+        Map<String, Object> options = (Map<String, Object>) object;
 
-        @SuppressWarnings("unchecked") List<String>
-          arguments =
-          (List<String>) (options.getOrDefault("args", new HashMap<>()));
-        @SuppressWarnings("unchecked") List<Object> extensionList =
-          (List<Object>) (options.getOrDefault("extensions", new ArrayList<>()));
+        @SuppressWarnings("unchecked")
+        List<String> arguments = (List<String>) (options.getOrDefault("args", new ArrayList<>()));
+        @SuppressWarnings("unchecked")
+        List<Object> extensionList =
+            (List<Object>) (options.getOrDefault("extensions", new ArrayList<>()));
 
-        arguments.forEach(arg -> {
-          if (!args.contains(arg)) {
-            addArguments(arg);
-          }
-        });
+        arguments.forEach(
+            arg -> {
+              if (!args.contains(arg)) {
+                addArguments(arg);
+              }
+            });
 
-        extensionList.forEach(extension -> {
-          if (!extensions.contains(extension)) {
-            if (extension instanceof File) {
-              addExtensions((File) extension);
-            } else if (extension instanceof String) {
-              addEncodedExtensions((String) extension);
-            }
-          }
-        });
+        extensionList.forEach(
+            extension -> {
+              if (!extensions.contains(extension)) {
+                if (extension instanceof File) {
+                  addExtensions((File) extension);
+                } else if (extension instanceof String) {
+                  addEncodedExtensions((String) extension);
+                }
+              }
+            });
 
         Object binary = options.get("binary");
         if (binary instanceof String) {
@@ -370,11 +396,12 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
           setBinary((File) binary);
         }
 
-        options.forEach((k, v) -> {
-          if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
-            setExperimentalOption(k, v);
-          }
-        });
+        options.forEach(
+            (k, v) -> {
+              if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
+                setExperimentalOption(k, v);
+              }
+            });
       }
     }
   }

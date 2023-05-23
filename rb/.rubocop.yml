@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   NewCops: enable
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
@@ -16,7 +16,7 @@ Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
 Metrics/AbcSize:
-  Max: 28
+  Max: 30
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
@@ -35,13 +35,14 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/bidi/log_inspector_spec.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+    - 'spec/**/*.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/support/color.rb'
+    - 'lib/selenium/webdriver/common/logger.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -60,6 +61,9 @@ Metrics/ModuleLength:
 
 Metrics/PerceivedComplexity:
   Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/common/local_driver.rb'
+    - 'lib/selenium/webdriver/common/logger.rb'
 
 Naming/FileName:
   Exclude:

@@ -20,24 +20,19 @@ package org.openqa.selenium.grid.node;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
-
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class CapabilityResponseEncoder {
 
   private static final Json JSON = new Json();
-  private static final ResponseEncoder<Session, Map<String, Object>, byte[]> JWP_ENCODER =
-      new Encoder(Dialect.OSS);
   private static final ResponseEncoder<Session, Map<String, Object>, byte[]> W3C_ENCODER =
       new Encoder(Dialect.W3C);
 
@@ -47,9 +42,6 @@ public class CapabilityResponseEncoder {
 
   public static ResponseEncoder<Session, Map<String, Object>, byte[]> getEncoder(Dialect dialect) {
     switch (dialect) {
-      case OSS:
-        return JWP_ENCODER;
-
       case W3C:
         return W3C_ENCODER;
 
@@ -96,22 +88,13 @@ public class CapabilityResponseEncoder {
       return apply(session, ImmutableMap.of());
     }
 
-    /**
-     * Create a UTF-8 encoded response for a given dialect for use with the New Session command.
-     */
+    /** Create a UTF-8 encoded response for a given dialect for use with the New Session command. */
     private static byte[] encodeAsResponse(
-        Dialect dialect,
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+        Dialect dialect, SessionId id, Capabilities capabilities, Map<String, Object> metadata) {
 
       Map<String, Object> toEncode;
 
       switch (dialect) {
-        case OSS:
-          toEncode = encodeJsonWireProtocol(id, capabilities, metadata);
-          break;
-
         case W3C:
           toEncode = encodeW3C(id, capabilities, metadata);
           break;
@@ -124,29 +107,15 @@ public class CapabilityResponseEncoder {
     }
 
     private static Map<String, Object> encodeW3C(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+        SessionId id, Capabilities capabilities, Map<String, Object> metadata) {
       return ImmutableMap.<String, Object>builder()
           .putAll(metadata)
-          .put("value", ImmutableMap.of(
-              "sessionId", id,
-              "capabilities", capabilities))
+          .put(
+              "value",
+              ImmutableMap.of(
+                  "sessionId", id,
+                  "capabilities", capabilities))
           .build();
     }
-
-    private static Map<String, Object> encodeJsonWireProtocol(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
-      return ImmutableMap.<String, Object>builder()
-          .putAll(metadata)
-          .put("status", ErrorCodes.SUCCESS)
-          .put("sessionId", id)
-          .put("value", capabilities)
-          .build();
-
-    }
-
   }
 }

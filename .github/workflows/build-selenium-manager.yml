@@ -3,34 +3,36 @@ name: build-selenium-manager
 on: workflow_dispatch
 
 jobs:
-  windows:
-    name: "[Windows] Build selenium-manager"
+  win32:
+    name: "[Windows x32] Build selenium-manager"
     runs-on: windows-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
       - name: "Update Rust"
         run: |
           rustup update
+          rustup toolchain install stable-i686-pc-windows-msvc
+          rustup default stable-i686-pc-windows-msvc
           rustc -vV
       - name: "Build release"
         run: |
           cd rust
-          cargo build --release --target x86_64-pc-windows-msvc
+          cargo build --release
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
         with:
-          name: selenium-manager_windows-x64
-          path: rust/target/x86_64-pc-windows-msvc/release/selenium-manager.exe
+          name: selenium-manager_windows-x32
+          path: rust/target/release/selenium-manager.exe
           retention-days: 6
 
-  linux:
-    name: "[Linux] Build selenium-manager"
+  linux64:
+    name: "[Linux x64] Build selenium-manager"
     runs-on: ubuntu-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=-crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
@@ -38,13 +40,18 @@ jobs:
         run: |
           rustup update
           rustc -vV
+      - name: "Install zig"
+        run: |
+          sudo snap install zig --beta --classic
       - name: "Build release"
         run: |
           cd rust
-          cargo build --release --target x86_64-unknown-linux-gnu
+          cargo install cargo-zigbuild
+          rustup target add x86_64-unknown-linux-musl
+          cargo zigbuild --release --target x86_64-unknown-linux-musl
       - name: "Tar binary (to keep executable permission)"
         run: |
-          cd rust/target/x86_64-unknown-linux-gnu/release
+          cd rust/target/x86_64-unknown-linux-musl/release
           tar -cvf ../../../../selenium-manager.tar selenium-manager
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
@@ -53,11 +60,11 @@ jobs:
           path: selenium-manager.tar
           retention-days: 6
 
-  macos:
-    name: "[macOS] Build selenium-manager"
+  macos64:
+    name: "[macOS x64] Build selenium-manager"
     runs-on: macos-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3

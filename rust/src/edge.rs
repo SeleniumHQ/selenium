@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_default_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
+    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -49,14 +49,19 @@ pub struct EdgeManager {
 }
 
 impl EdgeManager {
-    pub fn new() -> Box<Self> {
-        Box::new(EdgeManager {
-            browser_name: EDGE_NAMES[0],
-            driver_name: EDGEDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+        let browser_name = EDGE_NAMES[0];
+        let driver_name = EDGEDRIVER_NAME;
+        let config = ManagerConfig::default(browser_name, driver_name);
+        let default_timeout = config.timeout.to_owned();
+        let default_proxy = &config.proxy;
+        Ok(Box::new(EdgeManager {
+            browser_name,
+            driver_name,
+            http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
-        })
+        }))
     }
 }
 
@@ -121,9 +126,19 @@ impl SeleniumManager for EdgeManager {
                 Some(path) => {
                     browser_path = path;
                     commands = vec![
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
-                        format_two_args(WMIC_COMMAND, ENV_LOCALAPPDATA, browser_path),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES_X86,
+                            "",
+                            browser_path,
+                        ),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES,
+                            REMOVE_X86,
+                            browser_path,
+                        ),
+                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
                     ];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
@@ -148,12 +163,15 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
+        let mut browser_version = self.get_browser_version().to_string();
         let mut metadata = get_metadata(self.get_logger());
         let driver_ttl = self.get_config().driver_ttl;
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            browser_version.as_str(),
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -162,26 +180,40 @@ impl SeleniumManager for EdgeManager {
                 Ok(driver_version)
             }
             _ => {
-                let driver_url = if browser_version.is_empty() {
-                    format!("{}{}", DRIVER_URL, LATEST_STABLE)
-                } else {
-                    format!(
-                        "{}{}_{}_{}",
-                        DRIVER_URL,
-                        LATEST_RELEASE,
-                        browser_version,
-                        self.get_os().to_uppercase()
-                    )
-                };
+                if browser_version.is_empty() {
+                    let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
+                    self.log.debug(format!(
+                        "Reading {} latest version from {}",
+                        &self.driver_name, latest_stable_url
+                    ));
+                    let latest_driver_version = read_version_from_link(
+                        self.get_http_client(),
+                        latest_stable_url,
+                        self.get_logger(),
+                    )?;
+                    browser_version = self.get_major_version(latest_driver_version.as_str())?;
+                    self.log.debug(format!(
+                        "Latest {} major version is {}",
+                        &self.driver_name, browser_version
+                    ));
+                }
+                let driver_url = format!(
+                    "{}{}_{}_{}",
+                    DRIVER_URL,
+                    LATEST_RELEASE,
+                    browser_version,
+                    self.get_os().to_uppercase()
+                );
                 self.log.debug(format!(
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
                 ));
-                let driver_version = read_version_from_link(self.get_http_client(), driver_url)?;
+                let driver_version =
+                    read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
                 if !browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
-                        browser_version,
+                        browser_version.as_str(),
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
@@ -247,6 +279,10 @@ impl SeleniumManager for EdgeManager {
 
     fn get_config(&self) -> &ManagerConfig {
         &self.config
+    }
+
+    fn get_config_mut(&mut self) -> &mut ManagerConfig {
+        &mut self.config
     }
 
     fn set_config(&mut self, config: ManagerConfig) {

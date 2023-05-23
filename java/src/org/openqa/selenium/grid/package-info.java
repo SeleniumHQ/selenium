@@ -18,26 +18,22 @@
 package org.openqa.selenium.grid;
 
 /**
- * The Selenium Grid is composed of a number of moving pieces, all of which are
- * designed to be used either locally or across an HTTP boundary.
- * <p>
- * Sitting at the front of the system is the
- * {@link org.openqa.selenium.grid.router.Router}. This is responsible for
- * looking at incoming requests and routing them to the correct location. In the
- * case of a <a href="https://www.w3.org/TR/webdriver/#new-session"></a>New
- * Session</a> command, it will be sent to the
- * {@link org.openqa.selenium.grid.distributor.Distributor}.
- * <p>
- * The {@code Distributor} has a number of
- * {@link org.openqa.selenium.grid.node.Node}s associated with it, each of which
- * is capable of running one or more {@link org.openqa.selenium.grid.data.Session}s
- * which may or may not be running in memory. Each {@code Node} should register
- * with a single {@code Distributor}.
- * <p>
- * When a new session is started, the {@code Node} tells the
- * {@link org.openqa.selenium.grid.sessionmap.SessionMap} where the {@code Session}
- * (identified by its {@link org.openqa.selenium.remote.SessionId} can be
- * located (typically the URL of the server on which the {@code Node} is running.
- * Conversely, when the session comes to an end, the {@code Node} is responsible
- * for ensuring that the session is removed from the {@code SessionMap}.
+ * The Selenium Grid is composed of a number of moving pieces, all of which are designed to be used
+ * either locally or across an HTTP boundary.
+ *
+ * <p>Sitting at the front of the system is the {@link org.openqa.selenium.grid.router.Router}. This
+ * is responsible for looking at incoming requests and routing them to the correct location. In the
+ * case of a <a href="https://www.w3.org/TR/webdriver/#new-session"></a>New Session</a> command, it
+ * will be sent to the {@link org.openqa.selenium.grid.distributor.Distributor}.
+ *
+ * <p>The {@code Distributor} has a number of {@link org.openqa.selenium.grid.node.Node}s associated
+ * with it, each of which is capable of running one or more {@link
+ * org.openqa.selenium.grid.data.Session}s which may or may not be running in memory. Each {@code
+ * Node} should register with a single {@code Distributor}.
+ *
+ * <p>When a new session is started, the {@code Node} tells the {@link
+ * org.openqa.selenium.grid.sessionmap.SessionMap} where the {@code Session} (identified by its
+ * {@link org.openqa.selenium.remote.SessionId} can be located (typically the URL of the server on
+ * which the {@code Node} is running. Conversely, when the session comes to an end, the {@code Node}
+ * is responsible for ensuring that the session is removed from the {@code SessionMap}.
  */

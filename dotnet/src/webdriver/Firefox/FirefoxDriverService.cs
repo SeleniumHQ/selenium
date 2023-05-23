@@ -209,8 +209,20 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
         public static FirefoxDriverService CreateDefaultService()
         {
+            return CreateDefaultService(new FirefoxOptions());
+        }
+
+
+        /// <summary>
+        /// Creates a default instance of the FirefoxDriverService.
+        /// </summary>
+        /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
+        /// <returns>A FirefoxDriverService that implements default settings.</returns>
+        public static FirefoxDriverService CreateDefaultService(FirefoxOptions options)
+        {
             string serviceDirectory = DriverService.FindDriverServiceExecutable(FirefoxDriverServiceFileName(), FirefoxDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            FirefoxDriverService service = CreateDefaultService(serviceDirectory);
+            return DriverFinder.VerifyDriverServicePath(service, options) as FirefoxDriverService;
         }
 
         /// <summary>

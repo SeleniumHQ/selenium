@@ -1,3 +1,26 @@
+Selenium 4.9.1
+* Add CDP files for v113 and remove v110
+* Minor fixes for docstring and dictionary declarations (#11975)
+* Update logging to match other bindings (#11990)
+* Support newer versions of urllib3 (#11993)
+
+Selenium 4.9.0
+* Remove "shadow_root" assertion in Python bindings for Firefox (#11821)
+* Simplify driver binary and driver location selecting (#11864)
+* Do not pass desired caps in Safari (#11854)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Adding v112 and removing v109
+
+Selenium 4.8.3
+* Add fine grained control for arguments provided to service subprocesses by passing a `popen_kw` mapping for all services.
+* `Options` classes now allow `timeout` to be set partially and no longer raise an exception when all values are not provided. (#11623)
+* No longer sending `SIGKILL` to subprocesses in instances where `SIGTERM` was successful within 60 seconds.
+* Add CDP files for v111 and remove v108
+* Pass default to `pop` when parsing service popen_kw
+* Using json output with Selenium Manager
+* Sphinx config update to keep invoked methods and shorter aliases in documentation (#11802)
+
 Selenium 4.8.2
 * Update tox.ini for a valid "isort" version (#11667)
 * Undo a bug fix that caused a worse bug. (#11666)

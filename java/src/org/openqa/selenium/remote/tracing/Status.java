@@ -40,7 +40,6 @@ public class Status {
   public static final Status UNAVAILABLE = new Status(Kind.UNAVAILABLE, "");
   public static final Status UNAUTHENTICATED = new Status(Kind.UNAUTHENTICATED, "");
 
-
   private Status(Kind kind, String description) {
     this.kind = Require.nonNull("Kind", kind);
     this.description = Require.nonNull("Description", description);
@@ -75,5 +74,4 @@ public class Status {
     UNAVAILABLE,
     UNAUTHENTICATED
   }
-
 }

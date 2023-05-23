@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import com.google.common.net.MediaType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,24 +38,20 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 class CdpFacadeTest extends DevToolsTestBase {
 
   private static NettyAppServer server;
 
   @BeforeAll
   public static void startServer() {
-    server = new NettyAppServer(
-      new BasicAuthenticationFilter("test", "test")
-        .andFinally(req ->
-          new HttpResponse()
-            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-            .setContent(Contents.string("<h1>authorized</h1>", UTF_8))));
+    server =
+        new NettyAppServer(
+            new BasicAuthenticationFilter("test", "test")
+                .andFinally(
+                    req ->
+                        new HttpResponse()
+                            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+                            .setContent(Contents.string("<h1>authorized</h1>", UTF_8))));
     server.start();
   }
 
@@ -73,9 +75,11 @@ class CdpFacadeTest extends DevToolsTestBase {
     assertThat(message).contains("authorized");
 
     // Now replace the content of the page using network interception
-    try (NetworkInterceptor interceptor = new NetworkInterceptor(
-      driver,
-      Route.matching(req -> true).to(() -> req -> new HttpResponse().setContent(utf8String("I like cheese"))))) {
+    try (NetworkInterceptor interceptor =
+        new NetworkInterceptor(
+            driver,
+            Route.matching(req -> true)
+                .to(() -> req -> new HttpResponse().setContent(utf8String("I like cheese"))))) {
 
       driver.get(server.whereIs("/"));
       message = driver.findElement(By.tagName("body")).getText();

@@ -16,13 +16,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.8.2"
+SE_VERSION = "4.9.1"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v108",
-    "v109",
-    "v110",
+    "v111",
+    "v112",
+    "v113",
 ]
 
 TEST_DEPS = [
@@ -215,7 +215,7 @@ py_wheel(
     python_requires = ">=3.7",
     python_tag = "py3",
     requires = [
-        "urllib3[socks]~=1.26",
+        "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
         "certifi>=2021.10.8",

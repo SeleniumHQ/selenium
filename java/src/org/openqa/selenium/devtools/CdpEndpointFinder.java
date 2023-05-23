@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.devtools;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -31,11 +28,13 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class CdpEndpointFinder {
 
@@ -120,5 +119,4 @@ public class CdpEndpointFinder {
       return Optional.empty();
     }
   }
-
 }

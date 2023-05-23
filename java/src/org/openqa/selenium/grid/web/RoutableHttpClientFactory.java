@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.grid.web;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
+import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URL;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -24,14 +30,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
-
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.URL;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
-
-import com.google.common.collect.ImmutableMap;
 
 public class RoutableHttpClientFactory implements HttpClient.Factory {
 
@@ -51,9 +49,9 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
 
     URI url = config.baseUri();
 
-    if (self.getProtocol().equals(url.getScheme()) &&
-      self.getHost().equals(url.getHost()) &&
-      self.getPort() == url.getPort()) {
+    if (self.getProtocol().equals(url.getScheme())
+        && self.getHost().equals(url.getHost())
+        && self.getPort() == url.getPort()) {
 
       return new HttpClient() {
         @Override
@@ -62,10 +60,12 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
 
           if (!handler.test(request)) {
             response.setStatus(404);
-            response.setContent(asJson(ImmutableMap.of(
-              "value", request.getUri(),
-              "message", "Unable to route " + request,
-              "error", UnsupportedCommandException.class.getName())));
+            response.setContent(
+                asJson(
+                    ImmutableMap.of(
+                        "value", request.getUri(),
+                        "message", "Unable to route " + request,
+                        "error", UnsupportedCommandException.class.getName())));
             return response;
           }
 

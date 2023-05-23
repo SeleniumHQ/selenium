@@ -17,18 +17,16 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import com.google.common.annotations.VisibleForTesting;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
+import com.google.common.annotations.VisibleForTesting;
+import java.util.Comparator;
+import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
-
-import java.util.Comparator;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 public class DefaultSlotSelector implements SlotSelector {
 
@@ -46,28 +44,29 @@ public class DefaultSlotSelector implements SlotSelector {
     // Nodes).
     // After that, Nodes are ordered by their load, last session creation, and their id.
     return nodes.stream()
-      .filter(node -> node.hasCapacity(capabilities))
-      .sorted(
-        Comparator.comparingLong(this::getNumberOfSupportedBrowsers)
-        // Now sort by node which has the lowest load (natural ordering)
-          .thenComparingDouble(NodeStatus::getLoad)
-          // Then last session created (oldest first), so natural ordering again
-          .thenComparingLong(NodeStatus::getLastSessionCreated)
-          // And use the node id as a tie-breaker.
-          .thenComparing(NodeStatus::getNodeId))
-      .flatMap(node -> node.getSlots().stream()
-        .filter(slot -> slot.getSession() == null)
-        .filter(slot -> slot.isSupporting(capabilities))
-        .map(Slot::getId))
-      .collect(toImmutableSet());
+        .filter(node -> node.hasCapacity(capabilities))
+        .sorted(
+            Comparator.comparingLong(this::getNumberOfSupportedBrowsers)
+                // Now sort by node which has the lowest load (natural ordering)
+                .thenComparingDouble(NodeStatus::getLoad)
+                // Then last session created (oldest first), so natural ordering again
+                .thenComparingLong(NodeStatus::getLastSessionCreated)
+                // And use the node id as a tie-breaker.
+                .thenComparing(NodeStatus::getNodeId))
+        .flatMap(
+            node ->
+                node.getSlots().stream()
+                    .filter(slot -> slot.getSession() == null)
+                    .filter(slot -> slot.isSupporting(capabilities))
+                    .map(Slot::getId))
+        .collect(toImmutableSet());
   }
 
   @VisibleForTesting
   long getNumberOfSupportedBrowsers(NodeStatus nodeStatus) {
-    return nodeStatus.getSlots()
-      .stream()
-      .map(slot -> slot.getStereotype().getBrowserName().toLowerCase())
-      .distinct()
-      .count();
+    return nodeStatus.getSlots().stream()
+        .map(slot -> slot.getStereotype().getBrowserName().toLowerCase())
+        .distinct()
+        .count();
   }
 }

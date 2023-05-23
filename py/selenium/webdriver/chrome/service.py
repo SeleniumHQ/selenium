@@ -39,6 +39,7 @@ class Service(service.ChromiumService):
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        **kwargs,
     ) -> None:
         super().__init__(
             executable_path=executable_path,
@@ -47,4 +48,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             env=env,
             start_error_message="Please see https://chromedriver.chromium.org/home",
+            **kwargs,
         )

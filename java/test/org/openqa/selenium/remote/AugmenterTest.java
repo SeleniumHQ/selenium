@@ -17,8 +17,18 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
+import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -35,18 +45,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.decorators.WebDriverDecorator;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-
 @Tag("UnitTests")
 class AugmenterTest {
 
@@ -59,9 +57,10 @@ class AugmenterTest {
     final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(driver);
 
     assertThat(returned).isNotSameAs(driver);
     assertThat(returned).isInstanceOf(HasMagicNumbers.class);
@@ -72,9 +71,10 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("magic.numbers", false);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(driver);
 
     assertThat(returned).isSameAs(driver);
     assertThat(returned).isNotInstanceOf(HasMagicNumbers.class);
@@ -85,9 +85,10 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(driver);
     assertThat(returned).isNotInstanceOf(WebStorage.class);
   }
 
@@ -96,12 +97,10 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("foo", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation(
-        "foo",
-        MyInterface.class,
-        (c, exe) -> () -> "Hello World")
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("foo", MyInterface.class, (c, exe) -> () -> "Hello World")
+            .augment(driver);
 
     String text = ((MyInterface) returned).getHelloWorld();
     assertThat(text).isEqualTo("Hello World");
@@ -114,12 +113,10 @@ class AugmenterTest {
     stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "Title");
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation(
-        "magic.numbers",
-        HasMagicNumbers.class,
-        (c, exe) -> () -> 42)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(driver);
 
     assertThat(returned.getTitle()).isEqualTo("Title");
   }
@@ -132,15 +129,13 @@ class AugmenterTest {
     DetonatingDriver driver = new DetonatingDriver();
     driver.setCapabilities(caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation(
-        "magic.numbers",
-        HasMagicNumbers.class,
-        (c, exe) -> () -> 42)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(driver);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> returned.findElement(By.id("ignored")));
+        .isThrownBy(() -> returned.findElement(By.id("ignored")));
   }
 
   @Test
@@ -162,18 +157,14 @@ class AugmenterTest {
     Capabilities caps = new ImmutableCapabilities("find by magic", true);
     StubExecutor executor = new StubExecutor(caps);
     final WebElement element = mock(WebElement.class);
-    executor.expect(
-      FIND_ELEMENT,
-      ImmutableMap.of("using", "magic", "value", "cheese"),
-      element);
+    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "magic", "value", "cheese"), element);
 
     WebDriver driver = new RemoteWebDriver(executor, caps);
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation(
-        "find by magic",
-        FindByMagic.class,
-        (c, exe) -> magicWord -> element)
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation(
+                "find by magic", FindByMagic.class, (c, exe) -> magicWord -> element)
+            .augment(driver);
 
     // No exception is a Good Thing
     WebElement seen = returned.findElement(new ByMagic("cheese"));
@@ -182,18 +173,26 @@ class AugmenterTest {
 
   @Test
   void shouldAugmentMultipleInterfaces() {
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
-                                                        "numbers", true);
+    final Capabilities caps =
+        new ImmutableCapabilities(
+            "magic.numbers", true,
+            "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter()
-      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-      .addDriverAugmentation("numbers", HasNumbers.class, (c, exe) -> webDriver -> {
-        Require.precondition(webDriver instanceof HasMagicNumbers,
-                             "Driver must implement HasMagicNumbers");
-        return ((HasMagicNumbers) webDriver).getMagicNumber();
-      })
-      .augment(driver);
+    WebDriver returned =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation(
+                "numbers",
+                HasNumbers.class,
+                (c, exe) ->
+                    webDriver -> {
+                      Require.precondition(
+                          webDriver instanceof HasMagicNumbers,
+                          "Driver must implement HasMagicNumbers");
+                      return ((HasMagicNumbers) webDriver).getMagicNumber();
+                    })
+            .augment(driver);
 
     assertThat(returned).isNotSameAs(driver);
     assertThat(returned).isInstanceOf(HasMagicNumbers.class);
@@ -205,18 +204,26 @@ class AugmenterTest {
 
   @Test
   void shouldDecorateAugmentedWebDriver() {
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
-                                                        "numbers", true);
+    final Capabilities caps =
+        new ImmutableCapabilities(
+            "magic.numbers", true,
+            "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver augmented = getAugmenter()
-      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-      .addDriverAugmentation("numbers", HasNumbers.class, (c, exe) -> webDriver -> {
-        Require.precondition(webDriver instanceof HasMagicNumbers,
-                             "Driver must implement HasMagicNumbers");
-        return ((HasMagicNumbers) webDriver).getMagicNumber();
-      })
-      .augment(driver);
+    WebDriver augmented =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation(
+                "numbers",
+                HasNumbers.class,
+                (c, exe) ->
+                    webDriver -> {
+                      Require.precondition(
+                          webDriver instanceof HasMagicNumbers,
+                          "Driver must implement HasMagicNumbers");
+                      return ((HasMagicNumbers) webDriver).getMagicNumber();
+                    })
+            .augment(driver);
 
     WebDriver decorated = new ModifyTitleWebDriverDecorator().decorate(augmented);
 
@@ -270,8 +277,8 @@ class AugmenterTest {
       }
 
       for (Data possibleMatch : expected) {
-        if (possibleMatch.commandName.equals(command.getName()) &&
-            possibleMatch.args.equals(command.getParameters())) {
+        if (possibleMatch.commandName.equals(command.getName())
+            && possibleMatch.args.equals(command.getParameters())) {
           Response response = new Response(new SessionId("foo"));
           response.setValue(possibleMatch.returnValue);
           return response;
@@ -373,5 +380,4 @@ class AugmenterTest {
       return super.call(target, method, args);
     }
   }
-
 }

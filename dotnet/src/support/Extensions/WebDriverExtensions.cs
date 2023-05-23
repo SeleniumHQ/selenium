@@ -101,13 +101,20 @@ namespace OpenQA.Selenium.Support.Extensions
                     throw new WebDriverException("Script returned null, but desired type is a value type");
                 }
             }
-            else if (!type.IsInstanceOfType(value))
+            else if (type.IsInstanceOfType(value))
             {
-                throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
+                result = (T)value;
             }
             else
             {
-                result = (T)value;
+                try
+                {
+                    result = (T)Convert.ChangeType(value, type);
+                }
+                catch(Exception exp)
+                {
+                    throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type", exp);
+                }
             }
 
             return result;

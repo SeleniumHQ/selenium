@@ -17,14 +17,12 @@
 
 package org.openqa.selenium.lift.match;
 
-import org.hamcrest.Matcher;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
-/**
- * Various numerical hamcrest {@link Matcher}s.
- */
+import org.hamcrest.Matcher;
+
+/** Various numerical hamcrest {@link Matcher}s. */
 public class NumericalMatchers {
 
   public static Matcher<Integer> atLeast(int i) {

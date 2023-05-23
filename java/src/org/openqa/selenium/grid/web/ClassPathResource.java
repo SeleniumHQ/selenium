@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.web;
 
-import org.openqa.selenium.internal.Require;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.JarURLConnection;
@@ -26,6 +24,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarFile;
+import org.openqa.selenium.internal.Require;
 
 public class ClassPathResource implements Resource {
 
@@ -40,13 +39,13 @@ public class ClassPathResource implements Resource {
         JarURLConnection juc = (JarURLConnection) resourceUrl.openConnection();
         JarFile jarFile = juc.getJarFile();
 
-
         this.delegate = new JarFileResource(jarFile, juc.getEntryName(), stripPrefix);
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
     } else {
-      throw new IllegalArgumentException("Unable to handle scheme of type " + resourceUrl.getProtocol());
+      throw new IllegalArgumentException(
+          "Unable to handle scheme of type " + resourceUrl.getProtocol());
     }
   }
 
@@ -75,6 +74,4 @@ public class ClassPathResource implements Resource {
   public Optional<byte[]> read() {
     return delegate.read();
   }
-
-
 }

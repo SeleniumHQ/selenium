@@ -32,12 +32,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-/**
- * Polls a URL until a HTTP 200 response is received.
- */
+/** Polls a URL until a HTTP 200 response is received. */
 public class UrlChecker {
 
-  private static final Logger log = Logger.getLogger(UrlChecker.class.getName());
+  private static final Logger LOG = Logger.getLogger(UrlChecker.class.getName());
 
   static final int CONNECT_TIMEOUT_MS = 500;
   private static final int READ_TIMEOUT_MS = 1000;
@@ -45,50 +43,58 @@ public class UrlChecker {
   private static final long MIN_POLL_INTERVAL_MS = 10;
 
   private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
-  private static final ExecutorService EXECUTOR = Executors
-      .newCachedThreadPool(r -> {
-        Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
-        t.setDaemon(true);
-        return t;
-      });
+  private static final ExecutorService EXECUTOR =
+      Executors.newCachedThreadPool(
+          r -> {
+            Thread t =
+                new Thread(
+                    r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
+            t.setDaemon(true);
+            return t;
+          });
 
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.fine("Waiting for " + Arrays.toString(urls));
+    LOG.fine("Waiting for " + Arrays.toString(urls));
     try {
-      Future<Void> callback = EXECUTOR.submit(() -> {
-        HttpURLConnection connection = null;
+      Future<Void> callback =
+          EXECUTOR.submit(
+              () -> {
+                HttpURLConnection connection = null;
 
-        long sleepMillis = MIN_POLL_INTERVAL_MS;
-        while (true) {
-          if (Thread.interrupted()) {
-            throw new InterruptedException();
-          }
-          for (URL url : urls) {
-            try {
-              log.fine("Polling " + url);
-              connection = connectToUrl(url);
-              if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return null;
-              }
-            } catch (IOException e) {
-              // Ok, try again.
-            } finally {
-              if (connection != null) {
-                connection.disconnect();
-              }
-            }
-          }
-          MILLISECONDS.sleep(sleepMillis);
-          sleepMillis = (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
-        }
-      });
+                long sleepMillis = MIN_POLL_INTERVAL_MS;
+                while (true) {
+                  if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                  }
+                  for (URL url : urls) {
+                    try {
+                      LOG.fine("Polling " + url);
+                      connection = connectToUrl(url);
+                      if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        return null;
+                      }
+                    } catch (IOException e) {
+                      // Ok, try again.
+                    } finally {
+                      if (connection != null) {
+                        connection.disconnect();
+                      }
+                    }
+                  }
+                  MILLISECONDS.sleep(sleepMillis);
+                  sleepMillis =
+                      (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+                }
+              });
       callback.get(timeout, unit);
     } catch (java.util.concurrent.TimeoutException e) {
-      throw new TimeoutException(String.format(
-          "Timed out waiting for %s to be available after %d ms",
-          Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+      throw new TimeoutException(
+          String.format(
+              "Timed out waiting for %s to be available after %d ms",
+              Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)),
+          e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
@@ -100,36 +106,41 @@ public class UrlChecker {
   public void waitUntilUnavailable(long timeout, TimeUnit unit, final URL url)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.fine("Waiting for " + url);
+    LOG.fine("Waiting for " + url);
     try {
-      Future<Void> callback = EXECUTOR.submit(() -> {
-        HttpURLConnection connection = null;
+      Future<Void> callback =
+          EXECUTOR.submit(
+              () -> {
+                HttpURLConnection connection = null;
 
-        long sleepMillis = MIN_POLL_INTERVAL_MS;
-        while (true) {
-          try {
-            log.fine("Polling " + url);
-            connection = connectToUrl(url);
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-              return null;
-            }
-          } catch (IOException e) {
-            return null;
-          } finally {
-            if (connection != null) {
-              connection.disconnect();
-            }
-          }
+                long sleepMillis = MIN_POLL_INTERVAL_MS;
+                while (true) {
+                  try {
+                    LOG.fine("Polling " + url);
+                    connection = connectToUrl(url);
+                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                      return null;
+                    }
+                  } catch (IOException e) {
+                    return null;
+                  } finally {
+                    if (connection != null) {
+                      connection.disconnect();
+                    }
+                  }
 
-          MILLISECONDS.sleep(sleepMillis);
-          sleepMillis = (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
-        }
-      });
+                  MILLISECONDS.sleep(sleepMillis);
+                  sleepMillis =
+                      (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
+                }
+              });
       callback.get(timeout, unit);
     } catch (java.util.concurrent.TimeoutException e) {
-      throw new TimeoutException(String.format(
-          "Timed out waiting for %s to become unavailable after %d ms",
-          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+      throw new TimeoutException(
+          String.format(
+              "Timed out waiting for %s to become unavailable after %d ms",
+              url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)),
+          e);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }

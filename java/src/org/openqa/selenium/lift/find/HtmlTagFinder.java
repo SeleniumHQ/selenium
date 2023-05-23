@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.lift.find;
 
+import java.util.Collection;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import java.util.Collection;
 
 /**
  * Base {@link Finder} for all types of HTML tags. Subclasses should be created for each specific

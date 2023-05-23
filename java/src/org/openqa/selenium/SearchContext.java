@@ -29,7 +29,6 @@ public interface SearchContext {
    */
   List<WebElement> findElements(By by);
 
-
   /**
    * Find the first {@link WebElement} using the given method.
    *

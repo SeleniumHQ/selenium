@@ -17,37 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
+import java.util.ServiceLoader;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
-
-import java.util.ServiceLoader;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public enum Dialect {
-  OSS {
-    @Override
-    public CommandCodec<HttpRequest> getCommandCodec() {
-      return bindAdditionalCommands(new JsonHttpCommandCodec());
-    }
-
-    @Override
-    public ResponseCodec<HttpResponse> getResponseCodec() {
-      return new JsonHttpResponseCodec();
-    }
-
-    @Override
-    public String getEncodedElementKey() {
-      return "ELEMENT";
-    }
-
-    @Override
-    public String getShadowRootElementKey() {
-      return "shadow-6066-11e4-a52e-4f735466cecf";
-    }
-  },
   W3C {
     @Override
     public CommandCodec<HttpRequest> getCommandCodec() {
@@ -71,18 +47,26 @@ public enum Dialect {
   };
 
   public abstract CommandCodec<HttpRequest> getCommandCodec();
+
   public abstract ResponseCodec<HttpResponse> getResponseCodec();
+
   public abstract String getEncodedElementKey();
+
   public abstract String getShadowRootElementKey();
 
-  private static CommandCodec<HttpRequest> bindAdditionalCommands(CommandCodec<HttpRequest> toCodec) {
-    ServiceLoader.load(AdditionalHttpCommands.class).forEach(cmds -> {
-      cmds.getAdditionalCommands().forEach((name, info) -> {
-        if (!toCodec.isSupported(name)) {
-          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
-        }
-      });
-    });
+  private static CommandCodec<HttpRequest> bindAdditionalCommands(
+      CommandCodec<HttpRequest> toCodec) {
+    ServiceLoader.load(AdditionalHttpCommands.class)
+        .forEach(
+            cmds -> {
+              cmds.getAdditionalCommands()
+                  .forEach(
+                      (name, info) -> {
+                        if (!toCodec.isSupported(name)) {
+                          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
+                        }
+                      });
+            });
 
     return toCodec;
   }

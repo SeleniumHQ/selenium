@@ -1,3 +1,57 @@
+v4.9.1
+======
+* Supported CDP versions: 85, 111, 112, 113
+* Typo in the "addArguments" method comment (#11945)
+* Handling case where -1 is returned as statusCode (#11910)
+* Adding remote-allow-origins argument only when the Java 11 http client is not used (#11949)
+* Remove deprecated "version" JWP capability
+* Remove deprecated "platform" JWP capability
+* Remove deprecated "takesScreenshot" JWP capability
+* Remove deprecated "unexpectedAlertBehaviour" JWP capability
+* [grid] Displaying the real stereotype config at startup
+* Add logging for starting the driver
+* [grid] Do not switch and remove node in one iteration (#11961)
+* Handle fragmented websocket messages (#11962)
+* Add more logging to Selenium Manager (#11959)
+* Make Driver Services consistent (#11973)
+* Using driver path always for Safari and Safari Technology Preview (#11952)
+* Overriding methods to have main platform names lowercase (#11952)
+
+v4.9.0
+======
+* Supported CDP versions: 85, 110, 111, 112
+* Handle redirects inside the JdkHttpClient (#11816)
+* [grid] Remove Json Wire Protocol support (#11823)
+* Selenium Manager use binary from Browser Options
+* [grid] Allowing binary to be set via options when not set in Grid
+* Log exception message (#11922)
+* [grid] Fixing remote execution for Edge when Java 8 client is used
+
+v4.8.3
+======
+* Supported CDP versions: 85, 109, 110, 111
+* Fix bug preventing adding items to ArrayList for Selenium Manager command
+
+v4.8.2
+======
+* Supported CDP versions: 85, 109, 110, 111
+* [grid] Enabling `detectDrivers` original behaviour.
+* Fix NPE regression in 4.8.0 (#11701)
+* Implement DriverFinder completely independent of Service classes (#11491)
+* [grid] Allow LocalNode to be extended for customisation (#11718)
+* InvalidSelectorException extends WebDriverException (#11727)
+* Deprecate CDP instance methods in FirefoxDriver
+* Adding allowHosts to GeckoDriverService
+* [grid] Passing language env var to child containers
+* [grid] Removing unknown capability extensions for IE
+* [bidi] Ensure removing listeners does not cause an error
+* Process Selenium Manager output as JSON (#11663)
+* [grid] Support remote downloads in Grid (#11702)
+* Adding `remote-allow-origins` for Chrome
+* Invoking Selenium Manager only with `--browser
+* [grid] Adding `remote-allow-origins` for Chrome stereotypes
+* Overloaded constructors to configure connect and read timeouts for WebDriver objects (#11532)
+
 v4.8.1
 ======
 * Supported CDP versions: 85, 108, 109, 110

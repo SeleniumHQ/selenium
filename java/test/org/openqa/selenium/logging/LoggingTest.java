@@ -26,10 +26,9 @@ import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.logging.LogLevelMapping.toLevel;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.Map;
 import java.util.logging.Level;
+import org.junit.jupiter.api.Test;
 
 class LoggingTest {
 
@@ -71,6 +70,7 @@ class LoggingTest {
   void canRepresentLogEntryAsString() {
     long timestamp = 1572882588202L;
     LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
-    assertThat(entry.toString()).isEqualTo("[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");
+    assertThat(entry.toString())
+        .isEqualTo("[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");
   }
 }

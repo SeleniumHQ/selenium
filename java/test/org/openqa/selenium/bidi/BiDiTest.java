@@ -24,6 +24,10 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +46,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 class BiDiTest extends JupiterTestBase {
 
   String page;
@@ -64,7 +63,7 @@ class BiDiTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canNavigateAndListenToErrors()
-    throws ExecutionException, InterruptedException, TimeoutException {
+      throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptException(future::complete);
