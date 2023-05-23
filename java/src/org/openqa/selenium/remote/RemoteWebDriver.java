@@ -54,6 +54,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
@@ -72,6 +73,8 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.federatedcredentialmanagement.HasFederatedCredentialManagement;
+import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
@@ -97,6 +100,7 @@ public class RemoteWebDriver
     implements WebDriver,
         JavascriptExecutor,
         HasCapabilities,
+        HasFederatedCredentialManagement,
         HasVirtualAuthenticator,
         Interactive,
         PrintsPage,
@@ -620,6 +624,28 @@ public class RemoteWebDriver
     execute(
         DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
         ImmutableMap.of("authenticatorId", authenticator.getId()));
+  }
+
+  @Override
+  public void setDelayEnabled(boolean enabled) {
+    execute(DriverCommand.SET_DELAY_ENABLED(enabled));
+  }
+
+  @Override
+  public void resetCooldown() {
+    execute(DriverCommand.RESET_COOLDOWN);
+  }
+
+  @Override
+  public FederatedCredentialManagementDialog getFederatedCredentialManagementDialog() {
+    FederatedCredentialManagementDialog dialog = new FedCmDialogImpl(executeMethod);
+    try {
+      // As long as this does not throw, we're good.
+      dialog.getDialogType();
+      return dialog;
+    } catch (NoAlertPresentException e) {
+      return null;
+    }
   }
 
   /**
