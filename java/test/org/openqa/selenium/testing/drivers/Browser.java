@@ -129,6 +129,8 @@ public enum Browser {
         options.addArguments("-headless");
       }
 
+      options.setCapability("webSocketUrl", true);
+
       return options;
     }
   },
