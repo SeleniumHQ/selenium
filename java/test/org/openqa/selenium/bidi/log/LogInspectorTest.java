@@ -38,8 +38,6 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.LogInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 class LogInspectorTest extends JupiterTestBase {
