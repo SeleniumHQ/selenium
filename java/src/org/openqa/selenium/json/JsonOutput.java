@@ -288,7 +288,7 @@ public class JsonOutput implements Closeable {
 
   public JsonOutput beginArray() {
     append("[" + lineSeparator);
-    indent += "  ";
+    indent += indentBy;
     stack.addFirst(new JsonCollection());
     return this;
   }
