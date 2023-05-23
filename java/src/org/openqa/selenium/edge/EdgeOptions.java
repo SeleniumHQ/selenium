@@ -49,8 +49,15 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   public static final String LOGGING_PREFS = "ms:loggingPrefs";
 
+  public static final String WEBVIEW2_BROWSER_NAME = "webview2";
+
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, EDGE.browserName(), CAPABILITY);
+  }
+
+  public void useWebView(boolean webViewEnabled) {
+    String browserName = webViewEnabled ? WEBVIEW2_BROWSER_NAME : EDGE.browserName();
+    setCapability(CapabilityType.BROWSER_NAME, browserName);
   }
 
   @Override
