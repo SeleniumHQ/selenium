@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +45,6 @@ import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
@@ -66,30 +66,26 @@ import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
-import java.net.URISyntaxException;
-
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
-public class ChromiumDriver extends RemoteWebDriver implements
-  HasAuthentication,
-  HasBiDi,
-  HasCasting,
-  HasCdp,
-  HasDevTools,
-  HasLaunchApp,
-  HasLogEvents,
-  HasNetworkConditions,
-  HasPermissions,
-  LocationContext,
-  NetworkConnection,
-  WebStorage {
+public class ChromiumDriver extends RemoteWebDriver
+    implements HasAuthentication,
+        HasBiDi,
+        HasCasting,
+        HasCdp,
+        HasDevTools,
+        HasLaunchApp,
+        HasLogEvents,
+        HasNetworkConditions,
+        HasPermissions,
+        LocationContext,
+        NetworkConnection,
+        WebStorage {
 
-  public static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
-    CHROME.is(name) ||
-    EDGE.is(name) ||
-    OPERA.is(name);
+  public static final Predicate<String> IS_CHROMIUM_BROWSER =
+      name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;
@@ -120,16 +116,19 @@ public class ChromiumDriver extends RemoteWebDriver implements
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
 
-    Optional<String> webSocketUrl = Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
+    Optional<String> webSocketUrl =
+        Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
 
-    this.biDiUri = webSocketUrl.map(uri -> {
-      try {
-        return new URI(uri);
-      } catch (URISyntaxException e) {
-        LOG.warning(e.getMessage());
-      }
-      return null;
-    });
+    this.biDiUri =
+        webSocketUrl.map(
+            uri -> {
+              try {
+                return new URI(uri);
+              } catch (URISyntaxException e) {
+                LOG.warning(e.getMessage());
+              }
+              return null;
+            });
 
     this.biDi = createBiDi(biDiUri);
 
@@ -166,7 +165,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
                   return new NoOpCdpInfo();
                 });
 
-    
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
     this.capabilities =
@@ -262,15 +260,16 @@ public class ChromiumDriver extends RemoteWebDriver implements
       return Optional.empty();
     }
 
-    URI wsUri = biDiUri.orElseThrow(
-      () -> new BiDiException("This version of Chromium driver does not support BiDi"));
+    URI wsUri =
+        biDiUri.orElseThrow(
+            () -> new BiDiException("This version of Chromium driver does not support BiDi"));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =
-      new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
+        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
     return Optional.of(new BiDi(biDiConnection));
   }
