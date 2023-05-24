@@ -169,6 +169,13 @@ module Selenium
           end
         end
 
+        describe 'uses webview2 for MS Edge Driver' do
+          it 'changes browserName to webview2' do
+            options.webview2!
+            expect(options.browser_name).to eq('webview2')
+          end
+        end
+
         describe '#add_preference' do
           it 'adds a preference' do
             options.add_preference(:foo, 'bar')
