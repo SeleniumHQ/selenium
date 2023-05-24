@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-
 class BiDiSessionTest extends JupiterTestBase {
 
   @Test

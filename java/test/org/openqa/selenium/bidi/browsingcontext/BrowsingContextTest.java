@@ -29,7 +29,6 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -204,6 +203,9 @@ class BrowsingContextTest extends JupiterTestBase {
 
   @AfterEach
   public void quitDriver() {
-    safelyCall(seleniumExtension::removeDriver, server::stop);
+    if (driver != null) {
+      driver.quit();
+    }
+    safelyCall(server::stop);
   }
 }
