@@ -26,6 +26,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.drivers.Browser;
 
 class BiDiSessionCleanUpTest {
 
@@ -33,7 +34,7 @@ class BiDiSessionCleanUpTest {
 
   @Test
   void shouldNotCloseBiDiSessionIfOneWindowIsClosed() {
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -61,7 +62,7 @@ class BiDiSessionCleanUpTest {
 
   @Test
   void shouldCloseBiDiSessionIfLastWindowIsClosed() {
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 

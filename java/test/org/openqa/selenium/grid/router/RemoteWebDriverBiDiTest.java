@@ -63,9 +63,10 @@ class RemoteWebDriverBiDiTest {
                         + "driver-implementation = "
                         + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
+    options.merge(Browser.FIREFOX.getCapabilities());
 
     WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
     driver = new Augmenter().augment(driver);
@@ -93,7 +94,7 @@ class RemoteWebDriverBiDiTest {
                         + "driver-implementation = "
                         + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -124,7 +125,7 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
-  void canNavigateToUrl() throws ExecutionException, InterruptedException, TimeoutException {
+  void canNavigateToUrl() {
     Browser browser = Browser.FIREFOX;
 
     Deployment deployment =
@@ -137,7 +138,7 @@ class RemoteWebDriverBiDiTest {
                         + "driver-implementation = "
                         + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -155,5 +156,9 @@ class RemoteWebDriverBiDiTest {
     assertThat(browsingContext.getId()).isNotEmpty();
     assertThat(info.getNavigationId()).isNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
+  private FirefoxOptions createFirefoxOptions() {
+    return (FirefoxOptions) Browser.FIREFOX.getCapabilities();
   }
 }

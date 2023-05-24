@@ -34,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.LogInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -179,6 +180,7 @@ class LogInspectorTest extends JupiterTestBase {
   }
 
   @Test
+  @NeedsFreshDriver
   void canRetrieveStacktraceForALog()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
@@ -466,9 +468,6 @@ class LogInspectorTest extends JupiterTestBase {
 
   @AfterEach
   public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
-    safelyCall(server::stop);
+    safelyCall(seleniumExtension::removeDriver, server::stop);
   }
 }
