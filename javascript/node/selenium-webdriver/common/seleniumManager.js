@@ -76,6 +76,8 @@ function driverLocation(options) {
     )
   }
 
+  console.log('Applicable driver not found; attempting to install with Selenium Manager (Beta)')
+
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
