@@ -28,6 +28,7 @@ class BaseOptions(metaclass=ABCMeta):
     def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities
+        self._proxy = None
         self.set_capability("pageLoadStrategy", "normal")
         self.mobile_options = None
 
@@ -213,6 +214,7 @@ class BaseOptions(metaclass=ABCMeta):
         if not isinstance(value, Proxy):
             raise InvalidArgumentException("Only Proxy objects can be passed in.")
         self._proxy = value
+        self._caps["proxy"] = value.to_capabilities()
 
     @abstractmethod
     def to_capabilities(self):
