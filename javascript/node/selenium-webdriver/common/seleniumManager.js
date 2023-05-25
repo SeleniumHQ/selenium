@@ -76,18 +76,22 @@ function driverLocation(options) {
     )
   }
 
-  console.log('Applicable driver not found; attempting to install with Selenium Manager (Beta)')
+  console.log(
+    'Applicable driver not found; attempting to install with Selenium Manager (Beta)'
+  )
 
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
-  if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
-    args.push("--browser-version", options.getBrowserVersion())
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
+    args.push('--browser-version', options.getBrowserVersion())
   }
 
-  const vendorOptions = options.get('goog:chromeOptions') || options.get('ms:edgeOptions')
-                        || options.get('moz:firefoxOptions')
-  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== "") {
-    args.push("--browser-path", '"' + vendorOptions.binary + '"')
+  const vendorOptions =
+    options.get('goog:chromeOptions') ||
+    options.get('ms:edgeOptions') ||
+    options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
+    args.push('--browser-path', '"' + vendorOptions.binary + '"')
   }
 
   const smBinary = getBinary()
@@ -106,14 +110,17 @@ function driverLocation(options) {
         errorMessage = e.toString()
       }
     }
-    throw new Error(`Error executing command for ${smBinary} with ${args}: ${errorMessage}`)
+    throw new Error(
+      `Error executing command for ${smBinary} with ${args}: ${errorMessage}`
+    )
   }
   try {
     output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
-    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
+    throw new Error(
+      `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
+    )
   }
-
 
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
