@@ -35,6 +35,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.grid.commands.Standalone;
@@ -51,7 +53,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 class OverallGridTest {
@@ -101,7 +102,8 @@ class OverallGridTest {
 
   @Test
   void shouldIncrementSessionCountWhenSessionStarts() {
-    remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
+    Capabilities capabilities = new PersistentCapabilities().setCapability("browserName", "firefox");
+    remoteWebDriver = new RemoteWebDriver(server.getUrl(), capabilities);
     driver.get(whereIs(server, "/ui#/sessions"));
 
     wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
