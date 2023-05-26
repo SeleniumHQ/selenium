@@ -32,11 +32,11 @@ function getPath(service, capabilities) {
   try {
     return pathExists(service.getExecutable()) || driverLocation(capabilities)
   } catch (e) {
-      throw Error(
-        `Unable to obtain browser driver.
+    throw Error(
+      `Unable to obtain browser driver.
         For more information on how to install drivers see
         https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/. ${e}`
-      )
+    )
   }
 }
 

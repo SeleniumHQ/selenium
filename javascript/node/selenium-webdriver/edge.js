@@ -137,8 +137,8 @@ class Options extends chromium.Options {
    * @param {boolean} enable  flag to enable or disable the 'webview2' usage
    */
   useWebView(enable) {
-    const browserName = enable ? 'webview2' : Browser.EDGE;
-    return this.setBrowserName(browserName);
+    const browserName = enable ? 'webview2' : Browser.EDGE
+    return this.setBrowserName(browserName)
   }
 }
 

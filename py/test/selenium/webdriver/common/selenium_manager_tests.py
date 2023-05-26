@@ -21,6 +21,7 @@ import pytest
 
 from selenium.common.exceptions import SeleniumManagerException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
@@ -60,6 +61,27 @@ def test_browser_path_is_used_for_sm(mocker):
     args, kwargs = subprocess.run.call_args
     assert "--browser-path" in args[0]
     assert "/opt/bin/browser-bin" in args[0]
+
+
+def test_proxy_is_used_for_sm(mocker):
+    import subprocess
+
+    mock_run = mocker.patch("subprocess.run")
+    mocked_result = Mock()
+    mocked_result.configure_mock(
+        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+    )
+    mock_run.return_value = mocked_result
+    options = Options()
+    options.capabilities["browserName"] = "chrome"
+    proxy = Proxy()
+    proxy.http_proxy = "http-proxy"
+    options.proxy = proxy
+
+    _ = SeleniumManager().driver_location(options)
+    args, kwargs = subprocess.run.call_args
+    assert "--proxy" in args[0]
+    assert "http-proxy" in args[0]
 
 
 def test_stderr_is_propagated_to_exception_messages():

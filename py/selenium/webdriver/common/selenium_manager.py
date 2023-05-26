@@ -85,6 +85,12 @@ class SeleniumManager:
             args.append("--browser-path")
             args.append(str(binary_location))
 
+        proxy = options.proxy
+        if proxy and (proxy.http_proxy or proxy.ssl_proxy):
+            args.append("--proxy")
+            value = proxy.ssl_proxy if proxy.sslProxy else proxy.http_proxy
+            args.append(value)
+
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
 
