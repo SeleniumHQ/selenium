@@ -24,6 +24,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.drivers.Browser;
 
 class BiDiSessionTest {
 
@@ -31,7 +32,7 @@ class BiDiSessionTest {
 
   @Test
   void shouldBeAbleToCreateABiDiSession() {
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 

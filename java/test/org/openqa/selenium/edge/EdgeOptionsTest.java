@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
+import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
@@ -92,12 +93,9 @@ class EdgeOptionsTest {
   @Test
   void canMergeWithoutChangingOriginalObject() {
     EdgeOptions options = new EdgeOptions();
-    Map<String, Object> before = options.asMap();
     EdgeOptions merged =
         options.merge(
             new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, PageLoadStrategy.NONE));
-    // TODO: assertThat(merged).isNotSameAs(options);
-    // TODO: assertThat(options.asMap()).isEqualTo(before);
     assertThat(merged.getCapability(CapabilityType.PAGE_LOAD_STRATEGY))
         .isEqualTo(PageLoadStrategy.NONE);
   }
@@ -264,5 +262,15 @@ class EdgeOptionsTest {
         .extractingByKey("args")
         .asInstanceOf(LIST)
         .containsExactly("verbose", "silent");
+  }
+
+  @Test
+  void usingWebView2ChangesBrowserName() {
+    EdgeOptions options = new EdgeOptions();
+    assertThat(options.getBrowserName()).isEqualTo(EDGE.browserName());
+    options.useWebView(true);
+    assertThat(options.getBrowserName()).isEqualTo(WEBVIEW2_BROWSER_NAME);
+    options.useWebView(false);
+    assertThat(options.getBrowserName()).isEqualTo(EDGE.browserName());
   }
 }

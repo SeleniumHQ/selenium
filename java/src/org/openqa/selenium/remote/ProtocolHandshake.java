@@ -151,7 +151,10 @@ public class ProtocolHandshake {
             () ->
                 Either.left(
                     new SessionNotCreatedException(
-                        "Handshake response does not match any supported protocol")));
+                        String.format(
+                            "Handshake response does not match any supported protocol. "
+                                + "Response payload: %s",
+                            string(response)))));
   }
 
   public static class Result {

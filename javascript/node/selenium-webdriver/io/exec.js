@@ -141,8 +141,8 @@ function exec(command, opt_options) {
       resolve(new Result(code, signal))
     })
 
-    proc.once('error', err => {
-      reject(err);
+    proc.once('error', (err) => {
+      reject(err)
     })
   })
   return new Command(result, killCommand)

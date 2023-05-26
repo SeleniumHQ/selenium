@@ -16,24 +16,17 @@
 # under the License.
 
 
-from copy import deepcopy
 from importlib import import_module
 
 import pytest
 
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.remote import webdriver
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
-
-
-def test_converts_oss_capabilities_to_w3c(mocker):
-    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
-    oss_caps = {"platform": "WINDOWS", "version": "11", "acceptSslCerts": True}
-    w3c_caps = {"platformName": "windows", "browserVersion": "11", "acceptInsecureCerts": True}
-    WebDriver(desired_capabilities=deepcopy(oss_caps))
-    expected_params = {"capabilities": {"firstMatch": [{}], "alwaysMatch": w3c_caps}}
-    mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 
 @pytest.mark.parametrize(
@@ -54,9 +47,11 @@ def test_non_compliant_w3c_caps_is_deprecated(oss_name, val, w3c_name):
 
 def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
-    oss_caps = {"proxy": {"proxyType": "MANUAL", "httpProxy": "foo"}}
-    w3c_caps = {"proxy": {"proxyType": "manual", "httpProxy": "foo"}}
-    WebDriver(desired_capabilities=deepcopy(oss_caps))
+    w3c_caps = {"pageLoadStrategy": "normal", "proxy": {"proxyType": "manual", "httpProxy": "foo"}}
+    options = ArgOptions()
+    proxy = Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": "foo"})
+    options.proxy = proxy
+    WebDriver(options=options)
     expected_params = {"capabilities": {"firstMatch": [{}], "alwaysMatch": w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 

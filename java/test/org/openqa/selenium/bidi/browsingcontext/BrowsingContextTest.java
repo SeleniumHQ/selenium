@@ -25,24 +25,24 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.SeleniumExtension;
 
 class BrowsingContextTest {
 
+  @RegisterExtension static SeleniumExtension seleniumExtension = new SeleniumExtension();
   private AppServer server;
-  private FirefoxDriver driver;
+  private WebDriver driver;
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
+    driver = seleniumExtension.getDriver();
 
     server = new NettyAppServer();
     server.start();
@@ -141,6 +141,7 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NeedsFreshDriver
   void canGetAllTopLevelContexts() {
     BrowsingContext window1 = new BrowsingContext(driver, driver.getWindowHandle());
     BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
@@ -175,9 +176,6 @@ class BrowsingContextTest {
 
   @AfterEach
   public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
-    safelyCall(server::stop);
+    safelyCall(seleniumExtension::removeDriver, server::stop);
   }
 }

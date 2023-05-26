@@ -491,7 +491,7 @@ py_test_suite(
         "--driver=safari",
     ],
     tags = [
-        "exclusive",
+        "exclusive-if-local",
         "no-sandbox",
     ],
     deps = [
@@ -515,7 +515,7 @@ py_test_suite(
         "--browser-args=--automation",
     ],
     tags = [
-        "exclusive",
+        "exclusive-if-local",
         "no-sandbox",
     ],
     deps = [
@@ -539,7 +539,7 @@ py_test_suite(
         "--browser-args=--automation --headless",
     ],
     tags = [
-        "exclusive",
+        "exclusive-if-local",
         "no-sandbox",
     ],
     deps = [

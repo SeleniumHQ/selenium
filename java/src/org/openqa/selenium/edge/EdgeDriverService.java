@@ -19,6 +19,7 @@ package org.openqa.selenium.edge;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
@@ -164,7 +165,7 @@ public class EdgeDriverService extends DriverService {
 
       // webview2 - support
       // https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
-      if ("webview2".equalsIgnoreCase(capabilities.getBrowserName())) {
+      if (WEBVIEW2_BROWSER_NAME.equalsIgnoreCase(capabilities.getBrowserName())) {
         score++;
       }
 
