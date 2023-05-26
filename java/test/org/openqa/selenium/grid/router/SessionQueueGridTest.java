@@ -126,6 +126,7 @@ class SessionQueueGridTest {
                 new TestSessionFactory(
                     (id, caps) ->
                         new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+            .maximumConcurrentSessions(5)
             .build();
     handler.addHandler(localNode);
 

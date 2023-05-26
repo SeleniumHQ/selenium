@@ -127,6 +127,19 @@ class Options extends chromium.Options {
   setEdgeChromiumBinaryPath(path) {
     return this.setBinaryPath(path)
   }
+
+  /**
+   * Changes the browser name to 'webview2' to enable
+   * <a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">
+   *   test automation of WebView2 apps with Microsoft Edge WebDriver
+   * </a>
+   *
+   * @param {boolean} enable  flag to enable or disable the 'webview2' usage
+   */
+  useWebView(enable) {
+    const browserName = enable ? 'webview2' : Browser.EDGE
+    return this.setBrowserName(browserName)
+  }
 }
 
 /**

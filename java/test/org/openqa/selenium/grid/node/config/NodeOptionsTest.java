@@ -69,9 +69,7 @@ class NodeOptionsTest {
   @SuppressWarnings("ReturnValueIgnored")
   @Test
   void canConfigureNodeWithDriverDetection() {
-    assumeFalse(
-        Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
-        "We don't have driver servers in PATH when we run unit tests");
+    // If the driver isn't on the path, we should skip the test
     assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
@@ -116,9 +114,6 @@ class NodeOptionsTest {
   @Test
   void ensureManagedDownloadsFlagIsNOTAutoInjectedIntoIEStereoCapabilitiesWhenEnabledForNode() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
-    assumeFalse(
-        Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
-        "We don't have driver servers in PATH when we run unit tests");
     boolean isEnabled =
         isDownloadEnabled(new InternetExplorerDriverInfo(), "InternetExplorerDriverInfo");
     assertThat(isEnabled).isFalse();
@@ -376,6 +371,8 @@ class NodeOptionsTest {
         new String[] {
           "[node]",
           "detect-drivers = false",
+          "override-max-sessions = true", // When running remotely, there's no guarantee we have
+          // more than 1 core
           "[[node.driver-configuration]]",
           "display-name = \"Chrome Beta\"",
           "max-sessions = 1",
@@ -418,6 +415,7 @@ class NodeOptionsTest {
                 ((Map<String, String>) capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS))
                     .get("binary")
                     .equalsIgnoreCase(firefoxLocation));
+
     assertThat(reported)
         .filteredOn(
             capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))

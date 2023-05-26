@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
@@ -60,7 +61,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   public boolean isSupporting(Capabilities capabilities) {
     // webview2 - support https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
     return EDGE.is(capabilities.getBrowserName())
-        || "webview2".equalsIgnoreCase(capabilities.getBrowserName())
+        || WEBVIEW2_BROWSER_NAME.equalsIgnoreCase(capabilities.getBrowserName())
         || capabilities.getCapability("ms:edgeOptions") != null;
   }
 
