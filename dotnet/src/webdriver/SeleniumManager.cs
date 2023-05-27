@@ -98,6 +98,15 @@ namespace OpenQA.Selenium
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
             }
 
+            if (options.Proxy != null)
+            {
+                if (options.Proxy.SslProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
+                } else if (options.Proxy.HttpProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
+                }
+            }
+
             return RunCommand(binaryFullPath, argsBuilder.ToString());
         }
 
