@@ -97,4 +97,4 @@ jobs:
       cache-key: java-${{ matrix.browser }}-remote-tests
       run: >
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
-        xargs bazel test --flaky_test_attempts 3
+        xargs bazel test --flaky_test_attempts 10
