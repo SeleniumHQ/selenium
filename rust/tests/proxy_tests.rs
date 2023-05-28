@@ -31,6 +31,21 @@ async fn ok_proxy_test() {
         .code(0);
 }
 
+#[tokio::test]
+async fn wrong_proxy_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--proxy",
+        "http://localhost:12345",
+        "--clear-cache",
+    ])
+    .assert()
+    .failure()
+    .code(DATAERR);
+}
+
 #[test]
 fn wrong_protocol_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
