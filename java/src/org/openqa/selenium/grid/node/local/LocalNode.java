@@ -495,7 +495,10 @@ public class LocalNode extends Node {
                 desiredCapabilities);
 
         String sessionCreatedMessage = "Session created by the Node";
-        LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
+        LOG.info(
+            String.format(
+                "%s. Id: %s, Caps: %s",
+                sessionCreatedMessage, sessionId, externalSession.getCapabilities()));
 
         return Either.right(
             new CreateSessionResponse(
