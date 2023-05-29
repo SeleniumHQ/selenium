@@ -533,6 +533,8 @@ public class LocalNode extends Node {
               "download.prompt_for_download",
               false,
               "download.default_directory",
+              tempDir.getAbsolutePath(),
+              "savefile.default_directory",
               tempDir.getAbsolutePath());
       String optionsKey = Browser.CHROME.is(caps) ? "goog:chromeOptions" : "ms:edgeOptions";
       return appendPrefs(caps, optionsKey, map);
