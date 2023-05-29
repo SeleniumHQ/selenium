@@ -69,7 +69,7 @@ public class ProxyNodeWebsockets
     UrlTemplate.Match bidiMatch = BIDI_TEMPLATE.match(uri);
     UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
 
-    if (cdpMatch == null && vncMatch == null && fwdMatch == null) {
+    if (bidiMatch == null && cdpMatch == null && vncMatch == null && fwdMatch == null) {
       return Optional.empty();
     }
 

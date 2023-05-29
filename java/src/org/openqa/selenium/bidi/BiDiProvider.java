@@ -55,8 +55,14 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   }
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) caps.getCapability("webSocketUrl"));
+    Object bidiCapability;
+    if (caps.asMap().containsKey("se:bidi")) {
+      // Session is created remotely
+      bidiCapability = caps.getCapability("se:bidi");
+    } else {
+      bidiCapability = caps.getCapability("webSocketUrl");
+    }
+    Optional<String> webSocketUrl = Optional.ofNullable((String) bidiCapability);
 
     return webSocketUrl.map(
         uri -> {
