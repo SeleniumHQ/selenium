@@ -349,6 +349,16 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   @Override
+  public BiDi getBiDi() {
+    if (!biDiUri.isPresent()) {
+      throw new BiDiException("This version of Firefox or geckodriver does not support Bidi");
+    }
+
+    return maybeGetBiDi()
+        .orElseThrow(() -> new DevToolsException("Unable to initialize Bidi connection"));
+  }
+
+  @Override
   public void quit() {
     super.quit();
   }
