@@ -212,7 +212,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
       }
     } else {
       ::WaitForInputIdle(proc_info.hProcess, 2000);
-      LOG(DEBUG) << "IE launched successfully with process ID " << process_id;
+      std::string browser_launched = this->edge_ie_mode_ ? "Edge in IE Mode" : "IE";
+      LOG(DEBUG) << browser_launched << " launched successfully with process ID " << process_id;
       std::vector<wchar_t> image_buffer(MAX_PATH);
       int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
       std::wstring full_image_path = &image_buffer[0];
@@ -425,7 +426,7 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
 
-  LOG(TRACE) << "IE starting command line is: '"
+  LOG(TRACE) << "Edge in IE Mode starting command line is: '"
              << LOGWSTRING(executable_and_url) << "'.";
 
   LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
