@@ -130,7 +130,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->ignore_zoom_setting_ = settings.ignore_zoom_setting || this->edge_ie_mode_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
-  LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
+  LOG(DEBUG) << "path after was " << StringUtilities::ToString(this->edge_executable_location_) << "\n";
   this->html_getobject_msg_ = ::RegisterWindowMessage(HTML_GETOBJECT_MSG);
 
   // Explicitly load MSAA so we know if it's installed
