@@ -17,9 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.logging.LoggingPreferences;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
@@ -27,6 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.logging.LogLevelMapping;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 class SharedCapabilitiesMethods {
 
@@ -36,9 +35,9 @@ class SharedCapabilitiesMethods {
 
   static int hashCode(Capabilities caps) {
     return caps.getCapabilityNames().stream()
-      .sorted()
-      .mapToInt(name -> Objects.hash(name, caps.getCapability(name)))
-      .reduce(0, (l, r) -> l ^ r);
+        .sorted()
+        .mapToInt(name -> Objects.hash(name, caps.getCapability(name)))
+        .reduce(0, (l, r) -> l ^ r);
   }
 
   static boolean equals(Capabilities left, Capabilities right) {
@@ -48,7 +47,8 @@ class SharedCapabilitiesMethods {
   static void setCapability(Map<String, Object> caps, String key, Object value) {
     if ("loggingPrefs".equals(key) && value instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
-      @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
+      @SuppressWarnings("unchecked")
+      Map<String, String> prefsMap = (Map<String, String>) value;
 
       prefsMap.forEach((pKey, pValue) -> prefs.enable(pKey, LogLevelMapping.toLevel(pValue)));
       caps.put(key, prefs);
@@ -61,12 +61,6 @@ class SharedCapabilitiesMethods {
       } catch (WebDriverException e) {
         caps.put(key, value);
       }
-      return;
-    }
-
-    if ("unexpectedAlertBehaviour".equals(key)) {
-      caps.put("unexpectedAlertBehaviour", value);
-      caps.put("unhandledPromptBehavior", value);
       return;
     }
 
@@ -88,24 +82,27 @@ class SharedCapabilitiesMethods {
     if (stringify.getClass().isArray()) {
       value.append("[");
       value.append(
-        Stream.of((Object[]) stringify)
-          .map(item -> abbreviate(seen, item))
-          .collect(Collectors.joining(", ")));
+          Stream.of((Object[]) stringify)
+              .map(item -> abbreviate(seen, item))
+              .collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Collection) {
       value.append("[");
       value.append(
-        ((Collection<?>) stringify).stream()
-          .map(item -> abbreviate(seen, item))
-          .collect(Collectors.joining(", ")));
+          ((Collection<?>) stringify)
+              .stream().map(item -> abbreviate(seen, item)).collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Map) {
       value.append("{");
       value.append(
-        ((Map<?, ?>) stringify).entrySet().stream()
-          .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
-          .map(entry -> String.format("%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
-          .collect(Collectors.joining(", ")));
+          ((Map<?, ?>) stringify)
+              .entrySet().stream()
+                  .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
+                  .map(
+                      entry ->
+                          String.format(
+                              "%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
+                  .collect(Collectors.joining(", ")));
       value.append("}");
     } else {
       String s = String.valueOf(stringify);
@@ -119,6 +116,4 @@ class SharedCapabilitiesMethods {
     seen.put(stringify, value.toString());
     return value.toString();
   }
-
-
 }

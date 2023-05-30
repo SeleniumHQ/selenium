@@ -21,21 +21,17 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 
-import java.util.function.Predicate;
+public class AddHasLogEvents implements AugmenterProvider<HasLogEvents> {
 
-public class AddHasLogEvents
-  implements AugmenterProvider<HasLogEvents> {
-
-  private static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
-    CHROME.is(name) ||
-    EDGE.is(name) ||
-    OPERA.is(name);
+  private static final Predicate<String> IS_CHROMIUM_BROWSER =
+      name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
 
   @Override
   public Predicate<Capabilities> isApplicable() {

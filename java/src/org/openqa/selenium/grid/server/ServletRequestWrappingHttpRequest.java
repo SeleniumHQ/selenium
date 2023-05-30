@@ -21,11 +21,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
-
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -35,8 +30,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.servlet.http.HttpServletRequest;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 /**
  * Read-only adapter of {@link HttpServletRequest} to a {@link HttpRequest}. This class is not
@@ -66,7 +63,6 @@ class ServletRequestWrappingHttpRequest extends HttpRequest {
   public String getHeader(String name) {
     return req.getHeader(name);
   }
-
 
   @Override
   public ServletRequestWrappingHttpRequest removeHeader(String name) {
@@ -140,13 +136,14 @@ class ServletRequestWrappingHttpRequest extends HttpRequest {
     // We need to memoize, but the request input may be too large to fit in
     // memory.
 
-    return Contents.memoize(() -> {
-      try {
-        return req.getInputStream();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    });
+    return Contents.memoize(
+        () -> {
+          try {
+            return req.getInputStream();
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        });
   }
 
   @Override

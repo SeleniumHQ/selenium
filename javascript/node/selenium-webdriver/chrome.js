@@ -130,7 +130,6 @@
 const io = require('./io')
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
-const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Name of the ChromeDriver executable.
@@ -158,28 +157,6 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    */
   constructor(opt_exe) {
     let exe = opt_exe || locateSynchronously()
-
-    if (!exe) {
-      console.log(
-        ` The ChromeDriver could not be found on the current PATH, trying Selenium Manager`
-      )
-
-      try {
-        exe = driverLocation(Browser.CHROME)
-      } catch (err) {
-        console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
-      }
-    }
-
-    if (!exe) {
-      throw Error(
-        `The ChromeDriver could not be found on the current PATH.
-      Please download the latest version of the ChromeDriver
-      from http://chromedriver.storage.googleapis.com/index.html
-      and ensure it can be found on your PATH.`
-      )
-    }
-
     super(exe)
   }
 }

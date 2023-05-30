@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    selenium-devtools (0.110.0)
+    selenium-devtools (0.113.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.8.1)
+    selenium-webdriver (4.9.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -14,29 +14,27 @@ GEM
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
-    coderay (1.1.3)
     crack (0.4.5)
       rexml
+    debug (1.7.2)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     diff-lcs (1.5.0)
-    ffi (1.15.5-java)
     hashdiff (1.0.1)
+    io-console (0.6.0)
+    irb (1.6.4)
+      reline (>= 0.3.0)
     json (2.6.3)
     json (2.6.3-java)
-    method_source (1.0.0)
     parallel (1.22.1)
     parser (3.1.3.0)
       ast (~> 2.4.1)
-    pry (0.14.1)
-      coderay (~> 1.1)
-      method_source (~> 1.0)
-    pry (0.14.1-java)
-      coderay (~> 1.1)
-      method_source (~> 1.0)
-      spoon (~> 0.0)
     public_suffix (5.0.1)
     rack (2.2.5)
     rainbow (3.1.1)
     regexp_parser (2.6.1)
+    reline (0.3.3)
+      io-console (~> 0.5)
     rexml (3.2.5)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -70,8 +68,6 @@ GEM
       rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
     rubyzip (2.3.2)
-    spoon (0.0.6)
-      ffi
     unicode-display_width (2.3.0)
     webmock (3.18.1)
       addressable (>= 2.8.0)
@@ -85,10 +81,11 @@ GEM
 PLATFORMS
   java
   ruby
+  universal-java-18
   x64-mingw32
 
 DEPENDENCIES
-  pry (~> 0.14)
+  debug (~> 1.7)
   rack (~> 2.0)
   rspec (~> 3.0)
   rubocop (~> 1.42)
@@ -101,4 +98,4 @@ DEPENDENCIES
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   2.1.4
+   2.2.34

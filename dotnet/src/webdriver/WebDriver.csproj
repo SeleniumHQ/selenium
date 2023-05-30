@@ -6,78 +6,18 @@
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <AssemblyTitle>WebDriver</AssemblyTitle>
     <Description>Selenium WebDriver API .NET Bindings</Description>
     <Company>Selenium Committers</Company>
     <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
-    <Version>4</Version>
+    <Version>4.0.0</Version>
     <PackageId>Selenium.WebDriver</PackageId>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net46\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net46\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net47\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net47\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net48\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net48\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.1\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.1\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -112,7 +52,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
+  <ItemGroup>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
       <Visible>False</Visible>
       <LogicalName>webdriver_prefs.json</LogicalName>
@@ -130,29 +70,6 @@
       <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
-      <Visible>False</Visible>
-      <LogicalName>mutation-listener.js</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)../../../third_party/js/selenium/webdriver.json">
-      <Visible>False</Visible>
-      <LogicalName>webdriver_prefs.json</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
-      <Visible>False</Visible>
-      <LogicalName>get-attribute.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/is-displayed.js">
-      <Visible>False</Visible>
-      <LogicalName>is-displayed.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/find-elements.js">
-      <Visible>False</Visible>
-      <LogicalName>find-elements.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../javascript/cdp-support/mutation-listener.js">
       <Visible>False</Visible>
       <LogicalName>mutation-listener.js</LogicalName>
     </EmbeddedResource>

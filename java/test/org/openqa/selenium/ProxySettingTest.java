@@ -17,11 +17,22 @@
 
 package org.openqa.selenium;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,18 +56,6 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 class ProxySettingTest extends JupiterTestBase {
 
@@ -110,12 +109,15 @@ class ProxySettingTest extends JupiterTestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureProxyThroughPACFile() {
-    Server<?> helloServer = createSimpleHttpServer(
-        "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server<?> pacFileServer = createPacfileServer(Joiner.on('\n').join(
-        "function FindProxyForURL(url, host) {",
-        "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-        "}"));
+    Server<?> helloServer =
+        createSimpleHttpServer("<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
+    Server<?> pacFileServer =
+        createPacfileServer(
+            Joiner.on('\n')
+                .join(
+                    "function FindProxyForURL(url, host) {",
+                    "  return 'PROXY " + getHostAndPort(helloServer) + "';",
+                    "}"));
 
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -133,17 +135,20 @@ class ProxySettingTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts() {
-    Server<?> helloServer = createSimpleHttpServer(
-        "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server<?> goodbyeServer = createSimpleHttpServer(
-        "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
-    Server<?> pacFileServer = createPacfileServer(Joiner.on('\n').join(
-        "function FindProxyForURL(url, host) {",
-        "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
-        "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
-        "  }",
-        "  return 'DIRECT';",
-        "}"));
+    Server<?> helloServer =
+        createSimpleHttpServer("<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
+    Server<?> goodbyeServer =
+        createSimpleHttpServer("<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
+    Server<?> pacFileServer =
+        createPacfileServer(
+            Joiner.on('\n')
+                .join(
+                    "function FindProxyForURL(url, host) {",
+                    "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
+                    "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
+                    "  }",
+                    "  return 'DIRECT';",
+                    "}"));
 
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -159,24 +164,28 @@ class ProxySettingTest extends JupiterTestBase {
 
   private Server<?> createSimpleHttpServer(final String responseHtml) {
     return createServer(
-      req -> new HttpResponse()
-        .setHeader("Content-Type", "text/html; charset=utf-8")
-        .setContent(Contents.utf8String(responseHtml)));
+        req ->
+            new HttpResponse()
+                .setHeader("Content-Type", "text/html; charset=utf-8")
+                .setContent(Contents.utf8String(responseHtml)));
   }
 
   private Server<?> createPacfileServer(final String pacFileContents) {
     return createServer(
-      req -> new HttpResponse()
-        .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
-        .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII))));
+        req ->
+            new HttpResponse()
+                .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
+                .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII))));
   }
 
   private Server<?> createServer(HttpHandler handler) {
-    Server<?> server = new JreServer(
-      new BaseServerOptions(new MapConfig(
-        singletonMap("server", singletonMap("port", PortProber.findFreePort())))),
-      handler)
-      .start();
+    Server<?> server =
+        new JreServer(
+                new BaseServerOptions(
+                    new MapConfig(
+                        singletonMap("server", singletonMap("port", PortProber.findFreePort())))),
+                handler)
+            .start();
 
     tearDowns.add(server::stop);
 
@@ -199,31 +208,37 @@ class ProxySettingTest extends JupiterTestBase {
       String address = new NetworkUtils().getPrivateLocalAddress();
       baseUrl = String.format("%s:%d", address, port);
 
-      proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
-          .withFiltersSource(new HttpFiltersSourceAdapter() {
-            @Override
-            public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-              return new HttpFiltersAdapter(originalRequest) {
-                @Override
-                public io.netty.handler.codec.http.HttpResponse clientToProxyRequest(HttpObject httpObject) {
-                  String uri = originalRequest.uri();
-                  String[] parts = uri.split("/");
-                  if (parts.length == 0) {
-                    return null;
-                  }
-                  String finalPart = parts[parts.length - 1];
-                  uris.add(finalPart);
-                  return null;
-                }
+      proxyServer =
+          DefaultHttpProxyServer.bootstrap()
+              .withAllowLocalOnly(false)
+              .withPort(port)
+              .withFiltersSource(
+                  new HttpFiltersSourceAdapter() {
+                    @Override
+                    public HttpFilters filterRequest(
+                        HttpRequest originalRequest, ChannelHandlerContext ctx) {
+                      return new HttpFiltersAdapter(originalRequest) {
+                        @Override
+                        public io.netty.handler.codec.http.HttpResponse clientToProxyRequest(
+                            HttpObject httpObject) {
+                          String uri = originalRequest.uri();
+                          String[] parts = uri.split("/");
+                          if (parts.length == 0) {
+                            return null;
+                          }
+                          String finalPart = parts[parts.length - 1];
+                          uris.add(finalPart);
+                          return null;
+                        }
 
-                @Override
-                public HttpObject serverToProxyResponse(HttpObject httpObject) {
-                  return httpObject;
-                }
-              };
-            }
-          })
-          .start();
+                        @Override
+                        public HttpObject serverToProxyResponse(HttpObject httpObject) {
+                          return httpObject;
+                        }
+                      };
+                    }
+                  })
+              .start();
     }
 
     /**

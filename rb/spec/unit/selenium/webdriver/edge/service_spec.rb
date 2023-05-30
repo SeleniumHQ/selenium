@@ -31,15 +31,12 @@ module Selenium
             described_class.driver_path = nil
           end
 
-          it 'uses default path and port' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
+          it 'uses default port and nil path' do
             service = described_class.new
 
-            expect(service.executable_path).to include Service::EXECUTABLE
-            expected_port = Service::DEFAULT_PORT
-            expect(service.port).to eq expected_port
+            expect(service.port).to eq Service::DEFAULT_PORT
             expect(service.host).to eq Platform.localhost
+            expect(service.executable_path).to be_nil
           end
 
           it 'uses provided path and port' do
@@ -51,29 +48,6 @@ module Selenium
             expect(service.executable_path).to eq path
             expect(service.port).to eq port
             expect(service.host).to eq Platform.localhost
-          end
-
-          describe '#driver_path=' do
-            after { described_class.driver_path = nil }
-
-            it 'allows #driver_path= with String value' do
-              path = '/path/to/driver'
-              described_class.driver_path = path
-
-              service = described_class.new
-
-              expect(service.executable_path).to eq path
-            end
-
-            it 'allows #driver_path= with Proc value' do
-              path = '/path/to/driver'
-              proc = proc { path }
-              described_class.driver_path = proc
-
-              service = described_class.new
-
-              expect(service.executable_path).to eq path
-            end
           end
 
           it 'does not create args by default' do
@@ -107,7 +81,10 @@ module Selenium
 
         context 'when initializing driver' do
           let(:driver) { Edge::Driver }
-          let(:service) { instance_double(described_class, launch: service_manager) }
+          let(:service) do
+            instance_double(described_class, launch: service_manager, executable_path: nil, 'executable_path=': nil,
+                                             class: described_class)
+          end
           let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
           let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
@@ -127,6 +104,8 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
+            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
 
             driver.new
@@ -134,6 +113,8 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
+            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)
 
             driver.new(service: service)

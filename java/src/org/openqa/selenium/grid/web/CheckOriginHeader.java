@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.Collection;
+import java.util.Set;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Collection;
-import java.util.Set;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
 public class CheckOriginHeader implements Filter {
 
@@ -39,7 +38,8 @@ public class CheckOriginHeader implements Filter {
   public CheckOriginHeader(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
     allowedHosts = ImmutableSet.copyOf(allowedOriginHosts);
-    this.skipChecksOn = ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+    this.skipChecksOn =
+        ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override
@@ -54,13 +54,16 @@ public class CheckOriginHeader implements Filter {
       String origin = req.getHeader("Origin");
       if (origin != null && !allowedHosts.contains(origin)) {
         return new HttpResponse()
-          .setStatus(HTTP_INTERNAL_ERROR)
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "value", ImmutableMap.of(
-              "error", "unknown error",
-              "message", "Origin not allowed: " + origin,
-              "stacktrace", ""))));
+            .setStatus(HTTP_INTERNAL_ERROR)
+            .addHeader("Content-Type", JSON_UTF_8)
+            .setContent(
+                Contents.asJson(
+                    ImmutableMap.of(
+                        "value",
+                        ImmutableMap.of(
+                            "error", "unknown error",
+                            "message", "Origin not allowed: " + origin,
+                            "stacktrace", ""))));
       }
 
       return httpHandler.execute(req);

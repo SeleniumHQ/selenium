@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+import java.io.UncheckedIOException;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class SleepingHandler implements HttpHandler {
 
@@ -38,20 +37,20 @@ public class SleepingHandler implements HttpHandler {
     reallySleep(timeout);
 
     return new HttpResponse()
-      .setHeader("Content-Type", "text/html")
-      //Dont Cache Anything  at the browser
-      .setHeader("Cache-Control","no-cache")
-      .setHeader("Pragma","no-cache")
-      .setHeader("Expires", "0")
-      .setContent(utf8String(String.format(RESPONSE_STRING_FORMAT, duration)));
+        .setHeader("Content-Type", "text/html")
+        // Dont Cache Anything  at the browser
+        .setHeader("Cache-Control", "no-cache")
+        .setHeader("Pragma", "no-cache")
+        .setHeader("Expires", "0")
+        .setContent(utf8String(String.format(RESPONSE_STRING_FORMAT, duration)));
   }
 
   private void reallySleep(long timeout) {
     long start = System.currentTimeMillis();
     try {
       Thread.sleep(timeout);
-      while ( (System.currentTimeMillis() - start) < timeout) {
-        Thread.sleep( 20);
+      while ((System.currentTimeMillis() - start) < timeout) {
+        Thread.sleep(20);
       }
     } catch (InterruptedException ignore) {
     }

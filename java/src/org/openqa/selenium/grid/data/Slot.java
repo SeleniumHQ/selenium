@@ -19,16 +19,15 @@ package org.openqa.selenium.grid.data;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class Slot implements Serializable {
 
@@ -118,10 +117,10 @@ public class Slot implements Serializable {
     }
 
     Slot that = (Slot) o;
-    return Objects.equals(this.id, that.id) &&
-           Objects.equals(this.stereotype, that.stereotype) &&
-           Objects.equals(this.session, that.session) &&
-           Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
+    return Objects.equals(this.id, that.id)
+        && Objects.equals(this.stereotype, that.stereotype)
+        && Objects.equals(this.session, that.session)
+        && Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
   }
 
   @Override

@@ -17,20 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.time.Duration;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -48,6 +34,19 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.time.Duration;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 class PageLoadingTest extends JupiterTestBase {
 
@@ -195,8 +194,7 @@ class PageLoadingTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
-    assertThatCode(
-        () -> driver.get("http://www.thisurldoesnotexist.comx/"))
+    assertThatCode(() -> driver.get("http://www.thisurldoesnotexist.comx/"))
         .doesNotThrowAnyException();
   }
 
@@ -245,13 +243,14 @@ class PageLoadingTest extends JupiterTestBase {
 
   @NeedsFreshDriver
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  @NotYetImplemented(
+      value = HTMLUNIT,
+      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
-    ((JavascriptExecutor) driver).executeScript(
-        "window.open('" + pages.formPage + "', 'newWindow')");
+    ((JavascriptExecutor) driver)
+        .executeScript("window.open('" + pages.formPage + "', 'newWindow')");
     wait.until(newWindowIsOpened(currentWindowHandles));
     driver.switchTo().window("newWindow");
     wait.until(titleIs("We Leave From Here"));
@@ -305,8 +304,7 @@ class PageLoadingTest extends JupiterTestBase {
   @Ignore(IE)
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-    createNewDriver(new ImmutableCapabilities(
-        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
+    createNewDriver(new ImmutableCapabilities(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
@@ -324,8 +322,9 @@ class PageLoadingTest extends JupiterTestBase {
   /**
    * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/208
    *
-   * This test often causes the subsequent test to fail, in Firefox, on Linux, so we need a new
-   * driver after it. See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2282
+   * <p>This test often causes the subsequent test to fail, in Firefox, on Linux, so we need a new
+   * driver after it. See
+   * https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2282
    */
   @NoDriverAfterTest
   @Test
@@ -453,10 +452,10 @@ class PageLoadingTest extends JupiterTestBase {
   /**
    * Sets given pageLoadTimeout to the {@link #driver} and asserts that attempt to navigate to a
    * page that takes much longer (10 seconds longer) to load results in a TimeoutException.
-   * <p>
-   * Side effects: 1) {@link #driver} is configured to use given pageLoadTimeout,
-   * 2) test HTTP server still didn't serve the page to browser (some browsers may still
-   * be waiting for the page to load despite the fact that driver responded with the timeout).
+   *
+   * <p>Side effects: 1) {@link #driver} is configured to use given pageLoadTimeout, 2) test HTTP
+   * server still didn't serve the page to browser (some browsers may still be waiting for the page
+   * to load despite the fact that driver responded with the timeout).
    */
   private void testPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout) {
     // Test page will load this many seconds longer than WD pageLoadTimeout.
@@ -465,12 +464,12 @@ class PageLoadingTest extends JupiterTestBase {
     assertPageLoadTimeoutIsEnforced(webDriverPageLoadTimeout, pageLoadTimeBuffer);
   }
 
-  private void assertPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout,
-                                               long pageLoadTimeBuffer) {
+  private void assertPageLoadTimeoutIsEnforced(
+      long webDriverPageLoadTimeout, long pageLoadTimeBuffer) {
     long start = System.currentTimeMillis();
     try {
-      driver.get(appServer.whereIs(
-          "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
+      driver.get(
+          appServer.whereIs("sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
       fail("I should have timed out after " + webDriverPageLoadTimeout + " seconds");
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();

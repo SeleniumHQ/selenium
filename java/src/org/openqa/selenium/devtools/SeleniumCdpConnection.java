@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.devtools;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
 
 public class SeleniumCdpConnection extends Connection {
 
@@ -47,17 +46,21 @@ public class SeleniumCdpConnection extends Connection {
     return create(HttpClient.Factory.createDefault(), capabilities);
   }
 
-  public static Optional<Connection> create(HttpClient.Factory clientFactory, Capabilities capabilities) {
+  public static Optional<Connection> create(
+      HttpClient.Factory clientFactory, Capabilities capabilities) {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("Capabilities", capabilities);
 
-    return getCdpUri(clientFactory, capabilities).map(uri -> new SeleniumCdpConnection(
-      clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-      uri.toString()));
+    return getCdpUri(clientFactory, capabilities)
+        .map(
+            uri ->
+                new SeleniumCdpConnection(
+                    clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+                    uri.toString()));
   }
 
-  public static Optional<URI> getCdpUri(HttpClient.Factory clientFactory,
-                                        Capabilities capabilities) {
+  public static Optional<URI> getCdpUri(
+      HttpClient.Factory clientFactory, Capabilities capabilities) {
     Object cdp = capabilities.getCapability("se:cdp");
 
     if (cdp instanceof String) {

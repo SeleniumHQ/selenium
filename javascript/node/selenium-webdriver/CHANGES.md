@@ -1,3 +1,44 @@
+## v4.9.2
+
+#### :nail_care: Polish
+
+* Handle rejection of the driver if not found
+
+## v4.9.1
+
+#### :nail_care: Polish
+
+* Add CDP files for v113 and remove v110
+
+## v4.9.0
+
+#### :nail_care: Polish
+
+* Adding CDP v112 and removing v109
+
+#### :bug: Bug Fix
+
+* Fix: return statement in submit() (#11883)
+* [grid] Refining the UI configuration to allow sub paths work properly.
+* Replace `execSync` with `spawnSync` in `seleniumManager.js` (#11649) (#11873)
+
+#### :rocket: New Feature
+
+* [BiDi] Add Script module commands and types (#11847)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+
+## v4.8.2
+
+#### :nail_care: Polish
+
+* Add CDP support for v111 and remove v108
+* Using json output with Selenium Manager
+
+#### :bug: Bug Fix
+
+* fix: Using status from response (#11742)
+
 ## v4.8.1
 
 #### :rocket: New Feature
@@ -41,7 +82,7 @@ fix: iedriver download with selenium-manager #11579
 
 #### Committers: 1
 
-- Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
+* Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
 
 ## v4.7.0
 
@@ -62,7 +103,7 @@ fix: iedriver download with selenium-manager #11579
 
 #### :nail_care: Polish
 
-* Fix typos (#11258) 
+* Fix typos (#11258)
 
 ## v4.6.0
 
@@ -117,11 +158,12 @@ fix: iedriver download with selenium-manager #11579
 * destructuring exports
 * Moving from static to const to make js-dossier happy
 * Removing circular dependency Between webdriver.js and http.js
-* fix some typos in code and documentation 
+* fix some typos in code and documentation
 * add cdp v105 remove v102
 * add cdp v106 remove v103
 
 ## v4.4.0
+
 * Add support CDP 104 and remove CDP 101
 
 ## v4.3.1
@@ -1252,4 +1294,3 @@ major version release (i.e. 1.0.0).
 * Initial release for npm:
 
         npm install selenium-webdriver
-

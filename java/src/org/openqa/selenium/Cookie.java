@@ -42,7 +42,7 @@ public class Cookie implements Serializable {
    * @param name The name of the cookie; may not be null or an empty string.
    * @param value The cookie value; may not be null.
    * @param path The path the cookie is visible to. If left blank or set to null, will be set to
-   *        "/".
+   *     "/".
    * @param expiry The cookie's expiration date; may be null.
    * @see #Cookie(String, String, String, String, Date)
    */
@@ -57,7 +57,7 @@ public class Cookie implements Serializable {
    * @param value The cookie value; may not be null.
    * @param domain The domain the cookie is visible to.
    * @param path The path the cookie is visible to. If left blank or set to null, will be set to
-   *        "/".
+   *     "/".
    * @param expiry The cookie's expiration date; may be null.
    * @see #Cookie(String, String, String, String, Date, boolean)
    */
@@ -72,12 +72,12 @@ public class Cookie implements Serializable {
    * @param value The cookie value; may not be null.
    * @param domain The domain the cookie is visible to.
    * @param path The path the cookie is visible to. If left blank or set to null, will be set to
-   *        "/".
+   *     "/".
    * @param expiry The cookie's expiration date; may be null.
    * @param isSecure Whether this cookie requires a secure connection.
    */
-  public Cookie(String name, String value, String domain, String path, Date expiry,
-                boolean isSecure) {
+  public Cookie(
+      String name, String value, String domain, String path, Date expiry, boolean isSecure) {
     this(name, value, domain, path, expiry, isSecure, false);
   }
 
@@ -88,14 +88,20 @@ public class Cookie implements Serializable {
    * @param value The cookie value; may not be null.
    * @param domain The domain the cookie is visible to.
    * @param path The path the cookie is visible to. If left blank or set to null, will be set to
-   *        "/".
+   *     "/".
    * @param expiry The cookie's expiration date; may be null.
    * @param isSecure Whether this cookie requires a secure connection.
    * @param isHttpOnly Whether this cookie is a httpOnly cooke.
    */
-  public Cookie(String name, String value, String domain, String path, Date expiry,
-      boolean isSecure, boolean isHttpOnly) {
-            this(name, value, domain, path, expiry, isSecure, isHttpOnly, null);
+  public Cookie(
+      String name,
+      String value,
+      String domain,
+      String path,
+      Date expiry,
+      boolean isSecure,
+      boolean isHttpOnly) {
+    this(name, value, domain, path, expiry, isSecure, isHttpOnly, null);
   }
 
   /**
@@ -111,8 +117,15 @@ public class Cookie implements Serializable {
    * @param isHttpOnly Whether this cookie is a httpOnly cookie.
    * @param sameSite The samesite attribute of this cookie; e.g. None, Lax, Strict.
    */
-  public Cookie(String name, String value, String domain, String path, Date expiry,
-      boolean isSecure, boolean isHttpOnly, String sameSite) {
+  public Cookie(
+      String name,
+      String value,
+      String domain,
+      String path,
+      Date expiry,
+      boolean isSecure,
+      boolean isHttpOnly,
+      String sameSite) {
     this.name = name;
     this.value = value;
     this.path = path == null || "".equals(path) ? "/" : path;
@@ -190,13 +203,12 @@ public class Cookie implements Serializable {
 
   public void validate() {
     if (name == null || "".equals(name) || value == null || path == null) {
-      throw new IllegalArgumentException("Required attributes are not set or " +
-          "any non-null attribute set to null");
+      throw new IllegalArgumentException(
+          "Required attributes are not set or " + "any non-null attribute set to null");
     }
 
     if (name.indexOf(';') != -1) {
-      throw new IllegalArgumentException(
-          "Cookie names cannot contain a ';': " + name);
+      throw new IllegalArgumentException("Cookie names cannot contain a ';': " + name);
     }
 
     if (domain != null && domain.contains(":")) {
@@ -243,19 +255,19 @@ public class Cookie implements Serializable {
 
   @Override
   public String toString() {
-    return name + "=" + value
-        + (expiry == null ? ""
-            : "; expires=" + new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z")
-                .format(expiry))
+    return name
+        + "="
+        + value
+        + (expiry == null
+            ? ""
+            : "; expires=" + new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z").format(expiry))
         + ("".equals(path) ? "" : "; path=" + path)
         + (domain == null ? "" : "; domain=" + domain)
         + (isSecure ? ";secure;" : "")
         + (sameSite == null ? "" : "; sameSite=" + sameSite);
   }
 
-  /**
-   * Two cookies are equal if the name and value match
-   */
+  /** Two cookies are equal if the name and value match */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -325,8 +337,7 @@ public class Cookie implements Serializable {
     }
 
     public Cookie build() {
-      return new Cookie(
-          name, value, domain, path, expiry, secure, httpOnly, sameSite);
+      return new Cookie(name, value, domain, path, expiry, secure, httpOnly, sameSite);
     }
   }
 }

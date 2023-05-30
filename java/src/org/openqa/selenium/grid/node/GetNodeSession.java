@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class GetNodeSession implements HttpHandler {
 

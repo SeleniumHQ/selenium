@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.function.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.function.Supplier;
 
 class RemoteSupplier implements Supplier<WebDriver> {
 

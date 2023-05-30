@@ -56,7 +56,7 @@ copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # built documents.
 #
 # The short X.Y version.
-version = '4.8'
+version = '4.9'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -270,6 +270,14 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 # 'members' includes anything that has a docstring, 'undoc-members' includes
 # functions without docstrings.
 autodoc_default_flags = ['members', 'undoc-members']
+
+# configuration for keeping the methods that can be invoked on said classes
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'bysource',
+    'undoc-members': True,
+    'inherited-members': True,
+}
 
 # Include __init__ comments
 autoclass_content = "both"

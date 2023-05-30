@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.devtools.v85;
 
+import java.util.function.Function;
+import java.util.logging.Level;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
@@ -24,9 +26,6 @@ import org.openqa.selenium.devtools.v85.log.Log;
 import org.openqa.selenium.devtools.v85.log.model.LogEntry;
 import org.openqa.selenium.devtools.v85.runtime.model.Timestamp;
 import org.openqa.selenium.json.JsonInput;
-
-import java.util.function.Function;
-import java.util.logging.Level;
 
 public class V85Log implements org.openqa.selenium.devtools.idealized.log.Log {
   @Override
@@ -42,20 +41,18 @@ public class V85Log implements org.openqa.selenium.devtools.idealized.log.Log {
   @Override
   public Event<org.openqa.selenium.devtools.idealized.log.model.LogEntry> entryAdded() {
     return new Event<>(
-      Log.entryAdded().getMethod(),
-      input -> {
-        Function<JsonInput, LogEntry> mapper = ConverterFunctions.map(
-          "entry",
-          LogEntry.class);
-        LogEntry entry = mapper.apply(input);
+        Log.entryAdded().getMethod(),
+        input -> {
+          Function<JsonInput, LogEntry> mapper = ConverterFunctions.map("entry", LogEntry.class);
+          LogEntry entry = mapper.apply(input);
 
-        return new org.openqa.selenium.devtools.idealized.log.model.LogEntry(
-          entry.getSource().toString(),
-          new org.openqa.selenium.logging.LogEntry(
-            fromCdpLevel(entry.getLevel()),
-            fromCdpTimestamp(entry.getTimestamp()),
-            entry.getText()));
-      });
+          return new org.openqa.selenium.devtools.idealized.log.model.LogEntry(
+              entry.getSource().toString(),
+              new org.openqa.selenium.logging.LogEntry(
+                  fromCdpLevel(entry.getLevel()),
+                  fromCdpTimestamp(entry.getTimestamp()),
+                  entry.getText()));
+        });
   }
 
   private Level fromCdpLevel(LogEntry.Level level) {

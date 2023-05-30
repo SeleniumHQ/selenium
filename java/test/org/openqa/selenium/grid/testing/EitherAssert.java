@@ -28,8 +28,7 @@ public class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Eithe
   public EitherAssert<A, B> isLeft() {
     isNotNull();
     if (actual.isRight()) {
-      failWithMessage(
-        "Expected Either to be left but it is right: %s", actual.right());
+      failWithMessage("Expected Either to be left but it is right: %s", actual.right());
     }
     return this;
   }
@@ -37,8 +36,7 @@ public class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Eithe
   public EitherAssert<A, B> isRight() {
     isNotNull();
     if (actual.isLeft()) {
-      failWithMessage(
-        "Expected Either to be right but it is left: %s", actual.left());
+      failWithMessage("Expected Either to be right but it is left: %s", actual.left());
     }
     return this;
   }

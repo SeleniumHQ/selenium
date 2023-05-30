@@ -41,6 +41,7 @@ module Selenium
         @host = Platform.localhost
         @port = config.port
         @extra_args = config.args
+        @io = config.log
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
@@ -64,7 +65,7 @@ module Selenium
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
-      rescue ChildProcess::TimeoutError
+      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED
         nil # noop
       ensure
         stop_process
@@ -77,9 +78,10 @@ module Selenium
       private
 
       def build_process(*command)
-        WebDriver.logger.debug("Executing Process #{command}")
+        WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
-        @process.io = WebDriver.logger.io if WebDriver.logger.debug?
+        @io ||= WebDriver.logger.io if WebDriver.logger.debug?
+        @process.io = @io if @io
 
         @process
       end

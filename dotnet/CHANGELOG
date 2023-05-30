@@ -1,3 +1,28 @@
+v4.9.1
+======
+* Add CDP files for v113 and remove v110
+* Fallback result parsing of script execution to expected type (#11930)
+* Using Selenium Manager in default service creation (#11994)
+* Encoding process output (#11947)
+* Generate API documentation (#11968)
+
+v4.9.0
+======
+* Add CDP files for v112 and remove v109
+* Don't listen to error output stream from selenium manager to avoid messing up output (#11863)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Throw a descriptive exception if the current dev tools version is not supported (#11876)
+* Use ChangeType method to convert any object to boolean in WebElement properties (#11913)
+* Use selenium manager in tests (#11871)
+
+v4.8.2
+======
+* Add CDP files for v111 and remove v108
+* InvalidSelectorException now extends WebDriverException
+* Using json output with Selenium Manager
+* Include targets for projects building transitively (#11812)
+
 v4.8.1
 ======
 * Add CDP files for v110 and remove v107

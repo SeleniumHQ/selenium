@@ -5,6 +5,7 @@ load(
     "rb_binary",
     "rb_gem_build",
     "rb_gem_push",
+    "rb_test",
 )
 
 package(default_visibility = ["//:__subpackages__"])
@@ -172,17 +173,17 @@ rb_binary(
     ],
 )
 
-rb_binary(
+rb_test(
     name = "lint",
-    testonly = True,
     srcs = glob(["**/*.rb"]),
     args = [
+        "--autocorrect",
         "--config=rb/.rubocop.yml",
         "rb/",
     ],
     data = [".rubocop.yml"],
     main = "@bundle//:bin/rubocop",
-    tags = ["local"],
+    tags = ["no-sandbox"],
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
@@ -198,8 +199,9 @@ rb_binary(
     args = [
         "-rselenium-webdriver",
         "-rselenium/devtools",
+        "-Irb/lib",
     ],
-    main = "@bundle//:bin/pry",
+    main = "@bundle//:bin/irb",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",

@@ -18,7 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -28,10 +28,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.util.Map;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -80,19 +79,26 @@ public class ChromeDriver extends ChromiumDriver {
    * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(generateExecutor(service, options), options, ChromeOptions.CAPABILITY);
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  public ChromeDriver(
+      ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
+    super(generateExecutor(service, options, clientConfig), options, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  private static ChromeDriverCommandExecutor generateExecutor(ChromeDriverService service, ChromeOptions options) {
+  private static ChromeDriverCommandExecutor generateExecutor(
+      ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
+    Require.nonNull("Driver clientConfig", clientConfig);
     if (service.getExecutable() == null) {
       String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
-    return new ChromeDriverCommandExecutor(service);
+    return new ChromeDriverCommandExecutor(service, clientConfig);
   }
 
   @Beta
@@ -101,15 +107,15 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public ChromeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(new AddHasCasting().getAdditionalCommands())
-        .putAll(new AddHasCdp().getAdditionalCommands())
-        .build();
+          .putAll(new AddHasCasting().getAdditionalCommands())
+          .putAll(new AddHasCdp().getAdditionalCommands())
+          .build();
     }
   }
 }

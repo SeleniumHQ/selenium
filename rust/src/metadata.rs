@@ -17,6 +17,7 @@
 
 use std::fs;
 use std::fs::File;
+
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -68,7 +69,7 @@ fn new_metadata(log: &Logger) -> Metadata {
 }
 
 pub fn get_metadata(log: &Logger) -> Metadata {
-    let metadata_path = get_cache_folder().join(METADATA_FILE);
+    let metadata_path = get_metadata_path();
     log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
@@ -153,4 +154,15 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
         serde_json::to_string_pretty(metadata).unwrap(),
     )
     .unwrap();
+}
+
+pub fn clear_metadata(log: &Logger) {
+    let metadata_path = get_metadata_path();
+    log.debug(format!(
+        "Deleting metadata file {}",
+        metadata_path.display()
+    ));
+    fs::remove_file(metadata_path).unwrap_or_else(|err| {
+        log.warn(format!("Error deleting metadata file: {}", err));
+    });
 }

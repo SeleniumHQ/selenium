@@ -207,27 +207,30 @@ Build targets:
 | `bazel build //rb:selenium-webdriver`       | Build selenium-webdriver Ruby gem                 |
 | `bazel run //rb:selenium-devtools-release`  | Build and push selenium-devtools gem to RubyGems  |
 | `bazel run //rb:selenium-webdriver-release` | Build and push selenium-webdriver gem to RubyGems |
-| `bazel run //rb:console`                    | Start Pry REPL with all gems loaded               |
+| `bazel run //rb:console`                    | Start REPL with all gems loaded                   |
 | `bazel run //rb:docs`                       | Generate YARD docs                                |
-| `bazel run //rb:lint`                       | Run RuboCop linter                                |
 
 Test targets:
 
-| Command                                                                              | Description                                             |
-|--------------------------------------------------------------------------------------|---------------------------------------------------------|
-| `bazel test //rb/spec/...`                                                           | Run both unit and integration tests using Chrome        |
-| `bazel test //rb/spec/integration/...`                                               | Run integration tests using Chrome                      |
-| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using Firefox                     |
-| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using Chrome and Selenium Server  |
-| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using Firefox and Selenium Server |
-| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                          |
+| Command                                                                              | Description                                    |
+|--------------------------------------------------------------------------------------|------------------------------------------------|
+| `bazel test //rb/...`                                                                | Run unit, integration tests (Chrome) and lint  |
+| `bazel test //rb:lint`                                                               | Run RuboCop linter                             |
+| `bazel test //rb/spec/...`                                                           | Run unit and integration tests (Chrome)        |
+| `bazel test --test_size_filters large //rb/...`                                      | Run integration tests using (Chrome)           |
+| `bazel test //rb/spec/integration/...`                                               | Run integration tests using (Chrome)           |
+| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using (Firefox)          |
+| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using (Chrome and Grid)  |
+| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using (Firefox and Grid) |
+| `bazel test --test_size_filters small //rb/...`                                      | Run unit tests                                 |
+| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                 |
 
 Suffix `...` tells Bazel to run all the test targets. They are conveniently named by test file name with `_spec.rb` removed so you can run them individually:
 
 | Test file                                                      | Test target                                              |
 |----------------------------------------------------------------|----------------------------------------------------------|
 | `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
-| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
+| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`                | `//rb/spec/unit/selenium/webdriver:proxy`                |
 
 Supported browsers:
 
@@ -268,6 +271,16 @@ To run with a specific version of Ruby you can change the version in `rb/ruby_ve
 echo 'RUBY_VERSION = "<X.Y.Z>"' > rb/ruby_version.bzl
 ```
 
+If you want to debug code in tests, you can do it via [`debug`](https://github.com/ruby/debug) gem:
+
+1. Add `binding.break` to the code where you want the debugger to start.
+2. Run `bazel test --test_output streamed <test>`. Streaming output is not required, but will clearly say when debugger starts.
+3. When debugger starts, run the following in a separate terminal to connect to debugger:
+
+```sh
+bazel-selenium/external/bundle/bin/rdbg -A
+```
+
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
 1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE.
@@ -298,6 +311,18 @@ More information about running Selenium's .NET tests can be found in this [READM
 
 </details>
 
+#### Rust
+<details>
+<summary>Click to see Rust Build Steps</summary>
+
+Targets:
+
+| Command                               | Description                         |
+|---------------------------------------|-------------------------------------|
+| `bazel build //rust:selenium-manager` | Build selenium-manager binary       |
+| `bazel test //rust/...`               | Run both unit and integration tests |
+
+</details>
 
 ### Build Details
 

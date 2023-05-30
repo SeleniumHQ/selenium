@@ -23,11 +23,6 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'
-        MISSING_TEXT = <<~ERROR
-          Unable to find IEDriverServer. Please download the server from
-          https://www.selenium.dev/downloads/ and place it somewhere on your PATH.
-          More info at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver.
-        ERROR
         SHUTDOWN_SUPPORTED = true
 
         private

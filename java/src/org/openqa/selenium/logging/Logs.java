@@ -17,25 +17,22 @@
 
 package org.openqa.selenium.logging;
 
+import java.util.Set;
 import org.openqa.selenium.Beta;
 
-import java.util.Set;
-
-/**
- * Interface for providing logs.
- */
+/** Interface for providing logs. */
 @Beta
 public interface Logs {
 
   /**
    * Fetches available log entries for the given log type.
    *
-   * Note that log buffers are reset after each call, meaning that available log
-   * entries correspond to those entries not yet returned for a given log type.
-   * In practice, this means that this call will return the available log entries
-   * since the last call, or from the start of the session.
+   * <p>Note that log buffers are reset after each call, meaning that available log entries
+   * correspond to those entries not yet returned for a given log type. In practice, this means that
+   * this call will return the available log entries since the last call, or from the start of the
+   * session.
    *
-   * For more info on enabling logging, look at {@link LoggingPreferences}.
+   * <p>For more info on enabling logging, look at {@link LoggingPreferences}.
    *
    * @param logType The log type.
    * @return Available log entries for the specified log type.

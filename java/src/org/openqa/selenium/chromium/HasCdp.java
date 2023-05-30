@@ -17,23 +17,20 @@
 
 package org.openqa.selenium.chromium;
 
+import java.util.Map;
 import org.openqa.selenium.Beta;
 
-import java.util.Map;
-
-/**
- * Used by classes to indicate that they can execute Command DevTools commands.
- */
+/** Used by classes to indicate that they can execute Command DevTools commands. */
 @Beta
 public interface HasCdp {
 
   /**
-   * Execute a Chrome DevTools Protocol command and get returned result. The
-   * command and command args should follow
-   * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
+   * Execute a Chrome DevTools Protocol command and get returned result. The command and command
+   * args should follow <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
    * devtools protocol domains/commands</a>.
    *
-   * It is strongly encouraged to use {@link org.openqa.selenium.devtools.DevTools} API instead of this
+   * <p>It is strongly encouraged to use {@link org.openqa.selenium.devtools.DevTools} API instead
+   * of this
    *
    * @param commandName the command to execute with Chrome Dev Tools.
    * @param parameters any information needed to execute the Dev Tools command.

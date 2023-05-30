@@ -21,10 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -34,10 +37,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
-
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.List;
 
 class LocatingElementListHandlerTest {
 
@@ -53,8 +52,8 @@ class LocatingElementListHandlerTest {
 
     LocatingElementListHandler handler = new LocatingElementListHandler(locator);
     List<WebElement> proxy =
-        (List<WebElement>) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {List.class}, handler);
+        (List<WebElement>)
+            Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {List.class}, handler);
 
     proxy.get(1).sendKeys("Fishy");
     assertThat(proxy).hasSize(2);

@@ -34,6 +34,5 @@ public class NullTracer implements Tracer {
   }
 
   @Override
-  public void setOpenTelemetryContext(Context context) {
-  }
+  public void setOpenTelemetryContext(Context context) {}
 }

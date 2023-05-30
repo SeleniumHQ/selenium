@@ -21,13 +21,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-
-import org.openqa.selenium.internal.Require;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.openqa.selenium.internal.Require;
 
 public class MapConfig implements Config {
 
@@ -42,9 +40,13 @@ public class MapConfig implements Config {
         continue;
       }
 
-      ImmutableMap<String, Object> values = ((Map<?, ?>) entry.getValue()).entrySet().stream()
-        .filter(e -> e.getKey() instanceof String)
-        .collect(ImmutableMap.toImmutableMap(e -> String.valueOf(e.getKey()), Map.Entry::getValue));
+      ImmutableMap<String, Object> values =
+          ((Map<?, ?>) entry.getValue())
+              .entrySet().stream()
+                  .filter(e -> e.getKey() instanceof String)
+                  .collect(
+                      ImmutableMap.toImmutableMap(
+                          e -> String.valueOf(e.getKey()), Map.Entry::getValue));
 
       builder.put(entry.getKey(), values);
     }

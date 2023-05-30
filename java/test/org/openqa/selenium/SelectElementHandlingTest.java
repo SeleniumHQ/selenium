@@ -20,11 +20,10 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.List;
 
 class SelectElementHandlingTest extends JupiterTestBase {
 
@@ -121,7 +120,8 @@ class SelectElementHandlingTest extends JupiterTestBase {
   @Test
   void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
     driver.get(pages.selectPage);
-    WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
+    WebElement option =
+        driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
     option.click();
     assertThat(option.isSelected()).isTrue();
   }

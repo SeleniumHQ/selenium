@@ -237,7 +237,9 @@ def server(request):
         )
     except Exception:
         print("Starting the Selenium server")
-        process = subprocess.Popen(["java", "-jar", _path, "standalone", "--port", "4444"])
+        process = subprocess.Popen(
+            ["java", "-jar", _path, "standalone", "--port", "4444", "--selenium-manager", "true"]
+        )
         print(f"Selenium server running as process: {process.pid}")
         assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
         print("Selenium server is ready")

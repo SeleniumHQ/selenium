@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.util.logging.Logger;
 
 public class HttpTracing {
 
@@ -34,7 +33,9 @@ public class HttpTracing {
     Require.nonNull("Tracer", tracer);
     Require.nonNull("Request", request);
 
-    return tracer.getPropagator().extractContext(tracer.getCurrentContext(), request, (req, key) -> req.getHeader(key));
+    return tracer
+        .getPropagator()
+        .extractContext(tracer.getCurrentContext(), request, (req, key) -> req.getHeader(key));
   }
 
   public static Span newSpanAsChildOf(Tracer tracer, HttpRequest request, String name) {
@@ -56,7 +57,10 @@ public class HttpTracing {
     Require.nonNull("Request", request);
 
     StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
-    LOG.fine(String.format("Injecting %s into %s at %s:%d", request, context, caller.getClassName(), caller.getLineNumber()));
+    LOG.fine(
+        String.format(
+            "Injecting %s into %s at %s:%d",
+            request, context, caller.getClassName(), caller.getLineNumber()));
 
     tracer.getPropagator().inject(context, request, (req, key, value) -> req.setHeader(key, value));
   }

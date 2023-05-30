@@ -20,9 +20,7 @@ package org.openqa.selenium.devtools.idealized.target.model;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
-/**
- * Unique identifier of attached debugging session.
- */
+/** Unique identifier of attached debugging session. */
 public class SessionID {
 
   private final String sessionID;

@@ -42,7 +42,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive", "ie"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
     },
     "safari": {
         "deps": ["//java/src/org/openqa/selenium/safari"],
@@ -52,7 +52,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive", "safari"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
     },
 }
 
@@ -67,6 +67,11 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     data = kwargs["data"] if "data" in kwargs else []
     jvm_flags = kwargs["jvm_flags"] if "jvm_flags" in kwargs else []
     tags = kwargs["tags"] if "tags" in kwargs else []
+
+    remote = False
+    if "selenium-remote" in tags:
+        tags.remove("selenium-remote")
+        remote = True
 
     stripped_args = dict(**kwargs)
     stripped_args.pop("data", None)
@@ -98,7 +103,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             )
         all_tests.append(":%s" % test)
 
-        if "selenium-remote" in tags:
+        if remote:
             java_junit5_test(
                 name = "%s-remote" % test,
                 test_class = test_class,

@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-
-import org.openqa.selenium.WebDriverException;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import org.openqa.selenium.WebDriverException;
 
 class W3CHandshakeResponse implements HandshakeResponse {
 
@@ -54,9 +52,11 @@ class W3CHandshakeResponse implements HandshakeResponse {
       response.setStatus(
           new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
 
-      Class<? extends WebDriverException> type = new ErrorCodes().getExceptionType((String) rawError);
+      Class<? extends WebDriverException> type =
+          new ErrorCodes().getExceptionType((String) rawError);
       try {
-        WebDriverException exception = type.getConstructor(String.class).newInstance((String) rawMessage);
+        WebDriverException exception =
+            type.getConstructor(String.class).newInstance((String) rawMessage);
         exception.addInfo("remote stacktrace", (String) rawStackTrace);
         response.setValue(exception);
       } catch (ReflectiveOperationException e) {
@@ -72,16 +72,13 @@ class W3CHandshakeResponse implements HandshakeResponse {
   @Override
   public Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler() {
     return tuple -> {
-      if (tuple.getData().containsKey("status")) {
-        return null;
-      }
-
       Object rawValue = tuple.getData().get("value");
       if (!(rawValue instanceof Map)) {
         return null;
       }
 
-      @SuppressWarnings("unchecked") Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
+      @SuppressWarnings("unchecked")
+      Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
       Object rawSessionId = rawMap.get("sessionId");
       Object rawCapabilities = rawMap.get("capabilities");
 
@@ -96,9 +93,8 @@ class W3CHandshakeResponse implements HandshakeResponse {
         }
       }
 
-      @SuppressWarnings("unchecked") Map<String, Object>
-          caps =
-          (Map<String, Object>) rawCapabilities;
+      @SuppressWarnings("unchecked")
+      Map<String, Object> caps = (Map<String, Object>) rawCapabilities;
 
       String sessionId = (String) rawSessionId;
       return new ProtocolHandshake.Result(Dialect.W3C, sessionId, caps);
