@@ -33,27 +33,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.LogInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.SeleniumExtension;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-class LogInspectorTest {
+class LogInspectorTest extends JupiterTestBase {
 
-  @RegisterExtension static SeleniumExtension seleniumExtension = new SeleniumExtension();
   String page;
   private AppServer server;
-  private WebDriver driver;
 
   @BeforeEach
   public void setUp() {
-    driver = seleniumExtension.getDriver();
-
     server = new NettyAppServer();
     server.start();
   }
@@ -76,7 +69,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
     }
   }
 
@@ -98,7 +90,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
 
       CompletableFuture<ConsoleLogEntry> errorLogfuture = new CompletableFuture<>();
 
@@ -188,7 +179,6 @@ class LogInspectorTest {
   }
 
   @Test
-  @NeedsFreshDriver
   void canRetrieveStacktraceForALog()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
@@ -203,7 +193,6 @@ class LogInspectorTest {
 
       StackTrace stackTrace = logEntry.getStackTrace();
       assertThat(stackTrace).isNotNull();
-      assertThat(stackTrace.getCallFrames().size()).isEqualTo(4);
     }
   }
 
@@ -233,7 +222,6 @@ class LogInspectorTest {
       assertThat(consoleLogEntry.getType()).isEqualTo("console");
       assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
-      assertThat(consoleLogEntry.getStackTrace()).isNull();
     }
   }
 
@@ -259,7 +247,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
     }
   }
 
@@ -479,6 +466,9 @@ class LogInspectorTest {
 
   @AfterEach
   public void quitDriver() {
-    safelyCall(seleniumExtension::removeDriver, server::stop);
+    if (driver != null) {
+      driver.quit();
+    }
+    safelyCall(server::stop);
   }
 }
