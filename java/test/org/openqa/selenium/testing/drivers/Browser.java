@@ -63,6 +63,8 @@ public enum Browser {
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
 
+      options.setCapability("webSocketUrl", true);
+
       return options;
     }
   },
@@ -91,6 +93,8 @@ public enum Browser {
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }

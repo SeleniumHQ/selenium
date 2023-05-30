@@ -18,38 +18,25 @@
 package org.openqa.selenium.bidi;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.Collections;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-class BiDiSessionTest {
-
-  private FirefoxDriver driver;
+class BiDiSessionTest extends JupiterTestBase {
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void shouldBeAbleToCreateABiDiSession() {
-    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
-    // Enable BiDi
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-
-    BiDi biDi = driver.getBiDi();
+    BiDi biDi = ((HasBiDi) driver).getBiDi();
 
     BiDiSessionStatus status =
         biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
     assertThat(status).isNotNull();
-    assertThat(status.getMessage()).isEqualTo("Session already started");
-  }
-
-  @AfterEach
-  public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
+    assertThat(status.getMessage()).isNotEmpty();
   }
 }
