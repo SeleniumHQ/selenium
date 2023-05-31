@@ -137,16 +137,16 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         public void ShouldMoveToLocationAndClick()
         {
-            driver.Url = mouseInteractionPage;
+            driver.Url = javascriptPage;
+            IWebElement element = driver.FindElement(By.Id("clickField"));
+            var location = element.Location;
 
             Actions actionProvider = new Actions(driver);
-            IAction moveAndClick = actionProvider.MoveToLocation(70,60).Click().Build();
+            IAction moveAndClick = actionProvider.MoveToLocation(location.X,location.Y).Click().Build();
 
             moveAndClick.Perform();
 
-            IWebElement element = driver.FindElement(By.Id("greeting"));
-
-            Assert.AreEqual("Success!", element.Text);
+            Assert.AreEqual("Clicked", element.GetDomProperty("value"));
         }
 
         [Test]
