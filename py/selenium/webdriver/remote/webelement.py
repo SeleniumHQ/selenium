@@ -236,7 +236,6 @@ class WebElement(BaseWebElement):
     def shadow_root(self) -> ShadowRoot:
         """Returns a shadow root of the element if there is one or an error.
         Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
-        Previous versions of browsers will throw an assertion exception.
 
         :Returns:
           - ShadowRoot object or
