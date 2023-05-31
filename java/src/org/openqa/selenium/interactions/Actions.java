@@ -353,9 +353,9 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
-   * provided are outside the viewport (the mouse will end up outside the browser window) then the
-   * viewport is scrolled to match.
+   * Moves the mouse from its current position (or 0,0) by the given offset. If the final
+   * coordinates of the move are outside the viewport (the mouse will end up outside the browser window),
+   * an exception is raised.
    *
    * @param xOffset horizontal offset. A negative value means moving the mouse left.
    * @param yOffset vertical offset. A negative value means moving the mouse up.
@@ -369,17 +369,22 @@ public class Actions {
             .createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
   }
 
-  public Actions moveToLocation(int xOffset, int yOffset) {
+  /**
+   * Moves the mouse to provided coordinates on screen regardless of starting position of
+   * the mouse. If the coordinates
+   * provided are outside the viewport (the mouse will end up outside the browser window),
+   * an exception is raised.
+   *
+   * @param xCoordinate positive pixel value along horizontal axis in viewport. Numbers increase going right.
+   * @param yCoordinate positive pixel value along vertical axis in viewport. Numbers increase going down.
+   * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
+   *     boundaries.
+   */
+  public Actions moveToLocation(int xCoordinate, int yCoordinate) {
     return tick(
       getActivePointer()
-        .createPointerMove(Duration.ofMillis(250), Origin.viewport(), xOffset, yOffset));
-  }
-
-  public Actions moveToLocation(Point point) {
-    return tick(
-      getActivePointer()
-        .createPointerMove(
-          Duration.ofMillis(250), Origin.viewport(), point.getX(), point.getY()));
+        .createPointerMove(Duration.ofMillis(250), Origin.viewport(), xCoordinate, yCoordinate));
   }
 
   /**
