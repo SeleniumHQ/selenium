@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.Interactions
 
             moveAndClick.Perform();
 
-            Assert.AreEqual("Clicked", element.GetDomProperty("value"));
+            WaitFor(ValueToBe(element, "Clicked"), "Value was not expected value");
         }
 
         [Test]
@@ -458,6 +458,11 @@ namespace OpenQA.Selenium.Interactions
         private Func<bool> TitleToBe(string desiredTitle)
         {
             return () => driver.Title == desiredTitle;
+        }
+
+        private Func<bool> ValueToBe(IWebElement element, string desiredValue)
+        {
+            return () => element.GetDomProperty("value") == desiredValue;
         }
 
         private Func<bool> ElementTextToEqual(IWebElement element, string text)
