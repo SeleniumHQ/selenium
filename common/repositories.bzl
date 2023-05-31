@@ -72,8 +72,8 @@ exports_files(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1121435/chrome-linux.zip",
-        sha256 = "10b4f9e1d4c5d3985b2127a8d771f6f9aacb2b49a2104bd72e0627ffe713718d",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1135542/chrome-linux.zip",
+        sha256 = "2f81ebe4389d7ca6f4e0b9b4065b87e163a94f710a12cef77033c4cb90b8be94",
         build_file_content = """
 filegroup(
     name = "files",
@@ -89,22 +89,22 @@ exports_files(
 
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1121435/chrome-mac.zip",
-        sha256 = "472db714979bf7148a629a13f2c561a919c29c129dfbd697824bba9ea8429042",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1135542/chrome-mac.zip",
+        sha256 = "9a3b8c4d26028bb0bfaea5176703c093a812d36f93dd2c5b795d5addc6c4ce2d",
         strip_prefix = "chrome-mac",
         build_file_content = "exports_files([\"Chromium.app\"])",
     )
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip",
-        sha256 = "126151e17b5e42a39d6945f1df2b675d08ad2c79b469a84ecca3aa32f9b9a127",
+        url = "https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip",
+        sha256 = "a7787ef8b139170cab4abfca4a0284fd5d006bfd979624b4af25b64d583a6f44",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_mac64.zip",
-        sha256 = "26c6be21536fe91e8972b5ddf1e8fccee6f07792f74270c599d0457a663d6dc1",
+        url = "https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_mac64.zip",
+        sha256 = "6abdc9d358c2bc4668bef7b23048de2a9dbd3ad82cfbc6dfe322e74d4cff1650",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
