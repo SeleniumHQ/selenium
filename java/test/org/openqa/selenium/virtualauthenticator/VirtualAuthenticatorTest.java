@@ -79,14 +79,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
     // over HTTPS, the `registerCredential` method is missing. Let's
     // make the assumption that the server being used is running on
     // `localhost` and rewrite URLs from there.
-    URL url = new URL(appServer.whereIs("virtual-authenticator.html"));
-    String localUrl = new URL(
-      url.getProtocol(),
-      "localhost",
-      url.getPort(),
-      url.getFile()).toString();
-
-    driver.get(localUrl);
+    driver.get(toLocalUrl(appServer.whereIs("virtual-authenticator.html")));
   }
 
   private void createRKEnabledU2FAuthenticator() {
