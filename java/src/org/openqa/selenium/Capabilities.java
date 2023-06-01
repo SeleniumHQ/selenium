@@ -71,7 +71,7 @@ public interface Capabilities extends Serializable {
 
   /**
    * @param capabilityName The capability to check.
-   * @return Whether or not the value is not null and not false.
+   * @return Whether the value is not null and not false.
    * @see org.openqa.selenium.remote.CapabilityType
    */
   default boolean is(String capabilityName) {

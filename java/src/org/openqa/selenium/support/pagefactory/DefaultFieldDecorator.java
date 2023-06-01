@@ -33,7 +33,7 @@ import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
 
 /**
- * Default decorator for use with PageFactory. Will decorate 1) all of the WebElement fields and 2)
+ * Default decorator for use with PageFactory. Will decorate 1) all the WebElement fields and 2)
  * List&lt;WebElement&gt; fields that have {@literal @FindBy}, {@literal @FindBys}, or
  * {@literal @FindAll} annotation with a proxy that locates the elements using the passed in
  * ElementLocatorFactory.
