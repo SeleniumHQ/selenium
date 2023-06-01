@@ -23,13 +23,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.WebDriver;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
 
 @Tag("UnitTests")
 class DecoratedNavigationTest {

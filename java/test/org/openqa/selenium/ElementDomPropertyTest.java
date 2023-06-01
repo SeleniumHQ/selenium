@@ -18,16 +18,11 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.List;
 
 class ElementDomPropertyTest extends JupiterTestBase {
 
@@ -84,14 +79,12 @@ class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
   public void testShouldGetClassPropertiesOfAnElement() {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.cssSelector(".nameA"));
     assertThat(heading.getDomProperty("class")).isNull();
     assertThat(heading.getDomProperty("className")).isEqualTo("nameA nameBnoise   nameC");
-    assertThat(heading.getDomProperty("classList")).contains("nameA nameBnoise   nameC");
+    assertThat(heading.getDomProperty("classList")).isEqualTo("[nameA, nameBnoise, nameC]");
   }
 
   @Test

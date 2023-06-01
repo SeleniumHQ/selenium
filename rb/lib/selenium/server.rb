@@ -254,7 +254,7 @@ module Selenium
         args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
         cp = WebDriver::ChildProcess.build(*server_command)
-        WebDriver.logger.debug("Executing Process #{server_command}")
+        WebDriver.logger.debug("Executing Process #{server_command}", id: :server)
 
         if @log.is_a?(String)
           cp.io = @log

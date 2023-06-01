@@ -20,26 +20,24 @@ package org.openqa.selenium.net;
 /**
  * Identifies the ephemeral port range for a given environment.
  *
- * When trying to locate a "random" free port, it is important
- * to not allocate within the ephemeral range, since these
- * can be allocated at any time, and the probability of
- * race conditions increases as the number of recently used ports
- * increases, something which is quite common when running the
- * webdriver tests.
- *
+ * <p>When trying to locate a "random" free port, it is important to not allocate within the
+ * ephemeral range, since these can be allocated at any time, and the probability of race conditions
+ * increases as the number of recently used ports increases, something which is quite common when
+ * running the webdriver tests.
  */
-public interface EphemeralPortRangeDetector
-{
+public interface EphemeralPortRangeDetector {
 
   /**
    * Returns the first port in the ephemeral range
+   *
    * @return The first ephemeral port
    */
   int getLowestEphemeralPort();
+
   /**
    * Returns the last port that could be searched for free ports
+   *
    * @return The first port that may be free
    */
   int getHighestEphemeralPort();
-
 }

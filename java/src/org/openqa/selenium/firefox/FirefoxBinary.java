@@ -23,10 +23,6 @@ import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.ExecutableFinder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,12 +34,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.ExecutableFinder;
 
 public class FirefoxBinary {
 
-  /**
-   * Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease
-   */
+  /** Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease */
   public enum Channel {
     ESR("esr"),
     RELEASE("release"),
@@ -71,7 +68,8 @@ public class FirefoxBinary {
       final String lcName = name.toLowerCase();
       return stream(Channel.values())
           .filter(ch -> ch.name.equals(lcName))
-          .findFirst().orElseThrow(() -> new WebDriverException("Unrecognized channel: " + name));
+          .findFirst()
+          .orElseThrow(() -> new WebDriverException("Unrecognized channel: " + name));
     }
   }
 
@@ -91,8 +89,10 @@ public class FirefoxBinary {
       return;
     }
 
-    throw new WebDriverException("Cannot find firefox binary in PATH. " +
-                                 "Make sure firefox is installed. OS appears to be: " + Platform.getCurrent());
+    throw new WebDriverException(
+        "Cannot find firefox binary in PATH. "
+            + "Make sure firefox is installed. OS appears to be: "
+            + Platform.getCurrent());
   }
 
   public FirefoxBinary(Channel channel) {
@@ -103,15 +103,25 @@ public class FirefoxBinary {
         return;
       } else {
         throw new WebDriverException(
-          "Firefox executable specified by system property " + FirefoxDriver.SystemProperty.BROWSER_BINARY +
-          " does not belong to channel '" + channel + "', it appears to be '" + systemBinary.getChannel() + "'");
+            "Firefox executable specified by system property "
+                + FirefoxDriver.SystemProperty.BROWSER_BINARY
+                + " does not belong to channel '"
+                + channel
+                + "', it appears to be '"
+                + systemBinary.getChannel()
+                + "'");
       }
     }
 
-    executable = locateFirefoxBinariesFromPlatform()
-        .filter(e -> e.getChannel() == channel)
-        .findFirst().orElseThrow(() -> new WebDriverException(
-            String.format("Cannot find firefox binary for channel '%s' in PATH", channel)));
+    executable =
+        locateFirefoxBinariesFromPlatform()
+            .filter(e -> e.getChannel() == channel)
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new WebDriverException(
+                        String.format(
+                            "Cannot find firefox binary for channel '%s' in PATH", channel)));
   }
 
   public FirefoxBinary(File pathToFirefoxBinary) {
@@ -151,14 +161,12 @@ public class FirefoxBinary {
    * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
    * be found.
    */
-   static Executable locateFirefoxBinaryFromSystemProperty() {
+  static Executable locateFirefoxBinaryFromSystemProperty() {
     String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
-    if (binaryName == null)
-      return null;
+    if (binaryName == null) return null;
 
     File binary = new File(binaryName);
-    if (binary.exists() && !binary.isDirectory())
-      return new Executable(binary);
+    if (binary.exists() && !binary.isDirectory()) return new Executable(binary);
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
@@ -174,29 +182,31 @@ public class FirefoxBinary {
     }
 
     binary = new File(binaryName);
-    if (binary.exists())
-      return new Executable(binary);
+    if (binary.exists()) return new Executable(binary);
 
     throw new WebDriverException(
-      String.format("'%s' property set, but unable to locate the requested binary: %s",
-                    FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
+        String.format(
+            "'%s' property set, but unable to locate the requested binary: %s",
+            FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
   }
 
-  /**
-   * Locates the firefox binary by platform.
-   */
+  /** Locates the firefox binary by platform. */
   private static Stream<Executable> locateFirefoxBinariesFromPlatform() {
     List<Executable> executables = new ArrayList<>();
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
-      executables.addAll(Stream.of("Mozilla Firefox\\firefox.exe",
-                                   "Firefox Developer Edition\\firefox.exe",
-                                   "Nightly\\firefox.exe")
-          .map(FirefoxBinary::getPathsInProgramFiles)
-          .flatMap(List::stream)
-          .map(File::new).filter(File::exists)
-          .map(Executable::new).collect(toList()));
+      executables.addAll(
+          Stream.of(
+                  "Mozilla Firefox\\firefox.exe",
+                  "Firefox Developer Edition\\firefox.exe",
+                  "Nightly\\firefox.exe")
+              .map(FirefoxBinary::getPathsInProgramFiles)
+              .flatMap(List::stream)
+              .map(File::new)
+              .filter(File::exists)
+              .map(Executable::new)
+              .collect(toList()));
 
     } else if (current.is(MAC)) {
       // system
@@ -267,13 +277,16 @@ public class FirefoxBinary {
 
   private static String getEnvVarPath(final String envVar, final String defaultValue) {
     return getEnvVarIgnoreCase(envVar)
-        .map(File::new).filter(File::exists).map(File::getAbsolutePath)
+        .map(File::new)
+        .filter(File::exists)
+        .map(File::getAbsolutePath)
         .orElseGet(() -> new File(defaultValue).getAbsolutePath());
   }
 
   private static Optional<String> getEnvVarIgnoreCase(String var) {
     return System.getenv().entrySet().stream()
         .filter(e -> e.getKey().equalsIgnoreCase(var))
-        .findFirst().map(Map.Entry::getValue);
+        .findFirst()
+        .map(Map.Entry::getValue);
   }
 }

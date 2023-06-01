@@ -54,7 +54,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
+pub const REQUEST_TIMEOUT_SEC: u64 = 180; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -519,12 +519,12 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
-    let client_builder = Client::builder()
+    let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
-        Proxy::all(proxy)?;
+        client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
     Ok(client_builder.build().unwrap_or_default())
 }

@@ -17,51 +17,55 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PrefixedRouteTest {
 
   @Test
   void pathWithoutPrefixIsNotMatched() {
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
+    Route route =
+        Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cake"))).isFalse();
   }
 
   @Test
   void pathWithPrefixIsMatched() {
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
+    Route route =
+        Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese/cake"))).isTrue();
   }
 
   @Test
   void pathWhichCoincidentallyStartsWithThePrefixIsNotMatched() {
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
+    Route route =
+        Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheeseandpeas"))).isFalse();
   }
 
   @Test
   void pathWhichIsJustThePrefixMatches() {
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
+    Route route =
+        Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese"))).isTrue();
   }
 
   @Test
   void pathWhichIsJustThePrefixAndATrailingSlashMatches() {
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
+    Route route =
+        Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese/"))).isTrue();
   }
@@ -71,12 +75,17 @@ class PrefixedRouteTest {
     AtomicReference<String> path = new AtomicReference<>();
     AtomicReference<List<?>> parts = new AtomicReference<>();
 
-    Route route = Route.prefix("/cheese").to(Route.matching(req -> true)
-      .to(() -> req -> {
-        path.set(req.getUri());
-        parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
-        return new HttpResponse();
-      }));
+    Route route =
+        Route.prefix("/cheese")
+            .to(
+                Route.matching(req -> true)
+                    .to(
+                        () ->
+                            req -> {
+                              path.set(req.getUri());
+                              parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
+                              return new HttpResponse();
+                            }));
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
@@ -89,14 +98,20 @@ class PrefixedRouteTest {
     AtomicReference<String> path = new AtomicReference<>();
     AtomicReference<List<?>> parts = new AtomicReference<>();
 
-    Route route = Route.prefix("/cheese").to(
-      Route.prefix("/and").to(
-        Route.matching(req -> true)
-          .to(() -> req -> {
-            path.set(req.getUri());
-            parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
-            return new HttpResponse();
-          })));
+    Route route =
+        Route.prefix("/cheese")
+            .to(
+                Route.prefix("/and")
+                    .to(
+                        Route.matching(req -> true)
+                            .to(
+                                () ->
+                                    req -> {
+                                      path.set(req.getUri());
+                                      parts.set(
+                                          (List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
+                                      return new HttpResponse();
+                                    })));
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 

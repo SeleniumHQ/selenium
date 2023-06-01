@@ -18,9 +18,8 @@
 package org.openqa.selenium.ie;
 
 public enum ElementScrollBehavior {
-
-  TOP (0),
-  BOTTOM (1),
+  TOP(0),
+  BOTTOM(1),
   ;
 
   private int value;

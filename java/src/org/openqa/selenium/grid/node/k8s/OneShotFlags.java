@@ -17,33 +17,32 @@
 
 package org.openqa.selenium.grid.node.k8s;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+
 import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
+import java.util.Collections;
+import java.util.Set;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
-
-import java.util.Collections;
-import java.util.Set;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 
 @AutoService(HasRoles.class)
 public class OneShotFlags implements HasRoles {
 
   @Parameter(
-    names = {"--driver-name"},
-    description = "Name of the browser to use (optional)")
+      names = {"--driver-name"},
+      description = "Name of the browser to use (optional)")
   @ConfigValue(section = "k8s", name = "driver_name", example = "firefox")
   private String driverBinary;
 
   @Parameter(
-    names = {"--stereotype"},
-    description = "Stringified JSON representing browser stereotype (what to match against)")
+      names = {"--stereotype"},
+      description = "Stringified JSON representing browser stereotype (what to match against)")
   @ConfigValue(
-    section = "k8s",
-    name = "stereotype",
-    example = "\"{\\\"browserName\\\": \\\"firefox\\\"}\"")
+      section = "k8s",
+      name = "stereotype",
+      example = "\"{\\\"browserName\\\": \\\"firefox\\\"}\"")
   private String stereotype;
 
   @Override

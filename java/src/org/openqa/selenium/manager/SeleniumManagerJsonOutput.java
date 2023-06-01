@@ -20,74 +20,73 @@ import java.util.List;
 
 public class SeleniumManagerJsonOutput {
 
-    public List<Log> logs;
-    public Result result;
+  public List<Log> logs;
+  public Result result;
 
-    public List<Log> getLogs() {
-        return logs;
+  public List<Log> getLogs() {
+    return logs;
+  }
+
+  public void setLogs(List<Log> logs) {
+    this.logs = logs;
+  }
+
+  public Result getResult() {
+    return result;
+  }
+
+  public void setResult(Result result) {
+    this.result = result;
+  }
+
+  public static class Log {
+    public String level;
+    long timestamp;
+    public String message;
+
+    public String getLevel() {
+      return level;
     }
 
-    public void setLogs(List<Log> logs) {
-        this.logs = logs;
+    public void setLevel(String level) {
+      this.level = level;
     }
 
-    public Result getResult() {
-        return result;
+    public long getTimestamp() {
+      return timestamp;
     }
 
-    public void setResult(Result result) {
-        this.result = result;
+    public void setTimestamp(long timestamp) {
+      this.timestamp = timestamp;
     }
 
-    public static class Log {
-        public String level;
-        long timestamp;
-        public String message;
-
-        public String getLevel() {
-            return level;
-        }
-
-        public void setLevel(String level) {
-            this.level = level;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
-
-        public void setTimestamp(long timestamp) {
-            this.timestamp = timestamp;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+    public String getMessage() {
+      return message;
     }
 
-    public static class Result {
-        public int code;
-        public String message;
+    public void setMessage(String message) {
+      this.message = message;
+    }
+  }
 
-        public int getCode() {
-            return code;
-        }
+  public static class Result {
+    public int code;
+    public String message;
 
-        public void setCode(int code) {
-            this.code = code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+    public int getCode() {
+      return code;
     }
 
+    public void setCode(int code) {
+      this.code = code;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public void setMessage(String message) {
+      this.message = message;
+    }
+  }
 }

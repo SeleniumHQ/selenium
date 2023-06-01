@@ -22,12 +22,10 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
-
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
-
-import java.util.logging.Logger;
 
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {
 
@@ -75,15 +73,18 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     if (exporter == null) {
       System.setProperty("otel.traces.exporter", "none");
     }
-    OpenTelemetrySdk autoConfiguredSdk = AutoConfiguredOpenTelemetrySdk.builder()
-      .addTracerProviderCustomizer(((sdkTracerProviderBuilder, configProperties) -> sdkTracerProviderBuilder
-        .addSpanProcessor(SeleniumSpanExporter.getSpanProcessor())))
-      .build()
-      .getOpenTelemetrySdk();
+    OpenTelemetrySdk autoConfiguredSdk =
+        AutoConfiguredOpenTelemetrySdk.builder()
+            .addTracerProviderCustomizer(
+                ((sdkTracerProviderBuilder, configProperties) ->
+                    sdkTracerProviderBuilder.addSpanProcessor(
+                        SeleniumSpanExporter.getSpanProcessor())))
+            .build()
+            .getOpenTelemetrySdk();
 
     return new OpenTelemetryTracer(
-      autoConfiguredSdk.getTracer("default"),
-      autoConfiguredSdk.getPropagators().getTextMapPropagator());
+        autoConfiguredSdk.getTracer("default"),
+        autoConfiguredSdk.getPropagators().getTextMapPropagator());
   }
 
   private final Tracer tracer;
@@ -92,9 +93,8 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   public OpenTelemetryTracer(Tracer tracer, TextMapPropagator propagator) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.telemetryPropagator = new OpenTelemetryPropagator(
-      tracer,
-      Require.nonNull("Formatter", propagator));
+    this.telemetryPropagator =
+        new OpenTelemetryPropagator(tracer, Require.nonNull("Formatter", propagator));
   }
 
   @Override

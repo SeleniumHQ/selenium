@@ -25,7 +25,8 @@ module Selenium
       def load_version
         require "selenium/devtools/v#{@version}"
       rescue LoadError
-        Kernel.warn "Could not load selenium-devtools v#{@version}. Trying older versions."
+        WebDriver.logger.warn "Could not load selenium-devtools v#{@version}. Trying older versions.",
+                              id: :devtools
         load_older_version
       end
 
@@ -35,13 +36,19 @@ module Selenium
       def load_older_version
         load_old_version(@version - 1)
       rescue LoadError
-        load_old_version(@version - 2)
+        begin
+          load_old_version(@version - 2)
+        rescue LoadError
+          raise WebDriver::Error::WebDriverError,
+                'Could not find a valid devtools version; use a more recent version of selenium-devtools gem'
+        end
       end
 
       def load_old_version(version)
         require "selenium/devtools/v#{version}"
         self.version = version
-        Kernel.warn "Using selenium-devtools version v#{version}, some features may not work as expected."
+        msg = "Using selenium-devtools version v#{version}, some features may not work as expected."
+        WebDriver.logger.warn msg, id: :devtools
       end
     end
   end # DevTools

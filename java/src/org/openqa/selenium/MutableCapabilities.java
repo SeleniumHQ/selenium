@@ -17,13 +17,12 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 
 public class MutableCapabilities implements Capabilities {
 
@@ -49,17 +48,17 @@ public class MutableCapabilities implements Capabilities {
   }
 
   public MutableCapabilities(Map<String, ?> capabilities) {
-    capabilities.forEach((key, value) -> {
-      if (value != null) {
-        setCapability(key, value);
-      }
-    });
+    capabilities.forEach(
+        (key, value) -> {
+          if (value != null) {
+            setCapability(key, value);
+          }
+        });
   }
 
   /**
-   * Merge two {@link Capabilities} together and return the union of the two as a new
-   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
-   * {@code this}.
+   * Merge two {@link Capabilities} together and return the union of the two as a new {@link
+   * Capabilities} instance. Capabilities from {@code other} will override those in {@code this}.
    */
   @Override
   public MutableCapabilities merge(Capabilities other) {

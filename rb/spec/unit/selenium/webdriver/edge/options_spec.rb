@@ -169,6 +169,13 @@ module Selenium
           end
         end
 
+        describe 'uses webview2 for MS Edge Driver' do
+          it 'changes browserName to webview2' do
+            options.webview2!
+            expect(options.browser_name).to eq('webview2')
+          end
+        end
+
         describe '#add_preference' do
           it 'adds a preference' do
             options.add_preference(:foo, 'bar')
@@ -220,14 +227,14 @@ module Selenium
             expect(options.as_json).to eq('browserName' => 'MicrosoftEdge', 'ms:edgeOptions' => {})
           end
 
-          it 'errors when unrecognized capability is passed' do
+          it 'warns when unrecognized capability is passed' do
             expect {
               options.add_option(:foo, 'bar')
             }.to have_deprecated(:add_option)
 
             expect {
               options.as_json
-            }.to output(/WARN Selenium These options are not w3c compliant/).to_stdout_from_any_process
+            }.to have_warning(:w3c_options)
           end
 
           it 'returns added options' do

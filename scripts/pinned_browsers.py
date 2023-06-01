@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import codecs
 import hashlib
 import json
 import urllib3
@@ -77,7 +76,17 @@ def chrome():
         name = "linux_chrome",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"chrome-linux\\"])",
+        build_file_content = \"\"\"
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["chrome-linux/chrome"],
+)
+\"\"\",
     )
     """ % (linux, sha)
 
@@ -98,15 +107,26 @@ def chrome():
     raise RuntimeError("Cannot find stable chrome")
 
 def edge():
-    r = http.request('GET', 'https://msedgedriver.azureedge.net/LATEST_STABLE')
-    v = r.data.decode('utf-16').strip()
+    r = http.request('GET', 'https://edgeupdates.microsoft.com/api/products')
+    all_data = json.loads(r.data)
 
-    content = ""
+    edge = None
+    hash = None
+    version = None
 
-    edge = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % v
-    sha = calculate_hash(edge)
+    for data in all_data:
+        if not "Stable" == data.get("Product"):
+            continue
+        for release in data["Releases"]:
+            if "MacOS" == release.get("Platform"):
+                for artifact in release["Artifacts"]:
+                    if "pkg" == artifact["ArtifactName"]:
+                        edge = artifact["Location"]
+                        hash = artifact["Hash"]
+                        version = release["ProductVersion"]
 
-    content = content + """
+    if edge and hash:
+        return """
     pkg_archive(
         name = "mac_edge",
         url = "%s",
@@ -116,9 +136,9 @@ def edge():
         },
         build_file_content = "exports_files([\\"Edge.app\\"])",
     )
-    """ % (edge, sha, v)
+""" % (edge, hash.lower(), version)
 
-    return content
+    return ""
 
 def edgedriver():
     r = http.request('GET', 'https://msedgedriver.azureedge.net/LATEST_STABLE')
@@ -194,7 +214,17 @@ def firefox():
         name = "linux_firefox",
         url = "%s",
         sha256 = "%s",
-        build_file_content = "exports_files([\\"firefox\\"])",
+        build_file_content = \"\"\"
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["firefox/firefox"],
+)
+\"\"\",
     )
     """ % (linux, sha)
 

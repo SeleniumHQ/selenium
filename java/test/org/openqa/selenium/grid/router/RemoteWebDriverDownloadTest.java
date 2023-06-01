@@ -17,8 +17,27 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import com.google.common.collect.ImmutableMap;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,27 +60,6 @@ import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URL;
-import java.nio.file.Files;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 class RemoteWebDriverDownloadTest {
 
   private Server<?> server;
@@ -69,23 +67,26 @@ class RemoteWebDriverDownloadTest {
   private Capabilities capabilities;
   private final List<TearDownFixture> tearDowns = new LinkedList<>();
   private final ExecutorService executor =
-    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-
+      Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
   @BeforeEach
   public void setupServers() {
     Browser browser = Browser.detect();
     assert browser != null;
-    capabilities = new PersistentCapabilities(browser.getCapabilities())
-      .setCapability("se:downloadsEnabled", true);
+    capabilities =
+        new PersistentCapabilities(browser.getCapabilities())
+            .setCapability("se:downloadsEnabled", true);
 
-    Deployment deployment = DeploymentTypes.STANDALONE.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "selenium-manager = true\n" +
-        "enable-managed-downloads = true\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = true\n"
+                        + "enable-managed-downloads = true\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
@@ -150,7 +151,7 @@ class RemoteWebDriverDownloadTest {
       Map<String, Object> value = (Map<String, Object>) jsonResponse.get("value");
       String zippedContents = value.get("contents").toString();
       File downloadDir = Zip.unzipToTempDir(zippedContents, "download", "");
-      File downloadedFile = Optional.ofNullable(downloadDir.listFiles()).orElse(new File[]{})[0];
+      File downloadedFile = Optional.ofNullable(downloadDir.listFiles()).orElse(new File[] {})[0];
       String fileContent = String.join("", Files.readAllLines(downloadedFile.toPath()));
       assertThat(fileContent).isEqualTo("Hello, World!");
     } finally {

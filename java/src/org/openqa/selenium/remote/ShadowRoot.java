@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT;
+
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
-
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT;
 
 // Note: we want people to code against the SearchContext API, so we keep this class package private
 class ShadowRoot implements SearchContext, WrapsDriver {
@@ -45,17 +44,17 @@ class ShadowRoot implements SearchContext, WrapsDriver {
   @Override
   public List<WebElement> findElements(By by) {
     return parent.findElements(
-      this,
-      (using, value) -> FIND_ELEMENTS_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
-      by);
+        this,
+        (using, value) -> FIND_ELEMENTS_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
+        by);
   }
 
   @Override
   public WebElement findElement(By by) {
     return parent.findElement(
-      this,
-      (using, value) -> FIND_ELEMENT_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
-      by);
+        this,
+        (using, value) -> FIND_ELEMENT_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
+        by);
   }
 
   @Override

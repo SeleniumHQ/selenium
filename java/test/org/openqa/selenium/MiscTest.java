@@ -62,14 +62,22 @@ class MiscTest extends JupiterTestBase {
 
     String source = driver.getPageSource().toLowerCase();
 
-    assertThat(source).contains("<html", "</html", "an inline element", "<p id=", "lotsofspaces",
-                                "with document.write and with document.write again");
+    assertThat(source)
+        .contains(
+            "<html",
+            "</html",
+            "an inline element",
+            "<p id=",
+            "lotsofspaces",
+            "with document.write and with document.write again");
   }
 
   @Test
   @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
   @Ignore(value = EDGE, reason = "returns XML content formatted for display as HTML document")
-  @NotYetImplemented(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
+  @NotYetImplemented(
+      value = SAFARI,
+      reason = "returns XML content formatted for display as HTML document")
   @Ignore(IE)
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
@@ -77,10 +85,9 @@ class MiscTest extends JupiterTestBase {
     assertThat(source).isEqualToIgnoringWhitespace("<xml><foo><bar>baz</bar></foo></xml>");
   }
 
-
   @Test
   @Ignore(value = ALL, reason = "issue 2282")
-  public void testStimulatesStrangeOnloadInteractionInFirefox()  {
+  public void testStimulatesStrangeOnloadInteractionInFirefox() {
     driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.
@@ -93,7 +100,7 @@ class MiscTest extends JupiterTestBase {
   @Test
   void testClickingShouldNotTrampleWOrHInGlobalScope() {
     driver.get(appServer.whereIs("globalscope.html"));
-    String[] vars = new String[]{"w", "h"};
+    String[] vars = new String[] {"w", "h"};
     for (String var : vars) {
       assertThat(getGlobalVar(driver, var)).isEqualTo(var);
     }
@@ -107,5 +114,4 @@ class MiscTest extends JupiterTestBase {
     Object val = ((JavascriptExecutor) driver).executeScript("return window." + var + ";");
     return val == null ? "null" : val.toString();
   }
-
 }

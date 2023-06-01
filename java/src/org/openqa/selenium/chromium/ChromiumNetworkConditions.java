@@ -19,10 +19,7 @@ package org.openqa.selenium.chromium;
 
 import java.time.Duration;
 
-/**
- * Provides manipulation of getting and setting network conditions from Chromium.
- *
- */
+/** Provides manipulation of getting and setting network conditions from Chromium. */
 public class ChromiumNetworkConditions {
   public static final String OFFLINE = "offline";
   public static final String LATENCY = "latency";
@@ -34,9 +31,7 @@ public class ChromiumNetworkConditions {
   private int downloadThroughput = -1;
   private int uploadThroughput = -1;
 
-
   /**
-   *
    * @return whether network is simulated to be offline.
    */
   public boolean getOffline() {
@@ -53,7 +48,7 @@ public class ChromiumNetworkConditions {
   }
 
   /**
-   *  The current simulated latency of the connection.
+   * The current simulated latency of the connection.
    *
    * @return amount of latency, typically a Duration of milliseconds.
    */

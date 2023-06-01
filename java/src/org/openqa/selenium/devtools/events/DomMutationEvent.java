@@ -26,7 +26,8 @@ public class DomMutationEvent {
   private final String currentValue;
   private final String oldValue;
 
-  public DomMutationEvent(WebElement element, String attributeName, String currentValue, String oldValue) {
+  public DomMutationEvent(
+      WebElement element, String attributeName, String currentValue, String oldValue) {
     this.element = element;
     this.attributeName = attributeName;
     this.currentValue = currentValue;

@@ -41,6 +41,7 @@ const { EvaluateResultType } = require('../../bidi/evaluateResult')
 const { ResultOwnership } = require('../../bidi/resultOwnership')
 const { SpecialNumberType } = require('../../bidi/protocolType')
 const { RealmType } = require('../../bidi/realmInfo')
+const { WebDriverError } = require('../../lib/error')
 
 suite(
   function (env) {
@@ -1437,6 +1438,296 @@ suite(
         assert.equal(windowRealm.realmType, RealmType.WINDOW)
         assert.notEqual(windowRealm.realmId, null)
         assert.equal(windowRealm.browsingContext, windowId)
+      })
+
+      it('can add preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript("() => { window.foo='bar'; }")
+
+        // Check that preload script didn't apply the changes to the current context
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          id,
+          'window.foo',
+          true
+        )
+        assert.equal(result.result.type, 'undefined')
+
+        await driver.switchTo().newWindow('window')
+        const new_window_id = await driver.getWindowHandle()
+
+        // Check that preload script applied the changes to the window
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_window_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.resultType, EvaluateResultType.SUCCESS)
+        assert.notEqual(result.realmId, null)
+        assert.equal(result.result.type, 'string')
+        assert.notEqual(result.result.value, null)
+        assert.equal(result.result.value, 'bar')
+
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+        })
+
+        await browsingContext.navigate(Pages.logEntryAdded, 'complete')
+
+        // Check that preload script was applied after navigation
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_window_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+      })
+
+      it('can add same preload script twice', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        const script_1 = await manager.addPreloadScript('() => { return 42; }')
+        const script_2 = await manager.addPreloadScript('() => { return 42; }')
+
+        assert.notEqual(script_1, script_2)
+      })
+
+      it('can access preload script properties', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript(
+          '() => { window.preloadScriptFunction = () => window.baz = 42; }'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+        await driver.get(Pages.scriptTestAccessProperty)
+
+        const result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.baz',
+          true
+        )
+
+        assert.equal(result.result.type, 'number')
+        assert.equal(result.result.value, 42)
+      })
+
+      it('can add preload script to sandbox', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript('() => { window.foo = 1; }')
+        await manager.addPreloadScript(
+          '() => { window.bar = 2; }',
+          null,
+          'sandbox'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        let result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'undefined')
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+
+        result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'number')
+        assert.equal(result_in_sandbox.result.value, 2)
+      })
+
+      it('can remove properties set by preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript('() => { window.foo = 42; }')
+        await manager.addPreloadScript(
+          '() => { window.foo = 50; }',
+          null,
+          'sandbox_1'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+        await driver.get(Pages.scriptTestRemoveProperty)
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true
+        )
+        assert.equal(result.result.type, 'undefined')
+
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true,
+          null,
+          'sandbox_1'
+        )
+        assert.equal(result.result.type, 'number')
+        assert.equal(result.result.value, 50)
+      })
+
+      it('can remove preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script = await manager.addPreloadScript(
+          "() => { window.foo='bar'; }"
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const tab_1_id = await driver.getWindowHandle()
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          tab_1_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+
+        await manager.removePreloadScript(script)
+
+        await driver.switchTo().newWindow('tab')
+        const tab_2_id = await driver.getWindowHandle()
+
+        // Check that changes from preload script were not applied after script was removed
+        result = await manager.evaluateFunctionInBrowsingContext(
+          tab_2_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+      })
+
+      it('cannot remove same preload script twice', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script = await manager.addPreloadScript(
+          "() => { window.foo='bar'; }"
+        )
+
+        await manager.removePreloadScript(script)
+
+        await manager.removePreloadScript(script).catch((error) => {
+          assert(error instanceof WebDriverError)
+        })
+      })
+
+      it('can remove one of preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script_1 = await manager.addPreloadScript(
+          "() => { window.bar='foo'; }"
+        )
+
+        let script_2 = await manager.addPreloadScript(
+          "() => { window.baz='bar'; }"
+        )
+
+        await manager.removePreloadScript(script_1)
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        // Check that the first script didn't run
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+
+        // Check that the second script still applied the changes to the window
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.baz',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+
+        // Clean up the second script
+        await manager.removePreloadScript(script_2)
+      })
+
+      it('can remove one of preload script from sandbox', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script_1 = await manager.addPreloadScript(
+          '() => { window.foo = 1; }'
+        )
+
+        let script_2 = await manager.addPreloadScript(
+          '() => { window.bar = 2; }',
+          null,
+          'sandbox'
+        )
+
+        // Remove first preload script
+        await manager.removePreloadScript(script_1)
+
+        // Remove second preload script
+        await manager.removePreloadScript(script_2)
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        // Make sure that changes from first preload script were not applied
+        let result_in_window = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result_in_window.result.type, 'undefined')
+
+        // Make sure that changes from second preload script were not applied
+        let result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'undefined')
       })
     })
 

@@ -23,17 +23,16 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-
 class OsProcessTest {
 
-  private final static String testExecutable = findExecutable(
-    "java/test/org/openqa/selenium/os/echo");
+  private static final String testExecutable =
+      findExecutable("java/test/org/openqa/selenium/os/echo");
 
   private OsProcess process = new OsProcess(testExecutable);
 
@@ -42,7 +41,7 @@ class OsProcessTest {
     String key = null;
     String value = "Bar";
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> process.setEnvironmentVariable(key, value));
+        .isThrownBy(() -> process.setEnvironmentVariable(key, value));
     assertThat(process.getEnvironment()).doesNotContainValue(value);
   }
 
@@ -51,7 +50,7 @@ class OsProcessTest {
     String key = "Foo";
     String value = null;
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> process.setEnvironmentVariable(key, value));
+        .isThrownBy(() -> process.setEnvironmentVariable(key, value));
     assertThat(process.getEnvironment()).doesNotContainKey(key);
   }
 
@@ -93,8 +92,9 @@ class OsProcessTest {
   @Test
   void canDetectSuccess() throws InterruptedException {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
-    OsProcess process = new OsProcess(
-      testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
+    OsProcess process =
+        new OsProcess(
+            testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     process.executeAsync();
     process.waitFor();
     assertThat(process.getExitCode()).isZero();

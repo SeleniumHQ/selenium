@@ -61,6 +61,15 @@ describe('edge.Options', function () {
         },
       })
     })
+
+    it('useWebView changes browser name', function () {
+      let options = new edge.Options()
+      assert.strictEqual(options.getBrowserName(), 'MicrosoftEdge')
+      options.useWebView(true)
+      assert.strictEqual(options.getBrowserName(), 'webview2')
+      options.useWebView(false)
+      assert.strictEqual(options.getBrowserName(), 'MicrosoftEdge')
+    })
   })
 
   describe('addExtensions', function () {

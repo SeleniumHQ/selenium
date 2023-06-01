@@ -21,6 +21,12 @@ import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
+import java.util.UUID;
+import java.util.function.BiFunction;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
@@ -36,13 +42,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Instant;
-import java.util.UUID;
-import java.util.function.BiFunction;
-
 public class TestSessionFactory implements SessionFactory {
 
   private final Capabilities stereotype;
@@ -52,7 +51,8 @@ public class TestSessionFactory implements SessionFactory {
     this(new ImmutableCapabilities(), sessionGenerator);
   }
 
-  public TestSessionFactory(Capabilities stereotype, BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
+  public TestSessionFactory(
+      Capabilities stereotype, BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
     this.stereotype = ImmutableCapabilities.copyOf(stereotype);
     this.sessionGenerator = sessionGenerator;
   }
@@ -74,35 +74,37 @@ public class TestSessionFactory implements SessionFactory {
       throw new UncheckedIOException(e);
     }
 
-    Dialect downstream = sessionRequest.getDownstreamDialects().contains(W3C) ?
-                         W3C :
-                         sessionRequest.getDownstreamDialects().iterator().next();
+    Dialect downstream =
+        sessionRequest.getDownstreamDialects().contains(W3C)
+            ? W3C
+            : sessionRequest.getDownstreamDialects().iterator().next();
 
+    BaseActiveSession activeSession =
+        new BaseActiveSession(
+            session.getId(),
+            url,
+            downstream,
+            W3C,
+            stereotype,
+            session.getCapabilities(),
+            Instant.now()) {
+          @Override
+          public void stop() {
+            // Do nothing
+          }
 
-    BaseActiveSession activeSession = new BaseActiveSession(
-      session.getId(),
-      url,
-      downstream,
-      W3C,
-      stereotype,
-      session.getCapabilities(),
-      Instant.now()) {
-      @Override
-      public void stop() {
-        // Do nothing
-      }
-
-      @Override
-      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-        if (session instanceof HttpHandler) {
-          return ((HttpHandler) session).execute(req);
-        } else {
-          // Do nothing.
-          return new HttpResponse().setStatus(HTTP_NOT_FOUND)
-            .setContent(utf8String("No handler found for " + req));
-        }
-      }
-    };
+          @Override
+          public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+            if (session instanceof HttpHandler) {
+              return ((HttpHandler) session).execute(req);
+            } else {
+              // Do nothing.
+              return new HttpResponse()
+                  .setStatus(HTTP_NOT_FOUND)
+                  .setContent(utf8String("No handler found for " + req));
+            }
+          }
+        };
     return Either.right(activeSession);
   }
 

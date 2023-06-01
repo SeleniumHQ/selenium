@@ -36,7 +36,7 @@ Options:
       --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 120]
+          Timeout for network requests (in seconds) [default: 180]
       --driver-ttl <DRIVER_TTL>
           Driver TTL (time-to-live) [default: 86400]
       --browser-ttl <BROWSER_TTL>

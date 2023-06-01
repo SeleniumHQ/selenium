@@ -17,18 +17,16 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableSet;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableSet;
 import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class
-ClassPathResourceTest {
+class ClassPathResourceTest {
 
   @Test
   void shouldGetASingleFile() {
@@ -43,14 +41,10 @@ ClassPathResourceTest {
   }
 
   @Test
-  void shouldComplainIfResourceDoesNotExist() {
-
-  }
+  void shouldComplainIfResourceDoesNotExist() {}
 
   @Test
-  void shouldReportDirectoriesAsDirectories() {
-
-  }
+  void shouldReportDirectoriesAsDirectories() {}
 
   @Test
   void shouldListContentsOfDirectoriesIfInSameJar() {
@@ -60,11 +54,8 @@ ClassPathResourceTest {
     Resource resource = new ClassPathResource(res, "test/org/openqa/selenium/grid/web");
     assertThat(resource.isDirectory()).isTrue();
 
-    Set<String> names = resource.list().stream()
-      .map(Resource::name)
-      .collect(Collectors.toSet());
+    Set<String> names = resource.list().stream().map(Resource::name).collect(Collectors.toSet());
 
     assertThat(names).isEqualTo(ImmutableSet.of("packaged-file.txt"));
   }
-
 }

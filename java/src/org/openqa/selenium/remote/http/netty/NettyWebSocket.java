@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Request;
@@ -34,20 +44,9 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 class NettyWebSocket implements WebSocket {
 
-  private static final Logger log = Logger.getLogger(NettyWebSocket.class.getName());
+  private static final Logger LOG = Logger.getLogger(NettyWebSocket.class.getName());
 
   private final org.asynchttpclient.ws.WebSocket socket;
 
@@ -59,68 +58,88 @@ class NettyWebSocket implements WebSocket {
       URL origUrl = new URL(request.getUrl());
       String wsScheme = "https".equalsIgnoreCase(origUrl.getProtocol()) ? "wss" : "ws";
 
-      URI wsUri = new URI(wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
+      URI wsUri =
+          new URI(
+              wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
       ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future =
-        client.prepareGet(wsUri.toString()).execute(
-          new WebSocketUpgradeHandler.Builder().addWebSocketListener(new WebSocketListener() {
-            @Override
-            public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
-            }
+          client
+              .prepareGet(wsUri.toString())
+              .execute(
+                  new WebSocketUpgradeHandler.Builder()
+                      .addWebSocketListener(
+                          new WebSocketListener() {
+                            @Override
+                            public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {}
 
-            @Override
-            public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
-              listener.onClose(code, reason);
-            }
+                            @Override
+                            public void onClose(
+                                org.asynchttpclient.ws.WebSocket websocket,
+                                int code,
+                                String reason) {
+                              listener.onClose(code, reason);
+                            }
 
-            @Override
-            public void onError(Throwable t) {
-              listener.onError(t);
-            }
+                            @Override
+                            public void onError(Throwable t) {
+                              listener.onError(t);
+                            }
 
-            @Override
-            public void onBinaryFrame(byte[] payload, boolean finalFragment, int rsv) {
-              if (payload != null) {
-                listener.onBinary(payload);
-              }
-            }
+                            @Override
+                            public void onBinaryFrame(
+                                byte[] payload, boolean finalFragment, int rsv) {
+                              if (payload != null) {
+                                listener.onBinary(payload);
+                              }
+                            }
 
-            @Override
-            public void onTextFrame(String payload, boolean finalFragment, int rsv) {
-              if (payload != null) {
-                listener.onText(payload);
-              }
-            }
-          }).build());
-      socket = future.toCompletableFuture()
-        .exceptionally(t -> {
-          log.log(Level.WARNING, t.getMessage(), t);
-          return null;
-        })
-        .get();
+                            @Override
+                            public void onTextFrame(
+                                String payload, boolean finalFragment, int rsv) {
+                              if (payload != null) {
+                                listener.onText(payload);
+                              }
+                            }
+                          })
+                      .build());
+      socket =
+          future
+              .toCompletableFuture()
+              .exceptionally(
+                  t -> {
+                    LOG.log(Level.WARNING, t.getMessage(), t);
+                    return null;
+                  })
+              .get();
 
       if (socket == null) {
-        throw new ConnectionFailedException("Unable to establish websocket connection to " + request.getUrl());
+        throw new ConnectionFailedException(
+            "Unable to establish websocket connection to " + request.getUrl());
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      log.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
+      LOG.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
       throw new ConnectionFailedException("NettyWebSocket initial request interrupted", e);
     } catch (ExecutionException | MalformedURLException | URISyntaxException e) {
       throw new ConnectionFailedException("NettyWebSocket initial request execution error", e);
     }
   }
 
-  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config, AsyncHttpClient client) {
+  static BiFunction<HttpRequest, Listener, WebSocket> create(
+      ClientConfig config, AsyncHttpClient client) {
     Filter filter = config.filter();
 
-    Function<HttpRequest, HttpRequest> filterRequest = req -> {
-      AtomicReference<HttpRequest> ref = new AtomicReference<>();
-      filter.andFinally(in -> {
-        ref.set(in);
-        return new HttpResponse();
-      }).execute(req);
-      return ref.get();
-    };
+    Function<HttpRequest, HttpRequest> filterRequest =
+        req -> {
+          AtomicReference<HttpRequest> ref = new AtomicReference<>();
+          filter
+              .andFinally(
+                  in -> {
+                    ref.set(in);
+                    return new HttpResponse();
+                  })
+              .execute(req);
+          return ref.get();
+        };
 
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);

@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.9'
+  '4.10'
 end
 
 def version
-  "#{release_version}.1-SNAPSHOT"
+  "#{release_version}.0-SNAPSHOT"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v110:v110.publish
   //java/src/org/openqa/selenium/devtools/v111:v111.publish
   //java/src/org/openqa/selenium/devtools/v112:v112.publish
+  //java/src/org/openqa/selenium/devtools/v113:v113.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -206,11 +206,6 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:small-tests:run',
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
-
-# TODO(simon): test-core should go first, but it's changing the least for now.
-task test_selenium: [:'test-rc']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:firefox-rc-test:run']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
 
 task test_java_webdriver: %i[
   test_htmlunit

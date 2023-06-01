@@ -63,5 +63,4 @@ class CssValueTest extends JupiterTestBase {
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour).isIn("transparent", "rgba(0, 0, 0, 0)");
   }
-
 }

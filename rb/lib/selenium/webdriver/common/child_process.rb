@@ -53,9 +53,9 @@ module Selenium
         options = {%i[out err] => io}
         options[:pgroup] = true unless Platform.windows? # NOTE: this is a bug only in Windows 7
 
-        WebDriver.logger.debug("Starting process: #{@command} with #{options}")
+        WebDriver.logger.debug("Starting process: #{@command} with #{options}", id: :process)
         @pid = Process.spawn(*@command, options)
-        WebDriver.logger.debug("  -> pid: #{@pid}")
+        WebDriver.logger.debug("  -> pid: #{@pid}", id: :process)
 
         Process.detach(@pid) if detach
       end
@@ -64,16 +64,16 @@ module Selenium
         return unless @pid
         return if exited?
 
-        WebDriver.logger.debug("Sending TERM to process: #{@pid}")
+        WebDriver.logger.debug("Sending TERM to process: #{@pid}", id: :process)
         terminate(@pid)
         poll_for_exit(timeout)
 
-        WebDriver.logger.debug("  -> stopped #{@pid}")
+        WebDriver.logger.debug("  -> stopped #{@pid}", id: :process)
       rescue TimeoutError, Errno::EINVAL
-        WebDriver.logger.debug("    -> sending KILL to process: #{@pid}")
+        WebDriver.logger.debug("    -> sending KILL to process: #{@pid}", id: :process)
         kill(@pid)
         wait
-        WebDriver.logger.debug("      -> killed #{@pid}")
+        WebDriver.logger.debug("      -> killed #{@pid}", id: :process)
       end
 
       def alive?
@@ -83,18 +83,18 @@ module Selenium
       def exited?
         return unless @pid
 
-        WebDriver.logger.debug("Checking if #{@pid} is exited:")
+        WebDriver.logger.debug("Checking if #{@pid} is exited:", id: :process)
         _, @status = Process.waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
         return if @status.nil?
 
         exit_code = @status.exitstatus || @status.termsig
-        WebDriver.logger.debug("  -> exit code is #{exit_code.inspect}")
+        WebDriver.logger.debug("  -> exit code is #{exit_code.inspect}", id: :process)
 
         !!exit_code
       end
 
       def poll_for_exit(timeout)
-        WebDriver.logger.debug("Polling #{timeout} seconds for exit of #{@pid}")
+        WebDriver.logger.debug("Polling #{timeout} seconds for exit of #{@pid}", id: :process)
 
         end_time = Time.now + timeout
         sleep POLL_INTERVAL until exited? || Time.now > end_time

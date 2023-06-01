@@ -74,18 +74,22 @@ class ReverseProxyEndToEndTest {
     }
 
     Config additionalConfig =
-      new TomlConfig(
-        new StringReader(
-          "[network]\n" +
-            "sub-path = \"" + SUB_PATH + "\"\n" +
-          "[node]\n" +
-            "detect-drivers = false\n" +
-            "driver-factories = [\n" +
-            String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
-            String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
-            "]\n" +
-            "[sessionqueue]\n" +
-            "session-request-timeout = 5"));
+        new TomlConfig(
+            new StringReader(
+                "[network]\n"
+                    + "sub-path = \""
+                    + SUB_PATH
+                    + "\"\n"
+                    + "[node]\n"
+                    + "detect-drivers = false\n"
+                    + "driver-factories = [\n"
+                    + String.format("\"%s\",", TestSessionFactoryFactory.class.getName())
+                    + "\n"
+                    + String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\""))
+                    + "\n"
+                    + "]\n"
+                    + "[sessionqueue]\n"
+                    + "session-request-timeout = 5"));
 
     Supplier<Deployment> s1 = () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig);
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
@@ -116,16 +120,16 @@ class ReverseProxyEndToEndTest {
   private static void waitUntilReady(Server<?> server, Duration duration) {
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
       new FluentWait<>(client)
-        .withTimeout(duration)
-        .pollingEvery(Duration.ofSeconds(1))
-        .until(
-          c -> {
-            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-            System.out.println(Contents.string(response));
-            Map<String, Object> status = Values.get(response, MAP_TYPE);
-            return Boolean.TRUE.equals(
-              status != null && Boolean.parseBoolean(status.get("ready").toString()));
-          });
+          .withTimeout(duration)
+          .pollingEvery(Duration.ofSeconds(1))
+          .until(
+              c -> {
+                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+                System.out.println(Contents.string(response));
+                Map<String, Object> status = Values.get(response, MAP_TYPE);
+                return Boolean.TRUE.equals(
+                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+              });
     }
   }
 
@@ -147,7 +151,12 @@ class ReverseProxyEndToEndTest {
   private static class SpoofSession extends Session implements HttpHandler {
 
     private SpoofSession(URI serverUri, Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
+      super(
+          new SessionId(UUID.randomUUID()),
+          serverUri,
+          new ImmutableCapabilities(),
+          capabilities,
+          Instant.now());
     }
 
     @Override

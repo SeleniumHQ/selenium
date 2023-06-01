@@ -21,7 +21,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
-
 /**
  * A {@link LoadableComponent} which might not have finished loading when load() returns. After a
  * call to load(), the isLoaded() method should continue to fail until the component has fully
@@ -84,7 +83,6 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     // no-op by default
   }
 
-
   protected long sleepFor() {
     return 200;
   }
@@ -97,5 +95,4 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
       throw new AssertionError(e);
     }
   }
-
 }

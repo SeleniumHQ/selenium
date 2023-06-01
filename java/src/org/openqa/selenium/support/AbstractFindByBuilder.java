@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.support;
 
-import org.openqa.selenium.By;
-
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import org.openqa.selenium.By;
 
 public abstract class AbstractFindByBuilder {
 
@@ -108,8 +107,9 @@ public abstract class AbstractFindByBuilder {
     // A zero count is okay: it means to look by name or id.
     if (finders.size() > 1) {
       throw new IllegalArgumentException(
-          String.format("You must specify at most one location strategy. Number found: %d (%s)",
-                        finders.size(), finders.toString()));
+          String.format(
+              "You must specify at most one location strategy. Number found: %d (%s)",
+              finders.size(), finders.toString()));
     }
   }
 
@@ -118,5 +118,4 @@ public abstract class AbstractFindByBuilder {
       assertValidFindBy(findBy);
     }
   }
-
 }

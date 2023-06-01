@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.chromium;
 
-import org.openqa.selenium.Beta;
-
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can cast devices to available sink targets.
- */
+/** Used by classes to indicate that they can cast devices to available sink targets. */
 @Beta
 public interface HasCasting {
 
@@ -32,7 +29,6 @@ public interface HasCasting {
    * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
    *
    * @return array of ID / Name pairs of available cast sink targets
-   *
    */
   List<Map<String, String>> getCastSinks();
 
@@ -58,7 +54,6 @@ public interface HasCasting {
   void startTabMirroring(String deviceName);
 
   /**
-   *
    * @return an error message if there is any issue in a Cast session.
    */
   String getCastIssueMessage();
@@ -69,5 +64,4 @@ public interface HasCasting {
    * @param deviceName name of the target device.
    */
   void stopCasting(String deviceName);
-
 }
