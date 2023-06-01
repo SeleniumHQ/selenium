@@ -73,6 +73,35 @@ module Selenium
           )
         end
 
+        def print_page(**options)
+          print_result = @bidi.send_cmd('browsingContext.print',
+                                        context: @id,
+                                        background: false,
+                                        margin: {
+                                          bottom: options['bottom'] || 1.0,
+                                          left: options['left'] || 1.0,
+                                          right: options['right'] || 1.0,
+                                          top: options['top'] || 1.0
+                                        },
+                                        orientation: 'portrait',
+                                        page: {
+                                          height: options.dig(:page, :height) || 27.94,
+                                          width: options.dig(:page, :width) || 21.59
+                                        },
+                                        pageRanges: options['page_ranges'] || [],
+                                        scale: options['scale'] || 1.0,
+                                        shrinkToFit: options['shrink_to_fit'] || true)
+
+          print_result['data']
+        end
+
+        def save_print_page(path, **options)
+          File.open(path, 'wb') do |file|
+            content = Base64.decode64 print_page(**options)
+            file << content
+          end
+        end
+
         def close
           @bidi.send_cmd('browsingContext.close', context: @id)
         end

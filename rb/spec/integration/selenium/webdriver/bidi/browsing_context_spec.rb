@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     class BiDi
       describe BrowsingContext, only: {browser: %i[chrome edge firefox]} do
+        let(:magic_number) { 'JVBER' }
+
         before { reset_driver!(web_socket_url: true) }
         after { quit_driver }
 
@@ -103,6 +105,37 @@ module Selenium
 
           expect { window1.get_tree }.not_to raise_error
           expect { window2.get_tree }.to raise_error(Error::WebDriverError)
+        end
+
+        it 'returns base64 for print command' do
+          id = driver.window_handle
+          browsing_context = described_class.new(driver: driver, browsing_context_id: id)
+          driver.navigate.to url_for('printPage.html')
+          expect(browsing_context.print_page).to include(magic_number)
+        end
+
+        it 'prints with valid parameters' do
+          id = driver.window_handle
+          browsing_context = described_class.new(driver: driver, browsing_context_id: id)
+          driver.navigate.to url_for('printPage.html')
+          expect(browsing_context.print_page(orientation: 'landscape',
+                                             page_ranges: ['1-2'],
+                                             page: {width: 30})).to include(magic_number)
+        end
+
+        it 'can save PDF' do
+          id = driver.window_handle
+          browsing_context = described_class.new(driver: driver, browsing_context_id: id)
+          driver.navigate.to url_for('printPage.html')
+
+          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
+
+          browsing_context.save_print_page path
+
+          expect(File.exist?(path)).to be true
+          expect(File.size(path)).to be_positive
+        ensure
+          FileUtils.rm_rf(path)
         end
       end # BrowsingContext
     end # BiDi

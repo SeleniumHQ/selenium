@@ -43,6 +43,7 @@ Metrics/CyclomaticComplexity:
   Exclude:
     - 'lib/selenium/webdriver/support/color.rb'
     - 'lib/selenium/webdriver/common/logger.rb'
+    - 'lib/selenium/webdriver/bidi/browsing_context.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -64,6 +65,7 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'lib/selenium/webdriver/common/local_driver.rb'
     - 'lib/selenium/webdriver/common/logger.rb'
+    - 'lib/selenium/webdriver/bidi/browsing_context.rb'
 
 Naming/FileName:
   Exclude:
