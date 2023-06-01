@@ -24,8 +24,7 @@ from .service import Service
 
 
 class WebDriver(ChromiumDriver):
-    """Controls the Microsoft Edge driver and allows you to
-    drive the browser."""
+    """Controls the MDEdgeDriver and allows you to drive the browser."""
 
     def __init__(
         self,

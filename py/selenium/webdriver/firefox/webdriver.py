@@ -33,8 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class WebDriver(RemoteWebDriver):
-    """Controls the GeckoDriver and allows you to
-    drive the Firefox browser."""
+    """Controls the GeckoDriver and allows you to drive the browser."""
 
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
