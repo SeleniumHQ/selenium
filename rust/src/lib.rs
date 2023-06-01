@@ -435,9 +435,8 @@ pub trait SeleniumManager {
     }
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
-        let mut config = self.get_config_mut();
-        let default_timeout = config.timeout;
-        if timeout != default_timeout {
+        if timeout != REQUEST_TIMEOUT_SEC {
+            let mut config = self.get_config_mut();
             config.timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));

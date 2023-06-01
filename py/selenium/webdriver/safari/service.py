@@ -42,11 +42,13 @@ class Service(service.Service):
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        reuse_service=False,
         **kwargs,
     ) -> None:
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet
+        self._reuse_service = reuse_service
         log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
         super().__init__(
             executable=executable_path,
@@ -72,3 +74,11 @@ class Service(service.Service):
     def service_url(self) -> str:
         """Gets the url of the SafariDriver Service."""
         return f"http://localhost:{self.port}"
+
+    @property
+    def reuse_service(self) -> bool:
+        return self._reuse_service
+
+    @reuse_service.setter
+    def reuse_service(self, reuse: bool) -> None:
+        self._reuse_service = reuse

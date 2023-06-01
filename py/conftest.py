@@ -27,7 +27,6 @@ from urllib.request import urlopen
 import pytest
 
 from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
 
 drivers = (
     "chrome",
@@ -120,9 +119,7 @@ def driver(request):
         if driver_class == "Chrome":
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
-            capabilities = DesiredCapabilities.FIREFOX.copy()
-            kwargs.update({"desired_capabilities": capabilities})
-            options = get_options("Firefox", request.config)
+            options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
         if driver_class == "WebKitGTK":
             options = get_options(driver_class, request.config)
         if driver_class == "Edge":
