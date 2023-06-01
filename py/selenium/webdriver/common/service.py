@@ -35,9 +35,6 @@ from selenium.webdriver.common import utils
 logger = logging.getLogger(__name__)
 
 
-_HAS_NATIVE_DEVNULL = True
-
-
 class Service(ABC):
     """The abstract base class for all service objects.  Services typically
     launch a child program in a new process as an interim process to
@@ -61,7 +58,7 @@ class Service(ABC):
     ) -> None:
         self._path = executable
         self.port = port or utils.free_port()
-        self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
+        self.log_file = open(os.devnull, "wb") if not log_file == DEVNULL else log_file
         self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
@@ -132,7 +129,7 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
+        if self.log_file != PIPE and not (self.log_file == DEVNULL):
             try:
                 # Todo: Be explicit in what we are catching here.
                 if hasattr(self.log_file, "close"):

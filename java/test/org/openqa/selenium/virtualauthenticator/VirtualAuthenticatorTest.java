@@ -23,6 +23,9 @@ import static org.assertj.core.api.Fail.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
@@ -66,10 +69,17 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
   private VirtualAuthenticator authenticator;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws MalformedURLException {
     assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
     jsAwareDriver = (JavascriptExecutor) driver;
-    driver.get(appServer.whereIs("virtual-authenticator.html"));
+
+    // According to the spec, the only way we can use the virtual
+    // authenticator is if we are using HTTPS or contacting
+    // `localhost` directly. When we try and access the `NettyAppServer`
+    // over HTTPS, the `registerCredential` method is missing. Let's
+    // make the assumption that the server being used is running on
+    // `localhost` and rewrite URLs from there.
+    driver.get(toLocalUrl(appServer.whereIs("virtual-authenticator.html")));
   }
 
   private void createRKEnabledU2FAuthenticator() {
