@@ -297,6 +297,10 @@ suite(
     })
 
     describe('Browsing Context', function () {
+      let startIndex = 0
+      let endIndex = 5
+      let pdfMagicNumber = 'JVBER'
+
       it('can create a browsing context for given id', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -397,6 +401,44 @@ suite(
           await window1.getTree()
         })
         await assert.rejects(window2.getTree(), { message: 'no such frame' })
+      })
+
+      it('can print PDF with total pages', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.printPage)
+        const result = await browsingContext.printPage()
+
+        let base64Code = result.data.slice(startIndex, endIndex)
+        assert.strictEqual(base64Code, pdfMagicNumber)
+      })
+
+      it('can print PDF with all valid parameters', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.printPage)
+        const result = await browsingContext.printPage({
+          orientation: 'landscape',
+          scale: 1,
+          background: true,
+          width: 30,
+          height: 30,
+          top: 1,
+          bottom: 1,
+          left: 1,
+          right: 1,
+          shrinkToFit: true,
+          pageRanges: ['1-2'],
+        })
+
+        let base64Code = result.data.slice(startIndex, endIndex)
+        assert.strictEqual(base64Code, pdfMagicNumber)
       })
     })
 
