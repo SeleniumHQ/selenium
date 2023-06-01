@@ -150,7 +150,7 @@ class BrowsingContext {
         },
         orientation: 'portrait',
         page: {
-          height: 29.94,
+          height: 27.94,
           width: 21.59,
         },
         pageRanges: [],
