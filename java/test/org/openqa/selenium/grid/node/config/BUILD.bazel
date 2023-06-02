@@ -23,6 +23,7 @@ java_test_suite(
     srcs = ["NodeOptionsTest.java"],
     data = chromedriver_data + edgedriver_data + geckodriver_data,
     jvm_flags = chromedriver_jvm_flags + edgedriver_jvm_flags + geckodriver_jvm_flags,
+    tags = ["no-sandbox"],
     deps = [
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/edge",
