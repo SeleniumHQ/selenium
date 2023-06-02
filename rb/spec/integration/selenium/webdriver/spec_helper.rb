@@ -17,14 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-begin
-  require 'debug/session'
-  DEBUGGER__::CONFIG[:fork_mode] = :parent
-  DEBUGGER__.open(nonstop: true)
-rescue LoadError
-  # not supported on JRuby and TruffleRuby
-end
-
 require 'rubygems'
 require 'time'
 require 'rspec'

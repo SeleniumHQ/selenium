@@ -77,6 +77,7 @@ test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 test --test_timeout=1800
 
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
+test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//:bin/rdbg --nonstop --open --command"
 
 # The RBE to use
 build:remote --bes_results_url=https://gypsum.cluster.engflow.com/invocation
