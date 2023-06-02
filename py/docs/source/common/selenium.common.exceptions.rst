@@ -45,6 +45,7 @@
       NoSuchShadowRootException
       NoSuchWindowException
       ScreenshotException
+      SeleniumManagerException
       SessionNotCreatedException
       StaleElementReferenceException
       TimeoutException
