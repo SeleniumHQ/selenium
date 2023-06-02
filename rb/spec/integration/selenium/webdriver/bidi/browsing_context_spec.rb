@@ -120,7 +120,8 @@ module Selenium
           driver.navigate.to url_for('printPage.html')
           expect(browsing_context.print_page(orientation: 'landscape',
                                              page_ranges: ['1-2'],
-                                             page: {width: 30})).to include(magic_number)
+                                             page: described_class::Page.new(height: 30),
+                                             margin: described_class::Margin.new(bottom: 40))).to include(magic_number)
         end
 
         it 'can save PDF' do
@@ -130,7 +131,7 @@ module Selenium
 
           path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
 
-          browsing_context.save_print_page path
+          browsing_context.print_page(path: path)
 
           expect(File.exist?(path)).to be true
           expect(File.size(path)).to be_positive

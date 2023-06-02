@@ -73,33 +73,35 @@ module Selenium
           )
         end
 
-        def print_page(**options)
-          print_result = @bidi.send_cmd('browsingContext.print',
-                                        context: @id,
-                                        background: false,
-                                        margin: {
-                                          bottom: options['bottom'] || 1.0,
-                                          left: options['left'] || 1.0,
-                                          right: options['right'] || 1.0,
-                                          top: options['top'] || 1.0
-                                        },
-                                        orientation: 'portrait',
-                                        page: {
-                                          height: options.dig(:page, :height) || 27.94,
-                                          width: options.dig(:page, :width) || 21.59
-                                        },
-                                        pageRanges: options['page_ranges'] || [],
-                                        scale: options['scale'] || 1.0,
-                                        shrinkToFit: options['shrink_to_fit'] || true)
-
-          print_result['data']
+        # Organising margin and page parameters in a struct for print command
+        Margin = Struct.new(:bottom, :top, :left, :right, keyword_init: true) do
+          def initialize(bottom: 1.0, top: 1.0, left: 1.0, right: 1.0)
+            super
+          end
         end
 
-        def save_print_page(path, **options)
-          File.open(path, 'wb') do |file|
-            content = Base64.decode64 print_page(**options)
-            file << content
+        Page = Struct.new(:height, :width, keyword_init: true) do
+          def initialize(height: 27.94, width: 21.59)
+            super
           end
+        end
+
+        def print_page(background: false, margin: Margin.new, orientation: 'portrait', page: Page.new, page_ranges: [],
+                       scale: 1.0, shrink_to_fit: true, path: nil)
+          print_result = @bidi.send_cmd('browsingContext.print',
+                                        context: @id,
+                                        background: background,
+                                        margin: {bottom: margin.bottom, top: margin.top, left: margin.left,
+                                                 right: margin.right},
+                                        orientation: orientation,
+                                        page: {height: page.height, width: page.width},
+                                        pageRanges: page_ranges,
+                                        scale: scale,
+                                        shrinkToFit: shrink_to_fit)
+
+          return File.write(path, Base64.decode64(print_result['data']), mode: 'wb') unless path.nil?
+
+          print_result['data']
         end
 
         def close
