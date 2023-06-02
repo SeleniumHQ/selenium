@@ -18,6 +18,7 @@
 package org.openqa.selenium.support.locators;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.By.xpath;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -208,5 +210,27 @@ class RelativeLocatorTest extends JupiterTestBase {
         .describedAs(
             cells.stream().map(e -> e.getAttribute("id")).collect(Collectors.joining(", ")))
         .isEqualTo(List.of(b, a));
+  }
+
+  @Test
+  void nearLocatorShouldFindNearElements() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement rect1 = driver.findElement(By.id("rect1"));
+
+    WebElement rect2 = driver.findElement(with(By.id("rect2")).near(rect1));
+
+    assertThat(rect2.getAttribute("id")).isEqualTo("rect2");
+  }
+
+  @Test
+  void nearLocatorShouldNotFindFarElements() {
+    driver.get(appServer.whereIs("relative_locators.html"));
+
+    WebElement rect3 = driver.findElement(By.id("rect3"));
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElement(with(By.id("rect4")).near(rect3)))
+        .withMessageContaining("Cannot locate an element using");
   }
 }
