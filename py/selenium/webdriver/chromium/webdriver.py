@@ -112,6 +112,7 @@ class ChromiumDriver(RemoteWebDriver):
 
         :Usage:
             ::
+
                 driver.set_permissions('clipboard-read', 'denied')
         """
         self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
@@ -127,6 +128,7 @@ class ChromiumDriver(RemoteWebDriver):
          - cmd_args: A dict, command args. empty dict {} if there is no command args
         :Usage:
             ::
+
                 driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})
         :Returns:
             A dict, empty dict {} if there is no result to return.

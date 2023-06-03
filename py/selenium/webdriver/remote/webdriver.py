@@ -224,10 +224,10 @@ class WebDriver(BaseWebDriver):
         """Overrides the current file detector (if necessary) in limited
         context. Ensures the original file detector is set afterwards.
 
-        Example:
+        Example::
 
-        with webdriver.file_detector_context(UselessFileDetector):
-            someinput.send_keys('/etc/hosts')
+            with webdriver.file_detector_context(UselessFileDetector):
+                someinput.send_keys('/etc/hosts')
 
         :Args:
          - file_detector_class - Class of the desired file detector. If the class is different
@@ -620,11 +620,13 @@ class WebDriver(BaseWebDriver):
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
             optional keys - "path", "domain", "secure", "httpOnly", "expiry", "sameSite"
 
-        Usage:
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
-            driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
+        :Usage:
+            ::
+
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure' : True})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'sameSite' : 'Strict'})
         """
         if "sameSite" in cookie_dict:
             assert cookie_dict["sameSite"] in ["Strict", "Lax", "None"]
@@ -686,6 +688,7 @@ class WebDriver(BaseWebDriver):
 
         :Usage:
             ::
+
                 driver.timeouts
         :rtype: Timeout
         """
