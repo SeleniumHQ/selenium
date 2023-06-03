@@ -274,7 +274,7 @@ echo 'RUBY_VERSION = "<X.Y.Z>"' > rb/ruby_version.bzl
 If you want to debug code in tests, you can do it via [`debug`](https://github.com/ruby/debug) gem:
 
 1. Add `binding.break` to the code where you want the debugger to start.
-2. Run `bazel test --test_output streamed <test>`. Streaming output is not required, but will clearly say when debugger starts.
+2. Run tests with  `ruby_debug` configuration: `bazel test --config ruby_debug <test>`.
 3. When debugger starts, run the following in a separate terminal to connect to debugger:
 
 ```sh
