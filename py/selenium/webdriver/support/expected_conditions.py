@@ -20,6 +20,8 @@ from typing import Callable
 from typing import List
 from typing import Tuple
 from typing import Union
+from typing import Tuple
+from typing import Callable
 
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
@@ -33,6 +35,9 @@ from selenium.webdriver import Ie
 from selenium.webdriver import Safari
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.remote.webdriver import WebElement
+from selenium.webdriver.common.alert import Alert
+from selenium.types import AnyDriver
+
 
 # All driver types
 AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
@@ -98,7 +103,11 @@ def url_contains(url: str) -> Callable[[AnyDriver], bool]:
     return _predicate
 
 
+<<<<<<< HEAD
 def url_matches(pattern: str) -> Callable[[AnyDriver], bool]:
+=======
+def url_matches(pattern: str) -> Callable[[AnyDriver], Union[re.Match, None]]:
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An expectation for checking the current url.
 
     pattern is the expected pattern.  This finds the first occurrence of
@@ -175,7 +184,11 @@ def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[W
     return element if element.is_displayed() == visibility else False
 
 
+<<<<<<< HEAD
 def presence_of_all_elements_located(locator: Tuple[str, str]) -> Callable[[AnyDriver], List[WebElement]]:
+=======
+def presence_of_all_elements_located(locator: Tuple[str, str]) -> Callable[[AnyDriver], List[WebElement]]: 
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An expectation for checking that there is at least one element present
     on a web page.
 
@@ -203,9 +216,13 @@ def visibility_of_any_elements_located(locator: Tuple[str, str]) -> Callable[[An
     return _predicate
 
 
+<<<<<<< HEAD
 def visibility_of_all_elements_located(
     locator: Tuple[str, str]
 ) -> Callable[[AnyDriver], Union[bool, List[WebElement]]]:
+=======
+def visibility_of_all_elements_located(locator: Tuple[str, str]) -> Callable[[AnyDriver], Union[bool, List[WebElement]]]:
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An expectation for checking that all elements are present on the DOM of
     a page and visible. Visibility means that the elements are not only
     displayed but also has a height and width that is greater than 0.
@@ -261,9 +278,13 @@ def text_to_be_present_in_element_value(locator: Tuple[str, str], text_: str) ->
     return _predicate
 
 
+<<<<<<< HEAD
 def text_to_be_present_in_element_attribute(
     locator: Tuple[str, str], attribute_: str, text_: str
 ) -> Callable[[AnyDriver], bool]:
+=======
+def text_to_be_present_in_element_attribute(locator: Tuple[str, str], attribute_: str, text_: str) -> Callable[[AnyDriver], bool]:
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An expectation for checking if the given text is present in the
     element's attribute.
 
@@ -303,9 +324,13 @@ def frame_to_be_available_and_switch_to_it(locator: Union[Tuple[str, str], str])
     return _predicate
 
 
+<<<<<<< HEAD
 def invisibility_of_element_located(
     locator: Union[WebElement, Tuple[str, str]]
 ) -> Callable[[AnyDriver], Union[WebElement, bool]]:
+=======
+def invisibility_of_element_located(locator: Union[WebElement, Tuple[str, str]]) -> Callable[[AnyDriver], Union[WebElement, bool]]:
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An Expectation for checking that an element is either invisible or not
     present on the DOM.
 
@@ -329,9 +354,14 @@ def invisibility_of_element_located(
     return _predicate
 
 
+<<<<<<< HEAD
 def invisibility_of_element(
     element: Union[WebElement, Tuple[str, str]]
 ) -> Callable[[AnyDriver], Union[WebElement, bool]]:
+=======
+def invisibility_of_element(element: Union[WebElement, Tuple[str, str]]) -> Callable[[AnyDriver], Union[WebElement, bool]]:
+
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An Expectation for checking that an element is either invisible or not
     present on the DOM.
 
@@ -464,7 +494,11 @@ def alert_is_present() -> Callable[[AnyDriver], Union[Alert, bool]]:
     return _predicate
 
 
+<<<<<<< HEAD
 def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> Callable[[AnyDriver], bool]:
+=======
+def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> Callable[[AnyDriver], Union[str, bool, None]]:
+>>>>>>> c7b01416ef (added type hints to all conditions in expected_conditions.py)
     """An expectation for checking if the given attribute is included in the
     specified element.
 
