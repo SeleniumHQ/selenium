@@ -38,6 +38,7 @@ rust_test(
         srcs = [file],
         data = [":selenium-manager"],
         edition = "2021",
+        tags = ["no-sandbox"],
         deps = [":selenium_manager"] + all_crate_deps(
             normal = True,
             normal_dev = True,
