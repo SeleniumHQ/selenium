@@ -19,7 +19,6 @@
 
 import typing
 
-from selenium.webdriver import Chrome, Firefox, Safari, Ie, Edge
 
 AnyKey = typing.Union[str, int, float]
 WaitExcTypes = typing.Iterable[typing.Type[Exception]]
