@@ -69,7 +69,7 @@ public class RelativeLocator {
 
   private static final Json JSON = new Json();
 
-  private static final int CLOSE_IN_PIXELS = 100;
+  private static final int CLOSE_IN_PIXELS = 50;
 
   /** Start of a relative locator, finding elements by tag name. */
   public static RelativeBy with(By by) {

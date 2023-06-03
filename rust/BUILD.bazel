@@ -29,7 +29,6 @@ rust_test(
     size = "small",
     srcs = glob(["src/**/*.rs"]),
     crate = ":selenium_manager",
-    tags = ["no-sandbox"],
 )
 
 [
@@ -39,11 +38,7 @@ rust_test(
         srcs = [file],
         data = [":selenium-manager"],
         edition = "2021",
-        tags = [
-            "exclusive-if-local",
-            "no-sandbox",
-            "requires-network",
-        ],
+        tags = ["no-sandbox"],
         deps = [":selenium_manager"] + all_crate_deps(
             normal = True,
             normal_dev = True,
