@@ -24,6 +24,16 @@ module Selenium
         DEFAULT_PORT = 7050
         EXECUTABLE = 'safaridriver'
         SHUTDOWN_SUPPORTED = false
+
+        def initialize(path: nil, port: nil, log: nil, args: nil)
+          raise Error::WebDriverError, 'Safari Service does not support setting log output' if log
+
+          super
+        end
+
+        def log=(*)
+          raise Error::WebDriverError, 'Safari Service does not support setting log output'
+        end
       end # Service
     end # Safari
   end # WebDriver
