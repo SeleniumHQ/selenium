@@ -25,8 +25,11 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webdriver import WebElement
 from selenium.webdriver.common.alert import Alert
-from selenium.types import AnyDriver
+from selenium.webdriver import Chrome, Firefox, Safari, Ie, Edge
 
+
+# All driver types
+AnyDriver = typing.Union[Chrome, Firefox, Safari, Ie, Edge]
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
