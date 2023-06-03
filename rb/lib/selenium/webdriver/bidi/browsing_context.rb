@@ -91,10 +91,9 @@ module Selenium
           print_result = @bidi.send_cmd('browsingContext.print',
                                         context: @id,
                                         background: background,
-                                        margin: {bottom: margin.bottom, top: margin.top, left: margin.left,
-                                                 right: margin.right},
+                                        margin: margin.to_h,
                                         orientation: orientation,
-                                        page: {height: page.height, width: page.width},
+                                        page: page.to_h,
                                         pageRanges: page_ranges,
                                         scale: scale,
                                         shrinkToFit: shrink_to_fit)
