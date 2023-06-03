@@ -55,7 +55,6 @@ build --test_env=GITHUB_ACTIONS
 build --test_env=MOZ_HEADLESS
 build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
-build --test_env=SELENIUM_MANAGER_BASE_PATH
 build --test_env=TRAVIS
 build --test_env=PYTHON_VERSION
 

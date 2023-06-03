@@ -90,6 +90,9 @@ jasmine_node_test(
     local = True,
     templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
     deps = [
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
