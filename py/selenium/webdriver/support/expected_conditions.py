@@ -29,7 +29,7 @@ from selenium.webdriver import Chrome, Firefox, Safari, Ie, Edge
 
 
 # All driver types
-AnyDriver = typing.Union[Chrome, Firefox, Safari, Ie, Edge]
+AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
