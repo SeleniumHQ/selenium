@@ -26,4 +26,3 @@ WaitExcTypes = typing.Iterable[typing.Type[Exception]]
 
 # Service Types
 SubprocessStdAlias = typing.Union[int, typing.IO[typing.Any]]
-
