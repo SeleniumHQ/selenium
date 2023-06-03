@@ -236,8 +236,5 @@ class Select:
 
     def _get_longest_token(self, value: str) -> str:
         items = value.split(" ")
-        longest = ""
-        for item in items:
-            if len(item) > len(longest):
-                longest = item
-        return longest
+        return sorted(items, key=len)[-1]
+        
