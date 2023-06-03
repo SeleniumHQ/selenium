@@ -132,8 +132,6 @@ class ChromiumOptions(ArgOptions):
           name: The experimental option name.
           value: The option value.
         """
-        if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
         self._experimental_options[name] = value
 
     @property
@@ -176,17 +174,6 @@ class ChromiumOptions(ArgOptions):
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
-        if "w3c" in chrome_options:
-            if chrome_options["w3c"]:
-                warnings.warn(
-                    "Setting 'w3c: True' is redundant and will no longer be allowed", DeprecationWarning, stacklevel=2
-                )
-            else:
-                raise AttributeError(
-                    "setting w3c to False is not allowed, "
-                    "Please update to W3C Syntax: "
-                    "https://www.selenium.dev/blog/2022/legacy-protocol-support/"
-                )
         if self.mobile_options:
             chrome_options.update(self.mobile_options)
         chrome_options["extensions"] = self.extensions

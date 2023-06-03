@@ -48,11 +48,10 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.addArguments("--headless=chrome");
+        options.addArguments("--headless=new");
       }
 
       options.addArguments(
-          "disable-extensions",
           "disable-infobars",
           "disable-breakpad",
           "disable-dev-shm-usage",

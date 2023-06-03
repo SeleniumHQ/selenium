@@ -109,6 +109,8 @@ const Pages = (function () {
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
   addPage('virtualAuthenticator', 'virtual-authenticator.html')
   addPage('logEntryAdded', 'bidi/logEntryAdded.html')
+  addPage('scriptTestAccessProperty', 'bidi/scriptTestAccessProperty.html')
+  addPage('scriptTestRemoveProperty', 'bidi/scriptTestRemoveProperty.html')
 
   return pages
 })()
