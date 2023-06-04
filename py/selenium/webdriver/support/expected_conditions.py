@@ -16,17 +16,23 @@
 # under the License.
 
 import re
-from typing import Tuple, Callable, List, Union
+from typing import Callable
+from typing import List
+from typing import Tuple
+from typing import Union
 
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.remote.webdriver import WebElement
+from selenium.webdriver import Chrome
+from selenium.webdriver import Edge
+from selenium.webdriver import Firefox
+from selenium.webdriver import Ie
+from selenium.webdriver import Safari
 from selenium.webdriver.common.alert import Alert
-from selenium.webdriver import Chrome, Firefox, Safari, Ie, Edge
-
+from selenium.webdriver.remote.webdriver import WebElement
 
 # All driver types
 AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
