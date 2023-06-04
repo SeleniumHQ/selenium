@@ -22,6 +22,8 @@ module Selenium
     module Remote
       class Bridge
         autoload :COMMANDS, 'selenium/webdriver/remote/bridge/commands'
+        autoload :LocatorConverter, 'selenium/webdriver/remote/bridge/locator_converter'
+
         include Atoms
 
         PORT = 4444
@@ -31,11 +33,16 @@ module Selenium
 
         class << self
           attr_reader :extra_commands
+          attr_writer :locator_converter
 
           def add_command(name, verb, url, &block)
             @extra_commands ||= {}
             @extra_commands[name] = [verb, url]
             define_method(name, &block)
+          end
+
+          def locator_converter
+            @locator_converter ||= LocatorConverter.new
           end
         end
 
@@ -53,6 +60,8 @@ module Selenium
           @http = http_client || Http::Default.new
           @http.server_url = uri
           @file_detector = nil
+
+          @locator_converter = self.class.locator_converter
         end
 
         #
@@ -516,7 +525,7 @@ module Selenium
         alias switch_to_active_element active_element
 
         def find_element_by(how, what, parent_ref = [])
-          how, what = convert_locator(how, what)
+          how, what = @locator_converter.convert(how, what)
 
           return execute_atom(:findElements, Support::RelativeLocator.new(what).as_json).first if how == 'relative'
 
@@ -534,7 +543,7 @@ module Selenium
         end
 
         def find_elements_by(how, what, parent_ref = [])
-          how, what = convert_locator(how, what)
+          how, what = @locator_converter.convert(how, what)
 
           return execute_atom :findElements, Support::RelativeLocator.new(what).as_json if how == 'relative'
 
@@ -655,42 +664,6 @@ module Selenium
           {capabilities: capabilities}
         end
 
-        def convert_locator(how, what)
-          how = SearchContext::FINDERS[how.to_sym] || how
-
-          case how
-          when 'class name'
-            how = 'css selector'
-            what = ".#{escape_css(what.to_s)}"
-          when 'id'
-            how = 'css selector'
-            what = "##{escape_css(what.to_s)}"
-          when 'name'
-            how = 'css selector'
-            what = "*[name='#{escape_css(what.to_s)}']"
-          end
-
-          if what.is_a?(Hash)
-            what = what.each_with_object({}) do |(h, w), hash|
-              h, w = convert_locator(h.to_s, w)
-              hash[h] = w
-            end
-          end
-
-          [how, what]
-        end
-
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/
-        UNICODE_CODE_POINT = 30
-
-        # Escapes invalid characters in CSS selector.
-        # @see https://mathiasbynens.be/notes/css-escapes
-        def escape_css(string)
-          string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..]}" if string[0]&.match?(/[[:digit:]]/)
-
-          string
-        end
       end # Bridge
     end # Remote
   end # WebDriver
