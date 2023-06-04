@@ -92,7 +92,7 @@ def url_contains(url: str) -> Callable[[AnyDriver], bool]:
     return _predicate
 
 
-def url_matches(pattern: str) -> Callable[[AnyDriver], Union[re.Match, None]]:
+def url_matches(pattern: str) -> Callable[[AnyDriver], bool]:
     """An expectation for checking the current url.
 
     pattern is the expected pattern.  This finds the first occurrence of
@@ -451,7 +451,7 @@ def alert_is_present() -> Callable[[AnyDriver], Union[Alert, bool]]:
     return _predicate
 
 
-def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> Callable[[AnyDriver], Union[str, bool, None]]:
+def element_attribute_to_include(locator: Tuple[str, str], attribute_: str) -> Callable[[AnyDriver], bool]:
     """An expectation for checking if the given attribute is included in the
     specified element.
 
