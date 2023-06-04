@@ -57,6 +57,7 @@ namespace OpenQA.Selenium.Safari
         /// This is only valid for versions of the driver for Safari that target Safari 12
         /// or later, and will result in an error if used with prior versions of the driver.
         /// </remarks>
+        [Obsolete("Only w3c protocol is currently supported")]
         public bool UseLegacyProtocol
         {
             get { return this.useLegacyProtocol; }
