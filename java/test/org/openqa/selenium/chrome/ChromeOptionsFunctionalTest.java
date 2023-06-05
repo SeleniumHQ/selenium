@@ -17,7 +17,13 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -26,13 +32,6 @@ import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
 class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
@@ -107,6 +106,7 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   private ChromeOptions createChromeOptionsForExtensions() {
     ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
-    return options.setExperimentalOption("prefs", ImmutableMap.of("extensions.ui.developer_mode", true));
+    return options.setExperimentalOption(
+        "prefs", ImmutableMap.of("extensions.ui.developer_mode", true));
   }
 }

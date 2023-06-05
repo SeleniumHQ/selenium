@@ -27,9 +27,13 @@ module Selenium
     # @api private
     #
     class SeleniumManager
-      BIN_PATH = '../../../../../bin'
-
       class << self
+        attr_writer :bin_path
+
+        def bin_path
+          @bin_path ||= '../../../../../bin'
+        end
+
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
@@ -72,7 +76,7 @@ module Selenium
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            path = File.expand_path(BIN_PATH, __FILE__)
+            path = File.expand_path(bin_path, __FILE__)
             path << if Platform.windows?
                       '/windows/selenium-manager.exe'
                     elsif Platform.mac?

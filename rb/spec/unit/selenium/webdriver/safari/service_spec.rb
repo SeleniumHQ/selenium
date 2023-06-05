@@ -30,6 +30,12 @@ module Selenium
             allow(Platform).to receive(:assert_executable).and_return(true)
           end
 
+          it 'does not allow log' do
+            expect {
+              described_class.new(log: 'anywhere')
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
+          end
+
           it 'uses default port and nil path' do
             service = described_class.new
 
@@ -55,6 +61,13 @@ module Selenium
             service = described_class.new
 
             expect(service.extra_args).to be_empty
+          end
+
+          it 'does not allow log=' do
+            service = described_class.new
+            expect {
+              service.log = 'anywhere'
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
           end
 
           it 'uses provided args' do
