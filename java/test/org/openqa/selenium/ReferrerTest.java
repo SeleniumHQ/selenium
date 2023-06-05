@@ -98,7 +98,7 @@ class ReferrerTest {
   public static void shouldTestBeRunAtAll() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
-  
+
   @BeforeAll
   public static void readContents() throws IOException {
     page1 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_1)));
