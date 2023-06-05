@@ -442,7 +442,13 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 try:
                     session = self.sessions[session_id]
                 except KeyError:
-                    raise BrowserError(f"Browser sent a message for an invalid session: {session_id!r}")
+                    raise BrowserError(
+                        {
+                            "code": -32700,
+                            "message": "Browser sent a message for an invalid session",
+                            "data": f"{session_id!r}",
+                        }
+                    )
                 session._handle_data(data)
             else:
                 self._handle_data(data)
