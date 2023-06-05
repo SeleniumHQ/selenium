@@ -227,6 +227,16 @@ module Selenium
       #
 
       class UnsupportedOperationError < WebDriverError; end
+
+      #
+      # Indicates that driver was not specified and could not be located.
+      #
+
+      class NoSuchDriverError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}/driver_location")
+        end
+      end
     end # Error
   end # WebDriver
 end # Selenium
