@@ -118,15 +118,15 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
   /**
    * By default, elements are considered "found" if they are in the DOM. Override this method in
-   * order to change whether or not you consider the element loaded. For example, perhaps you need
-   * the element to be displayed:
+   * order to change whether you consider the element loaded. For example, perhaps you need the
+   * element to be displayed:
    *
    * <pre>{@code
    * return element.isDisplayed();
    * }</pre>
    *
    * @param element The element to use
-   * @return Whether or not it meets your criteria for "found"
+   * @return Whether it meets your criteria for "found"
    */
   protected boolean isElementUsable(WebElement element) {
     return true;

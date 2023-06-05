@@ -48,7 +48,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
   private final Json json = new Json();
 
   /**
-   * Encodes the given response as a HTTP response message. This method is guaranteed not to throw.
+   * Encodes the given response as an HTTP response message. This method is guaranteed not to throw.
    *
    * @param response The response to encode.
    * @return The encoded response.

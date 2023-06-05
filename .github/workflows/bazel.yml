@@ -55,6 +55,16 @@ jobs:
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
+      - name: Remove driver directories Windows
+        if: inputs.os == 'windows'
+        run: |
+          rm "$env:ChromeWebDriver" -r -v
+          rm "$env:EdgeWebDriver" -r -v
+          rm "$env:GeckoWebDriver" -r -v
+      - name: Remove driver directories Non-Windows
+        if: inputs.os != 'windows'
+        run: |
+          sudo rm -rf $CHROMEWEBDRIVER $EDGEWEBDRIVER $GECKOWEBDRIVER
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo 'RUBY_VERSION = "${{ inputs.ruby-version }}"' > rb/ruby_version.bzl

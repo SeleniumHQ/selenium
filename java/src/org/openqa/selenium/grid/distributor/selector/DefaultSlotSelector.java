@@ -39,7 +39,7 @@ public class DefaultSlotSelector implements SlotSelector {
     // First, filter the Nodes that support the required capabilities. Then, the filtered Nodes
     // get ordered in ascendant order by the number of browsers they support.
     // With this, Nodes with diverse configurations (supporting many browsers, e.g. Chrome,
-    // Firefox, Safari) are placed at the bottom so they have more availability when a session
+    // Firefox, Safari) are placed at the bottom, so they have more availability when a session
     // requests a browser supported only by a few Nodes (e.g. Safari only supported on macOS
     // Nodes).
     // After that, Nodes are ordered by their load, last session creation, and their id.

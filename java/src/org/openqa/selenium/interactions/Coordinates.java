@@ -52,7 +52,7 @@ public interface Coordinates {
   /**
    * Gets coordinates on the element relative to the top-left corner of the page.
    *
-   * @return coordinates on the element relative to the top-left corner of the the page.
+   * @return coordinates on the element relative to the top-left corner of the page.
    */
   Point onPage();
 
