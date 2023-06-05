@@ -147,8 +147,8 @@ class BrowserError(Exception):
     indicates that an error occurred."""
 
     def __init__(self, obj):
-        self.code = obj["code"]
-        self.message = obj["message"]
+        self.code = obj.get("code")
+        self.message = obj.get("message")
         self.detail = obj.get("data")
 
     def __str__(self):
