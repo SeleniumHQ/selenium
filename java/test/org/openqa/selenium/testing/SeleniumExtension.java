@@ -140,8 +140,8 @@ public class SeleniumExtension
       throw new Exception(
           String.format(
               "%s.%s is marked as not yet implemented with %s but already works!",
-              testClass.isPresent() ? testClass.get().getName() : "",
-              testMethod.isPresent() ? testMethod.get().getName() : "",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
               current));
     }
   }

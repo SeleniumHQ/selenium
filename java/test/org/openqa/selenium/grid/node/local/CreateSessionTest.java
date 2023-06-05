@@ -84,7 +84,7 @@ class CreateSessionTest {
           json.toType(new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8), MAP_TYPE);
 
       // Ensure that there's no status field (as this is used by the protocol handshake to determine
-      // whether the session is using the JWP or the W3C dialect.
+      // whether the session is using the JWP or the W3C dialect).
       assertThat(all.containsKey("status")).isFalse();
 
       // Now check the fields required by the spec
@@ -140,7 +140,7 @@ class CreateSessionTest {
           json.toType(new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8), MAP_TYPE);
 
       // Ensure that there's no status field (as this is used by the protocol handshake to determine
-      // whether the session is using the JWP or the W3C dialect.
+      // whether the session is using the JWP or the W3C dialect).
       assertThat(all.containsKey("status")).isFalse();
 
       // Now check the fields required by the spec

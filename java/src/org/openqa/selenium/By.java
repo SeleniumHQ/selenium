@@ -101,7 +101,7 @@ public abstract class By {
 
   /**
    * Find elements via the driver's underlying W3C Selector engine. If the browser does not
-   * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
+   * implement the Selector API, the best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
    * @param cssSelector CSS expression.
