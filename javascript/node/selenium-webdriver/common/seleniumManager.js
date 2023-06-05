@@ -94,6 +94,16 @@ function driverLocation(options) {
     args.push('--browser-path', '"' + vendorOptions.binary + '"')
   }
 
+  // Get the httpProxy and sslProxy values from the options object
+  const httpProxy = options.getProxy()['httpProxy'];
+  const sslProxy = options.getProxy()['sslProxy'];
+
+  if (httpProxy) {
+    args.push('--proxy', httpProxy);
+  } else if (sslProxy) {
+    args.push('--proxy', sslProxy);
+  }
+
   const smBinary = getBinary()
   const spawnResult = spawnSync(smBinary, args)
   let output
