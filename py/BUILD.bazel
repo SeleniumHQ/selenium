@@ -47,20 +47,20 @@ TEST_DEPS = [
 ]
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "selenium/webdriver/common/macos/selenium-manager",
-)
-
-copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "selenium/webdriver/common/linux/selenium-manager",
 )
 
 copy_file(
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "selenium/webdriver/common/macos/selenium-manager",
+)
+
+copy_file(
     name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
+    src = "//common/manager:selenium-manager-windows",
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
 )
 

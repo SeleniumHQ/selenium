@@ -25,18 +25,18 @@ java_export(
 
 copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "linux/selenium-manager",
 )
 
 copy_file(
-    name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
-    out = "windows/selenium-manager.exe",
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "macos/selenium-manager",
 )
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "macos/selenium-manager",
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "windows/selenium-manager.exe",
 )
