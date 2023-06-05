@@ -29,6 +29,7 @@ rust_test(
     size = "small",
     srcs = glob(["src/**/*.rs"]),
     crate = ":selenium_manager",
+    tags = ["no-sandbox"],
 )
 
 [
