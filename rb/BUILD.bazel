@@ -16,20 +16,20 @@ exports_files(["ruby_version.bzl"])
 
 copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "bin/linux/selenium-manager",
 )
 
 copy_file(
-    name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
-    out = "bin/windows/selenium-manager.exe",
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "bin/macos/selenium-manager",
 )
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "bin/macos/selenium-manager",
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "bin/windows/selenium-manager.exe",
 )
 
 select_file(
