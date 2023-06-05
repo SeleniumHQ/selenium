@@ -1,4 +1,4 @@
-// <copyright file="V111JavaScript.cs" company="WebDriver Committers">
+// <copyright file="V114JavaScript.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,25 +18,25 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V111.Page;
-using OpenQA.Selenium.DevTools.V111.Runtime;
+using OpenQA.Selenium.DevTools.V114.Page;
+using OpenQA.Selenium.DevTools.V114.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V111
+namespace OpenQA.Selenium.DevTools.V114
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 111 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 114 of the DevTools Protocol.
     /// </summary>
-    public class V111JavaScript : JavaScript
+    public class V114JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V111JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V114JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
-        public V111JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V114JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime;
             this.page = page;
