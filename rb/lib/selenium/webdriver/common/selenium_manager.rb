@@ -38,7 +38,7 @@ module Selenium
         # @return [String] the path to the correct driver.
         def driver_path(options)
           message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
-          WebDriver.logger.info(message, id: :selenium_manager)
+          WebDriver.logger.debug(message, id: :selenium_manager)
 
           unless options.is_a?(Options)
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
@@ -106,7 +106,8 @@ module Selenium
           end
 
           (json_output&.fetch('logs') || []).each do |log|
-            WebDriver.logger.send(log['level'].downcase, log['message'], id: :selenium_manager)
+            level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
+            WebDriver.logger.send(level, log['message'], id: :selenium_manager)
           end
 
           if status.exitstatus.positive?
