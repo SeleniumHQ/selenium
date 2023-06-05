@@ -84,7 +84,8 @@ public abstract class JupiterTestBase {
   public String toLocalUrl(String url) {
     try {
       URL original = new URL(url);
-      return new URL(original.getProtocol(), "localhost", original.getPort(), original.getFile()).toString();
+      return new URL(original.getProtocol(), "localhost", original.getPort(), original.getFile())
+          .toString();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
