@@ -1,4 +1,4 @@
-// <copyright file="V111Network.cs" company="WebDriver Committers">
+// <copyright file="V114Network.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,25 +20,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V111.Fetch;
-using OpenQA.Selenium.DevTools.V111.Network;
+using OpenQA.Selenium.DevTools.V114.Fetch;
+using OpenQA.Selenium.DevTools.V114.Network;
 
-namespace OpenQA.Selenium.DevTools.V111
+namespace OpenQA.Selenium.DevTools.V114
 {
     /// <summary>
-    /// Class providing functionality for manipulating network calls using version 111 of the DevTools Protocol
+    /// Class providing functionality for manipulating network calls using version 114 of the DevTools Protocol
     /// </summary>
-    public class V111Network : DevTools.Network
+    public class V114Network : DevTools.Network
     {
         private FetchAdapter fetch;
         private NetworkAdapter network;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V111Network"/> class.
+        /// Initializes a new instance of the <see cref="V114Network"/> class.
         /// </summary>
         /// <param name="network">The adapter for the Network domain.</param>
         /// <param name="fetch">The adapter for the Fetch domain.</param>
-        public V111Network(NetworkAdapter network, FetchAdapter fetch)
+        public V114Network(NetworkAdapter network, FetchAdapter fetch)
         {
             this.network = network;
             this.fetch = fetch;
@@ -80,12 +80,12 @@ namespace OpenQA.Selenium.DevTools.V111
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task EnableFetchForAllPatterns()
         {
-            await fetch.Enable(new OpenQA.Selenium.DevTools.V111.Fetch.EnableCommandSettings()
+            await fetch.Enable(new OpenQA.Selenium.DevTools.V114.Fetch.EnableCommandSettings()
             {
-                Patterns = new OpenQA.Selenium.DevTools.V111.Fetch.RequestPattern[]
+                Patterns = new OpenQA.Selenium.DevTools.V114.Fetch.RequestPattern[]
                 {
-                    new OpenQA.Selenium.DevTools.V111.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
-                    new OpenQA.Selenium.DevTools.V111.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
+                    new OpenQA.Selenium.DevTools.V114.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
+                    new OpenQA.Selenium.DevTools.V114.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
                 },
                 HandleAuthRequests = true
             });
@@ -208,9 +208,9 @@ namespace OpenQA.Selenium.DevTools.V111
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new V111.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new V114.Fetch.AuthChallengeResponse()
                 {
-                    Response = V111.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
+                    Response = V114.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
                     Username = userName,
                     Password = password
                 }
@@ -227,9 +227,9 @@ namespace OpenQA.Selenium.DevTools.V111
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new OpenQA.Selenium.DevTools.V111.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new OpenQA.Selenium.DevTools.V114.Fetch.AuthChallengeResponse()
                 {
-                    Response = V111.Fetch.AuthChallengeResponseResponseValues.CancelAuth
+                    Response = V114.Fetch.AuthChallengeResponseResponseValues.CancelAuth
                 }
             });
         }
