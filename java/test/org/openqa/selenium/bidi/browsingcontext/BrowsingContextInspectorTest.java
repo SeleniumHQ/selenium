@@ -33,6 +33,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.drivers.Browser;
 
 class BrowsingContextInspectorTest {
 
@@ -41,7 +42,7 @@ class BrowsingContextInspectorTest {
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
     options.setCapability("webSocketUrl", true);
 
     driver = new FirefoxDriver(options);

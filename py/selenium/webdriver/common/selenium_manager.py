@@ -70,7 +70,7 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
-        logger.info("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
+        logger.debug("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
 
         browser = options.capabilities["browserName"]
 
@@ -121,6 +121,6 @@ class SeleniumManager:
             for item in output["logs"]:
                 if item["level"] == "WARN":
                     logger.warning(item["message"])
-                if item["level"] == "DEBUG":
+                if item["level"] == "DEBUG" or item["level"] == "INFO":
                     logger.debug(item["message"])
             return result

@@ -17,9 +17,20 @@
 
 package org.openqa.selenium.devtools.v114;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -37,19 +48,6 @@ import org.openqa.selenium.devtools.v114.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.AbstractMap;
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
 
 public class v114Network extends Network<AuthRequired, RequestPaused> {
 

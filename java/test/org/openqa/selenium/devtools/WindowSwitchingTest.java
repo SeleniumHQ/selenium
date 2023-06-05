@@ -36,7 +36,7 @@ class WindowSwitchingTest extends DevToolsTestBase {
   public void shouldBeAbleToSwitchWindowsAndCloseTheOriginal() {
     WebDriver driver = new Augmenter().augment(this.driver);
 
-    driver.get("https://www.selenium.dev");
+    driver.get(pages.xhtmlTestPage);
 
     String originalWindow = driver.getWindowHandle();
     driver.switchTo().newWindow(WindowType.TAB);
@@ -48,7 +48,7 @@ class WindowSwitchingTest extends DevToolsTestBase {
     // tab
     driver.switchTo().window(originalWindow).close();
     driver.switchTo().window(newWindowHandle);
-    driver.get("https://www.selenium.dev/documentation/webdriver/browser_manipulation/");
+    driver.get(pages.echoPage);
 
     List<TargetInfo> updatedTargets =
         this.devTools.send(this.devTools.getDomains().target().getTargets());
@@ -65,7 +65,7 @@ class WindowSwitchingTest extends DevToolsTestBase {
     devTools.createSession();
     addConsoleLogListener(devTools);
 
-    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.get(appServer.whereIs("logEntryAdded.html"));
 
     List<TargetInfo> originalTargets = devTools.send(devTools.getDomains().target().getTargets());
     driver.findElement(By.id("consoleLog")).click();
@@ -77,7 +77,7 @@ class WindowSwitchingTest extends DevToolsTestBase {
     devTools.createSession(windowHandle);
     addConsoleLogListener(devTools);
 
-    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.get(appServer.whereIs("logEntryAdded.html"));
     driver.findElement(By.id("consoleLog")).click();
 
     List<TargetInfo> updatedTargets =
