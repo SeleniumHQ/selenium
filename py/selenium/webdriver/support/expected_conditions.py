@@ -189,7 +189,9 @@ def presence_of_all_elements_located(locator: Tuple[str, str]) -> Callable[[AnyD
     return _predicate
 
 
-def visibility_of_any_elements_located(locator: Tuple[str, str]) -> Callable[[AnyDriver], List[WebElement]]:
+def visibility_of_any_elements_located(
+        locator: Tuple[str, str]
+    ) -> Callable[[AnyDriver], List[WebElement]]:
     """An expectation for checking that there is at least one element visible
     on a web page.
 
@@ -227,7 +229,9 @@ def visibility_of_all_elements_located(
     return _predicate
 
 
-def text_to_be_present_in_element(locator: Tuple[str, str], text_: str) -> Callable[[AnyDriver], bool]:
+def text_to_be_present_in_element(
+        locator: Tuple[str, str], text_: str
+    ) -> Callable[[AnyDriver], bool]:
     """An expectation for checking if the given text is present in the
     specified element.
 
