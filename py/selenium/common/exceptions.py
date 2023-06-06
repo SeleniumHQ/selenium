@@ -20,6 +20,8 @@
 from typing import Optional
 from typing import Sequence
 
+SUPPORT_MSG = 'For documentation on this error, please visit:'
+ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
 class WebDriverException(Exception):
     """Base webdriver exception."""
@@ -69,6 +71,12 @@ class NoSuchElementException(WebDriverException):
           (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
           for how to write a wait wrapper to wait for an element to appear.
     """
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f'{msg}; {SUPPORT_MSG} {ERROR_URL}#no-such-element-exception'
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class NoSuchAttributeException(WebDriverException):
@@ -101,6 +109,12 @@ class StaleElementReferenceException(WebDriverException):
           node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f'{msg}; {SUPPORT_MSG} {ERROR_URL}#stale-element-reference-exception'
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class InvalidElementStateException(WebDriverException):
@@ -193,6 +207,12 @@ class InvalidSelectorException(WebDriverException):
     expression) or the expression does not select WebElements (e.g.
     "count(//input)").
     """
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f'{msg}; {SUPPORT_MSG} {ERROR_URL}#invalid-selector-exception'
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class ImeNotAvailableException(WebDriverException):
