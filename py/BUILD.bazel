@@ -325,6 +325,7 @@ py_library(
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
         tags = [
             "no-sandbox",
         ] + BROWSERS[browser]["tags"],
