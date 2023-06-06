@@ -49,7 +49,6 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import UnknownMethodException
 from selenium.common.exceptions import WebDriverException
 
-
 ErrorCode = {
     "SUCCESS": (0,),
     "NO_SUCH_ELEMENT": (7, "no such element", NoSuchElementException),
