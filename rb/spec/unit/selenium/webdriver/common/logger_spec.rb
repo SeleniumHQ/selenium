@@ -105,9 +105,10 @@ module Selenium
       end
 
       describe '#info' do
-        it 'logs info on first info but not second' do
+        it 'logs info on first displayed logging only' do
           logger = described_class.new('Selenium', default_level: :info)
 
+          logger.debug('first')
           expect { logger.info('first') }.to output(/:logger_info/).to_stdout_from_any_process
           expect { logger.info('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
         end

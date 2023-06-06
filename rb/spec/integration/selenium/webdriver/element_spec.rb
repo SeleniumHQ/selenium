@@ -40,6 +40,17 @@ module Selenium
         expect { driver.find_element(id: 'other_contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
+      it 'raises if element stale' do
+        driver.navigate.to url_for('formPage.html')
+        button = driver.find_element(id: 'imageButton')
+        driver.navigate.refresh
+
+        expect { button.click }.to raise_exception(Error::StaleElementReferenceError,
+                                                   /errors#stale-element-reference-exception/)
+
+        reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
+      end
+
       describe '#submit' do
         it 'valid submit button' do
           driver.navigate.to url_for('formPage.html')
