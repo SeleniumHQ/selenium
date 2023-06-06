@@ -16,8 +16,9 @@
 # under the License.
 import logging
 import shutil
+from pathlib import Path
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import NoSuchDriverException
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.common.service import Service
@@ -36,10 +37,13 @@ class DriverFinder:
 
     @staticmethod
     def get_path(service: Service, options: BaseOptions) -> str:
+        path = shutil.which(service.path)
         try:
-            path = shutil.which(service.path) or SeleniumManager().driver_location(options)
-        except WebDriverException as err:
-            logger.warning("Unable to obtain driver using Selenium Manager: " + err.msg)
-            raise err
+            path = SeleniumManager().driver_location(options) if path is None else path
+        except Exception as err:
+            raise NoSuchDriverException(f"Unable to obtain {service.path} using Selenium Manager; {err}")
+
+        if path is None or not Path(path).is_file():
+            raise NoSuchDriverException(f"Unable to locate or obtain {service.path}")
 
         return path

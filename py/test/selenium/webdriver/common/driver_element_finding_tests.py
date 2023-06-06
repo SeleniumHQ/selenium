@@ -99,6 +99,7 @@ def test_no_such_element_error(driver, pages):
     with pytest.raises(NoSuchElementException, match=msg):
         driver.find_element(By.ID, "non_Existent_Button")
 
+
 # By.name positive
 
 
