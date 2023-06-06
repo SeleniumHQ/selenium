@@ -15,21 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.remote;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.service.DriverService;
 
 /**
- * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)} and {@link
- * WebElement#findElement(By by) WebElement.findElement(By by)}.
+ * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
  */
-public class NoSuchElementException extends NotFoundException {
+public class NoSuchDriverException extends WebDriverException {
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#no-such-element-exception";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
 
-  public NoSuchElementException(String reason) {
+  public NoSuchDriverException(String reason) {
     super(reason);
   }
 
-  public NoSuchElementException(String reason, Throwable cause) {
+  public NoSuchDriverException(String reason, Throwable cause) {
     super(reason, cause);
   }
 

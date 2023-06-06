@@ -64,6 +64,7 @@ module Selenium
 
         it 'does not require any parameters' do
           allow(SeleniumManager).to receive(:driver_path).and_return('path')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:assert_executable)
           expect_request
 
@@ -72,6 +73,7 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           allow(SeleniumManager).to receive(:driver_path).and_return('path')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:assert_executable)
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', 'ms:edgeOptions': opts}}})
@@ -81,6 +83,7 @@ module Selenium
 
         it 'raises an ArgumentError if parameter is not recognized' do
           allow(SeleniumManager).to receive(:driver_path).and_return('path')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:assert_executable)
           msg = 'unknown keyword: :invalid'
           expect { described_class.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
