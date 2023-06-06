@@ -93,6 +93,13 @@ def test_finding_multiple_elements_by_id_with_space_should_return_empty_list(dri
     assert len(elements) == 0
 
 
+def test_no_such_element_error(driver, pages):
+    pages.load("formPage.html")
+    msg = r"\/errors#no-such-element-exception"
+    with pytest.raises(NoSuchElementException, match=msg):
+        driver.find_element(By.ID, "non_Existent_Button")
+
+
 # By.name positive
 
 
@@ -268,7 +275,8 @@ def test_should_not_find_element_by_class_when_the_name_queried_is_shorter_than_
 
 def test_finding_asingle_element_by_empty_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(InvalidSelectorException):
+    msg = r"\/errors#invalid-selector-exception"
+    with pytest.raises(InvalidSelectorException, match=msg):
         driver.find_element(By.CLASS_NAME, "")
 
 
