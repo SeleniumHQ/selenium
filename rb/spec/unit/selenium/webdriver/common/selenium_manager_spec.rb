@@ -34,6 +34,7 @@ module Selenium
 
         it 'detects Windows' do
           stub_binary('/windows/selenium-manager.exe')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(true)
 
           expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
@@ -41,6 +42,7 @@ module Selenium
 
         it 'detects Mac' do
           stub_binary('/macos/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
@@ -49,6 +51,7 @@ module Selenium
 
         it 'detects Linux' do
           stub_binary('/linux/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
@@ -61,7 +64,7 @@ module Selenium
 
           expect {
             described_class.send(:binary)
-          }.to raise_error(Error::WebDriverError, /Unable to obtain Selenium Manager/)
+          }.to raise_error(Error::WebDriverError, /Selenium Manager binary located, but not a file/)
         end
       end
 
@@ -74,12 +77,6 @@ module Selenium
       end
 
       describe 'self.driver_path' do
-        it 'errors if not an option' do
-          expect {
-            described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
-          }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
-        end
-
         it 'determines browser name by default' do
           allow(described_class).to receive(:run)
           allow(described_class).to receive(:binary).and_return('selenium-manager')

@@ -170,7 +170,7 @@ public class SeleniumManager {
         }
         binary.setExecutable(true);
       } catch (Exception e) {
-        throw new WebDriverException("Unable to obtain Selenium Manager", e);
+        throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     }
     return binary;

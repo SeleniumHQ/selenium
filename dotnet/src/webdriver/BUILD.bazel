@@ -248,19 +248,19 @@ copy_file(
 
 copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "manager/linux/selenium-manager",
 )
 
 copy_file(
     name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
+    src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
 )
 
 copy_file(
     name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
+    src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
 )
 
