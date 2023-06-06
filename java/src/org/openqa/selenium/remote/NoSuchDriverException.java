@@ -15,15 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v114;
+package org.openqa.selenium.remote;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.service.DriverService;
 
-@AutoService(CdpInfo.class)
-public class v114CdpInfo extends CdpInfo {
+/**
+ * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
+ */
+public class NoSuchDriverException extends WebDriverException {
 
-  public v114CdpInfo() {
-    super(114, v114Domains::new);
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
+
+  public NoSuchDriverException(String reason) {
+    super(reason);
+  }
+
+  public NoSuchDriverException(String reason, Throwable cause) {
+    super(reason, cause);
+  }
+
+  @Override
+  public String getSupportUrl() {
+    return SUPPORT_URL;
   }
 }

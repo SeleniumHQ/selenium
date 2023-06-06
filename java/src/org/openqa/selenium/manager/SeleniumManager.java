@@ -59,6 +59,7 @@ public class SeleniumManager {
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String EXE = ".exe";
+  private static final String INFO = "INFO";
   private static final String WARN = "WARN";
   private static final String DEBUG = "DEBUG";
 
@@ -135,7 +136,7 @@ public class SeleniumManager {
           if (logged.level.equalsIgnoreCase(WARN)) {
             LOG.warning(logged.message);
           }
-          if (logged.level.equalsIgnoreCase(DEBUG)) {
+          if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
             LOG.fine(logged.message);
           }
         });
@@ -169,7 +170,7 @@ public class SeleniumManager {
         }
         binary.setExecutable(true);
       } catch (Exception e) {
-        throw new WebDriverException("Unable to obtain Selenium Manager", e);
+        throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     }
     return binary;
@@ -209,7 +210,7 @@ public class SeleniumManager {
    * @return the location of the driver.
    */
   public String getDriverPath(Capabilities options) {
-    LOG.info("Applicable driver not found; attempting to install with Selenium Manager (Beta)");
+    LOG.fine("Applicable driver not found; attempting to install with Selenium Manager (Beta)");
     File binaryFile = getBinary();
     if (binaryFile == null) {
       return null;

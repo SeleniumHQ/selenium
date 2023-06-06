@@ -277,7 +277,7 @@ bazel-selenium/external/bundle/bin/rdbg -A
 
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
-1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE.
+1. Run `bundle exec rake update` as necessary to update generated artifacts.
 2. Open `rb/` as a main project directory.
 3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.

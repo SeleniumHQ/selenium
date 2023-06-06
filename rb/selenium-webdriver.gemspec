@@ -54,6 +54,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   s.add_development_dependency 'rack', ['~> 2.0']
+  s.add_development_dependency 'rake', ['~> 13.0']
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rubocop', ['~> 1.42']
   s.add_development_dependency 'rubocop-performance', ['~> 1.15']
