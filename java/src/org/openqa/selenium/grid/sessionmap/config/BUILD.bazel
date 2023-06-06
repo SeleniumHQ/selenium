@@ -12,6 +12,5 @@ java_library(
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/sessionmap",
         artifact("com.beust:jcommander"),
-        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )
