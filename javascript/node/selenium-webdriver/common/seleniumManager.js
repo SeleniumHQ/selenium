@@ -89,14 +89,20 @@ function driverLocation(options) {
     args.push('--browser-path', '"' + vendorOptions.binary + '"')
   }
 
-  // Get the httpProxy and sslProxy values from the options object
-  const httpProxy = options.getProxy()['httpProxy'];
-  const sslProxy = options.getProxy()['sslProxy'];
+  const proxyOptions = options.getProxy();
 
-  if (httpProxy) {
-    args.push('--proxy', httpProxy);
-  } else if (sslProxy) {
-    args.push('--proxy', sslProxy);
+  // Check if proxyOptions exists and has properties
+  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
+    const httpProxy = proxyOptions['httpProxy'];
+    const sslProxy = proxyOptions['sslProxy'];
+
+    if (httpProxy !== undefined) {
+      args.push('--proxy', httpProxy);
+    }
+
+    else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy);
+    }
   }
 
   const smBinary = getBinary()
