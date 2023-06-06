@@ -40,10 +40,6 @@ module Selenium
           message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
           WebDriver.logger.debug(message, id: :selenium_manager)
 
-          unless options.is_a?(Options)
-            raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
-          end
-
           command = generate_command(binary, options)
 
           location = run(*command)
@@ -85,11 +81,18 @@ module Selenium
                       '/linux/selenium-manager'
                     end
             location = File.expand_path(path, __FILE__)
-            unless location.is_a?(String) && File.exist?(location) && File.executable?(location)
-              raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
+
+            begin
+              Platform.assert_file(location)
+              Platform.assert_executable(location)
+            rescue TypeError
+              raise Error::WebDriverError,
+                    "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
+            rescue Error::WebDriverError => e
+              raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
             end
 
-            WebDriver.logger.debug("Selenium Manager found at #{location}", id: :selenium_manager)
+            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
             location
           end
         end
@@ -102,7 +105,7 @@ module Selenium
             json_output = stdout.empty? ? nil : JSON.parse(stdout)
             result = json_output&.dig('result', 'message')
           rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
           (json_output&.fetch('logs') || []).each do |log|

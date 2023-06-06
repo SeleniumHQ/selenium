@@ -22,6 +22,8 @@ java_library(
         "NeedsFreshDriver.java",
         "NoDriverAfterTest.java",
         "NoDriverBeforeTest.java",
+        "NotWorkingInRemoteBazelBuilds.java",
+        "NotWorkingInRemoteBazelBuildsList.java",
         "NotYetImplemented.java",
         "NotYetImplementedList.java",
         "SwitchToTopAfterTest.java",

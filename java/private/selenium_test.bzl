@@ -77,6 +77,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     stripped_args.pop("data", None)
     stripped_args.pop("jvm_flags", None)
     stripped_args.pop("tags", None)
+    inherited_env = stripped_args.pop("env_inherit", []) + ["REMOTE_BUILD"]
 
     all_tests = []
 
@@ -94,6 +95,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             # Only allow linting on the default test
             tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
+            env_inherit = inherited_env,
             **stripped_args
         )
         if browser == default_browser:
