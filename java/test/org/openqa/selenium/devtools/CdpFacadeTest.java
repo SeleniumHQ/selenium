@@ -65,7 +65,7 @@ class CdpFacadeTest extends DevToolsTestBase {
   public void networkInterceptorAndAuthHandlersDoNotFight() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
 
-    // First of all register the auth details
+    // First of all, register the auth details
     ((HasAuthentication) driver).register(UsernameAndPassword.of("test", "test"));
 
     // Verify things look okay

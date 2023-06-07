@@ -164,7 +164,7 @@ public class DevTools implements Closeable {
 
     // Grab the first "page" type, and glom on to that.
     // Find out which one might be the current one
-    // (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
+    // (using the given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
     return infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
