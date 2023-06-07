@@ -190,21 +190,21 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
   @Override
   public Object onError(
-      Decorated<?> target, Method method, Object[] args, InvocationTargetException e)
-      throws Throwable {
+    Decorated<?> target, Method method, Object[] args, InvocationTargetException e)
+    throws Throwable {
     listeners.forEach(
-        listener -> {
-          try {
-            listener.onError(target.getOriginal(), method, args, e);
-          } catch (Throwable t) {
-            LOG.log(Level.WARNING, t.getMessage(), t);
-          }
-        });
+      listener -> {
+        try {
+          listener.onError(target.getOriginal(), method, args, e);
+        } catch (Throwable t) {
+          LOG.log(Level.WARNING, t.getMessage(), t);
+        }
+      });
     return super.onError(target, method, args, e);
   }
 
   private void fireBeforeEvents(
-      WebDriverListener listener, Decorated<?> target, Method method, Object[] args) {
+    WebDriverListener listener, Decorated<?> target, Method method, Object[] args) {
     try {
       listener.beforeAnyCall(target.getOriginal(), method, args);
     } catch (Throwable t) {
@@ -247,11 +247,11 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
   }
 
   private void fireAfterEvents(
-      WebDriverListener listener, Decorated<?> target, Method method, Object res, Object[] args) {
+    WebDriverListener listener, Decorated<?> target, Method method, Object res, Object[] args) {
     String methodName = createEventMethodName("after", method.getName());
 
     boolean isVoid =
-        method.getReturnType() == Void.TYPE || method.getReturnType() == WebDriver.Timeouts.class;
+      method.getReturnType() == Void.TYPE || method.getReturnType() == WebDriver.Timeouts.class;
     int argsLength = args != null ? args.length : 0;
     Object[] args2 = new Object[argsLength + 1 + (isVoid ? 0 : 1)];
     args2[0] = target.getOriginal();
@@ -274,7 +274,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.afterAnyWebElementCall((WebElement) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Navigation) {
         listener.afterAnyNavigationCall(
-            (WebDriver.Navigation) target.getOriginal(), method, args, res);
+          (WebDriver.Navigation) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof Alert) {
         listener.afterAnyAlertCall((Alert) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Options) {
@@ -297,8 +297,8 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
   private String createEventMethodName(String prefix, String originalMethodName) {
     return prefix
-        + originalMethodName.substring(0, 1).toUpperCase()
-        + originalMethodName.substring(1);
+           + originalMethodName.substring(0, 1).toUpperCase()
+           + originalMethodName.substring(1);
   }
 
   private Method findMatchingMethod(WebDriverListener listener, String methodName, Object[] args) {
