@@ -35,7 +35,8 @@ class BaseOptions(metaclass=ABCMeta):
     @property
     def capabilities(self):
         return self._caps
-
+    
+    # setter that sets _caps
     @capabilities.setter
     def capabilities(self, values):
         name, value = values
