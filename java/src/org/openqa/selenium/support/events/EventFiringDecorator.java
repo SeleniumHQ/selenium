@@ -236,7 +236,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     args = args != null ? args : new Object[0];
     Object[] args2 = new Object[args.length + 1];
     args2[0] = target.getOriginal();
-    System.arraycopy(args, 0, args2, 1, argsLength);
+    System.arraycopy(args, 0, args2, 1, args.length);
 
     Method m = findMatchingMethod(listener, methodName, args2);
     if (m != null) {
