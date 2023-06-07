@@ -26,8 +26,7 @@ public class DriverFinder {
       try {
         exePath = SeleniumManager.getInstance().getDriverPath(options);
       } catch (Exception e) {
-        throw new NoSuchDriverException(String.format(
-          "Unable to obtain: %s", options), e);
+        throw new NoSuchDriverException(String.format("Unable to obtain: %s", options), e);
       }
     }
 
@@ -37,7 +36,8 @@ public class DriverFinder {
     } else if (!new File(exePath).exists()) {
       message = String.format("%s located at %s, but invalid", service.getDriverName(), exePath);
     } else if (!new File(exePath).canExecute()) {
-      message = String.format("%s located at %s, cannot be executed", service.getDriverName(), exePath);
+      message =
+          String.format("%s located at %s, cannot be executed", service.getDriverName(), exePath);
     } else {
       return exePath;
     }

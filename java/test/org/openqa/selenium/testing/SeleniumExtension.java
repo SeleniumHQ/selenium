@@ -149,18 +149,19 @@ public class SeleniumExtension
               current));
     }
 
-    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds = new NotWorkingInRemoteBazelBuildsRule(context);
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
     boolean isNotExpectedToWork = notWorkingInRemoteBuilds.check();
 
     if (isNotExpectedToWork && !failedWithRemoteBuild) {
       Optional<Class<?>> testClass = context.getTestClass();
       Optional<Method> testMethod = context.getTestMethod();
       throw new Exception(
-        String.format(
-          "%s.%s is not yet expected to work on remote builds using %s, but it already works!",
-          testClass.map(Class::getName).orElse(""),
-          testMethod.map(Method::getName).orElse(""),
-          Browser.detect()));
+          String.format(
+              "%s.%s is not yet expected to work on remote builds using %s, but it already works!",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
+              Browser.detect()));
     }
   }
 
@@ -220,7 +221,8 @@ public class SeleniumExtension
       failedWithNotYetImplemented = true;
     }
 
-    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds = new NotWorkingInRemoteBazelBuildsRule(context);
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
     if (notWorkingInRemoteBuilds.check()) {
       failedWithRemoteBuild = true;
     }
@@ -336,7 +338,6 @@ public class SeleniumExtension
           findRepeatableAnnotations(element, NotYetImplemented.class);
       return notImplemented(notYetImplementedList) || notImplemented(notYetImplemented.stream());
     }
-
   }
 
   private static class NotWorkingInRemoteBazelBuildsRule {
@@ -362,9 +363,9 @@ public class SeleniumExtension
 
       Optional<AnnotatedElement> element = context.getElement();
       Optional<NotWorkingInRemoteBazelBuilds> notWorkingList =
-        findAnnotation(element, NotWorkingInRemoteBazelBuilds.class);
+          findAnnotation(element, NotWorkingInRemoteBazelBuilds.class);
       List<NotWorkingInRemoteBazelBuilds> notWorking =
-        findRepeatableAnnotations(element, NotWorkingInRemoteBazelBuilds.class);
+          findRepeatableAnnotations(element, NotWorkingInRemoteBazelBuilds.class);
       return notWorkingYet(notWorkingList) || notWorkingYet(notWorking.stream());
     }
   }
