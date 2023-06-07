@@ -1,0 +1,866 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IWebElement
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IWebElement
+ ">
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_IWebElement.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.IWebElement%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.IWebElement">
+
+
+
+  <h1 id="OpenQA_Selenium_IWebElement" data-uid="OpenQA.Selenium.IWebElement" class="text-break">
+    Interface IWebElement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the interface through which the user controls elements on the page.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IWebElement : ISearchContext</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElement_OpenQA_Selenium_By_">ISearchContext.FindElement(By)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElements_OpenQA_Selenium_By_">ISearchContext.FindElements(By)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="OpenQA_Selenium_IWebElement_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> interface represents an HTML element.
+Generally, all interesting operations to do with interacting with a page will
+be performed through this interface.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_IWebElement_Displayed_" data-uid="OpenQA.Selenium.IWebElement.Displayed*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Displayed" data-uid="OpenQA.Selenium.IWebElement.Displayed">
+  Displayed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether or not this element is displayed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool Displayed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Displayed_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Displayed">Displayed</a> property avoids the problem
+of having to parse an element's &quot;style&quot; attribute to determine
+visibility of an element.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Enabled_" data-uid="OpenQA.Selenium.IWebElement.Enabled*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Enabled" data-uid="OpenQA.Selenium.IWebElement.Enabled">
+  Enabled
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether or not this element is enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool Enabled { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Enabled_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Enabled">Enabled</a> property will generally
+return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for everything except explicitly disabled input elements.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Location_" data-uid="OpenQA.Selenium.IWebElement.Location*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Location" data-uid="OpenQA.Selenium.IWebElement.Location">
+  Location
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.drawing.point">Point</a> object containing the coordinates of the upper-left corner
+of this element relative to the upper-left corner of the page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Point Location { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.drawing.point">Point</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Selected_" data-uid="OpenQA.Selenium.IWebElement.Selected*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Selected" data-uid="OpenQA.Selenium.IWebElement.Selected">
+  Selected
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether or not this element is selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool Selected { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Selected_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This operation only applies to input elements such as checkboxes,
+options in a select element and radio buttons.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Size_" data-uid="OpenQA.Selenium.IWebElement.Size*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Size" data-uid="OpenQA.Selenium.IWebElement.Size">
+  Size
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Size">Size</a> object containing the height and width of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Size Size { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.drawing.size">Size</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_TagName_" data-uid="OpenQA.Selenium.IWebElement.TagName*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_TagName" data-uid="OpenQA.Selenium.IWebElement.TagName">
+  TagName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the tag name of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string TagName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_TagName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_TagName">TagName</a> property returns the tag name of the
+element, not the value of the name attribute. For example, it will return
+&quot;input&quot; for an element specified by the HTML markup &lt;input name=&quot;foo&quot; /&gt;.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Text_" data-uid="OpenQA.Selenium.IWebElement.Text*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Text" data-uid="OpenQA.Selenium.IWebElement.Text">
+  Text
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string Text { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_IWebElement_Clear_" data-uid="OpenQA.Selenium.IWebElement.Clear*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Clear" data-uid="OpenQA.Selenium.IWebElement.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears the content of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Clear()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Clear_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If this element is a text entry element, the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Clear">Clear()</a>
+method will clear the value. It has no effect on other elements. Text entry elements
+are defined as elements with INPUT or TEXTAREA tags.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_Click_" data-uid="OpenQA.Selenium.IWebElement.Click*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Click" data-uid="OpenQA.Selenium.IWebElement.Click">
+  Click()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clicks this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Click()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Click_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Click this element. If the click causes a new page to load, the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Click">Click()</a>
+method will attempt to block until the page has loaded. After calling the
+<a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_Click">Click()</a> method, you should discard all references to this
+element unless you know that the element and the page will still be present.
+Otherwise, any further operations performed on this element will have an undefined.
+behavior.
+</p>
+<p>
+If this element is not clickable, then this operation is ignored. This allows you to
+simulate a users to accidentally missing the target when clicking.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.ElementNotVisibleException.html">ElementNotVisibleException</a></dt>
+    <dd><p>Thrown when the target element is not visible.</p>
+</dd>
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_GetAttribute_" data-uid="OpenQA.Selenium.IWebElement.GetAttribute*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_GetAttribute_System_String_" data-uid="OpenQA.Selenium.IWebElement.GetAttribute(System.String)">
+  GetAttribute(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of the specified attribute for this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string GetAttribute(string attributeName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>attributeName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the attribute.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The attribute's current value. Returns a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the
+value is not set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_GetAttribute_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_GetAttribute_System_String_">GetAttribute(string)</a> method will return the current value
+of the attribute, even if the value has been modified after the page has been
+loaded. Note that the value of the following attributes will be returned even if
+there is no explicit attribute on the element:
+<table><thead><tr><th class="term">Attribute name</th><th class="term">Value returned if not explicitly specified</th><th class="term">Valid element types</th></tr></thead><tbody><tr><td class="description">checked</td><td class="description">checked</td><td class="description">Check Box</td></tr><tr><td class="description">selected</td><td class="description">selected</td><td class="description">Options in Select elements</td></tr><tr><td class="description">disabled</td><td class="description">disabled</td><td class="description">Input and other UI elements</td></tr></tbody></table>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_GetCssValue_" data-uid="OpenQA.Selenium.IWebElement.GetCssValue*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_GetCssValue_System_String_" data-uid="OpenQA.Selenium.IWebElement.GetCssValue(System.String)">
+  GetCssValue(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of a CSS property of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string GetCssValue(string propertyName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>propertyName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the CSS property to get the value of.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value of the specified CSS property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_GetCssValue_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The value returned by the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_GetCssValue_System_String_">GetCssValue(string)</a>
+method is likely to be unpredictable in a cross-browser environment.
+Color values should be returned as hex strings. For example, a
+&quot;background-color&quot; property set as &quot;green&quot; in the HTML source, will
+return &quot;#008000&quot; for its value.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_GetDomAttribute_" data-uid="OpenQA.Selenium.IWebElement.GetDomAttribute*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_GetDomAttribute_System_String_" data-uid="OpenQA.Selenium.IWebElement.GetDomAttribute(System.String)">
+  GetDomAttribute(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of a declared HTML attribute of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string GetDomAttribute(string attributeName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>attributeName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the HTML attribute to get the value of.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The HTML attribute's current value. Returns a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the
+value is not set or the declared attribute does not exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_GetDomAttribute_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>As opposed to the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_GetAttribute_System_String_">GetAttribute(string)</a> method, this method
+only returns attributes declared in the element's HTML markup. To access the value
+of an IDL property of the element, either use the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_GetAttribute_System_String_">GetAttribute(string)</a>
+method or the <a class="xref" href="OpenQA.Selenium.IWebElement.html#OpenQA_Selenium_IWebElement_GetDomProperty_System_String_">GetDomProperty(string)</a> method.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_GetDomProperty_" data-uid="OpenQA.Selenium.IWebElement.GetDomProperty*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_GetDomProperty_System_String_" data-uid="OpenQA.Selenium.IWebElement.GetDomProperty(System.String)">
+  GetDomProperty(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of a JavaScript property of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string GetDomProperty(string propertyName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>propertyName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the JavaScript property to get the value of.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The JavaScript property's current value. Returns a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the
+value is not set or the property does not exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_GetShadowRoot_" data-uid="OpenQA.Selenium.IWebElement.GetShadowRoot*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_GetShadowRoot" data-uid="OpenQA.Selenium.IWebElement.GetShadowRoot">
+  GetShadowRoot()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ISearchContext GetShadowRoot()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></dt>
+    <dd><p>A shadow root representation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.NoSuchShadowRootException.html">NoSuchShadowRootException</a></dt>
+    <dd><p>Thrown when this element does not have a shadow root.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_IWebElement_SendKeys_" data-uid="OpenQA.Selenium.IWebElement.SendKeys*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_SendKeys_System_String_" data-uid="OpenQA.Selenium.IWebElement.SendKeys(System.String)">
+  SendKeys(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Simulates typing text into the element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SendKeys(string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to type into the element.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_SendKeys_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text to be typed may include special characters like arrow keys,
+backspaces, function keys, and so on. Valid special keys are defined in
+<a class="xref" href="OpenQA.Selenium.Keys.html">Keys</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.InvalidElementStateException.html">InvalidElementStateException</a></dt>
+    <dd><p>Thrown when the target element is not enabled.</p>
+</dd>
+    <dt><a class="xref" href="OpenQA.Selenium.ElementNotVisibleException.html">ElementNotVisibleException</a></dt>
+    <dd><p>Thrown when the target element is not visible.</p>
+</dd>
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="OpenQA.Selenium.Keys.html">Keys</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="OpenQA_Selenium_IWebElement_Submit_" data-uid="OpenQA.Selenium.IWebElement.Submit*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebElement_Submit" data-uid="OpenQA.Selenium.IWebElement.Submit">
+  Submit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Submits this element to the web server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Submit()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebElement_Submit_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If this current element is a form, or an element within a form,
+then this will be submitted to the web server. If this causes the current
+page to change, then this method will block until the new page is loaded.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a></dt>
+    <dd><p>Thrown when the target element is no longer valid in the document DOM.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebElement.cs/#L31" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

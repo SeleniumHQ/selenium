@@ -1,0 +1,773 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ChromeDriver
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ChromeDriver
+ ">
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Chrome_ChromeDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Chrome.ChromeDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.Chrome.ChromeDriver">
+
+
+
+  <h1 id="OpenQA_Selenium_Chrome_ChromeDriver" data-uid="OpenQA.Selenium.Chrome.ChromeDriver" class="text-break">
+    Class ChromeDriver
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.Chrome.html">Chrome</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a mechanism to write tests against Chrome</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ChromeDriver : ChromiumDriver, IWebDriver, IDisposable, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator, ISupportsLogs, IDevTools</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.WebDriver.html">WebDriver</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html">ChromiumDriver</a></div>
+      <div><span class="xref">ChromeDriver</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html">IFindsElement</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ITakesScreenshot.html">ITakesScreenshot</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ISupportsPrint.html">ISupportsPrint</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IActionExecutor.html">IActionExecutor</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IAllowsFileDetection.html">IAllowsFileDetection</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IHasCapabilities.html">IHasCapabilities</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IHasCommandExecutor.html">IHasCommandExecutor</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IHasSessionId.html">IHasSessionId</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ICustomDriverCommandExecutor.html">ICustomDriverCommandExecutor</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.html">IHasVirtualAuthenticator</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ISupportsLogs.html">ISupportsLogs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DevTools.IDevTools.html">IDevTools</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_AcceptUntrustedCertificates">ChromiumDriver.AcceptUntrustedCertificates</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_ExecuteCdp">ChromiumDriver.ExecuteCdp</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetCastSinksCommand">ChromiumDriver.GetCastSinksCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SelectCastSinkCommand">ChromiumDriver.SelectCastSinkCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StartCastTabMirroringCommand">ChromiumDriver.StartCastTabMirroringCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StartCastDesktopMirroringCommand">ChromiumDriver.StartCastDesktopMirroringCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetCastIssueMessageCommand">ChromiumDriver.GetCastIssueMessageCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StopCastingCommand">ChromiumDriver.StopCastingCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetNetworkConditionsCommand">ChromiumDriver.GetNetworkConditionsCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SetNetworkConditionsCommand">ChromiumDriver.SetNetworkConditionsCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_DeleteNetworkConditionsCommand">ChromiumDriver.DeleteNetworkConditionsCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SendChromeCommand">ChromiumDriver.SendChromeCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SendChromeCommandWithResult">ChromiumDriver.SendChromeCommandWithResult</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_LaunchAppCommand">ChromiumDriver.LaunchAppCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SetPermissionCommand">ChromiumDriver.SetPermissionCommand</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_ChromiumCustomCommands">ChromiumDriver.ChromiumCustomCommands</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_FileDetector">ChromiumDriver.FileDetector</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_HasActiveDevToolsSession">ChromiumDriver.HasActiveDevToolsSession</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_NetworkConditions">ChromiumDriver.NetworkConditions</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_LaunchApp_System_String_">ChromiumDriver.LaunchApp(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SetPermission_System_String_System_String_">ChromiumDriver.SetPermission(string, string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_ExecuteCdpCommand_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__">ChromiumDriver.ExecuteCdpCommand(string, Dictionary&lt;string, object&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetDevToolsSession">ChromiumDriver.GetDevToolsSession()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetDevToolsSession_System_Int32_">ChromiumDriver.GetDevToolsSession(int)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_CloseDevToolsSession">ChromiumDriver.CloseDevToolsSession()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_ClearNetworkConditions">ChromiumDriver.ClearNetworkConditions()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetCastSinks">ChromiumDriver.GetCastSinks()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_SelectCastSink_System_String_">ChromiumDriver.SelectCastSink(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StartTabMirroring_System_String_">ChromiumDriver.StartTabMirroring(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StartDesktopMirroring_System_String_">ChromiumDriver.StartDesktopMirroring(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_GetCastIssueMessage">ChromiumDriver.GetCastIssueMessage()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_StopCasting_System_String_">ChromiumDriver.StopCasting(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriver.html#OpenQA_Selenium_Chromium_ChromiumDriver_Dispose_System_Boolean_">ChromiumDriver.Dispose(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_DefaultCommandTimeout">WebDriver.DefaultCommandTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_CommandExecutor">WebDriver.CommandExecutor</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Capabilities">WebDriver.Capabilities</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Url">WebDriver.Url</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Title">WebDriver.Title</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_PageSource">WebDriver.PageSource</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_CurrentWindowHandle">WebDriver.CurrentWindowHandle</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_WindowHandles">WebDriver.WindowHandles</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_IsActionExecutor">WebDriver.IsActionExecutor</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_SessionId">WebDriver.SessionId</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ElementFactory">WebDriver.ElementFactory</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Close">WebDriver.Close()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Dispose">WebDriver.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteAsyncScript_System_String_System_Object___">WebDriver.ExecuteAsyncScript(string, params object[])</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteScript_System_String_System_Object___">WebDriver.ExecuteScript(string, params object[])</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteScript_OpenQA_Selenium_PinnedScript_System_Object___">WebDriver.ExecuteScript(PinnedScript, params object[])</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_FindElement_OpenQA_Selenium_By_">WebDriver.FindElement(By)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_FindElement_System_String_System_String_">WebDriver.FindElement(string, string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_FindElements_OpenQA_Selenium_By_">WebDriver.FindElements(By)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_FindElements_System_String_System_String_">WebDriver.FindElements(string, string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_GetScreenshot">WebDriver.GetScreenshot()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Print_OpenQA_Selenium_PrintOptions_">WebDriver.Print(PrintOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_PerformActions_System_Collections_Generic_IList_OpenQA_Selenium_Interactions_ActionSequence__">WebDriver.PerformActions(IList&lt;ActionSequence&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ResetInputState">WebDriver.ResetInputState()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Quit">WebDriver.Quit()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_SwitchTo">WebDriver.SwitchTo()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Manage">WebDriver.Manage()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Navigate">WebDriver.Navigate()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteCustomDriverCommand_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__">WebDriver.ExecuteCustomDriverCommand(string, Dictionary&lt;string, object&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RegisterCustomDriverCommands_System_Collections_Generic_IReadOnlyDictionary_System_String_OpenQA_Selenium_CommandInfo__">WebDriver.RegisterCustomDriverCommands(IReadOnlyDictionary&lt;string, CommandInfo&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RegisterCustomDriverCommand_System_String_OpenQA_Selenium_CommandInfo_">WebDriver.RegisterCustomDriverCommand(string, CommandInfo)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_Execute_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__">WebDriver.Execute(string, Dictionary&lt;string, object&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_StartSession_OpenQA_Selenium_ICapabilities_">WebDriver.StartSession(ICapabilities)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_GetCapabilitiesDictionary_OpenQA_Selenium_ICapabilities_">WebDriver.GetCapabilitiesDictionary(ICapabilities)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RegisterInternalDriverCommand_System_String_OpenQA_Selenium_CommandInfo_">WebDriver.RegisterInternalDriverCommand(string, CommandInfo)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_ExecuteScriptCommand_System_String_System_String_System_Object___">WebDriver.ExecuteScriptCommand(string, string, params object[])</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_AddVirtualAuthenticator_OpenQA_Selenium_VirtualAuth_VirtualAuthenticatorOptions_">WebDriver.AddVirtualAuthenticator(VirtualAuthenticatorOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RemoveVirtualAuthenticator_System_String_">WebDriver.RemoveVirtualAuthenticator(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_AuthenticatorId">WebDriver.AuthenticatorId</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_AddCredential_OpenQA_Selenium_VirtualAuth_Credential_">WebDriver.AddCredential(Credential)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_GetCredentials">WebDriver.GetCredentials()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RemoveCredential_System_Byte___">WebDriver.RemoveCredential(byte[])</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RemoveCredential_System_String_">WebDriver.RemoveCredential(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_RemoveAllCredentials">WebDriver.RemoveAllCredentials()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriver.html#OpenQA_Selenium_WebDriver_SetUserVerified_System_Boolean_">WebDriver.SetUserVerified(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="OpenQA_Selenium_Chrome_ChromeDriver_examples">Examples</h2>
+  <pre><code class="lang-csharp">[TestFixture]
+public class Testing
+{
+    private IWebDriver driver;
+
+    [SetUp]
+    public void SetUp()
+    {
+        driver = new ChromeDriver();
+    }
+
+    [Test]
+    public void TestGoogle()
+    {
+        driver.Navigate().GoToUrl("http://www.google.co.uk");
+        /*
+        *   Rest of the test
+        */
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        driver.Quit();
+    }
+}</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor">
+  ChromeDriver()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)">
+  ChromeDriver(ChromeDriverService)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified driver service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(ChromeDriverService service)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>service</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a> used to initialize the driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService,OpenQA.Selenium.Chrome.ChromeOptions)">
+  ChromeDriver(ChromeDriverService, ChromeOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified
+<a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a> and options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(ChromeDriverService service, ChromeOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>service</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a> to use.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a> used to initialize the driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeDriverService_OpenQA_Selenium_Chrome_ChromeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService,OpenQA.Selenium.Chrome.ChromeOptions,System.TimeSpan)">
+  ChromeDriver(ChromeDriverService, ChromeOptions, TimeSpan)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>service</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a> to use.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a> to be used with the Chrome driver.</p>
+</dd>
+    <dt><code>commandTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The maximum amount of time to wait for each command.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeOptions)">
+  ChromeDriver(ChromeOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(ChromeOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a> to be used with the Chrome driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)">
+  ChromeDriver(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
+to the directory containing ChromeDriver.exe.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(string chromeDriverDirectory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chromeDriverDirectory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full path to the directory containing ChromeDriver.exe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.Chrome.ChromeOptions)">
+  ChromeDriver(string, ChromeOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
+to the directory containing ChromeDriver.exe and options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(string chromeDriverDirectory, ChromeOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chromeDriverDirectory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full path to the directory containing ChromeDriver.exe.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a> to be used with the Chrome driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver__ctor_System_String_OpenQA_Selenium_Chrome_ChromeOptions_System_TimeSpan_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.Chrome.ChromeOptions,System.TimeSpan)">
+  ChromeDriver(string, ChromeOptions, TimeSpan)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriver.html">ChromeDriver</a> class using the specified path
+to the directory containing ChromeDriver.exe, options, and command timeout.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChromeDriver(string chromeDriverDirectory, ChromeOptions options, TimeSpan commandTimeout)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>chromeDriverDirectory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full path to the directory containing ChromeDriver.exe.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a> to be used with the Chrome driver.</p>
+</dd>
+    <dt><code>commandTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The maximum amount of time to wait for each command.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriver_CustomCommandDefinitions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.CustomCommandDefinitions*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriver_CustomCommandDefinitions" data-uid="OpenQA.Selenium.Chrome.ChromeDriver.CustomCommandDefinitions">
+  CustomCommandDefinitions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
+The keys of the dictionary are the names assigned to the command; the values are the
+<a class="xref" href="OpenQA.Selenium.CommandInfo.html">CommandInfo</a> objects describing the command behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyDictionary&lt;string, CommandInfo&gt; CustomCommandDefinitions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="OpenQA.Selenium.CommandInfo.html">CommandInfo</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriver.cs/#L60" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
