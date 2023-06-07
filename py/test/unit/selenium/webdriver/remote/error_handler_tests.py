@@ -44,7 +44,7 @@ def test_raises_exception_for_no_such_frame(handler, code):
         handler.check_response({"status": code, "value": "foo"})
 
 
-@pytest.mark.parametrize("code", ErrorCodeUNKNOWN_COMMAND)
+@pytest.mark.parametrize("code", ErrorCode.UNKNOWN_COMMAND)
 def test_raises_exception_for_unknown_command(handler, code):
     with pytest.raises(exceptions.WebDriverException):
         handler.check_response({"status": code, "value": "foo"})
@@ -247,7 +247,7 @@ def test_relays_exception_stacktrace(handler, key):
     import json
 
     stacktrace = {"lineNumber": 100, "fileName": "egg", "methodName": "ham", "className": "Spam"}
-    value = {key: [stacktrace], "message": "very bad", "error": ErrorCode.UNKNOWN_METHOD}
+    value = {key: [stacktrace], "message": "very bad", "error": ErrorCode.UNKNOWN_METHOD[0]}
     response = {"status": 400, "value": json.dumps({"value": value})}
     with pytest.raises(exceptions.UnknownMethodException) as e:
         handler.check_response(response)
