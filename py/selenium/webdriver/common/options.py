@@ -71,7 +71,7 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param platform: the required name of the platform
         """
-        self.capabilities("platformName", platform)
+        self.capabilities = ("platformName", platform)
 
     @property
     def page_load_strategy(self) -> str:
@@ -130,7 +130,7 @@ class BaseOptions(metaclass=ABCMeta):
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
         if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
-            self.capabilities("timeouts", timeouts)
+            self.capabilities = ("timeouts", timeouts)
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
 
