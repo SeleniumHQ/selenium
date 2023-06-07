@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.alert &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.common.alert &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -72,14 +72,14 @@
 <span class="sd">        Alert(driver).accept()</span>
 <span class="sd">        Alert(driver).dismiss()</span>
 
-<span class="sd">    Inputting a value into an alert prompt:</span>
+<span class="sd">    Inputting a value into an alert prompt::</span>
 
 <span class="sd">        name_prompt = Alert(driver)</span>
 <span class="sd">        name_prompt.send_keys(&quot;Willian Shakesphere&quot;)</span>
 <span class="sd">        name_prompt.accept()</span>
 
 
-<span class="sd">    Reading a the text of a prompt for verification:</span>
+<span class="sd">    Reading a the text of a prompt for verification::</span>
 
 <span class="sd">        alert_text = Alert(driver).text</span>
 <span class="sd">        self.assertEqual(&quot;Do you wish to quit?&quot;, alert_text)</span>
@@ -105,8 +105,10 @@
 <div class="viewcode-block" id="Alert.accept"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.accept">[docs]</a>    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Accepts the alert available.</span>
 
-<span class="sd">        Usage::</span>
-<span class="sd">        Alert(driver).accept() # Confirm a alert dialog.</span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                Alert(driver).accept() # Confirm a alert dialog.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_ACCEPT_ALERT</span><span class="p">)</span></div>
 
@@ -149,7 +151,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.common.exceptions &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.common.exceptions &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -118,28 +118,31 @@
 <tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>A screen capture was made impossible.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">SeleniumManagerException</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>A new session could not be created.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a reference to an element is now “stale”.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Thrown when a command does not complete in enough time.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a driver fails to set a cookie.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when an unexpected alert has appeared.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException" title="selenium.common.exceptions.UnexpectedTagNameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException" title="selenium.common.exceptions.UnexpectedTagNameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a support class did not get an expected web element.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>The requested command matched a known URL but did not match any methods for that URL.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Base webdriver exception.</td>
 </tr>
 </tbody>
@@ -515,6 +518,24 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 <dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchDriverException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchDriverException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchDriverException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when driver is not specified and cannot be located.</p>
+<dl class="attribute">
+<dt id="selenium.common.exceptions.NoSuchDriverException.args">
+<code class="descname">args</code><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.common.exceptions.NoSuchDriverException.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.NoSuchDriverException.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchElementException">
 <em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchElementException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when element could not be found.</p>
@@ -614,24 +635,6 @@ set self.__traceback__ to tb and return self.</p>
 <dl class="method">
 <dt id="selenium.common.exceptions.ScreenshotException.with_traceback">
 <code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.ScreenshotException.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="selenium.common.exceptions.SeleniumManagerException">
-<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">SeleniumManagerException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#SeleniumManagerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.SeleniumManagerException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when an issue interacting with selenium manager occurs.</p>
-<dl class="attribute">
-<dt id="selenium.common.exceptions.SeleniumManagerException.args">
-<code class="descname">args</code><a class="headerlink" href="#selenium.common.exceptions.SeleniumManagerException.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.common.exceptions.SeleniumManagerException.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.common.exceptions.SeleniumManagerException.with_traceback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception.with_traceback(tb) –
 set self.__traceback__ to tb and return self.</p>
 </dd></dl>
@@ -839,7 +842,7 @@ set self.__traceback__ to tb and return self.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

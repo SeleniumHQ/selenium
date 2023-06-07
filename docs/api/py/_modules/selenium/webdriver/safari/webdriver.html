@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -64,7 +64,6 @@
 
 <span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">SafariRemoteConnection</span>
-<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
 
 <span class="n">DEFAULT_SAFARI_CAPS</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">SAFARI</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -75,13 +74,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">executable_path</span><span class="o">=</span><span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">,</span>
         <span class="n">reuse_service</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DEFAULT_SAFARI_CAPS</span><span class="p">,</span>
-        <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">service_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -89,65 +83,34 @@
 <span class="sd">        safaridriver service.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.</span>
-<span class="sd">         - executable_path - Path to a custom safaridriver executable to be used. If absent, /usr/bin/safaridriver is used.</span>
 <span class="sd">         - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.</span>
-<span class="sd">         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).</span>
-<span class="sd">         - quiet - If True, the driver&#39;s stdout and stderr is suppressed.</span>
 <span class="sd">         - keep_alive - Whether to configure SafariRemoteConnection to use</span>
 <span class="sd">             HTTP keep-alive. Defaults to True.</span>
-<span class="sd">         - service_args : List of args to pass to the safaridriver service</span>
+<span class="sd">         - options - Instance of ``options.Options``.</span>
 <span class="sd">         - service - Service object for handling the browser driver if you need to pass extra details</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;port has been deprecated, please set it via the service class&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">executable_path</span> <span class="o">!=</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;executable_path has been deprecated, please use the Options class to set it&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
         <span class="k">if</span> <span class="n">reuse_service</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;reuse_service has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
                 <span class="ne">DeprecationWarning</span><span class="p">,</span>
                 <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="o">!=</span> <span class="n">DEFAULT_SAFARI_CAPS</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;desired_capabilities has been deprecated, please use the Options class to set it&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;quiet has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_alive</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;keep_alive has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">service_args</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;service_args has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reuse_service</span> <span class="o">=</span> <span class="n">reuse_service</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="ow">or</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">reuse_service</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reuse_service</span> <span class="o">=</span> <span class="n">reuse_service</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">reuse_service</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reuse_service</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="n">executor</span> <span class="o">=</span> <span class="n">SafariRemoteConnection</span><span class="p">(</span><span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">)</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="n">SafariRemoteConnection</span><span class="p">(</span>
+            <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
+            <span class="n">keep_alive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">,</span>
+            <span class="n">ignore_proxy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -225,7 +188,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

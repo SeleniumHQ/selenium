@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -138,7 +138,7 @@ instance will fail.</p>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.get_attribute">
-<code class="descname">get_attribute</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_attribute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_attribute</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; str | None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the given attribute or property of the element.</p>
 <p>This method will first try to return the value of a property with the
 given name. If a property with that name doesn’t exist, it returns the
@@ -258,8 +258,8 @@ webelements refer to the same element, can be done using <code class="docutils l
 <dd><p>THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
 on the screen an element is so that we can click it. This method should
 cause the element to be scrolled into view.</p>
-<p>Returns the top lefthand corner location on the screen, or
-<code class="docutils literal notranslate"><span class="pre">None</span></code> if the element is not visible.</p>
+<p>Returns the top lefthand corner location on the screen, or zero
+coordinates if the element is not visible.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -370,8 +370,7 @@ file inputs, this could be a local file path.</li>
 <dt id="selenium.webdriver.remote.webelement.WebElement.shadow_root">
 <code class="descname">shadow_root</code><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.shadow_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a shadow root of the element if there is one or an error.
-Only works from Chromium 96 and Firefox 96 onwards. Previous versions
-of browsers will throw an assertion exception.</p>
+Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -458,7 +457,7 @@ of browsers will throw an assertion exception.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

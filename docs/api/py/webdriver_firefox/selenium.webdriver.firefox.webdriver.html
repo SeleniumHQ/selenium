@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -45,62 +45,25 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="selenium.webdriver.firefox.webdriver.WebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriver</span></code></a>([firefox_profile,&nbsp;firefox_binary,&nbsp;…])</td>
-<td>Starts a new local session of Firefox.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="selenium.webdriver.firefox.webdriver.WebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriver</span></code></a>(options,&nbsp;service[,&nbsp;keep_alive])</td>
+<td>Controls the GeckoDriver and allows you to drive the browser.</td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.firefox.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>options=None</em>, <em>service_log_path='geckodriver.log'</em>, <em>service_args=None</em>, <em>service=None</em>, <em>desired_capabilities=None</em>, <em>log_path=None</em>, <em>keep_alive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts a new local session of Firefox.</p>
-<p>Based on the combination and specificity of the various keyword
-arguments, a capabilities dictionary will be constructed that
-is passed to the remote end.</p>
-<p>The keyword arguments given to this constructor are helpers to
-more easily allow Firefox WebDriver sessions to be customised
-with different options.  They are mapped on to a capabilities
-dictionary that is passed on to the remote end.</p>
-<p>As some of the options, such as <cite>firefox_profile</cite> and
-<cite>options.profile</cite> are mutually exclusive, precedence is
-given from how specific the setting is.  <cite>capabilities</cite> is the
-least specific keyword argument, followed by <cite>options</cite>,
-followed by <cite>firefox_binary</cite> and <cite>firefox_profile</cite>.</p>
-<p>In practice this means that if <cite>firefox_profile</cite> and
-<cite>options.profile</cite> are both set, the selected profile
-instance will always come from the most specific variable.
-In this case that would be <cite>firefox_profile</cite>.  This will result in
-<cite>options.profile</cite> to be ignored because it is considered
-a less specific setting than the top-level <cite>firefox_profile</cite>
-keyword argument.  Similarly, if you had specified a
-<cite>capabilities[“moz:firefoxOptions”][“profile”]</cite> Base64 string,
-this would rank below <cite>options.profile</cite>.</p>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.firefox.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>options: selenium.webdriver.firefox.options.Options = None</em>, <em>service: selenium.webdriver.firefox.service.Service = None</em>, <em>keep_alive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the GeckoDriver and allows you to drive the browser.</p>
+<p>Creates a new instance of the Firefox driver. Starts the service and
+then creates new instance of Firefox driver.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>firefox_profile</strong> – Deprecated: Instance of <code class="docutils literal notranslate"><span class="pre">FirefoxProfile</span></code> object
-or a string.  If undefined, a fresh profile will be created
-in a temporary location on the system.</li>
-<li><strong>firefox_binary</strong> – Deprecated: Instance of <code class="docutils literal notranslate"><span class="pre">FirefoxBinary</span></code> or full
-path to the Firefox binary.  If undefined, the system default
-Firefox installation will  be used.</li>
-<li><strong>capabilities</strong> – Deprecated: Dictionary of desired capabilities.</li>
-<li><strong>proxy</strong> – Deprecated: The proxy settings to use when communicating with
-Firefox via the extension connection.</li>
-<li><strong>executable_path</strong> – Deprecated: Full path to override which geckodriver
-binary to use for Firefox 47.0.1 and greater, which
-defaults to picking up the binary from the system path.</li>
-<li><strong>options</strong> – Instance of <code class="docutils literal notranslate"><span class="pre">options.Options</span></code>.</li>
-<li><strong>service</strong> – (Optional) service instance for managing the starting and stopping of the driver.</li>
-<li><strong>service_log_path</strong> – Deprecated: Where to log information from the driver.</li>
-<li><strong>service_args</strong> – Deprecated: List of args to pass to the driver service</li>
-<li><strong>desired_capabilities</strong> – Deprecated: alias of capabilities. In future
-versions of this library, this will replace ‘capabilities’.
-This will make the signature consistent with RemoteWebDriver.</li>
-<li><strong>keep_alive</strong> – Whether to configure remote_connection.RemoteConnection to use
-HTTP keep-alive.</li>
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>options - Instance of <code class="docutils literal notranslate"><span class="pre">options.Options</span></code>.</li>
+<li>service - (Optional) service instance for managing the starting and stopping of the driver.</li>
+<li>keep_alive - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.</li>
 </ul>
 </td>
 </tr>
@@ -124,7 +87,7 @@ HTTP keep-alive.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
 <li><dl class="first docutils">
 <dt>cookie_dict: A dictionary object, with required keys - “name” and “value”;</dt>
 <dd>optional keys - “path”, “domain”, “secure”, “httpOnly”, “expiry”, “sameSite”</dd>
@@ -133,15 +96,16 @@ HTTP keep-alive.</li>
 </ul>
 </td>
 </tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span> <span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span> <span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;secure&#39;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;sameSite&#39;</span> <span class="p">:</span> <span class="s1">&#39;Strict&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</td>
+</tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Usage:</dt>
-<dd>driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’})
-driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’})
-driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’, ‘secure’:True})
-driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’: ‘Strict’})</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -391,10 +355,10 @@ before entering the block, and restored upon exiting it.</p>
 <dd><p>Overrides the current file detector (if necessary) in limited
 context. Ensures the original file detector is set afterwards.</p>
 <p>Example:</p>
-<dl class="docutils">
-<dt>with webdriver.file_detector_context(UselessFileDetector):</dt>
-<dd>someinput.send_keys(‘/etc/hosts’)</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">file_detector_context</span><span class="p">(</span><span class="n">UselessFileDetector</span><span class="p">):</span>
+    <span class="n">someinput</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;/etc/hosts&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -458,11 +422,6 @@ and used as a file detector during the duration of the context manager.</dd>
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile">
-<code class="descname">firefox_profile</code><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver.forward">
@@ -1118,7 +1077,7 @@ browsers; other browsers should use <cite>set_window_position</cite> and
 
 <dl class="method">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver.start_session">
-<code class="descname">start_session</code><span class="sig-paren">(</span><em>capabilities: dict</em>, <em>browser_profile=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.start_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.start_session" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start_session</code><span class="sig-paren">(</span><em>capabilities: dict</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.start_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.start_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new session with the desired capabilities.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1178,11 +1137,9 @@ behavior.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><dl class="first docutils">
-<dt>::</dt>
-<dd><p class="first last">driver.timeouts</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">timeouts</span>
+</pre></div>
+</div>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Timeout</p>
@@ -1297,7 +1254,7 @@ behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

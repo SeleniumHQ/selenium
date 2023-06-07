@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -102,24 +102,6 @@
 <span class="kn">from</span> <span class="nn">.switch_to</span> <span class="kn">import</span> <span class="n">SwitchTo</span>
 <span class="kn">from</span> <span class="nn">.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
 
-<span class="n">_W3C_CAPABILITY_NAMES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;browserName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;browserVersion&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;platformName&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;proxy&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;setWindowRect&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;timeouts&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;unhandledPromptBehavior&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;webSocketUrl&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-
-<span class="n">_OSS_W3C_CONVERSION</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;acceptSslCerts&quot;</span><span class="p">:</span> <span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;browserVersion&quot;</span><span class="p">,</span> <span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="s2">&quot;platformName&quot;</span><span class="p">}</span>
-
 <span class="n">cdp</span> <span class="o">=</span> <span class="kc">None</span>
 
 
@@ -129,7 +111,7 @@
         <span class="n">cdp</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;selenium.webdriver.common.bidi.cdp&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_make_w3c_caps</span><span class="p">(</span><span class="n">caps</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_create_caps</span><span class="p">(</span><span class="n">caps</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Makes a W3C alwaysMatch capabilities object.</span>
 
 <span class="sd">    Filters out capability names that are not in the W3C spec. Spec-compliant</span>
@@ -142,32 +124,10 @@
 <span class="sd">     - caps - A dictionary of capabilities requested by the caller.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">caps</span><span class="p">)</span>
-    <span class="n">profile</span> <span class="o">=</span> <span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;firefox_profile&quot;</span><span class="p">)</span>
     <span class="n">always_match</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;proxy&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">caps</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;proxyType&quot;</span><span class="p">):</span>
-        <span class="n">caps</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">][</span><span class="s2">&quot;proxyType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">caps</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">][</span><span class="s2">&quot;proxyType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">caps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_OSS_W3C_CONVERSION</span><span class="p">:</span>
-            <span class="c1"># Todo: Remove in 4.7.0 (Deprecated in 4.5.0)</span>
-            <span class="n">w3c_equivalent</span> <span class="o">=</span> <span class="n">_OSS_W3C_CONVERSION</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is not a w3c capability.  use `</span><span class="si">{</span><span class="n">w3c_equivalent</span><span class="si">}</span><span class="s2">` instead.  This will no longer be&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; converted in 4.7.0&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">always_match</span><span class="p">[</span><span class="n">w3c_equivalent</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;platform&quot;</span> <span class="k">else</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_W3C_CAPABILITY_NAMES</span> <span class="ow">or</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
-            <span class="n">always_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
-        <span class="n">moz_opts</span> <span class="o">=</span> <span class="n">always_match</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;moz:firefoxOptions&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="c1"># If it&#39;s already present, assume the caller did that intentionally.</span>
-        <span class="k">if</span> <span class="s2">&quot;profile&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">moz_opts</span><span class="p">:</span>
-            <span class="c1"># Don&#39;t mutate the original capabilities.</span>
-            <span class="n">new_opts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">moz_opts</span><span class="p">)</span>
-            <span class="n">new_opts</span><span class="p">[</span><span class="s2">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span>
-            <span class="n">always_match</span><span class="p">[</span><span class="s2">&quot;moz:firefoxOptions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_opts</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;firstMatch&quot;</span><span class="p">:</span> <span class="p">[{}],</span> <span class="s2">&quot;alwaysMatch&quot;</span><span class="p">:</span> <span class="n">always_match</span><span class="p">}</span>
+        <span class="n">always_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;capabilities&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;firstMatch&quot;</span><span class="p">:</span> <span class="p">[{}],</span> <span class="s2">&quot;alwaysMatch&quot;</span><span class="p">:</span> <span class="n">always_match</span><span class="p">}}</span>
 
 
 <div class="viewcode-block" id="get_remote_connection"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.get_remote_connection">[docs]</a><span class="k">def</span> <span class="nf">get_remote_connection</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_local_proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -242,9 +202,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">command_executor</span><span class="o">=</span><span class="s2">&quot;http://127.0.0.1:4444&quot;</span><span class="p">,</span>
-        <span class="n">desired_capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">browser_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">file_detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseOptions</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseOptions</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -255,56 +212,19 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - command_executor - Either a string representing URL of the remote server or a custom</span>
 <span class="sd">             remote_connection.RemoteConnection object. Defaults to &#39;http://127.0.0.1:4444/wd/hub&#39;.</span>
-<span class="sd">         - desired_capabilities - A dictionary of capabilities to request when</span>
-<span class="sd">             starting the browser session. Required parameter.</span>
-<span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.</span>
-<span class="sd">             Only used if Firefox is requested. Optional.</span>
-<span class="sd">         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will</span>
-<span class="sd">             be started with given proxy settings, if possible. Optional.</span>
 <span class="sd">         - keep_alive - Whether to configure remote_connection.RemoteConnection to use</span>
 <span class="sd">             HTTP keep-alive. Defaults to True.</span>
 <span class="sd">         - file_detector - Pass custom file detector object during instantiation. If None,</span>
 <span class="sd">             then default LocalFileDetector() will be used.</span>
 <span class="sd">         - options - instance of a driver options.Options class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">desired_capabilities</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;desired_capabilities has been deprecated, please pass in an Options object with options kwarg&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">browser_profile</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;browser_profile has been deprecated, please pass in an Firefox Options object with options kwarg&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">proxy</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;proxy has been deprecated, please pass in an Options object with options kwarg&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_alive</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;keep_alive has been deprecated. We will be using True as the default value as we start removing it.&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="n">capabilities</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># If we get a list we can assume that no capabilities</span>
-        <span class="c1"># have been passed in</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">create_matches</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
             <span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
-                <span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span>
-            <span class="k">if</span> <span class="n">desired_capabilities</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Desired Capabilities must be a dictionary&quot;</span><span class="p">)</span>
-                <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+            <span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">command_executor</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">get_remote_connection</span><span class="p">(</span>
@@ -323,7 +243,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">file_detector</span> <span class="o">=</span> <span class="n">file_detector</span> <span class="ow">or</span> <span class="n">LocalFileDetector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_client</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (session=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s1">&quot;)&gt;&#39;</span>
@@ -344,10 +264,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Overrides the current file detector (if necessary) in limited</span>
 <span class="sd">        context. Ensures the original file detector is set afterwards.</span>
 
-<span class="sd">        Example:</span>
+<span class="sd">        Example::</span>
 
-<span class="sd">        with webdriver.file_detector_context(UselessFileDetector):</span>
-<span class="sd">            someinput.send_keys(&#39;/etc/hosts&#39;)</span>
+<span class="sd">            with webdriver.file_detector_context(UselessFileDetector):</span>
+<span class="sd">                someinput.send_keys(&#39;/etc/hosts&#39;)</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - file_detector_class - Class of the desired file detector. If the class is different</span>
@@ -399,32 +319,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="WebDriver.start_session"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.start_session">[docs]</a>    <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="WebDriver.start_session"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.start_session">[docs]</a>    <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new session with the desired capabilities.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - capabilities - a capabilities dict to start the session with.</span>
 <span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">&quot;Capabilities must be a dictionary&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">browser_profile</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;moz:firefoxOptions&quot;</span> <span class="ow">in</span> <span class="n">capabilities</span><span class="p">:</span>
-                <span class="n">capabilities</span><span class="p">[</span><span class="s2">&quot;moz:firefoxOptions&quot;</span><span class="p">][</span><span class="s2">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;firefox_profile&quot;</span><span class="p">:</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span><span class="p">})</span>
-        <span class="n">w3c_caps</span> <span class="o">=</span> <span class="n">_make_w3c_caps</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;capabilities&quot;</span><span class="p">:</span> <span class="n">w3c_caps</span><span class="p">}</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">caps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-        <span class="c1"># if capabilities is none we are probably speaking to</span>
-        <span class="c1"># a W3C endpoint</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">caps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;capabilities&quot;</span><span class="p">)</span></div>
+        <span class="n">caps</span> <span class="o">=</span> <span class="n">_create_caps</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">caps</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sessionId&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;capabilities&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -754,11 +660,13 @@
 <span class="sd">         - cookie_dict: A dictionary object, with required keys - &quot;name&quot; and &quot;value&quot;;</span>
 <span class="sd">            optional keys - &quot;path&quot;, &quot;domain&quot;, &quot;secure&quot;, &quot;httpOnly&quot;, &quot;expiry&quot;, &quot;sameSite&quot;</span>
 
-<span class="sd">        Usage:</span>
-<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;})</span>
-<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;})</span>
-<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;, &#39;secure&#39;:True})</span>
-<span class="sd">            driver.add_cookie({&#39;name&#39;: &#39;foo&#39;, &#39;value&#39;: &#39;bar&#39;, &#39;sameSite&#39;: &#39;Strict&#39;})</span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;})</span>
+<span class="sd">                driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;})</span>
+<span class="sd">                driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;, &#39;secure&#39; : True})</span>
+<span class="sd">                driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;sameSite&#39; : &#39;Strict&#39;})</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;sameSite&quot;</span> <span class="ow">in</span> <span class="n">cookie_dict</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">cookie_dict</span><span class="p">[</span><span class="s2">&quot;sameSite&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Strict&quot;</span><span class="p">,</span> <span class="s2">&quot;Lax&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">]</span>
@@ -820,6 +728,7 @@
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
+
 <span class="sd">                driver.timeouts</span>
 <span class="sd">        :rtype: Timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1295,7 +1204,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

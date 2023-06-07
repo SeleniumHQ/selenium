@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.webkitgtk.webdriver &#8212; Selenium 4.9 documentation</title>
+    <title>selenium.webdriver.webkitgtk.webdriver &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -80,7 +80,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
 <li><dl class="first docutils">
 <dt>cookie_dict: A dictionary object, with required keys - “name” and “value”;</dt>
 <dd>optional keys - “path”, “domain”, “secure”, “httpOnly”, “expiry”, “sameSite”</dd>
@@ -89,15 +89,16 @@
 </ul>
 </td>
 </tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span> <span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span> <span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;secure&#39;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;sameSite&#39;</span> <span class="p">:</span> <span class="s1">&#39;Strict&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</td>
+</tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Usage:</dt>
-<dd>driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’})
-driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’})
-driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’, ‘secure’:True})
-driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’: ‘Strict’})</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -324,10 +325,10 @@ cache.</p>
 <dd><p>Overrides the current file detector (if necessary) in limited
 context. Ensures the original file detector is set afterwards.</p>
 <p>Example:</p>
-<dl class="docutils">
-<dt>with webdriver.file_detector_context(UselessFileDetector):</dt>
-<dd>someinput.send_keys(‘/etc/hosts’)</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">file_detector_context</span><span class="p">(</span><span class="n">UselessFileDetector</span><span class="p">):</span>
+    <span class="n">someinput</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;/etc/hosts&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -931,7 +932,7 @@ browsers; other browsers should use <cite>set_window_position</cite> and
 
 <dl class="method">
 <dt id="selenium.webdriver.webkitgtk.webdriver.WebDriver.start_session">
-<code class="descname">start_session</code><span class="sig-paren">(</span><em>capabilities: dict</em>, <em>browser_profile=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.start_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.webkitgtk.webdriver.WebDriver.start_session" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start_session</code><span class="sig-paren">(</span><em>capabilities: dict</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.start_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.webkitgtk.webdriver.WebDriver.start_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new session with the desired capabilities.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -991,11 +992,9 @@ behavior.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><dl class="first docutils">
-<dt>::</dt>
-<dd><p class="first last">driver.timeouts</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">timeouts</span>
+</pre></div>
+</div>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Timeout</p>
@@ -1093,7 +1092,7 @@ behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
