@@ -44,7 +44,7 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  *   <li>"error"-event: a method was called and thrown an exception.
  * </ul>
  *
- * To use this decorator you have to prepare a listener, create a decorator using this listener,
+ * To use this decorator, you have to prepare a listener, create a decorator using this listener,
  * decorate the original WebDriver instance with this decorator and use the new WebDriver instance
  * created by the decorator instead of the original one:
  *
@@ -61,7 +61,7 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  * original driver.
  *
  * <p>A listener can subscribe to "specific" or "generic" events (or both). A "specific" event
- * correspond to a single specific method, a "generic" event correspond to any method called in a
+ * corresponds to a single specific method, a "generic" event corresponds to any method called in a
  * class or in any class.
  *
  * <p>To subscribe to a "specific" event a listener should implement a method with a name derived
@@ -118,7 +118,7 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  * </code></pre>
  *
  * <p>A listener can subscribe to both "specific" and "generic" events at the same time. In this
- * case "before"-events are fired in order from the most generic to the most specific, and
+ * case, "before"-events are fired in order from the most generic to the most specific, and
  * "after"-events are fired in the opposite order, for example:
  *
  * <pre><code>
@@ -131,7 +131,7 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  *   afterAnyCall
  * </code></pre>
  *
- * <p>One of the most obvious use of this decorator is logging. But it can be used to modify
+ * <p>One of the most obvious use of this decorator is logging. But it can be used to modify the
  * behavior of the original driver to some extent because listener methods are executed in the same
  * thread as the original driver methods.
  *
@@ -157,7 +157,7 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  * but the decorator suppresses these exceptions), can't prevent execution of the decorated methods,
  * can't modify parameters and results of the methods.
  *
- * <p>Decorators that modify the behaviour of the underlying drivers should be implemented by
+ * <p>Decorators that modify the behavior of the underlying drivers should be implemented by
  * extending {@link WebDriverDecorator}, not by creating sophisticated listeners.
  */
 @Beta
