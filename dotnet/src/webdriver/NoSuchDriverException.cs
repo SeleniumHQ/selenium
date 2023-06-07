@@ -1,4 +1,4 @@
-// <copyright file="InvalidSelectorException.cs" company="WebDriver Committers">
+// <copyright file="NoSuchDriverException.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -22,55 +22,56 @@ using System.Runtime.Serialization;
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// The exception that is thrown when an element is not visible.
+    /// The exception that is thrown when a driver is not found.
     /// </summary>
     [Serializable]
-    public class InvalidSelectorException : WebDriverException
+    public class NoSuchDriverException : NotFoundException
     {
+
         /// <summary>
         /// Link to the documentation for this error
         /// </summary>
-        private static string supportUrl = baseSupportUrl + "#invalid-selector-exception";
+        private static string supportUrl = baseSupportUrl + "/driver_location";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class.
+        /// Initializes a new instance of the <see cref="NoSuchDriverException"/> class.
         /// </summary>
-        public InvalidSelectorException()
+        public NoSuchDriverException()
             : base(GetMessage(""))
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class with
+        /// Initializes a new instance of the <see cref="NoSuchDriverException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public InvalidSelectorException(string message)
+        public NoSuchDriverException(string message)
             : base(GetMessage(message))
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class with
+        /// Initializes a new instance of the <see cref="NoSuchDriverException"/> class with
         /// a specified error message and a reference to the inner exception that is the
         /// cause of this exception.
         /// </summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception,
         /// or <see langword="null"/> if no inner exception is specified.</param>
-        public InvalidSelectorException(string message, Exception innerException)
+        public NoSuchDriverException(string message, Exception innerException)
             : base(GetMessage(message), innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class with serialized data.
+        /// Initializes a new instance of the <see cref="NoSuchDriverException"/> class with serialized data.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
-        protected InvalidSelectorException(SerializationInfo info, StreamingContext context)
+        protected NoSuchDriverException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

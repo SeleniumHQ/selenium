@@ -1,3 +1,16 @@
+Selenium 4.10.0
+* Add CDP files for v114 and remove v111
+* Fix bug preventing proxy from working in Options classes (#12029)
+* Add proxy support for Selenium Manager (#12032)
+* Additional updates to typing (#12067, #12106)
+* Add support for changing pointers in Actions class (#11521)
+* Remove browser filters for shadow root element searches (#12112)
+* Remove significant amounts of deprecated code (#12030)
+* Improve near relative locator behavior (#11290)
+* Change Selenium Manager logging to debug (#12145)
+* Add links to documentation in error messages (#12156)
+* Add custom error class for driver location and improve error logic
+
 Selenium 4.9.1
 * Add CDP files for v113 and remove v110
 * Minor fixes for docstring and dictionary declarations (#11975)
