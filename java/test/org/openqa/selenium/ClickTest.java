@@ -17,16 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
@@ -34,6 +24,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 class ClickTest extends JupiterTestBase {
 

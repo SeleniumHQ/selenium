@@ -284,7 +284,6 @@ class WebDriver(BaseWebDriver):
 
         :Args:
          - capabilities - a capabilities dict to start the session with.
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
 
         caps = _create_caps(capabilities)
