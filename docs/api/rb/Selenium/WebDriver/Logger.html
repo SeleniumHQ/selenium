@@ -230,6 +230,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#error-instance_method" title="#error (instance method)">#<strong>error</strong>(message, id: []) { ... } &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Used to supply information that suggests an error occurred.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#ignore-instance_method" title="#ignore (instance method)">#<strong>ignore</strong>(*ids)  &#x21d2; Object </a>
     
 
@@ -723,10 +747,6 @@
       <pre class="lines">
 
 
-160
-161
-162
-163
 164
 165
 166
@@ -738,10 +758,14 @@
 172
 173
 174
-175</pre>
+175
+176
+177
+178
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deprecate'>deprecate</span><span class='lparen'>(</span><span class='id identifier rubyid_old'>old</span><span class='comma'>,</span> <span class='id identifier rubyid_new'>new</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>reference:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
@@ -758,6 +782,93 @@
   <span class='id identifier rubyid_message'>message</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> See explanation for this deprecation: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_reference'>reference</span><span class='embexpr_end'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_reference'>reference</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 
   <span class='id identifier rubyid_discard_or_log'>discard_or_log</span><span class='lparen'>(</span><span class='symbol'>:warn</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="error-instance_method">
+  
+    #<strong>error</strong>(message, id: []) { ... } &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Used to supply information that suggests an error occurred</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>message</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>id</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Sybmol&gt;</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        
+        <div class='inline'>
+<p>see #deprecate</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+140
+141
+142</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 140</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_error'>error</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_discard_or_log'>discard_or_log</span><span class='lparen'>(</span><span class='symbol'>:error</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -894,26 +1005,12 @@
 
 129
 130
-131
-132
-133
-134
-135
-136
-137
-138</pre>
+131</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_info'>info</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='ivar'>@first_warning</span>
-    <span class='ivar'>@first_warning</span> <span class='op'>=</span> <span class='kw'>true</span>
-    <span class='id identifier rubyid_info'>info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Details on how to use and modify Selenium logger:\n</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='lbracket'>[</span><span class='symbol'>:logger_info</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>do</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://selenium.dev/documentation/webdriver/troubleshooting/logging\n</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-
   <span class='id identifier rubyid_discard_or_log'>discard_or_log</span><span class='lparen'>(</span><span class='symbol'>:info</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1136,12 +1233,12 @@
       <pre class="lines">
 
 
-147
-148
-149</pre>
+151
+152
+153</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_warn'>warn</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_discard_or_log'>discard_or_log</span><span class='lparen'>(</span><span class='symbol'>:warn</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -1156,7 +1253,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon May  8 15:16:10 2023 by
+  Generated on Wed Jun  7 18:35:39 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.0.6).
 </div>

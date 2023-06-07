@@ -121,6 +121,43 @@
 
 
 
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(msg = &#39;&#39;)  &#x21d2; StaleElementReferenceError </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of StaleElementReferenceError.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
 
   
   
@@ -128,12 +165,57 @@
   
   
   
+  <div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
   
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(msg = &#39;&#39;)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Error::StaleElementReferenceError (class)">StaleElementReferenceError</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of StaleElementReferenceError.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+69
+70
+71</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/error.rb', line 69</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='kw'>super</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_content'>; </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Error.html#SUPPORT_MSG-constant" title="Selenium::WebDriver::Error::SUPPORT_MSG (constant)">SUPPORT_MSG</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Error.html#ERROR_URL-constant" title="Selenium::WebDriver::Error::ERROR_URL (constant)">ERROR_URL</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>#stale-element-reference-exception</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
 
 </div>
 
       <div id="footer">
-  Generated on Mon May  8 15:16:09 2023 by
+  Generated on Wed Jun  7 18:35:39 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.0.6).
 </div>

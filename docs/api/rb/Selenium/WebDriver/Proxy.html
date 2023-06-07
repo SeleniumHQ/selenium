@@ -746,7 +746,7 @@
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksUsername</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_socks_username'>socks_username</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksPassword</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_socks_password'>socks_password</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksVersion</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_socks_version'>socks_version</span>
-  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__k'>_k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
 
   <span class='id identifier rubyid_json_result'>json_result</span> <span class='kw'>if</span> <span class='id identifier rubyid_json_result'>json_result</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>&gt;</span> <span class='int'>1</span>
 <span class='kw'>end</span></pre>
@@ -1158,7 +1158,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon May  8 15:16:10 2023 by
+  Generated on Wed Jun  7 18:35:39 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.0.6).
 </div>
