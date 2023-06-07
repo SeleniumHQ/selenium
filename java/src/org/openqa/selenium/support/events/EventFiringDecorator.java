@@ -233,12 +233,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
     String methodName = createEventMethodName("before", method.getName());
 
-    int argsLength = args != null ? args.length : 0;
-    Object[] args2 = new Object[argsLength + 1];
+    args = args != null ? args : new Object[0];
+    Object[] args2 = new Object[args.length + 1];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
+    System.arraycopy(args, 0, args2, 1, argsLength);
 
     Method m = findMatchingMethod(listener, methodName, args2);
     if (m != null) {
@@ -252,12 +250,11 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
     boolean isVoid =
       method.getReturnType() == Void.TYPE || method.getReturnType() == WebDriver.Timeouts.class;
-    int argsLength = args != null ? args.length : 0;
-    Object[] args2 = new Object[argsLength + 1 + (isVoid ? 0 : 1)];
+    args = args != null ? args : new Object[0];
+    Object[] args2 = new Object[args.length + 1 + (isVoid ? 0 : 1)];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
+    System.arraycopy(args, 0, args2, 1, args.length);
+
     if (!isVoid) {
       args2[args2.length - 1] = res;
     }
