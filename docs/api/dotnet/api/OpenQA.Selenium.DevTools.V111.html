@@ -18,18 +18,18 @@
       
       
       
-
-      <script type="module">
-        import docfx from './../public/main.js'
-        window.docfx = docfx
-        window.MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        }
-      </script>
-      <script type="text/javascript" src="../public/docfx.min.js"></script>
   </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
@@ -87,31 +87,6 @@ Classes
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.DevToolsSessionDomains.html">DevToolsSessionDomains</a></dt>
       <dd></dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.V111Domains.html">V111Domains</a></dt>
-      <dd><p>Class containing the domain implementation for version 111 of the DevTools Protocol.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.V111JavaScript.html">V111JavaScript</a></dt>
-      <dd><p>Class containing the JavaScript implementation for version 111 of the DevTools Protocol.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.V111Log.html">V111Log</a></dt>
-      <dd><p>Class containing the browser's log as referenced by version 111 of the DevTools Protocol.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.V111Network.html">V111Network</a></dt>
-      <dd><p>Class providing functionality for manipulating network calls using version 111 of the DevTools Protocol</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="OpenQA.Selenium.DevTools.V111.V111Target.html">V111Target</a></dt>
-      <dd><p>Class providing functionality for manipulating targets for version 111 of the DevTools Protocol</p>
-</dd>
     </dl>
 
 

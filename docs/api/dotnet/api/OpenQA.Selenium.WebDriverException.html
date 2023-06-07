@@ -18,18 +18,18 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_WebDriverException.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.WebDriverException%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
-
-      <script type="module">
-        import docfx from './../public/main.js'
-        window.docfx = docfx
-        window.MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        }
-      </script>
-      <script type="text/javascript" src="../public/docfx.min.js"></script>
   </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
@@ -207,7 +207,7 @@ public class WebDriverException : Exception, ISerializable</code></pre>
 
   <h3 id="OpenQA_Selenium_WebDriverException__ctor" data-uid="OpenQA.Selenium.WebDriverException.#ctor">
   WebDriverException()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.WebDriverException.html">WebDriverException</a> class.</p>
@@ -234,7 +234,7 @@ public class WebDriverException : Exception, ISerializable</code></pre>
 
   <h3 id="OpenQA_Selenium_WebDriverException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="OpenQA.Selenium.WebDriverException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
   WebDriverException(SerializationInfo, StreamingContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.WebDriverException.html">WebDriverException</a> class with serialized data.</p>
@@ -272,7 +272,7 @@ information about the source or destination.</p>
 
   <h3 id="OpenQA_Selenium_WebDriverException__ctor_System_String_" data-uid="OpenQA.Selenium.WebDriverException.#ctor(System.String)">
   WebDriverException(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.WebDriverException.html">WebDriverException</a> class with
@@ -306,7 +306,7 @@ a specified error message.</p>
 
   <h3 id="OpenQA_Selenium_WebDriverException__ctor_System_String_System_Exception_" data-uid="OpenQA.Selenium.WebDriverException.#ctor(System.String,System.Exception)">
   WebDriverException(string, Exception)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.WebDriverException.html">WebDriverException</a> class with
@@ -332,6 +332,72 @@ or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keyword
 
 
 
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="OpenQA_Selenium_WebDriverException_baseSupportUrl" data-uid="OpenQA.Selenium.WebDriverException.baseSupportUrl">
+  baseSupportUrl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Location of errors in documentation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected static string baseSupportUrl</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_WebDriverException_supportMsg" data-uid="OpenQA.Selenium.WebDriverException.supportMsg">
+  supportMsg
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriverException.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Intro comment for pointing to documentation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected static string supportMsg</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
 
 
 

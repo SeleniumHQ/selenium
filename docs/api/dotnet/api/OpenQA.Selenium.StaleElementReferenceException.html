@@ -18,18 +18,18 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_StaleElementReferenceException.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.StaleElementReferenceException%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
-
-      <script type="module">
-        import docfx from './../public/main.js'
-        window.docfx = docfx
-        window.MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        }
-      </script>
-      <script type="text/javascript" src="../public/docfx.min.js"></script>
   </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
@@ -121,6 +121,12 @@ public class StaleElementReferenceException : WebDriverException, ISerializable<
     <dt>Inherited Members</dt>
     <dd>
     <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriverException.html#OpenQA_Selenium_WebDriverException_supportMsg">WebDriverException.supportMsg</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.WebDriverException.html#OpenQA_Selenium_WebDriverException_baseSupportUrl">WebDriverException.baseSupportUrl</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception">Exception.GetBaseException()</a>
     </div>
     <div>
@@ -189,7 +195,7 @@ public class StaleElementReferenceException : WebDriverException, ISerializable<
 
   <h3 id="OpenQA_Selenium_StaleElementReferenceException__ctor" data-uid="OpenQA.Selenium.StaleElementReferenceException.#ctor">
   StaleElementReferenceException()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a> class.</p>
@@ -216,7 +222,7 @@ public class StaleElementReferenceException : WebDriverException, ISerializable<
 
   <h3 id="OpenQA_Selenium_StaleElementReferenceException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="OpenQA.Selenium.StaleElementReferenceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
   StaleElementReferenceException(SerializationInfo, StreamingContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a> class with serialized data.</p>
@@ -254,7 +260,7 @@ information about the source or destination.</p>
 
   <h3 id="OpenQA_Selenium_StaleElementReferenceException__ctor_System_String_" data-uid="OpenQA.Selenium.StaleElementReferenceException.#ctor(System.String)">
   StaleElementReferenceException(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a> class with
@@ -288,7 +294,7 @@ a specified error message.</p>
 
   <h3 id="OpenQA_Selenium_StaleElementReferenceException__ctor_System_String_System_Exception_" data-uid="OpenQA.Selenium.StaleElementReferenceException.#ctor(System.String,System.Exception)">
   StaleElementReferenceException(string, Exception)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.StaleElementReferenceException.html">StaleElementReferenceException</a> class with
@@ -312,6 +318,49 @@ or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keyword
 </dd>
   </dl>
 
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_StaleElementReferenceException_GetMessage_" data-uid="OpenQA.Selenium.StaleElementReferenceException.GetMessage*"></a>
+
+  <h3 id="OpenQA_Selenium_StaleElementReferenceException_GetMessage_System_String_" data-uid="OpenQA.Selenium.StaleElementReferenceException.GetMessage(System.String)">
+  GetMessage(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/StaleElementReferenceException.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Add information about obtaining additional support from documentation to this exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected static string GetMessage(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The original message for exception</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The final message for exception</p>
+</dd>
+  </dl>
 
 
 

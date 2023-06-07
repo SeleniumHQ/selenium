@@ -18,18 +18,18 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_SeleniumManager.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.SeleniumManager%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
-
-      <script type="module">
-        import docfx from './../public/main.js'
-        window.docfx = docfx
-        window.MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        }
-      </script>
-      <script type="text/javascript" src="../public/docfx.min.js"></script>
   </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
@@ -79,7 +79,7 @@
 
   <h1 id="OpenQA_Selenium_SeleniumManager" data-uid="OpenQA.Selenium.SeleniumManager" class="text-break">
     Class SeleniumManager
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -148,7 +148,7 @@ This implementation is still in beta, and may change.</p>
 
   <h3 id="OpenQA_Selenium_SeleniumManager_DriverPath_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.SeleniumManager.DriverPath(OpenQA.Selenium.DriverOptions)">
   DriverPath(DriverOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines the location of the correct driver.</p>
@@ -162,7 +162,8 @@ This implementation is still in beta, and may change.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a></dt>
-    <dd></dd>
+    <dd><p>The correct path depends on which options are being used.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -186,7 +187,7 @@ This implementation is still in beta, and may change.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L39" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SeleniumManager.cs/#L40" class="edit-link">Edit this page</a>
         </div>
 
         

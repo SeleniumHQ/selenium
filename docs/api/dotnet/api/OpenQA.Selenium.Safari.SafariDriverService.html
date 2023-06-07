@@ -18,18 +18,18 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Safari_SafariDriverService.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Safari.SafariDriverService%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
-
-      <script type="module">
-        import docfx from './../public/main.js'
-        window.docfx = docfx
-        window.MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        }
-      </script>
-      <script type="text/javascript" src="../public/docfx.min.js"></script>
   </head>
+
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
 
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
@@ -194,7 +194,7 @@
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_CommandLineArguments" data-uid="OpenQA.Selenium.Safari.SafariDriverService.CommandLineArguments">
   CommandLineArguments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the command-line arguments for the driver service.</p>
@@ -226,7 +226,7 @@
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_HasShutdown" data-uid="OpenQA.Selenium.Safari.SafariDriverService.HasShutdown">
   HasShutdown
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the service has a shutdown API that can be called to terminate
@@ -259,7 +259,7 @@ it gracefully before forcing a termination.</p>
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_IsInitialized" data-uid="OpenQA.Selenium.Safari.SafariDriverService.IsInitialized">
   IsInitialized
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the service is responding to HTTP requests.</p>
@@ -291,7 +291,7 @@ it gracefully before forcing a termination.</p>
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_TerminationTimeout" data-uid="OpenQA.Selenium.Safari.SafariDriverService.TerminationTimeout">
   TerminationTimeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
@@ -334,7 +334,8 @@ W3C WebDriver Specification.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool UseLegacyProtocol { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Only w3c protocol is currently supported&quot;)]
+public bool UseLegacyProtocol { get; set; }</code></pre>
   </div>
 
 
@@ -366,7 +367,7 @@ or later, and will result in an error if used with prior versions of the driver.
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_CreateDefaultService" data-uid="OpenQA.Selenium.Safari.SafariDriverService.CreateDefaultService">
   CreateDefaultService()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L162"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the SafariDriverService.</p>
@@ -399,7 +400,7 @@ or later, and will result in an error if used with prior versions of the driver.
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_CreateDefaultService_System_String_" data-uid="OpenQA.Selenium.Safari.SafariDriverService.CreateDefaultService(System.String)">
   CreateDefaultService(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L172"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable.</p>
@@ -438,7 +439,7 @@ or later, and will result in an error if used with prior versions of the driver.
 
   <h3 id="OpenQA_Selenium_Safari_SafariDriverService_CreateDefaultService_System_String_System_String_" data-uid="OpenQA.Selenium.Safari.SafariDriverService.CreateDefaultService(System.String,System.String)">
   CreateDefaultService(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariDriverService.cs/#L183"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable with the given name.</p>
