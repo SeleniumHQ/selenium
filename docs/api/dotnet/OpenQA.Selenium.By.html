@@ -1,0 +1,1044 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class By
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class By
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_By.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.By%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.By">
+
+
+
+  <h1 id="OpenQA_Selenium_By" data-uid="OpenQA.Selenium.By" class="text-break">
+    Class By
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a mechanism by which to find elements within a document.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Serializable]
+public class By</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">By</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.RelativeBy.html">RelativeBy</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="OpenQA_Selenium_By_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>It is possible to create your own locating mechanisms for finding documents.
+In order to do this,subclass this class and override the protected methods. However,
+it is expected that that all subclasses rely on the basic finding mechanisms provided
+through static methods of this class. An example of this can be found in OpenQA.Support.ByIdOrName</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_By__ctor_" data-uid="OpenQA.Selenium.By.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_By__ctor" data-uid="OpenQA.Selenium.By.#ctor">
+  By()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.By.html">By</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected By()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By__ctor_" data-uid="OpenQA.Selenium.By.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_By__ctor_System_Func_OpenQA_Selenium_ISearchContext_OpenQA_Selenium_IWebElement__System_Func_OpenQA_Selenium_ISearchContext_System_Collections_ObjectModel_ReadOnlyCollection_OpenQA_Selenium_IWebElement___" data-uid="OpenQA.Selenium.By.#ctor(System.Func{OpenQA.Selenium.ISearchContext,OpenQA.Selenium.IWebElement},System.Func{OpenQA.Selenium.ISearchContext,System.Collections.ObjectModel.ReadOnlyCollection{OpenQA.Selenium.IWebElement}})">
+  By(Func&lt;ISearchContext, IWebElement&gt;, Func&lt;ISearchContext, ReadOnlyCollection&lt;IWebElement&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.By.html">By</a> class using the given functions to find elements.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected By(Func&lt;ISearchContext, IWebElement&gt; findElementMethod, Func&lt;ISearchContext, ReadOnlyCollection&lt;IWebElement&gt;&gt; findElementsMethod)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>findElementMethod</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>, <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;</dt>
+    <dd><p>A function that takes an object implementing <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>
+and returns the found <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>.</p>
+</dd>
+    <dt><code>findElementsMethod</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;&gt;</dt>
+    <dd><p>A function that takes an object implementing <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>
+and returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection&lt;T&gt;</a> of the found<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a>.
+<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a>/&gt;.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By__ctor_" data-uid="OpenQA.Selenium.By.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_By__ctor_System_String_System_String_" data-uid="OpenQA.Selenium.By.#ctor(System.String,System.String)">
+  By(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Intializes a new instance of the <a class="xref" href="OpenQA.Selenium.By.html">By</a> class using the specified mechanism and critieria for finding elements.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected By(string mechanism, string criteria)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mechanism</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The mechanism to use in finding elements.</p>
+</dd>
+    <dt><code>criteria</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The criteria to use in finding elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_By__ctor_System_String_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Customizing nothing else, instances using this constructor will attempt to find elemsnts
+using the <a class="xref" href="OpenQA.Selenium.Internal.IFindsElement.html#OpenQA_Selenium_Internal_IFindsElement_FindElement_System_String_System_String_">FindElement(string, string)</a> method, taking string arguments.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_By_Criteria_" data-uid="OpenQA.Selenium.By.Criteria*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Criteria" data-uid="OpenQA.Selenium.By.Criteria">
+  Criteria
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of the criteria for this <a class="xref" href="OpenQA.Selenium.By.html">By</a> class instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Criteria { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_Description_" data-uid="OpenQA.Selenium.By.Description*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Description" data-uid="OpenQA.Selenium.By.Description">
+  Description
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the value of the description for this <a class="xref" href="OpenQA.Selenium.By.html">By</a> class instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected string Description { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_FindElementMethod_" data-uid="OpenQA.Selenium.By.FindElementMethod*"></a>
+
+  <h3 id="OpenQA_Selenium_By_FindElementMethod" data-uid="OpenQA.Selenium.By.FindElementMethod">
+  FindElementMethod
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the method used to find a single element matching specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Func&lt;ISearchContext, IWebElement&gt; FindElementMethod { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>, <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_FindElementsMethod_" data-uid="OpenQA.Selenium.By.FindElementsMethod*"></a>
+
+  <h3 id="OpenQA_Selenium_By_FindElementsMethod" data-uid="OpenQA.Selenium.By.FindElementsMethod">
+  FindElementsMethod
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the method used to find all elements matching specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Func&lt;ISearchContext, ReadOnlyCollection&lt;IWebElement&gt;&gt; FindElementsMethod { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_Mechanism_" data-uid="OpenQA.Selenium.By.Mechanism*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Mechanism" data-uid="OpenQA.Selenium.By.Mechanism">
+  Mechanism
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of the mechanism for this <a class="xref" href="OpenQA.Selenium.By.html">By</a> class instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Mechanism { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_By_ClassName_" data-uid="OpenQA.Selenium.By.ClassName*"></a>
+
+  <h3 id="OpenQA_Selenium_By_ClassName_System_String_" data-uid="OpenQA.Selenium.By.ClassName(System.String)">
+  ClassName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their CSS class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By ClassName(string classNameToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>classNameToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The CSS class to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_By_ClassName_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If an element has many classes then this will match against each of them.
+For example if the value is &quot;one two onone&quot;, then the following values for the
+className parameter will match: &quot;one&quot; and &quot;two&quot;.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_By_CssSelector_" data-uid="OpenQA.Selenium.By.CssSelector*"></a>
+
+  <h3 id="OpenQA_Selenium_By_CssSelector_System_String_" data-uid="OpenQA.Selenium.By.CssSelector(System.String)">
+  CssSelector(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L317"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their cascading style sheet (CSS) selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By CssSelector(string cssSelectorToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cssSelectorToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The CSS selector to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_Equals_" data-uid="OpenQA.Selenium.By.Equals*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Equals_System_Object_" data-uid="OpenQA.Selenium.By.Equals(System.Object)">
+  Equals(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L368"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a> is equal
+to the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a> to compare with the
+current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>
+is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_FindElement_" data-uid="OpenQA.Selenium.By.FindElement*"></a>
+
+  <h3 id="OpenQA_Selenium_By_FindElement_OpenQA_Selenium_ISearchContext_" data-uid="OpenQA.Selenium.By.FindElement(OpenQA.Selenium.ISearchContext)">
+  FindElement(ISearchContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L334"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds the first element matching the criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual IWebElement FindElement(ISearchContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a> object to use to search for the elements.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></dt>
+    <dd><p>The first matching <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> on the current context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_FindElements_" data-uid="OpenQA.Selenium.By.FindElements*"></a>
+
+  <h3 id="OpenQA_Selenium_By_FindElements_OpenQA_Selenium_ISearchContext_" data-uid="OpenQA.Selenium.By.FindElements(OpenQA.Selenium.ISearchContext)">
+  FindElements(ISearchContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L345"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all elements matching the criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual ReadOnlyCollection&lt;IWebElement&gt; FindElements(ISearchContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a> object to use to search for the elements.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection&lt;T&gt;</a> of all <a class="xref" href="OpenQA.Selenium.IWebElement.html">WebElements</a>
+matching the current criteria, or an empty list if nothing matches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_GetHashCode_" data-uid="OpenQA.Selenium.By.GetHashCode*"></a>
+
+  <h3 id="OpenQA_Selenium_By_GetHashCode" data-uid="OpenQA.Selenium.By.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L380"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Serves as a hash function for a particular type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A hash code for the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_Id_" data-uid="OpenQA.Selenium.By.Id*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Id_System_String_" data-uid="OpenQA.Selenium.By.Id(System.String)">
+  Id(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By Id(string idToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>idToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_LinkText_" data-uid="OpenQA.Selenium.By.LinkText*"></a>
+
+  <h3 id="OpenQA_Selenium_By_LinkText_System_String_" data-uid="OpenQA.Selenium.By.LinkText(System.String)">
+  LinkText(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their link text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By LinkText(string linkTextToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>linkTextToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The link text to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_Name_" data-uid="OpenQA.Selenium.By.Name*"></a>
+
+  <h3 id="OpenQA_Selenium_By_Name_System_String_" data-uid="OpenQA.Selenium.By.Name(System.String)">
+  Name(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By Name(string nameToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>nameToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_PartialLinkText_" data-uid="OpenQA.Selenium.By.PartialLinkText*"></a>
+
+  <h3 id="OpenQA_Selenium_By_PartialLinkText_System_String_" data-uid="OpenQA.Selenium.By.PartialLinkText(System.String)">
+  PartialLinkText(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L283"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by a partial match on their link text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By PartialLinkText(string partialLinkTextToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>partialLinkTextToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The partial link text to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_TagName_" data-uid="OpenQA.Selenium.By.TagName*"></a>
+
+  <h3 id="OpenQA_Selenium_By_TagName_System_String_" data-uid="OpenQA.Selenium.By.TagName(System.String)">
+  TagName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by their tag name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By TagName(string tagNameToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tagNameToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The tag name to find.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_ToString_" data-uid="OpenQA.Selenium.By.ToString*"></a>
+
+  <h3 id="OpenQA_Selenium_By_ToString" data-uid="OpenQA.Selenium.By.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L354"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a string representation of the finder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string displaying the finder content.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_XPath_" data-uid="OpenQA.Selenium.By.XPath*"></a>
+
+  <h3 id="OpenQA_Selenium_By_XPath_System_String_" data-uid="OpenQA.Selenium.By.XPath(System.String)">
+  XPath(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a mechanism to find elements by an XPath query.
+When searching within a WebElement using xpath be aware that WebDriver follows standard conventions:
+a search prefixed with &quot;//&quot; will search the entire document, not just the children of this current node.
+Use &quot;.//&quot; to limit your search to the children of this WebElement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static By XPath(string xpathToFind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xpathToFind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The XPath query to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.By.html">By</a> object the driver can use to find the elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="OpenQA_Selenium_By_op_Equality_" data-uid="OpenQA.Selenium.By.op_Equality*"></a>
+
+  <h3 id="OpenQA_Selenium_By_op_Equality_OpenQA_Selenium_By_OpenQA_Selenium_By_" data-uid="OpenQA.Selenium.By.op_Equality(OpenQA.Selenium.By,OpenQA.Selenium.By)">
+  operator ==(By, By)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if two <a class="xref" href="OpenQA.Selenium.By.html">By</a> instances are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(By one, By two)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>one</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>One instance to compare.</p>
+</dd>
+    <dt><code>two</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>The other instance to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the two instances are equal; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_By_op_Inequality_" data-uid="OpenQA.Selenium.By.op_Inequality*"></a>
+
+  <h3 id="OpenQA_Selenium_By_op_Inequality_OpenQA_Selenium_By_OpenQA_Selenium_By_" data-uid="OpenQA.Selenium.By.op_Inequality(OpenQA.Selenium.By,OpenQA.Selenium.By)">
+  operator !=(By, By)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if two <a class="xref" href="OpenQA.Selenium.By.html">By</a> instances are unequal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(By one, By two)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>one</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>One instance to compare.</p>
+</dd>
+    <dt><code>two</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>The other instance to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the two instances are not equal; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/By.cs/#L36" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

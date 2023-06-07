@@ -1,0 +1,512 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IWebDriver
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IWebDriver
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_IWebDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.IWebDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.IWebDriver">
+
+
+
+  <h1 id="OpenQA_Selenium_IWebDriver" data-uid="OpenQA.Selenium.IWebDriver" class="text-break">
+    Interface IWebDriver
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the interface through which the user controls the browser.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IWebDriver : ISearchContext, IDisposable</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElement_OpenQA_Selenium_By_">ISearchContext.FindElement(By)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElements_OpenQA_Selenium_By_">ISearchContext.FindElements(By)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">IDisposable.Dispose()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="OpenQA_Selenium_IWebDriver_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The <a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a> interface is the main interface to use for testing, which
+represents an idealized web browser. The methods in this class fall into three categories:</p>
+<ul><li>Control of the browser itself</li><li>Selection of <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a></li><li>Debugging aids</li></ul>
+<p>
+Key properties and methods are <a class="xref" href="OpenQA.Selenium.IWebDriver.html#OpenQA_Selenium_IWebDriver_Url">Url</a>, which is used to
+load a new web page by setting the property, and the various methods similar
+to <a class="xref" href="OpenQA.Selenium.ISearchContext.html#OpenQA_Selenium_ISearchContext_FindElement_OpenQA_Selenium_By_">FindElement(By)</a>, which is used to find <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a>.
+</p>
+<p>
+You use the interface by instantiate drivers that implement of this interface.
+You should write your tests against this interface so that you may "swap in" a
+more fully featured browser when there is a requirement for one.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_IWebDriver_CurrentWindowHandle_" data-uid="OpenQA.Selenium.IWebDriver.CurrentWindowHandle*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_CurrentWindowHandle" data-uid="OpenQA.Selenium.IWebDriver.CurrentWindowHandle">
+  CurrentWindowHandle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current window handle, which is an opaque handle to this
+window that uniquely identifies it within this driver instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string CurrentWindowHandle { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_PageSource_" data-uid="OpenQA.Selenium.IWebDriver.PageSource*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_PageSource" data-uid="OpenQA.Selenium.IWebDriver.PageSource">
+  PageSource
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the source of the page last loaded by the browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string PageSource { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebDriver_PageSource_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If the page has been modified after loading (for example, by JavaScript)
+there is no guarantee that the returned text is that of the modified page.
+Please consult the documentation of the particular driver being used to
+determine whether the returned text reflects the current state of the page
+or the text last sent by the web server. The page source returned is a
+representation of the underlying DOM: do not expect it to be formatted
+or escaped in the same way as the response sent from the web server.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Title_" data-uid="OpenQA.Selenium.IWebDriver.Title*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Title" data-uid="OpenQA.Selenium.IWebDriver.Title">
+  Title
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the title of the current browser window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string Title { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Url_" data-uid="OpenQA.Selenium.IWebDriver.Url*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Url" data-uid="OpenQA.Selenium.IWebDriver.Url">
+  Url
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the URL the browser is currently displaying.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string Url { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_IWebDriver_Url_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Setting the <a class="xref" href="OpenQA.Selenium.IWebDriver.html#OpenQA_Selenium_IWebDriver_Url">Url</a> property will load a new web page in the current browser window.
+This is done using an HTTP GET operation, and the method will block until the
+load is complete. This will follow redirects issued either by the server or
+as a meta-redirect from within the returned HTML. Should a meta-redirect &quot;rest&quot;
+for any duration of time, it is best to wait until this timeout is over, since
+should the underlying page change while your test is executing the results of
+future calls against this interface will be against the freshly loaded page.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="OpenQA.Selenium.INavigation.html#OpenQA.Selenium.INavigation.GoToUrl(System.String)">GoToUrl</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>)</div>
+    <div><a class="xref" href="OpenQA.Selenium.INavigation.html#OpenQA.Selenium.INavigation.GoToUrl(System.Uri)">GoToUrl</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a>)</div>
+    </dd>
+  </dl>
+
+
+  <a id="OpenQA_Selenium_IWebDriver_WindowHandles_" data-uid="OpenQA.Selenium.IWebDriver.WindowHandles*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_WindowHandles" data-uid="OpenQA.Selenium.IWebDriver.WindowHandles">
+  WindowHandles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the window handles of open browser windows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ReadOnlyCollection&lt;string&gt; WindowHandles { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Close_" data-uid="OpenQA.Selenium.IWebDriver.Close*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Close" data-uid="OpenQA.Selenium.IWebDriver.Close">
+  Close()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Close the current window, quitting the browser if it is the last window currently open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Close()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Manage_" data-uid="OpenQA.Selenium.IWebDriver.Manage*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Manage" data-uid="OpenQA.Selenium.IWebDriver.Manage">
+  Manage()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to change its settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOptions Manage()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.IOptions.html">IOptions</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.IOptions.html">IOptions</a> object allowing the user to change
+the settings of the driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Navigate_" data-uid="OpenQA.Selenium.IWebDriver.Navigate*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Navigate" data-uid="OpenQA.Selenium.IWebDriver.Navigate">
+  Navigate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to navigate the browser to another location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">INavigation Navigate()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.INavigation.html">INavigation</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.INavigation.html">INavigation</a> object allowing the user to access
+the browser's history and to navigate to a given URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_Quit_" data-uid="OpenQA.Selenium.IWebDriver.Quit*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_Quit" data-uid="OpenQA.Selenium.IWebDriver.Quit">
+  Quit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Quits this driver, closing every associated window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Quit()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_IWebDriver_SwitchTo_" data-uid="OpenQA.Selenium.IWebDriver.SwitchTo*"></a>
+
+  <h3 id="OpenQA_Selenium_IWebDriver_SwitchTo" data-uid="OpenQA.Selenium.IWebDriver.SwitchTo">
+  SwitchTo()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to send future commands to a different frame or window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITargetLocator SwitchTo()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.ITargetLocator.html">ITargetLocator</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.ITargetLocator.html">ITargetLocator</a> object which can be used to select
+a frame or window.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/IWebDriver.cs/#L46" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,2057 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class NetworkAdapter
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class NetworkAdapter
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter">
+
+
+
+  <h1 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter" class="text-break">
+    Class NetworkAdapter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.DevTools.html">DevTools</a>.<a class="xref" href="OpenQA.Selenium.DevTools.V85.html">V85</a>.<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.html">Network</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an adapter for the Network domain to simplify the command interface.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class NetworkAdapter</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NetworkAdapter</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter__ctor_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter__ctor_OpenQA_Selenium_DevTools_IDevToolsSession_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.#ctor(OpenQA.Selenium.DevTools.IDevToolsSession)">
+  NetworkAdapter(IDevToolsSession)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NetworkAdapter(IDevToolsSession session)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>session</code> <a class="xref" href="OpenQA.Selenium.DevTools.IDevToolsSession.html">IDevToolsSession</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Session_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Session*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Session" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Session">
+  Session
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the DevToolsSession associated with the adapter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IDevToolsSession Session { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.DevTools.IDevToolsSession.html">IDevToolsSession</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanClearBrowserCache_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanClearBrowserCache*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanClearBrowserCache_OpenQA_Selenium_DevTools_V85_Network_CanClearBrowserCacheCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanClearBrowserCache(OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCacheCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  CanClearBrowserCache(CanClearBrowserCacheCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tells whether clearing browser cache is supported.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CanClearBrowserCacheCommandResponse&gt; CanClearBrowserCache(CanClearBrowserCacheCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCacheCommandSettings.html">CanClearBrowserCacheCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCacheCommandResponse.html">CanClearBrowserCacheCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanClearBrowserCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanClearBrowserCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanClearBrowserCookies_OpenQA_Selenium_DevTools_V85_Network_CanClearBrowserCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanClearBrowserCookies(OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  CanClearBrowserCookies(CanClearBrowserCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tells whether clearing browser cookies is supported.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CanClearBrowserCookiesCommandResponse&gt; CanClearBrowserCookies(CanClearBrowserCookiesCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCookiesCommandSettings.html">CanClearBrowserCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCookiesCommandResponse.html">CanClearBrowserCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanEmulateNetworkConditions_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanEmulateNetworkConditions*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_CanEmulateNetworkConditions_OpenQA_Selenium_DevTools_V85_Network_CanEmulateNetworkConditionsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.CanEmulateNetworkConditions(OpenQA.Selenium.DevTools.V85.Network.CanEmulateNetworkConditionsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  CanEmulateNetworkConditions(CanEmulateNetworkConditionsCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tells whether emulation of network conditions is supported.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CanEmulateNetworkConditionsCommandResponse&gt; CanEmulateNetworkConditions(CanEmulateNetworkConditionsCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanEmulateNetworkConditionsCommandSettings.html">CanEmulateNetworkConditionsCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanEmulateNetworkConditionsCommandResponse.html">CanEmulateNetworkConditionsCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ClearBrowserCache_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ClearBrowserCache*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ClearBrowserCache_OpenQA_Selenium_DevTools_V85_Network_ClearBrowserCacheCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ClearBrowserCache(OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCacheCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  ClearBrowserCache(ClearBrowserCacheCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears browser cache.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ClearBrowserCacheCommandResponse&gt; ClearBrowserCache(ClearBrowserCacheCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCacheCommandSettings.html">ClearBrowserCacheCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCacheCommandResponse.html">ClearBrowserCacheCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ClearBrowserCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ClearBrowserCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ClearBrowserCookies_OpenQA_Selenium_DevTools_V85_Network_ClearBrowserCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ClearBrowserCookies(OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  ClearBrowserCookies(ClearBrowserCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears browser cookies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ClearBrowserCookiesCommandResponse&gt; ClearBrowserCookies(ClearBrowserCookiesCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCookiesCommandSettings.html">ClearBrowserCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCookiesCommandResponse.html">ClearBrowserCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ContinueInterceptedRequest_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ContinueInterceptedRequest*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ContinueInterceptedRequest_OpenQA_Selenium_DevTools_V85_Network_ContinueInterceptedRequestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ContinueInterceptedRequest(OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  ContinueInterceptedRequest(ContinueInterceptedRequestCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Response to Network.requestIntercepted which either modifies the request to continue with any
+modifications, or blocks it, or completes it with the provided response bytes. If a network
+fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
+event will be sent with the same InterceptionId.
+Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ContinueInterceptedRequestCommandResponse&gt; ContinueInterceptedRequest(ContinueInterceptedRequestCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.html">ContinueInterceptedRequestCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandResponse.html">ContinueInterceptedRequestCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_DeleteCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.DeleteCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_DeleteCookies_OpenQA_Selenium_DevTools_V85_Network_DeleteCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.DeleteCookies(OpenQA.Selenium.DevTools.V85.Network.DeleteCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  DeleteCookies(DeleteCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes browser cookies with matching name and url or domain/path pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DeleteCookiesCommandResponse&gt; DeleteCookies(DeleteCookiesCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DeleteCookiesCommandSettings.html">DeleteCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DeleteCookiesCommandResponse.html">DeleteCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Disable_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Disable*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Disable_OpenQA_Selenium_DevTools_V85_Network_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Disable(OpenQA.Selenium.DevTools.V85.Network.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  Disable(DisableCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disables network tracking, prevents network events from being sent to the client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DisableCommandResponse&gt; Disable(DisableCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DisableCommandSettings.html">DisableCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DisableCommandResponse.html">DisableCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_EmulateNetworkConditions_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.EmulateNetworkConditions*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_EmulateNetworkConditions_OpenQA_Selenium_DevTools_V85_Network_EmulateNetworkConditionsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.EmulateNetworkConditions(OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  EmulateNetworkConditions(EmulateNetworkConditionsCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Activates emulation of network conditions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;EmulateNetworkConditionsCommandResponse&gt; EmulateNetworkConditions(EmulateNetworkConditionsCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.html">EmulateNetworkConditionsCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandResponse.html">EmulateNetworkConditionsCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Enable_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Enable*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_Enable_OpenQA_Selenium_DevTools_V85_Network_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.Enable(OpenQA.Selenium.DevTools.V85.Network.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  Enable(EnableCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables network tracking, network events will now be delivered to the client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;EnableCommandResponse&gt; Enable(EnableCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EnableCommandSettings.html">EnableCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EnableCommandResponse.html">EnableCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetAllCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetAllCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetAllCookies_OpenQA_Selenium_DevTools_V85_Network_GetAllCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetAllCookies(OpenQA.Selenium.DevTools.V85.Network.GetAllCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetAllCookies(GetAllCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns all browser cookies. Depending on the backend support, will return detailed cookie
+information in the <code>cookies</code> field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetAllCookiesCommandResponse&gt; GetAllCookies(GetAllCookiesCommandSettings command = null, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetAllCookiesCommandSettings.html">GetAllCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetAllCookiesCommandResponse.html">GetAllCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetCertificate_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetCertificate*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetCertificate_OpenQA_Selenium_DevTools_V85_Network_GetCertificateCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetCertificate(OpenQA.Selenium.DevTools.V85.Network.GetCertificateCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetCertificate(GetCertificateCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L219"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the DER-encoded certificate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetCertificateCommandResponse&gt; GetCertificate(GetCertificateCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCertificateCommandSettings.html">GetCertificateCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCertificateCommandResponse.html">GetCertificateCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetCookies_OpenQA_Selenium_DevTools_V85_Network_GetCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetCookies(OpenQA.Selenium.DevTools.V85.Network.GetCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetCookies(GetCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L227"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns all browser cookies for the current URL. Depending on the backend support, will return
+detailed cookie information in the <code>cookies</code> field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetCookiesCommandResponse&gt; GetCookies(GetCookiesCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCookiesCommandSettings.html">GetCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCookiesCommandResponse.html">GetCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetRequestPostData_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetRequestPostData*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetRequestPostData_OpenQA_Selenium_DevTools_V85_Network_GetRequestPostDataCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetRequestPostData(OpenQA.Selenium.DevTools.V85.Network.GetRequestPostDataCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetRequestPostData(GetRequestPostDataCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns post data sent with the request. Returns an error when no data was sent with the request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetRequestPostDataCommandResponse&gt; GetRequestPostData(GetRequestPostDataCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetRequestPostDataCommandSettings.html">GetRequestPostDataCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetRequestPostDataCommandResponse.html">GetRequestPostDataCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetResponseBody_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetResponseBody*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetResponseBody_OpenQA_Selenium_DevTools_V85_Network_GetResponseBodyCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetResponseBody(OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetResponseBody(GetResponseBodyCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns content served for the given request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetResponseBodyCommandResponse&gt; GetResponseBody(GetResponseBodyCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyCommandSettings.html">GetResponseBodyCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyCommandResponse.html">GetResponseBodyCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetResponseBodyForInterception_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetResponseBodyForInterception*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_GetResponseBodyForInterception_OpenQA_Selenium_DevTools_V85_Network_GetResponseBodyForInterceptionCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.GetResponseBodyForInterception(OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyForInterceptionCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  GetResponseBodyForInterception(GetResponseBodyForInterceptionCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns content served for the given currently intercepted request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;GetResponseBodyForInterceptionCommandResponse&gt; GetResponseBodyForInterception(GetResponseBodyForInterceptionCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyForInterceptionCommandSettings.html">GetResponseBodyForInterceptionCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyForInterceptionCommandResponse.html">GetResponseBodyForInterceptionCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ReplayXHR_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ReplayXHR*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ReplayXHR_OpenQA_Selenium_DevTools_V85_Network_ReplayXHRCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ReplayXHR(OpenQA.Selenium.DevTools.V85.Network.ReplayXHRCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  ReplayXHR(ReplayXHRCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L267"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This method sends a new XMLHttpRequest which is identical to the original one. The following
+parameters should be identical: method, url, async, request body, extra headers, withCredentials
+attribute, user, password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ReplayXHRCommandResponse&gt; ReplayXHR(ReplayXHRCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ReplayXHRCommandSettings.html">ReplayXHRCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ReplayXHRCommandResponse.html">ReplayXHRCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SearchInResponseBody_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SearchInResponseBody*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SearchInResponseBody_OpenQA_Selenium_DevTools_V85_Network_SearchInResponseBodyCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SearchInResponseBody(OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SearchInResponseBody(SearchInResponseBodyCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Searches for given string in response content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SearchInResponseBodyCommandResponse&gt; SearchInResponseBody(SearchInResponseBodyCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings.html">SearchInResponseBodyCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandResponse.html">SearchInResponseBodyCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetBlockedURLs_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetBlockedURLs*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetBlockedURLs_OpenQA_Selenium_DevTools_V85_Network_SetBlockedURLsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetBlockedURLs(OpenQA.Selenium.DevTools.V85.Network.SetBlockedURLsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetBlockedURLs(SetBlockedURLsCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L281"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Blocks URLs from loading.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetBlockedURLsCommandResponse&gt; SetBlockedURLs(SetBlockedURLsCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBlockedURLsCommandSettings.html">SetBlockedURLsCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBlockedURLsCommandResponse.html">SetBlockedURLsCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetBypassServiceWorker_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetBypassServiceWorker*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetBypassServiceWorker_OpenQA_Selenium_DevTools_V85_Network_SetBypassServiceWorkerCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetBypassServiceWorker(OpenQA.Selenium.DevTools.V85.Network.SetBypassServiceWorkerCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetBypassServiceWorker(SetBypassServiceWorkerCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Toggles ignoring of service worker for each request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetBypassServiceWorkerCommandResponse&gt; SetBypassServiceWorker(SetBypassServiceWorkerCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBypassServiceWorkerCommandSettings.html">SetBypassServiceWorkerCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBypassServiceWorkerCommandResponse.html">SetBypassServiceWorkerCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCacheDisabled_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCacheDisabled*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCacheDisabled_OpenQA_Selenium_DevTools_V85_Network_SetCacheDisabledCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCacheDisabled(OpenQA.Selenium.DevTools.V85.Network.SetCacheDisabledCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetCacheDisabled(SetCacheDisabledCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetCacheDisabledCommandResponse&gt; SetCacheDisabled(SetCacheDisabledCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCacheDisabledCommandSettings.html">SetCacheDisabledCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCacheDisabledCommandResponse.html">SetCacheDisabledCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCookie_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCookie*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCookie_OpenQA_Selenium_DevTools_V85_Network_SetCookieCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCookie(OpenQA.Selenium.DevTools.V85.Network.SetCookieCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetCookie(SetCookieCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetCookieCommandResponse&gt; SetCookie(SetCookieCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookieCommandSettings.html">SetCookieCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookieCommandResponse.html">SetCookieCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCookies_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCookies*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetCookies_OpenQA_Selenium_DevTools_V85_Network_SetCookiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetCookies(OpenQA.Selenium.DevTools.V85.Network.SetCookiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetCookies(SetCookiesCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L309"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets given cookies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetCookiesCommandResponse&gt; SetCookies(SetCookiesCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookiesCommandSettings.html">SetCookiesCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookiesCommandResponse.html">SetCookiesCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetDataSizeLimitsForTest_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetDataSizeLimitsForTest*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetDataSizeLimitsForTest_OpenQA_Selenium_DevTools_V85_Network_SetDataSizeLimitsForTestCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetDataSizeLimitsForTest(OpenQA.Selenium.DevTools.V85.Network.SetDataSizeLimitsForTestCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetDataSizeLimitsForTest(SetDataSizeLimitsForTestCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For testing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDataSizeLimitsForTestCommandResponse&gt; SetDataSizeLimitsForTest(SetDataSizeLimitsForTestCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetDataSizeLimitsForTestCommandSettings.html">SetDataSizeLimitsForTestCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetDataSizeLimitsForTestCommandResponse.html">SetDataSizeLimitsForTestCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetExtraHTTPHeaders_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetExtraHTTPHeaders*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetExtraHTTPHeaders_OpenQA_Selenium_DevTools_V85_Network_SetExtraHTTPHeadersCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetExtraHTTPHeaders(OpenQA.Selenium.DevTools.V85.Network.SetExtraHTTPHeadersCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetExtraHTTPHeaders(SetExtraHTTPHeadersCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L323"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Specifies whether to always send extra HTTP headers with the requests from this page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetExtraHTTPHeadersCommandResponse&gt; SetExtraHTTPHeaders(SetExtraHTTPHeadersCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetExtraHTTPHeadersCommandSettings.html">SetExtraHTTPHeadersCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetExtraHTTPHeadersCommandResponse.html">SetExtraHTTPHeadersCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetRequestInterception_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetRequestInterception*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetRequestInterception_OpenQA_Selenium_DevTools_V85_Network_SetRequestInterceptionCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetRequestInterception(OpenQA.Selenium.DevTools.V85.Network.SetRequestInterceptionCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetRequestInterception(SetRequestInterceptionCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L331"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the requests to intercept that match the provided patterns and optionally resource types.
+Deprecated, please use Fetch.enable instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetRequestInterceptionCommandResponse&gt; SetRequestInterception(SetRequestInterceptionCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetRequestInterceptionCommandSettings.html">SetRequestInterceptionCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetRequestInterceptionCommandResponse.html">SetRequestInterceptionCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetUserAgentOverride_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetUserAgentOverride*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SetUserAgentOverride_OpenQA_Selenium_DevTools_V85_Network_SetUserAgentOverrideCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SetUserAgentOverride(OpenQA.Selenium.DevTools.V85.Network.SetUserAgentOverrideCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  SetUserAgentOverride(SetUserAgentOverrideCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L338"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows overriding user agent with the given string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetUserAgentOverrideCommandResponse&gt; SetUserAgentOverride(SetUserAgentOverrideCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetUserAgentOverrideCommandSettings.html">SetUserAgentOverrideCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetUserAgentOverrideCommandResponse.html">SetUserAgentOverrideCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_TakeResponseBodyForInterceptionAsStream_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.TakeResponseBodyForInterceptionAsStream*"></a>
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_TakeResponseBodyForInterceptionAsStream_OpenQA_Selenium_DevTools_V85_Network_TakeResponseBodyForInterceptionAsStreamCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.TakeResponseBodyForInterceptionAsStream(OpenQA.Selenium.DevTools.V85.Network.TakeResponseBodyForInterceptionAsStreamCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
+  TakeResponseBodyForInterceptionAsStream(TakeResponseBodyForInterceptionAsStreamCommandSettings, CancellationToken, int?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a handle to the stream representing the response body. Note that after this command,
+the intercepted request can't be continued as is -- you either need to cancel it or to provide
+the response body. The stream only supports sequential read, IO.read will fail if the position
+is specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;TakeResponseBodyForInterceptionAsStreamCommandResponse&gt; TakeResponseBodyForInterceptionAsStream(TakeResponseBodyForInterceptionAsStreamCommandSettings command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>command</code> <a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.TakeResponseBodyForInterceptionAsStreamCommandSettings.html">TakeResponseBodyForInterceptionAsStreamCommandSettings</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+    <dt><code>millisecondsTimeout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+    <dt><code>throwExceptionIfResponseNotReceived</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.TakeResponseBodyForInterceptionAsStreamCommandResponse.html">TakeResponseBodyForInterceptionAsStreamCommandResponse</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_DataReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.DataReceived">
+  DataReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when data chunk was received over the network.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;DataReceivedEventArgs&gt; DataReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DataReceivedEventArgs.html">DataReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_EventSourceMessageReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.EventSourceMessageReceived">
+  EventSourceMessageReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when EventSource message is received.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;EventSourceMessageReceivedEventArgs&gt; EventSourceMessageReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EventSourceMessageReceivedEventArgs.html">EventSourceMessageReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_LoadingFailed" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.LoadingFailed">
+  LoadingFailed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when HTTP request has failed to load.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;LoadingFailedEventArgs&gt; LoadingFailed</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.LoadingFailedEventArgs.html">LoadingFailedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_LoadingFinished" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.LoadingFinished">
+  LoadingFinished
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when HTTP request has finished loading.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;LoadingFinishedEventArgs&gt; LoadingFinished</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.LoadingFinishedEventArgs.html">LoadingFinishedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_RequestIntercepted" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.RequestIntercepted">
+  RequestIntercepted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
+mocked.
+Deprecated, use Fetch.requestPaused instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;RequestInterceptedEventArgs&gt; RequestIntercepted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.RequestInterceptedEventArgs.html">RequestInterceptedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_RequestServedFromCache" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.RequestServedFromCache">
+  RequestServedFromCache
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired if request ended up loading from cache.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;RequestServedFromCacheEventArgs&gt; RequestServedFromCache</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.RequestServedFromCacheEventArgs.html">RequestServedFromCacheEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_RequestWillBeSent" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.RequestWillBeSent">
+  RequestWillBeSent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when page is about to send HTTP request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;RequestWillBeSentEventArgs&gt; RequestWillBeSent</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.RequestWillBeSentEventArgs.html">RequestWillBeSentEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_RequestWillBeSentExtraInfo" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.RequestWillBeSentExtraInfo">
+  RequestWillBeSentExtraInfo
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when additional information about a requestWillBeSent event is available from the
+network stack. Not every requestWillBeSent event will have an additional
+requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
+or requestWillBeSentExtraInfo will be fired first for the same request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;RequestWillBeSentExtraInfoEventArgs&gt; RequestWillBeSentExtraInfo</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.RequestWillBeSentExtraInfoEventArgs.html">RequestWillBeSentExtraInfoEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ResourceChangedPriority" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ResourceChangedPriority">
+  ResourceChangedPriority
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when resource loading priority is changed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;ResourceChangedPriorityEventArgs&gt; ResourceChangedPriority</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ResourceChangedPriorityEventArgs.html">ResourceChangedPriorityEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ResponseReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ResponseReceived">
+  ResponseReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when HTTP response is available.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;ResponseReceivedEventArgs&gt; ResponseReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs.html">ResponseReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_ResponseReceivedExtraInfo" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.ResponseReceivedExtraInfo">
+  ResponseReceivedExtraInfo
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when additional information about a responseReceived event is available from the network
+stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for
+it, and responseReceivedExtraInfo may be fired before or after responseReceived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;ResponseReceivedExtraInfoEventArgs&gt; ResponseReceivedExtraInfo</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedExtraInfoEventArgs.html">ResponseReceivedExtraInfoEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_SignedExchangeReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.SignedExchangeReceived">
+  SignedExchangeReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when a signed exchange was received over the network</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;SignedExchangeReceivedEventArgs&gt; SignedExchangeReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SignedExchangeReceivedEventArgs.html">SignedExchangeReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketClosed" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketClosed">
+  WebSocketClosed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket is closed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketClosedEventArgs&gt; WebSocketClosed</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketClosedEventArgs.html">WebSocketClosedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketCreated" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketCreated">
+  WebSocketCreated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired upon WebSocket creation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketCreatedEventArgs&gt; WebSocketCreated</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketCreatedEventArgs.html">WebSocketCreatedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketFrameError" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketFrameError">
+  WebSocketFrameError
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket message error occurs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketFrameErrorEventArgs&gt; WebSocketFrameError</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketFrameErrorEventArgs.html">WebSocketFrameErrorEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketFrameReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketFrameReceived">
+  WebSocketFrameReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket message is received.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketFrameReceivedEventArgs&gt; WebSocketFrameReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketFrameReceivedEventArgs.html">WebSocketFrameReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketFrameSent" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketFrameSent">
+  WebSocketFrameSent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket message is sent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketFrameSentEventArgs&gt; WebSocketFrameSent</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketFrameSentEventArgs.html">WebSocketFrameSentEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketHandshakeResponseReceived" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketHandshakeResponseReceived">
+  WebSocketHandshakeResponseReceived
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket handshake response becomes available.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketHandshakeResponseReceivedEventArgs&gt; WebSocketHandshakeResponseReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketHandshakeResponseReceivedEventArgs.html">WebSocketHandshakeResponseReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DevTools_V85_Network_NetworkAdapter_WebSocketWillSendHandshakeRequest" data-uid="OpenQA.Selenium.DevTools.V85.Network.NetworkAdapter.WebSocketWillSendHandshakeRequest">
+  WebSocketWillSendHandshakeRequest
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fired when WebSocket is about to initiate handshake.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebSocketWillSendHandshakeRequestEventArgs&gt; WebSocketWillSendHandshakeRequest</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.WebSocketWillSendHandshakeRequestEventArgs.html">WebSocketWillSendHandshakeRequestEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v85/Network/NetworkAdapter.cs/#L11" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

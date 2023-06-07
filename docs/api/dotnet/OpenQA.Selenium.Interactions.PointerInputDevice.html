@@ -1,0 +1,763 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PointerInputDevice
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PointerInputDevice
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Interactions_PointerInputDevice.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Interactions.PointerInputDevice%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.Interactions.PointerInputDevice">
+
+
+
+  <h1 id="OpenQA_Selenium_Interactions_PointerInputDevice" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice" class="text-break">
+    Class PointerInputDevice
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.Interactions.html">Interactions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a pointer input device, such as a stylus, mouse, or finger on a touch screen.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class PointerInputDevice : InputDevice</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html">InputDevice</a></div>
+      <div><span class="xref">PointerInputDevice</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html#OpenQA_Selenium_Interactions_InputDevice_DeviceName">InputDevice.DeviceName</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html#OpenQA_Selenium_Interactions_InputDevice_CreatePause">InputDevice.CreatePause()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html#OpenQA_Selenium_Interactions_InputDevice_CreatePause_System_TimeSpan_">InputDevice.CreatePause(TimeSpan)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html#OpenQA_Selenium_Interactions_InputDevice_GetHashCode">InputDevice.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Interactions.InputDevice.html#OpenQA_Selenium_Interactions_InputDevice_ToString">InputDevice.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor">
+  PointerInputDevice()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PointerInputDevice()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor_OpenQA_Selenium_Interactions_PointerKind_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor(OpenQA.Selenium.Interactions.PointerKind)">
+  PointerInputDevice(PointerKind)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PointerInputDevice(PointerKind pointerKind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pointerKind</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerKind.html">PointerKind</a></dt>
+    <dd><p>The kind of pointer represented by this input device.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice__ctor_OpenQA_Selenium_Interactions_PointerKind_System_String_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.#ctor(OpenQA.Selenium.Interactions.PointerKind,System.String)">
+  PointerInputDevice(PointerKind, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PointerInputDevice(PointerKind pointerKind, string deviceName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pointerKind</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerKind.html">PointerKind</a></dt>
+    <dd><p>The kind of pointer represented by this input device.</p>
+</dd>
+    <dt><code>deviceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unique name for this input device.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_DeviceKind_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.DeviceKind*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_DeviceKind" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.DeviceKind">
+  DeviceKind
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the type of device for this input device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override InputDeviceKind DeviceKind { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.InputDeviceKind.html">InputDeviceKind</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerCancel_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerCancel*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerCancel" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerCancel">
+  CreatePointerCancel()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L284"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer cancel action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerCancel()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer cancel gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerDown_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerDown*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerDown_OpenQA_Selenium_Interactions_MouseButton_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerDown(OpenQA.Selenium.Interactions.MouseButton)">
+  CreatePointerDown(MouseButton)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer down action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerDown(MouseButton button)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <a class="xref" href="OpenQA.Selenium.Interactions.MouseButton.html">MouseButton</a></dt>
+    <dd><p>The button of the pointer that should be pressed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer down gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerDown_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerDown*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerDown_OpenQA_Selenium_Interactions_MouseButton_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerDown(OpenQA.Selenium.Interactions.MouseButton,OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties)">
+  CreatePointerDown(MouseButton, PointerEventProperties)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer down action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerDown(MouseButton button, PointerInputDevice.PointerEventProperties properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <a class="xref" href="OpenQA.Selenium.Interactions.MouseButton.html">MouseButton</a></dt>
+    <dd><p>The button of the pointer that should be pressed.</p>
+</dd>
+    <dt><code>properties</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a>.<a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties.html">PointerEventProperties</a></dt>
+    <dd><p>The specifications for the pointer event interaction</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer down gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerDown_OpenQA_Selenium_Interactions_MouseButton_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>MouseButton value applies to Pen types for primary, secondary and erase functionality (0, 2, and 5 respectively)</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_OpenQA_Selenium_IWebElement_System_Int32_System_Int32_System_TimeSpan_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove(OpenQA.Selenium.IWebElement,System.Int32,System.Int32,System.TimeSpan)">
+  CreatePointerMove(IWebElement, int, int, TimeSpan)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L224"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer move action to a specific element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerMove(IWebElement target, int xOffset, int yOffset, TimeSpan duration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> used as the target for the move.</p>
+</dd>
+    <dt><code>xOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The horizontal offset from the origin of the move.</p>
+</dd>
+    <dt><code>yOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The vertical offset from the origin of the move.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The length of time the move gesture takes to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer move gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_OpenQA_Selenium_IWebElement_System_Int32_System_Int32_System_TimeSpan_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove(OpenQA.Selenium.IWebElement,System.Int32,System.Int32,System.TimeSpan,OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties)">
+  CreatePointerMove(IWebElement, int, int, TimeSpan, PointerEventProperties)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L238"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer move action to a specific element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerMove(IWebElement target, int xOffset, int yOffset, TimeSpan duration, PointerInputDevice.PointerEventProperties properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>target</code> <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></dt>
+    <dd><p>The <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> used as the target for the move.</p>
+</dd>
+    <dt><code>xOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The horizontal offset from the origin of the move.</p>
+</dd>
+    <dt><code>yOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The vertical offset from the origin of the move.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The length of time the move gesture takes to complete.</p>
+</dd>
+    <dt><code>properties</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a>.<a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties.html">PointerEventProperties</a></dt>
+    <dd><p>The specifications for the pointer event interaction</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer move gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_OpenQA_Selenium_Interactions_CoordinateOrigin_System_Int32_System_Int32_System_TimeSpan_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove(OpenQA.Selenium.Interactions.CoordinateOrigin,System.Int32,System.Int32,System.TimeSpan)">
+  CreatePointerMove(CoordinateOrigin, int, int, TimeSpan)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer move action to an absolute coordinate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerMove(CoordinateOrigin origin, int xOffset, int yOffset, TimeSpan duration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <a class="xref" href="OpenQA.Selenium.Interactions.CoordinateOrigin.html">CoordinateOrigin</a></dt>
+    <dd><p>The origin of coordinates for the move. Values can be relative to
+the view port origin, or the most recent pointer position.</p>
+</dd>
+    <dt><code>xOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The horizontal offset from the origin of the move.</p>
+</dd>
+    <dt><code>yOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The vertical offset from the origin of the move.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The length of time the move gesture takes to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer move gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when passing CoordinateOrigin.Element into origin.
+Users should us the other CreatePointerMove overload to move to a specific element.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerMove_OpenQA_Selenium_Interactions_CoordinateOrigin_System_Int32_System_Int32_System_TimeSpan_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerMove(OpenQA.Selenium.Interactions.CoordinateOrigin,System.Int32,System.Int32,System.TimeSpan,OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties)">
+  CreatePointerMove(CoordinateOrigin, int, int, TimeSpan, PointerEventProperties)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer move action to an absolute coordinate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerMove(CoordinateOrigin origin, int xOffset, int yOffset, TimeSpan duration, PointerInputDevice.PointerEventProperties properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>origin</code> <a class="xref" href="OpenQA.Selenium.Interactions.CoordinateOrigin.html">CoordinateOrigin</a></dt>
+    <dd><p>The origin of coordinates for the move. Values can be relative to
+the view port origin, or the most recent pointer position.</p>
+</dd>
+    <dt><code>xOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The horizontal offset from the origin of the move.</p>
+</dd>
+    <dt><code>yOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The vertical offset from the origin of the move.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The length of time the move gesture takes to complete.</p>
+</dd>
+    <dt><code>properties</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a>.<a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties.html">PointerEventProperties</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer move gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when passing CoordinateOrigin.Element into origin.
+Users should us the other CreatePointerMove overload to move to a specific element.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerUp_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerUp*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerUp_OpenQA_Selenium_Interactions_MouseButton_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerUp(OpenQA.Selenium.Interactions.MouseButton)">
+  CreatePointerUp(MouseButton)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer up action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerUp(MouseButton button)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <a class="xref" href="OpenQA.Selenium.Interactions.MouseButton.html">MouseButton</a></dt>
+    <dd><p>The button of the pointer that should be released.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer up gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerUp_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerUp*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerUp_OpenQA_Selenium_Interactions_MouseButton_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.CreatePointerUp(OpenQA.Selenium.Interactions.MouseButton,OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties)">
+  CreatePointerUp(MouseButton, PointerEventProperties)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a pointer down action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interaction CreatePointerUp(MouseButton button, PointerInputDevice.PointerEventProperties properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <a class="xref" href="OpenQA.Selenium.Interactions.MouseButton.html">MouseButton</a></dt>
+    <dd><p>The button of the pointer that should be pressed.</p>
+</dd>
+    <dt><code>properties</code> <a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.html">PointerInputDevice</a>.<a class="xref" href="OpenQA.Selenium.Interactions.PointerInputDevice.PointerEventProperties.html">PointerEventProperties</a></dt>
+    <dd><p>The specifications for the pointer event interaction</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Interactions.Interaction.html">Interaction</a></dt>
+    <dd><p>The action representing the pointer down gesture.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Interactions_PointerInputDevice_CreatePointerUp_OpenQA_Selenium_Interactions_MouseButton_OpenQA_Selenium_Interactions_PointerInputDevice_PointerEventProperties__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>MouseButton value applies to Pen types for primary, secondary and erase functionality (0, 2, and 5 respectively)</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Interactions_PointerInputDevice_ToDictionary_" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.ToDictionary*"></a>
+
+  <h3 id="OpenQA_Selenium_Interactions_PointerInputDevice_ToDictionary" data-uid="OpenQA.Selenium.Interactions.PointerInputDevice.ToDictionary">
+  ToDictionary()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a value for this input device that can be transmitted across the wire to a remote end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Dictionary&lt;string, object&gt; ToDictionary()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> representing this action.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Interactions/PointerInputDevice.cs/#L110" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

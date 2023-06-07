@@ -1,0 +1,968 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DriverService
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DriverService
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DriverService.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DriverService%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.DriverService">
+
+
+
+  <h1 id="OpenQA_Selenium_DriverService" data-uid="OpenQA.Selenium.DriverService" class="text-break">
+    Class DriverService
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Exposes the service provided by a native WebDriver server executable.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class DriverService : ICommandServer, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">DriverService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.Remote.ICommandServer.html">ICommandServer</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html">ChromiumDriverService</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriverService.html">FirefoxDriverService</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IE.InternetExplorerDriverService.html">InternetExplorerDriverService</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Safari.SafariDriverService.html">SafariDriverService</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_DriverService__ctor_" data-uid="OpenQA.Selenium.DriverService.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService__ctor_System_String_System_Int32_System_String_System_Uri_" data-uid="OpenQA.Selenium.DriverService.#ctor(System.String,System.Int32,System.String,System.Uri)">
+  DriverService(string, int, string, Uri)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>servicePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full path to the directory containing the executable providing the service to drive the browser.</p>
+</dd>
+    <dt><code>port</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The port on which the driver executable should listen.</p>
+</dd>
+    <dt><code>driverServiceExecutableName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file name of the driver service executable.</p>
+</dd>
+    <dt><code>driverServiceDownloadUrl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd><p>A URL at which the driver service executable may be downloaded.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>If the path specified is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or an empty string.</p>
+</dd>
+    <dt><a class="xref" href="OpenQA.Selenium.DriverServiceNotFoundException.html">DriverServiceNotFoundException</a></dt>
+    <dd><p>If the specified driver service executable does not exist in the specified directory.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_DriverService_CommandLineArguments_" data-uid="OpenQA.Selenium.DriverService.CommandLineArguments*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_CommandLineArguments" data-uid="OpenQA.Selenium.DriverService.CommandLineArguments">
+  CommandLineArguments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the command-line arguments for the driver service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual string CommandLineArguments { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_DriverServiceExecutableName_" data-uid="OpenQA.Selenium.DriverService.DriverServiceExecutableName*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_DriverServiceExecutableName" data-uid="OpenQA.Selenium.DriverService.DriverServiceExecutableName">
+  DriverServiceExecutableName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the executable file name of the driver service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DriverServiceExecutableName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_DriverServicePath_" data-uid="OpenQA.Selenium.DriverService.DriverServicePath*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_DriverServicePath" data-uid="OpenQA.Selenium.DriverService.DriverServicePath">
+  DriverServicePath
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the path of the driver service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DriverServicePath { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_HasShutdown_" data-uid="OpenQA.Selenium.DriverService.HasShutdown*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_HasShutdown" data-uid="OpenQA.Selenium.DriverService.HasShutdown">
+  HasShutdown
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the service has a shutdown API that can be called to terminate
+it gracefully before forcing a termination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool HasShutdown { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_HideCommandPromptWindow_" data-uid="OpenQA.Selenium.DriverService.HideCommandPromptWindow*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_HideCommandPromptWindow" data-uid="OpenQA.Selenium.DriverService.HideCommandPromptWindow">
+  HideCommandPromptWindow
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the command prompt window of the service should be hidden.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HideCommandPromptWindow { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_HostName_" data-uid="OpenQA.Selenium.DriverService.HostName*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_HostName" data-uid="OpenQA.Selenium.DriverService.HostName">
+  HostName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the host name of the service. Defaults to &quot;localhost.&quot;</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string HostName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_DriverService_HostName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Most driver service executables do not allow connections from remote
+(non-local) machines. This property can be used as a workaround so
+that an IP address (like &quot;127.0.0.1&quot; or &quot;::1&quot;) can be used instead.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_InitializationTimeout_" data-uid="OpenQA.Selenium.DriverService.InitializationTimeout*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_InitializationTimeout" data-uid="OpenQA.Selenium.DriverService.InitializationTimeout">
+  InitializationTimeout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating the time to wait for an initial connection before timing out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan InitializationTimeout { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_IsInitialized_" data-uid="OpenQA.Selenium.DriverService.IsInitialized*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_IsInitialized" data-uid="OpenQA.Selenium.DriverService.IsInitialized">
+  IsInitialized
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the service is responding to HTTP requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool IsInitialized { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_IsRunning_" data-uid="OpenQA.Selenium.DriverService.IsRunning*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_IsRunning" data-uid="OpenQA.Selenium.DriverService.IsRunning">
+  IsRunning
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the service is running.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsRunning { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_Port_" data-uid="OpenQA.Selenium.DriverService.Port*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_Port" data-uid="OpenQA.Selenium.DriverService.Port">
+  Port
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the port of the service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Port { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_ProcessId_" data-uid="OpenQA.Selenium.DriverService.ProcessId*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_ProcessId" data-uid="OpenQA.Selenium.DriverService.ProcessId">
+  ProcessId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the process ID of the running driver service executable. Returns 0 if the process is not running.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ProcessId { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_ServiceUrl_" data-uid="OpenQA.Selenium.DriverService.ServiceUrl*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_ServiceUrl" data-uid="OpenQA.Selenium.DriverService.ServiceUrl">
+  ServiceUrl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the Uri of the service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Uri ServiceUrl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_SuppressInitialDiagnosticInformation_" data-uid="OpenQA.Selenium.DriverService.SuppressInitialDiagnosticInformation*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_SuppressInitialDiagnosticInformation" data-uid="OpenQA.Selenium.DriverService.SuppressInitialDiagnosticInformation">
+  SuppressInitialDiagnosticInformation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the initial diagnostic information is suppressed
+when starting the driver server executable. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, meaning
+diagnostic information should be shown by the driver server executable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SuppressInitialDiagnosticInformation { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_TerminationTimeout_" data-uid="OpenQA.Selenium.DriverService.TerminationTimeout*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_TerminationTimeout" data-uid="OpenQA.Selenium.DriverService.TerminationTimeout">
+  TerminationTimeout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual TimeSpan TerminationTimeout { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_DriverService_Dispose_" data-uid="OpenQA.Selenium.DriverService.Dispose*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_Dispose" data-uid="OpenQA.Selenium.DriverService.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases all resources associated with this <a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_Dispose_" data-uid="OpenQA.Selenium.DriverService.Dispose*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_Dispose_System_Boolean_" data-uid="OpenQA.Selenium.DriverService.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L305"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases all resources associated with this <a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the Dispose method was explicitly called; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_FindDriverServiceExecutable_" data-uid="OpenQA.Selenium.DriverService.FindDriverServiceExecutable*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_FindDriverServiceExecutable_System_String_System_Uri_" data-uid="OpenQA.Selenium.DriverService.FindDriverServiceExecutable(System.String,System.Uri)">
+  FindDriverServiceExecutable(string, Uri)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L296"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds the specified driver service executable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected static string FindDriverServiceExecutable(string executableName, Uri downloadUrl)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>executableName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file name of the executable to find.</p>
+</dd>
+    <dt><code>downloadUrl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
+    <dd><p>A URL at which the driver service executable may be downloaded.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The directory containing the driver service executable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.DriverServiceNotFoundException.html">DriverServiceNotFoundException</a></dt>
+    <dd><p>If the specified driver service executable does not exist in the current directory or in a directory on the system path.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_DriverService_OnDriverProcessStarted_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarted*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_OnDriverProcessStarted_OpenQA_Selenium_DriverProcessStartedEventArgs_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarted(OpenQA.Selenium.DriverProcessStartedEventArgs)">
+  OnDriverProcessStarted(DriverProcessStartedEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L339"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarted">DriverProcessStarted</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eventArgs</code> <a class="xref" href="OpenQA.Selenium.DriverProcessStartedEventArgs.html">DriverProcessStartedEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.DriverProcessStartedEventArgs.html">DriverProcessStartedEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_OnDriverProcessStarting_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarting*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_OnDriverProcessStarting_OpenQA_Selenium_DriverProcessStartingEventArgs_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarting(OpenQA.Selenium.DriverProcessStartingEventArgs)">
+  OnDriverProcessStarting(DriverProcessStartingEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarting">DriverProcessStarting</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eventArgs</code> <a class="xref" href="OpenQA.Selenium.DriverProcessStartingEventArgs.html">DriverProcessStartingEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.DriverProcessStartingEventArgs.html">DriverProcessStartingEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_DriverService_Start_" data-uid="OpenQA.Selenium.DriverService.Start*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverService_Start" data-uid="OpenQA.Selenium.DriverService.Start">
+  Start()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts the DriverService if it is not already running.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Start()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="OpenQA_Selenium_DriverService_DriverProcessStarted" data-uid="OpenQA.Selenium.DriverService.DriverProcessStarted">
+  DriverProcessStarted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Occurs when the driver process has completely started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;DriverProcessStartedEventArgs&gt; DriverProcessStarted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DriverProcessStartedEventArgs.html">DriverProcessStartedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_DriverService_DriverProcessStarting" data-uid="OpenQA.Selenium.DriverService.DriverProcessStarting">
+  DriverProcessStarting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Occurs when the driver process is starting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;DriverProcessStartingEventArgs&gt; DriverProcessStarting</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DriverProcessStartingEventArgs.html">DriverProcessStartingEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L34" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
