@@ -812,11 +812,10 @@ public class CdpClientGenerator {
         case "string":
           return String.class.getName();
         case "any":
+        case "array":
           return Object.class.getName();
         case "object":
           return "java.util.Map<String, Object>";
-        case "array":
-          return Object.class.getName();
         default:
           throw new RuntimeException("Unknown simple type: " + name);
       }
@@ -828,7 +827,6 @@ public class CdpClientGenerator {
         case "boolean":
           return "false";
         case "integer":
-          return "0";
         case "number":
           return "0";
         case "any":
@@ -903,14 +901,13 @@ public class CdpClientGenerator {
         case "number":
           return "input.nextNumber()";
         case "string":
+        case "array":
           return "input.nextString()";
         case "any":
           return "input.read(Object.class)";
         case "object":
           return "input.read(new com.google.common.reflect.TypeToken<java.util.Map<String,"
               + " Object>>() {}.getType())";
-        case "array":
-          return "input.nextString()";
         default:
           return String.format("input.read(%s.class)", getJavaType());
       }
