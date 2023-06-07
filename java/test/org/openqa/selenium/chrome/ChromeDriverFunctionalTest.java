@@ -24,12 +24,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-
 import org.assertj.core.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -47,7 +45,6 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.drivers.Browser;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
 
@@ -87,7 +84,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
               localDriver =
                   new ChromeDriver(
                       ChromeDriverService.createDefaultService(),
-                    (ChromeOptions) CHROME.getCapabilities(),
+                      (ChromeOptions) CHROME.getCapabilities(),
                       clientConfig);
             })
         .isInstanceOf(SessionNotCreatedException.class);
@@ -96,7 +93,8 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
-    RemoteWebDriverBuilder builder = ChromeDriver.builder().oneOf(CHROME.getCapabilities()).config(clientConfig);
+    RemoteWebDriverBuilder builder =
+        ChromeDriver.builder().oneOf(CHROME.getCapabilities()).config(clientConfig);
 
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(builder::build)

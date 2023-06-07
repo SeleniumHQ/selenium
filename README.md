@@ -49,14 +49,8 @@ before submitting your pull requests.
   to make sure this isn't required in the long run.
 * Windows users:
   *  Latest version of [Visual Studio](https://www.visualstudio.com/) with command line tools and build tools installed
-  * `BAZEL_VS` environment variable should point to the location of the build tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools`
-  * `BAZEL_VC` environment variable should point to the location of the command line tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\VC`
-  * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
-     e.g. `14.27.29110`
-  * A detailed setup guide can be seen on Jim Evan's [post](http://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html)
-  * If the Jim's blog instructions were followed, also make sure `C:\tools\msys65\usr\bin` is on the `PATH`.
+  * A setup guide with detailed explanations can be seen on Jim Evan's [post](http://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html)
+  * An up-to-date list of instructions for Windows 11, including avoiding issues with the latest versions of Visual Studio, can be seen in this [gist](https://gist.github.com/titusfortner/aec103e9b02709f771497fdb8b21154c)
 
 ### Internet Explorer Driver
 
@@ -283,11 +277,10 @@ bazel-selenium/external/bundle/bin/rdbg -A
 
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
-1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE.
+1. Run `bundle exec rake update` as necessary to update generated artifacts.
 2. Open `rb/` as a main project directory.
-3. In <kbd>Settings / Lanugages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/ruby_rules_dist/dist/bin/ruby`.
-4. In <kbd>Run / Edit Configurations... / Edit configuration templates... / RSpec</kbd> add `-I ../bazel-bin/rb/lib` to <kbd>Ruby arguments</kbd>.
-5. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
+4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.
 
 </details>
 

@@ -20,6 +20,10 @@ package org.openqa.selenium.bidi.browsingcontext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +33,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import org.openqa.selenium.testing.drivers.Browser;
 
 class BrowsingContextInspectorTest {
 
@@ -42,7 +42,7 @@ class BrowsingContextInspectorTest {
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
     options.setCapability("webSocketUrl", true);
 
     driver = new FirefoxDriver(options);
@@ -53,7 +53,7 @@ class BrowsingContextInspectorTest {
 
   @Test
   void canListenToWindowBrowsingContextCreatedEvent()
-    throws ExecutionException, InterruptedException, TimeoutException {
+      throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
 
@@ -73,7 +73,7 @@ class BrowsingContextInspectorTest {
 
   @Test
   void canListenToTabBrowsingContextCreatedEvent()
-    throws ExecutionException, InterruptedException, TimeoutException {
+      throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
       inspector.onBrowsingContextCreated(future::complete);
@@ -92,7 +92,7 @@ class BrowsingContextInspectorTest {
 
   @Test
   void canListenToDomContentLoadedEvent()
-    throws ExecutionException, InterruptedException, TimeoutException {
+      throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
       inspector.onDomContentLoaded(future::complete);
@@ -108,7 +108,7 @@ class BrowsingContextInspectorTest {
 
   @Test
   void canListenToBrowsingContextLoadedEvent()
-    throws ExecutionException, InterruptedException, TimeoutException {
+      throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
       inspector.onBrowsingContextLoaded(future::complete);

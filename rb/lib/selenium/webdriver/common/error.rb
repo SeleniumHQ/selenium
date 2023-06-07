@@ -34,13 +34,20 @@ module Selenium
         WebDriverError
       end
 
+      SUPPORT_MSG = 'For documentation on this error, please visit:'
+      ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
+
       class WebDriverError < StandardError; end
 
       #
       # An element could not be located on the page using the given search parameters.
       #
 
-      class NoSuchElementError < WebDriverError; end
+      class NoSuchElementError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#no-such-element-exception")
+        end
+      end
 
       #
       # A command to switch to a frame could not be satisfied because the frame could not be found.
@@ -58,7 +65,11 @@ module Selenium
       # A command failed because the referenced element is no longer attached to the DOM.
       #
 
-      class StaleElementReferenceError < WebDriverError; end
+      class StaleElementReferenceError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#stale-element-reference-exception")
+        end
+      end
 
       #
       # A command failed because the referenced shadow root is no longer attached to the DOM.
@@ -132,7 +143,11 @@ module Selenium
       # Argument was an invalid selector.
       #
 
-      class InvalidSelectorError < WebDriverError; end
+      class InvalidSelectorError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#invalid-selector-exception")
+        end
+      end
 
       #
       # A new session could not be created.
@@ -212,6 +227,16 @@ module Selenium
       #
 
       class UnsupportedOperationError < WebDriverError; end
+
+      #
+      # Indicates that driver was not specified and could not be located.
+      #
+
+      class NoSuchDriverError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}/driver_location")
+        end
+      end
     end # Error
   end # WebDriver
 end # Selenium

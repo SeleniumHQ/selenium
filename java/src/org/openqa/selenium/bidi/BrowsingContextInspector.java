@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.bidi;
 
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
 import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
@@ -25,14 +32,6 @@ import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-
-import java.io.StringReader;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class BrowsingContextInspector implements AutoCloseable {
 
@@ -43,48 +42,48 @@ public class BrowsingContextInspector implements AutoCloseable {
   private final BiDi bidi;
 
   private final Function<Map<String, Object>, BrowsingContextInfo> browsingContextInfoMapper =
-    params -> {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(params));
-        JsonInput input = JSON.newInput(reader)) {
-        return input.read(BrowsingContextInfo.class);
-      }
-    };
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(BrowsingContextInfo.class);
+        }
+      };
 
   private final Function<Map<String, Object>, NavigationInfo> navigationInfoMapper =
-    params -> {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(params));
-        JsonInput input = JSON.newInput(reader)) {
-        return input.read(NavigationInfo.class);
-      }
-    };
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(NavigationInfo.class);
+        }
+      };
 
   private final Event<BrowsingContextInfo> browsingContextCreated =
-    new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
+      new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
   private final Event<BrowsingContextInfo> browsingContextDestroyed =
-    new Event<>("browsingContext.contextDestroyed", browsingContextInfoMapper);
+      new Event<>("browsingContext.contextDestroyed", browsingContextInfoMapper);
 
   private final Event<UserPromptClosed> userPromptClosed =
-    new Event<>("browsingContext.userPromptClosed", params -> {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(params));
-        JsonInput input = JSON.newInput(reader)) {
-        return input.read(UserPromptClosed.class);
-      }
-    });
+      new Event<>(
+          "browsingContext.userPromptClosed",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(UserPromptClosed.class);
+            }
+          });
 
   private final Set<Event<NavigationInfo>> navigationEventSet = new HashSet<>();
 
   private final Event<UserPromptOpened> userPromptOpened =
-    new Event<>("browsingContext.userPromptOpened", params -> {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(params));
-        JsonInput input = JSON.newInput(reader)) {
-        return input.read(UserPromptOpened.class);
-      }
-    });
+      new Event<>(
+          "browsingContext.userPromptOpened",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(UserPromptOpened.class);
+            }
+          });
 
   public BrowsingContextInspector(WebDriver driver) {
     this(new HashSet<>(), driver);

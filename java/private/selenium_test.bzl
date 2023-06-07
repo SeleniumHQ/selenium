@@ -56,7 +56,9 @@ BROWSERS = {
     },
 }
 
-def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(), **kwargs):
+DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b != "ie"]
+
+def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS, **kwargs):
     if len(browsers) == 0:
         fail("At least one browser must be specified.")
 
@@ -77,6 +79,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     stripped_args.pop("data", None)
     stripped_args.pop("jvm_flags", None)
     stripped_args.pop("tags", None)
+    inherited_env = stripped_args.pop("env_inherit", []) + ["REMOTE_BUILD"]
 
     all_tests = []
 
@@ -94,6 +97,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             # Only allow linting on the default test
             tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
+            env_inherit = inherited_env,
             **stripped_args
         )
         if browser == default_browser:

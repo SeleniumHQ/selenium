@@ -27,18 +27,18 @@ module Selenium
     # @api private
     #
     class SeleniumManager
-      BIN_PATH = '../../../../../bin'
-
       class << self
+        attr_writer :bin_path
+
+        def bin_path
+          @bin_path ||= '../../../../../bin'
+        end
+
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
           message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
-          WebDriver.logger.info(message, id: :selenium_manager)
-
-          unless options.is_a?(Options)
-            raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
-          end
+          WebDriver.logger.debug(message, id: :selenium_manager)
 
           command = generate_command(binary, options)
 
@@ -72,7 +72,7 @@ module Selenium
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            path = File.expand_path(BIN_PATH, __FILE__)
+            path = File.expand_path(bin_path, __FILE__)
             path << if Platform.windows?
                       '/windows/selenium-manager.exe'
                     elsif Platform.mac?
@@ -81,11 +81,18 @@ module Selenium
                       '/linux/selenium-manager'
                     end
             location = File.expand_path(path, __FILE__)
-            unless location.is_a?(String) && File.exist?(location) && File.executable?(location)
-              raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
+
+            begin
+              Platform.assert_file(location)
+              Platform.assert_executable(location)
+            rescue TypeError
+              raise Error::WebDriverError,
+                    "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
+            rescue Error::WebDriverError => e
+              raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
             end
 
-            WebDriver.logger.debug("Selenium Manager found at #{location}", id: :selenium_manager)
+            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
             location
           end
         end
@@ -98,11 +105,12 @@ module Selenium
             json_output = stdout.empty? ? nil : JSON.parse(stdout)
             result = json_output&.dig('result', 'message')
           rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
           (json_output&.fetch('logs') || []).each do |log|
-            WebDriver.logger.send(log['level'].downcase, log['message'], id: :selenium_manager)
+            level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
+            WebDriver.logger.send(level, log['message'], id: :selenium_manager)
           end
 
           if status.exitstatus.positive?

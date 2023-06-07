@@ -94,7 +94,7 @@ class AjaxElementLocatorTest {
 
     assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(locator::findElement);
 
-    // Look ups:
+    // Look-ups:
     // 1. In "isLoaded"
     // 2. Immediately after call of load. (clock is 0)
     // 3. First sleep, then third call.   (clock is 1)

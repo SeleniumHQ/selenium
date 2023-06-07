@@ -19,11 +19,10 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.openqa.selenium.json.JsonInput;
 
 public class UserPromptClosed {
 
@@ -38,7 +37,6 @@ public class UserPromptClosed {
     this.accepted = accepted;
     this.userText = userText;
   }
-
 
   public static UserPromptClosed fromJson(JsonInput input) {
     String browsingContextId = null;

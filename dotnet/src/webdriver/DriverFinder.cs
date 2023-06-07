@@ -41,15 +41,18 @@ namespace OpenQA.Selenium
             if (File.Exists(executablePath)) return service;
             try
             {
-                string driverFullPath = SeleniumManager.DriverPath(options);
-                service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
-                service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
-                return service;
+                executablePath = SeleniumManager.DriverPath(options);
+                service.DriverServicePath = Path.GetDirectoryName(executablePath);
+                service.DriverServiceExecutableName = Path.GetFileName(executablePath);
             }
             catch (Exception e)
             {
-                throw new WebDriverException($"Unable to locate driver with path: {executablePath}, for more information on how to install drivers see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/", e);
+                throw new NoSuchDriverException($"Unable to obtain {service.DriverServiceExecutableName} using Selenium Manager", e);
             }
+
+            if (File.Exists(executablePath)) return service;
+
+            throw new NoSuchDriverException($"Unable to locate or obtain {service.DriverServiceExecutableName}");
         }
     }
 }

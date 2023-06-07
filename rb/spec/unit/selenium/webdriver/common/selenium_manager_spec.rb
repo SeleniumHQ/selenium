@@ -34,6 +34,7 @@ module Selenium
 
         it 'detects Windows' do
           stub_binary('/windows/selenium-manager.exe')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(true)
 
           expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
@@ -41,6 +42,7 @@ module Selenium
 
         it 'detects Mac' do
           stub_binary('/macos/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
@@ -49,6 +51,7 @@ module Selenium
 
         it 'detects Linux' do
           stub_binary('/linux/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
@@ -61,7 +64,7 @@ module Selenium
 
           expect {
             described_class.send(:binary)
-          }.to raise_error(Error::WebDriverError, /Unable to obtain Selenium Manager/)
+          }.to raise_error(Error::WebDriverError, /Selenium Manager binary located, but not a file/)
         end
       end
 
@@ -74,22 +77,12 @@ module Selenium
       end
 
       describe 'self.driver_path' do
-        it 'errors if not an option' do
-          expect {
-            expect {
-              described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
-            }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
-          }.to have_warning(:selenium_manager)
-        end
-
         it 'determines browser name by default' do
           allow(described_class).to receive(:run)
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
 
-          expect {
-            described_class.driver_path(Options.chrome)
-          }.to have_warning(:selenium_manager)
+          described_class.driver_path(Options.chrome)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
@@ -101,9 +94,7 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(browser_version: 1)
 
-          expect {
-            described_class.driver_path(options)
-          }.to have_warning(:selenium_manager)
+          described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
@@ -119,9 +110,7 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(proxy: proxy)
 
-          expect {
-            described_class.driver_path(options)
-          }.to have_warning(:selenium_manager)
+          described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
@@ -136,9 +125,7 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path/to/browser')
 
-          expect {
-            described_class.driver_path(options)
-          }.to have_warning(:selenium_manager)
+          described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
@@ -150,9 +137,7 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path to/the/browser')
 
-          expect {
-            described_class.driver_path(options)
-          }.to have_warning(:selenium_manager)
+          described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json',

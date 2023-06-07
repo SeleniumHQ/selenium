@@ -261,7 +261,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         }
       }
       if (logTruncate == null) {
-        logTruncate = Boolean.getBoolean(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
+        logTruncate = !Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);
       }
       if (profileRoot == null) {
         String profileRootFromProperty = System.getProperty(GECKO_DRIVER_PROFILE_ROOT);
@@ -288,7 +288,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         args.add("--log");
         args.add(logLevel.toString());
       }
-      if (logTruncate != null && logTruncate.equals(Boolean.TRUE)) {
+      if (logTruncate != null && logTruncate.equals(Boolean.FALSE)) {
         args.add("--log-no-truncate");
       }
       if (profileRoot != null) {
