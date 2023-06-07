@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.DetachedShadowRootException;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidArgumentException;
@@ -56,6 +57,7 @@ public class ErrorCodec {
   private static final Set<W3CError> ERRORS =
       ImmutableSet.<W3CError>builder()
           .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
+          .add(new W3CError("detached shadow root", DetachedShadowRootException.class, 404))
           .add(
               new W3CError(
                   "element click intercepted", ElementClickInterceptedException.class, 400))
