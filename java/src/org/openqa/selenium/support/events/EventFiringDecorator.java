@@ -236,9 +236,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     int argsLength = args != null ? args.length : 0;
     Object[] args2 = new Object[argsLength + 1];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
+    System.arraycopy(args, 0, args2, 1, argsLength);
 
     Method m = findMatchingMethod(listener, methodName, args2);
     if (m != null) {
@@ -255,9 +253,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     int argsLength = args != null ? args.length : 0;
     Object[] args2 = new Object[argsLength + 1 + (isVoid ? 0 : 1)];
     args2[0] = target.getOriginal();
-    for (int i = 0; i < argsLength; i++) {
-      args2[i + 1] = args[i];
-    }
+    System.arraycopy(args, 0, args2, 1, argsLength);
     if (!isVoid) {
       args2[args2.length - 1] = res;
     }
