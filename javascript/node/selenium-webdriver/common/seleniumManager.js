@@ -71,7 +71,7 @@ function driverLocation(options) {
     )
   }
 
-  console.log(
+  console.debug(
     'Applicable driver not found; attempting to install with Selenium Manager (Beta)'
   )
 
