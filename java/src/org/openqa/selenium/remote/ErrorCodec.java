@@ -36,6 +36,7 @@ import org.openqa.selenium.NoSuchCookieException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -73,6 +74,7 @@ public class ErrorCodec {
           .add(new W3CError("no such cookie", NoSuchCookieException.class, 404))
           .add(new W3CError("no such element", NoSuchElementException.class, 404))
           .add(new W3CError("no such frame", NoSuchFrameException.class, 404))
+          .add(new W3CError("no such shadow root", NoSuchShadowRootException.class, 404))
           .add(new W3CError("no such window", NoSuchWindowException.class, 404))
           .add(new W3CError("session not created", SessionNotCreatedException.class, 500))
           .add(new W3CError("stale element reference", StaleElementReferenceException.class, 404))
