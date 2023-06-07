@@ -753,8 +753,8 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
  this timeout is over, since should the underlying page change whilst your test is executing the
  results of future calls against this interface will be against the freshly loaded page. Synonym
  for <a href="../WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a>.
- <p>
- See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -775,15 +775,15 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getTitle()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#getTitle()">WebDriver</a></code></span></div>
 <div class="block">Get the title of the current page.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a> for
+ more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.html#getTitle()">getTitle</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The title of the current page, with leading and trailing whitespace stripped, or null
-         if one is not already set</dd>
+     if one is not already set</dd>
 </dl>
 </li>
 </ul>
@@ -796,9 +796,9 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCurrentUrl()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#getCurrentUrl()">WebDriver</a></code></span></div>
 <div class="block">Get a string representing the current URL that the browser is looking at.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.html#getCurrentUrl()">getCurrentUrl</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
@@ -817,23 +817,25 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
                       throws <a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</a></code></span></div>
 <div class="block">Capture the screenshot and store it in the specified location.
- <p>
- For a W3C-conformant WebDriver or WebElement, this behaves as stated in
- <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
- <p>
- For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to return
- the following in order of preference:
+
+ <p>For a W3C-conformant WebDriver or WebElement, this behaves as stated in <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
+
+ <p>For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to
+ return the following in order of preference:
+
  <ul>
-   <li>Entire page</li>
-   <li>Current window</li>
-   <li>Visible portion of the current frame</li>
-   <li>The screenshot of the entire display containing the browser</li>
+   <li>Entire page
+   <li>Current window
+   <li>Visible portion of the current frame
+   <li>The screenshot of the entire display containing the browser
  </ul>
+
  For a non-W3C-conformant WebElement extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:
+
  <ul>
-   <li>The entire content of the HTML element</li>
-   <li>The visible portion of the HTML element</li>
+   <li>The entire content of the HTML element
+   <li>The visible portion of the HTML element
  </ul></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -873,15 +875,13 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
 <h4>findElement</h4>
 <pre class="methodSignature">public&nbsp;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElement&#8203;(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#findElement(org.openqa.selenium.By)">WebDriver</a></code></span></div>
-<div class="block">Find the first <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method.
- This method is affected by the 'implicit wait' times in force at the time of execution.
- The findElement(..) invocation will return a matching row, or try again repeatedly until
- the configured timeout is reached.
- <p>
- findElement should not be used to look for non-present elements, use <a href="../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(By)</code></a>
- and assert zero length response instead.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-element">W3C WebDriver specification</a>
+<div class="block">Find the first <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method. This method is affected by the
+ 'implicit wait' times in force at the time of execution. The findElement(..) invocation will
+ return a matching row, or try again repeatedly until the configured timeout is reached.
+
+ <p>findElement should not be used to look for non-present elements, use <a href="../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(By)</code></a> and assert zero length response instead.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-element">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -906,12 +906,12 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
 <h4>findElements</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#findElements(org.openqa.selenium.By)">WebDriver</a></code></span></div>
-<div class="block">Find all elements within the current page using the given mechanism.
- This method is affected by the 'implicit wait' times in force at the time of execution. When
- implicitly waiting, this method will return as soon as there are more than 0 items in the
- found collection, or will return an empty list if the timeout is reached.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-elements">W3C WebDriver specification</a>
+<div class="block">Find all elements within the current page using the given mechanism. This method is affected by
+ the 'implicit wait' times in force at the time of execution. When implicitly waiting, this
+ method will return as soon as there are more than 0 items in the found collection, or will
+ return an empty list if the timeout is reached.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-elements">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -994,9 +994,9 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
  server. The page source returned is a representation of the underlying DOM: do not expect it to
  be formatted or escaped in the same way as the response sent from the web server. Think of it
  as an artist's impression.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-page-source">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-page-source">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.html#getPageSource()">getPageSource</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
@@ -1014,8 +1014,8 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <pre class="methodSignature">public&nbsp;void&nbsp;close()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#close()">WebDriver</a></code></span></div>
 <div class="block">Close the current window, quitting the browser if it's the last window currently open.
- <p>
- See <a href="https://w3c.github.io/webdriver/#close-window">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#close-window">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -1048,9 +1048,9 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#getWindowHandles()">WebDriver</a></code></span></div>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="../WebDriver.html#switchTo()"><code>WebDriver.switchTo()</code></a>.<a href="../WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a>
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-handles">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-handles">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.html#getWindowHandles()">getWindowHandles</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
@@ -1069,9 +1069,9 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.html#getWindowHandle()">WebDriver</a></code></span></div>
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.
  This can be used to switch to this window at a later date
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-handle">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-handle">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.html#getWindowHandle()">getWindowHandle</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
@@ -1092,29 +1092,26 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <div class="block">Executes JavaScript in the context of the currently selected frame or window. The script
  fragment provided will be executed as the body of an anonymous function.
 
- <p>
- Within the script, use <code>document</code> to refer to the current document. Note that local
- variables will not be available once the script has finished executing, though global variables
- will persist.
+ <p>Within the script, use <code>document</code> to refer to the current document. Note that
+ local variables will not be available once the script has finished executing, though global
+ variables will persist.
 
- <p>
- If the script has a return value (i.e. if the script contains a <code>return</code> statement),
- then the following steps will be taken:
+ <p>If the script has a return value (i.e. if the script contains a <code>return</code>
+ statement), then the following steps will be taken:
 
  <ul>
- <li>For an HTML element, this method returns a WebElement</li>
- <li>For a decimal, a Double is returned</li>
- <li>For a non-decimal number, a Long is returned</li>
- <li>For a boolean, a Boolean is returned</li>
- <li>For all other cases, a String is returned.</li>
- <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
- support nested lists.</li>
- <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
- <li>Unless the value is null or there is no return value, in which null is returned</li>
+   <li>For an HTML element, this method returns a WebElement
+   <li>For a decimal, a Double is returned
+   <li>For a non-decimal number, a Long is returned
+   <li>For a boolean, a Boolean is returned
+   <li>For all other cases, a String is returned.
+   <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+       support nested lists.
+   <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.
+   <li>Unless the value is null or there is no return value, in which null is returned
  </ul>
 
- <p>
- Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
+ <p>Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
  the above. An exception will be thrown if the arguments do not meet these criteria. The
  arguments will be made available to the JavaScript via the "arguments" magic variable, as if
  the function were called via "Function.apply"</div>
@@ -1144,68 +1141,66 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
  provided callback. This callback is always injected into the executed function as the last
  argument.
 
- <p>
- The first argument passed to the callback function will be used as the script's result. This
+ <p>The first argument passed to the callback function will be used as the script's result. This
  value will be handled as follows:
 
  <ul>
- <li>For an HTML element, this method returns a WebElement</li>
- <li>For a number, a Long is returned</li>
- <li>For a boolean, a Boolean is returned</li>
- <li>For all other cases, a String is returned.</li>
- <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
- support nested lists.</li>
- <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
- <li>Unless the value is null or there is no return value, in which null is returned</li>
+   <li>For an HTML element, this method returns a WebElement
+   <li>For a number, a Long is returned
+   <li>For a boolean, a Boolean is returned
+   <li>For all other cases, a String is returned.
+   <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+       support nested lists.
+   <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.
+   <li>Unless the value is null or there is no return value, in which null is returned
  </ul>
 
- <p>
- The default timeout for a script to be executed is 0ms. In most cases, including the examples
- below, one must set the script timeout
- <a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a> beforehand
- to a value sufficiently large enough.
+ <p>The default timeout for a script to be executed is 0ms. In most cases, including the
+ examples below, one must set the script timeout <a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a> beforehand to a value sufficiently large
+ enough.
 
- <p>
- Example #1: Performing a sleep in the browser under test. <pre><code>
-   long start = System.currentTimeMillis();
-   ((JavascriptExecutor) driver).executeAsyncScript(
-       "window.setTimeout(arguments[arguments.length - 1], 500);");
-   System.out.println(
-       "Elapsed time: " + (System.currentTimeMillis() - start));
+ <p>Example #1: Performing a sleep in the browser under test.
+
+ <pre><code>
+ long start = System.currentTimeMillis();
+ ((JavascriptExecutor) driver).executeAsyncScript(
+     "window.setTimeout(arguments[arguments.length - 1], 500);");
+ System.out.println(
+     "Elapsed time: " + (System.currentTimeMillis() - start));
  </code></pre>
 
- <p>
- Example #2: Synchronizing a test with an AJAX application: <pre><code>
-   WebElement composeButton = driver.findElement(By.id("compose-button"));
-   composeButton.click();
-   ((JavascriptExecutor) driver).executeAsyncScript(
-       "var callback = arguments[arguments.length - 1];" +
-       "mailClient.getComposeWindowWidget().onload(callback);");
-   driver.switchTo().frame("composeWidget");
-   driver.findElement(By.id("to")).sendKeys("bog@example.com");
+ <p>Example #2: Synchronizing a test with an AJAX application:
+
+ <pre><code>
+ WebElement composeButton = driver.findElement(By.id("compose-button"));
+ composeButton.click();
+ ((JavascriptExecutor) driver).executeAsyncScript(
+     "var callback = arguments[arguments.length - 1];" +
+     "mailClient.getComposeWindowWidget().onload(callback);");
+ driver.switchTo().frame("composeWidget");
+ driver.findElement(By.id("to")).sendKeys("bog@example.com");
  </code></pre>
 
- <p>
- Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre><code>
-   Object response = ((JavascriptExecutor) driver).executeAsyncScript(
-       "var callback = arguments[arguments.length - 1];" +
-       "var xhr = new XMLHttpRequest();" +
-       "xhr.open('GET', '/resource/data.json', true);" +
-       "xhr.onreadystatechange = function() {" +
-       "  if (xhr.readyState == 4) {" +
-       "    callback(xhr.responseText);" +
-       "  }" +
-       "};" +
-       "xhr.send();");
-   JsonObject json = new JsonParser().parse((String) response);
-   assertEquals("cheese", json.get("food").getAsString());
+ <p>Example #3: Injecting a XMLHttpRequest and waiting for the result:
+
+ <pre><code>
+ Object response = ((JavascriptExecutor) driver).executeAsyncScript(
+     "var callback = arguments[arguments.length - 1];" +
+     "var xhr = new XMLHttpRequest();" +
+     "xhr.open('GET', '/resource/data.json', true);" +
+     "xhr.onreadystatechange = function() {" +
+     "  if (xhr.readyState == 4) {" +
+     "    callback(xhr.responseText);" +
+     "  }" +
+     "};" +
+     "xhr.send();");
+ JsonObject json = new JsonParser().parse((String) response);
+ assertEquals("cheese", json.get("food").getAsString());
  </code></pre>
 
- <p>
- Script arguments must be a number, a boolean, a String, WebElement, or a List of any
+ <p>Script arguments must be a number, a boolean, a String, WebElement, or a List of any
  combination of the above. An exception will be thrown if the arguments do not meet these
- criteria. The arguments will be made available to the JavaScript via the "arguments"
- variable.</div>
+ criteria. The arguments will be made available to the JavaScript via the "arguments" variable.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a></code>&nbsp;in interface&nbsp;<code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code></dd>
@@ -1253,7 +1248,7 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <dd><code><a href="../WebDriver.html#navigate()">navigate</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A <a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>WebDriver.Navigation</code></a> that allows the selection of what to
-         do next</dd>
+     do next</dd>
 </dl>
 </li>
 </ul>
@@ -1396,8 +1391,8 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <h4>removeVirtualAuthenticator</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;removeVirtualAuthenticator&#8203;(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">HasVirtualAuthenticator</a></code></span></div>
-<div class="block">Removes a previously added virtual authenticator. The authenticator is no
- longer valid after removal, so no methods may be called.</div>
+<div class="block">Removes a previously added virtual authenticator. The authenticator is no longer valid after
+ removal, so no methods may be called.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a></code>&nbsp;in interface&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code></dd>

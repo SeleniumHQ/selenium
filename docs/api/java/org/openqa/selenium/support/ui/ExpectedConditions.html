@@ -382,7 +382,8 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#numberOfElementsToBeMoreThan(org.openqa.selenium.By,java.lang.Integer)">numberOfElementsToBeMoreThan</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                             java.lang.Integer&nbsp;number)</code></th>
 <td class="colLast">
-<div class="block">An expectation for checking number of WebElements with given locator being more than defined number</div>
+<div class="block">An expectation for checking number of WebElements with given locator being more than defined
+ number</div>
 </td>
 </tr>
 <tr id="i30" class="altColor">
@@ -454,8 +455,7 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#textMatches(org.openqa.selenium.By,java.util.regex.Pattern)">textMatches</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
            java.util.regex.Pattern&nbsp;pattern)</code></th>
 <td class="colLast">
-<div class="block">An expectation for checking WebElement with given locator has text with a value as a part of
- it</div>
+<div class="block">An expectation for checking WebElement with given locator has text with a value as a part of it</div>
 </td>
 </tr>
 <tr id="i40" class="altColor">
@@ -890,7 +890,7 @@ extends java.lang.Object</pre>
 <dd><code>text</code> - to be present in the value attribute of the element found by the locator</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true once the value attribute of the first element located by locator contains the
- given text</dd>
+     given text</dd>
 </dl>
 </li>
 </ul>
@@ -901,8 +901,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>frameToBeAvailableAndSwitchToIt</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt&#8203;(java.lang.String&nbsp;frameLocator)</pre>
-<div class="block">An expectation for checking whether the given frame is available to switch to. <p> If the frame
- is available it switches the given driver to the specified frame.</div>
+<div class="block">An expectation for checking whether the given frame is available to switch to.
+
+ <p>If the frame is available it switches the given driver to the specified frame.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>frameLocator</code> - used to find the frame (id or name)</dd>
@@ -918,8 +919,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>frameToBeAvailableAndSwitchToIt</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
-<div class="block">An expectation for checking whether the given frame is available to switch to. <p> If the frame
- is available it switches the given driver to the specified frame.</div>
+<div class="block">An expectation for checking whether the given frame is available to switch to.
+
+ <p>If the frame is available it switches the given driver to the specified frame.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>locator</code> - used to find the frame</dd>
@@ -935,8 +937,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>frameToBeAvailableAndSwitchToIt</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt&#8203;(int&nbsp;frameLocator)</pre>
-<div class="block">An expectation for checking whether the given frame is available to switch to. <p> If the frame
- is available it switches the given driver to the specified frameIndex.</div>
+<div class="block">An expectation for checking whether the given frame is available to switch to.
+
+ <p>If the frame is available it switches the given driver to the specified frameIndex.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>frameLocator</code> - used to find the frame (index)</dd>
@@ -952,8 +955,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>frameToBeAvailableAndSwitchToIt</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</pre>
-<div class="block">An expectation for checking whether the given frame is available to switch to. <p> If the frame
- is available it switches the given driver to the specified web element.</div>
+<div class="block">An expectation for checking whether the given frame is available to switch to.
+
+ <p>If the frame is available it switches the given driver to the specified web element.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>frameLocator</code> - used to find the frame (webelement)</dd>
@@ -1054,7 +1058,7 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;T&gt;&nbsp;refreshed&#8203;(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;T&gt;&nbsp;condition)</pre>
 <div class="block">Wrapper for a condition, which allows for elements to update by redrawing.
 
- This works around the problem of conditions which have two parts: find an element and then
+ <p>This works around the problem of conditions which have two parts: find an element and then
  check for some condition on it. For these conditions it is possible that an element is located
  and then subsequently it is redrawn on the client. When this happens a <a href="../../StaleElementReferenceException.html" title="class in org.openqa.selenium"><code>StaleElementReferenceException</code></a> is thrown when the second part of the condition is checked.</div>
 <dl>
@@ -1147,8 +1151,8 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;not&#8203;(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;?&gt;&nbsp;condition)</pre>
 <div class="block">An expectation with the logical opposite condition of the given condition.
 
- Note that if the Condition you are inverting throws an exception that is caught by the Ignored
- Exceptions, the inversion will not take place and lead to confusing results.</div>
+ <p>Note that if the Condition you are inverting throws an exception that is caught by the
+ Ignored Exceptions, the inversion will not take place and lead to confusing results.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>condition</code> - ExpectedCondition to be inverted</dd>
@@ -1203,8 +1207,7 @@ extends java.lang.Object</pre>
 <h4>textMatches</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;textMatches&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                                                                java.util.regex.Pattern&nbsp;pattern)</pre>
-<div class="block">An expectation for checking WebElement with given locator has text with a value as a part of
- it</div>
+<div class="block">An expectation for checking WebElement with given locator has text with a value as a part of it</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>locator</code> - used to find the element</dd>
@@ -1222,7 +1225,8 @@ extends java.lang.Object</pre>
 <h4>numberOfElementsToBeMoreThan</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;&nbsp;numberOfElementsToBeMoreThan&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                                                                                          java.lang.Integer&nbsp;number)</pre>
-<div class="block">An expectation for checking number of WebElements with given locator being more than defined number</div>
+<div class="block">An expectation for checking number of WebElements with given locator being more than defined
+ number</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>locator</code> - used to find the element</dd>
@@ -1400,8 +1404,7 @@ extends java.lang.Object</pre>
 <div class="block">An expectation for checking child WebElement as a part of parent element to be visible</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>parent</code> - used to check parent element. For example table with locator
-  By.id("fish")</dd>
+<dd><code>parent</code> - used to check parent element. For example table with locator By.id("fish")</dd>
 <dd><code>childLocator</code> - used to find the ultimate child element.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>visible nested element</dd>
@@ -1437,8 +1440,7 @@ extends java.lang.Object</pre>
 <div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>locator</code> - used to check parent element. For example table with locator
-                    By.xpath("//table")</dd>
+<dd><code>locator</code> - used to check parent element. For example table with locator By.xpath("//table")</dd>
 <dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>sub-element</dd>
@@ -1474,8 +1476,7 @@ extends java.lang.Object</pre>
 <div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>parent</code> - used to check parent element. For example table with locator
-                    By.xpath("//table")</dd>
+<dd><code>parent</code> - used to check parent element. For example table with locator By.xpath("//table")</dd>
 <dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>sub-element</dd>
@@ -1539,7 +1540,7 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;or&#8203;(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;?&gt;...&nbsp;conditions)</pre>
 <div class="block">An expectation with the logical or condition of the given list of conditions.
 
- Each condition is checked until at least one of them returns true or not null.</div>
+ <p>Each condition is checked until at least one of them returns true or not null.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>conditions</code> - ExpectedCondition is a list of alternative conditions</dd>
@@ -1557,7 +1558,7 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;and&#8203;(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;?&gt;...&nbsp;conditions)</pre>
 <div class="block">An expectation with the logical and condition of the given list of conditions.
 
- Each condition is checked until all of them return true or not null</div>
+ <p>Each condition is checked until all of them return true or not null</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>conditions</code> - ExpectedCondition is a list of alternative conditions</dd>
@@ -1575,7 +1576,7 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;javaScriptThrowsNoExceptions&#8203;(java.lang.String&nbsp;javaScript)</pre>
 <div class="block">An expectation to check if js executable.
 
- Useful when you know that there should be a Javascript value or something at the stage.</div>
+ <p>Useful when you know that there should be a Javascript value or something at the stage.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>javaScript</code> - used as executable script</dd>

@@ -152,8 +152,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">FirefoxOptions</span>
 extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&gt;</pre>
 <div class="block">Manage firefox specific settings in a way that geckodriver can understand.
- <p>
- An example of usage:
+
+ <p>An example of usage:
+
  <pre>
     FirefoxOptions options = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
@@ -253,10 +254,10 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configureFromEnv()">configureFromEnv</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Configures the following:
+
  
    Binary
    <code>webdriver.firefox.bin</code> - the path to the firefox binary
-
    Firefox profile
    <code>webdriver.firefox.profile</code> - a named firefox profile
  </div>
@@ -294,8 +295,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -461,12 +461,12 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <h4>configureFromEnv</h4>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;configureFromEnv()</pre>
 <div class="block">Configures the following:
- <dl>
-   <dt>Binary</dt>
-   <dd><code>webdriver.firefox.bin</code> - the path to the firefox binary</dd>
 
-   <dt>Firefox profile</dt>
-   <dd><code>webdriver.firefox.profile</code> - a named firefox profile</dd>
+ <dl>
+   <dt>Binary
+   <dd><code>webdriver.firefox.bin</code> - the path to the firefox binary
+   <dt>Firefox profile
+   <dd><code>webdriver.firefox.profile</code> - a named firefox profile
  </dl></div>
 </li>
 </ul>
@@ -581,8 +581,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <pre class="methodSignature">@Deprecated
 public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setHeadless&#8203;(boolean&nbsp;headless)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#addArguments(java.lang.String...)"><code>addArguments(String...)</code></a>.
- Example: `addArguments("-headless")`.</div>
+<div class="deprecationComment">Use <a href="#addArguments(java.lang.String...)"><code>addArguments(String...)</code></a>. Example: `addArguments("-headless")`.</div>
 </div>
 </li>
 </ul>
@@ -665,9 +664,7 @@ public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.fi
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">MutableCapabilities</a></code></span></div>
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
- <code>this</code>.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in <code>this</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>

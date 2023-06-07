@@ -134,12 +134,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public interface <span class="typeNameLabel">EphemeralPortRangeDetector</span></pre>
 <div class="block">Identifies the ephemeral port range for a given environment.
 
- When trying to locate a "random" free port, it is important
- to not allocate within the ephemeral range, since these
- can be allocated at any time, and the probability of
- race conditions increases as the number of recently used ports
- increases, something which is quite common when running the
- webdriver tests.</div>
+ <p>When trying to locate a "random" free port, it is important to not allocate within the
+ ephemeral range, since these can be allocated at any time, and the probability of race conditions
+ increases as the number of recently used ports increases, something which is quite common when
+ running the webdriver tests.</div>
 </li>
 </ul>
 </div>

@@ -142,10 +142,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>@FunctionalInterface
 public interface <span class="typeNameLabel">Filter</span>
 extends java.util.function.Function&lt;<a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>,&#8203;<a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&gt;</pre>
-<div class="block">Can be wrapped around an <a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http"><code>HttpHandler</code></a> in order to either modify incoming
- <a href="HttpRequest.html" title="class in org.openqa.selenium.remote.http"><code>HttpRequest</code></a>s or outgoing <a href="HttpResponse.html" title="class in org.openqa.selenium.remote.http"><code>HttpResponse</code></a>s using the well-known "Filter" pattern.
- This is very similar to the Servlet spec's <code>Filter</code>, but takes advantage of
- lambdas:
+<div class="block">Can be wrapped around an <a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http"><code>HttpHandler</code></a> in order to either modify incoming <a href="HttpRequest.html" title="class in org.openqa.selenium.remote.http"><code>HttpRequest</code></a>s or outgoing <a href="HttpResponse.html" title="class in org.openqa.selenium.remote.http"><code>HttpResponse</code></a>s using the well-known "Filter" pattern. This is
+ very similar to the Servlet spec's <code>javax.servlet.Filter</code>, but takes advantage of lambdas:
+
  <pre><code>
  Filter filter = next -&gt; {
    return req -&gt; {
@@ -157,8 +156,8 @@ extends java.util.function.Function&lt;<a href="HttpHandler.html" title="interfa
  }
  </code></pre>
 
-<p>Because each filter returns an <a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http"><code>HttpHandler</code></a>, it's easy to do processing before, or after
- each request, as well as short-circuit things if necessary.</div>
+ <p>Because each filter returns an <a href="HttpHandler.html" title="interface in org.openqa.selenium.remote.http"><code>HttpHandler</code></a>, it's easy to do processing before, or
+ after each request, as well as short-circuit things if necessary.</div>
 </li>
 </ul>
 </div>

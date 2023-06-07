@@ -144,13 +144,11 @@ extends java.lang.Object
 implements java.io.Serializable</pre>
 <div class="block">Represents the logging preferences.
 
- Sample usage:
-  DesiredCapabilities caps = DesiredCapabilities.firefox();
-  LoggingPreferences logs = new LoggingPreferences();
-  logs.enable(LogType.DRIVER, Level.INFO);
-  caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
+ <p>Sample usage: DesiredCapabilities caps = DesiredCapabilities.firefox(); LoggingPreferences
+ logs = new LoggingPreferences(); logs.enable(LogType.DRIVER, Level.INFO);
+ caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
 
-  WebDriver driver = new FirefoxDriver(caps);</div>
+ <p>WebDriver driver = new FirefoxDriver(caps);</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.openqa.selenium.logging.LoggingPreferences">Serialized Form</a></dd>
@@ -200,8 +198,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code><a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addPreferences(org.openqa.selenium.logging.LoggingPreferences)">addPreferences</a></span>&#8203;(<a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;prefs)</code></th>
 <td class="colLast">
-<div class="block">Adds the given logging preferences giving them precedence over existing
- preferences.</div>
+<div class="block">Adds the given logging preferences giving them precedence over existing preferences.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -320,8 +317,7 @@ implements java.io.Serializable</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>logType</code> - The log type.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <code>Level</code> for the given <a href="LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a> if enabled.
-     Otherwise returns <code>Level.OFF</code>.</dd>
+<dd>the <code>Level</code> for the given <a href="LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a> if enabled. Otherwise returns <code>Level.OFF</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -332,8 +328,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>addPreferences</h4>
 <pre class="methodSignature">public&nbsp;<a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;addPreferences&#8203;(<a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;prefs)</pre>
-<div class="block">Adds the given logging preferences giving them precedence over existing
- preferences.</div>
+<div class="block">Adds the given logging preferences giving them precedence over existing preferences.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>prefs</code> - The logging preferences to add.</dd>

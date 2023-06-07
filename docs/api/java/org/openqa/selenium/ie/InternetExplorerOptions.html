@@ -152,10 +152,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">InternetExplorerOptions</span>
 extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&gt;</pre>
 <div class="block">Options for configuring the use of IE. Can be used like so:
+
  <pre>InternetExplorerOptions options = new InternetExplorerOptions()
    .requireWindowFocus();
 
-new InternetExplorerDriver(options);</pre></div>
+ new InternetExplorerDriver(options);</pre></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.openqa.selenium.ie.InternetExplorerOptions">Serialized Form</a></dd>
@@ -287,8 +288,7 @@ new InternetExplorerDriver(options);</pre></div>
 <td class="colFirst"><code><a href="InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></th>
 <td class="colLast">
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
@@ -324,7 +324,7 @@ new InternetExplorerDriver(options);</pre></div>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usePerProcessProxy()">usePerProcessProxy</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Use the <a href="../Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a> defined in other <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> on a
-  per-process basis, not updating the system installed proxy setting.</div>
+ per-process basis, not updating the system installed proxy setting.</div>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
@@ -470,9 +470,7 @@ new InternetExplorerDriver(options);</pre></div>
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">MutableCapabilities</a></code></span></div>
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
- <code>this</code>.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in <code>this</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
@@ -569,13 +567,13 @@ new InternetExplorerDriver(options);</pre></div>
 <h4>usePerProcessProxy</h4>
 <pre class="methodSignature">public&nbsp;<a href="InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&nbsp;usePerProcessProxy()</pre>
 <div class="block">Use the <a href="../Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a> defined in other <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> on a
-  per-process basis, not updating the system installed proxy setting. This is only valid when
-  setting a <a href="../Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a> where the
-  <a href="../Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a> is one of
-  <ul>
-    <li><a href="../Proxy.ProxyType.html#DIRECT"><code>Proxy.ProxyType.DIRECT</code></a>
-    <li><a href="../Proxy.ProxyType.html#MANUAL"><code>Proxy.ProxyType.MANUAL</code></a>
-    <li><a href="../Proxy.ProxyType.html#SYSTEM"><code>Proxy.ProxyType.SYSTEM</code></a>
+ per-process basis, not updating the system installed proxy setting. This is only valid when
+ setting a <a href="../Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a> where the <a href="../Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a> is one of
+
+ <ul>
+   <li><a href="../Proxy.ProxyType.html#DIRECT"><code>Proxy.ProxyType.DIRECT</code></a>
+   <li><a href="../Proxy.ProxyType.html#MANUAL"><code>Proxy.ProxyType.MANUAL</code></a>
+   <li><a href="../Proxy.ProxyType.html#SYSTEM"><code>Proxy.ProxyType.SYSTEM</code></a>
  </ul></div>
 </li>
 </ul>

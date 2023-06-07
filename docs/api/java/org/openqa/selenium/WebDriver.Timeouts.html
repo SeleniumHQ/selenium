@@ -137,8 +137,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public static interface <span class="typeNameLabel">WebDriver.Timeouts</span></pre>
 <div class="block">An interface for managing timeout behavior for WebDriver instances.
- <p>
- See <a href="https://w3c.github.io/webdriver/#set-timeouts">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#set-timeouts">W3C WebDriver specification</a>
  for more details.</div>
 </li>
 </ul>
@@ -164,8 +164,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>default java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getImplicitWaitTimeout()">getImplicitWaitTimeout</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets the amount of time the driver should wait when searching for an element if it is
- not immediately present.</div>
+<div class="block">Gets the amount of time the driver should wait when searching for an element if it is not
+ immediately present.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -189,10 +189,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
               java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#implicitlyWait(java.time.Duration)"><code>implicitlyWait(Duration)</code></a>
-
- Specifies the amount of time the driver should wait when searching for an element if it is
- not immediately present.</div>
+<div class="deprecationComment">Use <a href="#implicitlyWait(java.time.Duration)"><code>implicitlyWait(Duration)</code></a></div>
 </div>
 </td>
 </tr>
@@ -210,9 +207,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#pageLoadTimeout(java.time.Duration)"><code>pageLoadTimeout(Duration)</code></a>
-
- Sets the amount of time to wait for a page load to complete before throwing an error.</div>
+<div class="deprecationComment">Use <a href="#pageLoadTimeout(java.time.Duration)"><code>pageLoadTimeout(Duration)</code></a></div>
 </div>
 </td>
 </tr>
@@ -237,10 +232,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                 java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#setScriptTimeout(java.time.Duration)"><code>setScriptTimeout(Duration)</code></a>
-
- Sets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error.</div>
+<div class="deprecationComment">Use <a href="#setScriptTimeout(java.time.Duration)"><code>setScriptTimeout(Duration)</code></a></div>
 </div>
 </td>
 </tr>
@@ -281,20 +273,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                                   java.util.concurrent.TimeUnit&nbsp;unit)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
 <div class="deprecationComment">Use <a href="#implicitlyWait(java.time.Duration)"><code>implicitlyWait(Duration)</code></a>
-
- Specifies the amount of time the driver should wait when searching for an element if it is
- not immediately present.
- <p>
- When searching for a single element, the driver should poll the page until the element has
- been found, or this timeout expires before throwing a <a href="NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementException</code></a>. When
- searching for multiple elements, the driver should poll the page until at least one element
- has been found or this timeout has expired.
- <p>
- Increasing the implicit wait timeout should be used judiciously as it will have an adverse
- effect on test run time, especially when used with slower location strategies like XPath.
- <p>
- If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
- argument will be returned.</div>
+     <p>Specifies the amount of time the driver should wait when searching for an element if
+     it is not immediately present.
+     <p>When searching for a single element, the driver should poll the page until the element
+     has been found, or this timeout expires before throwing a <a href="NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementException</code></a>.
+     When searching for multiple elements, the driver should poll the page until at least one
+     element has been found or this timeout has expired.
+     <p>Increasing the implicit wait timeout should be used judiciously as it will have an
+     adverse effect on test run time, especially when used with slower location strategies
+     like XPath.
+     <p>If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+     invalid argument will be returned.</div>
 </div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -314,16 +303,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature">default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;implicitlyWait&#8203;(java.time.Duration&nbsp;duration)</pre>
 <div class="block">Specifies the amount of time the driver should wait when searching for an element if it is
  not immediately present.
- <p>
- When searching for a single element, the driver should poll the page until the element has
+
+ <p>When searching for a single element, the driver should poll the page until the element has
  been found, or this timeout expires before throwing a <a href="NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementException</code></a>. When
  searching for multiple elements, the driver should poll the page until at least one element
  has been found or this timeout has expired.
- <p>
- Increasing the implicit wait timeout should be used judiciously as it will have an adverse
+
+ <p>Increasing the implicit wait timeout should be used judiciously as it will have an adverse
  effect on test run time, especially when used with slower location strategies like XPath.
- <p>
- If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
+
+ <p>If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
  argument will be returned.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -340,8 +329,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getImplicitWaitTimeout</h4>
 <pre class="methodSignature">default&nbsp;java.time.Duration&nbsp;getImplicitWaitTimeout()</pre>
-<div class="block">Gets the amount of time the driver should wait when searching for an element if it is
- not immediately present.</div>
+<div class="block">Gets the amount of time the driver should wait when searching for an element if it is not
+ immediately present.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The amount of time the driver should wait when searching for an element.</dd>
@@ -361,10 +350,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                                     java.util.concurrent.TimeUnit&nbsp;unit)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
 <div class="deprecationComment">Use <a href="#setScriptTimeout(java.time.Duration)"><code>setScriptTimeout(Duration)</code></a>
-
- Sets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
- error code with invalid argument will be returned.</div>
+     <p>Sets the amount of time to wait for an asynchronous script to finish execution before
+     throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     error code with invalid argument will be returned.</div>
 </div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -391,8 +379,8 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
 <div class="deprecationComment">Use <a href="#scriptTimeout(java.time.Duration)"><code>scriptTimeout(Duration)</code></a></div>
 </div>
 <div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
- error code with invalid argument will be returned.</div>
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an error
+ code with invalid argument will be returned.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>duration</code> - The timeout value.</dd>
@@ -413,8 +401,8 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
 <h4>scriptTimeout</h4>
 <pre class="methodSignature">default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;scriptTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
 <div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
- error code with invalid argument will be returned.</div>
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an error
+ code with invalid argument will be returned.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>duration</code> - The timeout value.</dd>
@@ -435,8 +423,8 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
 <h4>getScriptTimeout</h4>
 <pre class="methodSignature">default&nbsp;java.time.Duration&nbsp;getScriptTimeout()</pre>
 <div class="block">Gets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
- error code with invalid argument will be returned.</div>
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an error
+ code with invalid argument will be returned.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The amount of time to wait for an asynchronous script to finish execution.</dd>
@@ -457,10 +445,9 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
                                    java.util.concurrent.TimeUnit&nbsp;unit)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
 <div class="deprecationComment">Use <a href="#pageLoadTimeout(java.time.Duration)"><code>pageLoadTimeout(Duration)</code></a>
-
- Sets the amount of time to wait for a page load to complete before throwing an error.
- If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
- invalid argument will be returned.</div>
+     <p>Sets the amount of time to wait for a page load to complete before throwing an error.
+     If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+     invalid argument will be returned.</div>
 </div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -481,9 +468,9 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>pageLoadTimeout</h4>
 <pre class="methodSignature">default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;pageLoadTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
-<div class="block">Sets the amount of time to wait for a page load to complete before throwing an error.
- If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
- invalid argument will be returned.</div>
+<div class="block">Sets the amount of time to wait for a page load to complete before throwing an error. If the
+ timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid argument
+ will be returned.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>duration</code> - The timeout value.</dd>
@@ -502,9 +489,9 @@ default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>getPageLoadTimeout</h4>
 <pre class="methodSignature">default&nbsp;java.time.Duration&nbsp;getPageLoadTimeout()</pre>
-<div class="block">Gets the amount of time to wait for a page load to complete before throwing an error.
- If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
- invalid argument will be returned.</div>
+<div class="block">Gets the amount of time to wait for a page load to complete before throwing an error. If the
+ timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid argument
+ will be returned.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The amount of time to wait for a page load to complete.</dd>

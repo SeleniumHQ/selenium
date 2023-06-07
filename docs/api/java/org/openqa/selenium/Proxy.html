@@ -139,9 +139,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends java.lang.Object</pre>
 <div class="block">Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
  this type to a WebDriver constructor, or in some cases to the profile object used in the
- WebDriver construction.  For simplicity, setting values here commits the proxy to a certain
- configuration.  That is, it is an error to set an <code>httpProxy</code> manually and then turn
- on proxy autodetect.</div>
+ WebDriver construction. For simplicity, setting values here commits the proxy to a certain
+ configuration. That is, it is an error to set an <code>httpProxy</code> manually and then turn on
+ proxy autodetect.</div>
 </li>
 </ul>
 </div>
@@ -457,9 +457,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getProxyType</h4>
 <pre class="methodSignature">public&nbsp;<a href="Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a>&nbsp;getProxyType()</pre>
-<div class="block">Gets the <a href="Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a>.  This can signal if set to use a direct connection (without proxy),
+<div class="block">Gets the <a href="Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a>. This can signal if set to use a direct connection (without proxy),
  manually set proxy settings, auto-configured proxy settings, or whether to use the default
- system proxy settings.  It defaults to <a href="Proxy.ProxyType.html#UNSPECIFIED"><code>Proxy.ProxyType.UNSPECIFIED</code></a>.</div>
+ system proxy settings. It defaults to <a href="Proxy.ProxyType.html#UNSPECIFIED"><code>Proxy.ProxyType.UNSPECIFIED</code></a>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the proxy type employed</dd>
@@ -507,7 +507,7 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>autodetect</code> - set to true to use proxy auto detection, false to leave proxy settings
-                   unspecified</dd>
+     unspecified</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>reference to self</dd>
 </dl>
@@ -700,7 +700,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getSocksUsername</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getSocksUsername()</pre>
-<div class="block">Gets the SOCKS proxy's username.  Supported by SOCKS v5 and above.</div>
+<div class="block">Gets the SOCKS proxy's username. Supported by SOCKS v5 and above.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the SOCKS proxy's username</dd>
@@ -774,9 +774,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>setProxyAutoconfigUrl</h4>
 <pre class="methodSignature">public&nbsp;<a href="Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setProxyAutoconfigUrl&#8203;(java.lang.String&nbsp;proxyAutoconfigUrl)</pre>
-<div class="block">Specifies the URL to be used for proxy auto-configuration.  Expected format is
- <code>http://hostname.com:1234/pacfile</code>.  This is required if <a href="#getProxyType()"><code>getProxyType()</code></a> is
- set to <a href="Proxy.ProxyType.html#PAC"><code>Proxy.ProxyType.PAC</code></a>, ignored otherwise.</div>
+<div class="block">Specifies the URL to be used for proxy auto-configuration. Expected format is <code>
+ http://hostname.com:1234/pacfile</code>. This is required if <a href="#getProxyType()"><code>getProxyType()</code></a> is set to
+ <a href="Proxy.ProxyType.html#PAC"><code>Proxy.ProxyType.PAC</code></a>, ignored otherwise.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>proxyAutoconfigUrl</code> - the URL for proxy auto-configuration</dd>

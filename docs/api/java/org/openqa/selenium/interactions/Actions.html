@@ -139,11 +139,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends java.lang.Object</pre>
 <div class="block">The user-facing API for emulating complex user gestures. Use this class rather than using the
  Keyboard or Mouse directly.
- <p>
- Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
- method calls.
- <p>
- Call <a href="#perform()"><code>perform()</code></a> at the end of the method chain to actually perform the actions.</div>
+
+ <p>Implements the builder pattern: Builds a CompositeAction containing all actions specified by
+ the method calls.
+
+ <p>Call <a href="#perform()"><code>perform()</code></a> at the end of the method chain to actually perform the actions.</div>
 </li>
 </ul>
 </div>
@@ -189,9 +189,8 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#build()">build</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Generates a composite action containing all actions so far, ready to be performed (and
- resets the internal builder state, so subsequent calls to this method will contain fresh
- sequences).</div>
+<div class="block">Generates a composite action containing all actions so far, ready to be performed (and resets
+ the internal builder state, so subsequent calls to this method will contain fresh sequences).</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -255,8 +254,8 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#dragAndDrop(org.openqa.selenium.WebElement,org.openqa.selenium.WebElement)">dragAndDrop</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;source,
            <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code></th>
 <td class="colLast">
-<div class="block">A convenience method that performs click-and-hold at the location of the source element,
- moves to the location of the target element, then releases the mouse.</div>
+<div class="block">A convenience method that performs click-and-hold at the location of the source element, moves
+ to the location of the target element, then releases the mouse.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -265,8 +264,8 @@ extends java.lang.Object</pre>
              int&nbsp;xOffset,
              int&nbsp;yOffset)</code></th>
 <td class="colLast">
-<div class="block">A convenience method that performs click-and-hold at the location of the source element,
- moves by a given offset, then releases the mouse.</div>
+<div class="block">A convenience method that performs click-and-hold at the location of the source element, moves
+ by a given offset, then releases the mouse.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
@@ -392,7 +391,8 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scrollToElement(org.openqa.selenium.WebElement)">scrollToElement</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
 <td class="colLast">
-<div class="block">If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.</div>
+<div class="block">If the element is outside the viewport, scrolls the bottom of the element to the bottom of the
+ viewport.</div>
 </td>
 </tr>
 <tr id="i29" class="rowColor">
@@ -407,10 +407,8 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)">sendKeys</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
         java.lang.CharSequence...&nbsp;keys)</code></th>
 <td class="colLast">
-<div class="block">Equivalent to calling:
- <i>Actions.click(element).sendKeys(keysToSend).</i>
- This method is different from <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see
- <a href="#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
+<div class="block">Equivalent to calling: <i>Actions.click(element).sendKeys(keysToSend).</i> This method is
+ different from <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see <a href="#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 </td>
 </tr>
 <tr id="i31" class="rowColor">
@@ -484,15 +482,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>keyDown</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyDown&#8203;(java.lang.CharSequence&nbsp;key)</pre>
-<div class="block">Performs a modifier key press. Does not release the modifier key - subsequent interactions
- may assume it's kept pressed.
- Note that the modifier key is <b>never</b> released implicitly - either
- <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
- must be called to release the modifier.</div>
+<div class="block">Performs a modifier key press. Does not release the modifier key - subsequent interactions may
+ assume it's kept pressed. Note that the modifier key is <b>never</b> released implicitly -
+ either <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i> must be called to release the
+ modifier.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
- provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
+<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a>
+     or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -510,8 +507,8 @@ extends java.lang.Object</pre>
  <i>Actions.click(element).sendKeys(theKey);</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
- provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
+<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a>
+     or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
 <dd><code>target</code> - WebElement to perform the action</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
@@ -531,7 +528,8 @@ extends java.lang.Object</pre>
  behaviour.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
+<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a>
+     or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -549,7 +547,8 @@ extends java.lang.Object</pre>
  <i>Actions.click(element).sendKeys(theKey);</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
+<dd><code>key</code> - Either <a href="../Keys.html#META"><code>Keys.META</code></a>, <a href="../Keys.html#COMMAND"><code>Keys.COMMAND</code></a>, <a href="../Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../Keys.html#ALT"><code>Keys.ALT</code></a>
+     or <a href="../Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
 <dd><code>target</code> - WebElement to perform the action on</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
@@ -565,12 +564,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>sendKeys</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys&#8203;(java.lang.CharSequence...&nbsp;keys)</pre>
-<div class="block">Sends keys to the active element. This differs from calling
- <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> on the active element in two ways:
+<div class="block">Sends keys to the active element. This differs from calling <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> on the active element in two ways:
+
  <ul>
- <li>The modifier keys included in this call are not released.</li>
- <li>There is no attempt to re-focus the element - so sendKeys(Keys.TAB) for switching
- elements should work. </li>
+   <li>The modifier keys included in this call are not released.
+   <li>There is no attempt to re-focus the element - so sendKeys(Keys.TAB) for switching
+       elements should work.
  </ul></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -592,10 +591,8 @@ extends java.lang.Object</pre>
 <h4>sendKeys</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
                         java.lang.CharSequence...&nbsp;keys)</pre>
-<div class="block">Equivalent to calling:
- <i>Actions.click(element).sendKeys(keysToSend).</i>
- This method is different from <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see
- <a href="#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
+<div class="block">Equivalent to calling: <i>Actions.click(element).sendKeys(keysToSend).</i> This method is
+ different from <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see <a href="#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>target</code> - element to focus on.</dd>
@@ -647,12 +644,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>release</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;release&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
-<div class="block">Releases the depressed left mouse button, in the middle of the given element.
- This is equivalent to:
- <i>Actions.moveToElement(onElement).release()</i>
+<div class="block">Releases the depressed left mouse button, in the middle of the given element. This is
+ equivalent to: <i>Actions.moveToElement(onElement).release()</i>
 
- Invoking this action without invoking <a href="#clickAndHold()"><code>clickAndHold()</code></a> first will result in
- undefined behaviour.</div>
+ <p>Invoking this action without invoking <a href="#clickAndHold()"><code>clickAndHold()</code></a> first will result in undefined
+ behaviour.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>target</code> - Element to release the mouse button above.</dd>
@@ -668,7 +664,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>scrollToElement</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;scrollToElement&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
-<div class="block">If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.</div>
+<div class="block">If the element is outside the viewport, scrolls the bottom of the element to the bottom of the
+ viewport.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>element</code> - Which element to scroll into the viewport.</dd>
@@ -688,7 +685,8 @@ extends java.lang.Object</pre>
 <div class="block">Scrolls by provided amounts with the origin in the top left corner of the viewport.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>deltaX</code> - The distance along X axis to scroll using the wheel. A negative value scrolls left.</dd>
+<dd><code>deltaX</code> - The distance along X axis to scroll using the wheel. A negative value scrolls
+     left.</dd>
 <dd><code>deltaY</code> - The distance along Y axis to scroll using the wheel. A negative value scrolls up.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
@@ -704,14 +702,15 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;scrollFromOrigin&#8203;(<a href="WheelInput.ScrollOrigin.html" title="class in org.openqa.selenium.interactions">WheelInput.ScrollOrigin</a>&nbsp;scrollOrigin,
                                 int&nbsp;deltaX,
                                 int&nbsp;deltaY)</pre>
-<div class="block">Scrolls by provided amount based on a provided origin.
- The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
- If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-   be scrolled to the bottom of the viewport.</div>
+<div class="block">Scrolls by provided amount based on a provided origin. The scroll origin is either the center
+ of an element or the upper left of the viewport plus any offsets. If the origin is an element,
+ and the element is not in the viewport, the bottom of the element will first be scrolled to the
+ bottom of the viewport.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>scrollOrigin</code> - Where scroll originates (viewport or element center) plus provided offsets.</dd>
-<dd><code>deltaX</code> - The distance along X axis to scroll using the wheel. A negative value scrolls left.</dd>
+<dd><code>deltaX</code> - The distance along X axis to scroll using the wheel. A negative value scrolls
+     left.</dd>
 <dd><code>deltaY</code> - The distance along Y axis to scroll using the wheel. A negative value scrolls up.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
@@ -760,9 +759,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>click</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;click()</pre>
-<div class="block">Clicks at the current mouse location. Useful when combined with
- <a href="#moveToElement(org.openqa.selenium.WebElement,int,int)"><code>moveToElement(org.openqa.selenium.WebElement, int, int)</code></a> or
- <a href="#moveByOffset(int,int)"><code>moveByOffset(int, int)</code></a>.</div>
+<div class="block">Clicks at the current mouse location. Useful when combined with <a href="#moveToElement(org.openqa.selenium.WebElement,int,int)"><code>moveToElement(org.openqa.selenium.WebElement, int, int)</code></a> or <a href="#moveByOffset(int,int)"><code>moveByOffset(int, int)</code></a>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
@@ -830,10 +827,10 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>target</code> - element to move to.</dd>
-<dd><code>xOffset</code> - Offset from the element's in-view center point. A negative value means
- an offset left of the point.</dd>
-<dd><code>yOffset</code> - Offset from the element's in-view center point. A negative value means
- an offset above the point.</dd>
+<dd><code>xOffset</code> - Offset from the element's in-view center point. A negative value means an offset
+     left of the point.</dd>
+<dd><code>yOffset</code> - Offset from the element's in-view center point. A negative value means an offset
+     above the point.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -848,8 +845,8 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;moveByOffset&#8203;(int&nbsp;xOffset,
                             int&nbsp;yOffset)</pre>
 <div class="block">Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
- provided are outside the viewport (the mouse will end up outside the browser window) then
- the viewport is scrolled to match.</div>
+ provided are outside the viewport (the mouse will end up outside the browser window) then the
+ viewport is scrolled to match.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>xOffset</code> - horizontal offset. A negative value means moving the mouse left.</dd>
@@ -858,7 +855,7 @@ extends java.lang.Object</pre>
 <dd>A self reference.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</a></code> - if the provided offset is outside the document's
- boundaries.</dd>
+     boundaries.</dd>
 </dl>
 </li>
 </ul>
@@ -869,8 +866,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>contextClick</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;contextClick&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
-<div class="block">Performs a context-click at middle of the given element. First performs a mouseMove
- to the location of the element.</div>
+<div class="block">Performs a context-click at middle of the given element. First performs a mouseMove to the
+ location of the element.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>target</code> - Element to move to.</dd>
@@ -901,8 +898,8 @@ extends java.lang.Object</pre>
 <h4>dragAndDrop</h4>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;dragAndDrop&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;source,
                            <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
-<div class="block">A convenience method that performs click-and-hold at the location of the source element,
- moves to the location of the target element, then releases the mouse.</div>
+<div class="block">A convenience method that performs click-and-hold at the location of the source element, moves
+ to the location of the target element, then releases the mouse.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>source</code> - element to emulate button down at.</dd>
@@ -921,8 +918,8 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;dragAndDropBy&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;source,
                              int&nbsp;xOffset,
                              int&nbsp;yOffset)</pre>
-<div class="block">A convenience method that performs click-and-hold at the location of the source element,
- moves by a given offset, then releases the mouse.</div>
+<div class="block">A convenience method that performs click-and-hold at the location of the source element, moves
+ by a given offset, then releases the mouse.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>source</code> - element to emulate button down at.</dd>
@@ -1029,12 +1026,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>build</h4>
 <pre class="methodSignature">public&nbsp;<a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;build()</pre>
-<div class="block">Generates a composite action containing all actions so far, ready to be performed (and
- resets the internal builder state, so subsequent calls to this method will contain fresh
- sequences).
- <p>
- <b>Warning</b>: you may want to call <a href="#perform()"><code>perform()</code></a> instead to actually perform
- the actions.</div>
+<div class="block">Generates a composite action containing all actions so far, ready to be performed (and resets
+ the internal builder state, so subsequent calls to this method will contain fresh sequences).
+
+ <p><b>Warning</b>: you may want to call <a href="#perform()"><code>perform()</code></a> instead to actually perform the
+ actions.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the composite action</dd>

@@ -137,10 +137,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">ThreadGuard</span>
 extends java.lang.Object</pre>
-<div class="block">Multithreaded client code should use this to assert that it accesses webdriver in a
- thread-safe manner.
+<div class="block">Multithreaded client code should use this to assert that it accesses webdriver in a thread-safe
+ manner.
 
- Wrap WebDriver instances as follows:
+ <p>Wrap WebDriver instances as follows:
 
  <pre class="code">
  WebDriver driver = ThreadGuard.protect(new FirefoxDriver());

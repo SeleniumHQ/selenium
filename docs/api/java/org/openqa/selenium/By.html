@@ -143,8 +143,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends java.lang.Object</pre>
 <div class="block">Mechanism used to locate elements within a document. In order to create your own locating
  mechanisms, it is possible to subclass this class and override the protected methods as required,
- though it is expected that all subclasses rely on the basic finding mechanisms provided
- through static methods of this class:
+ though it is expected that all subclasses rely on the basic finding mechanisms provided through
+ static methods of this class:
 
  <pre><code>
  public WebElement findElement(WebDriver driver) {
@@ -481,8 +481,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>className</h4>
 <pre class="methodSignature">public static&nbsp;<a href="By.html" title="class in org.openqa.selenium">By</a>&nbsp;className&#8203;(java.lang.String&nbsp;className)</pre>
-<div class="block">Find elements based on the value of the "class" attribute. Only one class name should be
- used. If an element has multiple classes, please use <a href="#cssSelector(java.lang.String)"><code>cssSelector(String)</code></a>.</div>
+<div class="block">Find elements based on the value of the "class" attribute. Only one class name should be used.
+ If an element has multiple classes, please use <a href="#cssSelector(java.lang.String)"><code>cssSelector(String)</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>className</code> - The value of the "class" attribute to search for.</dd>
@@ -499,7 +499,7 @@ extends java.lang.Object</pre>
 <h4>cssSelector</h4>
 <pre class="methodSignature">public static&nbsp;<a href="By.html" title="class in org.openqa.selenium">By</a>&nbsp;cssSelector&#8203;(java.lang.String&nbsp;cssSelector)</pre>
 <div class="block">Find elements via the driver's underlying W3C Selector engine. If the browser does not
- implement the Selector API, a best effort is made to emulate the API. In this case, we strive
+ implement the Selector API, the best effort is made to emulate the API. In this case, we strive
  for at least CSS2 support, but offer no guarantees.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

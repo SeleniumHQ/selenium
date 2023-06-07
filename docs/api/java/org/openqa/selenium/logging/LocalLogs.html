@@ -204,8 +204,8 @@ implements <a href="Logs.html" title="interface in org.openqa.selenium.logging">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCombinedLogsHolder(org.openqa.selenium.logging.LocalLogs,org.openqa.selenium.logging.LocalLogs)">getCombinedLogsHolder</a></span>&#8203;(<a href="LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;predefinedTypeLogger,
                      <a href="LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;allTypesLogger)</code></th>
 <td class="colLast">
-<div class="block">See documentation of CompositeLocalLogs about the difference between the first
- LocalLogs instance and the second one.</div>
+<div class="block">See documentation of CompositeLocalLogs about the difference between the first LocalLogs
+ instance and the second one.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -317,8 +317,8 @@ implements <a href="Logs.html" title="interface in org.openqa.selenium.logging">
 <h4>getCombinedLogsHolder</h4>
 <pre class="methodSignature">public static&nbsp;<a href="LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;getCombinedLogsHolder&#8203;(<a href="LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;predefinedTypeLogger,
                                               <a href="LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;allTypesLogger)</pre>
-<div class="block">See documentation of CompositeLocalLogs about the difference between the first
- LocalLogs instance and the second one.</div>
+<div class="block">See documentation of CompositeLocalLogs about the difference between the first LocalLogs
+ instance and the second one.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>predefinedTypeLogger</code> - LocalLogs which pre-defines the log types it stores.</dd>
@@ -338,12 +338,12 @@ implements <a href="Logs.html" title="interface in org.openqa.selenium.logging">
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="Logs.html#get(java.lang.String)">Logs</a></code></span></div>
 <div class="block">Fetches available log entries for the given log type.
 
- Note that log buffers are reset after each call, meaning that available log
- entries correspond to those entries not yet returned for a given log type.
- In practice, this means that this call will return the available log entries
- since the last call, or from the start of the session.
+ <p>Note that log buffers are reset after each call, meaning that available log entries
+ correspond to those entries not yet returned for a given log type. In practice, this means that
+ this call will return the available log entries since the last call, or from the start of the
+ session.
 
- For more info on enabling logging, look at <a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
+ <p>For more info on enabling logging, look at <a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="Logs.html#get(java.lang.String)">get</a></code>&nbsp;in interface&nbsp;<code><a href="Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></code></dd>

@@ -252,14 +252,11 @@ public interface <span class="typeNameLabel">WebDriverInfo</span></pre>
 <pre class="methodSignature"><a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCanonicalCapabilities()</pre>
 <div class="block">Describes the smallest set of <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> that could be used to create an instance of
  this <a href="WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.
- <p>
- Note, this set does not need to be exhaustive: the only requirement is that if
- <a href="#isAvailable()"><code>isAvailable()</code></a> returns <code>true</code>, the returned <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> can be passed to
- <a href="#createDriver(org.openqa.selenium.Capabilities)"><code>createDriver(Capabilities)</code></a> and a session will be created.</div>
+
+ <p>Note, this set does not need to be exhaustive: the only requirement is that if <a href="#isAvailable()"><code>isAvailable()</code></a> returns <code>true</code>, the returned <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> can be passed to <a href="#createDriver(org.openqa.selenium.Capabilities)"><code>createDriver(Capabilities)</code></a> and a session will be created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The smallest set of <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> required to create an instance of this
-   <a href="WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</dd>
+<dd>The smallest set of <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> required to create an instance of this <a href="WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</dd>
 </dl>
 </li>
 </ul>
@@ -272,8 +269,8 @@ public interface <span class="typeNameLabel">WebDriverInfo</span></pre>
 <pre class="methodSignature">boolean&nbsp;isSupporting&#8203;(<a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Whether a call to <a href="#createDriver(org.openqa.selenium.Capabilities)"><code>createDriver(Capabilities)</code></a> would succeed if given
- <code>capabilities</code>.</dd>
+<dd>Whether a call to <a href="#createDriver(org.openqa.selenium.Capabilities)"><code>createDriver(Capabilities)</code></a> would succeed if given <code>
+     capabilities</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -327,8 +324,7 @@ public interface <span class="typeNameLabel">WebDriverInfo</span></pre>
 <li class="blockList">
 <h4>isPresent</h4>
 <pre class="methodSignature">boolean&nbsp;isPresent()</pre>
-<div class="block">Checks whether the browser driver is already present on the host machine. Different from
- <a href="#isAvailable()"><code>isAvailable()</code></a> which uses Selenium Manager to obtain the driver when not present.</div>
+<div class="block">Checks whether the browser driver is already present on the host machine. Different from <a href="#isAvailable()"><code>isAvailable()</code></a> which uses Selenium Manager to obtain the driver when not present.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether the browser driver is present on the host machine.</dd>
@@ -345,8 +341,8 @@ public interface <span class="typeNameLabel">WebDriverInfo</span></pre>
 <div class="block">Some browsers require all the resources of the current system in order to run (for example,
  Safari on iOS) and so do not support multiple simultaneous sessions on the same system. Other
  browsers can create isolated state for each new <a href="WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance.
- <p>
- The count of simultaneous sessions is typically 1, some multiple of the available number of
+
+ <p>The count of simultaneous sessions is typically 1, some multiple of the available number of
  cores, or <code>Integer.MAX_VALUE</code> if the number is unbounded or no-one cares.</div>
 </li>
 </ul>

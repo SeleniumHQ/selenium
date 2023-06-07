@@ -348,7 +348,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createServiceWithConfig(org.openqa.selenium.chrome.ChromeOptions)">createServiceWithConfig</a></span>&#8203;(<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a>  }</div>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> }</div>
 </div>
 </td>
 </tr>
@@ -679,10 +679,8 @@ public&nbsp;ChromeDriverService&#8203;(java.io.File&nbsp;executable,
 <h4>createDefaultService</h4>
 <pre class="methodSignature">public static&nbsp;<a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;createDefaultService()</pre>
 <div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the default configuration. In
- this configuration, the service will use the ChromeDriver executable identified by
- <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
- Each service created by this method will be configured to use a free port on the current
- system.</div>
+ this configuration, the service will use the ChromeDriver executable identified by <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>. Each
+ service created by this method will be configured to use a free port on the current system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new ChromeDriverService using the default configuration.</dd>
@@ -698,13 +696,11 @@ public&nbsp;ChromeDriverService&#8203;(java.io.File&nbsp;executable,
 <pre class="methodSignature">@Deprecated
 public static&nbsp;<a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;createServiceWithConfig&#8203;(<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;options)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a>  }</div>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> }</div>
 </div>
 <div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the supplied configuration. In
- this configuration, the service will use the ChromeDriver executable identified by
- <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
- Each service created by this method will be configured to use a free port on the current
- system.</div>
+ this configuration, the service will use the ChromeDriver executable identified by <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>. Each
+ service created by this method will be configured to use a free port on the current system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new ChromeDriverService using the supplied configuration from <a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome"><code>ChromeOptions</code></a>.</dd>

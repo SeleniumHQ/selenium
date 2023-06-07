@@ -103,18 +103,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <section role="region"><a id="package.description">
 <!--   -->
 </a>
-<div class="block">The <a href="Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible
- for assigning new calls to Create Session to a
- <a href="../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>. It's possible that the first
- attempt to create a session fails for any number of reasons, and so a
- well-behaved implementation will continue trying additional nodes until
- either a session starts or nothing is successful.
- <p>
- To complicate matters, local ends may send a session request that is one of
- two different dialects (presumably in the future there may be more. *sigh*)
- and care must be taken to ensure that dialects match, or that a converter
- of some sort is added. The Node may be the part of the system responsible
- for adding this converter.</div>
+<div class="block">The <a href="Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible for assigning new
+ calls to Create Session to a <a href="../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>. It's possible that the
+ first attempt to create a session fails for any number of reasons, and so a well-behaved
+ implementation will continue trying additional nodes until either a session starts or nothing is
+ successful.
+
+ <p>To complicate matters, local ends may send a session request that is one of two different
+ dialects (presumably in the future there may be more. *sigh*) and care must be taken to ensure
+ that dialects match, or that a converter of some sort is added. The Node may be the part of the
+ system responsible for adding this converter.</div>
 </section>
 <ul class="blockList">
 <li class="blockList">
@@ -128,9 +126,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></th>
 <td class="colLast">
-<div class="block">Responsible for being the central place where the <a href="../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>s
- on which <a href="../data/Session.html" title="class in org.openqa.selenium.grid.data"><code>Session</code></a>s run
- are determined.</div>
+<div class="block">Responsible for being the central place where the <a href="../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>s on which <a href="../data/Session.html" title="class in org.openqa.selenium.grid.data"><code>Session</code></a>s run are
+ determined.</div>
 </td>
 </tr>
 <tr class="rowColor">

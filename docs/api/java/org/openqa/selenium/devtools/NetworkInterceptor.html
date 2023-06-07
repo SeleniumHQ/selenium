@@ -142,14 +142,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">NetworkInterceptor</span>
 extends java.lang.Object
 implements java.lang.AutoCloseable</pre>
-<div class="block">Provides a mechanism for stubbing out responses to requests in drivers which
- implement <a href="HasDevTools.html" title="interface in org.openqa.selenium.devtools"><code>HasDevTools</code></a>. Usage is done by specifying a <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http"><code>Route</code></a>,
- which will be checked for every request to see if that request should be
- handled or not. Note that the URLs given to the <code>Route</code> will be fully
- qualified.
+<div class="block">Provides a mechanism for stubbing out responses to requests in drivers which implement <a href="HasDevTools.html" title="interface in org.openqa.selenium.devtools"><code>HasDevTools</code></a>. Usage is done by specifying a <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http"><code>Route</code></a>, which will be checked for every
+ request to see if that request should be handled or not. Note that the URLs given to the <code>
+ Route</code> will be fully qualified.
+
+ <p>Example usage:
+
  <p>
- Example usage:
- <p>
+
  <pre><code>
    Route route = Route.matching(req -&gt; GET == req.getMethod() &amp;&amp; req.getUri().endsWith("/example"))
      .to(() -&gt; req -&gt; new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
@@ -158,9 +158,9 @@ implements java.lang.AutoCloseable</pre>
      // Your code here.
    }
  </code></pre>
- <p>
- It is also possible to intercept and modify responses that the browser will
- receive. Do this by calling <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,org.openqa.selenium.remote.http.Filter)"><code>NetworkInterceptor(WebDriver, Filter)</code></a>.</div>
+
+ <p>It is also possible to intercept and modify responses that the browser will receive. Do this
+ by calling <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,org.openqa.selenium.remote.http.Filter)"><code>NetworkInterceptor(WebDriver, Filter)</code></a>.</div>
 </li>
 </ul>
 </div>
@@ -185,8 +185,8 @@ implements java.lang.AutoCloseable</pre>
 <td class="colFirst"><code>static <a href="../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROCEED_WITH_REQUEST">PROCEED_WITH_REQUEST</a></span></code></th>
 <td class="colLast">
-<div class="block">Return this from a <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http"><code>Routable</code></a> in order to have the browser
- continue the request unmodified.</div>
+<div class="block">Return this from a <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http"><code>Routable</code></a> in order to have the browser continue the request
+ unmodified.</div>
 </td>
 </tr>
 </table>
@@ -288,8 +288,8 @@ implements java.lang.AutoCloseable</pre>
 <li class="blockList">
 <h4>PROCEED_WITH_REQUEST</h4>
 <pre>public static final&nbsp;<a href="../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a> PROCEED_WITH_REQUEST</pre>
-<div class="block">Return this from a <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http"><code>Routable</code></a> in order to have the browser
- continue the request unmodified.</div>
+<div class="block">Return this from a <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http"><code>Routable</code></a> in order to have the browser continue the request
+ unmodified.</div>
 </li>
 </ul>
 </li>

@@ -153,15 +153,14 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <div class="block">An implementation of the <a href="Wait.html" title="interface in org.openqa.selenium.support.ui"><code>Wait</code></a> interface that may have its timeout and polling interval
  configured on the fly.
 
- <p>
- Each FluentWait instance defines the maximum amount of time to wait for a condition, as well as
- the frequency with which to check the condition. Furthermore, the user may configure the wait to
- ignore specific types of exceptions whilst waiting, such as
- <a href="../../NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementExceptions</code></a> when searching for an
- element on the page.
+ <p>Each FluentWait instance defines the maximum amount of time to wait for a condition, as well
+ as the frequency with which to check the condition. Furthermore, the user may configure the wait
+ to ignore specific types of exceptions whilst waiting, such as <a href="../../NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementExceptions</code></a> when searching for an element
+ on the page.
 
- <p>
- Sample usage: <pre>
+ <p>Sample usage:
+
+ <pre>
    // Waiting 30 seconds for an element to be present on the page, checking
    // for its presence once every 5 seconds.
    Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
@@ -176,8 +175,7 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
    });
  </pre>
 
- <p>
- <em>This class makes no thread safety guarantees.</em></div>
+ <p><em>This class makes no thread safety guarantees.</em></div>
 </li>
 </ul>
 </div>
@@ -287,11 +285,12 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <td class="colLast">
 <div class="block">Repeatedly applies this instance's input value to the given function until one of the following
  occurs:
+
  
- the function returns neither null nor false
- the function throws an unignored exception
- the timeout expires
- the current thread is interrupted
+   the function returns neither null nor false
+   the function throws an unignored exception
+   the timeout expires
+   the current thread is interrupted
  </div>
 </td>
 </tr>
@@ -414,8 +413,7 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <li class="blockList">
 <h4>withTimeout</h4>
 <pre class="methodSignature">public&nbsp;<a href="FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;withTimeout&#8203;(java.time.Duration&nbsp;timeout)</pre>
-<div class="block">Sets how long to wait for the evaluated condition to be true. The default timeout is
- <a href="#DEFAULT_WAIT_DURATION"><code>DEFAULT_WAIT_DURATION</code></a>.</div>
+<div class="block">Sets how long to wait for the evaluated condition to be true. The default timeout is <a href="#DEFAULT_WAIT_DURATION"><code>DEFAULT_WAIT_DURATION</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeout</code> - The timeout duration.</dd>
@@ -465,9 +463,8 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <pre class="methodSignature">public&nbsp;<a href="FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;pollingEvery&#8203;(java.time.Duration&nbsp;interval)</pre>
 <div class="block">Sets how often the condition should be evaluated.
 
- <p>
- In reality, the interval may be greater as the cost of actually evaluating a condition function
- is not factored in. The default polling interval is <a href="#DEFAULT_WAIT_DURATION"><code>DEFAULT_WAIT_DURATION</code></a>.</div>
+ <p>In reality, the interval may be greater as the cost of actually evaluating a condition
+ function is not factored in. The default polling interval is <a href="#DEFAULT_WAIT_DURATION"><code>DEFAULT_WAIT_DURATION</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>interval</code> - The timeout duration.</dd>
@@ -540,11 +537,12 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <pre class="methodSignature">public&nbsp;&lt;V&gt;&nbsp;V&nbsp;until&#8203;(java.util.function.Function&lt;? super <a href="FluentWait.html" title="type parameter in FluentWait">T</a>,&#8203;V&gt;&nbsp;isTrue)</pre>
 <div class="block">Repeatedly applies this instance's input value to the given function until one of the following
  occurs:
+
  <ol>
- <li>the function returns neither null nor false</li>
- <li>the function throws an unignored exception</li>
- <li>the timeout expires</li>
- <li>the current thread is interrupted</li>
+   <li>the function returns neither null nor false
+   <li>the function throws an unignored exception
+   <li>the timeout expires
+   <li>the current thread is interrupted
  </ol></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -554,8 +552,8 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>isTrue</code> - the parameter to pass to the <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><code>ExpectedCondition</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The function's return value if the function returned something different
- from null or false before the timeout expired.</dd>
+<dd>The function's return value if the function returned something different from null or
+     false before the timeout expired.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../../TimeoutException.html" title="class in org.openqa.selenium">TimeoutException</a></code> - If the timeout expires.</dd>
 </dl>
@@ -575,7 +573,7 @@ implements <a href="Wait.html" title="interface in org.openqa.selenium.support.u
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>message</code> - The timeout message.</dd>
 <dd><code>lastException</code> - The last exception to be thrown and subsequently suppressed while waiting
-                      on a function.</dd>
+     on a function.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Nothing will ever be returned; this return type is only specified as a convenience.</dd>
 </dl>

@@ -136,9 +136,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">TakesScreenshot</span></pre>
-<div class="block">Indicates a driver or an HTML element that can capture a screenshot and store it in different ways.
- <p>
- Example usage:
+<div class="block">Indicates a driver or an HTML element that can capture a screenshot and store it in different
+ ways.
+
+ <p>Example usage:
 
  <pre>
  File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -201,23 +202,25 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature">&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs&#8203;(<a href="OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)
                throws <a href="WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block">Capture the screenshot and store it in the specified location.
- <p>
- For a W3C-conformant WebDriver or WebElement, this behaves as stated in
- <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
- <p>
- For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to return
- the following in order of preference:
+
+ <p>For a W3C-conformant WebDriver or WebElement, this behaves as stated in <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
+
+ <p>For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to
+ return the following in order of preference:
+
  <ul>
-   <li>Entire page</li>
-   <li>Current window</li>
-   <li>Visible portion of the current frame</li>
-   <li>The screenshot of the entire display containing the browser</li>
+   <li>Entire page
+   <li>Current window
+   <li>Visible portion of the current frame
+   <li>The screenshot of the entire display containing the browser
  </ul>
+
  For a non-W3C-conformant WebElement extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:
+
  <ul>
-   <li>The entire content of the HTML element</li>
-   <li>The visible portion of the HTML element</li>
+   <li>The entire content of the HTML element
+   <li>The visible portion of the HTML element
  </ul></div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -229,7 +232,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - on failure.</dd>
 <dd><code>java.lang.UnsupportedOperationException</code> - if the underlying implementation does not support
- screenshot capturing.</dd>
+     screenshot capturing.</dd>
 </dl>
 </li>
 </ul>

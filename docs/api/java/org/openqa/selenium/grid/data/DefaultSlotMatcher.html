@@ -142,12 +142,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">DefaultSlotMatcher</span>
 extends java.lang.Object
 implements <a href="SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>, java.io.Serializable</pre>
-<div class="block">Default matching implementation for slots, loosely based on the
- requirements for capability matching from the WebDriver spec. A match
- is made if the following are all true:
+<div class="block">Default matching implementation for slots, loosely based on the requirements for capability
+ matching from the WebDriver spec. A match is made if the following are all true:
+
  <ul>
-   <li>All non-extension capabilities from the <code>stereotype</code> match
-       those in the <a href="../../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> being considered.
+   <li>All non-extension capabilities from the <code>stereotype</code> match those in the <a href="../../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> being considered.
    <li>If the <a href="../../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> being considered contain any of:
        <ul>
          <li>browserName
@@ -156,10 +155,9 @@ implements <a href="SlotMatcher.html" title="interface in org.openqa.selenium.gr
        </ul>
        Then the <code>stereotype</code> must contain the same values.
  </ul>
- <p>
- One thing to note is that extension capabilities are not considered when
- matching slots, since the matching of these is implementation-specific
- to each driver.</div>
+
+ <p>One thing to note is that extension capabilities are not considered when matching slots, since
+ the matching of these is implementation-specific to each driver.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.openqa.selenium.grid.data.DefaultSlotMatcher">Serialized Form</a></dd>

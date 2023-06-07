@@ -142,66 +142,64 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre><a href="../../Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 public class <span class="typeNameLabel">WebDriverDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>
 extends java.lang.Object</pre>
-<div class="block">This class helps to create decorators for instances of <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> and
- derived objects, such as <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>, that can
- extend or modify their "regular" behavior. It provides a flexible
- alternative to subclassing WebDriver.
- <p>
- Here is a general usage pattern:
+<div class="block">This class helps to create decorators for instances of <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> and derived objects,
+ such as <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>, that can extend or modify their "regular"
+ behavior. It provides a flexible alternative to subclassing WebDriver.
+
+ <p>Here is a general usage pattern:
+
  <ol>
    <li>implement a subclass of WebDriverDecorator that adds something to WebDriver behavior:<br>
-     <pre><code>
+       <pre><code>
  public class MyWebDriverDecorator extends WebDriverDecorator { ... }
      </code></pre>
-     (see below for details)</li>
+       (see below for details)
    <li>use a decorator instance to decorate a WebDriver object:<br>
-     <pre><code>
+       <pre><code>
  WebDriver original = new FirefoxDriver();
  WebDriver decorated = new MyWebDriverDecorator().decorate(original);
-     </code></pre></li>
+     </code></pre>
    <li>use the decorated WebDriver instead of the original one:<br>
-    <pre><code>
+       <pre><code>
  decorated.get("http://example.com/");
  ...
  decorated.quit();
     </code></pre>
-   </li>
  </ol>
+
  By subclassing WebDriverDecorator you can define what code should be executed
+
  <ul>
-   <li>before executing a method of the underlying object,</li>
-   <li>after executing a method of the underlying object,</li>
-   <li>instead of executing a method of the underlying object,</li>
-   <li>when an exception is thrown by a method of the underlying object.</li>
+   <li>before executing a method of the underlying object,
+   <li>after executing a method of the underlying object,
+   <li>instead of executing a method of the underlying object,
+   <li>when an exception is thrown by a method of the underlying object.
  </ul>
- The same decorator is used under the hood to decorate all the objects
- derived from the underlying WebDriver instance. For example,
- <code>decorated.findElement(someLocator)</code> automatically decorates
- the returned WebElement.
- <p>
- Instances created by the decorator implement all the same interfaces as
- the original objects.
- <p>
- When you implement a decorator there are two main options (that can be used
- both separately and together):
+
+ The same decorator is used under the hood to decorate all the objects derived from the underlying
+ WebDriver instance. For example, <code>decorated.findElement(someLocator)</code> automatically
+ decorates the returned WebElement.
+
+ <p>Instances created by the decorator implement all the same interfaces as the original objects.
+
+ <p>When you implement a decorator there are two main options (that can be used both separately
+ and together):
+
  <ul>
-   <li>if you want to apply the same behavior modification to all methods of
-   a WebDriver instance and its derived objects you can subclass
-   WebDriverDecorator and override some of the following methods:
-   <a href="#beforeCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)"><code>beforeCall(Decorated, Method, Object[])</code></a>,
-   <a href="#afterCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)"><code>afterCall(Decorated, Method, Object[], Object)</code></a>,
-   <a href="#call(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)"><code>call(Decorated, Method, Object[])</code></a> and
-   <a href="#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)"><code>onError(Decorated, Method, Object[], InvocationTargetException)</code></a></li>
-   <li>if you want to modify behavior of a specific class instances only
-   (e.g. behaviour of WebElement instances) you can override one of the
-   overloaded <code>createDecorated</code> methods to create a non-trivial
-   decorator for the specific class only.</li>
+   <li>if you want to apply the same behavior modification to all methods of a WebDriver instance
+       and its derived objects you can subclass WebDriverDecorator and override some of the
+       following methods: <a href="#beforeCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)"><code>beforeCall(Decorated, Method, Object[])</code></a>, <a href="#afterCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)"><code>afterCall(Decorated, Method, Object[], Object)</code></a>, <a href="#call(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)"><code>call(Decorated, Method,
+       Object[])</code></a> and <a href="#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)"><code>onError(Decorated, Method, Object[], InvocationTargetException)</code></a>
+   <li>if you want to modify behavior of a specific class instances only (e.g. behaviour of
+       WebElement instances) you can override one of the overloaded <code>createDecorated</code>
+       methods to create a non-trivial decorator for the specific class only.
  </ul>
+
  Let's consider both approaches by examples.
- <p>
- One of the most widely used decorator examples is a logging decorator.
- In this case we want to add the same piece of logging code before and after
- each invoked method:
+
+ <p>One of the most widely used decorator examples is a logging decorator. In this case we want to
+ add the same piece of logging code before and after each invoked method:
+
  <pre><code>
    public class LoggingDecorator extends WebDriverDecorator {
      final Logger logger = LoggerFactory.getLogger(Thread.currentThread().getName());
@@ -216,8 +214,10 @@ extends java.lang.Object</pre>
      }
    }
  </code></pre>
- For the second example let's implement a decorator that implicitly waits
- for an element to be visible before any click or sendKeys method call.
+
+ For the second example let's implement a decorator that implicitly waits for an element to be
+ visible before any click or sendKeys method call.
+
  <pre><code>
    public class ImplicitlyWaitingDecorator extends WebDriverDecorator {
      private WebDriverWait wait;
@@ -241,13 +241,14 @@ extends java.lang.Object</pre>
      }
    }
  </code></pre>
- This class is not a pure decorator, it allows to not only add new behavior
- but also replace "normal" behavior of a WebDriver or derived objects.
- <p>
- Let's suppose you want to use JavaScript-powered clicks instead of normal
- ones (yes, this allows to interact with invisible elements, it's a bad
- practice in general but sometimes it's inevitable). This behavior change
- can be achieved with the following "decorator":
+
+ This class is not a pure decorator, it allows to not only add new behavior but also replace
+ "normal" behavior of a WebDriver or derived objects.
+
+ <p>Let's suppose you want to use JavaScript-powered clicks instead of normal ones (yes, this
+ allows to interact with invisible elements, it's a bad practice in general but sometimes it's
+ inevitable). This behavior change can be achieved with the following "decorator":
+
  <pre><code>
    public class JavaScriptPoweredDecorator extends WebDriverDecorator {
      &#x40;Override
@@ -268,9 +269,11 @@ extends java.lang.Object</pre>
      }
    }
  </code></pre>
- It is possible to apply multiple decorators to compose behaviors added
- by each of them. For example, if you want to log method calls and
- implicitly wait for elements visibility you can use two decorators:
+
+ It is possible to apply multiple decorators to compose behaviors added by each of them. For
+ example, if you want to log method calls and implicitly wait for elements visibility you can use
+ two decorators:
+
  <pre><code>
    WebDriver original = new FirefoxDriver();
    WebDriver decorated =

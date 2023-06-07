@@ -147,7 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public enum <span class="typeNameLabel">Keys</span>
 extends java.lang.Enum&lt;<a href="Keys.html" title="enum in org.openqa.selenium">Keys</a>&gt;
 implements java.lang.CharSequence</pre>
-<div class="block">Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
+<div class="block">Representations of pressable keys that aren't text. These are stored in the Unicode PUA (Private
  Use Area) code points, 0xE000-0xF8FF.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -1243,11 +1243,11 @@ not permitted.)</div>
 <li class="blockList">
 <h4>chord</h4>
 <pre class="methodSignature">public static&nbsp;java.lang.String&nbsp;chord&#8203;(java.lang.CharSequence...&nbsp;value)</pre>
-<div class="block">Simulate pressing many keys at once in a "chord".  Takes a sequence of Keys.XXXX or strings;
+<div class="block">Simulate pressing many keys at once in a "chord". Takes a sequence of Keys.XXXX or strings;
  appends each of the values to a string, and adds the chord termination key (Keys.NULL) and
  returns the resultant string.
 
- Note: When the low-level webdriver key handlers see Keys.NULL, active modifier keys
+ <p>Note: When the low-level webdriver key handlers see Keys.NULL, active modifier keys
  (CTRL/ALT/SHIFT/etc) release via a keyup event.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

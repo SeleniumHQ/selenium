@@ -159,6 +159,7 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <div class="block">Class to manage options specific to <a href="ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a>.
 
  <p>Example usage:
+
  <pre><code>
  ChromeOptions options = new ChromeOptions()
  options.addExtensions(new File("/path/to/extension.crx"))
@@ -202,8 +203,7 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CAPABILITY">CAPABILITY</a></span></code></th>
 <td class="colLast">
-<div class="block">Key used to store a set of ChromeOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
- object.</div>
+<div class="block">Key used to store a set of ChromeOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -263,8 +263,7 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <td class="colFirst"><code><a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></th>
 <td class="colLast">
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -272,7 +271,8 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">setLogLevel</a></span>&#8203;(<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set log level.</div>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set
+     log level.</div>
 </div>
 </td>
 </tr>
@@ -335,8 +335,7 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <li class="blockList">
 <h4>CAPABILITY</h4>
 <pre>public static final&nbsp;java.lang.String CAPABILITY</pre>
-<div class="block">Key used to store a set of ChromeOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
- object.</div>
+<div class="block">Key used to store a set of ChromeOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeOptions.CAPABILITY">Constant Field Values</a></dd>
@@ -394,7 +393,8 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <pre class="methodSignature">@Deprecated
 public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setLogLevel&#8203;(<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</pre>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set log level.</div>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set
+     log level.</div>
 </div>
 </li>
 </ul>
@@ -406,9 +406,7 @@ public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chr
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">MutableCapabilities</a></code></span></div>
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
- <code>this</code>.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in <code>this</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>

@@ -290,11 +290,11 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <h4>getSize</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;getSize()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#getSize()">WebDriver.Window</a></code></span></div>
-<div class="block">Get the size of the current window. This will return the outer window dimension, not just
- the view port.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Get the size of the current window. This will return the outer window dimension, not just the
+ view port.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#getSize()">getSize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -311,11 +311,11 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <h4>setSize</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setSize&#8203;(<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;targetSize)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">WebDriver.Window</a></code></span></div>
-<div class="block">Set the size of the current window. This will change the outer window dimension,
- not just the view port, synonymous to window.resizeTo() in JS.
- <p>
- See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Set the size of the current window. This will change the outer window dimension, not just the
+ view port, synonymous to window.resizeTo() in JS.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">setSize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -333,9 +333,9 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <pre class="methodSignature">public&nbsp;<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getPosition()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#getPosition()">WebDriver.Window</a></code></span></div>
 <div class="block">Get the position of the current window, relative to the upper left corner of the screen.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#getPosition()">getPosition</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -354,9 +354,9 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">WebDriver.Window</a></code></span></div>
 <div class="block">Set the position of the current window. This is relative to the upper left corner of the
  screen, synonymous to window.moveTo() in JS.
- <p>
- See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">setPosition</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -374,9 +374,9 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <pre class="methodSignature">public&nbsp;void&nbsp;maximize()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#maximize()">WebDriver.Window</a></code></span></div>
 <div class="block">Maximizes the current window if it is not already maximized
- <p>
- See <a href="https://w3c.github.io/webdriver/#maximize-window">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#maximize-window">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#maximize()">maximize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -392,9 +392,9 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <pre class="methodSignature">public&nbsp;void&nbsp;minimize()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#minimize()">WebDriver.Window</a></code></span></div>
 <div class="block">Minimizes the current window if it is not already minimized
- <p>
- See <a href="https://w3c.github.io/webdriver/#minimize-window">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#minimize-window">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#minimize()">minimize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
@@ -410,9 +410,9 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <pre class="methodSignature">public&nbsp;void&nbsp;fullscreen()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#fullscreen()">WebDriver.Window</a></code></span></div>
 <div class="block">Fullscreen the current window if it is not already fullscreen
- <p>
- See <a href="https://w3c.github.io/webdriver/#fullscreen-window">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#fullscreen-window">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Window.html#fullscreen()">fullscreen</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>

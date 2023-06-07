@@ -141,8 +141,9 @@ extends java.lang.Object</pre>
 <div class="block">Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
  data expected by the original JSON Wire Protocol, so will fail to create sessions as expected if
  used against a server that only implements that protocol.
- <p>
- Expected usage is something like:
+
+ <p>Expected usage is something like:
+
  <pre>
    WebDriver driver = RemoteWebDriver.builder()
      .addAlternative(new FirefoxOptions())
@@ -151,12 +152,13 @@ extends java.lang.Object</pre>
      .setCapability("proxy", new Proxy())
      .build();
  </pre>
+
  In this example, we ask for a session where the browser will be either Firefox or Chrome (we
  don't care which), but where either browser will use the given <a href="../Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a>.
  In addition, we've added some metadata to the session, setting the "<code>cloud.key</code>" to be the
  secret passphrase of our account with the cloud "Selenium as a Service" provider.
- <p>
- If no call to <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a> or <a href="#address(java.net.URI)"><code>address(URI)</code></a> is made, the
+
+ <p>If no call to <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a> or <a href="#address(java.net.URI)"><code>address(URI)</code></a> is made, the
  builder will use <code>ServiceLoader</code> to find all instances of <a href="../WebDriverInfo.html" title="interface in org.openqa.selenium"><code>WebDriverInfo</code></a> and will
  call <a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)"><code>WebDriverInfo.createDriver(Capabilities)</code></a> for the first supported set of
  capabilities.</div>
@@ -235,8 +237,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#config(org.openqa.selenium.remote.http.ClientConfig)">config</a></span>&#8203;(<a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</code></th>
 <td class="colLast">
-<div class="block">Allows precise control of the <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http"><code>ClientConfig</code></a> to use with remote
- instances.</div>
+<div class="block">Allows precise control of the <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http"><code>ClientConfig</code></a> to use with remote instances.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
@@ -334,9 +335,8 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;setCapability&#8203;(java.lang.String&nbsp;capabilityName,
                                             java.lang.Object&nbsp;value)</pre>
 <div class="block">Sets a capability for every single alternative when the session is created. These capabilities
- are only set once the session is created, so this will be set on capabilities added via
- <a href="#addAlternative(org.openqa.selenium.Capabilities)"><code>addAlternative(Capabilities)</code></a> or <a href="#oneOf(org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities...)"><code>oneOf(Capabilities, Capabilities...)</code></a> even
- after this method call.</div>
+ are only set once the session is created, so this will be set on capabilities added via <a href="#addAlternative(org.openqa.selenium.Capabilities)"><code>addAlternative(Capabilities)</code></a> or <a href="#oneOf(org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities...)"><code>oneOf(Capabilities, Capabilities...)</code></a> even after this
+ method call.</div>
 </li>
 </ul>
 <a id="address(java.lang.String)">
@@ -373,8 +373,7 @@ extends java.lang.Object</pre>
 <h4>address</h4>
 <pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;address&#8203;(java.net.URI&nbsp;uri)</pre>
 <div class="block">Set the URI of the remote server. If this URI is not set, then it assumed that a local running
- remote webdriver session is needed. It is an error to call this method and also
- <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a>.</div>
+ remote webdriver session is needed. It is an error to call this method and also <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a>.</div>
 </li>
 </ul>
 <a id="authenticateAs(org.openqa.selenium.UsernameAndPassword)">
@@ -393,9 +392,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>config</h4>
 <pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;config&#8203;(<a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</pre>
-<div class="block">Allows precise control of the <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http"><code>ClientConfig</code></a> to use with remote
- instances. If <a href="http/ClientConfig.html#baseUri(java.net.URI)"><code>ClientConfig.baseUri(URI)</code></a> has been called, then
- that will be used as the base URI for the session.</div>
+<div class="block">Allows precise control of the <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http"><code>ClientConfig</code></a> to use with remote instances. If <a href="http/ClientConfig.html#baseUri(java.net.URI)"><code>ClientConfig.baseUri(URI)</code></a> has been called, then that will be used as the base URI for the
+ session.</div>
 </li>
 </ul>
 <a id="withDriverService(org.openqa.selenium.remote.service.DriverService)">

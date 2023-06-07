@@ -151,9 +151,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">DriverCommandExecutor</span>
 extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a>
 implements java.io.Closeable</pre>
-<div class="block">A specialized <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that will use a <a href="DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> that lives
- and dies with a single WebDriver session. The service will be restarted upon each new session
- request and shutdown after each quit command.</div>
+<div class="block">A specialized <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that will use a <a href="DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> that lives and
+ dies with a single WebDriver session. The service will be restarted upon each new session request
+ and shutdown after each quit command.</div>
 </li>
 </ul>
 </div>
@@ -176,8 +176,8 @@ implements java.io.Closeable</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService)">DriverCommandExecutor</a></span>&#8203;(<a href="DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</code></th>
 <td class="colLast">
-<div class="block">Creates a new DriverCommandExecutor which will communicate with the driver as configured
- by the given <code>service</code>.</div>
+<div class="block">Creates a new DriverCommandExecutor which will communicate with the driver as configured by the
+ given <code>service</code>.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -185,8 +185,8 @@ implements java.io.Closeable</pre>
                      java.util.Map&lt;java.lang.String,&#8203;<a href="../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;additionalCommands,
                      <a href="../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
 <td class="colLast">
-<div class="block">Creates an <a href="DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a> that supports non-standard
- <code>additionalCommands</code> in addition to the standard.</div>
+<div class="block">Creates an <a href="DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a> that supports non-standard <code>additionalCommands</code>
+ in addition to the standard.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -262,8 +262,8 @@ implements java.io.Closeable</pre>
 <li class="blockList">
 <h4>DriverCommandExecutor</h4>
 <pre>public&nbsp;DriverCommandExecutor&#8203;(<a href="DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</pre>
-<div class="block">Creates a new DriverCommandExecutor which will communicate with the driver as configured
- by the given <code>service</code>.</div>
+<div class="block">Creates a new DriverCommandExecutor which will communicate with the driver as configured by the
+ given <code>service</code>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>service</code> - The DriverService to send commands to.</dd>
@@ -289,8 +289,8 @@ implements java.io.Closeable</pre>
 <pre>public&nbsp;DriverCommandExecutor&#8203;(<a href="DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
                              java.util.Map&lt;java.lang.String,&#8203;<a href="../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;additionalCommands,
                              <a href="../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</pre>
-<div class="block">Creates an <a href="DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a> that supports non-standard
- <code>additionalCommands</code> in addition to the standard.</div>
+<div class="block">Creates an <a href="DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a> that supports non-standard <code>additionalCommands</code>
+ in addition to the standard.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>service</code> - driver server</dd>
@@ -317,9 +317,9 @@ implements java.io.Closeable</pre>
 <h4>execute</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;execute&#8203;(<a href="../Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)
                  throws java.io.IOException</pre>
-<div class="block">Sends the <code>command</code> to the driver server for execution. The server will be started
- if requesting a new session. Likewise, if terminating a session, the server will be shutdown
- once a response is received.</div>
+<div class="block">Sends the <code>command</code> to the driver server for execution. The server will be started if
+ requesting a new session. Likewise, if terminating a session, the server will be shutdown once
+ a response is received.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../CommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></code>&nbsp;in interface&nbsp;<code><a href="../CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>

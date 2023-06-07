@@ -214,13 +214,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>create</h4>
 <pre class="methodSignature">static&nbsp;<a href="HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;create&#8203;(java.lang.String&nbsp;name)</pre>
-<div class="block">Creates a new instance of <a href="HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http"><code>HttpClient.Factory</code></a> with the given name. It uses
- <code>ServiceLoader</code> to find all available implementations and selects the class
- that has an {@link @HttpClientName} annotation with the given name as the value.</div>
+<div class="block">Creates a new instance of <a href="HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http"><code>HttpClient.Factory</code></a> with the given name. It uses <code>ServiceLoader</code> to find all available implementations and selects the class that has an
+ {@link @HttpClientName} annotation with the given name as the value.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.IllegalArgumentException</code> - if no implementation with the given name can be found</dd>
-<dd><code>java.lang.IllegalStateException</code> - if more than one implementation with the given name can be found</dd>
+<dd><code>java.lang.IllegalStateException</code> - if more than one implementation with the given name can be
+     found</dd>
 </dl>
 </li>
 </ul>
@@ -234,7 +234,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Use the <code>webdriver.http.factory</code> system property to determine which implementation of
  <a href="HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http"><code>HttpClient.Factory</code></a> should be used.
 
- {@see create}</div>
+ <p>{@see create}</div>
 </li>
 </ul>
 <a id="createClient(java.net.URL)">

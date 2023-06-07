@@ -139,22 +139,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends <a href="SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></pre>
 <div class="block">WebDriver is a remote control interface that enables introspection and control of user agents
  (browsers). The methods in this interface fall into three categories:
+
  <ul>
- <li>Control of the browser itself</li>
- <li>Selection of <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s</li>
- <li>Debugging aids</li>
+   <li>Control of the browser itself
+   <li>Selection of <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s
+   <li>Debugging aids
  </ul>
- <p>
- Key methods are <a href="#get(java.lang.String)"><code>get(String)</code></a>, which is used to load a new web page, and the
- various methods similar to <a href="#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a>, which is used to find
- <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s.
- <p>
- Currently, you will need to instantiate implementations of this interface directly. It is hoped
- that you write your tests against this interface so that you may "swap in" a more fully featured
- browser when there is a requirement for one.
- <p>
- Most implementations of this interface follow
- <a href="https://w3c.github.io/webdriver/">W3C WebDriver specification</a></div>
+
+ <p>Key methods are <a href="#get(java.lang.String)"><code>get(String)</code></a>, which is used to load a new web page, and the
+ various methods similar to <a href="#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a>, which is used to find <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s.
+
+ <p>Currently, you will need to instantiate implementations of this interface directly. It is
+ hoped that you write your tests against this interface so that you may "swap in" a more fully
+ featured browser when there is a requirement for one.
+
+ <p>Most implementations of this interface follow <a href="https://w3c.github.io/webdriver/">W3C
+ WebDriver specification</a></div>
 </li>
 </ul>
 </div>
@@ -348,8 +348,8 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  this timeout is over, since should the underlying page change whilst your test is executing the
  results of future calls against this interface will be against the freshly loaded page. Synonym
  for <a href="WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a>.
- <p>
- See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -367,9 +367,9 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <h4>getCurrentUrl</h4>
 <pre class="methodSignature">java.lang.String&nbsp;getCurrentUrl()</pre>
 <div class="block">Get a string representing the current URL that the browser is looking at.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The URL of the page currently loaded in the browser</dd>
@@ -384,13 +384,13 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <h4>getTitle</h4>
 <pre class="methodSignature">java.lang.String&nbsp;getTitle()</pre>
 <div class="block">Get the title of the current page.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a> for
+ more details.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The title of the current page, with leading and trailing whitespace stripped, or null
-         if one is not already set</dd>
+     if one is not already set</dd>
 </dl>
 </li>
 </ul>
@@ -401,12 +401,12 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <li class="blockList">
 <h4>findElements</h4>
 <pre class="methodSignature">java.util.List&lt;<a href="WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="By.html" title="class in org.openqa.selenium">By</a>&nbsp;by)</pre>
-<div class="block">Find all elements within the current page using the given mechanism.
- This method is affected by the 'implicit wait' times in force at the time of execution. When
- implicitly waiting, this method will return as soon as there are more than 0 items in the
- found collection, or will return an empty list if the timeout is reached.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-elements">W3C WebDriver specification</a>
+<div class="block">Find all elements within the current page using the given mechanism. This method is affected by
+ the 'implicit wait' times in force at the time of execution. When implicitly waiting, this
+ method will return as soon as there are more than 0 items in the found collection, or will
+ return an empty list if the timeout is reached.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-elements">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -428,15 +428,13 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <li class="blockList">
 <h4>findElement</h4>
 <pre class="methodSignature"><a href="WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElement&#8203;(<a href="By.html" title="class in org.openqa.selenium">By</a>&nbsp;by)</pre>
-<div class="block">Find the first <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method.
- This method is affected by the 'implicit wait' times in force at the time of execution.
- The findElement(..) invocation will return a matching row, or try again repeatedly until
- the configured timeout is reached.
- <p>
- findElement should not be used to look for non-present elements, use <a href="#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a>
- and assert zero length response instead.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-element">W3C WebDriver specification</a>
+<div class="block">Find the first <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method. This method is affected by the
+ 'implicit wait' times in force at the time of execution. The findElement(..) invocation will
+ return a matching row, or try again repeatedly until the configured timeout is reached.
+
+ <p>findElement should not be used to look for non-present elements, use <a href="#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a> and assert zero length response instead.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-element">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -467,9 +465,9 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  server. The page source returned is a representation of the underlying DOM: do not expect it to
  be formatted or escaped in the same way as the response sent from the web server. Think of it
  as an artist's impression.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-page-source">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-page-source">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The source of the current page</dd>
@@ -484,8 +482,8 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <h4>close</h4>
 <pre class="methodSignature">void&nbsp;close()</pre>
 <div class="block">Close the current window, quitting the browser if it's the last window currently open.
- <p>
- See <a href="https://w3c.github.io/webdriver/#close-window">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#close-window">W3C WebDriver specification</a>
  for more details.</div>
 </li>
 </ul>
@@ -508,9 +506,9 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <pre class="methodSignature">java.util.Set&lt;java.lang.String&gt;&nbsp;getWindowHandles()</pre>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="#switchTo()"><code>switchTo()</code></a>.<a href="WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a>
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-handles">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-handles">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A set of window handles which can be used to iterate over all open windows.</dd>
@@ -526,9 +524,9 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <pre class="methodSignature">java.lang.String&nbsp;getWindowHandle()</pre>
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.
  This can be used to switch to this window at a later date
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-window-handle">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-window-handle">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the current window handle</dd>
@@ -563,7 +561,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A <a href="WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>WebDriver.Navigation</code></a> that allows the selection of what to
-         do next</dd>
+     do next</dd>
 </dl>
 </li>
 </ul>

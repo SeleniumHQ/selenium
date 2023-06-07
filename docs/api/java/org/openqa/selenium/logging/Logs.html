@@ -194,12 +194,12 @@ public interface <span class="typeNameLabel">Logs</span></pre>
 <pre class="methodSignature"><a href="LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;get&#8203;(java.lang.String&nbsp;logType)</pre>
 <div class="block">Fetches available log entries for the given log type.
 
- Note that log buffers are reset after each call, meaning that available log
- entries correspond to those entries not yet returned for a given log type.
- In practice, this means that this call will return the available log entries
- since the last call, or from the start of the session.
+ <p>Note that log buffers are reset after each call, meaning that available log entries
+ correspond to those entries not yet returned for a given log type. In practice, this means that
+ this call will return the available log entries since the last call, or from the start of the
+ session.
 
- For more info on enabling logging, look at <a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
+ <p>For more info on enabling logging, look at <a href="LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>logType</code> - The log type.</dd>

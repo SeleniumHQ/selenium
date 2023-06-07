@@ -154,6 +154,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <div class="block">Class to manage options specific to <a href="SafariDriver.html" title="class in org.openqa.selenium.safari"><code>SafariDriver</code></a>.
 
  <p>Example usage:
+
  <pre><code>
  SafariOptions options = new SafariOptions()
  options.setUseTechnologyPreview(true);
@@ -251,24 +252,23 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></th>
 <td class="colLast">
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAutomaticInspection(boolean)">setAutomaticInspection</a></span>&#8203;(boolean&nbsp;automaticInspection)</code></th>
 <td class="colLast">
-<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
- the automatic inspection.</div>
+<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable the
+ automatic inspection.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAutomaticProfiling(boolean)">setAutomaticProfiling</a></span>&#8203;(boolean&nbsp;automaticProfiling)</code></th>
 <td class="colLast">
-<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
- the automatic profiling.</div>
+<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable the
+ automatic profiling.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
@@ -379,9 +379,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">MutableCapabilities</a></code></span></div>
-<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
- <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
- <code>this</code>.</div>
+<div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in <code>this</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
@@ -406,12 +404,12 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>setAutomaticInspection</h4>
 <pre class="methodSignature">public&nbsp;<a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setAutomaticInspection&#8203;(boolean&nbsp;automaticInspection)</pre>
-<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
- the automatic inspection. Defaults to disabling the automatic inspection.</div>
+<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable the
+ automatic inspection. Defaults to disabling the automatic inspection.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>automaticInspection</code> - If true, the SafariDriver will enable the Automation Inspection,
-                            otherwise will disable.</dd>
+     otherwise will disable.</dd>
 </dl>
 </li>
 </ul>
@@ -431,12 +429,12 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>setAutomaticProfiling</h4>
 <pre class="methodSignature">public&nbsp;<a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setAutomaticProfiling&#8203;(boolean&nbsp;automaticProfiling)</pre>
-<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
- the automatic profiling. Defaults to disabling the automatic profiling.</div>
+<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable the
+ automatic profiling. Defaults to disabling the automatic profiling.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>automaticProfiling</code> - If true, the SafariDriver will enable the Automation Profiling,
-                           otherwise will disable.</dd>
+     otherwise will disable.</dd>
 </dl>
 </li>
 </ul>
@@ -461,7 +459,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>useTechnologyPreview</code> - If true, the SafariDriver will use the Safari Technology Preview,
-                             otherwise will use the release version of Safari.</dd>
+     otherwise will use the release version of Safari.</dd>
 </dl>
 </li>
 </ul>

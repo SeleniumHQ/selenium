@@ -147,10 +147,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">SafariDriver</span>
 extends <a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="HasPermissions.html" title="interface in org.openqa.selenium.safari">HasPermissions</a>, <a href="HasDebugger.html" title="interface in org.openqa.selenium.safari">HasDebugger</a></pre>
-<div class="block">A WebDriver implementation that controls Safari using a browser extension
- (consequently, only Safari 5.1+ is supported).
+<div class="block">A WebDriver implementation that controls Safari using a browser extension (consequently, only
+ Safari 5.1+ is supported).
 
- This driver can be configured using the <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> class.</div>
+ <p>This driver can be configured using the <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> class.</div>
 </li>
 </ul>
 </div>
@@ -247,9 +247,8 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#attachDebugger()">attachDebugger</a></span>()</code></th>
 <td class="colLast">
-<div class="block">This opens Safari's Web Inspector
- If driver subsequently executes script of "debugger;" the execution will pause, no additional commands will be processed,
-  and the code will time out.</div>
+<div class="block">This opens Safari's Web Inspector If driver subsequently executes script of "debugger;" the
+ execution will pause, no additional commands will be processed, and the code will time out.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -409,8 +408,7 @@ public static&nbsp;<a href="../remote/RemoteWebDriverBuilder.html" title="class 
 <pre class="methodSignature">public&nbsp;void&nbsp;setPermissions&#8203;(java.lang.String&nbsp;permission,
                            boolean&nbsp;value)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasPermissions.html#setPermissions(java.lang.String,boolean)">HasPermissions</a></code></span></div>
-<div class="block">Set permission on the browser.
- The only supported permission at this time is "getUserMedia".</div>
+<div class="block">Set permission on the browser. The only supported permission at this time is "getUserMedia".</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="HasPermissions.html#setPermissions(java.lang.String,boolean)">setPermissions</a></code>&nbsp;in interface&nbsp;<code><a href="HasPermissions.html" title="interface in org.openqa.selenium.safari">HasPermissions</a></code></dd>
@@ -443,9 +441,8 @@ public static&nbsp;<a href="../remote/RemoteWebDriverBuilder.html" title="class 
 <h4>attachDebugger</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;attachDebugger()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasDebugger.html#attachDebugger()">HasDebugger</a></code></span></div>
-<div class="block">This opens Safari's Web Inspector
- If driver subsequently executes script of "debugger;" the execution will pause, no additional commands will be processed,
-  and the code will time out.</div>
+<div class="block">This opens Safari's Web Inspector If driver subsequently executes script of "debugger;" the
+ execution will pause, no additional commands will be processed, and the code will time out.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="HasDebugger.html#attachDebugger()">attachDebugger</a></code>&nbsp;in interface&nbsp;<code><a href="HasDebugger.html" title="interface in org.openqa.selenium.safari">HasDebugger</a></code></dd>

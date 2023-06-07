@@ -163,16 +163,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.util.function.Predicate,java.util.function.Supplier)">register</a></span>&#8203;(java.util.function.Predicate&lt;java.net.URI&gt;&nbsp;whenThisMatches,
         java.util.function.Supplier&lt;<a href="Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&gt;&nbsp;useTheseCredentials)</code></th>
 <td class="colLast">
-<div class="block">Registers a check for whether a set of <a href="Credentials.html" title="interface in org.openqa.selenium"><code>Credentials</code></a> should be
- used for a particular site, identified by its URI.</div>
+<div class="block">Registers a check for whether a set of <a href="Credentials.html" title="interface in org.openqa.selenium"><code>Credentials</code></a> should be used for a particular
+ site, identified by its URI.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>default void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.util.function.Supplier)">register</a></span>&#8203;(java.util.function.Supplier&lt;<a href="Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&gt;&nbsp;alwaysUseTheseCredentials)</code></th>
 <td class="colLast">
-<div class="block">As <a href="#register(java.util.function.Predicate,java.util.function.Supplier)"><code>register(Predicate, Supplier)</code></a> but attempts to apply the
- credentials for any request for authorization.</div>
+<div class="block">As <a href="#register(java.util.function.Predicate,java.util.function.Supplier)"><code>register(Predicate, Supplier)</code></a> but attempts to apply the credentials for any request
+ for authorization.</div>
 </td>
 </tr>
 </table>
@@ -200,10 +200,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>register</h4>
 <pre class="methodSignature">void&nbsp;register&#8203;(java.util.function.Predicate&lt;java.net.URI&gt;&nbsp;whenThisMatches,
               java.util.function.Supplier&lt;<a href="Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&gt;&nbsp;useTheseCredentials)</pre>
-<div class="block">Registers a check for whether a set of <a href="Credentials.html" title="interface in org.openqa.selenium"><code>Credentials</code></a> should be
- used for a particular site, identified by its URI. If called multiple
- times, the credentials will be checked in the order they've been added
- and the first one to match will be used.</div>
+<div class="block">Registers a check for whether a set of <a href="Credentials.html" title="interface in org.openqa.selenium"><code>Credentials</code></a> should be used for a particular
+ site, identified by its URI. If called multiple times, the credentials will be checked in the
+ order they've been added and the first one to match will be used.</div>
 </li>
 </ul>
 <a id="register(java.util.function.Supplier)">
@@ -213,8 +212,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>register</h4>
 <pre class="methodSignature">default&nbsp;void&nbsp;register&#8203;(java.util.function.Supplier&lt;<a href="Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&gt;&nbsp;alwaysUseTheseCredentials)</pre>
-<div class="block">As <a href="#register(java.util.function.Predicate,java.util.function.Supplier)"><code>register(Predicate, Supplier)</code></a> but attempts to apply the
- credentials for any request for authorization.</div>
+<div class="block">As <a href="#register(java.util.function.Predicate,java.util.function.Supplier)"><code>register(Predicate, Supplier)</code></a> but attempts to apply the credentials for any request
+ for authorization.</div>
 </li>
 </ul>
 </li>

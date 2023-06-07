@@ -103,40 +103,28 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <section role="region"><a id="package.description">
 <!--   -->
 </a>
-<div class="block"><p>Mechanisms to configure and run selenium via the command line. There
- are two key classes <a href="CliCommand.html" title="interface in org.openqa.selenium.cli"><code>CliCommand</code></a> and
- <a href="../grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config"><code>HasRoles</code></a>. Ultimately, these are used to
- build a <a href="../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config"><code>Config</code></a> instance, for
- which there are strongly-typed role-specific classes that use a
- <code>Config</code>, such as
+<div class="block">Mechanisms to configure and run selenium via the command line. There are two key classes <a href="CliCommand.html" title="interface in org.openqa.selenium.cli"><code>CliCommand</code></a> and <a href="../grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config"><code>HasRoles</code></a>.
+ Ultimately, these are used to build a <a href="../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config"><code>Config</code></a> instance,
+ for which there are strongly-typed role-specific classes that use a <code>Config</code>, such as
  <a href="../grid/node/docker/DockerOptions.html" title="class in org.openqa.selenium.grid.node.docker"><code>DockerOptions</code></a>.
 
- <p>Assuming your <code>CliCommand</code> extends
- <a href="../grid/TemplateGridCommand.html" title="class in org.openqa.selenium.grid"><code>TemplateGridCommand</code></a>, the process for
- building the set of flags to use is:
+ <p>Assuming your <code>CliCommand</code> extends <a href="../grid/TemplateGridCommand.html" title="class in org.openqa.selenium.grid"><code>TemplateGridCommand</code></a>,
+ the process for building the set of flags to use is:
+
  <ol>
-   <li>The default flags are added (these are
-    <a href="../grid/server/HelpFlags.html" title="class in org.openqa.selenium.grid.server"><code>HelpFlags</code></a> and
-    <a href="../grid/config/ConfigFlags.html" title="class in org.openqa.selenium.grid.config"><code>ConfigFlags</code></a>
-   <li><code>ServiceLoader</code> is used to find all implementations
-    of <a href="../grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config"><code>HasRoles</code></a> where
-    <a href="../grid/config/HasRoles.html#getRoles()"><code>HasRoles.getRoles()</code></a> is contained
-    within <a href="CliCommand.html#getConfigurableRoles()"><code>CliCommand.getConfigurableRoles()</code></a>.
-   <li>Finally all flags returned by
-     <a href="CliCommand.html#getFlagObjects()"><code>CliCommand.getFlagObjects()</code></a>
-     are added.
+   <li>The default flags are added (these are <a href="../grid/server/HelpFlags.html" title="class in org.openqa.selenium.grid.server"><code>HelpFlags</code></a>
+       and <a href="../grid/config/ConfigFlags.html" title="class in org.openqa.selenium.grid.config"><code>ConfigFlags</code></a>
+   <li><code>ServiceLoader</code> is used to find all implementations of <a href="../grid/config/HasRoles.html" title="interface in org.openqa.selenium.grid.config"><code>HasRoles</code></a> where <a href="../grid/config/HasRoles.html#getRoles()"><code>HasRoles.getRoles()</code></a> is contained within <a href="CliCommand.html#getConfigurableRoles()"><code>CliCommand.getConfigurableRoles()</code></a>.
+   <li>Finally all flags returned by <a href="CliCommand.html#getFlagObjects()"><code>CliCommand.getFlagObjects()</code></a> are added.
  </ol>
 
- <p>The flags are then used by JCommander to parse the command arguments.
- Once that's done, the raw flags are converted to a
- <a href="../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config"><code>Config</code></a> by combining all of the
- flag objects with system properties and environment variables. This
- implies that each flag object has annotated each field with
- <a href="../grid/config/ConfigValue.html" title="annotation in org.openqa.selenium.grid.config"><code>ConfigValue</code></a>.
+ <p>The flags are then used by JCommander to parse the command arguments. Once that's done, the
+ raw flags are converted to a <a href="../grid/config/Config.html" title="interface in org.openqa.selenium.grid.config"><code>Config</code></a> by combining all of
+ the flag objects with system properties and environment variables. This implies that each flag
+ object has annotated each field with <a href="../grid/config/ConfigValue.html" title="annotation in org.openqa.selenium.grid.config"><code>ConfigValue</code></a>.
 
- <p>Ultimately, this means that flag objects have all (most?) fields
- annotated with JCommander's <code>Parameter</code>
- annotation as well as <code>ConfigValue</code>.</div>
+ <p>Ultimately, this means that flag objects have all (most?) fields annotated with JCommander's
+ <code>Parameter</code> annotation as well as <code>ConfigValue</code>.</div>
 </section>
 <ul class="blockList">
 <li class="blockList">

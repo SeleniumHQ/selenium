@@ -234,16 +234,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>from</h4>
 <pre class="methodSignature">public static&nbsp;java.net.URI&nbsp;from&#8203;(java.lang.String&nbsp;rawUri)</pre>
-<div class="block">Convert a string, which may just be a hostname, into a valid <code>URI</code>.
- If no scheme is given, it is set to <code>http</code> by default.
- <p>
- We prefer to use <code>URI</code> instead of <code>URL</code> since the latter
- requires a scheme handler to be registered for types, so strings like
- <code>docker://localhost:1234</code> would not generally be a valid <code>URL</code>
- but would be a correct <code>URI</code>.
- <p>
- A known limitation is that URI fragments are not handled. In the
- expected use cases for this method, that is not a problem.</div>
+<div class="block">Convert a string, which may just be a hostname, into a valid <code>URI</code>. If no scheme is
+ given, it is set to <code>http</code> by default.
+
+ <p>We prefer to use <code>URI</code> instead of <code>URL</code> since the latter requires a scheme
+ handler to be registered for types, so strings like <code>docker://localhost:1234</code> would not
+ generally be a valid <code>URL</code> but would be a correct <code>URI</code>.
+
+ <p>A known limitation is that URI fragments are not handled. In the expected use cases for this
+ method, that is not a problem.</div>
 </li>
 </ul>
 </li>

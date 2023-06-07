@@ -182,9 +182,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#escape(java.lang.String)">escape</a></span>&#8203;(java.lang.String&nbsp;toEscape)</code></th>
 <td class="colLast">
-<div class="block">Convert strings with both quotes and ticks into a valid xpath component
-
- For example,</div>
+<div class="block">Convert strings with both quotes and ticks into a valid xpath component</div>
 </td>
 </tr>
 </table>
@@ -239,17 +237,13 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;java.lang.String&nbsp;escape&#8203;(java.lang.String&nbsp;toEscape)</pre>
 <div class="block">Convert strings with both quotes and ticks into a valid xpath component
 
- For example,
+ <p>For example,
 
- <p>
-   <code>foo</code> will be converted to <code>"foo"</code>,
- </p>
- <p>
-   <code>f"oo</code> will be converted to <code>'f"oo'</code>,
- </p>
- <p>
-   <code>foo'"bar</code> will be converted to <code>concat("foo'", '"', "bar")</code>
- </p></div>
+ <p><code>foo</code> will be converted to <code>"foo"</code>,
+
+ <p><code>f"oo</code> will be converted to <code>'f"oo'</code>,
+
+ <p><code>foo'"bar</code> will be converted to <code>concat("foo'", '"', "bar")</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>toEscape</code> - a text to escape quotes in, e.g. <code>"f'oo"</code></dd>

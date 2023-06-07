@@ -144,18 +144,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 public class <span class="typeNameLabel">EventFiringDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>
 extends <a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a>&lt;T&gt;</pre>
 <div class="block">This decorator creates a wrapper around an arbitrary <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance that notifies
- registered listeners about events happening in this WebDriver and derived objects, such as
- <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>.
- <p>
- Listeners should implement <a href="WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a>. It supports three types of events:
+ registered listeners about events happening in this WebDriver and derived objects, such as <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>.
+
+ <p>Listeners should implement <a href="WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a>. It supports three types of events:
+
  <ul>
-   <li>"before"-event: a method is about to be called;</li>
-   <li>"after"-event: a method was called successfully and returned some result;</li>
-   <li>"error"-event: a method was called and thrown an exception.</li>
+   <li>"before"-event: a method is about to be called;
+   <li>"after"-event: a method was called successfully and returned some result;
+   <li>"error"-event: a method was called and thrown an exception.
  </ul>
+
  To use this decorator you have to prepare a listener, create a decorator using this listener,
- decorate the original WebDriver instance with this decorator and use the new WebDriver
- instance created by the decorator instead of the original one:
+ decorate the original WebDriver instance with this decorator and use the new WebDriver instance
+ created by the decorator instead of the original one:
+
  <pre><code>
    WebDriver original = new FirefoxDriver();
    WebDriverListener listener = new MyListener();
@@ -164,18 +166,19 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
    WebElement header = decorated.findElement(By.tagName("h1"));
    String headerText = header.getText();
  </code></pre>
- <p>
- The instance of WebDriver created by the decorator implements all the same interfaces as
- the original driver.
- <p>
- A listener can subscribe to "specific" or "generic" events (or both). A "specific" event
- correspond to a single specific method, a "generic" event correspond to any method called in
- a class or in any class.
- <p>
- To subscribe to a "specific" event a listener should implement a method with a name derived from
- the target method to be watched. The listener methods for "before"-events receive the parameters
- passed to the decorated method. The listener methods for "after"-events receive the parameters
- passed to the decorated method as well as the result returned by this method.
+
+ <p>The instance of WebDriver created by the decorator implements all the same interfaces as the
+ original driver.
+
+ <p>A listener can subscribe to "specific" or "generic" events (or both). A "specific" event
+ correspond to a single specific method, a "generic" event correspond to any method called in a
+ class or in any class.
+
+ <p>To subscribe to a "specific" event a listener should implement a method with a name derived
+ from the target method to be watched. The listener methods for "before"-events receive the
+ parameters passed to the decorated method. The listener methods for "after"-events receive the
+ parameters passed to the decorated method as well as the result returned by this method.
+
  <pre><code>
    WebDriverListener listener = new WebDriverListener() {
      &#x40;Override
@@ -188,9 +191,10 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
      }
    };
  </code></pre>
- <p>
- To subscribe to a "generic" event a listener should implement a method with a name derived from
- the class to be watched:
+
+ <p>To subscribe to a "generic" event a listener should implement a method with a name derived
+ from the class to be watched:
+
  <pre><code>
    WebDriverListener listener = new WebDriverListener() {
      &#x40;Override
@@ -205,8 +209,9 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
      }
    };
  </code></pre>
- <p>
- There are also listener methods for "super-generic" events:
+
+ <p>There are also listener methods for "super-generic" events:
+
  <pre><code>
    WebDriverListener listener = new WebDriverListener() {
      &#x40;Override
@@ -221,10 +226,11 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
      }
    };
  </code></pre>
- <p>
- A listener can subscribe to both "specific" and "generic" events at the same time. In this case
- "before"-events are fired in order from the most generic to the most specific,
- and "after"-events are fired in the opposite order, for example:
+
+ <p>A listener can subscribe to both "specific" and "generic" events at the same time. In this
+ case "before"-events are fired in order from the most generic to the most specific, and
+ "after"-events are fired in the opposite order, for example:
+
  <pre><code>
    beforeAnyCall
    beforeAnyWebDriverCall
@@ -234,13 +240,14 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
    afterAnyWebDriverCall
    afterAnyCall
  </code></pre>
- <p>
- One of the most obvious use of this decorator is logging. But it can be used to modify behavior
- of the original driver to some extent because listener methods are executed in the same thread
- as the original driver methods.
- <p>
- For example, a listener can be used to slow down execution for demonstration purposes, just
+
+ <p>One of the most obvious use of this decorator is logging. But it can be used to modify
+ behavior of the original driver to some extent because listener methods are executed in the same
+ thread as the original driver methods.
+
+ <p>For example, a listener can be used to slow down execution for demonstration purposes, just
  make a listener that adds a pause before some operations:
+
  <pre><code>
    WebDriverListener listener = new WebDriverListener() {
      &#x40;Override
@@ -253,14 +260,14 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
      }
    };
  </code></pre>
- <p>
- Just be careful to not block the current thread in a listener method!
- <p>
- Listeners can't affect driver behavior too much. They can't throw any exceptions
- (they can, but the decorator suppresses these exceptions), can't prevent execution of
- the decorated methods, can't modify parameters and results of the methods.
- <p>
- Decorators that modify the behaviour of the underlying drivers should be implemented by
+
+ <p>Just be careful to not block the current thread in a listener method!
+
+ <p>Listeners can't affect driver behavior too much. They can't throw any exceptions (they can,
+ but the decorator suppresses these exceptions), can't prevent execution of the decorated methods,
+ can't modify parameters and results of the methods.
+
+ <p>Decorators that modify the behaviour of the underlying drivers should be implemented by
  extending <a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators"><code>WebDriverDecorator</code></a>, not by creating sophisticated listeners.</div>
 </li>
 </ul>

@@ -148,22 +148,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>
 implements java.io.Closeable</pre>
 <div class="block">An in-memory implementation of the list of new session requests.
- <p>
- The lifecycle of a request can be described as:
+
+ <p>The lifecycle of a request can be described as:
+
  <ol>
-   <li>User adds an item on to the queue using <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>. This
-       will block until the request completes in some way.
-   <li>If the session request is completed, then <a href="#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)"><code>complete(RequestId, Either)</code></a> must
-       be called. This will ensure that <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>
-       returns.
-   <li>If the request cannot be handled right now, call
-       <a href="#retryAddToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>retryAddToQueue(SessionRequest)</code></a> to return the session request to the front
-       of the queue.
+   <li>User adds an item on to the queue using <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>. This will
+       block until the request completes in some way.
+   <li>If the session request is completed, then <a href="#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)"><code>complete(RequestId, Either)</code></a> must be
+       called. This will ensure that <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a> returns.
+   <li>If the request cannot be handled right now, call <a href="#retryAddToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>retryAddToQueue(SessionRequest)</code></a>
+       to return the session request to the front of the queue.
  </ol>
- <p>
- There is a background thread that will reap <a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data"><code>SessionRequest</code></a>s that have timed out.
- This means that a request can either complete by a listener calling
- <a href="#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)"><code>complete(RequestId, Either)</code></a> directly, or by being reaped by the thread.</div>
+
+ <p>There is a background thread that will reap <a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data"><code>SessionRequest</code></a>s that have timed out. This
+ means that a request can either complete by a listener calling <a href="#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)"><code>complete(RequestId,
+ Either)</code></a> directly, or by being reaped by the thread.</div>
 </li>
 </ul>
 </div>

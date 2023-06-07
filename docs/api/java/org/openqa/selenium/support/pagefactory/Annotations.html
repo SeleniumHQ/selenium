@@ -192,8 +192,8 @@ extends <a href="AbstractAnnotations.html" title="class in org.openqa.selenium.s
 <td class="colFirst"><code><a href="../../By.html" title="class in org.openqa.selenium">By</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#buildBy()">buildBy</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Defines how to transform given object (field, class, etc)
- into <a href="../../By.html" title="class in org.openqa.selenium"><code>By</code></a> class used by webdriver to locate elements.</div>
+<div class="block">Defines how to transform given object (field, class, etc.) into <a href="../../By.html" title="class in org.openqa.selenium"><code>By</code></a>
+ class used by webdriver to locate elements.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -210,8 +210,7 @@ extends <a href="AbstractAnnotations.html" title="class in org.openqa.selenium.s
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLookupCached()">isLookupCached</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Defines whether or not given element
- should be returned from cache on further calls.</div>
+<div class="block">Defines whether given element should be returned from cache on further calls.</div>
 </td>
 </tr>
 </table>
@@ -268,8 +267,7 @@ extends <a href="AbstractAnnotations.html" title="class in org.openqa.selenium.s
 <li class="blockList">
 <h4>isLookupCached</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isLookupCached()</pre>
-<div class="block">Defines whether or not given element
- should be returned from cache on further calls.</div>
+<div class="block">Defines whether given element should be returned from cache on further calls.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="AbstractAnnotations.html#isLookupCached()">isLookupCached</a></code>&nbsp;in class&nbsp;<code><a href="AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a></code></dd>
@@ -285,13 +283,11 @@ extends <a href="AbstractAnnotations.html" title="class in org.openqa.selenium.s
 <li class="blockList">
 <h4>buildBy</h4>
 <pre class="methodSignature">public&nbsp;<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildBy()</pre>
-<div class="block">Defines how to transform given object (field, class, etc)
- into <a href="../../By.html" title="class in org.openqa.selenium"><code>By</code></a> class used by webdriver to locate elements.
+<div class="block">Defines how to transform given object (field, class, etc.) into <a href="../../By.html" title="class in org.openqa.selenium"><code>By</code></a>
+ class used by webdriver to locate elements.
 
- Looks for one of <a href="../FindBy.html" title="annotation in org.openqa.selenium.support"><code>FindBy</code></a>,
- <a href="../FindBys.html" title="annotation in org.openqa.selenium.support"><code>FindBys</code></a> or
- <a href="../FindAll.html" title="annotation in org.openqa.selenium.support"><code>FindAll</code></a> field annotations. In case
- no annotations provided for field, uses field name as 'id' or 'name'.</div>
+ <p>Looks for one of <a href="../FindBy.html" title="annotation in org.openqa.selenium.support"><code>FindBy</code></a>, <a href="../FindBys.html" title="annotation in org.openqa.selenium.support"><code>FindBys</code></a> or <a href="../FindAll.html" title="annotation in org.openqa.selenium.support"><code>FindAll</code></a> field
+ annotations. In case no annotations provided for field, uses field name as 'id' or 'name'.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="AbstractAnnotations.html#buildBy()">buildBy</a></code>&nbsp;in class&nbsp;<code><a href="AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a></code></dd>

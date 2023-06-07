@@ -237,8 +237,8 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <td class="colFirst"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newWindow(org.openqa.selenium.WindowType)">newWindow</a></span>&#8203;(<a href="../WindowType.html" title="enum in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</code></th>
 <td class="colLast">
-<div class="block">Creates a new browser window and switches the focus for future commands of this driver
- to the new window.</div>
+<div class="block">Creates a new browser window and switches the focus for future commands of this driver to the
+ new window.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -306,13 +306,13 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <h4>frame</h4>
 <pre class="methodSignature">public&nbsp;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;frame&#8203;(int&nbsp;frameIndex)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#frame(int)">WebDriver.TargetLocator</a></code></span></div>
-<div class="block">Select a frame by its (zero-based) index. Selecting a frame by index is equivalent to the
- JS expression window.frames[index] where "window" is the DOM window represented by the
- current context. Once the frame has been selected, all subsequent calls on the WebDriver
- interface are made to that frame.
- <p>
- See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Select a frame by its (zero-based) index. Selecting a frame by index is equivalent to the JS
+ expression window.frames[index] where "window" is the DOM window represented by the current
+ context. Once the frame has been selected, all subsequent calls on the WebDriver interface
+ are made to that frame.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#frame(int)">frame</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
@@ -338,7 +338,7 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <dd><code><a href="../WebDriver.TargetLocator.html#frame(java.lang.String)">frame</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>frameName</code> - the name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt;
-        element, or the (zero-based) index</dd>
+     element, or the (zero-based) index</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>This driver focused on the given frame</dd>
 </dl>
@@ -353,9 +353,9 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <pre class="methodSignature">public&nbsp;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;frame&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)">WebDriver.TargetLocator</a></code></span></div>
 <div class="block">Select a frame using its previously located <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>.
- <p>
- See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)">frame</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
@@ -378,9 +378,9 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#parentFrame()">WebDriver.TargetLocator</a></code></span></div>
 <div class="block">Change focus to the parent context. If the current context is the top level browsing context,
  the context remains unchanged.
- <p>
- See <a href="https://w3c.github.io/webdriver/#switch-to-parent-frame">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#switch-to-parent-frame">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#parentFrame()">parentFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
@@ -398,15 +398,14 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <pre class="methodSignature">public&nbsp;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;window&#8203;(java.lang.String&nbsp;windowHandleOrName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#window(java.lang.String)">WebDriver.TargetLocator</a></code></span></div>
 <div class="block">Switch the focus of future commands for this driver to the window with the given name/handle.
- <p>
- See <a href="https://w3c.github.io/webdriver/#switch-to-window">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#switch-to-window">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#window(java.lang.String)">window</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>windowHandleOrName</code> - The name of the window or the handle as returned by
-        <a href="../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a></dd>
+<dd><code>windowHandleOrName</code> - The name of the window or the handle as returned by <a href="../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>This driver focused on the given window</dd>
 </dl>
@@ -420,19 +419,18 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <h4>newWindow</h4>
 <pre class="methodSignature">public&nbsp;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;newWindow&#8203;(<a href="../WindowType.html" title="enum in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)">WebDriver.TargetLocator</a></code></span></div>
-<div class="block">Creates a new browser window and switches the focus for future commands of this driver
- to the new window.
- <p>
- See <a href="https://w3c.github.io/webdriver/#new-window">W3C WebDriver specification</a>
+<div class="block">Creates a new browser window and switches the focus for future commands of this driver to the
+ new window.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#new-window">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)">newWindow</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>typeHint</code> - The type of new browser window to be created. The created window is not
-                 guaranteed to be of the requested type; if the driver does not support
-                 the requested type, a new browser window will be created of whatever type
-                 the driver does support.</dd>
+     guaranteed to be of the requested type; if the driver does not support the requested
+     type, a new browser window will be created of whatever type the driver does support.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>This driver focused on the given window</dd>
 </dl>
@@ -448,9 +446,9 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.TargetLocator.html#defaultContent()">WebDriver.TargetLocator</a></code></span></div>
 <div class="block">Selects either the first frame on the page, or the main document when a page contains
  iframes.
- <p>
- See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#defaultContent()">defaultContent</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
@@ -470,15 +468,15 @@ implements <a href="../WebDriver.TargetLocator.html" title="interface in org.ope
 <div class="block">Switches to the element that currently has focus within the document currently "switched to",
  or the body element if this cannot be detected. This matches the semantics of calling
  "document.activeElement" in Javascript.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-active-element">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-active-element">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.TargetLocator.html#activeElement()">activeElement</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The WebElement with focus, or the body element if no element with focus can be
-         detected.</dd>
+     detected.</dd>
 </dl>
 </li>
 </ul>

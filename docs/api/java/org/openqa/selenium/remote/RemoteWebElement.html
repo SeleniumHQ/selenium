@@ -284,7 +284,8 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAccessibleName()">getAccessibleName</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets result of a Accessible Name and Description Computation for the Accessible Name of the element.</div>
+<div class="block">Gets result of a Accessible Name and Description Computation for the Accessible Name of the
+ element.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -592,21 +593,18 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>click</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;click()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#click()">WebElement</a></code></span></div>
-<div class="block">Click this element. If this causes a new page to load, you
- should discard all references to this element and any further
- operations performed on this element will throw a
+<div class="block">Click this element. If this causes a new page to load, you should discard all references to
+ this element and any further operations performed on this element will throw a
  StaleElementReferenceException.
- <p>
- Note that if click() is done by sending a native event (which is
- the default on most browsers/platforms) then the method will
- _not_ wait for the next page to load and the caller should verify
- that themselves.
- <p>
- There are some preconditions for an element to be clicked. The
- element must be visible, and it must have a height and width
- greater than 0.
- <p>
- See <a href="https://w3c.github.io/webdriver/#element-click">W3C WebDriver specification</a>
+
+ <p>Note that if click() is done by sending a native event (which is the default on most
+ browsers/platforms) then the method will _not_ wait for the next page to load and the caller
+ should verify that themselves.
+
+ <p>There are some preconditions for an element to be clicked. The element must be visible, and
+ it must have a height and width greater than 0.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#element-click">W3C WebDriver specification</a>
  for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -640,9 +638,9 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;void&nbsp;sendKeys&#8203;(java.lang.CharSequence...&nbsp;keysToSend)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#sendKeys(java.lang.CharSequence...)">WebElement</a></code></span></div>
 <div class="block">Use this method to simulate typing into an element, which may set its value.
- <p>
- See <a href="https://w3c.github.io/webdriver/#element-send-keys">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#element-send-keys">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -660,8 +658,8 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;void&nbsp;clear()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#clear()">WebElement</a></code></span></div>
 <div class="block">If this element is a form entry element, this will reset its value.
- <p>
- See <a href="https://w3c.github.io/webdriver/#element-clear">W3C WebDriver specification</a>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#element-clear">W3C WebDriver specification</a>
  and <a href="https://html.spec.whatwg.org/#concept-form-reset-control">HTML specification</a>
  for more details.</div>
 <dl>
@@ -680,9 +678,9 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getTagName()">WebElement</a></code></span></div>
 <div class="block">Get the tag name of this element. <b>Not</b> the value of the name attribute: will return
  <code>"input"</code> for the element <code>&lt;input name="foo" /&gt;</code>.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-tag-name">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-tag-name">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getTagName()">getTagName</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -699,11 +697,11 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>getDomProperty</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDomProperty&#8203;(java.lang.String&nbsp;name)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getDomProperty(java.lang.String)">WebElement</a></code></span></div>
-<div class="block">Get the value of the given property of the element. Will return the current value, even if
- this has been modified after the page has been loaded.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Get the value of the given property of the element. Will return the current value, even if this
+ has been modified after the page has been loaded.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getDomProperty(java.lang.String)">getDomProperty</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -723,20 +721,20 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDomAttribute&#8203;(java.lang.String&nbsp;name)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getDomAttribute(java.lang.String)">WebElement</a></code></span></div>
 <div class="block">Get the value of the given attribute of the element.
- <p>
- This method, unlike <a href="../WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a>, returns the value of the attribute with the
- given name but not the property with the same name.
- <p>
- The following are deemed to be "boolean" attributes, and will return either "true" or null:
- <p>
- async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+
+ <p>This method, unlike <a href="../WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a>, returns the value of the attribute with
+ the given name but not the property with the same name.
+
+ <p>The following are deemed to be "boolean" attributes, and will return either "true" or null:
+
+ <p>async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
  defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
  iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
  novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
  seeking, selected, truespeed, willvalidate
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getDomAttribute(java.lang.String)">getDomAttribute</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -757,34 +755,36 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getAttribute(java.lang.String)">WebElement</a></code></span></div>
 <div class="block">Get the value of the given attribute of the element. Will return the current value, even if
  this has been modified after the page has been loaded.
- <p>
- More exactly, this method will return the value of the property with the given name, if it
+
+ <p>More exactly, this method will return the value of the property with the given name, if it
  exists. If it does not, then the value of the attribute with the given name is returned. If
  neither exists, null is returned.
- <p>
- The "style" attribute is converted as best can be to a text representation with a trailing
+
+ <p>The "style" attribute is converted as best can be to a text representation with a trailing
  semicolon.
- <p>
- The following are deemed to be "boolean" attributes, and will return either "true" or null:
- <p>
- async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+
+ <p>The following are deemed to be "boolean" attributes, and will return either "true" or null:
+
+ <p>async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
  defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
  iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
  novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
  seeking, selected, truespeed, willvalidate
- <p>
- Finally, the following commonly mis-capitalized attribute/property names are evaluated as
+
+ <p>Finally, the following commonly mis-capitalized attribute/property names are evaluated as
  expected:
+
  <ul>
- <li>If the given name is "class", the "className" property is returned.
- <li>If the given name is "readonly", the "readOnly" property is returned.
+   <li>If the given name is "class", the "className" property is returned.
+   <li>If the given name is "readonly", the "readOnly" property is returned.
  </ul>
+
  <i>Note:</i> The reason for this behavior is that users frequently confuse attributes and
- properties. If you need to do something more precise, use <a href="../WebElement.html#getDomAttribute(java.lang.String)"><code>WebElement.getDomAttribute(String)</code></a>
- or <a href="../WebElement.html#getDomProperty(java.lang.String)"><code>WebElement.getDomProperty(String)</code></a> to obtain the result you desire.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
- for more details.</div>
+ properties. If you need to do something more precise, use <a href="../WebElement.html#getDomAttribute(java.lang.String)"><code>WebElement.getDomAttribute(String)</code></a> or
+ <a href="../WebElement.html#getDomProperty(java.lang.String)"><code>WebElement.getDomProperty(String)</code></a> to obtain the result you desire.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getAttribute(java.lang.String)">getAttribute</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -804,9 +804,9 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getAriaRole()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getAriaRole()">WebElement</a></code></span></div>
 <div class="block">Gets result of computing the WAI-ARIA role of element.
- <p>
- See <a href="https://www.w3.org/TR/webdriver/#get-computed-role">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://www.w3.org/TR/webdriver/#get-computed-role">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getAriaRole()">getAriaRole</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -823,10 +823,11 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>getAccessibleName</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getAccessibleName()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getAccessibleName()">WebElement</a></code></span></div>
-<div class="block">Gets result of a Accessible Name and Description Computation for the Accessible Name of the element.
- <p>
- See <a href="https://www.w3.org/TR/webdriver/#get-computed-label">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Gets result of a Accessible Name and Description Computation for the Accessible Name of the
+ element.
+
+ <p>See <a href="https://www.w3.org/TR/webdriver/#get-computed-label">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getAccessibleName()">getAccessibleName</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -844,12 +845,11 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isSelected()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#isSelected()">WebElement</a></code></span></div>
 <div class="block">Determine whether this element is selected or not. This operation only applies to input
- elements such as checkboxes, options in a select and radio buttons.
- For more information on which elements this method supports,
- refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
- <p>
- See <a href="https://w3c.github.io/webdriver/#is-element-selected">W3C WebDriver specification</a>
- for more details.</div>
+ elements such as checkboxes, options in a select and radio buttons. For more information on
+ which elements this method supports, refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#is-element-selected">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#isSelected()">isSelected</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -868,9 +868,9 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#isEnabled()">WebElement</a></code></span></div>
 <div class="block">Is the element currently enabled or not? This will generally return true for everything but
  disabled input elements.
- <p>
- See <a href="https://w3c.github.io/webdriver/#is-element-enabled">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#is-element-enabled">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#isEnabled()">isEnabled</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -888,9 +888,9 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getText()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getText()">WebElement</a></code></span></div>
 <div class="block">Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-text">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-text">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getText()">getText</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -907,23 +907,21 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>getCssValue</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCssValue&#8203;(java.lang.String&nbsp;propertyName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getCssValue(java.lang.String)">WebElement</a></code></span></div>
-<div class="block">Get the value of a given CSS property.
- Color values could be returned as rgba or rgb strings.
+<div class="block">Get the value of a given CSS property. Color values could be returned as rgba or rgb strings.
  This depends on whether the browser omits the implicit opacity value or not.
- <p>
- For example if the "background-color" property is set as "green" in the
- HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
- preserved or "rgb(0, 255, 0)" if it is omitted.
- <p>
- Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
- margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
- in accordance with the
- <a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">DOM CSS2 specification</a>
- - you should directly access the longhand properties (e.g. background-color) to access the
- desired values.
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-css-value">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>For example if the "background-color" property is set as "green" in the HTML source, the
+ returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is preserved or "rgb(0,
+ 255, 0)" if it is omitted.
+
+ <p>Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
+ margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned, in
+ accordance with the <a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">DOM CSS2
+ specification</a> - you should directly access the longhand properties (e.g. background-color)
+ to access the desired values.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-css-value">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getCssValue(java.lang.String)">getCssValue</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -945,13 +943,13 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <div class="block">Find all elements within the current context using the given mechanism. When using xpath be
  aware that webdriver follows standard conventions: a search prefixed with "//" will search the
  entire document, not just the children of this current node. Use ".//" to limit your search to
- the children of this WebElement.
- This method is affected by the 'implicit wait' times in force at the time of execution. When
- implicitly waiting, this method will return as soon as there are more than 0 items in the
- found collection, or will return an empty list if the timeout is reached.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-elements-from-element">W3C WebDriver specification</a>
- for more details.</div>
+ the children of this WebElement. This method is affected by the 'implicit wait' times in force
+ at the time of execution. When implicitly waiting, this method will return as soon as there are
+ more than 0 items in the found collection, or will return an empty list if the timeout is
+ reached.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-elements-from-element">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../SearchContext.html#findElements(org.openqa.selenium.By)">findElements</a></code>&nbsp;in interface&nbsp;<code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code></dd>
@@ -975,17 +973,14 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>findElement</h4>
 <pre class="methodSignature">public&nbsp;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElement&#8203;(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#findElement(org.openqa.selenium.By)">WebElement</a></code></span></div>
-<div class="block">Find the first <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method. See the note in
- <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> about finding via XPath.
- This method is affected by the 'implicit wait' times in force at the time of execution.
- The findElement(..) invocation will return a matching row, or try again repeatedly until
- the configured timeout is reached.
- <p>
- findElement should not be used to look for non-present elements, use <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a>
- and assert zero length response instead.
- <p>
- See <a href="https://w3c.github.io/webdriver/#find-element-from-element">W3C WebDriver specification</a>
- for more details.</div>
+<div class="block">Find the first <a href="../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method. See the note in <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> about finding via XPath. This method is affected by the 'implicit wait'
+ times in force at the time of execution. The findElement(..) invocation will return a matching
+ row, or try again repeatedly until the configured timeout is reached.
+
+ <p>findElement should not be used to look for non-present elements, use <a href="../WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> and assert zero length response instead.
+
+ <p>See <a href="https://w3c.github.io/webdriver/#find-element-from-element">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../SearchContext.html#findElement(org.openqa.selenium.By)">findElement</a></code>&nbsp;in interface&nbsp;<code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code></dd>
@@ -1040,7 +1035,8 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getShadowRoot()">getShadowRoot</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A representation of an element's shadow root for accessing the shadow DOM of a web component.</dd>
+<dd>A representation of an element's shadow root for accessing the shadow DOM of a web
+     component.</dd>
 </dl>
 </li>
 </ul>
@@ -1133,9 +1129,9 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <pre class="methodSignature">public&nbsp;<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocation()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getLocation()">WebElement</a></code></span></div>
 <div class="block">Where on the page is the top left-hand corner of the rendered element?
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getLocation()">getLocation</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -1153,9 +1149,9 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <pre class="methodSignature">public&nbsp;<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;getSize()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#getSize()">WebElement</a></code></span></div>
 <div class="block">What is the width and height of the rendered element?
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
- for more details.</div>
+
+ <p>See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver
+ specification</a> for more details.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#getSize()">getSize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
@@ -1176,9 +1172,8 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <dd><code><a href="../WebElement.html#getRect()">getRect</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The location and size of the rendered element
- <p>
- See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
- for more details.</dd>
+     <p>See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver
+     specification</a> for more details.</dd>
 </dl>
 </li>
 </ul>
@@ -1206,23 +1201,25 @@ public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs&#8203;(<a href="../OutputType.
                       throws <a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</a></code></span></div>
 <div class="block">Capture the screenshot and store it in the specified location.
- <p>
- For a W3C-conformant WebDriver or WebElement, this behaves as stated in
- <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
- <p>
- For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to return
- the following in order of preference:
+
+ <p>For a W3C-conformant WebDriver or WebElement, this behaves as stated in <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
+
+ <p>For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to
+ return the following in order of preference:
+
  <ul>
-   <li>Entire page</li>
-   <li>Current window</li>
-   <li>Visible portion of the current frame</li>
-   <li>The screenshot of the entire display containing the browser</li>
+   <li>Entire page
+   <li>Current window
+   <li>Visible portion of the current frame
+   <li>The screenshot of the entire display containing the browser
  </ul>
+
  For a non-W3C-conformant WebElement extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:
+
  <ul>
-   <li>The entire content of the HTML element</li>
-   <li>The visible portion of the HTML element</li>
+   <li>The entire content of the HTML element
+   <li>The visible portion of the HTML element
  </ul></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>

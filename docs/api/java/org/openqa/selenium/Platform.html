@@ -727,7 +727,7 @@ not permitted.)</div>
 <h4>extractFromSysProperty</h4>
 <pre class="methodSignature">public static&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;extractFromSysProperty&#8203;(java.lang.String&nbsp;osName)</pre>
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
- most likely operating system.  If unable to determine the operating system, it will default to
+ most likely operating system. If unable to determine the operating system, it will default to
  UNIX.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -746,7 +746,7 @@ not permitted.)</div>
 <pre class="methodSignature">public static&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;extractFromSysProperty&#8203;(java.lang.String&nbsp;osName,
                                               java.lang.String&nbsp;osVersion)</pre>
 <div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
- most likely operating system.  If unable to determine the operating system, it will default to
+ most likely operating system. If unable to determine the operating system, it will default to
  UNIX.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -789,8 +789,8 @@ not permitted.)</div>
 <li class="blockList">
 <h4>is</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;is&#8203;(<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;compareWith)</pre>
-<div class="block">Heuristic for comparing two platforms.  If platforms (which is not the same thing as operating
- systems) are found to be approximately similar in nature, this will return true.  For instance
+<div class="block">Heuristic for comparing two platforms. If platforms (which is not the same thing as operating
+ systems) are found to be approximately similar in nature, this will return true. For instance
  the LINUX platform is similar to UNIX, and will give a positive result if compared.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -807,12 +807,12 @@ not permitted.)</div>
 <li class="blockList">
 <h4>family</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;family()</pre>
-<div class="block">Returns a platform that represents a family for the current platform.  For instance
- the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.</div>
+<div class="block">Returns a platform that represents a family for the current platform. For instance the LINUX if
+ a part of the UNIX family, the XP is a part of the WINDOWS family.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the family platform for the current one, or <code>null</code> if this <code>Platform</code>
-         represents a platform family (such as Windows, or MacOS)</dd>
+     represents a platform family (such as Windows, or MacOS)</dd>
 </dl>
 </li>
 </ul>
