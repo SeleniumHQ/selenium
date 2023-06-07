@@ -1,4 +1,4 @@
-4.10.0 (Unreleased)
+4.10.0 (2023-06-07)
 =========================
 Ruby:
   * Implement proxy support for Selenium Manager
