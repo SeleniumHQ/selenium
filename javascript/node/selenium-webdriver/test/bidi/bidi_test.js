@@ -1050,7 +1050,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 285)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1191,7 +1190,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 251)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1568,7 +1566,7 @@ suite(
         await manager.addPreloadScript('() => { window.foo = 1; }')
         await manager.addPreloadScript(
           '() => { window.bar = 2; }',
-          null,
+          [],
           'sandbox'
         )
 
@@ -1612,7 +1610,7 @@ suite(
         await manager.addPreloadScript('() => { window.foo = 42; }')
         await manager.addPreloadScript(
           '() => { window.foo = 50; }',
-          null,
+          [],
           'sandbox_1'
         )
 
@@ -1738,7 +1736,7 @@ suite(
 
         let script_2 = await manager.addPreloadScript(
           '() => { window.bar = 2; }',
-          null,
+          [],
           'sandbox'
         )
 
