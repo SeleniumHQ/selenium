@@ -17,20 +17,16 @@
 
 package org.openqa.selenium;
 
-/**
- * Indicates that an element does not have a shadow root.
- */
-public class NoSuchShadowRootException extends NotFoundException {
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-  public NoSuchShadowRootException(String message) {
-    super(message);
-  }
+public class NoSuchShadowRootTest extends JupiterTestBase{
 
-  public NoSuchShadowRootException(Throwable cause) {
-    super(cause);
-  }
-
-  public NoSuchShadowRootException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  @Test
+  public void getNoSuchShadowRoot(){
+    driver.get(pages.shadowRootPage);
+    WebElement nonExistentShadowRootElement = driver.findElement(By.id("noShadowRoot"));
+    assertThatExceptionOfType(NoSuchShadowRootException.class).isThrownBy(() -> nonExistentShadowRootElement.getShadowRoot());
+    }
 }

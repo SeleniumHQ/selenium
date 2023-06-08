@@ -18,19 +18,15 @@
 package org.openqa.selenium;
 
 /**
- * Indicates that an element does not have a shadow root.
+ * Indicates that a reference to a shadow root is now "detached" --- the element no longer appears on the
+ * DOM of the page.
  */
-public class NoSuchShadowRootException extends NotFoundException {
-
-  public NoSuchShadowRootException(String message) {
+public class DetachedShadowRootException extends WebDriverException {
+  public DetachedShadowRootException(String message) {
     super(message);
   }
 
-  public NoSuchShadowRootException(Throwable cause) {
-    super(cause);
-  }
-
-  public NoSuchShadowRootException(String message, Throwable cause) {
+  public DetachedShadowRootException(String message, Throwable cause) {
     super(message, cause);
   }
 }
