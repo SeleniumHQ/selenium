@@ -28,6 +28,14 @@ class Options(ArgOptions):
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property
+    def capabilities(self):
+        return self._caps
+
+    def set_capability(self, name, value) -> None:
+        """Sets a capability."""
+        self._caps[name] = value
+
+    @property
     def binary_location(self) -> str:
         """Returns the location of the browser binary otherwise an empty
         string."""

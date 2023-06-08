@@ -270,4 +270,5 @@ def test_handle_errors_better(handler):
     }
     with pytest.raises(exceptions.WebDriverException) as e:
         handler.check_response(response)
-        assert "Could not start a new session." in e.value.msg
+
+    assert "Could not start a new session." in e.value.msg
