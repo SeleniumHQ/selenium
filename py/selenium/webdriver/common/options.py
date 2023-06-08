@@ -29,16 +29,15 @@ class BaseOptions(metaclass=ABCMeta):
         super().__init__()
         self._caps = self.default_capabilities
         self._proxy = None
-        self.capabilities = ("pageLoadStrategy", "normal")
+        self.set_capability("pageLoadStrategy", "normal")
         self.mobile_options = None
 
     @property
     def capabilities(self):
         return self._caps
 
-    @capabilities.setter
-    def capabilities(self, values):
-        name, value = values
+    def set_capability(self, name, value) -> None:
+        """Sets a capability."""
         self._caps[name] = value
 
     @property
@@ -55,7 +54,7 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param version: The required version of the browser
         """
-        self.capabilities = ("browserVersion", version)
+        self.set_capability("browserVersion", version)
 
     @property
     def platform_name(self) -> str:
@@ -71,7 +70,7 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param platform: the required name of the platform
         """
-        self.capabilities = ("platformName", platform)
+        self.set_capability("platformName", platform)
 
     @property
     def page_load_strategy(self) -> str:
@@ -88,7 +87,7 @@ class BaseOptions(metaclass=ABCMeta):
         :param strategy: the strategy corresponding to a document readiness state
         """
         if strategy in ["normal", "eager", "none"]:
-            self.capabilities = ("pageLoadStrategy", strategy)
+            self.set_capability("pageLoadStrategy", strategy)
         else:
             raise ValueError("Strategy can only be one of the following: normal, eager, none")
 
@@ -108,7 +107,7 @@ class BaseOptions(metaclass=ABCMeta):
         :param behavior: behavior to use when an alert is encountered
         """
         if behavior in ["dismiss", "accept", "dismiss and notify", "accept and notify", "ignore"]:
-            self.capabilities = ("unhandledPromptBehavior", behavior)
+            self.set_capability("unhandledPromptBehavior", behavior)
         else:
             raise ValueError(
                 "Behavior can only be one of the following: dismiss, accept, dismiss and notify, "
@@ -130,7 +129,7 @@ class BaseOptions(metaclass=ABCMeta):
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
         if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
-            self.capabilities = ("timeouts", timeouts)
+            self.set_capability("timeouts", timeouts)
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
 

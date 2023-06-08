@@ -97,7 +97,7 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
-        self.capabilities = (self.AUTOMATIC_INSPECTION, value)
+        self.set_capability(self.AUTOMATIC_INSPECTION, value)
 
     @property
     def automatic_profiling(self) -> bool:
@@ -111,7 +111,7 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
-        self.capabilities = (self.AUTOMATIC_PROFILING, value)
+        self.set_capability(self.AUTOMATIC_PROFILING, value)
 
     @property
     def use_technology_preview(self) -> bool:
@@ -126,4 +126,4 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
-        self.capabilities = ("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")
+        self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")
