@@ -21,6 +21,7 @@ import static com.google.common.net.HttpHeaders.REFERER;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -92,6 +93,11 @@ class ReferrerTest {
   private TestServer server1;
   private TestServer server2;
   private ProxyServer proxyServer;
+
+  @BeforeAll
+  public static void shouldTestBeRunAtAll() {
+    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
+  }
 
   @BeforeAll
   public static void readContents() throws IOException {

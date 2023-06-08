@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -53,6 +54,9 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void builderGeneratesDefaultChromeOptions() {
+    // This test won't pass if we want to use Chrome in a non-standard location
+    Assumptions.assumeThat(System.getProperty("webdriver.chrome.binary")).isNull();
+
     localDriver = ChromeDriver.builder().build();
     Capabilities capabilities = ((ChromeDriver) localDriver).getCapabilities();
 
@@ -63,7 +67,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void builderOverridesDefaultChromeOptions() {
-    ChromeOptions options = new ChromeOptions();
+    ChromeOptions options = (ChromeOptions) CHROME.getCapabilities();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = ChromeDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout())
@@ -80,7 +84,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
               localDriver =
                   new ChromeDriver(
                       ChromeDriverService.createDefaultService(),
-                      new ChromeOptions(),
+                      (ChromeOptions) CHROME.getCapabilities(),
                       clientConfig);
             })
         .isInstanceOf(SessionNotCreatedException.class);
@@ -89,7 +93,8 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
-    RemoteWebDriverBuilder builder = ChromeDriver.builder().config(clientConfig);
+    RemoteWebDriverBuilder builder =
+        ChromeDriver.builder().oneOf(CHROME.getCapabilities()).config(clientConfig);
 
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(builder::build)

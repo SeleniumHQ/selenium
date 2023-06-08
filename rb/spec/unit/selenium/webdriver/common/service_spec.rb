@@ -25,7 +25,7 @@ module Selenium
       let(:service_path) { '/path/to/service' }
 
       before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
+        allow(Platform).to receive(:assert_executable)
         stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end

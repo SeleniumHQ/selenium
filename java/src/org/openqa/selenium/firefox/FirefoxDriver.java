@@ -88,7 +88,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private final Optional<URI> biDiUri;
   private Connection connection;
   private DevTools devTools;
-  private BiDi biDi;
+  private Optional<BiDi> biDi;
 
   /**
    * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)} server
@@ -174,6 +174,8 @@ public class FirefoxDriver extends RemoteWebDriver
               }
               return null;
             });
+
+    this.biDi = createBiDi(biDiUri);
 
     this.cdpUri = cdpUri;
     this.capabilities =
@@ -321,12 +323,7 @@ public class FirefoxDriver extends RemoteWebDriver
         .orElseThrow(() -> new DevToolsException("Unable to initialize CDP connection"));
   }
 
-  @Override
-  public Optional<BiDi> maybeGetBiDi() {
-    if (biDi != null) {
-      return Optional.of(biDi);
-    }
-
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
     if (!biDiUri.isPresent()) {
       return Optional.empty();
     }
@@ -340,12 +337,15 @@ public class FirefoxDriver extends RemoteWebDriver
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-    org.openqa.selenium.bidi.Connection connection =
+    org.openqa.selenium.bidi.Connection biDiConnection =
         new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
-    biDi = new BiDi(connection);
+    return Optional.of(new BiDi(biDiConnection));
+  }
 
-    return Optional.of(biDi);
+  @Override
+  public Optional<BiDi> maybeGetBiDi() {
+    return biDi;
   }
 
   @Override

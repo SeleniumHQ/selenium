@@ -129,6 +129,42 @@ class BrowsingContext {
     }
     await this.bidi.send(params)
   }
+
+  /**
+   * Prints PDF of the webpage
+   * @param options print options given by the user
+   * @returns PrintResult object
+   */
+  async printPage(options = {}) {
+    let params = {
+      method: 'browsingContext.print',
+      // Setting default values for parameters
+      params: {
+        context: this._id,
+        background: false,
+        margin: {
+          bottom: 1.0,
+          left: 1.0,
+          right: 1.0,
+          top: 1.0,
+        },
+        orientation: 'portrait',
+        page: {
+          height: 27.94,
+          width: 21.59,
+        },
+        pageRanges: [],
+        scale: 1.0,
+        shrinkToFit: true,
+      },
+    }
+
+    // Updating parameter values based on the options passed
+    params.params = this._driver.validatePrintPageParams(options, params.params)
+
+    const response = await this.bidi.send(params)
+    return new PrintResult(response.result.data)
+  }
 }
 
 class NavigateResult {
@@ -143,6 +179,16 @@ class NavigateResult {
 
   get navigationId() {
     return this._navigationId
+  }
+}
+
+class PrintResult {
+  constructor(data) {
+    this._data = data
+  }
+
+  get data() {
+    return this._data
   }
 }
 

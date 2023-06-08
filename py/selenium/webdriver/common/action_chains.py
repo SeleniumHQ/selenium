@@ -21,7 +21,10 @@ import warnings
 from selenium.webdriver.remote.webelement import WebElement
 
 from .actions.action_builder import ActionBuilder
+from .actions.key_input import KeyInput
+from .actions.pointer_input import PointerInput
 from .actions.wheel_input import ScrollOrigin
+from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
 
 
@@ -58,7 +61,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver, duration=250):
+    def __init__(self, driver, duration=250, devices=None):
         """Creates a new ActionChains.
 
         :Args:
@@ -66,7 +69,18 @@ class ActionChains:
          - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
         """
         self._driver = driver
-        self.w3c_actions = ActionBuilder(driver, duration=duration)
+        mouse = None
+        keyboard = None
+        wheel = None
+        if devices is not None and isinstance(devices, list):
+            for device in devices:
+                if isinstance(device, PointerInput):
+                    mouse = device
+                if isinstance(device, KeyInput):
+                    keyboard = device
+                if isinstance(device, WheelInput):
+                    wheel = device
+        self.w3c_actions = ActionBuilder(driver, mouse=mouse, keyboard=keyboard, wheel=wheel, duration=duration)
 
     def perform(self):
         """Performs all stored actions."""

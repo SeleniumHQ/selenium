@@ -465,7 +465,10 @@ public class DriverService implements Closeable {
         }
 
         if (logLocation == null) {
-          return System.err;
+          LOG.info(
+              "Driver logs no longer sent to console by default; "
+                  + "https://www.selenium.dev/documentation/webdriver/drivers/service/#setting-log-output");
+          return ByteStreams.nullOutputStream();
         }
 
         switch (logLocation) {

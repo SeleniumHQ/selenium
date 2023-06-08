@@ -67,6 +67,7 @@ public class SeleniumExtension
   private final CaptureLoggingRule captureLoggingRule;
 
   private boolean failedWithNotYetImplemented = false;
+  private boolean failedWithRemoteBuild = false;
 
   public SeleniumExtension() {
     this(Duration.ofSeconds(10), Duration.ofSeconds(5));
@@ -115,6 +116,9 @@ public class SeleniumExtension
 
     // NotYetImplementedRule
     failedWithNotYetImplemented = false;
+
+    // Remote builds
+    failedWithRemoteBuild = false;
   }
 
   @Override
@@ -140,9 +144,24 @@ public class SeleniumExtension
       throw new Exception(
           String.format(
               "%s.%s is marked as not yet implemented with %s but already works!",
-              testClass.isPresent() ? testClass.get().getName() : "",
-              testMethod.isPresent() ? testMethod.get().getName() : "",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
               current));
+    }
+
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
+    boolean isNotExpectedToWork = notWorkingInRemoteBuilds.check();
+
+    if (isNotExpectedToWork && !failedWithRemoteBuild) {
+      Optional<Class<?>> testClass = context.getTestClass();
+      Optional<Method> testMethod = context.getTestMethod();
+      throw new Exception(
+          String.format(
+              "%s.%s is not yet expected to work on remote builds using %s, but it already works!",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
+              Browser.detect()));
     }
   }
 
@@ -199,10 +218,20 @@ public class SeleniumExtension
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
     if (notYetImplementedRule.check()) {
-      // Expected
       failedWithNotYetImplemented = true;
+    }
+
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
+    if (notWorkingInRemoteBuilds.check()) {
+      failedWithRemoteBuild = true;
+    }
+
+    if (failedWithNotYetImplemented || failedWithRemoteBuild) {
+      // Expected failures.
       return;
     }
+
     throw throwable;
   }
 
@@ -308,6 +337,36 @@ public class SeleniumExtension
       List<NotYetImplemented> notYetImplemented =
           findRepeatableAnnotations(element, NotYetImplemented.class);
       return notImplemented(notYetImplementedList) || notImplemented(notYetImplemented.stream());
+    }
+  }
+
+  private static class NotWorkingInRemoteBazelBuildsRule {
+    ExtensionContext context;
+    private final Browser current = Objects.requireNonNull(Browser.detect());
+
+    public NotWorkingInRemoteBazelBuildsRule(ExtensionContext context) {
+      this.context = context;
+    }
+
+    private boolean notWorkingYet(Optional<NotWorkingInRemoteBazelBuilds> list) {
+      return list.isPresent() && notWorkingYet(Stream.of(list.get()));
+    }
+
+    private boolean notWorkingYet(Stream<NotWorkingInRemoteBazelBuilds> value) {
+      return value.anyMatch(notWorking -> current.matches(notWorking.value()));
+    }
+
+    public boolean check() {
+      if (!Objects.equals("1", System.getenv("REMOTE_BUILD"))) {
+        return false;
+      }
+
+      Optional<AnnotatedElement> element = context.getElement();
+      Optional<NotWorkingInRemoteBazelBuilds> notWorkingList =
+          findAnnotation(element, NotWorkingInRemoteBazelBuilds.class);
+      List<NotWorkingInRemoteBazelBuilds> notWorking =
+          findRepeatableAnnotations(element, NotWorkingInRemoteBazelBuilds.class);
+      return notWorkingYet(notWorkingList) || notWorkingYet(notWorking.stream());
     }
   }
 

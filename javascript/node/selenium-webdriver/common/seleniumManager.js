@@ -47,12 +47,7 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  let seleniumManagerBasePath
-  if (process.env.SELENIUM_MANAGER_BASE_PATH) {
-    seleniumManagerBasePath = process.env.SELENIUM_MANAGER_BASE_PATH
-  } else {
-    seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
-  }
+  let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
 
   const filePath = path.join(seleniumManagerBasePath, directory, file)
 
@@ -76,7 +71,7 @@ function driverLocation(options) {
     )
   }
 
-  console.log(
+  console.debug(
     'Applicable driver not found; attempting to install with Selenium Manager (Beta)'
   )
 
@@ -92,6 +87,22 @@ function driverLocation(options) {
     options.get('moz:firefoxOptions')
   if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
     args.push('--browser-path', '"' + vendorOptions.binary + '"')
+  }
+
+  const proxyOptions = options.getProxy();
+
+  // Check if proxyOptions exists and has properties
+  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
+    const httpProxy = proxyOptions['httpProxy'];
+    const sslProxy = proxyOptions['sslProxy'];
+
+    if (httpProxy !== undefined) {
+      args.push('--proxy', httpProxy);
+    }
+
+    else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy);
+    }
   }
 
   const smBinary = getBinary()

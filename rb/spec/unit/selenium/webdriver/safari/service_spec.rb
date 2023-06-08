@@ -27,7 +27,13 @@ module Selenium
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
           before do
-            allow(Platform).to receive(:assert_executable).and_return(true)
+            allow(Platform).to receive(:assert_executable)
+          end
+
+          it 'does not allow log' do
+            expect {
+              described_class.new(log: 'anywhere')
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
           end
 
           it 'uses default port and nil path' do
@@ -55,6 +61,13 @@ module Selenium
             service = described_class.new
 
             expect(service.extra_args).to be_empty
+          end
+
+          it 'does not allow log=' do
+            service = described_class.new
+            expect {
+              service.log = 'anywhere'
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
           end
 
           it 'uses provided args' do
@@ -89,6 +102,7 @@ module Selenium
 
           it 'is created when :url is not provided' do
             allow(Platform).to receive(:find_binary).and_return('/path/to/safaridriver')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
 
@@ -99,6 +113,7 @@ module Selenium
 
           it 'accepts :service without creating a new instance' do
             allow(Platform).to receive(:find_binary).and_return('path/to/safaridriver')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)
 

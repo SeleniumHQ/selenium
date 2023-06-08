@@ -21,184 +21,51 @@ import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
-from shutil import rmtree
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from .firefox_binary import FirefoxBinary
-from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
 logger = logging.getLogger(__name__)
 
-# Default for log_path variable. To be deleted when deprecations for arguments are removed.
-DEFAULT_LOG_PATH = None
-DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
-
 
 class WebDriver(RemoteWebDriver):
+    """Controls the GeckoDriver and allows you to drive the browser."""
+
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
     def __init__(
         self,
-        firefox_profile=None,
-        firefox_binary=None,
-        capabilities=None,
-        proxy=None,
-        executable_path=DEFAULT_EXECUTABLE_PATH,
-        options=None,
-        service_log_path=DEFAULT_SERVICE_LOG_PATH,
-        service_args=None,
-        service=None,
-        desired_capabilities=None,
-        log_path=DEFAULT_LOG_PATH,
-        keep_alive=True,  # Todo: Why is this now unused?
+        options: Options = None,
+        service: Service = None,
+        keep_alive=True,
     ) -> None:
-        """Starts a new local session of Firefox.
+        """Creates a new instance of the Firefox driver. Starts the service and
+        then creates new instance of Firefox driver.
 
-        Based on the combination and specificity of the various keyword
-        arguments, a capabilities dictionary will be constructed that
-        is passed to the remote end.
-
-        The keyword arguments given to this constructor are helpers to
-        more easily allow Firefox WebDriver sessions to be customised
-        with different options.  They are mapped on to a capabilities
-        dictionary that is passed on to the remote end.
-
-        As some of the options, such as `firefox_profile` and
-        `options.profile` are mutually exclusive, precedence is
-        given from how specific the setting is.  `capabilities` is the
-        least specific keyword argument, followed by `options`,
-        followed by `firefox_binary` and `firefox_profile`.
-
-        In practice this means that if `firefox_profile` and
-        `options.profile` are both set, the selected profile
-        instance will always come from the most specific variable.
-        In this case that would be `firefox_profile`.  This will result in
-        `options.profile` to be ignored because it is considered
-        a less specific setting than the top-level `firefox_profile`
-        keyword argument.  Similarly, if you had specified a
-        `capabilities["moz:firefoxOptions"]["profile"]` Base64 string,
-        this would rank below `options.profile`.
-
-        :param firefox_profile: Deprecated: Instance of ``FirefoxProfile`` object
-            or a string.  If undefined, a fresh profile will be created
-            in a temporary location on the system.
-        :param firefox_binary: Deprecated: Instance of ``FirefoxBinary`` or full
-            path to the Firefox binary.  If undefined, the system default
-            Firefox installation will  be used.
-        :param capabilities: Deprecated: Dictionary of desired capabilities.
-        :param proxy: Deprecated: The proxy settings to use when communicating with
-            Firefox via the extension connection.
-        :param executable_path: Deprecated: Full path to override which geckodriver
-            binary to use for Firefox 47.0.1 and greater, which
-            defaults to picking up the binary from the system path.
-        :param options: Instance of ``options.Options``.
-        :param service: (Optional) service instance for managing the starting and stopping of the driver.
-        :param service_log_path: Deprecated: Where to log information from the driver.
-        :param service_args: Deprecated: List of args to pass to the driver service
-        :param desired_capabilities: Deprecated: alias of capabilities. In future
-            versions of this library, this will replace 'capabilities'.
-            This will make the signature consistent with RemoteWebDriver.
-        :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
-             HTTP keep-alive.
+        :Args:
+         - options - Instance of ``options.Options``.
+         - service - (Optional) service instance for managing the starting and stopping of the driver.
+         - keep_alive - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
         """
 
-        if executable_path != DEFAULT_EXECUTABLE_PATH:
-            warnings.warn(
-                "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        if capabilities or desired_capabilities:
-            warnings.warn(
-                "capabilities and desired_capabilities have been deprecated, please pass in a Service object",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if firefox_binary:
-            warnings.warn(
-                "firefox_binary has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        self.binary = None
-        if firefox_profile:
-            warnings.warn(
-                "firefox_profile has been deprecated, please pass in an Options object",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        self.profile = None
+        self.service = service if service else Service()
+        self.options = options if options else Options()
+        self.keep_alive = keep_alive
 
-        if log_path != DEFAULT_LOG_PATH:
-            warnings.warn(
-                "log_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-
-        # Service Arguments being deprecated.
-        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
-            warnings.warn(
-                "service_log_path has been deprecated, please pass in a Service object",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if service_args:
-            warnings.warn(
-                "service_args has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-
-        self.service = service
-
-        # If desired capabilities is set, alias it to capabilities.
-        # If both are set ignore desired capabilities.
-        if not capabilities and desired_capabilities:
-            capabilities = desired_capabilities
-
-        if not capabilities:
-            capabilities = DesiredCapabilities.FIREFOX.copy()
-        if not options:
-            options = Options()
-
-        capabilities = dict(capabilities)
-
-        if capabilities.get("binary"):
-            options.binary = capabilities["binary"]
-
-        # options overrides capabilities
-        if options:
-            if options.binary:
-                self.binary = options.binary
-            if options.profile:
-                self.profile = options.profile
-
-        # firefox_binary and firefox_profile
-        # override options
-        if firefox_binary:
-            if isinstance(firefox_binary, str):
-                firefox_binary = FirefoxBinary(firefox_binary)
-            self.binary = firefox_binary
-            options.binary = firefox_binary
-        if firefox_profile:
-            if isinstance(firefox_profile, str):
-                firefox_profile = FirefoxProfile(firefox_profile)
-            self.profile = firefox_profile
-            options.profile = firefox_profile
-
-        if not capabilities.get("acceptInsecureCerts") or not options.accept_insecure_certs:
-            options.accept_insecure_certs = False
-
-        if not self.service:
-            self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = DriverFinder.get_path(self.service, self.options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url, ignore_proxy=options._ignore_local_proxy
+            remote_server_addr=self.service.service_url,
+            ignore_proxy=self.options._ignore_local_proxy,
+            keep_alive=self.keep_alive,
         )
-        super().__init__(command_executor=executor, options=options, keep_alive=True)
+        super().__init__(command_executor=executor, options=self.options)
 
         self._is_remote = False
 
@@ -211,36 +78,6 @@ class WebDriver(RemoteWebDriver):
             pass
 
         self.service.stop()
-
-        if self.profile:
-            try:
-                rmtree(self.profile.path)
-                if self.profile.tempfolder:
-                    rmtree(self.profile.tempfolder)
-            except Exception:
-                logger.exception("Unable to remove profile specific paths.")
-
-        self._close_binary_file_handle()
-
-    def _close_binary_file_handle(self) -> None:
-        """Attempts to close the underlying file handles for `FirefoxBinary`
-        instances if they are used and open.
-
-        To keep inline with other cleanup raising here is swallowed and
-        will not cause a runtime error.
-        """
-        try:
-            if isinstance(self.binary, FirefoxBinary):
-                if hasattr(self.binary._log_file, "close"):
-                    self.binary._log_file.close()
-        except Exception:
-            logger.exception("Unable to close open file handle for firefox binary log file.")
-
-    @property
-    def firefox_profile(self):
-        return self.profile
-
-    # Extension commands:
 
     def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})

@@ -33,7 +33,6 @@ toml = "0.7.3"
 [dev-dependencies]
 assert_cmd = "2.0.10"
 rstest = "0.17.0"
-wiremock = "0.5.17"
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

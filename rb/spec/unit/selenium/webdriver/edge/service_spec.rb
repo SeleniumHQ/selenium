@@ -27,7 +27,7 @@ module Selenium
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
           before do
-            allow(Platform).to receive(:assert_executable).and_return(true)
+            allow(Platform).to receive(:assert_executable)
             described_class.driver_path = nil
           end
 
@@ -105,6 +105,7 @@ module Selenium
 
           it 'is created when :url is not provided' do
             allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
 
@@ -114,6 +115,7 @@ module Selenium
 
           it 'accepts :service without creating a new instance' do
             allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)
 

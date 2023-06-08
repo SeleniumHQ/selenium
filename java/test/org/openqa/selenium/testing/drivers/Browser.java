@@ -48,20 +48,18 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.addArguments("--headless=chrome");
+        options.addArguments("--headless=new");
       }
 
       options.addArguments(
-          "disable-extensions",
-          "disable-infobars",
-          "disable-breakpad",
-          "disable-dev-shm-usage",
-          "no-sandbox");
+          "disable-infobars", "disable-breakpad", "disable-dev-shm-usage", "no-sandbox");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }
@@ -91,6 +89,8 @@ public enum Browser {
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }

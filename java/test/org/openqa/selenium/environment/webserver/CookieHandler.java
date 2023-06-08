@@ -49,7 +49,7 @@ class CookieHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
     HttpResponse response = new HttpResponse();
     response.setHeader("Content-Type", "text/html");
-    // Dont Cache Anything  at the browser
+    // Don't Cache Anything  at the browser
     response.setHeader("Cache-Control", "no-cache");
     response.setHeader("Pragma", "no-cache");
     response.setHeader("Expires", EPOCH_START);

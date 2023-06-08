@@ -86,4 +86,23 @@ def test_no_such_element_is_raised_rather_than_index_error(driver, pages):
     with pytest.raises(NoSuchElementException) as exc:
         anchor = driver.find_element(By.ID, "second")
         driver.find_element(locate_with(By.ID, "nonexistentid").above(anchor))
-    assert exc.value.msg == "Cannot locate relative element with: {'id': 'nonexistentid'}"
+    assert "Cannot locate relative element with: {'id': 'nonexistentid'}" in exc.value.msg
+
+
+def test_near_locator_should_find_near_elements(driver, pages):
+    pages.load("relative_locators.html")
+    rect1 = driver.find_element(By.ID, "rect1")
+
+    el = driver.find_element(locate_with(By.ID, "rect2").near(rect1))
+
+    assert el.get_attribute("id") == "rect2"
+
+
+def test_near_locator_should_not_find_far_elements(driver, pages):
+    pages.load("relative_locators.html")
+    rect3 = driver.find_element(By.ID, "rect3")
+
+    with pytest.raises(NoSuchElementException) as exc:
+        driver.find_element(locate_with(By.ID, "rect4").near(rect3))
+
+    assert "Cannot locate relative element with: {'id': 'rect4'}" in exc.value.msg

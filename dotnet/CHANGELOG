@@ -1,3 +1,14 @@
+v4.10.0
+======
+* Add CDP files for v114 and remove v111
+* Remove Selenium RC and WebDriverBackedSelenium code (#12024)
+* Improve compilation and publishing of Selenium Manager (#12045)
+* Fix version reported by HTTP user agent (#12061)
+* Support proxies for Selenium Manager (#12100)
+* Deprecate UseLegacyProtocol in SafariDriverService
+* Add links to documentation in error messages (#12157)
+* Add custom error class for driver location and improve error logic (#12157)
+
 v4.9.1
 ======
 * Add CDP files for v113 and remove v110

@@ -70,7 +70,7 @@ class NodeOptionsTest {
   @Test
   void canConfigureNodeWithDriverDetection() {
     // If the driver isn't on the path, we should skip the test
-    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
+    assumeTrue(new ChromeDriverInfo().isPresent(), "ChromeDriver needs to be available");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -126,7 +126,7 @@ class NodeOptionsTest {
   }
 
   boolean isDownloadEnabled(WebDriverInfo driver, String customMsg) {
-    assumeTrue(driver.isAvailable(), customMsg + " needs to be available");
+    assumeTrue(driver.isPresent(), customMsg + " needs to be available");
     Config config =
         new MapConfig(
             singletonMap(
@@ -213,6 +213,10 @@ class NodeOptionsTest {
 
   @Test
   void platformNameIsAddedByDefault() {
+    assumeTrue(
+        new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
+        "A driver needs to be available");
+
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -230,7 +234,7 @@ class NodeOptionsTest {
 
   @Test
   void vncEnabledCapabilityIsAddedWhenEnvVarIsTrue() {
-    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
 
     List<Capabilities> reported = new ArrayList<>();
     NodeOptions nodeOptions = new NodeOptions(config);
@@ -252,7 +256,7 @@ class NodeOptionsTest {
 
   @Test
   void vncEnabledCapabilityIsNotAddedWhenEnvVarIsFalse() {
-    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
 
     List<Capabilities> reported = new ArrayList<>();
     NodeOptions nodeOptions = new NodeOptions(config);
@@ -313,6 +317,10 @@ class NodeOptionsTest {
 
   @Test
   void detectDriversByDefault() {
+    assumeTrue(
+        new ChromeDriverInfo().isPresent() || new GeckoDriverInfo().isPresent(),
+        "A driver needs to be available");
+
     Config config = new MapConfig(emptyMap());
 
     List<Capabilities> reported = new ArrayList<>();
@@ -583,7 +591,7 @@ class NodeOptionsTest {
 
   @Test
   void shouldNotOverrideMaxSessionsByDefault() {
-    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
+    assumeTrue(new ChromeDriverInfo().isPresent(), "ChromeDriver needs to be available");
     int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config =
@@ -608,7 +616,7 @@ class NodeOptionsTest {
 
   @Test
   void canOverrideMaxSessionsWithFlag() {
-    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
+    assumeTrue(new ChromeDriverInfo().isPresent(), "ChromeDriver needs to be available");
     int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config =

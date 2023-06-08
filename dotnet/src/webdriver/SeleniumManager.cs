@@ -72,12 +72,17 @@ namespace OpenQA.Selenium
 #endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
+
+            if (!File.Exists(binaryFullPath))
+            {
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
+            }
         }
 
         /// <summary>
         /// Determines the location of the correct driver.
         /// </summary>
-        /// <param name="driverName">Which driver the service needs.</param>
+        /// <param name="options">The correct path depends on which options are being used.</param>
         /// <returns>
         /// The location of the driver.
         /// </returns>
@@ -96,6 +101,15 @@ namespace OpenQA.Selenium
             if (!string.IsNullOrEmpty(browserBinary))
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
+            }
+
+            if (options.Proxy != null)
+            {
+                if (options.Proxy.SslProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
+                } else if (options.Proxy.HttpProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
+                }
             }
 
             return RunCommand(binaryFullPath, argsBuilder.ToString());
