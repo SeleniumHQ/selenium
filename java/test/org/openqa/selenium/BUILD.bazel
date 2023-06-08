@@ -83,7 +83,6 @@ java_selenium_test_suite(
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
-        artifact("javax.servlet:javax.servlet-api"),
         artifact("org.assertj:assertj-core"),
         artifact("xyz.rogfam:littleproxy"),
     ] + JUNIT5_DEPS,

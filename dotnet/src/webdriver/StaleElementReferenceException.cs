@@ -28,10 +28,15 @@ namespace OpenQA.Selenium
     public class StaleElementReferenceException : WebDriverException
     {
         /// <summary>
+        /// Link to the documentation for this error
+        /// </summary>
+        private static string supportUrl = baseSupportUrl + "#stale-element-reference-exception";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class.
         /// </summary>
         public StaleElementReferenceException()
-            : base()
+            : base(GetMessage(""))
         {
         }
 
@@ -41,7 +46,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         public StaleElementReferenceException(string message)
-            : base(message)
+            : base(GetMessage(message))
         {
         }
 
@@ -54,7 +59,7 @@ namespace OpenQA.Selenium
         /// <param name="innerException">The exception that is the cause of the current exception,
         /// or <see langword="null"/> if no inner exception is specified.</param>
         public StaleElementReferenceException(string message, Exception innerException)
-            : base(message, innerException)
+            : base(GetMessage(message), innerException)
         {
         }
 
@@ -68,6 +73,16 @@ namespace OpenQA.Selenium
         protected StaleElementReferenceException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+
+        /// <summary>
+        /// Add information about obtaining additional support from documentation to this exception.
+        /// </summary>
+        /// <param name="message">The original message for exception</param>
+        /// <returns>The final message for exception</returns>
+        protected static string GetMessage(string message)
+        {
+            return message + "; " + supportMsg + supportUrl;
         }
     }
 }

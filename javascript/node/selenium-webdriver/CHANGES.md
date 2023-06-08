@@ -1,3 +1,16 @@
+## v4.10.0
+
+#### :nail_care: Polish
+
+* Adding CDP v114 and removing v111
+
+#### :rocket: New Feature
+
+* [Edge] Support webview2 (#11978)
+* [BiDi] Add Script module commands to add/remove preloaded scripts (#11847)
+* [BiDi] Add printPage command (#12124)
+* Add support for proxies with Selenium Manager
+
 ## v4.9.2
 
 #### :nail_care: Polish
