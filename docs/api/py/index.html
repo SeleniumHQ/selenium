@@ -16,7 +16,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Selenium Documentation" href="api.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -27,6 +28,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="1. Selenium Documentation"
+             accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,24 +48,21 @@
 <p>The <cite>selenium</cite> package is used to automate web browser interaction from Python.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="89%" />
+<col width="17%" />
+<col width="83%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><strong>Home</strong>:</td>
 <td><a class="reference external" href="https://selenium.dev">https://selenium.dev</a></td>
 </tr>
-<tr class="row-even"><td><strong>Docs</strong>:</td>
-<td><a class="reference external" href="https://seleniumhq.github.io/selenium/docs/api/py/api.html">selenium package API</a></td>
-</tr>
-<tr class="row-odd"><td><strong>Dev</strong>:</td>
+<tr class="row-even"><td><strong>GitHub</strong>:</td>
 <td><a class="reference external" href="https://github.com/SeleniumHQ/Selenium">https://github.com/SeleniumHQ/Selenium</a></td>
 </tr>
-<tr class="row-even"><td><strong>PyPI</strong>:</td>
+<tr class="row-odd"><td><strong>PyPI</strong>:</td>
 <td><a class="reference external" href="https://pypi.org/project/selenium/">https://pypi.org/project/selenium/</a></td>
 </tr>
-<tr class="row-odd"><td><strong>IRC</strong>:</td>
-<td><strong>#selenium</strong> channel on LiberaChat</td>
+<tr class="row-even"><td><strong>IRC/Slack</strong>:</td>
+<td><a class="reference external" href="https://www.selenium.dev/support/#ChatRoom">Selenium chat room</a></td>
 </tr>
 </tbody>
 </table>
@@ -173,10 +174,10 @@ for example, requires <a class="reference external" href="https://github.com/moz
 <div class="section" id="selenium-server-optional">
 <h2>Selenium Server (optional)<a class="headerlink" href="#selenium-server-optional" title="Permalink to this headline">¶</a></h2>
 <p>For normal WebDriver scripts (non-Remote), the Java server is not needed.</p>
-<p>However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).</p>
+<p>However, to use Selenium Webdriver Remote , you need to also run the Selenium server. The server requires a Java Runtime Environment (JRE).</p>
 <p>Download the server separately, from: <a class="reference external" href="https://www.selenium.dev/downloads/">https://www.selenium.dev/downloads/</a></p>
 <p>Run the server from the command line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">selenium</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">4.6.0</span><span class="o">.</span><span class="n">jar</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">selenium</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">4.10.0</span><span class="o">.</span><span class="n">jar</span>
 </pre></div>
 </div>
 <p>Then run your Python client scripts.</p>
@@ -190,11 +191,23 @@ for example, requires <a class="reference external" href="https://github.com/moz
 <col width="83%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td>official:</td>
+<tr class="row-odd"><td>Official:</td>
 <td><a class="reference external" href="https://github.com/SeleniumHQ/selenium/tree/trunk/py">https://github.com/SeleniumHQ/selenium/tree/trunk/py</a></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="more-docs">
+<h2>More Docs<a class="headerlink" href="#more-docs" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">1. API Docs</a></li>
+</ul>
+</div>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+</ul>
 </div>
 <div class="section" id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
@@ -231,11 +244,15 @@ for example, requires <a class="reference external" href="https://github.com/moz
 <li><a class="reference internal" href="#example-2">Example 2:</a></li>
 <li><a class="reference internal" href="#selenium-server-optional">Selenium Server (optional)</a></li>
 <li><a class="reference internal" href="#use-the-source-luke">Use The Source Luke!</a></li>
+<li><a class="reference internal" href="#more-docs">More Docs</a></li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
 </ul>
 </li>
 </ul>
 
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">1. Selenium Documentation</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -268,11 +285,14 @@ for example, requires <a class="reference external" href="https://github.com/moz
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="1. Selenium Documentation"
+             >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+        &#169; Copyright 2009-2023 Software Freedom Conservancy.
     </div>
   </body>
 </html>
