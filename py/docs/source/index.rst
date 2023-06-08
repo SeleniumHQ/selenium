@@ -126,13 +126,13 @@ Selenium Server (optional)
 
 For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
-However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
+However, to use Selenium Webdriver Remote , you need to also run the Selenium server. The server requires a Java Runtime Environment (JRE).
 
 Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-4.6.0.jar
+    java -jar selenium-server-4.10.0.jar
 
 Then run your Python client scripts.
 
