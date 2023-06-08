@@ -49,14 +49,14 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Selenium'
-copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
+copyright = '2009-2023 Software Freedom Conservancy'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '4.9'
+version = '4.10'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -228,9 +228,9 @@ man_pages = [
 
 # Bibliographic Dublin Core info.
 epub_title = 'Selenium'
-epub_author = 'plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
-epub_publisher = 'plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
-epub_copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
+epub_author = 'The Selenium Project'
+epub_publisher = 'The Selenium Project'
+epub_copyright = '2009-2023 Software Freedom Conservancy'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
