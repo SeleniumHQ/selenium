@@ -9,17 +9,15 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used to automate web browser interaction from Python.
 
-+-----------+--------------------------------------------------------------------------------------+
-| **Home**: | https://selenium.dev                                                                 |
-+-----------+--------------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
-+-----------+--------------------------------------------------------------------------------------+
-| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                               |
-+-----------+--------------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.org/project/selenium/                                                   |
-+-----------+--------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on LiberaChat                                                  |
-+-----------+--------------------------------------------------------------------------------------+
++-----------------+--------------------------------------------------------------------------------------+
+| **Home**:       | https://selenium.dev                                                                 |
++-----------------+--------------------------------------------------------------------------------------+
+| **GitHub**:     | https://github.com/SeleniumHQ/Selenium                                               |
++-----------------+--------------------------------------------------------------------------------------+
+| **PyPI**:       | https://pypi.org/project/selenium/                                                   |
++-----------------+--------------------------------------------------------------------------------------+
+| **IRC/Slack**:  | `Selenium chat room <https://www.selenium.dev/support/#ChatRoom>`_                   |
++-----------------+--------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
 
@@ -142,9 +140,19 @@ Use The Source Luke!
 View source code online:
 
 +-----------+------------------------------------------------------+
-| official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
+| Official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
 
+More Docs
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   API Docs <../api.rst>
+
+* :ref:`genindex`
+* :ref:`modindex`
 
 Contributing
 =============
