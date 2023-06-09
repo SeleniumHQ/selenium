@@ -18,19 +18,18 @@
 package org.openqa.selenium;
 
 /**
- * Indicates that an element does not have a shadow root.
+ * Indicates that navigation caused by the user agent hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.
  */
-public class NoSuchShadowRootException extends NotFoundException {
+public class InsecureCertificateException extends WebDriverException {
+    public InsecureCertificateException(String message) {
+      super(message);
+    }
 
-  public NoSuchShadowRootException(String message) {
-    super(message);
-  }
+    public InsecureCertificateException(Throwable cause) {
+      super(cause);
+    }
 
-  public NoSuchShadowRootException(Throwable cause) {
-    super(cause);
-  }
-
-  public NoSuchShadowRootException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public InsecureCertificateException(String message, Throwable cause) {
+      super(message, cause);
+    }
 }
