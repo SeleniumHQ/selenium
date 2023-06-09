@@ -15,30 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverService;
+package org.openqa.selenium;
 
 /**
- * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
- * Capabilities)}.
+ * Indicates that navigation caused by the user agent hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.
  */
-public class NoSuchDriverException extends WebDriverException {
+public class InsecureCertificateException extends WebDriverException {
+    public InsecureCertificateException(String message) {
+      super(message);
+    }
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
+    public InsecureCertificateException(Throwable cause) {
+      super(cause);
+    }
 
-  public NoSuchDriverException(String reason) {
-    super(reason);
-  }
-
-  public NoSuchDriverException(String reason, Throwable cause) {
-    super(reason, cause);
-  }
-
-  @Override
-  public String getSupportUrl() {
-    return SUPPORT_URL;
-  }
+    public InsecureCertificateException(String message, Throwable cause) {
+      super(message, cause);
+    }
 }

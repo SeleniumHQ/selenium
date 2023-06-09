@@ -15,30 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverService;
+package org.openqa.selenium;
 
 /**
- * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
- * Capabilities)}.
+ * Indicates that a reference to a shadow root is now "detached" --- the element no longer appears on the
+ * DOM of the page.
  */
-public class NoSuchDriverException extends WebDriverException {
-
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
-
-  public NoSuchDriverException(String reason) {
-    super(reason);
+public class DetachedShadowRootException extends WebDriverException {
+  public DetachedShadowRootException(String message) {
+    super(message);
   }
 
-  public NoSuchDriverException(String reason, Throwable cause) {
-    super(reason, cause);
-  }
-
-  @Override
-  public String getSupportUrl() {
-    return SUPPORT_URL;
+  public DetachedShadowRootException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

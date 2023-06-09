@@ -15,30 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverService;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-/**
- * Thrown by {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService,
- * Capabilities)}.
- */
-public class NoSuchDriverException extends WebDriverException {
+public class NoSuchShadowRootTest extends JupiterTestBase{
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "/driver_location/";
-
-  public NoSuchDriverException(String reason) {
-    super(reason);
-  }
-
-  public NoSuchDriverException(String reason, Throwable cause) {
-    super(reason, cause);
-  }
-
-  @Override
-  public String getSupportUrl() {
-    return SUPPORT_URL;
-  }
+  @Test
+  public void getNoSuchShadowRoot(){
+    driver.get(pages.shadowRootPage);
+    WebElement nonExistentShadowRootElement = driver.findElement(By.id("noShadowRoot"));
+    assertThatExceptionOfType(NoSuchShadowRootException.class).isThrownBy(() -> nonExistentShadowRootElement.getShadowRoot());
+    }
 }

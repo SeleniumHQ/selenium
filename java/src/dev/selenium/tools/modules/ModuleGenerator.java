@@ -466,8 +466,14 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleRequiresDirective n, Void arg) {
+      String name = n.getNameAsString();
+      if (name.startsWith("processed_")) {
+        // When 'Automatic-Module-Name' is not set, we must derive the module name from the jar file
+        // name. Therefore, the 'processed_' prefix added by bazel must be removed to get the name.
+        name = name.substring(10);
+      }
       byteBuddyVisitor.visitRequire(
-          n.getNameAsString(), getByteBuddyModifier(n.getModifiers()), null);
+        name, getByteBuddyModifier(n.getModifiers()), null);
     }
 
     @Override
