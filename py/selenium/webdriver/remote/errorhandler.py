@@ -51,7 +51,7 @@ from selenium.common.exceptions import WebDriverException
 
 
 class ExceptionMapping:
-    """maps each errorcode in ErrorCode object to corresponding exception."""
+    """Maps each errorcode in ErrorCode object to corresponding exception."""
 
     NO_SUCH_ELEMENT = NoSuchElementException
     NO_SUCH_FRAME = NoSuchFrameException
@@ -174,72 +174,16 @@ class ErrorHandler:
                     pass
 
         exception_class: Type[WebDriverException]
-        if status in ErrorCode.NO_SUCH_ELEMENT:
-            exception_class = NoSuchElementException
-        elif status in ErrorCode.NO_SUCH_FRAME:
-            exception_class = NoSuchFrameException
-        elif status in ErrorCode.NO_SUCH_SHADOW_ROOT:
-            exception_class = NoSuchShadowRootException
-        elif status in ErrorCode.NO_SUCH_WINDOW:
-            exception_class = NoSuchWindowException
-        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:
-            exception_class = StaleElementReferenceException
-        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:
-            exception_class = ElementNotVisibleException
-        elif status in ErrorCode.INVALID_ELEMENT_STATE:
-            exception_class = InvalidElementStateException
-        elif (
-            status in ErrorCode.INVALID_SELECTOR
-            or status in ErrorCode.INVALID_XPATH_SELECTOR
-            or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER
-        ):
-            exception_class = InvalidSelectorException
-        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
-            exception_class = ElementNotSelectableException
-        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
-            exception_class = ElementNotInteractableException
-        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
-            exception_class = InvalidCookieDomainException
-        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
-            exception_class = UnableToSetCookieException
-        elif status in ErrorCode.TIMEOUT:
-            exception_class = TimeoutException
-        elif status in ErrorCode.SCRIPT_TIMEOUT:
-            exception_class = TimeoutException
-        elif status in ErrorCode.UNKNOWN_ERROR:
-            exception_class = WebDriverException
-        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:
-            exception_class = UnexpectedAlertPresentException
-        elif status in ErrorCode.NO_ALERT_OPEN:
-            exception_class = NoAlertPresentException
-        elif status in ErrorCode.IME_NOT_AVAILABLE:
-            exception_class = ImeNotAvailableException
-        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
-            exception_class = ImeActivationFailedException
-        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
-            exception_class = MoveTargetOutOfBoundsException
-        elif status in ErrorCode.JAVASCRIPT_ERROR:
-            exception_class = JavascriptException
-        elif status in ErrorCode.SESSION_NOT_CREATED:
-            exception_class = SessionNotCreatedException
-        elif status in ErrorCode.INVALID_ARGUMENT:
-            exception_class = InvalidArgumentException
-        elif status in ErrorCode.NO_SUCH_COOKIE:
-            exception_class = NoSuchCookieException
-        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:
-            exception_class = ScreenshotException
-        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:
-            exception_class = ElementClickInterceptedException
-        elif status in ErrorCode.INSECURE_CERTIFICATE:
-            exception_class = InsecureCertificateException
-        elif status in ErrorCode.INVALID_COORDINATES:
-            exception_class = InvalidCoordinatesException
-        elif status in ErrorCode.INVALID_SESSION_ID:
-            exception_class = InvalidSessionIdException
-        elif status in ErrorCode.UNKNOWN_METHOD:
-            exception_class = UnknownMethodException
+        e = ErrorCode()
+        error_codes = [item for item in dir(e) if not item.startswith("__")]
+        for error_code in error_codes:
+            error_info = getattr(ErrorCode, error_code)
+            if isinstance(error_info, list) and status in error_info:
+                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
+                break
         else:
             exception_class = WebDriverException
+
         if not value:
             value = response["value"]
         if isinstance(value, str):
