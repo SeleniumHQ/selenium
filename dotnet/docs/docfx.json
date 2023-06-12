@@ -5,6 +5,7 @@
         {
           "files": [
             "src/webdriver/WebDriver.csproj",
+            "src/support/WebDriver.Support.csproj",
             "bin/**/*.dll"
           ],
           "src": "../"
