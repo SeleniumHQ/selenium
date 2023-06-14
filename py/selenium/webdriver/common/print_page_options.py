@@ -80,7 +80,7 @@ class MarginSettings:
     - top
     - bottom
     - left
-    - right margins
+    - right
     """
 
     def __init__(self, name):
