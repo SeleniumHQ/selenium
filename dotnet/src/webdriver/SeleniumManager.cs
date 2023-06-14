@@ -72,12 +72,17 @@ namespace OpenQA.Selenium
 #endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
+
+            if (!File.Exists(binaryFullPath))
+            {
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
+            }
         }
 
         /// <summary>
         /// Determines the location of the correct driver.
         /// </summary>
-        /// <param name="driverName">Which driver the service needs.</param>
+        /// <param name="options">The correct path depends on which options are being used.</param>
         /// <returns>
         /// The location of the driver.
         /// </returns>

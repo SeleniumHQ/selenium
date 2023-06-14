@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 from typing import List
 
-from selenium.common.exceptions import SeleniumManagerException
+from selenium.common import WebDriverException
 from selenium.webdriver.common.options import BaseOptions
 
 logger = logging.getLogger(__name__)
@@ -57,8 +57,7 @@ class SeleniumManager:
         path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
-            tracker = "https://github.com/SeleniumHQ/selenium/issues"
-            raise SeleniumManagerException(f"{path} is missing.  Please open an issue on {tracker}")
+            raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
         return path
 
@@ -109,15 +108,18 @@ class SeleniumManager:
         """
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
-        completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
-        stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
-        output = json.loads(stdout)
-        result = output["result"]["message"]
+        try:
+            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
+            stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
+            output = json.loads(stdout)
+            result = output["result"]["message"]
+        except Exception as err:
+            raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
+
         if completed_proc.returncode:
-            raise SeleniumManagerException(f"Selenium Manager failed for: {command}.\n{result}{stderr}")
+            raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
         else:
-            # Selenium Manager exited successfully, return executable path and print warnings
             for item in output["logs"]:
                 if item["level"] == "WARN":
                     logger.warning(item["message"])

@@ -182,7 +182,7 @@ class ScriptManager {
 
   async addPreloadScript(
     functionDeclaration,
-    argumentValueList = null,
+    argumentValueList = [],
     sandbox = null
   ) {
     const params = {

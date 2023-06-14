@@ -23,8 +23,10 @@ import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.DetachedShadowRootException;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.InsecureCertificateException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -35,6 +37,7 @@ import org.openqa.selenium.NoSuchCookieException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -56,6 +59,7 @@ public class ErrorCodec {
   private static final Set<W3CError> ERRORS =
       ImmutableSet.<W3CError>builder()
           .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
+          .add(new W3CError("detached shadow root", DetachedShadowRootException.class, 404))
           .add(
               new W3CError(
                   "element click intercepted", ElementClickInterceptedException.class, 400))
@@ -65,12 +69,14 @@ public class ErrorCodec {
           .add(new W3CError("invalid element state", InvalidElementStateException.class, 400))
           .add(new W3CError("invalid selector", InvalidSelectorException.class, 400))
           .add(new W3CError("invalid session id", NoSuchSessionException.class, 404))
+          .add(new W3CError("insecure certificate", InsecureCertificateException.class, 400))
           .add(new W3CError("javascript error", JavascriptException.class, 500))
           .add(new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500))
           .add(new W3CError("no such alert", NoAlertPresentException.class, 404))
           .add(new W3CError("no such cookie", NoSuchCookieException.class, 404))
           .add(new W3CError("no such element", NoSuchElementException.class, 404))
           .add(new W3CError("no such frame", NoSuchFrameException.class, 404))
+          .add(new W3CError("no such shadow root", NoSuchShadowRootException.class, 404))
           .add(new W3CError("no such window", NoSuchWindowException.class, 404))
           .add(new W3CError("session not created", SessionNotCreatedException.class, 500))
           .add(new W3CError("stale element reference", StaleElementReferenceException.class, 404))

@@ -28,6 +28,16 @@ namespace OpenQA.Selenium
     public class WebDriverException : Exception
     {
         /// <summary>
+        /// Intro comment for pointing to documentation
+        /// </summary>
+        protected static string supportMsg = "For documentation on this error, please visit: ";
+
+        /// <summary>
+        /// Location of errors in documentation
+        /// </summary>
+        protected static string baseSupportUrl = "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverException"/> class.
         /// </summary>
         public WebDriverException()

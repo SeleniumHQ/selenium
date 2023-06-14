@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+/**
+ * Indicates that an element does not have a shadow root.
+ */
 public class NoSuchShadowRootException extends NotFoundException {
 
   public NoSuchShadowRootException(String message) {

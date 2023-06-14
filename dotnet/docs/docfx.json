@@ -5,6 +5,7 @@
         {
           "files": [
             "src/webdriver/WebDriver.csproj",
+            "src/support/WebDriver.Support.csproj",
             "bin/**/*.dll"
           ],
           "src": "../"
@@ -23,18 +24,8 @@
   "build": {
     "content": [
       {
-        "files": [
-          "api/**.yml",
-          "api/index.md"
-        ]
-      },
-      {
-        "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
-          "toc.yml",
-          "*.md"
-        ]
+        "files": "**/*.{md|yml}",
+        "src": "api"
       }
     ],
     "resource": [

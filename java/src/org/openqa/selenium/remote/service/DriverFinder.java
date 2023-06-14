@@ -6,6 +6,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.remote.NoSuchDriverException;
 
 public class DriverFinder {
 
@@ -25,24 +26,22 @@ public class DriverFinder {
       try {
         exePath = SeleniumManager.getInstance().getDriverPath(options);
       } catch (Exception e) {
-        LOG.warning(
-            String.format(
-                "Unable to obtain %s using Selenium Manager: %s",
-                service.getDriverName(), e.getMessage()));
+        throw new NoSuchDriverException(String.format("Unable to obtain: %s", options), e);
       }
     }
 
-    String validPath =
-        Require.state("The path to the driver executable", exePath)
-            .nonNull(
-                "Unable to locate the %s executable; for more information on how to install"
-                    + " drivers, see"
-                    + " https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/",
-                service.getDriverName());
+    String message = "";
+    if (exePath == null) {
+      message = String.format("Unable to locate or obtain %s", service.getDriverName());
+    } else if (!new File(exePath).exists()) {
+      message = String.format("%s located at %s, but invalid", service.getDriverName(), exePath);
+    } else if (!new File(exePath).canExecute()) {
+      message =
+          String.format("%s located at %s, cannot be executed", service.getDriverName(), exePath);
+    } else {
+      return exePath;
+    }
 
-    File exe = new File(validPath);
-    Require.state("The driver executable", exe).isFile();
-    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
-    return validPath;
+    throw new NoSuchDriverException(message);
   }
 }
