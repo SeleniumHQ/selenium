@@ -150,6 +150,21 @@ class ValidateType:
 
 
 class PrintOptions:
+    page_height = PageSettings("height")
+    page_width = PageSettings("width")
+
+    margin_top = MarginSettings("top")
+    margin_bottom = MarginSettings("bottom")
+    margin_left = MarginSettings("left")
+    margin_right = MarginSettings("right")
+
+    scale = Scale("scale")
+    orientation = PageOrientation("orientation")
+
+    background = ValidateType("background", bool)
+    shrink_to_fit = ValidateType("shrinkToFit", bool)
+    page_ranges = ValidateType("pageRanges", list)
+
     def __init__(self) -> None:
         self._print_options: _PrintOpts = {}
         self._page: _PageOpts = {}
