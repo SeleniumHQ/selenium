@@ -16,13 +16,13 @@ headless_args = select({
 chrome_args = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "--driver-binary=$(location @linux_chromedriver//:chromedriver)",
-        "--browser-binary=$(location @linux_chrome//:chrome-linux/chrome)",
+        "--browser-binary=$(location @linux_chrome//:chrome-linux64/chrome)",
         "--browser-args=--disable-dev-shm-usage",
         "--browser-args=--no-sandbox",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
         "--driver-binary=$(location @mac_chromedriver//:chromedriver)",
-        "--browser-binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+        "--browser-binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
     "@selenium//common:use_local_chromedriver": [
         "--driver-binary=$(location @selenium//common:chromedriver)",

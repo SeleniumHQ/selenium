@@ -4,6 +4,8 @@ import hashlib
 import json
 import urllib3
 
+from packaging.version import LegacyVersion
+
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
@@ -47,31 +49,24 @@ def chromedriver():
     return content
 
 def chrome():
-    # Find the current latest stable revision
-    r = http.request('GET', 'https://omahaproxy.appspot.com/all.json?channel=stable&os=linux')
-    max_version = int(json.loads(r.data)[0]['versions'][0]['branch_base_position'])
-    min_version = max_version - 1500
+    channel = "Stable"
+    r = http.request('GET', f'https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Win32,Windows,Mac,Linux')
+    milestone = json.loads(r.data)[0]["milestone"]
 
-    # count down from most recent to a version which has something for everyone
-    for v in range(max_version, min_version, -1):
-        r = http.request(
-            'HEAD',
-            'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%s/chrome-linux.zip' % v)
-        if r.status != 200:
-            continue
+    r = http.request('GET', 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
+    versions = json.loads(r.data)["versions"]
 
-        r = http.request(
-            'HEAD',
-            'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%s/chrome-mac.zip' % v)
-        if r.status != 200:
-            continue
+    selected_version = sorted(
+        filter(lambda v: v['version'].split('.')[0] == str(milestone), versions),
+        key=lambda v: LegacyVersion(v['version'])
+    )[-1]
 
-        content = ""
+    downloads = selected_version["downloads"]["chrome"]
 
-        linux = 'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%s/chrome-linux.zip' % v
-        sha = calculate_hash(linux)
+    linux = [d["url"] for d in downloads if d["platform"] == "linux64"][0]
+    sha = calculate_hash(linux)
 
-        content = content + """
+    content = """
     http_archive(
         name = "linux_chrome",
         url = "%s",
@@ -84,27 +79,32 @@ filegroup(
 )
 
 exports_files(
-    ["chrome-linux/chrome"],
+    ["chrome-linux64/chrome"],
 )
 \"\"\",
     )
-    """ % (linux, sha)
 
-        mac = 'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%s/chrome-mac.zip' % v
-        sha = calculate_hash(mac)
+""" % (linux, sha)
 
-        content = content + """
+    mac = [d["url"] for d in downloads if d["platform"] == "mac-x64"][0]
+    sha = calculate_hash(mac)
+
+    content += """
     http_archive(
         name = "mac_chrome",
         url = "%s",
         sha256 = "%s",
-        strip_prefix = "chrome-mac",
-        build_file_content = "exports_files([\\"Chromium.app\\"])",
+        strip_prefix = "chrome-mac-x64",
+        patch_cmds = [
+            "mv 'Google Chrome for Testing.app' Chrome.app",
+            "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
+        ],
+        build_file_content = "exports_files([\\"Google Chrome for Testing.app\\"])",
     )
-    """ % (mac, sha)
 
-        return content
-    raise RuntimeError("Cannot find stable chrome")
+""" % (mac, sha)
+
+    return content
 
 def edge():
     r = http.request('GET', 'https://edgeupdates.microsoft.com/api/products')
@@ -226,7 +226,8 @@ exports_files(
 )
 \"\"\",
     )
-    """ % (linux, sha)
+
+""" % (linux, sha)
 
     mac = "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg" % (v, v)
     sha = calculate_hash(mac)
@@ -237,7 +238,8 @@ exports_files(
         sha256 = "%s",
         build_file_content = "exports_files([\\"Firefox.app\\"])",
     )
-    """ % (mac, sha)
+
+""" % (mac, sha)
 
     return content
 
