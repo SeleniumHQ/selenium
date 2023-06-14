@@ -18,15 +18,17 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class NoSuchShadowRootTest extends JupiterTestBase{
+public class NoSuchShadowRootTest extends JupiterTestBase {
 
   @Test
-  public void getNoSuchShadowRoot(){
+  public void getNoSuchShadowRoot() {
     driver.get(pages.shadowRootPage);
     WebElement nonExistentShadowRootElement = driver.findElement(By.id("noShadowRoot"));
-    assertThatExceptionOfType(NoSuchShadowRootException.class).isThrownBy(() -> nonExistentShadowRootElement.getShadowRoot());
-    }
+    assertThatExceptionOfType(NoSuchShadowRootException.class)
+        .isThrownBy(() -> nonExistentShadowRootElement.getShadowRoot());
+  }
 }

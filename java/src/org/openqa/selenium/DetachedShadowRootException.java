@@ -18,8 +18,8 @@
 package org.openqa.selenium;
 
 /**
- * Indicates that a reference to a shadow root is now "detached" --- the element no longer appears on the
- * DOM of the page.
+ * Indicates that a reference to a shadow root is now "detached" --- the element no longer appears
+ * on the DOM of the page.
  */
 public class DetachedShadowRootException extends WebDriverException {
   public DetachedShadowRootException(String message) {
