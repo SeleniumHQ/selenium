@@ -97,11 +97,11 @@ impl SeleniumManager for SafariManager {
         self.driver_name
     }
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         Ok("(local)".to_string())
     }
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         Err(format!("{} not available for download", self.get_driver_name()).into())
     }
 

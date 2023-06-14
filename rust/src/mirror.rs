@@ -15,10 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::downloads::read_content_from_link;
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 
 pub const MIRROR_URL: &str =
     "https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/common/mirror/selenium";
@@ -32,10 +29,4 @@ pub struct Assets {
 pub struct SeleniumRelease {
     pub tag_name: String,
     pub assets: Vec<Assets>,
-}
-
-pub fn get_mirror_response(http_client: &Client) -> Result<Vec<SeleniumRelease>, Box<dyn Error>> {
-    let content = read_content_from_link(http_client, MIRROR_URL.to_string())?;
-    let mirror_response: Vec<SeleniumRelease> = serde_json::from_str(&content)?;
-    Ok(mirror_response)
 }

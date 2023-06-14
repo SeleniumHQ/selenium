@@ -16,6 +16,7 @@
 // under the License.
 
 use reqwest::Client;
+use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fs::File;
 use std::io::copy;
@@ -91,4 +92,13 @@ pub async fn read_redirect_from_link(
         http_client.get(&url).send().await?.url().path().to_string(),
         log,
     )
+}
+
+pub fn parse_json_from_url<T>(http_client: &Client, url: String) -> Result<T, Box<dyn Error>>
+where
+    T: Serialize + for<'a> Deserialize<'a>,
+{
+    let content = read_content_from_link(http_client, url)?;
+    let response: T = serde_json::from_str(&content)?;
+    Ok(response)
 }
