@@ -17,98 +17,41 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.io.ByteStreams;
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.SimpleHttpServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 class ReverseProxyHandlerTest {
-
-  private Server server;
   private Tracer tracer = DefaultTestTracer.createTracer();
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
-  @BeforeEach
-  public void startServer() throws IOException {
-    server = new Server();
-  }
-
-  @AfterEach
-  public void stopServer() {
-    server.stop();
-  }
-
   @Test
-  void shouldForwardRequestsToEndPoint() {
-    HttpHandler handler = new ReverseProxyHandler(tracer, factory.createClient(server.url));
-    HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
-    req.addHeader("X-Cheese", "Cake");
-    handler.execute(req);
+  void shouldForwardRequestsToEndPoint()
+    throws MalformedURLException, URISyntaxException, InterruptedException {
+    try (SimpleHttpServer server = new SimpleHttpServer()){
+      server.registerEndpoint(HttpMethod.GET, "/ok",
+                              SimpleHttpServer.ECHO_HEADERS_HANDLER);
 
-    // HTTP headers are case insensitive. This is how the HttpUrlConnection likes to encode things
-    assertEquals("Cake", server.lastRequest.getHeader("x-cheese"));
-  }
+      HttpHandler
+        handler =
+        new ReverseProxyHandler(tracer, factory.createClient(server.baseUri().toURL()));
+      HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
+      req.addHeader("X-Cheese", "Cake");
+      HttpResponse response = handler.execute(req);
 
-  private static class Server {
-    private final URL url;
-    private final HttpServer server;
-    private HttpRequest lastRequest;
-
-    public Server() throws IOException {
-      int port = PortProber.findFreePort();
-      String address = new NetworkUtils().getPrivateLocalAddress();
-      url = new URL("http", address, port, "/ok");
-
-      server = HttpServer.create(new InetSocketAddress(address, port), 0);
-      server.createContext(
-          "/ok",
-          ex -> {
-            lastRequest =
-                new HttpRequest(
-                    HttpMethod.valueOf(ex.getRequestMethod()), ex.getRequestURI().getPath());
-            Headers headers = ex.getRequestHeaders();
-            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-              for (String value : entry.getValue()) {
-                lastRequest.addHeader(entry.getKey().toLowerCase(), value);
-              }
-            }
-            try (InputStream in = ex.getRequestBody()) {
-              lastRequest.setContent(bytes(ByteStreams.toByteArray(in)));
-            }
-
-            byte[] payload = "I like cheese".getBytes(UTF_8);
-            ex.sendResponseHeaders(HTTP_OK, payload.length);
-            try (OutputStream out = ex.getResponseBody()) {
-              out.write(payload);
-            }
-          });
-      server.start();
-    }
-
-    public void stop() {
-      server.stop(0);
+      // HTTP headers are case insensitive.
+      assertEquals("Cake", response.getHeader("x-cheese"));
     }
   }
 }

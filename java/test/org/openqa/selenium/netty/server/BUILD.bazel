@@ -33,7 +33,24 @@ java_test_suite(
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
     ] + JUNIT5_DEPS,
+)
+
+java_library(
+    name = "test-server",
+    testonly = True,
+    srcs = glob(["SimpleHttpServer.java"]),
+    visibility = ["//java/test:__subpackages__"],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+    ],
 )
