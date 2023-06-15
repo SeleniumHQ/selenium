@@ -45,7 +45,7 @@ class NetworkInspector {
     } else {
       await this.bidi.subscribe(eventType)
     }
-    this._on(callback)
+    await this._on(callback)
   }
 
   async _on(callback) {
