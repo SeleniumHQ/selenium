@@ -16,6 +16,7 @@
 # under the License.
 import typing
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
 DEFAULT_EXECUTABLE_PATH = "chromedriver"
@@ -38,6 +39,7 @@ class Service(service.ChromiumService):
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
@@ -46,6 +48,7 @@ class Service(service.ChromiumService):
             port=port,
             service_args=service_args,
             log_path=log_path,
+            log_output=log_output,
             env=env,
             start_error_message="Please see https://chromedriver.chromium.org/home",
             **kwargs,
