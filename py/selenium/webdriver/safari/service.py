@@ -16,8 +16,8 @@
 # under the License.
 
 import os
-import subprocess
 import typing
+import warnings
 
 from selenium.webdriver.common import service
 
@@ -30,7 +30,7 @@ class Service(service.Service):
 
     :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
+    :param quiet: (Deprecated) Suppress driver stdout & stderr, redirects to os.devnull if enabled.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
@@ -39,7 +39,7 @@ class Service(service.Service):
         self,
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        quiet: bool = False,
+        quiet: bool = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         reuse_service=False,
@@ -47,13 +47,13 @@ class Service(service.Service):
     ) -> None:
         self._check_executable(executable_path)
         self.service_args = service_args or []
-        self.quiet = quiet
+        if quiet is not None:
+            warnings.warn("quiet is no longer needed to supress output", DeprecationWarning, stacklevel=2)
+
         self._reuse_service = reuse_service
-        log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
         super().__init__(
             executable=executable_path,
             port=port,
-            log_file=log_file,  # type: ignore
             env=env,
             **kwargs,
         )
