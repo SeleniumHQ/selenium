@@ -123,7 +123,7 @@ public class NewSessionPayload implements Closeable {
     Require.precondition(
         source.containsKey("capabilities"), "New session payload must contain capabilities");
 
-    String json = new Json().toJson(Require.nonNull("Payload", source));
+    String json = new Json().toJson(Require.nonNull("Payload", source), 100);
     return new NewSessionPayload(new StringReader(json));
   }
 
