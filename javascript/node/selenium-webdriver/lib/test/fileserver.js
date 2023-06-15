@@ -111,6 +111,9 @@ const Pages = (function () {
   addPage('logEntryAdded', 'bidi/logEntryAdded.html')
   addPage('scriptTestAccessProperty', 'bidi/scriptTestAccessProperty.html')
   addPage('scriptTestRemoveProperty', 'bidi/scriptTestRemoveProperty.html')
+  addPage('emptyPage', 'bidi/emptyPage.html')
+  addPage('emptyText', 'bidi/emptyText.txt')
+  addPage('redirectedHttpEquiv', 'bidi/redirected_http_equiv.html')
 
   return pages
 })()
