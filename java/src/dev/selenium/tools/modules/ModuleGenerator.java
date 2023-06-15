@@ -472,8 +472,7 @@ public class ModuleGenerator {
         // name. Therefore, the 'processed_' prefix added by bazel must be removed to get the name.
         name = name.substring(10);
       }
-      byteBuddyVisitor.visitRequire(
-        name, getByteBuddyModifier(n.getModifiers()), null);
+      byteBuddyVisitor.visitRequire(name, getByteBuddyModifier(n.getModifiers()), null);
     }
 
     @Override
