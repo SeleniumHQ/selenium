@@ -148,7 +148,6 @@ pub trait SeleniumManager {
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
         let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
-        let browser_ttl = self.get_config().browser_ttl;
 
         match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
             Some(version) => {
@@ -182,7 +181,9 @@ pub trait SeleniumManager {
                     browser_version = Some(full_browser_version);
                     break;
                 }
-                if browser_version.is_some() && !self.is_safari() {
+
+                let browser_ttl = self.get_browser_ttl();
+                if browser_ttl > 0 && browser_version.is_some() && !self.is_safari() {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
                         browser_version.as_ref().unwrap(),
@@ -454,6 +455,22 @@ pub trait SeleniumManager {
         let http_client = create_http_client(timeout, proxy)?;
         self.set_http_client(http_client);
         Ok(())
+    }
+
+    fn get_driver_ttl(&self) -> u64 {
+        self.get_config().driver_ttl
+    }
+
+    fn set_driver_ttl(&mut self, driver_ttl: u64) {
+        self.get_config_mut().driver_ttl = driver_ttl;
+    }
+
+    fn get_browser_ttl(&self) -> u64 {
+        self.get_config().browser_ttl
+    }
+
+    fn set_browser_ttl(&mut self, browser_ttl: u64) {
+        self.get_config_mut().browser_ttl = browser_ttl;
     }
 }
 

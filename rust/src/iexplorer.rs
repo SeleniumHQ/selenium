@@ -100,7 +100,6 @@ impl SeleniumManager for IExplorerManager {
         let browser_version_binding = self.get_major_browser_version();
         let browser_version = browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
-        let driver_ttl = self.get_config().driver_ttl;
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
         {
@@ -144,7 +143,8 @@ impl SeleniumManager for IExplorerManager {
                         self.get_logger(),
                     )?;
 
-                    if !browser_version.is_empty() {
+                    let driver_ttl = self.get_driver_ttl();
+                    if driver_ttl > 0 && !browser_version.is_empty() {
                         metadata.drivers.push(create_driver_metadata(
                             browser_version,
                             self.driver_name,
