@@ -46,20 +46,13 @@ jobs:
       run: ./go publish-maven-snapshot
 
   grid:
-    runs-on: ubuntu-latest
     if: inputs.language == 'java'
-    steps:
-      - name: Java Build
-        uses: ./.github/workflows/bazel.yml
-        with:
-          name: Build Release
-          cache-key: java-nightly
-          run: ./go publish-maven-snapshot
-      - name: Release Nightly Grid
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "nightly"
-          title: "Nightly"
-          prerelease: true
-          files: build/dist/*.jar
+    name: Grid
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Release
+      cache-key: grid-nightly
+      run: |
+        echo build --stamp >>.bazelrc.local
+        ./go prep-release-zip
+      nightly-release-files: build/dist/*.jar

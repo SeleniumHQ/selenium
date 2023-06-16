@@ -41,6 +41,11 @@ on:
         required: false
         type: string
         default: ''
+      nightly-release-files:
+        description: Files to upload to the Nightly release tah
+        required: false
+        type: string
+        default: ''
 
 jobs:
   bazel:
@@ -122,3 +127,12 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: false
+      - name: Release Nightly
+        if: inputs.nightly-release-files != ''
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "nightly"
+          title: "Nightly"
+          prerelease: true
+          files: ${{ inputs.nightly-release-files }}
