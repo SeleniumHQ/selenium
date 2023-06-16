@@ -116,7 +116,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
             continue;
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if target_file_name.eq_ignore_ascii_case(file.name()) {
+        if file.name().ends_with(target_file_name) {
             log.debug(format!(
                 "File extracted to {} ({} bytes)",
                 target.display(),

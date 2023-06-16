@@ -162,8 +162,9 @@ impl SeleniumManager for FirefoxManager {
         self.driver_name
     }
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_version_binding = self.get_major_browser_version();
+        let browser_version = browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
         let driver_ttl = self.get_config().driver_ttl;
 
@@ -196,7 +197,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();

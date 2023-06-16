@@ -24,12 +24,13 @@ use std::path::PathBuf;
 
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
+use crate::downloads::parse_json_from_url;
 use crate::{create_http_client, parse_version, Logger, SeleniumManager};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::mirror::{get_mirror_response, Assets, SeleniumRelease};
+use crate::mirror::{Assets, SeleniumRelease, MIRROR_URL};
 
 pub const IE_NAMES: &[&str] = &[
     "iexplorer",
@@ -95,8 +96,9 @@ impl SeleniumManager for IExplorerManager {
         self.driver_name
     }
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_version_binding = self.get_major_browser_version();
+        let browser_version = browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
         let driver_ttl = self.get_config().driver_ttl;
 
@@ -110,7 +112,10 @@ impl SeleniumManager for IExplorerManager {
                 Ok(driver_version)
             }
             _ => {
-                let selenium_releases = get_mirror_response(self.get_http_client())?;
+                let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
+                    self.get_http_client(),
+                    MIRROR_URL.to_string(),
+                )?;
 
                 let filtered_releases: Vec<SeleniumRelease> = selenium_releases
                     .into_iter()
@@ -157,7 +162,7 @@ impl SeleniumManager for IExplorerManager {
         }
     }
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         let mut driver_url = "".to_string();
         RELEASE_URL.with(|url| {
             driver_url = url.borrow().to_string();
