@@ -354,11 +354,18 @@ end
 
 task 'release-java': %i[prep-release-zip publish-maven]
 
-def read_user_pass_from_m2_settings
-  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
-  found_section = false
+def read_m2_user_pass
+  # First check env vars, then the settings.xml config inside .m2
   user = nil
   pass = nil
+  if ENV['SEL_M2_USER'] && ENV['SEL_M2_PASS']
+    puts 'Fetching m2 user and pass from environment variables.'
+    user = ENV['SEL_M2_USER']
+    pass = ENV['SEL_M2_PASS']
+    return [user, pass]
+  end
+  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
+  found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
@@ -375,16 +382,20 @@ def read_user_pass_from_m2_settings
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
- creds = read_user_pass_from_m2_settings
+  creds = read_m2_user_pass
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
   end
 end
 
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
- creds = read_user_pass_from_m2_settings
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
+  creds = read_m2_user_pass
+  if version.end_with?('-SNAPSHOT')
+    JAVA_RELEASE_TARGETS.each do |p|
+      Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
+    end
+  else
+    puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
   end
 end
 
