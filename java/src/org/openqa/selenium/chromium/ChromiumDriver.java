@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
@@ -132,19 +133,25 @@ public class ChromiumDriver extends RemoteWebDriver
 
     this.biDi = createBiDi(biDiUri);
 
-    Optional<URI> cdpUri =
-        CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
-            .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
+    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
+    Optional<HttpClient> client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+    Optional<URI> cdpUri;
 
     try {
-      connection =
-          cdpUri.map(
-              uri ->
-                  new Connection(
-                      factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-                      uri.toString()));
+      try {
+        cdpUri = client.flatMap(httpClient -> CdpEndpointFinder.getCdpEndPoint(httpClient));
+      } catch (Exception e) {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception ex) {
+          e.addSuppressed(ex);
+        }
+        throw e;
+      }
+      connection = cdpUri.map(uri -> new Connection(client.get(), uri.toString()));
     } catch (ConnectionFailedException e) {
-      LOG.warning("Unable to establish websocket connection to " + cdpUri.get());
+      cdpUri = Optional.empty();
+      LOG.log(Level.WARNING, "Unable to establish websocket connection to " + reportedUri.get(), e);
       connection = Optional.empty();
     }
 
