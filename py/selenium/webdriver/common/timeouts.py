@@ -37,7 +37,33 @@ else:
     JSONTimeouts = Dict[str, int]
 
 
+class TimeoutDescriptor:
+    """TimeoutDescriptor which gets and sets values to below attributes.
+
+    - _implicit_timeout
+    - _page_load
+    - _script
+    This does not set the value on the remote end.
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls) -> float:
+        return getattr(obj, self.name) / 1000
+
+    def __set__(self, obj, value) -> None:
+        if not isinstance(value, (int, float)):
+            raise TypeError("Timeouts can only be an int or a float")
+        setattr(obj, self.name, int(float(value) * 1000))
+
+
 class Timeouts:
+    # Creating descriptor objects
+    implicit_wait = TimeoutDescriptor("_implicit_wait")
+    page_load = TimeoutDescriptor("_page_load")
+    script = TimeoutDescriptor("_script")
+
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
         """Create a new Timeout object.
 
@@ -53,66 +79,12 @@ class Timeouts:
         self.page_load = page_load
         self.script = script
 
-    @property
-    def implicit_wait(self) -> float:
-        """Return the value for the implicit wait.
-
-        This does not return the value on the remote end
-        """
-        return self._implicit_wait / 1000
-
-    @implicit_wait.setter
-    def implicit_wait(self, _implicit_wait: float) -> None:
-        """Sets the value for the implicit wait.
-
-        This does not set the value on the remote end
-        """
-        self._implicit_wait = self._convert(_implicit_wait)
-
-    @property
-    def page_load(self) -> float:
-        """Return the value for the page load wait.
-
-        This does not return the value on the remote end
-        """
-        return self._page_load / 1000
-
-    @page_load.setter
-    def page_load(self, _page_load: float) -> None:
-        """Sets the value for the page load wait.
-
-        This does not set the value on the remote end
-        """
-        self._page_load = self._convert(_page_load)
-
-    @property
-    def script(self) -> float:
-        """Return the value for the script wait.
-
-        This does not return the value on the remote end
-        """
-        return self._script / 1000
-
-    @script.setter
-    def script(self, _script: float) -> None:
-        """Sets the value for the script wait.
-
-        This does not set the value on the remote end
-        """
-        self._script = self._convert(_script)
-
-    def _convert(self, timeout: float) -> int:
-        if isinstance(timeout, (int, float)):
-            return int(float(timeout) * 1000)
-        raise TypeError("Timeouts can only be an int or a float")
-
     def _to_json(self) -> JSONTimeouts:
         timeouts: JSONTimeouts = {}
-        if self._implicit_wait:
-            timeouts["implicit"] = self._implicit_wait
-        if self._page_load:
-            timeouts["pageLoad"] = self._page_load
-        if self._script:
-            timeouts["script"] = self._script
-
+        if self.implicit_wait:
+            timeouts["implicit"] = self.implicit_wait
+        if self.page_load:
+            timeouts["pageLoad"] = self.page_load
+        if self.script:
+            timeouts["script"] = self.script
         return timeouts
