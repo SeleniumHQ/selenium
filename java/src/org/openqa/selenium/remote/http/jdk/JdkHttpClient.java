@@ -34,6 +34,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpTimeoutException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
@@ -66,7 +67,7 @@ public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
   private java.net.http.HttpClient client;
-  private WebSocket websocket;
+  private final List<WebSocket> websockets;
   private final ExecutorService executorService;
   private final Duration readTimeout;
 
@@ -75,6 +76,7 @@ public class JdkHttpClient implements HttpClient {
 
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
+    this.websockets = new ArrayList<>();
 
     executorService = Executors.newCachedThreadPool();
 
@@ -239,7 +241,7 @@ public class JdkHttpClient implements HttpClient {
       throw new TimeoutException(e);
     }
 
-    this.websocket =
+    WebSocket websocket =
         new WebSocket() {
           @Override
           public WebSocket send(Message message) {
@@ -305,14 +307,11 @@ public class JdkHttpClient implements HttpClient {
           @Override
           public void close() {
             LOG.fine("Closing websocket");
-            synchronized (underlyingSocket) {
-              if (!underlyingSocket.isOutputClosed()) {
-                underlyingSocket.sendClose(1000, "WebDriver closing socket");
-              }
-            }
+            send(new CloseMessage(1000, "WebDriver closing socket"));
           }
         };
-    return this.websocket;
+    websockets.add(websocket);
+    return websocket;
   }
 
   private URI getWebSocketUri(HttpRequest request) {
@@ -443,11 +442,18 @@ public class JdkHttpClient implements HttpClient {
 
   @Override
   public void close() {
-    executorService.shutdownNow();
-    if (this.websocket != null) {
-      this.websocket.close();
+    if (this.client == null) {
+      return;
     }
     this.client = null;
+    for (WebSocket websocket : websockets) {
+      try {
+        websocket.close();
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "failed to close the websocket: " + websocket, e);
+      }
+    }
+    executorService.shutdownNow();
   }
 
   @AutoService(HttpClient.Factory.class)
