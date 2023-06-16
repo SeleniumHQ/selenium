@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -31,5 +33,19 @@ class JsonConfigTest {
     Config config = new JsonConfig(new StringReader(raw));
 
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+  }
+
+  @Test
+  void ensureCanReadListOfMaps() {
+    String raw = "{\"node\":{\"detect-drivers\":false,"
+      + "\"driver-configuration\":[{\"display-name\":\"htmlunit\","
+      + "\"stereotype\":{\"browserName\":\"htmlunit\",\"browserVersion\":\"chrome\"}}]}}";
+    Config config = new JsonConfig(new StringReader(raw));
+    List<String> expected = Arrays.asList(
+      "display-name=htmlunit",
+      "stereotype={browserName=htmlunit, browserVersion=chrome}"
+    );
+    Optional<List<String>> content = config.getAll("node", "driver-configuration");
+    assertThat(content).isEqualTo(Optional.of(expected));
   }
 }
