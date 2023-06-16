@@ -8,9 +8,22 @@ on:
         description: Nightly version number (e.g. 20221125)
         required: true
         type: string
+      language:
+        description: Configured artefacts for the language will be built and pushed
+        required: true
+        type: choice
+        default: "ruby"
+        options:
+          - java
+          - ruby
+
+env:
+  SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+  SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
 
 jobs:
   ruby:
+    if: inputs.language == 'ruby'
     name: Ruby
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -26,3 +39,12 @@ jobs:
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
         bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
         bazel run //rb:${{ matrix.gem }}-release-nightly
+
+  java:
+    if: inputs.language == 'java'
+    name: Java
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Release
+      cache-key: java-nightly
+      run: ./go publish-maven-snapshot
