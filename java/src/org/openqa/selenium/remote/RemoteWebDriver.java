@@ -462,7 +462,26 @@ public class RemoteWebDriver
   public List<WebElement> findElements(By locator) {
     Require.nonNull("Locator", locator);
 
-    return findElements(this, DriverCommand::FIND_ELEMENTS, locator);
+    if (locator.getClass().equals(By.ByKeyword.class)) {
+      By.Remotable.Parameters params = ((By.ByKeyword) locator).getRemoteParameters();
+      String xpath = (String) params.value();
+      String[] keywords = this.getKeywordAtXpath(xpath);
+      List<WebElement> webElements;
+      for (Map<String, String> language : languagesProperties) {
+        String[] values = getValuesFromKeywords(language, keywords);
+        String newXpath = parseXpath(xpath, keywords, values);
+        try {
+          webElements = findElements(By.xpath(newXpath));
+          System.out.println("Found with XPath: " + newXpath);
+          return webElements;
+        } catch (NoSuchElementException e) {
+          //Error catched by original method
+        }
+      }
+      throw new NoSuchElementException("Unable to find element with locator " + locator);
+    } else {
+     return findElements(this, DriverCommand::FIND_ELEMENTS, locator);
+    }
   }
 
   public List<WebElement> findElements(
