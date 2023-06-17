@@ -89,22 +89,209 @@ class Options(ArgOptions):
 
     # Creating descriptor objects for each of the above IE options
     browser_attach_timeout = IeOptions("BROWSER_ATTACH_TIMEOUT", int)
+    """Gets and Sets `browser_attach_timeout`
+
+    Usage
+    -----
+    `self.browser_attach_timeout`
+    `self.browser_attach_timeout` = `value`
+
+    Notes
+    -----
+    `value` should be an `int` (Timeout) in milliseconds
+    """
     element_scroll_behavior = IeOptions("ELEMENT_SCROLL_BEHAVIOR", int)
+    """Gets and Sets `element_scroll_behavior`
+
+    Usage
+    -----
+    `self.element_scroll_behavior`
+    `self.element_scroll_behavior` = `value`
+
+    Notes
+    -----
+    `value` should be `int` either 0 - Top, 1 - Bottom
+    """
     ensure_clean_session = IeOptions("ENSURE_CLEAN_SESSION", bool)
+    """Gets and Sets `ensure_clean_session`
+
+    Usage
+    -----
+    `self.ensure_clean_session`
+    `self.ensure_clean_session` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     file_upload_dialog_timeout = IeOptions("FILE_UPLOAD_DIALOG_TIMEOUT", int)
+    """Gets and Sets `file_upload_dialog_timeout`
+
+    Usage
+    -----
+    `self.file_upload_dialog_timeout`
+    `self.file_upload_dialog_timeout` = `value`
+
+    Notes
+    -----
+    `value` should be `int` (Timeout) in milliseconds
+    """
     force_create_process_api = IeOptions("FORCE_CREATE_PROCESS_API", bool)
+    """Gets and Sets `force_create_process_api`
+
+    Usage
+    -----
+    `self.force_create_process_api`
+    `self.force_create_process_api` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     force_shell_windows_api = IeOptions("FORCE_SHELL_WINDOWS_API", bool)
+    """Gets and Sets `force_shell_windows_api`
+
+    Usage
+    -----
+    `self.force_shell_windows_api`
+    `self.force_shell_windows_api` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     full_page_screenshot = IeOptions("FULL_PAGE_SCREENSHOT", bool)
+    """Gets and Sets `full_page_screenshot`
+
+    Usage
+    -----
+    `self.full_page_screenshot`
+    `self.full_page_screenshot` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     ignore_protected_mode_settings = IeOptions("IGNORE_PROTECTED_MODE_SETTINGS", bool)
+    """Gets and Sets `ignore_protected_mode_settings`
+
+    Usage
+    -----
+    `self.ignore_protected_mode_settings`
+    `self.ignore_protected_mode_settings` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     ignore_zoom_level = IeOptions("IGNORE_ZOOM_LEVEL", bool)
+    """Gets and Sets `ignore_zoom_level`
+
+    Usage
+    -----
+    `self.ignore_zoom_level`
+    `self.ignore_zoom_level` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     initial_browser_url = IeOptions("INITIAL_BROWSER_URL", str)
+    """Gets and Sets `initial_browser_url`
+
+    Usage
+    -----
+    `self.initial_browser_url`
+    `self.initial_browser_url` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     native_events = IeOptions("NATIVE_EVENTS", bool)
+    """Gets and Sets `native_events`
+
+    Usage
+    -----
+    `self.native_events`
+    `self.native_events` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     persistent_hover = IeOptions("PERSISTENT_HOVER", bool)
+    """Gets and Sets `persistent_hover`
+
+    Usage
+    -----
+    `self.persistent_hover`
+    `self.persistent_hover` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     require_window_focus = IeOptions("REQUIRE_WINDOW_FOCUS", bool)
+    """Gets and Sets `require_window_focus`
+
+    Usage
+    -----
+    `self.require_window_focus`
+    `self.require_window_focus` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     use_per_process_proxy = IeOptions("USE_PER_PROCESS_PROXY", bool)
+    """Gets and Sets `use_per_process_proxy`
+
+    Usage
+    -----
+    `self.use_per_process_proxy`
+    `self.use_per_process_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     use_legacy_file_upload_dialog_handling = IeOptions("USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING", bool)
+    """Gets and Sets `use_legacy_file_upload_dialog_handling`
+
+    Usage
+    -----
+    `self.use_legacy_file_upload_dialog_handling`
+    `self.use_legacy_file_upload_dialog_handling` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     attach_to_edge_chrome = IeOptions("ATTACH_TO_EDGE_CHROME", bool)
+    """Gets and Sets `attach_to_edge_chrome`
+
+    Usage
+    -----
+    `self.attach_to_edge_chrome`
+    `self.attach_to_edge_chrome` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     edge_executable_path = IeOptions("EDGE_EXECUTABLE_PATH", str)
+    """Gets and Sets `edge_executable_path`
+
+    Usage
+    -----
+    `self.edge_executable_path`
+    `self.edge_executable_path` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
 
     def __init__(self) -> None:
         super().__init__()
