@@ -25,7 +25,7 @@ class ElementScrollBehavior(Enum):
     BOTTOM = 1
 
 
-class IeOptions:
+class _IeOptions:
     """IeOptions descriptor that validates below attributes.
 
     - BROWSER_ATTACH_TIMEOUT
@@ -88,7 +88,7 @@ class Options(ArgOptions):
     EDGE_EXECUTABLE_PATH = "ie.edgepath"
 
     # Creating descriptor objects for each of the above IE options
-    browser_attach_timeout = IeOptions("BROWSER_ATTACH_TIMEOUT", int)
+    browser_attach_timeout = _IeOptions("BROWSER_ATTACH_TIMEOUT", int)
     """Gets and Sets `browser_attach_timeout`
 
     Usage
@@ -100,7 +100,7 @@ class Options(ArgOptions):
     -----
     `value` should be an `int` (Timeout) in milliseconds
     """
-    element_scroll_behavior = IeOptions("ELEMENT_SCROLL_BEHAVIOR", int)
+    element_scroll_behavior = _IeOptions("ELEMENT_SCROLL_BEHAVIOR", int)
     """Gets and Sets `element_scroll_behavior`
 
     Usage
@@ -112,7 +112,7 @@ class Options(ArgOptions):
     -----
     `value` should be `int` either 0 - Top, 1 - Bottom
     """
-    ensure_clean_session = IeOptions("ENSURE_CLEAN_SESSION", bool)
+    ensure_clean_session = _IeOptions("ENSURE_CLEAN_SESSION", bool)
     """Gets and Sets `ensure_clean_session`
 
     Usage
@@ -124,7 +124,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    file_upload_dialog_timeout = IeOptions("FILE_UPLOAD_DIALOG_TIMEOUT", int)
+    file_upload_dialog_timeout = _IeOptions("FILE_UPLOAD_DIALOG_TIMEOUT", int)
     """Gets and Sets `file_upload_dialog_timeout`
 
     Usage
@@ -136,7 +136,7 @@ class Options(ArgOptions):
     -----
     `value` should be `int` (Timeout) in milliseconds
     """
-    force_create_process_api = IeOptions("FORCE_CREATE_PROCESS_API", bool)
+    force_create_process_api = _IeOptions("FORCE_CREATE_PROCESS_API", bool)
     """Gets and Sets `force_create_process_api`
 
     Usage
@@ -148,7 +148,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    force_shell_windows_api = IeOptions("FORCE_SHELL_WINDOWS_API", bool)
+    force_shell_windows_api = _IeOptions("FORCE_SHELL_WINDOWS_API", bool)
     """Gets and Sets `force_shell_windows_api`
 
     Usage
@@ -160,7 +160,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    full_page_screenshot = IeOptions("FULL_PAGE_SCREENSHOT", bool)
+    full_page_screenshot = _IeOptions("FULL_PAGE_SCREENSHOT", bool)
     """Gets and Sets `full_page_screenshot`
 
     Usage
@@ -172,7 +172,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    ignore_protected_mode_settings = IeOptions("IGNORE_PROTECTED_MODE_SETTINGS", bool)
+    ignore_protected_mode_settings = _IeOptions("IGNORE_PROTECTED_MODE_SETTINGS", bool)
     """Gets and Sets `ignore_protected_mode_settings`
 
     Usage
@@ -184,7 +184,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    ignore_zoom_level = IeOptions("IGNORE_ZOOM_LEVEL", bool)
+    ignore_zoom_level = _IeOptions("IGNORE_ZOOM_LEVEL", bool)
     """Gets and Sets `ignore_zoom_level`
 
     Usage
@@ -196,7 +196,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    initial_browser_url = IeOptions("INITIAL_BROWSER_URL", str)
+    initial_browser_url = _IeOptions("INITIAL_BROWSER_URL", str)
     """Gets and Sets `initial_browser_url`
 
     Usage
@@ -208,7 +208,7 @@ class Options(ArgOptions):
     -----
     `value` should be `str`
     """
-    native_events = IeOptions("NATIVE_EVENTS", bool)
+    native_events = _IeOptions("NATIVE_EVENTS", bool)
     """Gets and Sets `native_events`
 
     Usage
@@ -220,7 +220,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    persistent_hover = IeOptions("PERSISTENT_HOVER", bool)
+    persistent_hover = _IeOptions("PERSISTENT_HOVER", bool)
     """Gets and Sets `persistent_hover`
 
     Usage
@@ -232,7 +232,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    require_window_focus = IeOptions("REQUIRE_WINDOW_FOCUS", bool)
+    require_window_focus = _IeOptions("REQUIRE_WINDOW_FOCUS", bool)
     """Gets and Sets `require_window_focus`
 
     Usage
@@ -244,7 +244,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    use_per_process_proxy = IeOptions("USE_PER_PROCESS_PROXY", bool)
+    use_per_process_proxy = _IeOptions("USE_PER_PROCESS_PROXY", bool)
     """Gets and Sets `use_per_process_proxy`
 
     Usage
@@ -256,7 +256,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    use_legacy_file_upload_dialog_handling = IeOptions("USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING", bool)
+    use_legacy_file_upload_dialog_handling = _IeOptions("USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING", bool)
     """Gets and Sets `use_legacy_file_upload_dialog_handling`
 
     Usage
@@ -268,7 +268,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    attach_to_edge_chrome = IeOptions("ATTACH_TO_EDGE_CHROME", bool)
+    attach_to_edge_chrome = _IeOptions("ATTACH_TO_EDGE_CHROME", bool)
     """Gets and Sets `attach_to_edge_chrome`
 
     Usage
@@ -280,7 +280,7 @@ class Options(ArgOptions):
     -----
     `value` should be `bool`
     """
-    edge_executable_path = IeOptions("EDGE_EXECUTABLE_PATH", str)
+    edge_executable_path = _IeOptions("EDGE_EXECUTABLE_PATH", str)
     """Gets and Sets `edge_executable_path`
 
     Usage
