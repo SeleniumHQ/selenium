@@ -99,6 +99,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Augmentable
 public class RemoteWebDriver
@@ -388,7 +390,44 @@ public class RemoteWebDriver
   public WebElement findElement(By locator) {
     Require.nonNull("Locator", locator);
 
-    return findElement(this, DriverCommand::FIND_ELEMENT, locator);
+  private String[] getValuesFromKeywords(Map<String, String> map, String[] keywords) {
+    String[] values = new String[keywords.length];
+    for (int i = 0; i < keywords.length; i++) {
+      try {
+        values[i] = map.get(keywords[i]);
+      } catch (NullPointerException e) {
+        values[i] = null;
+        throw new RuntimeException("No such value to the keyword: " + keywords[i]);
+      }
+    }
+    return values;
+  }
+
+  private String parseXpath(String xpath, String[] keywords, String[] value) {
+    String newXpath = new String(xpath);
+      for (int i = 0; i < keywords.length; i++) {
+      if(value[i] == null) continue;
+      String keyword = keywords[i];
+      String regex = "${" + keyword + "}";
+      newXpath = newXpath.replace(regex, value[i]);
+    }
+    return  newXpath;
+  }
+
+  private String[] getKeywordAtXpath(String xpath) {
+    Pattern pattern = Pattern.compile("\\$\\{[a-z]+(((\\.[a-z]+)*)|((-[a-z]+)*))\\}");
+    Matcher matcher = pattern.matcher(xpath);
+    List<String> keywords = new ArrayList<>();
+    while(matcher.find()) {
+      String keyword = matcher.group();
+      keyword = keyword.replace("$", "");
+      keyword = keyword.replace("{", "");
+      keyword = keyword.replace("}", "");
+      keywords.add(keyword);
+    }
+    String[] arrayKeywords = new String[keywords.size()];
+    keywords.toArray(arrayKeywords);
+    return arrayKeywords;
   }
 
   WebElement findElement(
