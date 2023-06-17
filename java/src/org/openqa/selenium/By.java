@@ -89,6 +89,14 @@ public abstract class By {
   }
 
   /**
+   * @param keyword The XPath with a keyowrd text in it to use.
+   * @return A By which locates elements via XPath witha  keyword.
+   */
+  public static By keyword(String keyword) {
+    return new ByKeyword(keyword);
+  } 
+
+  /**
    * Find elements based on the value of the "class" attribute. Only one class name should be used.
    * If an element has multiple classes, please use {@link By#cssSelector(String)}.
    *
@@ -292,6 +300,21 @@ public abstract class By {
       return "By.xpath: " + xpathExpression;
     }
   }
+
+    public static class ByKeyword extends BaseW3CLocator {
+      private final String keyword;
+
+      public ByKeyword(String keyword) {
+        super("keyword",
+        Require.argument("Keyword", keyword)
+          .nonNull("Cannot find elements when the Keyword is null"));
+
+        this.keyword = keyword;
+      }
+
+      @Override
+      public String toString() { return "By.keyword: " + keyword; }
+    }
 
   public static class ByClassName extends PreW3CLocator {
 
