@@ -55,6 +55,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Pdf;
@@ -389,6 +390,27 @@ public class RemoteWebDriver
   @Override
   public WebElement findElement(By locator) {
     Require.nonNull("Locator", locator);
+    if (locator.getClass().equals(By.ByKeyword.class)) {
+      By.Remotable.Parameters params = ((By.ByKeyword) locator).getRemoteParameters();
+      String xpath = (String) params.value();
+      String[] keywords = this.getKeywordAtXpath(xpath);
+      WebElement webElement;
+      for (Map<String, String> language : languagesProperties) {
+        String[] values = getValuesFromKeywords(language, keywords);
+        String newXpath = parseXpath(xpath, keywords, values);
+        try {
+          webElement = findElement(By.xpath(newXpath));
+          System.out.println("Found with XPath: " + newXpath);
+          return webElement;
+        } catch (NoSuchElementException e) {
+          //Error catched by original method
+        }
+      }
+      throw new NoSuchElementException("Unable to find element with locator " + locator);
+    } else {
+      return findElement(this, DriverCommand::FIND_ELEMENT, locator);
+    }
+  }
 
   private String[] getValuesFromKeywords(Map<String, String> map, String[] keywords) {
     String[] values = new String[keywords.length];
