@@ -22,8 +22,126 @@ from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
 
 
+class _BaseOptions:
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls):
+        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect"):
+            return obj._caps.get(self.name, False)
+        return obj._caps.get(self.name)
+
+    def __set__(self, obj, value):
+        obj.set_capability(self.name, value)
+
+
+class _PageLoadStrategy:
+    """Determines the point at which a navigation command is returned:
+    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+
+    :param strategy: the strategy corresponding to a document readiness state
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls):
+        return obj._caps[self.name]
+
+    def __set__(self, obj, value):
+        if value in ("normal", "eager", "none"):
+            obj.set_capability("pageLoadStrategy", value)
+        else:
+            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+
+
+class _UnHandledPromptBehavior:
+    """How the driver should respond when an alert is present and the:
+    command sent is not handling the alert:
+    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
+
+    :param behavior: behavior to use when an alert is encountered
+
+    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls):
+        return obj._caps["unhandledPromptBehavior"]
+
+    def __set__(self, obj, value):
+        if value in ("dismiss", "accept", "dismiss and notify", "accept and notify", "ignore"):
+            obj.set_capability("unhandledPromptBehavior", value)
+        else:
+            raise ValueError(
+                "Behavior can only be one of the following: dismiss, accept, dismiss and notify, "
+                "accept and notify, ignore"
+            )
+
+
+class _Timeouts:
+    """How long the driver should wait for actions to complete before:
+    returning an error https://w3c.github.io/webdriver/#timeouts:
+
+    :param timeouts: values in milliseconds for implicit wait, page load and script timeout
+
+    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls):
+        return self._caps["timeouts"]
+
+    def __set__(self, obj, value):
+        if all(x in ("implicit", "pageLoad", "script") for x in value.keys()):
+            obj.set_capability("timeouts", value)
+        else:
+            raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
+
+
+class _Proxy:
+    """
+    :Returns: Proxy if set, otherwise None.
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls):
+        return obj._proxy
+
+    def __set__(self, obj, value):
+        if not isinstance(value, Proxy):
+            raise InvalidArgumentException("Only Proxy objects can be passed in.")
+        obj._proxy = value
+        obj._caps["proxy"] = value.to_capabilities()
+
+
 class BaseOptions(metaclass=ABCMeta):
     """Base class for individual browser options."""
+
+    # Creating _BaseOptions descriptors
+    browser_version = _BaseOptions("browserVersion")
+    platform_name = _BaseOptions("platformName")
+    accept_insecure_certs = _BaseOptions("acceptInsecureCerts")
+    strict_file_interactability = _BaseOptions("strictFileInteractability")
+    set_window_rect = _BaseOptions("setWindowRect")
+
+    # Creating _PageLoadStrategy descriptor
+    page_load_strategy = _PageLoadStrategy("pageLoadStrategy")
+
+    # Creating _UnHandledPromptBehavior descriptor
+    unhandled_prompt_behavior = _UnHandledPromptBehavior("unhandledPromptBehavior")
+
+    # Creating _Timeouts descriptor
+    timeouts = _Timeouts("timeouts")
+
+    # Creating _Proxy descriptor
+    proxy = _Proxy("proxy")
 
     def __init__(self) -> None:
         super().__init__()
@@ -39,99 +157,6 @@ class BaseOptions(metaclass=ABCMeta):
     def set_capability(self, name, value) -> None:
         """Sets a capability."""
         self._caps[name] = value
-
-    @property
-    def browser_version(self) -> str:
-        """
-        :returns: the version of the browser if set, otherwise None.
-        """
-        return self._caps.get("browserVersion")
-
-    @browser_version.setter
-    def browser_version(self, version: str) -> None:
-        """Requires the major version of the browser to match provided value:
-        https://w3c.github.io/webdriver/#dfn-browser-version.
-
-        :param version: The required version of the browser
-        """
-        self.set_capability("browserVersion", version)
-
-    @property
-    def platform_name(self) -> str:
-        """
-        :returns: The name of the platform
-        """
-        return self._caps["platformName"]
-
-    @platform_name.setter
-    def platform_name(self, platform: str) -> None:
-        """Requires the platform to match the provided value:
-        https://w3c.github.io/webdriver/#dfn-platform-name.
-
-        :param platform: the required name of the platform
-        """
-        self.set_capability("platformName", platform)
-
-    @property
-    def page_load_strategy(self) -> str:
-        """
-        :returns: page load strategy if set, the default is "normal"
-        """
-        return self._caps["pageLoadStrategy"]
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, strategy: str) -> None:
-        """Determines the point at which a navigation command is returned:
-        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
-
-        :param strategy: the strategy corresponding to a document readiness state
-        """
-        if strategy in ["normal", "eager", "none"]:
-            self.set_capability("pageLoadStrategy", strategy)
-        else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
-
-    @property
-    def unhandled_prompt_behavior(self) -> str:
-        """
-        :returns: unhandled prompt behavior if set, the default is "dismiss and notify"
-        """
-        return self._caps["unhandledPromptBehavior"]
-
-    @unhandled_prompt_behavior.setter
-    def unhandled_prompt_behavior(self, behavior: str) -> None:
-        """How the driver should respond when an alert is present and the
-        command sent is not handling the alert:
-        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
-
-        :param behavior: behavior to use when an alert is encountered
-        """
-        if behavior in ["dismiss", "accept", "dismiss and notify", "accept and notify", "ignore"]:
-            self.set_capability("unhandledPromptBehavior", behavior)
-        else:
-            raise ValueError(
-                "Behavior can only be one of the following: dismiss, accept, dismiss and notify, "
-                "accept and notify, ignore"
-            )
-
-    @property
-    def timeouts(self) -> dict:
-        """
-        :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
-        """
-        return self._caps["timeouts"]
-
-    @timeouts.setter
-    def timeouts(self, timeouts: dict) -> None:
-        """How long the driver should wait for actions to complete before
-        returning an error https://w3c.github.io/webdriver/#timeouts.
-
-        :param timeouts: values in milliseconds for implicit wait, page load and script timeout
-        """
-        if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
-            self.set_capability("timeouts", timeouts)
-        else:
-            raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
 
     def enable_mobile(
         self,
@@ -151,70 +176,6 @@ class BaseOptions(metaclass=ABCMeta):
             self.mobile_options["androidActivity"] = android_activity
         if device_serial:
             self.mobile_options["androidDeviceSerial"] = device_serial
-
-    @property
-    def accept_insecure_certs(self) -> bool:
-        """
-        :returns: whether the session accepts insecure certificates
-        """
-        return self._caps.get("acceptInsecureCerts", False)
-
-    @accept_insecure_certs.setter
-    def accept_insecure_certs(self, value: bool) -> None:
-        """Whether untrusted and self-signed TLS certificates are implicitly
-        trusted: https://w3c.github.io/webdriver/#dfn-insecure-tls-
-        certificates.
-
-        :param value: whether to accept insecure certificates
-        """
-        self._caps["acceptInsecureCerts"] = value
-
-    @property
-    def strict_file_interactability(self) -> bool:
-        """
-        :returns: whether session is strict about file interactability
-        """
-        return self._caps.get("strictFileInteractability", False)
-
-    @strict_file_interactability.setter
-    def strict_file_interactability(self, value: bool) -> None:
-        """Whether interactability checks will be applied to file type input
-        elements. The default is false.
-
-        :param value: whether file interactability is strict
-        """
-        self._caps["strictFileInteractability"] = value
-
-    @property
-    def set_window_rect(self) -> bool:
-        """
-        :returns: whether the remote end supports setting window size and position
-        """
-        return self._caps.get("setWindowRect", False)
-
-    @set_window_rect.setter
-    def set_window_rect(self, value: bool) -> None:
-        """Whether the remote end supports all of the resizing and positioning
-        commands. The default is false. https://w3c.github.io/webdriver/#dfn-
-        strict-file-interactability.
-
-        :param value: whether remote end must support setting window resizing and repositioning
-        """
-        self._caps["setWindowRect"] = value
-
-    @property
-    def proxy(self) -> Proxy:
-        """
-        :Returns: Proxy if set, otherwise None.
-        """
-        return self._proxy
-
-    @proxy.setter
-    def proxy(self, value: Proxy) -> None:
-        if not isinstance(value, Proxy):
-            raise InvalidArgumentException("Only Proxy objects can be passed in.")
-        self._proxy = value
-        self._caps["proxy"] = value.to_capabilities()
 
     @abstractmethod
     def to_capabilities(self):
