@@ -91,8 +91,14 @@ import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Augmentable
 public class RemoteWebDriver
@@ -165,6 +171,43 @@ public class RemoteWebDriver
 
       throw e;
     }
+  }
+
+  public static void addLanguageProperty(String propertiePath) {
+    if(languagesProperties == null) {
+      languagesProperties = new ArrayList<Map<String, String>>();
+    }
+    HashMap<String, String> newMap;
+    try {
+      newMap = RemoteWebDriver.makeHashMap(propertiePath);
+    } catch (IOException e) {
+      if(e.getClass().equals(FileNotFoundException.class)) {
+        System.out.println("File " + propertiePath + " was not found.");
+      } else {
+        System.out.println("File " + propertiePath + " could no be loaded.");
+      }
+      newMap = null;
+    }
+    languagesProperties.add(newMap);
+  }
+
+  private static HashMap<String, String> makeHashMap (String propertiePath) throws IOException {
+    Require.argument("propertiePath", propertiePath).nonNull("propertiePath argument must not have the value equal null");
+
+    Properties languagePropertie = new Properties();
+
+    languagePropertie.load(new FileInputStream(propertiePath));
+
+    Enumeration<Object> keys = languagePropertie.keys();
+
+    HashMap<String, String> hashMap = new HashMap<String, String>();
+
+    while (keys.hasMoreElements()) {
+      String key = (String) keys.nextElement();
+      String value = languagePropertie.getProperty(key);
+      hashMap.put(key, value);
+    }
+    return hashMap;
   }
 
   private static URL getDefaultServerURL() {
