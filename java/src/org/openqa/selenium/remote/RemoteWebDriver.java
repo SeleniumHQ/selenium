@@ -91,6 +91,8 @@ import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
+import java.util.List;
+import java.util.Map;
 
 @Augmentable
 public class RemoteWebDriver
@@ -116,6 +118,8 @@ public class RemoteWebDriver
 
   private Logs remoteLogs;
   private LocalLogs localLogs;
+
+  static private List<Map<String, String>> languagesProperties;
 
   // For cglib
   protected RemoteWebDriver() {
