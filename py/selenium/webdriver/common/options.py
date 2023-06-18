@@ -126,22 +126,143 @@ class BaseOptions(metaclass=ABCMeta):
 
     # Creating _BaseOptions descriptors
     browser_version = _BaseOptions("browserVersion")
-    platform_name = _BaseOptions("platformName")
-    accept_insecure_certs = _BaseOptions("acceptInsecureCerts")
-    strict_file_interactability = _BaseOptions("strictFileInteractability")
-    set_window_rect = _BaseOptions("setWindowRect")
+    """Gets and Sets `borwser_version`
 
+    Usage
+    -----
+    `self.boweser_version`
+    `self.browser_version` = `value`
+
+    Notes
+    -----
+    Requires the major version of the browser to match provided value
+    https://w3c.github.io/webdriver/#dfn-browser-version.
+
+    `value` is required version of the browser and should be `str`
+    """
+    platform_name = _BaseOptions("platformName")
+    """Gets and Sets `platform_name`
+
+    Usage
+    -----
+    `self.platform_name`
+    `self.platform_name` = `value`
+
+    Notes
+    -----
+    Requires the platform to match the provided value
+    https://w3c.github.io/webdriver/#dfn-platform-name.
+    `value` should be the required name of the platform and it should be a `str`
+    """
+    accept_insecure_certs = _BaseOptions("acceptInsecureCerts")
+    """Gets and Sets `accept_insecure_certs`
+
+    Usage
+    -----
+    `self.accept_insecure_certs`
+    `self.accept_insecure_certs` = `value`
+
+    Notes
+    -----
+    Whether untrusted and self-signed TLS certificates are implicitly
+    trusted: https://w3c.github.io/webdriver/#dfn-insecure-tls-certificates.
+
+    `value` should be `bool`, whether to accept insecure certificates
+    """
+    strict_file_interactability = _BaseOptions("strictFileInteractability")
+    """Gets and Sets `strict_file_interactability`
+
+    Usage
+    -----
+    `self.strict_file_interactability`
+    `self.strict_file_interactability` = `value`
+
+    Notes
+    -----
+    Whether interactability checks will be applied to file type input
+    elements. The default is false.
+
+    `value` should be `bool`, whether file interactability is strict
+    """
+    set_window_rect = _BaseOptions("setWindowRect")
+    """Gets and Sets `set_window_rect`
+
+    Usage
+    -----
+    `self.set_window_rect`
+    `self.set_window_rect` = `value`
+
+    Notes
+    -----
+    Whether the remote end supports all of the resizing and positioning
+    commands. The default is false. https://w3c.github.io/webdriver/#dfn-strict-file-interactability.
+
+    `value` should be `bool`, whether remote end must support setting window resizing and repositioning
+    """
     # Creating _PageLoadStrategy descriptor
     page_load_strategy = _PageLoadStrategy("pageLoadStrategy")
+    """Gets and Sets `page_load_strategy`
 
+    Usage
+    -----
+    `self.page_load_strategy`
+    `self.page_load_strategy` = `value`
+
+    Notes
+    -----
+    Determines the point at which a navigation command is returned
+    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+
+    `value` should be `str`, the strategy corresponding to a document readiness state
+    """
     # Creating _UnHandledPromptBehavior descriptor
     unhandled_prompt_behavior = _UnHandledPromptBehavior("unhandledPromptBehavior")
+    """Gets and Sets `unhandled_prompt_behavior`
 
+    Usage
+    -----
+    `self.unhandled_prompt_behavior`
+    `self.unhandled_prompt_behavior` = `value`
+
+    Notes
+    -----
+    How the driver should respond when an alert is present and the
+    command sent is not handling the alert
+    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+
+    unhandled prompt behavior if set, the default is "dismiss and notify"
+    `value` should be `str`, behavior to use when an alert is encountered
+    """
     # Creating _Timeouts descriptor
     timeouts = _Timeouts("timeouts")
+    """Gets and Sets `timeouts`
 
+    Usage
+    -----
+    `self.timeouts`
+    `self.timeouts` = `value`
+
+    Notes
+    -----
+    returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    sets: How long the driver should wait for actions to complete before
+    returning an error https://w3c.github.io/webdriver/#timeouts.
+
+    `value` should `dict`, values in milliseconds for implicit wait, page load and script timeout
+    """
     # Creating _Proxy descriptor
     proxy = _Proxy("proxy")
+    """Gets and Sets `proxy`
+
+    Usage
+    -----
+    `self.proxy`
+    `self.proxy` = `value`
+
+    Returns: Proxy if set, otherwise None.
+    Sets: `Proxy`
+    `value` should be `Proxy`
+    """
 
     def __init__(self) -> None:
         super().__init__()
