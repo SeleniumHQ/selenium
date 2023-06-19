@@ -63,7 +63,7 @@ platform(
 
 buildifier(
     name = "buildifier",
-    #    lint_mode = "fix",
+    lint_mode = "fix",
     mode = "fix",
     tags = [
         "manual",

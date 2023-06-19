@@ -1,6 +1,3 @@
-#load("@io_bazel_rules_docker//contrib:passwd.bzl", "passwd_entry", "passwd_file")
-#load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_push", "oci_tarball")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("//common/private:passwd.bzl", "passwd_entry", "passwd_file")
 load(":docker.bzl", "docker_image")
