@@ -11,5 +11,4 @@ jobs:
     with:
       name: Cache
       cache-key: rbe
-      disk-cache: false
       run: bazel test --config=remote --keep_going //java/...
