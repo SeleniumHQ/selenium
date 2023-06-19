@@ -5,9 +5,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  rbe-small-tests:
-    name: RBE - Small Tests
+  set-ruby-version:
+    name: Set Ruby version
     uses: ./.github/workflows/bazel.yml
+    with:
+      run: echo 'RUBY_VERSION = "jruby-9.4.2.0"' >rb/ruby_version.bzl
+
+  # The NPM repository rule wants to write to the HOME directory
+  # but that's configured for the remote build machines, so run
+  # that repository rule first so that the subsequent remote
+  # build runs successfully.
+  warm-cache:
+    name: Warm repository rule cache
+    uses: ./.github/workflows/bazel.yml
+    needs: set-ruby-version
+    with:
+      name: Cache
+      cache-key: rbe
+      run: bazel query @npm//:all
+
+  rbe-tests:
+    name: Test
+    uses: ./.github/workflows/bazel.yml
+    needs: warm-cache
     with:
       name: Cache
       cache-key: rbe
