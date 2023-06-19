@@ -10,5 +10,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Cache
-      cache-key: java
-      run: bazel test --config=remote-ci --test_size_filters=small --keep_going //java/... //py/...
+      cache-key: rbe
+      disk-cache: false
+      run: bazel test --config=remote --keep_going //java/...
