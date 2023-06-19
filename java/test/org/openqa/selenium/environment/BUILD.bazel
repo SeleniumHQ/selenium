@@ -108,8 +108,8 @@ java_test_suite(
     data = firefox["data"],
     jvm_flags = firefox["jvm_flags"],
     tags = [
-        "selenium-remote",
         "firefox",
+        "selenium-remote",
     ] + firefox["tags"],
     deps = [
         ":environment",
