@@ -55,3 +55,4 @@ jobs:
       run: |
         echo build --stamp >>.bazelrc.local
         ./go prep-release-zip
+      nightly-release-files: build/dist/*.jar
