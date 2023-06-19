@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -156,10 +157,28 @@ public class FirefoxDriver extends RemoteWebDriver
     context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    Optional<URI> cdpUri =
-        CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
-            .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+
+    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities);
+    Optional<HttpClient> client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+    Optional<URI> cdpUri;
+
+    try {
+      cdpUri = client.flatMap(httpClient -> CdpEndpointFinder.getCdpEndPoint(httpClient));
+    } catch (Exception e) {
+      try {
+        client.ifPresent(HttpClient::close);
+      } catch (Exception ex) {
+        e.addSuppressed(ex);
+      }
+      throw e;
+    }
+
+    try {
+      client.ifPresent(HttpClient::close);
+    } catch (Exception e) {
+      LOG.log(Level.FINE, "failed to close the http client used to check the reported CDP endpoint: " + reportedUri.get(), e);
+    }
 
     Optional<String> webSocketUrl =
         Optional.ofNullable((String) capabilities.getCapability("webSocketUrl"));
