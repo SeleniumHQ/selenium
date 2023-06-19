@@ -1,5 +1,5 @@
 {
-  "checksum": "70757c50b40139ddca4935f818e6c7fd1532e2e75e86bef59e8e38750959ab88",
+  "checksum": "d715ce358c361b942596d27fe828de8d446ef878a936a9659dbddc1064767761",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -480,10 +480,6 @@
             {
               "id": "regex-automata 0.1.10",
               "target": "regex_automata"
-            },
-            {
-              "id": "serde 1.0.158",
-              "target": "serde"
             }
           ],
           "selects": {}
@@ -7508,10 +7504,6 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.158",
-              "target": "serde"
-            },
-            {
               "id": "time-core 0.1.0",
               "target": "time_core"
             }
@@ -10153,15 +10145,6 @@
           ],
           "selects": {}
         },
-        "deps": {
-          "common": [
-            {
-              "id": "memchr 2.5.0",
-              "target": "memchr"
-            }
-          ],
-          "selects": {}
-        },
         "edition": "2021",
         "version": "0.4.0"
       },
@@ -10616,7 +10599,9 @@
       "arm-unknown-linux-gnueabi",
       "armv7-linux-androideabi",
       "armv7-unknown-linux-gnueabi",
-      "powerpc-unknown-linux-gnu"
+      "powerpc-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi"
     ],
     "cfg(any(rustix_use_libc, miri, not(all(target_os = \"linux\", any(target_arch = \"x86\", all(target_arch = \"x86_64\", target_pointer_width = \"64\"), all(target_endian = \"little\", any(target_arch = \"arm\", all(target_arch = \"aarch64\", target_pointer_width = \"64\"), target_arch = \"powerpc64\", target_arch = \"riscv64\", target_arch = \"mips\", target_arch = \"mips64\")))))))": [
       "aarch64-apple-darwin",
@@ -10634,6 +10619,8 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "wasm32-unknown-unknown",
       "wasm32-wasi",
       "x86_64-apple-darwin",
@@ -10641,7 +10628,8 @@
       "x86_64-fuchsia",
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
-      "x86_64-unknown-freebsd"
+      "x86_64-unknown-freebsd",
+      "x86_64-unknown-none"
     ],
     "cfg(any(target_arch = \"aarch64\", target_arch = \"x86\", target_arch = \"x86_64\"))": [
       "aarch64-apple-darwin",
@@ -10662,7 +10650,8 @@
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(any(target_arch = \"aarch64\", target_arch = \"x86_64\", target_arch = \"x86\"))": [
       "aarch64-apple-darwin",
@@ -10683,7 +10672,8 @@
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(any(target_arch = \"x86\", target_arch = \"x86_64\", all(any(target_arch = \"aarch64\", target_arch = \"arm\"), any(target_os = \"android\", target_os = \"fuchsia\", target_os = \"linux\"))))": [
       "aarch64-fuchsia",
@@ -10703,7 +10693,8 @@
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(any(target_os = \"android\", target_os = \"linux\"))": [
       "aarch64-linux-android",
@@ -10767,13 +10758,16 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
       "x86_64-fuchsia",
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(not(any(windows, target_os = \"hermit\", target_os = \"unknown\")))": [
       "aarch64-apple-darwin",
@@ -10793,13 +10787,16 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "wasm32-wasi",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
       "x86_64-fuchsia",
       "x86_64-linux-android",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(not(target_arch = \"wasm32\"))": [
       "aarch64-apple-darwin",
@@ -10821,13 +10818,16 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
       "x86_64-fuchsia",
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(not(windows))": [
       "aarch64-apple-darwin",
@@ -10847,6 +10847,8 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "wasm32-unknown-unknown",
       "wasm32-wasi",
       "x86_64-apple-darwin",
@@ -10854,7 +10856,8 @@
       "x86_64-fuchsia",
       "x86_64-linux-android",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(not(windows_raw_dylib))": [
       "aarch64-apple-darwin",
@@ -10876,6 +10879,8 @@
       "riscv32imc-unknown-none-elf",
       "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
+      "thumbv7em-none-eabi",
+      "thumbv8m.main-none-eabi",
       "wasm32-unknown-unknown",
       "wasm32-wasi",
       "x86_64-apple-darwin",
@@ -10884,7 +10889,8 @@
       "x86_64-linux-android",
       "x86_64-pc-windows-msvc",
       "x86_64-unknown-freebsd",
-      "x86_64-unknown-linux-gnu"
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-none"
     ],
     "cfg(target_arch = \"wasm32\")": [
       "wasm32-unknown-unknown",

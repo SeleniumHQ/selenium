@@ -54,6 +54,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpClientName;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -145,7 +146,13 @@ public class JdkHttpClient implements HttpClient {
 
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-    URI uri = getWebSocketUri(request);
+    URI uri;
+
+    try {
+      uri = getWebSocketUri(request);
+    } catch (URISyntaxException e) {
+      throw new ConnectionFailedException("JdkWebSocket initial request execution error", e);
+    }
 
     CompletableFuture<java.net.http.WebSocket> webSocketCompletableFuture =
         client
@@ -220,25 +227,17 @@ public class JdkHttpClient implements HttpClient {
       underlyingSocket =
           webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (CancellationException e) {
-      throw new WebDriverException(e.getMessage(), e);
+      throw new ConnectionFailedException("JdkWebSocket initial request canceled", e);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
-
-      if (cause instanceof HttpTimeoutException) {
-        throw new TimeoutException(cause);
-      } else if (cause instanceof IOException) {
-        throw new UncheckedIOException((IOException) cause);
-      } else if (cause instanceof RuntimeException) {
-        throw (RuntimeException) cause;
-      }
-
-      throw new WebDriverException((cause != null) ? cause : e);
+      throw new ConnectionFailedException(
+          "JdkWebSocket initial request execution error", (cause != null) ? cause : e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new RuntimeException(e);
+      throw new ConnectionFailedException("JdkWebSocket initial request interrupted", e);
     } catch (java.util.concurrent.TimeoutException e) {
       webSocketCompletableFuture.cancel(true);
-      throw new TimeoutException(e);
+      throw new ConnectionFailedException("JdkWebSocket initial request timeout", e);
     }
 
     WebSocket websocket =
@@ -314,36 +313,28 @@ public class JdkHttpClient implements HttpClient {
     return websocket;
   }
 
-  private URI getWebSocketUri(HttpRequest request) {
+  private URI getWebSocketUri(HttpRequest request) throws URISyntaxException {
     URI uri = messages.getRawUri(request);
     if ("http".equalsIgnoreCase(uri.getScheme())) {
-      try {
-        uri =
-            new URI(
-                "ws",
-                uri.getUserInfo(),
-                uri.getHost(),
-                uri.getPort(),
-                uri.getPath(),
-                uri.getQuery(),
-                uri.getFragment());
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      uri =
+          new URI(
+              "ws",
+              uri.getUserInfo(),
+              uri.getHost(),
+              uri.getPort(),
+              uri.getPath(),
+              uri.getQuery(),
+              uri.getFragment());
     } else if ("https".equalsIgnoreCase(uri.getScheme())) {
-      try {
-        uri =
-            new URI(
-                "wss",
-                uri.getUserInfo(),
-                uri.getHost(),
-                uri.getPort(),
-                uri.getPath(),
-                uri.getQuery(),
-                uri.getFragment());
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      uri =
+          new URI(
+              "wss",
+              uri.getUserInfo(),
+              uri.getHost(),
+              uri.getPort(),
+              uri.getPath(),
+              uri.getQuery(),
+              uri.getFragment());
     }
     return uri;
   }

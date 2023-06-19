@@ -1,5 +1,13 @@
 [
   {
+    "tag_name": "nightly",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.11.0-SNAPSHOT.jar"
+      }
+    ]
+  },
+  {
     "tag_name": "selenium-4.10.0",
     "assets": [
       {
@@ -864,35 +872,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-server-standalone-3.141.0.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-3.14.0",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/IEDriverServer_Win32_3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/IEDriverServer_x64_3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-dotnet-3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-dotnet-strongnamed-3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-html-runner-3.14.0.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-java-3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-server-3.14.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.14.0/selenium-server-standalone-3.14.0.jar"
       }
     ]
   }
