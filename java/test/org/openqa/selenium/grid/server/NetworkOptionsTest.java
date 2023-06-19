@@ -22,6 +22,8 @@ import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +36,9 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.jre.server.JreServer;
+import org.openqa.selenium.netty.server.SimpleHttpServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -48,7 +49,8 @@ class NetworkOptionsTest {
    * problem and to resolve it.
    */
   @Test
-  void triggerFailureInTracing() {
+  void triggerFailureInTracing()
+    throws URISyntaxException, InterruptedException, MalformedURLException {
     // I better explain this. The only hint that we have that our use of
     // OpenTelemetry is wrong is found in the log message that the
     // io.grpc.Context generates when `Context.detach` is called in an
@@ -71,9 +73,10 @@ class NetworkOptionsTest {
       Tracer tracer = DefaultTestTracer.createTracer();
       HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
-      Server<?> server =
-          new JreServer(new BaseServerOptions(config), req -> new HttpResponse()).start();
-      try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+      SimpleHttpServer server = new SimpleHttpServer(new BaseServerOptions(config).getPort());
+      server.registerEndpoint(GET, "/version", null, null);
+
+      try (HttpClient client = clientFactory.createClient(server.baseUri().toURL())) {
         client.execute(new HttpRequest(GET, "/version"));
       }
     } finally {

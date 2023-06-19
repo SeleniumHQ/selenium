@@ -30,7 +30,6 @@ def selenium_java_deps():
             "io.grpc:grpc-context:1.55.1",
             "io.lettuce:lettuce-core:6.2.4.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
-            "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
             "io.netty:netty-codec-http2:%s" % netty_version,
             "io.netty:netty-common:%s" % netty_version,
@@ -59,7 +58,6 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-sdk-trace:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
-            "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
                 artifact = "junit",
@@ -101,7 +99,6 @@ def selenium_java_deps():
             "org.slf4j:slf4j-jdk14:2.0.7",
             "org.testng:testng:7.7.1",
             "org.zeromq:jeromq:0.5.3",
-            "xyz.rogfam:littleproxy:2.0.17",
             "org.seleniumhq.selenium:htmlunit-driver:4.9.0",
             "org.redisson:redisson:3.21.1",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
