@@ -230,7 +230,8 @@ public class JdkHttpClient implements HttpClient {
       throw new ConnectionFailedException("JdkWebSocket initial request canceled", e);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
-      throw new ConnectionFailedException("JdkWebSocket initial request execution error", (cause != null) ? cause : e);
+      throw new ConnectionFailedException(
+          "JdkWebSocket initial request execution error", (cause != null) ? cause : e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new ConnectionFailedException("JdkWebSocket initial request interrupted", e);
