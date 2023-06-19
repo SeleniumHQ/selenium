@@ -117,12 +117,30 @@ public class ProxyNodeWebsockets
       Consumer<Message> downstream, Capabilities caps) {
     // Using strings here to avoid Node depending upon specific drivers.
     for (String cdpEndpointCap : CDP_ENDPOINT_CAPS) {
-      Optional<URI> cdpUri =
-          CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps)
-              .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+      Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps);
+      Optional<HttpClient> client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(clientFactory, uri));
+      Optional<URI> cdpUri;
+
+      try {
+        cdpUri = client.flatMap(httpClient -> CdpEndpointFinder.getCdpEndPoint(httpClient));
+      } catch (Exception e) {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception ex) {
+          e.addSuppressed(ex);
+        }
+        throw e;
+      }
+
       if (cdpUri.isPresent()) {
         LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", cdpEndpointCap));
         return cdpUri.map(cdp -> createWsEndPoint(cdp, downstream));
+      } else {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception e) {
+          LOG.log(Level.FINE, "failed to close the http client used to check the reported CDP endpoint: " + reportedUri.get(), e);
+        }
       }
     }
     return Optional.empty();

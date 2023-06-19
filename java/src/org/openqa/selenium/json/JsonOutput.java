@@ -128,24 +128,36 @@ public class JsonOutput implements Closeable {
     // common kinds of inputs next.
     Map<Predicate<Class<?>>, DepthAwareConsumer> builder = new LinkedHashMap<>();
     builder.put(Objects::isNull, (obj, maxDepth, depthRemaining) -> append("null"));
-    builder.put(CharSequence.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
-    builder.put(Number.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(obj.toString()));
     builder.put(
-        Boolean.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append((Boolean) obj ? "true" : "false"));
+        CharSequence.class::isAssignableFrom,
+        (obj, maxDepth, depthRemaining) -> append(asString(obj)));
+    builder.put(
+        Number.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(obj.toString()));
+    builder.put(
+        Boolean.class::isAssignableFrom,
+        (obj, maxDepth, depthRemaining) -> append((Boolean) obj ? "true" : "false"));
     builder.put(
         Date.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
+        (obj, maxDepth, depthRemaining) ->
+            append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
     builder.put(
         Instant.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
-    builder.put(Enum.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
+        (obj, maxDepth, depthRemaining) ->
+            append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
     builder.put(
-        File.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(((File) obj).getAbsolutePath()));
-    builder.put(URI.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString((obj).toString())));
+        Enum.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
+    builder.put(
+        File.class::isAssignableFrom,
+        (obj, maxDepth, depthRemaining) -> append(((File) obj).getAbsolutePath()));
+    builder.put(
+        URI.class::isAssignableFrom,
+        (obj, maxDepth, depthRemaining) -> append(asString((obj).toString())));
     builder.put(
         URL.class::isAssignableFrom,
         (obj, maxDepth, depthRemaining) -> append(asString(((URL) obj).toExternalForm())));
-    builder.put(UUID.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj.toString())));
+    builder.put(
+        UUID.class::isAssignableFrom,
+        (obj, maxDepth, depthRemaining) -> append(asString(obj.toString())));
     builder.put(
         Level.class::isAssignableFrom,
         (obj, maxDepth, depthRemaining) -> append(asString(LogLevelMapping.getName((Level) obj))));
@@ -162,13 +174,16 @@ public class JsonOutput implements Closeable {
     // Special handling of asMap and toJson
     builder.put(
         cls -> getMethod(cls, "toJson") != null,
-        (obj, maxDepth, depthRemaining) -> convertUsingMethod("toJson", obj, maxDepth, depthRemaining));
+        (obj, maxDepth, depthRemaining) ->
+            convertUsingMethod("toJson", obj, maxDepth, depthRemaining));
     builder.put(
         cls -> getMethod(cls, "asMap") != null,
-        (obj, maxDepth, depthRemaining) -> convertUsingMethod("asMap", obj, maxDepth, depthRemaining));
+        (obj, maxDepth, depthRemaining) ->
+            convertUsingMethod("asMap", obj, maxDepth, depthRemaining));
     builder.put(
         cls -> getMethod(cls, "toMap") != null,
-        (obj, maxDepth, depthRemaining) -> convertUsingMethod("toMap", obj, maxDepth, depthRemaining));
+        (obj, maxDepth, depthRemaining) ->
+            convertUsingMethod("toMap", obj, maxDepth, depthRemaining));
 
     // And then the collection types
     builder.put(
@@ -385,7 +400,8 @@ public class JsonOutput implements Closeable {
     }
   }
 
-  private JsonOutput convertUsingMethod(String methodName, Object toConvert, int maxDepth, int depthRemaining) {
+  private JsonOutput convertUsingMethod(
+      String methodName, Object toConvert, int maxDepth, int depthRemaining) {
     try {
       Method method = getMethod(toConvert.getClass(), methodName);
       if (method == null) {

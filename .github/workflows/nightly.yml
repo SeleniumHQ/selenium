@@ -6,8 +6,9 @@ on:
     inputs:
       version:
         description: Nightly version number (e.g. 20221125)
-        required: true
+        required: false
         type: string
+        default: ''
       language:
         description: Configured artefacts for the language will be built and pushed
         required: true
@@ -19,7 +20,7 @@ on:
 
 jobs:
   ruby:
-    if: inputs.language == 'ruby'
+    if: inputs.language == 'ruby' || github.event_name == 'schedule'
     name: Ruby
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -37,7 +38,7 @@ jobs:
         bazel run //rb:${{ matrix.gem }}-release-nightly
 
   java:
-    if: inputs.language == 'java'
+    if: inputs.language == 'java' || github.event_name == 'schedule'
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
@@ -46,7 +47,7 @@ jobs:
       run: ./go publish-maven-snapshot
 
   grid:
-    if: inputs.language == 'java'
+    if: inputs.language == 'java' || github.event_name == 'schedule'
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:
@@ -55,4 +56,4 @@ jobs:
       run: |
         echo build --stamp >>.bazelrc.local
         ./go prep-release-zip
-      nightly-release-files: build/dist/*.jar
+      nightly-release-files: build/dist/*.*

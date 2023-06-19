@@ -43,7 +43,7 @@ public class Json {
 
   public String toJson(Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
-         JsonOutput jsonOutput = newOutput(writer)) {
+        JsonOutput jsonOutput = newOutput(writer)) {
       jsonOutput.write(toConvert, maxDepth);
       return writer.toString();
     } catch (IOException e) {

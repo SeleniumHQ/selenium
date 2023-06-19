@@ -126,11 +126,6 @@ build:remote --experimental_credential_helper=%workspace%/scripts/credential-hel
 # Use pinned browsers when running remotely
 build:remote --//common:pin_browsers
 
-# Extend the remote config for CI
-build:remote-ci --config=remote
-build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
-build:remote-ci --bes_upload_mode=wait_for_upload_complete
-
 # The remote build machines are pretty small, and 50 threads may leave them
 # thrashing, but our dev machines are a lot larger. Scale the workload so we
 # make reasonable usage of everything, everywhere, all at once.
@@ -139,3 +134,11 @@ build:remote --local_ram_resources='HOST_RAM*4.0'
 
 # A small hint that we're running our tests remotely
 test:remote --test_env=REMOTE_BUILD=1
+
+# Wait for up to 5 minutes for a test to pass
+test:remote --test_timeout=600
+
+# Extend the remote config for CI
+build:remote-ci --config=remote
+build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
+build:remote-ci --bes_upload_mode=wait_for_upload_complete

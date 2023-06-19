@@ -764,7 +764,8 @@ class JsonOutputTest {
 
     Object finalValue = value;
 
-    assertThatExceptionOfType(JsonException.class).isThrownBy(() -> jsonOutput.write(finalValue, maxDepth));
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> jsonOutput.write(finalValue, maxDepth));
   }
 
   private String convert(Object toConvert) {
