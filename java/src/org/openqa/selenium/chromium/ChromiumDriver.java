@@ -133,8 +133,10 @@ public class ChromiumDriver extends RemoteWebDriver
 
     this.biDi = createBiDi(biDiUri);
 
-    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
-    Optional<HttpClient> client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+    Optional<URI> reportedUri =
+        CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
+    Optional<HttpClient> client =
+        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
     Optional<URI> cdpUri;
 
     try {

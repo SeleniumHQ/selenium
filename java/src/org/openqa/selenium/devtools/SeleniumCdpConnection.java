@@ -54,19 +54,19 @@ public class SeleniumCdpConnection extends Connection {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("Capabilities", capabilities);
 
-
-    Optional<URI> cdpUri = Optional
-      .ofNullable(capabilities.getCapability("se:cdp"))
-      .flatMap((uri) -> {
-        if (uri instanceof String) {
-          try {
-            return Optional.of(new URI((String) uri));
-          } catch (URISyntaxException e) {
-            return Optional.empty();
-          }
-        }
-        return Optional.empty();
-      });
+    Optional<URI> cdpUri =
+        Optional.ofNullable(capabilities.getCapability("se:cdp"))
+            .flatMap(
+                (uri) -> {
+                  if (uri instanceof String) {
+                    try {
+                      return Optional.of(new URI((String) uri));
+                    } catch (URISyntaxException e) {
+                      return Optional.empty();
+                    }
+                  }
+                  return Optional.empty();
+                });
 
     Optional<HttpClient> client;
 
@@ -91,7 +91,11 @@ public class SeleniumCdpConnection extends Connection {
         try {
           client.ifPresent(HttpClient::close);
         } catch (Exception e) {
-          LOG.log(Level.FINE, "failed to close the http client used to check the reported CDP endpoint: " + reportedUri.get(), e);
+          LOG.log(
+              Level.FINE,
+              "failed to close the http client used to check the reported CDP endpoint: "
+                  + reportedUri.get(),
+              e);
         }
       }
     }

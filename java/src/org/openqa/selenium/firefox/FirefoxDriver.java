@@ -159,8 +159,10 @@ public class FirefoxDriver extends RemoteWebDriver
     Capabilities capabilities = super.getCapabilities();
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
-    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities);
-    Optional<HttpClient> client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
+    Optional<URI> reportedUri =
+        CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities);
+    Optional<HttpClient> client =
+        reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(factory, uri));
     Optional<URI> cdpUri;
 
     try {
@@ -177,7 +179,11 @@ public class FirefoxDriver extends RemoteWebDriver
     try {
       client.ifPresent(HttpClient::close);
     } catch (Exception e) {
-      LOG.log(Level.FINE, "failed to close the http client used to check the reported CDP endpoint: " + reportedUri.get(), e);
+      LOG.log(
+          Level.FINE,
+          "failed to close the http client used to check the reported CDP endpoint: "
+              + reportedUri.get(),
+          e);
     }
 
     Optional<String> webSocketUrl =
