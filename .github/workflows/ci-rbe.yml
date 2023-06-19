@@ -5,11 +5,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  rbe-small-tests:
-    name: RBE - Small Tests
+  test:
+    name: Test
     uses: ./.github/workflows/bazel.yml
     with:
       name: Cache
       cache-key: rbe
-      disk-cache: false
-      run: bazel test --config=remote --keep_going //java/...
+      run: ./scripts/github-actions/ci-build.sh
