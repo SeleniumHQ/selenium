@@ -24,12 +24,11 @@ alias(
     }),
 )
 
+# TODO: When Rust compiles nicely on Windows, use the same stamping
+#       logic as the other rules
 alias(
     name = "selenium-manager-windows",
-    actual = select({
-        "//common:stamp": "windows/selenium-manager.exe",
-        "//conditions:default": "//rust:selenium-manager-windows",
-    }),
+    actual = "windows/selenium-manager.exe",
 )
 
 exports_files(
