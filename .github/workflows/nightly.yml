@@ -46,9 +46,10 @@ jobs:
       name: Release
       cache-key: java-nightly
       run: |
-        export SEL_M2_USER="$SEL_M2_USER"
-        export SEL_M2_PASS="$SEL_M2_PASS"
         ./go publish-maven-snapshot
+    secrets:
+      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
 
   grid:
     if: inputs.language == 'grid' || github.event_name == 'schedule'
