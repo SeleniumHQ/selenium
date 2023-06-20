@@ -242,6 +242,7 @@ def test_raises_exception_for_method_not_allowed(handler, code):
         handler.check_response({"status": code, "value": "foo"})
 
 
+
 @pytest.mark.parametrize("key", ["stackTrace", "stacktrace"])
 def test_relays_exception_stacktrace(handler, key):
     import json

@@ -18,6 +18,9 @@
 from typing import Any
 from typing import Dict
 from typing import Type
+from typing import Union
+from typing import Sequence
+from typing import List
 
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
@@ -49,87 +52,66 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import UnknownMethodException
 from selenium.common.exceptions import WebDriverException
 
+import json
 
-class ExceptionMapping:
-    """Maps each errorcode in ErrorCode object to corresponding exception."""
-
-    NO_SUCH_ELEMENT = NoSuchElementException
-    NO_SUCH_FRAME = NoSuchFrameException
-    NO_SUCH_SHADOW_ROOT = NoSuchShadowRootException
-    STALE_ELEMENT_REFERENCE = StaleElementReferenceException
-    ELEMENT_NOT_VISIBLE = ElementNotVisibleException
-    INVALID_ELEMENT_STATE = InvalidElementStateException
-    UNKNOWN_ERROR = WebDriverException
-    ELEMENT_IS_NOT_SELECTABLE = ElementNotSelectableException
-    JAVASCRIPT_ERROR = JavascriptException
-    TIMEOUT = TimeoutException
-    NO_SUCH_WINDOW = NoSuchWindowException
-    INVALID_COOKIE_DOMAIN = InvalidCookieDomainException
-    UNABLE_TO_SET_COOKIE = UnableToSetCookieException
-    UNEXPECTED_ALERT_OPEN = UnexpectedAlertPresentException
-    NO_ALERT_OPEN = NoAlertPresentException
-    SCRIPT_TIMEOUT = TimeoutException
-    IME_NOT_AVAILABLE = ImeNotAvailableException
-    IME_ENGINE_ACTIVATION_FAILED = ImeActivationFailedException
-    INVALID_SELECTOR = InvalidSelectorException
-    SESSION_NOT_CREATED = SessionNotCreatedException
-    MOVE_TARGET_OUT_OF_BOUNDS = MoveTargetOutOfBoundsException
-    INVALID_XPATH_SELECTOR = InvalidSelectorException
-    INVALID_XPATH_SELECTOR_RETURN_TYPER = InvalidSelectorException
-    ELEMENT_NOT_INTERACTABLE = ElementNotInteractableException
-    INSECURE_CERTIFICATE = InsecureCertificateException
-    INVALID_ARGUMENT = InvalidArgumentException
-    INVALID_COORDINATES = InvalidCoordinatesException
-    INVALID_SESSION_ID = InvalidSessionIdException
-    NO_SUCH_COOKIE = NoSuchCookieException
-    UNABLE_TO_CAPTURE_SCREEN = ScreenshotException
-    ELEMENT_CLICK_INTERCEPTED = ElementClickInterceptedException
-    UNKNOWN_METHOD = UnknownMethodException
+ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
+    'element click intercepted': ElementClickInterceptedException,
+    'element not interactable': ElementNotInteractableException,
+    'insecure certificate': InsecureCertificateException,
+    'invalid argument': InvalidArgumentException,
+    'invalid cookie domain': InvalidCookieDomainException,
+    'invalid element state': InvalidElementStateException,
+    'invalid selector': InvalidSelectorException,
+    'invalid session id': InvalidSessionIdException,
+    'javascript error': JavascriptException,
+    'move target out of bounds': MoveTargetOutOfBoundsException,
+    'no such alert': NoAlertPresentException,
+    'no such cookie': NoSuchCookieException,
+    'no such element': NoSuchElementException,
+    'no such frame': NoSuchFrameException,
+    'no such window': NoSuchWindowException,
+    'no such shadow root': NoSuchShadowRootException,
+    'script timeout': TimeoutException,
+    'session not created': SessionNotCreatedException,
+    'stale element reference': StaleElementReferenceException,
+    'detached shadow root': NoSuchShadowRootException,
+    'timeout': TimeoutException,
+    'unable to set cookie': UnableToSetCookieException,
+    'unable to capture screen': ScreenshotException,
+    'unexpected alert open': UnexpectedAlertPresentException,
+    'unknown command': UnknownMethodException,
+    'unknown error': WebDriverException,
+    'unknown method': UnknownMethodException,
+    'unsupported operation': UnknownMethodException,
+    'element not visible': ElementNotVisibleException,
+    'element not selectable': ElementNotSelectableException,
+    'invalid coordinates': InvalidCoordinatesException,
+}
 
 
-class ErrorCode:
-    """Error codes defined in the WebDriver wire protocol."""
+def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
+    if not original:
+        return []
+    if isinstance(original, str):
+        return original.split('\n')
 
-    # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
-    SUCCESS = 0
-    NO_SUCH_ELEMENT = [7, "no such element"]
-    NO_SUCH_FRAME = [8, "no such frame"]
-    NO_SUCH_SHADOW_ROOT = ["no such shadow root"]
-    UNKNOWN_COMMAND = [9, "unknown command"]
-    STALE_ELEMENT_REFERENCE = [10, "stale element reference"]
-    ELEMENT_NOT_VISIBLE = [11, "element not visible"]
-    INVALID_ELEMENT_STATE = [12, "invalid element state"]
-    UNKNOWN_ERROR = [13, "unknown error"]
-    ELEMENT_IS_NOT_SELECTABLE = [15, "element not selectable"]
-    JAVASCRIPT_ERROR = [17, "javascript error"]
-    XPATH_LOOKUP_ERROR = [19, "invalid selector"]
-    TIMEOUT = [21, "timeout"]
-    NO_SUCH_WINDOW = [23, "no such window"]
-    INVALID_COOKIE_DOMAIN = [24, "invalid cookie domain"]
-    UNABLE_TO_SET_COOKIE = [25, "unable to set cookie"]
-    UNEXPECTED_ALERT_OPEN = [26, "unexpected alert open"]
-    NO_ALERT_OPEN = [27, "no such alert"]
-    SCRIPT_TIMEOUT = [28, "script timeout"]
-    INVALID_ELEMENT_COORDINATES = [29, "invalid element coordinates"]
-    IME_NOT_AVAILABLE = [30, "ime not available"]
-    IME_ENGINE_ACTIVATION_FAILED = [31, "ime engine activation failed"]
-    INVALID_SELECTOR = [32, "invalid selector"]
-    SESSION_NOT_CREATED = [33, "session not created"]
-    MOVE_TARGET_OUT_OF_BOUNDS = [34, "move target out of bounds"]
-    INVALID_XPATH_SELECTOR = [51, "invalid selector"]
-    INVALID_XPATH_SELECTOR_RETURN_TYPER = [52, "invalid selector"]
+    result: List[str] = []
+    try:
+        for frame in original:
+            if not isinstance(frame, dict):
+                continue
 
-    ELEMENT_NOT_INTERACTABLE = [60, "element not interactable"]
-    INSECURE_CERTIFICATE = ["insecure certificate"]
-    INVALID_ARGUMENT = [61, "invalid argument"]
-    INVALID_COORDINATES = ["invalid coordinates"]
-    INVALID_SESSION_ID = ["invalid session id"]
-    NO_SUCH_COOKIE = [62, "no such cookie"]
-    UNABLE_TO_CAPTURE_SCREEN = [63, "unable to capture screen"]
-    ELEMENT_CLICK_INTERCEPTED = [64, "element click intercepted"]
-    UNKNOWN_METHOD = ["unknown method exception"]
-
-    METHOD_NOT_ALLOWED = [405, "unsupported operation"]
+            line = frame.get('lineNumber', '')
+            file = frame.get('fileName', '<anonymous>')
+            if line:
+                file = f'{file}:{line}'
+            meth = frame.get('methodName', '<anonymous>')
+            if 'className' in frame:
+                meth = f'{frame["className"]}.{meth}'
+            result.append(f'    at {meth} ({file})')
+    except TypeError:
+        pass
+    return result
 
 
 class ErrorHandler:
@@ -145,58 +127,34 @@ class ErrorHandler:
 
         :Raises: If the response contains an error message.
         """
-        status = response.get("status", None)
-        if not status or status == ErrorCode.SUCCESS:
+
+        payload = response.get("value")
+        if payload is None:
+            # invalid response
             return
-        value = None
-        message = response.get("message", "")
-        screen: str = response.get("screen", "")
+
+        try:
+            payload_dict = json.loads(payload)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(payload_dict, dict):
+            return
+        value = payload_dict.get('value')
+        if not isinstance(value, dict):
+            return
+
+        error = value.get('error')
+        if not error:
+            return
+        message = value.get('message', error)
+
+        exception_class: Type[WebDriverException] = ERROR_TO_EXC_MAPPING.get(
+            error, WebDriverException
+        )
+
+        # backtrace from remote in Ruby
         stacktrace = None
-        if isinstance(status, int):
-            value_json = response.get("value", None)
-            if value_json and isinstance(value_json, str):
-                import json
-
-                try:
-                    value = json.loads(value_json)
-                    if len(value) == 1:
-                        value = value["value"]
-                    status = value.get("error", None)
-                    if not status:
-                        status = value.get("status", ErrorCode.UNKNOWN_ERROR)
-                        message = value.get("value") or value.get("message")
-                        if not isinstance(message, str):
-                            value = message
-                            message = message.get("message")
-                    else:
-                        message = value.get("message", None)
-                except ValueError:
-                    pass
-
-        exception_class: Type[WebDriverException]
-        e = ErrorCode()
-        error_codes = [item for item in dir(e) if not item.startswith("__")]
-        for error_code in error_codes:
-            error_info = getattr(ErrorCode, error_code)
-            if isinstance(error_info, list) and status in error_info:
-                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)
-                break
-        else:
-            exception_class = WebDriverException
-
-        if not value:
-            value = response["value"]
-        if isinstance(value, str):
-            raise exception_class(value)
-        if message == "" and "message" in value:
-            message = value["message"]
-
-        screen = None  # type: ignore[assignment]
-        if "screen" in value:
-            screen = value["screen"]
-
-        stacktrace = None
-        st_value = value.get("stackTrace") or value.get("stacktrace")
+        st_value = value.get('stacktrace', '')
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")
@@ -216,11 +174,10 @@ class ErrorHandler:
                         stacktrace.append(msg)
                 except TypeError:
                     pass
-        if exception_class == UnexpectedAlertPresentException:
-            alert_text = None
-            if "data" in value:
-                alert_text = value["data"].get("text")
-            elif "alert" in value:
-                alert_text = value["alert"].get("text")
-            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
-        raise exception_class(message, screen, stacktrace)
+        if exception_class is UnexpectedAlertPresentException:
+            raise UnexpectedAlertPresentException(
+                msg=message,
+                stacktrace=format_stacktrace(stacktrace),
+                alert_text=value.get('data'),
+            )
+        raise exception_class(msg=message, stacktrace=stacktrace)
