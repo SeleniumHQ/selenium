@@ -36,12 +36,20 @@ module Selenium
 
           @bidi = driver.bidi
           @bidi.session.subscribe('network.beforeRequestSent', browsing_context_ids)
+          @bidi.session.subscribe('network.responseStarted', browsing_context_ids)
+          @bidi.session.subscribe('network.responseCompleted', browsing_context_ids)
         end
 
         def before_request_sent(&block)
-          on(:before_request_sent) do |params|
-            before_request_sent_event(params, &block)
-          end
+          on(:before_request_sent, &block)
+        end
+
+        def response_started(&block)
+          on(:response_started, &block)
+        end
+
+        def response_completed(&block)
+          on(:response_started, &block)
         end
 
         private
@@ -49,10 +57,6 @@ module Selenium
         def on(event, &block)
           event = EVENTS[event] if event.is_a?(Symbol)
           @bidi.callbacks["network.#{event}"] << block
-        end
-
-        def before_request_sent_event(params)
-          yield(params)
         end
       end # NetworkInspector
     end # Bidi
