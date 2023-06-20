@@ -54,6 +54,8 @@ jobs:
     runs-on: ${{ inputs.os == 'windows' && 'windows-2019' || format('{0}-latest', inputs.os) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3

@@ -47,9 +47,7 @@ jobs:
       cache-key: java-nightly
       run: |
         ./go publish-maven-snapshot
-    secrets:
-      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
-      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+    secrets: inherit
 
   grid:
     if: inputs.language == 'grid' || github.event_name == 'schedule'
