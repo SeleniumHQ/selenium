@@ -90,7 +90,7 @@ module Selenium
             inspector.response_started { |event| on_response_started.push(event) }
 
             driver.navigate.to url_for(empty_text)
-            wait.until { !on_response_started.nil? }
+            wait.until { !on_response_started.empty? }
 
             expect(on_response_started[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_started[0].dig('request', 'url')).to eq driver.current_url
@@ -110,7 +110,7 @@ module Selenium
 
             # Checking mime type for 'html' text
             driver.navigate.to url_for(empty_page)
-            wait.until { !on_response_started.nil? }
+            wait.until { !on_response_started.empty? }
 
             expect(on_response_started[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_started[0].dig('request', 'url')).to eq driver.current_url
@@ -120,7 +120,7 @@ module Selenium
             # Checking mime type for 'plain' text
             on_response_started = []
             driver.navigate.to url_for(empty_text)
-            wait.until { !on_response_started.nil? }
+            wait.until { !on_response_started.empty? }
             expect(on_response_started[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_started[0].dig('request', 'url')).to eq driver.current_url
             expect(on_response_started[0].dig('response', 'url')).to eq driver.current_url
@@ -135,7 +135,7 @@ module Selenium
             inspector.response_completed { |event| on_response_completed.push(event) }
 
             driver.navigate.to url_for(empty_page)
-            wait.until { !on_response_completed.nil? }
+            wait.until { !on_response_completed.empty? }
 
             expect(on_response_completed[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_completed[0].dig('request', 'url')).to eq driver.current_url
@@ -156,7 +156,7 @@ module Selenium
 
             # Checking mime type for 'html' text
             driver.navigate.to url_for(empty_page)
-            wait.until { !on_response_completed.nil? }
+            wait.until { !on_response_completed.empty? }
 
             expect(on_response_completed[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_completed[0].dig('request', 'url')).to eq driver.current_url
@@ -166,7 +166,7 @@ module Selenium
             # Checking mime type for 'plain' text
             on_response_completed = []
             driver.navigate.to url_for(empty_text)
-            wait.until { !on_response_completed.nil? }
+            wait.until { !on_response_completed.empty? }
             expect(on_response_completed[0].dig('request', 'method')).to eq 'GET'
             expect(on_response_completed[0].dig('request', 'url')).to eq driver.current_url
             expect(on_response_completed[0].dig('response', 'url')).to eq driver.current_url
