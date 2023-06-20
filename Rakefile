@@ -360,7 +360,6 @@ def read_m2_user_pass
   pass = nil
   if ENV['SEL_M2_USER'] && ENV['SEL_M2_PASS']
     puts 'Fetching m2 user and pass from environment variables.'
-    puts ENV['SEL_M2_USER']
     user = ENV['SEL_M2_USER']
     pass = ENV['SEL_M2_PASS']
     return [user, pass]
