@@ -4,12 +4,18 @@ set -eufo pipefail
 # We want to see what's going on
 set -x
 
+# The ruby version may have been set by the CI runner. Stash
+# changes while we check to see if we need to reformat the
+# code.
+git stash
+
 # Fail the build if the format script needs to be re-run
 ./scripts/format.sh
 git diff --exit-code
 
-# We want to use a pre-built Ruby version
-echo 'RUBY_VERSION = "jruby-9.4.2.0"' >rb/ruby_version.bzl
+# Now we're made it out, reapply changes made by the build
+# runner
+git stash apply
 
 # The NPM repository rule wants to write to the HOME directory
 # but that's configured for the remote build machines, so run

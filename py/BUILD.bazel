@@ -14,6 +14,9 @@ compile_pip_requirements(
     name = "requirements",
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
+    tags = [
+        "no-rbe",
+    ],
 )
 
 SE_VERSION = "4.10.0"
@@ -124,10 +127,10 @@ py_library(
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-        ":mutation-listener",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
+        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -352,10 +355,12 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=chrome",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -379,6 +384,7 @@ py_test_suite(
         "--headless=true",
     ],
     tags = [
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -401,6 +407,7 @@ py_test_suite(
         "--driver=edge",
     ],
     tags = [
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -422,10 +429,12 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=firefox",
-    ],
+    ] + BROWSERS["firefox"]["args"],
+    data = BROWSERS["firefox"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-    ],
+    ] + BROWSERS["firefox"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -448,6 +457,7 @@ py_test_suite(
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -470,6 +480,7 @@ py_test_suite(
         "--driver=ie",
     ],
     tags = [
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -493,6 +504,7 @@ py_test_suite(
     ],
     tags = [
         "exclusive-if-local",
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -517,6 +529,7 @@ py_test_suite(
     ],
     tags = [
         "exclusive-if-local",
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [
@@ -541,6 +554,7 @@ py_test_suite(
     ],
     tags = [
         "exclusive-if-local",
+        "no-rbe",
         "no-sandbox",
     ],
     deps = [

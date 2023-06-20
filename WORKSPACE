@@ -101,6 +101,23 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
+# The go rules are often a dependency of _something_, so loading the version
+# we want early
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "6b65cb7917b4d1709f9410ffe00ecf3e160edf674b78c54a894471320862184f",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.39.0/rules_go-v0.39.0.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.39.0/rules_go-v0.39.0.zip",
+    ],
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.19.3")
+
 http_archive(
     name = "rules_jvm_external",
     patch_args = [
@@ -241,80 +258,48 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
 
 http_archive(
-    name = "io_bazel_rules_docker",
-    sha256 = "b1e80761a8a8243d03ebca8845e9cc1ba6c82ce7c5179ce2b295cd36f7e394bf",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.25.0/rules_docker-v0.25.0.tar.gz"],
+    name = "rules_oci",
+    sha256 = "db57efd706f01eb3ce771468366baa1614b5b25f4cce99757e2b8d942155b8ec",
+    strip_prefix = "rules_oci-1.0.0",
+    url = "https://github.com/bazel-contrib/rules_oci/releases/download/v1.0.0/rules_oci-v1.0.0.tar.gz",
 )
 
-load(
-    "@io_bazel_rules_docker//repositories:repositories.bzl",
-    container_repositories = "repositories",
+load("@rules_oci//oci:dependencies.bzl", "rules_oci_dependencies")
+
+rules_oci_dependencies()
+
+load("@rules_oci//oci:repositories.bzl", "LATEST_CRANE_VERSION", "oci_register_toolchains")
+
+oci_register_toolchains(
+    name = "oci",
+    crane_version = LATEST_CRANE_VERSION,
+    # Uncommenting the zot toolchain will cause it to be used instead of crane for some tasks.
+    # Note that it does not support docker-format images.
+    # zot_version = LATEST_ZOT_VERSION,
 )
 
-container_repositories()
-
-load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
-
-container_deps()
-
-load(
-    "@io_bazel_rules_docker//container:container.bzl",
-    "container_pull",
-)
+load("@rules_oci//oci:pull.bzl", "oci_pull")
 
 # Examine https://console.cloud.google.com/gcr/images/distroless/GLOBAL/java?gcrImageListsize=30 to find
 # the latest version when updating
-container_pull(
+oci_pull(
     name = "java_image_base",
-    # This pulls the java 11 version of the java base image
-    digest = "sha256:97c7eae86c65819664fcb7f36e8dee54bbbbc09c2cb6b448cbee06e1b42df81b",
-    registry = "gcr.io",
-    repository = "distroless/java",
+    digest = "sha256:161a1d97d592b3f1919801578c3a47c8e932071168a96267698f4b669c24c76d",
+    image = "gcr.io/distroless/java17",
 )
 
-container_pull(
+oci_pull(
     name = "firefox_standalone",
-    # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:ecc9861eafb3c2f999126fa4cc0434e9fbe6658ba1241998457bb088c99dd0d0",
+    digest = "sha256:b6d8279268b3183d0d33e667e82fec1824298902f77718764076de763673124f",
     registry = "index.docker.io",
-    repository = "selenium/standalone-firefox-debug",
+    repository = "selenium/standalone-firefox",
 )
 
-container_pull(
+oci_pull(
     name = "chrome_standalone",
-    # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:c3a2174ac31b3918ae9d93c43ed8165fc2346b8c9e16d38ebac691fbb242667f",
+    digest = "sha256:1b809a961a0a77787a7cccac74ddc5570b7e89747f925b8469ddb9a6624d4ece",
     registry = "index.docker.io",
-    repository = "selenium/standalone-chrome-debug",
-)
-
-http_archive(
-    name = "io_bazel_rules_k8s",
-    sha256 = "ce5b9bc0926681e2e7f2147b49096f143e6cbc783e71bc1d4f36ca76b00e6f4a",
-    strip_prefix = "rules_k8s-0.7",
-    urls = ["https://github.com/bazelbuild/rules_k8s/archive/refs/tags/v0.7.tar.gz"],
-)
-
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults", "k8s_repositories")
-
-k8s_repositories()
-
-load(
-    "@io_bazel_rules_go//go:deps.bzl",
-    "go_register_toolchains",
-    "go_rules_dependencies",
-)
-
-go_rules_dependencies()
-
-go_register_toolchains()
-
-k8s_defaults(
-    name = "k8s_dev",
-    cluster = "docker-desktop",
-    image_chroot = "localhost:5000",
-    kind = "deployment",
-    namespace = "selenium",
+    repository = "selenium/standalone-chrome",
 )
 
 load("//common:repositories.bzl", "pin_browsers")
@@ -346,4 +331,13 @@ rb_bundle(
         "//:rb/selenium-webdriver.gemspec",
     ],
     gemfile = "//:rb/Gemfile",
+)
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "65391537d1ef528bf772ae25d2c163bd5cee6a929b06cad985e0734f1a12610b",
+    strip_prefix = "buildtools-6.1.2",
+    urls = [
+        "https://github.com/bazelbuild/buildtools/archive/refs/tags/v6.1.2.zip",
+    ],
 )

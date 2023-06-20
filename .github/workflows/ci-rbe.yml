@@ -9,6 +9,7 @@ jobs:
     name: Test
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Cache
+      name: All RBE tests
       cache-key: rbe
+      ruby-version: jruby-9.4.2.0
       run: ./scripts/github-actions/ci-build.sh

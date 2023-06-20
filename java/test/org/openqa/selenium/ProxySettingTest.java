@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Collections.singletonMap;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -27,105 +27,86 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpObject;
+
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
-import org.littleshoot.proxy.HttpFilters;
-import org.littleshoot.proxy.HttpFiltersAdapter;
-import org.littleshoot.proxy.HttpFiltersSourceAdapter;
-import org.littleshoot.proxy.HttpProxyServer;
-import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.jre.server.JreServer;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.netty.server.SimpleHttpServer;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.Safely;
-import org.openqa.selenium.testing.TearDownFixture;
 
 class ProxySettingTest extends JupiterTestBase {
 
-  private final List<TearDownFixture> tearDowns = new ArrayList<>();
+  @Test
+  @Ignore(SAFARI)
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
+  public void canConfigureManualHttpProxy() throws URISyntaxException, InterruptedException {
+    try (FakeProxyServer proxyServer = new FakeProxyServer()) {
+      Proxy proxyToUse = proxyServer.asProxy();
 
-  private ProxyServer proxyServer;
+      createNewDriver(new ImmutableCapabilities(PROXY, proxyToUse));
 
-  @BeforeEach
-  public void newProxyInstance() {
-    proxyServer = new ProxyServer();
-    tearDowns.add(proxyServer::destroy);
-  }
-
-  @AfterEach
-  public void tearDown() {
-    tearDowns.forEach(Safely::safelyCall);
+      driver.get(appServer.whereElseIs("simpleTest.html"));
+      assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
+    }
   }
 
   @Test
   @Ignore(SAFARI)
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  public void canConfigureManualHttpProxy() {
-    Proxy proxyToUse = proxyServer.asProxy();
+  public void canConfigureNoProxy() throws URISyntaxException, InterruptedException {
+    try (FakeProxyServer proxyServer = new FakeProxyServer()) {
+      Proxy proxyToUse = proxyServer.asProxy();
+      proxyToUse.setNoProxy("localhost, 127.0.0.1, " + appServer.getHostName());
 
-    createNewDriver(new ImmutableCapabilities(PROXY, proxyToUse));
+      createNewDriver(new ImmutableCapabilities(PROXY, proxyToUse));
 
-    driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
+      driver.get(appServer.whereIs("simpleTest.html"));
+      assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isFalse();
+
+      driver.get(appServer.whereElseIs("simpleTest.html"));
+      assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
+    }
   }
 
   @Test
   @Ignore(SAFARI)
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  public void canConfigureNoProxy() {
-    Proxy proxyToUse = proxyServer.asProxy();
-    proxyToUse.setNoProxy("localhost, 127.0.0.1, " + appServer.getHostName());
+  public void canConfigureProxyThroughPACFile() throws URISyntaxException, InterruptedException {
+    try (SimpleHttpServer helloServer = createSimpleHttpServer(
+          appServer.whereElseIs("mouseOver.html"),
+          "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>"
+        );
+        SimpleHttpServer pacFileServer =
+           createPacfileServer(
+             "/proxy.pac",
+             Joiner.on('\n')
+               .join(
+                 "function FindProxyForURL(url, host) {",
+                 "  return 'PROXY " + getHostAndPort(helloServer) + "';",
+                 "}"));
+    ) {
 
-    createNewDriver(new ImmutableCapabilities(PROXY, proxyToUse));
+      Proxy proxy = new Proxy();
+      proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    driver.get(appServer.whereIs("simpleTest.html"));
-    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isFalse();
+      createNewDriver(new ImmutableCapabilities(PROXY, proxy));
 
-    driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
-  }
-
-  @Test
-  @Ignore(SAFARI)
-  @NoDriverBeforeTest
-  @NoDriverAfterTest
-  public void canConfigureProxyThroughPACFile() {
-    Server<?> helloServer =
-        createSimpleHttpServer("<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server<?> pacFileServer =
-        createPacfileServer(
-            Joiner.on('\n')
-                .join(
-                    "function FindProxyForURL(url, host) {",
-                    "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-                    "}"));
-
-    Proxy proxy = new Proxy();
-    proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
-
-    createNewDriver(new ImmutableCapabilities(PROXY, proxy));
-
-    driver.get(appServer.whereElseIs("mouseOver.html"));
-    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Hello, world!");
+      driver.get(appServer.whereElseIs("mouseOver.html"));
+      assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Hello, world!");
+    }
   }
 
   @Test
@@ -134,13 +115,18 @@ class ProxySettingTest extends JupiterTestBase {
   @NoDriverAfterTest
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
-  public void canUsePACThatOnlyProxiesCertainHosts() {
-    Server<?> helloServer =
-        createSimpleHttpServer("<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server<?> goodbyeServer =
-        createSimpleHttpServer("<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
-    Server<?> pacFileServer =
-        createPacfileServer(
+  public void canUsePACThatOnlyProxiesCertainHosts()
+    throws URISyntaxException, InterruptedException {
+    try (SimpleHttpServer helloServer = createSimpleHttpServer(
+          "/index.html",
+          "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>"
+        );
+        SimpleHttpServer goodbyeServer = createSimpleHttpServer(
+          helloServer.baseUri().resolve("/index.html").toString(),
+          "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>"
+        );
+        SimpleHttpServer pacFileServer = createPacfileServer(
+          "/proxy.pac",
             Joiner.on('\n')
                 .join(
                     "function FindProxyForURL(url, host) {",
@@ -148,97 +134,63 @@ class ProxySettingTest extends JupiterTestBase {
                     "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
                     "  }",
                     "  return 'DIRECT';",
-                    "}"));
+                    "}")
+        );) {
 
-    Proxy proxy = new Proxy();
-    proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
+      Proxy proxy = new Proxy();
+      proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    createNewDriver(new ImmutableCapabilities(PROXY, proxy));
+      createNewDriver(new ImmutableCapabilities(PROXY, proxy));
 
-    driver.get("http://" + getHostAndPort(helloServer));
-    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Goodbye, world!");
+      driver.get("http://" + getHostAndPort(helloServer) + "/index.html");
+      assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Goodbye, world!");
 
-    driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Heading");
+      driver.get(appServer.whereElseIs("simpleTest.html"));
+      assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Heading");
+    }
   }
 
-  private Server<?> createSimpleHttpServer(final String responseHtml) {
-    return createServer(
-        req ->
-            new HttpResponse()
-                .setHeader("Content-Type", "text/html; charset=utf-8")
-                .setContent(Contents.utf8String(responseHtml)));
-  }
+  private SimpleHttpServer createSimpleHttpServer(String requestPath, String responseHtml)
+    throws URISyntaxException, InterruptedException {
+    SimpleHttpServer server = new SimpleHttpServer();
+    byte[] bytes = responseHtml.getBytes(UTF_8);
 
-  private Server<?> createPacfileServer(final String pacFileContents) {
-    return createServer(
-        req ->
-            new HttpResponse()
-                .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
-                .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII))));
-  }
-
-  private Server<?> createServer(HttpHandler handler) {
-    Server<?> server =
-        new JreServer(
-                new BaseServerOptions(
-                    new MapConfig(
-                        singletonMap("server", singletonMap("port", PortProber.findFreePort())))),
-                handler)
-            .start();
-
-    tearDowns.add(server::stop);
+    server.registerEndpoint(HttpMethod.GET, requestPath, "text/html; charset=utf-8", bytes);
 
     return server;
   }
 
-  private static HostAndPort getHostAndPort(Server<?> server) {
-    URL url = server.getUrl();
-    return HostAndPort.fromParts(url.getHost(), url.getPort());
+  private SimpleHttpServer createPacfileServer(String requestPath, String responsePac)
+    throws URISyntaxException, InterruptedException {
+      SimpleHttpServer server = new SimpleHttpServer();
+    byte[] bytes = responsePac.getBytes(US_ASCII);
+
+    server.registerEndpoint(HttpMethod.GET, requestPath, "application/x-ns-proxy-autoconfig", bytes);
+
+    return server;
   }
 
-  public static class ProxyServer {
-    private final HttpProxyServer proxyServer;
-    private final String baseUrl;
-    private final List<String> uris = new ArrayList<>();
+  private static HostAndPort getHostAndPort(SimpleHttpServer server) {
+    URI baseUri = server.baseUri();
+    return HostAndPort.fromParts(baseUri.getHost(), baseUri.getPort());
+  }
 
-    public ProxyServer() {
-      int port = PortProber.findFreePort();
+  public static class FakeProxyServer extends SimpleHttpServer {
+    private final Set<String> resources = new HashSet<>();
 
-      String address = new NetworkUtils().getPrivateLocalAddress();
-      baseUrl = String.format("%s:%d", address, port);
+    public FakeProxyServer() throws URISyntaxException, InterruptedException {
 
-      proxyServer =
-          DefaultHttpProxyServer.bootstrap()
-              .withAllowLocalOnly(false)
-              .withPort(port)
-              .withFiltersSource(
-                  new HttpFiltersSourceAdapter() {
-                    @Override
-                    public HttpFilters filterRequest(
-                        HttpRequest originalRequest, ChannelHandlerContext ctx) {
-                      return new HttpFiltersAdapter(originalRequest) {
-                        @Override
-                        public io.netty.handler.codec.http.HttpResponse clientToProxyRequest(
-                            HttpObject httpObject) {
-                          String uri = originalRequest.uri();
-                          String[] parts = uri.split("/");
-                          if (parts.length == 0) {
-                            return null;
-                          }
-                          String finalPart = parts[parts.length - 1];
-                          uris.add(finalPart);
-                          return null;
-                        }
+    }
 
-                        @Override
-                        public HttpObject serverToProxyResponse(HttpObject httpObject) {
-                          return httpObject;
-                        }
-                      };
-                    }
-                  })
-              .start();
+    @Override
+    protected FullHttpResponse handleRequest(HttpRequest requested) {
+      String[] parts = requested.uri().split("/");
+
+      if (parts.length > 1) {
+        resources.add(parts[parts.length - 1]);
+      }
+
+      return super.handleRequest(requested);
     }
 
     /**
@@ -248,16 +200,13 @@ class ProxySettingTest extends JupiterTestBase {
      * @return true if the resource has been called.
      */
     public boolean hasBeenCalled(String resourceName) {
-      return uris.contains(resourceName);
-    }
-
-    public void destroy() {
-      proxyServer.stop();
+      return resources.contains(resourceName);
     }
 
     public Proxy asProxy() {
       Proxy proxy = new Proxy();
-      proxy.setHttpProxy(baseUrl);
+      URI baseUri = baseUri();
+      proxy.setHttpProxy(baseUri.getHost() + ":" + baseUri.getPort());
       return proxy;
     }
   }
