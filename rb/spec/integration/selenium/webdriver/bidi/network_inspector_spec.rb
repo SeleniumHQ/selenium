@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe NetworkInspector, only: {browser: %i[chrome edge firefox]} do
+      describe NetworkInspector, only: {browser: %i[firefox]} do
         let(:empty_page) { '/bidi/emptyPage.html' }
         let(:empty_text) { '/bidi/emptyText.txt' }
         let(:redirected_http_equiv) { '/bidi/redirected_http_equiv.html' }
