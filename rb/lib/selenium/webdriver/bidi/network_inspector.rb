@@ -49,7 +49,7 @@ module Selenium
         end
 
         def response_completed(&block)
-          on(:response_started, &block)
+          on(:response_completed, &block)
         end
 
         private
