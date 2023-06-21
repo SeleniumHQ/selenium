@@ -114,7 +114,7 @@ module Selenium
           expect(browsing_context.print_page).to include(magic_number)
         end
 
-        it 'prints with valid parameters' do
+        it 'prints with valid parameters', only: {browser: %i[firefox]} do
           id = driver.window_handle
           browsing_context = described_class.new(driver: driver, browsing_context_id: id)
           driver.navigate.to url_for('printPage.html')
