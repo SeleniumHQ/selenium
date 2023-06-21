@@ -29,41 +29,45 @@ module Selenium
 
         it 'can listen to event before request is sent' do
           reset_driver!(web_socket_url: true) do |driver|
-            before_request_event = nil
+            before_request_event = []
             inspector = described_class.new(driver)
-            inspector.before_request_sent { |event| before_request_event = event }
+            inspector.before_request_sent do |event|
+              before_request_event.push(event) if event.dig('request', 'url').include? 'emptyPage.html'
+            end
 
             driver.navigate.to url_for(empty_page)
-            wait.until { !before_request_event.nil? }
+            wait.until { !before_request_event.empty? }
 
-            expect(before_request_event.dig('request', 'method')).to eq 'GET'
-            expect(before_request_event.dig('request', 'url')).to eq driver.current_url
+            expect(before_request_event[0].dig('request', 'method')).to eq 'GET'
+            expect(before_request_event[0].dig('request', 'url')).to eq driver.current_url
           end
         end
 
         it 'can request cookies' do
           reset_driver!(web_socket_url: true) do |driver|
-            before_request_event = nil
+            before_request_event = []
             inspector = described_class.new(driver)
-            inspector.before_request_sent { |event| before_request_event = event }
+            inspector.before_request_sent do |event|
+              before_request_event.push(event) if event.dig('request', 'url').include? 'emptyText.txt'
+            end
 
             driver.navigate.to url_for(empty_text)
             driver.manage.add_cookie name: 'north',
                                      value: 'biryani'
             driver.navigate.refresh
-            wait.until { !before_request_event.nil? }
+            wait.until { !before_request_event.empty? }
 
-            expect(before_request_event.dig('request', 'method')).to eq 'GET'
-            expect(before_request_event.dig('request', 'url')).to eq driver.current_url
-            expect(before_request_event.dig('request', 'cookies', 0, 'name')).to eq 'north'
-            expect(before_request_event.dig('request', 'cookies', 0, 'value')).to eq 'biryani'
+            expect(before_request_event[1].dig('request', 'method')).to eq 'GET'
+            expect(before_request_event[1].dig('request', 'url')).to eq driver.current_url
+            expect(before_request_event[1].dig('request', 'cookies', 0, 'name')).to eq 'north'
+            expect(before_request_event[1].dig('request', 'cookies', 0, 'value')).to eq 'biryani'
 
             driver.manage.add_cookie name: 'south',
                                      value: 'dosa'
             driver.navigate.refresh
-            wait.until { !before_request_event.nil? }
-            expect(before_request_event.dig('request', 'cookies', 1, 'name')).to eq 'south'
-            expect(before_request_event.dig('request', 'cookies', 1, 'value')).to eq 'dosa'
+
+            expect(before_request_event[2].dig('request', 'cookies', 1, 'name')).to eq 'south'
+            expect(before_request_event[2].dig('request', 'cookies', 1, 'value')).to eq 'dosa'
           end
         end
 
@@ -71,15 +75,20 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             before_request_event = []
             inspector = described_class.new(driver)
-            inspector.before_request_sent { |event| before_request_event.push(event) }
+            inspector.before_request_sent do |event|
+              if (event.dig('request', 'url').include? 'redirected_http_equiv.html') ||
+                 (event.dig('request', 'url').include? 'redirected.html')
+                before_request_event.push(event)
+              end
+            end
 
             driver.navigate.to url_for(redirected_http_equiv)
             wait.until { driver.current_url.include? 'redirected.html' }
 
             expect(before_request_event[0].dig('request', 'method')).to eq 'GET'
             expect(before_request_event[0].dig('request', 'url')).to include 'redirected_http_equiv.html'
-            expect(before_request_event[2].dig('request', 'method')).to eq 'GET'
-            expect(before_request_event[2].dig('request', 'url')).to include 'redirected.html'
+            expect(before_request_event[1].dig('request', 'method')).to eq 'GET'
+            expect(before_request_event[1].dig('request', 'url')).to include 'redirected.html'
           end
         end
 
@@ -87,7 +96,9 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             on_response_started = []
             inspector = described_class.new(driver)
-            inspector.response_started { |event| on_response_started.push(event) }
+            inspector.response_started do |event|
+              on_response_started.push(event) if event.dig('request', 'url').include? 'emptyText.txt'
+            end
 
             driver.navigate.to url_for(empty_text)
             wait.until { !on_response_started.empty? }
@@ -106,7 +117,12 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             on_response_started = []
             inspector = described_class.new(driver)
-            inspector.response_started { |event| on_response_started.push(event) }
+            inspector.response_started do |event|
+              if (event.dig('request', 'url').include? 'emptyPage.html') ||
+                 (event.dig('request', 'url').include? 'emptyText.txt')
+                on_response_started.push(event)
+              end
+            end
 
             # Checking mime type for 'html' text
             driver.navigate.to url_for(empty_page)
@@ -118,13 +134,13 @@ module Selenium
             expect(on_response_started[0].dig('response', 'mimeType')).to include 'text/html'
 
             # Checking mime type for 'plain' text
-            on_response_started = []
             driver.navigate.to url_for(empty_text)
             wait.until { !on_response_started.empty? }
-            expect(on_response_started[0].dig('request', 'method')).to eq 'GET'
-            expect(on_response_started[0].dig('request', 'url')).to eq driver.current_url
-            expect(on_response_started[0].dig('response', 'url')).to eq driver.current_url
-            expect(on_response_started[0].dig('response', 'mimeType')).to include 'text/plain'
+
+            expect(on_response_started[1].dig('request', 'method')).to eq 'GET'
+            expect(on_response_started[1].dig('request', 'url')).to eq driver.current_url
+            expect(on_response_started[1].dig('response', 'url')).to eq driver.current_url
+            expect(on_response_started[1].dig('response', 'mimeType')).to include 'text/plain'
           end
         end
 
@@ -132,7 +148,9 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             on_response_completed = []
             inspector = described_class.new(driver)
-            inspector.response_completed { |event| on_response_completed.push(event) }
+            inspector.response_completed do |event|
+              on_response_completed.push(event) if event.dig('request', 'url').include? 'emptyPage.html'
+            end
 
             driver.navigate.to url_for(empty_page)
             wait.until { !on_response_completed.empty? }
@@ -152,7 +170,12 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             on_response_completed = []
             inspector = described_class.new(driver)
-            inspector.response_completed { |event| on_response_completed.push(event) }
+            inspector.response_completed do |event|
+              if (event.dig('request', 'url').include? 'emptyPage.html') ||
+                 (event.dig('request', 'url').include? 'emptyText.txt')
+                on_response_completed.push(event)
+              end
+            end
 
             # Checking mime type for 'html' text
             driver.navigate.to url_for(empty_page)
@@ -164,13 +187,13 @@ module Selenium
             expect(on_response_completed[0].dig('response', 'mimeType')).to include 'text/html'
 
             # Checking mime type for 'plain' text
-            on_response_completed = []
             driver.navigate.to url_for(empty_text)
             wait.until { !on_response_completed.empty? }
-            expect(on_response_completed[0].dig('request', 'method')).to eq 'GET'
-            expect(on_response_completed[0].dig('request', 'url')).to eq driver.current_url
-            expect(on_response_completed[0].dig('response', 'url')).to eq driver.current_url
-            expect(on_response_completed[0].dig('response', 'mimeType')).to include 'text/plain'
+
+            expect(on_response_completed[1].dig('request', 'method')).to eq 'GET'
+            expect(on_response_completed[1].dig('request', 'url')).to eq driver.current_url
+            expect(on_response_completed[1].dig('response', 'url')).to eq driver.current_url
+            expect(on_response_completed[1].dig('response', 'mimeType')).to include 'text/plain'
           end
         end
       end
