@@ -103,6 +103,7 @@ public class OneShotNode extends Node {
   private HttpClient client;
   private Capabilities capabilities;
   private Instant sessionStart = Instant.EPOCH;
+  private SlotMatcher slotMatcher;
 
   private OneShotNode(
       Tracer tracer,
@@ -113,7 +114,8 @@ public class OneShotNode extends Node {
       URI uri,
       URI gridUri,
       Capabilities stereotype,
-      WebDriverInfo driverInfo) {
+      WebDriverInfo driverInfo,
+      SlotMatcher slotMatcher) {
     super(tracer, id, uri, registrationSecret);
 
     this.heartbeatPeriod = heartbeatPeriod;
@@ -121,6 +123,7 @@ public class OneShotNode extends Node {
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.driverInfo = Require.nonNull("Driver info", driverInfo);
+    this.slotMatcher = slotMatcher;
 
     new JMXHelper().register(this);
   }
@@ -175,7 +178,8 @@ public class OneShotNode extends Node {
             .getPublicGridUri()
             .orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
         stereotype,
-        driverInfo);
+        driverInfo,
+        nodeOptions.getSlotMatcher());
   }
 
   @Override

@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -53,7 +54,7 @@ class NodeStatusTest {
                         new URI("http://localhost:1235"),
                         stereotype,
                         new ImmutableCapabilities("peas", "sausages"),
-                        Instant.now()))),
+                        Instant.now()), new DefaultSlotMatcher())),
             UP,
             Duration.ofSeconds(10),
             "4.0.0",

@@ -47,6 +47,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
@@ -208,12 +209,12 @@ class DefaultSlotSelectorTest {
                     stereotype,
                     now,
                     new Session(
-                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
+                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now), new DefaultSlotMatcher()));
           }
 
           for (int i = 0; i < count - currentLoad; i++) {
             slots.add(
-                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
+                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null, new DefaultSlotMatcher()));
           }
         });
 
