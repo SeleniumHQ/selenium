@@ -36,6 +36,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -55,6 +58,9 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.YesSlotMatcher;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
@@ -670,6 +676,32 @@ class NodeOptionsTest {
         .isEqualTo(Optional.of(URI.create(nonLoopbackAddressUrl)));
   }
 
+  @Test
+  void notSettingSlotMatcherAvailable() {
+    String[] rawConfig =
+        new String[] {
+          "[node]", "slot-matcher = \"org.openqa.selenium.grid.data.DefaultSlotMatcher\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getSlotMatcher())
+        .isExactlyInstanceOf(DefaultSlotMatcher.class);
+  }
+
+  @Test
+  void settingSlotMatcherAvailable() {
+    String[] rawConfig =
+        new String[] {
+          "[node]", "slot-matcher = \"org.openqa.selenium.grid.data.YesSlotMatcher\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getSlotMatcher())
+        .isExactlyInstanceOf(YesSlotMatcher.class);
+  }
+
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
     return new Condition<>(
         caps -> caps.stream().anyMatch(cap -> name.equals(cap.getBrowserName())),
@@ -699,4 +731,5 @@ class NodeOptionsTest {
       };
     }
   }
+
 }
