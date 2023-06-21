@@ -47,6 +47,8 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.SlotMatcher;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
@@ -65,9 +67,11 @@ public class GridModel {
   private final Map<NodeId, Instant> nodePurgeTimes = new ConcurrentHashMap<>();
   private final Map<NodeId, Integer> nodeHealthCount = new ConcurrentHashMap<>();
   private final EventBus events;
+  private final SlotMatcher slotMatcher;
 
-  public GridModel(EventBus events) {
+  public GridModel(EventBus events, SlotMatcher slotMatcher) {
     this.events = Require.nonNull("Event bus", events);
+    this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
     this.events.addListener(SessionClosedEvent.listener(this::release));
@@ -75,8 +79,10 @@ public class GridModel {
 
   public static GridModel create(Config config) {
     EventBus bus = new EventBusOptions(config).getEventBus();
+    //SlotMatcher slotMatcher = new DistributorOptions(config).getSlotMatcher();
+    SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
-    return new GridModel(bus);
+    return new GridModel(bus, slotMatcher);
   }
 
   public void add(NodeStatus node) {
@@ -381,7 +387,7 @@ public class GridModel {
 
           if (id.equals(slot.getSession().getId())) {
             Slot released =
-                new Slot(slot.getId(), slot.getStereotype(), slot.getLastStarted(), null);
+                new Slot(slot.getId(), slot.getStereotype(), slot.getLastStarted(), null, slotMatcher);
             amend(node.getAvailability(), node, released);
             return;
           }
@@ -405,7 +411,8 @@ public class GridModel {
                 status.getExternalUri(),
                 slot.getStereotype(),
                 slot.getStereotype(),
-                now));
+                now),
+            slotMatcher);
 
     amend(UP, status, reserved);
   }
@@ -451,7 +458,8 @@ public class GridModel {
               slot.getId(),
               slot.getStereotype(),
               session == null ? slot.getLastStarted() : session.getStartTime(),
-              session);
+              session,
+              slotMatcher);
 
       amend(node.getAvailability(), node, updated);
     } finally {

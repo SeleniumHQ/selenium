@@ -116,7 +116,8 @@ public class DockerSessionFactory implements SessionFactory {
       Image videoImage,
       DockerAssetsPath assetsPath,
       String networkName,
-      boolean runningInDocker) {
+      boolean runningInDocker,
+      SlotMatcher slotMatcher) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -129,7 +130,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
-    this.slotMatcher = new DefaultSlotMatcher();
+    this.slotMatcher = slotMatcher;
   }
 
   @Override

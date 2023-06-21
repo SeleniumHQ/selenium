@@ -55,6 +55,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
@@ -141,7 +142,8 @@ class AddingNodesTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor =
         new RemoteDistributor(
@@ -179,7 +181,8 @@ class AddingNodesTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize)) {
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher())) {
 
       distributor =
           new RemoteDistributor(
@@ -217,7 +220,8 @@ class AddingNodesTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize)) {
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher())) {
 
       distributor =
           new RemoteDistributor(
@@ -265,7 +269,8 @@ class AddingNodesTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize)) {
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher())) {
 
       distributor =
           new RemoteDistributor(
@@ -306,7 +311,8 @@ class AddingNodesTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize)) {
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher())) {
 
       distributor =
           new RemoteDistributor(
@@ -337,7 +343,8 @@ class AddingNodesTest {
                           sessionUri,
                           CAPS,
                           CAPS,
-                          Instant.now()))),
+                          Instant.now()),
+                      new DefaultSlotMatcher())),
               UP,
               Duration.ofSeconds(10),
               status.getVersion(),
@@ -460,7 +467,7 @@ class AddingNodesTest {
           getUri(),
           1,
           ImmutableSet.of(
-              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
+              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess, new DefaultSlotMatcher())),
           UP,
           Duration.ofSeconds(10),
           getNodeVersion(),

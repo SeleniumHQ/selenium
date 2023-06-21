@@ -28,6 +28,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.grid.data.SlotMatcher;
 
 public class Slot implements Serializable {
 
@@ -37,12 +38,12 @@ public class Slot implements Serializable {
   private final Instant lastStarted;
   private final SlotMatcher slotMatcher;
 
-  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
+  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session, SlotMatcher slotMatcher) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
     this.session = session;
-    this.slotMatcher = new DefaultSlotMatcher();
+    this.slotMatcher = slotMatcher;
   }
 
   private static Slot fromJson(JsonInput input) {
@@ -78,7 +79,7 @@ public class Slot implements Serializable {
     }
     input.endObject();
 
-    return new Slot(id, stereotype, lastStarted, session);
+    return new Slot(id, stereotype, lastStarted, session, new DefaultSlotMatcher());
   }
 
   private Map<String, Object> toJson() {

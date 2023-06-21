@@ -82,6 +82,8 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.SlotMatcher;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
@@ -119,6 +121,7 @@ public class LocalNode extends Node {
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
 
   private final EventBus bus;
+  private final SlotMatcher slotMatcher;
   private final URI externalUri;
   private final URI gridUri;
   private final Duration heartbeatPeriod;
@@ -153,7 +156,8 @@ public class LocalNode extends Node {
       Duration heartbeatPeriod,
       List<SessionSlot> factories,
       Secret registrationSecret,
-      boolean managedDownloadsEnabled) {
+      boolean managedDownloadsEnabled,
+      SlotMatcher slotMatcher) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -171,6 +175,7 @@ public class LocalNode extends Node {
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
     this.managedDownloadsEnabled = managedDownloadsEnabled;
+    this.slotMatcher = slotMatcher;
 
     this.healthCheck =
         healthCheck == null
@@ -855,7 +860,8 @@ public class LocalNode extends Node {
                       new SlotId(getId(), slot.getId()),
                       slot.getStereotype(),
                       lastStarted,
-                      session);
+                      session,
+                      slotMatcher);
                 })
             .collect(toImmutableSet());
 
@@ -940,6 +946,7 @@ public class LocalNode extends Node {
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
     private boolean managedDownloadsEnabled = false;
+    private SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
     private Builder(Tracer tracer, EventBus bus, URI uri, URI gridUri, Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
@@ -994,6 +1001,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder slotMatcher(SlotMatcher slotMatcher) {
+      this.slotMatcher = slotMatcher;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
@@ -1010,7 +1022,8 @@ public class LocalNode extends Node {
           heartbeatPeriod,
           factories.build(),
           registrationSecret,
-          managedDownloadsEnabled);
+          managedDownloadsEnabled,
+          slotMatcher);
     }
 
     public Advanced advanced() {

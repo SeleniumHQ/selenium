@@ -181,7 +181,8 @@ public class DockerOptions {
                     videoImage,
                     assetsPath,
                     networkName,
-                    info.isPresent()));
+                    info.isPresent(),
+                    options.getSlotMatcher()));
           }
           LOG.info(
               String.format(

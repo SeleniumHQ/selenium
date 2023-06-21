@@ -31,6 +31,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_USE_SELENIUM_MANAGER;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SLOT_MATCHER;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
 
@@ -67,6 +68,15 @@ public class NodeFlags implements HasRoles {
               + "the host could run out of resources.")
   @ConfigValue(section = NODE_SECTION, name = "override-max-sessions", example = "false")
   public Boolean overrideMaxSessions = OVERRIDE_MAX_SESSIONS;
+
+  @Parameter(
+      names = {"--slot-matcher"},
+      description =
+          "Full classname of non-default slot matcher to use. This is used to determine whether a"
+              + " Node can support a particular session. The class provided here should be the same as the one"
+              + " used for distributor options")
+  @ConfigValue(section = NODE_SECTION, name = "slot-matcher", example = DEFAULT_SLOT_MATCHER)
+  private String slotMatcher = DEFAULT_SLOT_MATCHER;
 
   @Parameter(
       names = {"--session-timeout"},

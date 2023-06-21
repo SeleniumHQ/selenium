@@ -80,6 +80,7 @@ import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.GridModel;
@@ -179,7 +180,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
       Duration healthcheckInterval,
       boolean rejectUnsupportedCaps,
       Duration sessionRequestRetryInterval,
-      int newSessionThreadPoolSize) {
+      int newSessionThreadPoolSize,
+      SlotMatcher slotMatcher) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -189,7 +191,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new GridModel(bus);
+    this.model = new GridModel(bus, slotMatcher);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
@@ -263,7 +265,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         distributorOptions.getHealthCheckInterval(),
         distributorOptions.shouldRejectUnsupportedCaps(),
         newSessionQueueOptions.getSessionRequestRetryInterval(),
-        distributorOptions.getNewSessionThreadPoolSize());
+        distributorOptions.getNewSessionThreadPoolSize(),
+        distributorOptions.getSlotMatcher());
   }
 
   @Override

@@ -71,14 +71,15 @@ public class LocalNodeFactory {
             .enableCdp(nodeOptions.isCdpEnabled())
             .enableBiDi(nodeOptions.isBiDiEnabled())
             .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
-            .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
+            .heartbeatPeriod(nodeOptions.getHeartbeatPeriod())
+            .slotMatcher(nodeOptions.getSlotMatcher());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     nodeOptions
         .getSessionFactories(
-            caps -> createSessionFactory(tracer, clientFactory, sessionTimeout, builders, caps))
+            caps -> createSessionFactory(tracer, clientFactory, sessionTimeout, builders, caps, nodeOptions.getSlotMatcher()))
         .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
@@ -101,9 +102,9 @@ public class LocalNodeFactory {
       HttpClient.Factory clientFactory,
       Duration sessionTimeout,
       List<DriverService.Builder<?, ?>> builders,
-      Capabilities stereotype) {
+      Capabilities stereotype,
+      SlotMatcher slotMatcher) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
-    SlotMatcher slotMatcher = new DefaultSlotMatcher();
     String webDriverExecutablePath =
         String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
 
