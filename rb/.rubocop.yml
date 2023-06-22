@@ -67,7 +67,6 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'lib/selenium/webdriver/common/local_driver.rb'
     - 'lib/selenium/webdriver/common/logger.rb'
-    - 'lib/selenium/webdriver/bidi/script/protocol_value/remote_value.rb'
 
 Naming/FileName:
   Exclude:

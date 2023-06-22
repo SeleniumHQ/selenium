@@ -46,7 +46,7 @@ module Selenium
                                    this_parameter: nil, result_ownership: nil)
           params = get_call_function_params('realm', realm_id, nil, function_declaration, await_promise,
                                             argument_value_list, this_parameter, result_ownership)
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.callFunction',
             functionDeclaration: params[:function_declaration],
             awaitPromise: params[:await_promise],
@@ -62,7 +62,7 @@ module Selenium
                                               sandbox: nil)
           params = get_call_function_params('contextTarget', browsing_context_id, sandbox, function_declaration,
                                             await_promise, argument_value_list, this_parameter, result_ownership)
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.callFunction',
             functionDeclaration: params[:function_declaration],
             awaitPromise: params[:await_promise],
@@ -76,7 +76,7 @@ module Selenium
         def evaluate_function_in_realm(realm_id, expression, await_promise, result_ownership: nil)
           params = get_evaluate_params('realm', realm_id, nil, expression, await_promise, result_ownership)
 
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.evaluate',
             expression: params[:expression],
             awaitPromise: params[:await_promise],
@@ -90,7 +90,7 @@ module Selenium
           params = get_evaluate_params('contextTarget', browsing_context_id, sandbox, expression, await_promise,
                                        result_ownership)
 
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.evaluate',
             expression: params[:expression],
             awaitPromise: params[:await_promise],
@@ -140,9 +140,7 @@ module Selenium
                               {'realm' => id}
                             end
 
-          unless argument_value_list.nil?
-            params[:arguments] = argument_value_list
-          end
+          params[:arguments] = argument_value_list unless argument_value_list.nil?
 
           params[:this] = this_parameter unless this_parameter.nil?
 
