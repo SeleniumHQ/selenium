@@ -18,7 +18,7 @@
 import pytest
 
 from selenium.common import exceptions
-from selenium.webdriver.remote.errorhandler import ErrorHandler
+from selenium.webdriver.remote.errorhandler import ErrorHandler, ERROR_TO_EXC_MAPPING
 
 
 @pytest.fixture
@@ -31,23 +31,21 @@ def test_does_not_raise_exception_on_success(handler):
     assert handler.check_response({}) is None
 
 
-# @pytest.mark.parametrize("code", ErrorCode.NO_SUCH_ELEMENT)
-# def test_raises_exception_for_no_such_element(handler, code):
-#     with pytest.raises(exceptions.NoSuchElementException):
-#         handler.check_response({"status": code, "value": "foo"})
+@pytest.mark.parametrize("error", ["no such element"])
+def test_raises_exception_for_no_such_element(handler, error):
+    with pytest.raises(exceptions.NoSuchElementException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("code", ErrorCode.NO_SUCH_FRAME)
-# def test_raises_exception_for_no_such_frame(handler, code):
-#     with pytest.raises(exceptions.NoSuchFrameException):
-#         handler.check_response({"status": code, "value": "foo"})
+@pytest.mark.parametrize("error", ["no such frame"])
+def test_raises_exception_for_no_such_frame(handler, error):
+    with pytest.raises(exceptions.NoSuchFrameException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
-
-# @pytest.mark.parametrize("code", ErrorCode.UNKNOWN_COMMAND)
-# def test_raises_exception_for_unknown_command(handler, code):
-#     with pytest.raises(exceptions.WebDriverException):
-#         handler.check_response({"status": code, "value": "foo"})
-
+@pytest.mark.parametrize("error",["unknown command"])
+def test_raises_exception_for_unknown_command(handler, error):
+    with pytest.raises(exceptions.WebDriverException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 # @pytest.mark.parametrize("code", ErrorCode.STALE_ELEMENT_REFERENCE)
 # def test_raises_exception_for_stale_element_reference(handler, code):
@@ -261,10 +259,9 @@ def test_handle_errors_better(handler):
     response = {
         "value": json.dumps(
             {
-                "value": {
-                    "error": "session not created",
-                    "message": "Could not start a new session. No Node supports the required capabilities: Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}}, Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}, version: }\nBuild info: version: '4.0.0-beta-3', revision: '5d108f9a67'\nSystem info: host: '9315f0a993d2', ip: '172.17.0.8', os.name: 'Linux', os.arch: 'amd64', os.version: '5.8.0-44-generic', java.version: '1.8.0_282'\nDriver info: driver.version: unknown"
-                }
+                "error": "session not created",
+                "message": "Could not start a new session. No Node supports the required capabilities: Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}}, Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}, version: }\nBuild info: version: '4.0.0-beta-3', revision: '5d108f9a67'\nSystem info: host: '9315f0a993d2', ip: '172.17.0.8', os.name: 'Linux', os.arch: 'amd64', os.version: '5.8.0-44-generic', java.version: '1.8.0_282'\nDriver info: driver.version: unknown",
+                "stacktrace": ""
             }
         ),
     }

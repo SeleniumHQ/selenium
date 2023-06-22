@@ -133,20 +133,21 @@ class ErrorHandler:
             # invalid response
             return
 
-        try:
-            payload_dict = json.loads(payload)
-        except (json.JSONDecodeError, TypeError):
-            return
+        print(f'===payload==> {payload}')
+
+        payload_dict = payload
+        if type(payload) != dict:
+            try:
+                payload_dict = json.loads(payload)
+            except (json.JSONDecodeError, TypeError):
+                return
         if not isinstance(payload_dict, dict):
             return
-        value = payload_dict.get('value')
-        if not isinstance(value, dict):
-            return
 
-        error = value.get('error')
+        error = payload_dict.get('error')
         if not error:
             return
-        message = value.get('message', error)
+        message = payload_dict.get('message', error)
 
         exception_class: Type[WebDriverException] = ERROR_TO_EXC_MAPPING.get(
             error, WebDriverException
@@ -154,7 +155,7 @@ class ErrorHandler:
 
         # backtrace from remote in Ruby
         stacktrace = None
-        st_value = value.get('stacktrace', '')
+        st_value = payload_dict.get('stacktrace', '')
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")
@@ -178,6 +179,6 @@ class ErrorHandler:
             raise UnexpectedAlertPresentException(
                 msg=message,
                 stacktrace=format_stacktrace(stacktrace),
-                alert_text=value.get('data'),
+                alert_text=payload_dict.get('data'),
             )
         raise exception_class(msg=message, stacktrace=stacktrace)
