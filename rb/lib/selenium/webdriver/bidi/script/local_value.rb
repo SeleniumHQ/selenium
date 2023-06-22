@@ -17,10 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative '../protocol_type/primitive_type'
-require_relative '../protocol_type/non_primitive_type'
-require_relative '../protocol_type/remote_type'
-require_relative '../protocol_type/special_number_type'
+require_relative './primitive_type'
+require_relative './non_primitive_type'
 
 module Selenium
   module WebDriver
@@ -95,7 +93,7 @@ module Selenium
           to_return['value'] = @value unless @type.eql?(PrimitiveType::NULL) && @type.eql?(PrimitiveType::UNDEFINED)
           to_return
         end
-      end
-    end
-  end
-end
+      end # LocalValue
+    end # BiDi
+  end # WebDriver
+end # Selenium

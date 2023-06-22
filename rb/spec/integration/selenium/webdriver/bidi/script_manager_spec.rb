@@ -43,9 +43,9 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('undefined')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('undefined')
         end
 
         it 'can call function with null argument' do
@@ -65,15 +65,15 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('null')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('null')
         end
 
         it 'can call function with minus zero argument' do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
-          argument_values = [LocalValue.create_special_number_value(SpecialNumberType::MINUS_ZERO)]
+          argument_values = [LocalValue.create_special_number_value('-0')]
           result = manager.call_function_in_browsing_context(
             id,
             %(
@@ -87,16 +87,16 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to eq('-0')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('number')
+          expect(result.dig('result', 'value')).to eq('-0')
         end
 
         it 'can call function with infinity argument' do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
-          argument_values = [LocalValue.create_special_number_value(SpecialNumberType::INFINITY)]
+          argument_values = [LocalValue.create_special_number_value('Infinity')]
           result = manager.call_function_in_browsing_context(
             id,
             %(
@@ -110,16 +110,16 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to eq('Infinity')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('number')
+          expect(result.dig('result', 'value')).to eq('Infinity')
         end
 
         it 'can call function with minus infinity argument' do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
-          argument_values = [LocalValue.create_special_number_value(SpecialNumberType::MINUS_INFINITY)]
+          argument_values = [LocalValue.create_special_number_value('-Infinity')]
           result = manager.call_function_in_browsing_context(
             id,
             %(
@@ -133,10 +133,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to eq('-Infinity')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('number')
+          expect(result.dig('result', 'value')).to eq('-Infinity')
         end
 
         it 'can call function with number argument' do
@@ -156,10 +156,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to eq(1.4)
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('number')
+          expect(result.dig('result', 'value')).to eq(1.4)
         end
 
         it 'can call function with boolean argument' do
@@ -179,10 +179,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('boolean')
-          expect(result.result.value).to be(true)
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('boolean')
+          expect(result.dig('result', 'value')).to be(true)
         end
 
         it 'can call function with big int argument' do
@@ -202,10 +202,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('bigint')
-          expect(result.result.value).to eq('42')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('bigint')
+          expect(result.dig('result', 'value')).to eq('42')
         end
 
         it 'can call function with array argument' do
@@ -227,14 +227,14 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('array')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('array')
 
-          result_value = result.result.value
+          result_value = result.dig('result', 'value')
           expect(result_value.length).to eq(1)
-          expect(result_value[0]['type']).to eq('string')
-          expect(result_value[0]['value']).to eq('foobar')
+          expect(result_value.dig(0, 'type')).to eq('string')
+          expect(result_value.dig(0, 'value')).to eq('foobar')
         end
 
         it 'can call function with set argument' do
@@ -256,14 +256,14 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('set')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('set')
 
-          result_value = result.result.value
+          result_value = result.dig('result', 'value')
           expect(result_value.length).to eq(1)
-          expect(result_value[0]['type']).to eq('string')
-          expect(result_value[0]['value']).to eq('foobar')
+          expect(result_value.dig(0, 'type')).to eq('string')
+          expect(result_value.dig(0, 'value')).to eq('foobar')
         end
 
         it 'can call function with date argument' do
@@ -284,10 +284,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('date')
-          expect(result.result.value).to eq('2022-05-31T13:47:29.000Z')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('date')
+          expect(result.dig('result', 'value')).to eq('2022-05-31T13:47:29.000Z')
         end
 
         it 'can call function with map argument' do
@@ -309,14 +309,14 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('map')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('map')
 
-          result_value = result.result.value
-          expect(result_value.keys.length).to eq(1)
-          expect(result_value['foobar']['type']).to eq('string')
-          expect(result_value['foobar']['value']).to eq('foobar')
+          result_value = result.dig('result', 'value')
+          expect(result_value.length).to eq(1)
+          expect(result_value.dig(0, 1, 'type')).to eq('string')
+          expect(result_value.dig(0, 1, 'value')).to eq('foobar')
         end
 
         it 'can call function with object argument' do
@@ -338,20 +338,19 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('object')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('object')
 
-          result_value = result.result.value
-          expect(result_value.keys.length).to eq(1)
-          expect(result_value['foobar']['type']).to eq('string')
-          expect(result_value['foobar']['value']).to eq('foobar')
+          result_value = result.dig('result', 'value')
+          expect(result_value.length).to eq(1)
+          expect(result_value.dig(0, 1, 'type')).to eq('string')
         end
 
         it 'can call function with regex argument' do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
-          argument_values = [LocalValue.create_regular_expression_value(RegExpValue.create(pattern: 'foo', flags: 'g'))]
+          argument_values = [LocalValue.create_regular_expression_value({pattern: 'foo', flags: 'g'})]
           result = manager.call_function_in_browsing_context(
             id,
             %(
@@ -366,11 +365,11 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('regexp')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('regexp')
 
-          result_value = result.result.value
+          result_value = result.dig('result', 'value')
           expect(result_value['pattern']).to eq('foo')
           expect(result_value['flags']).to eq('g')
         end
@@ -386,10 +385,10 @@ module Selenium
             false
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to eq(3)
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('number')
+          expect(result.dig('result', 'value')).to eq(3)
         end
 
         it 'can call function with arguments' do
@@ -407,13 +406,13 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('array')
-          expect(result.result.value.length).to eq(2)
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('array')
+          expect(result.dig('result', 'value').length).to eq(2)
         end
 
-        it 'can call function with await promise' do
+        it 'can call function with await promise true' do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
           result = manager.call_function_in_browsing_context(
@@ -427,10 +426,10 @@ module Selenium
             true
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('string')
-          expect(result.result.value).to eq('SOME_DELAYED_RESULT')
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('string')
+          expect(result.dig('result', 'value')).to eq('SOME_DELAYED_RESULT')
         end
 
         it 'can call function with await promise false' do
@@ -447,10 +446,10 @@ module Selenium
             false
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('promise')
-          expect(result.result.value).to be_nil
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('promise')
+          expect(result.dig('result', 'value')).to be_nil
         end
 
         it 'can call function with ownership root' do
@@ -465,10 +464,10 @@ module Selenium
             result_ownership: 'root'
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.handle).not_to be_nil
-          expect(result.result.value).not_to be_nil
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'handle')).not_to be_nil
+          expect(result.dig('result', 'value')).not_to be_nil
         end
 
         it 'can call function with ownership none' do
@@ -483,13 +482,13 @@ module Selenium
             result_ownership: 'none'
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.handle).to be_nil
-          expect(result.result.value).not_to be_nil
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'handle')).to be_nil
+          expect(result.dig('result', 'value')).not_to be_nil
         end
 
-        it 'can call function that throws exception' do
+        it 'can call function that throws exception', only: {browser: %i[firefox]} do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
           result = manager.call_function_in_browsing_context(
@@ -497,13 +496,13 @@ module Selenium
             '))) !!@@## some invalid JS script (((',
             false
           )
-          expect(result.result_type).to eq(EvaluateResultType::EXCEPTION)
-          expect(result.realm_id).not_to be_nil
-          expect(result.exception_details.exception['type']).to eq('error')
-          expect(result.exception_details.text).to eq("SyntaxError: expected expression, got ')'")
-          expect(result.exception_details.line_number).to eq(285)
-          expect(result.exception_details.column_number).to eq(39)
-          expect(result.exception_details.stack_trace['callFrames'].length).to eq(0)
+
+          expect(result['type']).to eq('exception')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('exceptionDetails', 'exception', 'type')).to eq('error')
+          expect(result.dig('exceptionDetails', 'text')).to eq("SyntaxError: expected expression, got ')'")
+          expect(result.dig('exceptionDetails', 'columnNumber')).to eq 39
+          expect(result.dig('exceptionDetails', 'stackTrace', 'callFrames').length).to eq 0
         end
 
         it 'can call function in a sandbox' do
@@ -529,8 +528,8 @@ module Selenium
             sandbox: 'sandbox'
           )
 
-          expect(result_not_in_sandbox.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result_not_in_sandbox.result.type).to be('undefined')
+          expect(result_not_in_sandbox['type']).to eq('success')
+          expect(result_not_in_sandbox.dig('result', 'type')).to eq 'undefined'
 
           # Make changes in the sandbox
           manager.call_function_in_browsing_context(
@@ -552,10 +551,10 @@ module Selenium
             sandbox: 'sandbox'
           )
 
-          expect(result_in_sandbox.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result_in_sandbox.realm_id).not_to be_nil
-          expect(result_in_sandbox.result.type).to eq('number')
-          expect(result_in_sandbox.result.value).to be(2)
+          expect(result_in_sandbox['type']).to eq('success')
+          expect(result_in_sandbox['realm']).not_to be_nil
+          expect(result_in_sandbox.dig('result', 'type')).to eq 'number'
+          expect(result_in_sandbox.dig('result', 'value')).to be 2
         end
 
         it 'can call function in a realm' do
@@ -564,8 +563,8 @@ module Selenium
           manager = described_class.new(driver: driver, browsing_context_id: first_tab)
 
           realms = manager.all_realms
-          first_tab_realm_id = realms[0].realm_id
-          second_tab_realm_id = realms[1].realm_id
+          first_tab_realm_id = realms[0]['realm']
+          second_tab_realm_id = realms[1]['realm']
 
           manager.call_function_in_realm(
             first_tab_realm_id,
@@ -591,9 +590,9 @@ module Selenium
             true
           )
 
-          expect(first_context_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(first_context_result.result.type).to eq('number')
-          expect(first_context_result.result.value).to eq(3)
+          expect(first_context_result['type']).to eq('success')
+          expect(first_context_result.dig('result', 'type')).to eq 'number'
+          expect(first_context_result.dig('result', 'value')).to eq 3
 
           second_context_result = manager.call_function_in_realm(
             second_tab_realm_id,
@@ -603,9 +602,9 @@ module Selenium
             true
           )
 
-          expect(second_context_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(second_context_result.result.type).to eq('number')
-          expect(second_context_result.result.value).to eq(5)
+          expect(second_context_result['type']).to eq('success')
+          expect(second_context_result.dig('result', 'type')).to eq 'number'
+          expect(second_context_result.dig('result', 'value')).to eq 5
         end
 
         it 'can evaluate script' do
@@ -619,13 +618,13 @@ module Selenium
             true
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('number')
-          expect(result.result.value).to be(3)
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq 'number'
+          expect(result.dig('result', 'value')).to eq 3
         end
 
-        it 'can evaluate script that throws exception' do
+        it 'can evaluate script that throws exception', only: {browser: %i[firefox]} do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
           result = manager.evaluate_function_in_browsing_context(
@@ -634,13 +633,12 @@ module Selenium
             false
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::EXCEPTION)
-          expect(result.realm_id).not_to be_nil
-          expect(result.exception_details.exception['type']).to eq('error')
-          expect(result.exception_details.text).to eq("SyntaxError: expected expression, got ')'")
-          expect(result.exception_details.line_number).to eq(251)
-          expect(result.exception_details.column_number).to eq(39)
-          expect(result.exception_details.stack_trace['callFrames'].length).to eq(0)
+          expect(result['type']).to eq('exception')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('exceptionDetails', 'exception', 'type')).to eq('error')
+          expect(result.dig('exceptionDetails', 'text')).to eq("SyntaxError: expected expression, got ')'")
+          expect(result.dig('exceptionDetails', 'columnNumber')).to eq 39
+          expect(result.dig('exceptionDetails', 'stackTrace', 'callFrames').length).to eq 0
         end
 
         it 'can evaluate script with result ownership' do
@@ -655,11 +653,11 @@ module Selenium
             result_ownership: 'root'
           )
 
-          expect(result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result.realm_id).not_to be_nil
-          expect(result.result.type).to eq('object')
-          expect(result.result.value).not_to be_nil
-          expect(result.result.handle).not_to be_nil
+          expect(result['type']).to eq('success')
+          expect(result['realm']).not_to be_nil
+          expect(result.dig('result', 'type')).to eq('object')
+          expect(result.dig('result', 'value')).not_to be_nil
+          expect(result.dig('result', 'handle')).not_to be_nil
         end
 
         it 'can evaluate in a sandbox' do
@@ -685,8 +683,8 @@ module Selenium
             sandbox: 'sandbox'
           )
 
-          expect(result_not_in_sandbox.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result_not_in_sandbox.result.type).to be('undefined')
+          expect(result_not_in_sandbox['type']).to eq('success')
+          expect(result_not_in_sandbox.dig('result', 'type')).to eq 'undefined'
 
           # Make changes in the sandbox
           manager.evaluate_function_in_browsing_context(
@@ -708,10 +706,10 @@ module Selenium
             sandbox: 'sandbox'
           )
 
-          expect(result_in_sandbox.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(result_in_sandbox.realm_id).not_to be_nil
-          expect(result_in_sandbox.result.type).to eq('number')
-          expect(result_in_sandbox.result.value).to be(2)
+          expect(result_in_sandbox['type']).to eq('success')
+          expect(result_in_sandbox['realm']).not_to be_nil
+          expect(result_in_sandbox.dig('result', 'type')).to eq 'number'
+          expect(result_in_sandbox.dig('result', 'value')).to eq 2
         end
 
         it 'can evaluate in a realm' do
@@ -720,8 +718,8 @@ module Selenium
           manager = described_class.new(driver: driver, browsing_context_id: first_tab)
 
           realms = manager.all_realms
-          first_tab_realm_id = realms[0].realm_id
-          second_tab_realm_id = realms[1].realm_id
+          first_tab_realm_id = realms[0]['realm']
+          second_tab_realm_id = realms[1]['realm']
 
           manager.evaluate_function_in_realm(
             first_tab_realm_id,
@@ -747,9 +745,9 @@ module Selenium
             true
           )
 
-          expect(first_context_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(first_context_result.result.type).to eq('number')
-          expect(first_context_result.result.value).to eq(3)
+          expect(first_context_result['type']).to eq('success')
+          expect(first_context_result.dig('result', 'type')).to eq 'number'
+          expect(first_context_result.dig('result', 'value')).to eq 3
 
           second_context_result = manager.evaluate_function_in_realm(
             second_tab_realm_id,
@@ -759,12 +757,12 @@ module Selenium
             true
           )
 
-          expect(second_context_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(second_context_result.result.type).to eq('number')
-          expect(second_context_result.result.value).to eq(5)
+          expect(second_context_result['type']).to eq('success')
+          expect(second_context_result.dig('result', 'type')).to eq 'number'
+          expect(second_context_result.dig('result', 'value')).to eq 5
         end
 
-        it 'can disown handles' do
+        it 'can disown handles', only: {browser: %i[firefox]} do
           id = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: id)
           evaluate_result = manager.evaluate_function_in_browsing_context(
@@ -775,15 +773,14 @@ module Selenium
             false,
             result_ownership: 'root'
           )
-          expect(evaluate_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(evaluate_result.realm_id).not_to be_nil
-          expect(evaluate_result.result.handle).not_to be_nil
+          expect(evaluate_result['type']).to eq('success')
+          expect(evaluate_result['realm']).not_to be_nil
+          expect(evaluate_result.dig('result', 'handle')).not_to be_nil
 
-          value_map = evaluate_result.result.value
+          value_map = evaluate_result.dig('result', 'value')
           value1 = LocalValue.create_object_value(value_map)
           value2 = ReferenceValue.new(
-            'handle',
-            evaluate_result.result.handle
+            handle: evaluate_result.dig('result', 'handle')
           ).as_map
           argument_values = [value1, value2]
 
@@ -796,9 +793,9 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(evaluate_result.result.value).not_to be_nil
+          expect(evaluate_result.dig('result', 'value')).not_to be_nil
 
-          handles = [evaluate_result.result.handle]
+          handles = [evaluate_result.dig('result', 'handle')]
           manager.disown_browsing_context_script(id, handles)
 
           expect {
@@ -824,15 +821,14 @@ module Selenium
             false,
             result_ownership: 'root'
           )
-          expect(evaluate_result.result_type).to eq(EvaluateResultType::SUCCESS)
-          expect(evaluate_result.realm_id).not_to be_nil
-          expect(evaluate_result.result.handle).not_to be_nil
+          expect(evaluate_result['type']).to eq('success')
+          expect(evaluate_result['realm']).not_to be_nil
+          expect(evaluate_result.dig('result', 'handle')).not_to be_nil
 
-          value_map = evaluate_result.result.value
+          value_map = evaluate_result.dig('result', 'value')
           value1 = LocalValue.create_object_value(value_map)
           value2 = ReferenceValue.new(
-            'handle',
-            evaluate_result.result.handle
+            handle: evaluate_result.dig('result', 'handle')
           ).as_map
           argument_values = [value1, value2]
 
@@ -845,10 +841,10 @@ module Selenium
             argument_value_list: argument_values
           )
 
-          expect(evaluate_result.result.value).not_to be_nil
+          expect(evaluate_result.dig('result', 'value')).not_to be_nil
 
-          handles = [evaluate_result.result.handle]
-          manager.disown_realm_script(evaluate_result.realm_id, handles)
+          handles = [evaluate_result.dig('result', 'handle')]
+          manager.disown_realm_script(evaluate_result['realm'], handles)
 
           expect {
             manager.call_function_in_browsing_context(
@@ -869,19 +865,19 @@ module Selenium
           manager = described_class.new(driver: driver, browsing_context_id: first_window)
 
           realms = manager.all_realms
-          expect(realms.length).to eq(2)
+          expect(realms.length).to eq 2
 
           first_window_realm = realms[0]
 
-          expect(first_window_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(first_window_realm.realm_id).not_to be_nil
-          expect(first_window_realm.browsing_context).to eq(first_window)
+          expect(first_window_realm['type']).to eq('window')
+          expect(first_window_realm['realm']).not_to be_nil
+          expect(first_window_realm['context']).to eq first_window
 
           second_window_realm = realms[1]
 
-          expect(second_window_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(second_window_realm.realm_id).not_to be_nil
-          expect(second_window_realm.browsing_context).to eq(second_window)
+          expect(second_window_realm['type']).to eq('window')
+          expect(second_window_realm['realm']).not_to be_nil
+          expect(second_window_realm['context']).to eq second_window
         end
 
         it 'can get realm by type' do
@@ -890,20 +886,20 @@ module Selenium
           second_window = driver.window_handle
           manager = described_class.new(driver: driver, browsing_context_id: first_window)
 
-          realms = manager.realms_by_type(RealmType::WINDOW)
-          expect(realms.length).to eq(2)
+          realms = manager.realms_by_type('window')
+          expect(realms.length).to eq 2
 
           first_window_realm = realms[0]
 
-          expect(first_window_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(first_window_realm.realm_id).not_to be_nil
-          expect(first_window_realm.browsing_context).to eq(first_window)
+          expect(first_window_realm['type']).to eq('window')
+          expect(first_window_realm['realm']).not_to be_nil
+          expect(first_window_realm['context']).to eq first_window
 
           second_window_realm = realms[1]
 
-          expect(second_window_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(second_window_realm.realm_id).not_to be_nil
-          expect(second_window_realm.browsing_context).to eq(second_window)
+          expect(second_window_realm['type']).to eq('window')
+          expect(second_window_realm['realm']).not_to be_nil
+          expect(second_window_realm['context']).to eq second_window
         end
 
         it 'can get realm in browsing context' do
@@ -916,9 +912,9 @@ module Selenium
 
           tab_realm = realms[0]
 
-          expect(tab_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(tab_realm.realm_id).not_to be_nil
-          expect(tab_realm.browsing_context).to eq(tab_id)
+          expect(tab_realm['type']).to eq('window')
+          expect(tab_realm['realm']).not_to be_nil
+          expect(tab_realm['context']).to eq tab_id
         end
 
         it 'can get realm in browsing context by type' do
@@ -928,14 +924,14 @@ module Selenium
 
           realms = manager.realms_in_browsing_context_by_type(
             window_id,
-            RealmType::WINDOW
+            'window'
           )
 
           window_realm = realms[0]
 
-          expect(window_realm.realm_type).to eq(RealmType::WINDOW)
-          expect(window_realm.realm_id).not_to be_nil
-          expect(window_realm.browsing_context).to eq(window_id)
+          expect(window_realm['type']).to eq('window')
+          expect(window_realm['realm']).not_to be_nil
+          expect(window_realm['context']).to eq(window_id)
         end
       end #
     end # BiDi

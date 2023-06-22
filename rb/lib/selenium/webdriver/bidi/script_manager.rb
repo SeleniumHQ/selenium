@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# frozen_string_literal = true
-
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,15 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative './script/evaluate_result/exception_details'
-require_relative './script/evaluate_result/evaluate_result_exception'
-require_relative './script/evaluate_result/evaluate_result_success'
-require_relative './script/evaluate_result/evaluate_result_type'
-require_relative './script/protocol_value/local_value'
-require_relative './script/protocol_value/reference_value'
-require_relative './script/protocol_value/remote_value'
-require_relative './script/protocol_value/reg_exp_value'
-require_relative './script/realm_info/realm_info'
+require_relative './script/local_value'
+require_relative './script/reference_value'
 
 module Selenium
   module WebDriver
@@ -64,8 +55,6 @@ module Selenium
             this: params[:this],
             resultOwnership: params[:result_ownership]
           )
-
-          create_evaluate_result(response)
         end
 
         def call_function_in_browsing_context(browsing_context_id, function_declaration, await_promise,
@@ -82,8 +71,6 @@ module Selenium
             this: params[:this],
             resultOwnership: params[:result_ownership]
           )
-
-          create_evaluate_result(response)
         end
 
         def evaluate_function_in_realm(realm_id, expression, await_promise, result_ownership: nil)
@@ -96,8 +83,6 @@ module Selenium
             target: params[:target],
             resultOwnership: params[:result_ownership]
           )
-
-          create_evaluate_result(response)
         end
 
         def evaluate_function_in_browsing_context(browsing_context_id, expression, await_promise,
@@ -112,38 +97,32 @@ module Selenium
             target: params[:target],
             resultOwnership: params[:result_ownership]
           )
-
-          create_evaluate_result(response)
         end
 
         def all_realms
-          response = @bidi.send_cmd('script.getRealms')
-          realm_info_mapper(response['realms'])
+          @bidi.send_cmd('script.getRealms')['realms']
         end
 
         def realms_by_type(type)
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.getRealms',
             type: type
-          )
-          realm_info_mapper(response['realms'])
+          )['realms']
         end
 
         def realms_in_browsing_context(browsing_context)
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.getRealms',
             context: browsing_context
-          )
-          realm_info_mapper(response['realms'])
+          )['realms']
         end
 
         def realms_in_browsing_context_by_type(browsing_context, type)
-          response = @bidi.send_cmd(
+          @bidi.send_cmd(
             'script.getRealms',
             context: browsing_context,
             type: type
-          )
-          realm_info_mapper(response['realms'])
+          )['realms']
         end
 
         private
@@ -162,7 +141,7 @@ module Selenium
                             end
 
           unless argument_value_list.nil?
-            params[:arguments] = argument_value_list # .map { |val| val.as_map }
+            params[:arguments] = argument_value_list
           end
 
           params[:this] = this_parameter unless this_parameter.nil?
@@ -188,32 +167,7 @@ module Selenium
 
           params
         end
-
-        def create_evaluate_result(response)
-          type = response['type']
-          realm_id = response['realm']
-
-          if type.eql? EvaluateResultType::SUCCESS
-            result = response['result']
-            evaluate_result = EvaluateResultSuccess.new(
-              realm_id,
-              RemoteValue.new(result)
-            )
-          else
-            exception_details = response['exceptionDetails']
-            evaluate_result = EvaluateResultException.new(
-              realm_id,
-              ExceptionDetails.new(exception_details)
-            )
-          end
-
-          evaluate_result
-        end
-
-        def realm_info_mapper(realms)
-          realms.map { |val| RealmInfo.from_json(val) }
-        end
-      end
-    end
-  end
-end
+      end # ScriptManager
+    end # BiDi
+  end # WebDriver
+end # Selenium

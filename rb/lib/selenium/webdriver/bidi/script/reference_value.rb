@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# frozen_string_literal = true
-
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,15 +20,19 @@
 module Selenium
   module WebDriver
     class BiDi
-      class EvaluateResultSuccess
-        attr_accessor :result_type, :realm_id, :result
-
-        def initialize(realm_id, value)
-          @result_type = EvaluateResultType::SUCCESS
-          @realm_id = realm_id
-          @result = value
+      class ReferenceValue
+        def initialize(handle: nil, share_id: nil)
+          @handle = handle
+          @share_id = share_id
         end
-      end
-    end
-  end
-end
+
+        def as_map
+          {
+            handle: @handle,
+            shareId: @share_id
+          }
+        end
+      end # ReferenceValue
+    end # BiDi
+  end # WebDriver
+end # Selenium

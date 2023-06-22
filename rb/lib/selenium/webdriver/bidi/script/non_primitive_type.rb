@@ -20,14 +20,21 @@
 module Selenium
   module WebDriver
     class BiDi
-      module RegExpValue
-        def self.create(pattern:, flags: nil)
-          {
-            'pattern' => pattern,
-            'flags' => flags
-          }
+      module NonPrimitiveType
+        ARRAY = 'array'
+        DATE = 'date'
+        MAP = 'map'
+        OBJECT = 'object'
+        REGULAR_EXPRESSION = 'regexp'
+        SET = 'set'
+
+        def self.find_by_name(name)
+          NonPrimitiveType.constants.each do |type|
+            return NonPrimitiveType.const_get(type) if name.casecmp?(NonPrimitiveType.const_get(type))
+          end
+          nil
         end
-      end
-    end
-  end
-end
+      end # NonPrimitiveType
+    end # BiDi
+  end # WebDriver
+end # Selenium
