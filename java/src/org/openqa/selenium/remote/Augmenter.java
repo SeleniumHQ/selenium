@@ -50,6 +50,7 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.html5.AddWebStorage;
+import org.openqa.selenium.support.decorators.Decorated;
 
 /**
  * Enhance the interfaces implemented by an instance of the {@link org.openqa.selenium.WebDriver}
@@ -253,6 +254,10 @@ public class Augmenter {
 
     if (driver instanceof WrapsDriver) {
       return extractRemoteWebDriver(((WrapsDriver) driver).getWrappedDriver());
+    }
+
+    if (driver instanceof Decorated) {
+      return extractRemoteWebDriver((WebDriver) ((Decorated<?>) driver).getOriginal());
     }
 
     return null;
