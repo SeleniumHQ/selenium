@@ -103,7 +103,7 @@ public class Slot implements Serializable {
     toReturn.put("lastStarted", getLastStarted());
     toReturn.put("session", getSession());
     toReturn.put("stereotype", getStereotype());
-    toReturn.put("slotMatcher", slotMatcher.getClass().getCanonicalName());
+    toReturn.put("slotMatcher", getSlotMatcher());
     return unmodifiableMap(toReturn);
   }
 
@@ -113,6 +113,10 @@ public class Slot implements Serializable {
 
   public Capabilities getStereotype() {
     return stereotype;
+  }
+
+  public String getSlotMatcher() {
+    return slotMatcher.getClass().getCanonicalName();
   }
 
   public Instant getLastStarted() {
@@ -137,6 +141,7 @@ public class Slot implements Serializable {
     return Objects.equals(this.id, that.id)
         && Objects.equals(this.stereotype, that.stereotype)
         && Objects.equals(this.session, that.session)
+        && Objects.equals(this.slotMatcher, that.slotMatcher)
         && Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
   }
 
