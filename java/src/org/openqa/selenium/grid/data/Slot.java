@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -31,6 +32,8 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.grid.data.SlotMatcher;
 
 public class Slot implements Serializable {
+
+  private static final Logger LOG = Logger.getLogger(Slot.class.getName());
 
   private final SlotId id;
   private final Capabilities stereotype;
@@ -51,6 +54,7 @@ public class Slot implements Serializable {
     Capabilities stereotype = null;
     Instant lastStarted = null;
     Session session = null;
+    SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
     input.beginObject();
     while (input.hasNext()) {
@@ -72,6 +76,17 @@ public class Slot implements Serializable {
           stereotype = input.read(Capabilities.class);
           break;
 
+        case "slotMatcher":
+          
+          String slotMatcherClass = input.read(String.class);
+          try {
+            Class<?> classClazz = Class.forName(slotMatcherClass, true, Thread.currentThread().getContextClassLoader());
+            slotMatcher = (SlotMatcher) classClazz.newInstance();
+          } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            LOG.warning(String.format("Slot matcher class '%s' cannot be found in classpath, defaulting to DefaultSlotMatcher", slotMatcherClass));
+          }
+          break;
+
         default:
           input.skipValue();
           break;
@@ -79,7 +94,7 @@ public class Slot implements Serializable {
     }
     input.endObject();
 
-    return new Slot(id, stereotype, lastStarted, session, new DefaultSlotMatcher());
+    return new Slot(id, stereotype, lastStarted, session, slotMatcher);
   }
 
   private Map<String, Object> toJson() {
@@ -88,6 +103,7 @@ public class Slot implements Serializable {
     toReturn.put("lastStarted", getLastStarted());
     toReturn.put("session", getSession());
     toReturn.put("stereotype", getStereotype());
+    toReturn.put("slotMatcher", slotMatcher.getClass().getCanonicalName());
     return unmodifiableMap(toReturn);
   }
 
