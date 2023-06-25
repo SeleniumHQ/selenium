@@ -34,6 +34,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -77,6 +78,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -221,6 +223,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally.")
   void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =

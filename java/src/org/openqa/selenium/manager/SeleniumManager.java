@@ -40,6 +40,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 
 /**
  * This implementation is still in beta, and may change.
@@ -101,8 +102,8 @@ public class SeleniumManager {
    */
   private static String runCommand(String... command) {
     LOG.fine(String.format("Executing Process: %s", Arrays.toString(command)));
-    String output = "";
-    int code = 0;
+    String output;
+    int code;
     try {
       Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
       process.waitFor();
@@ -111,35 +112,52 @@ public class SeleniumManager {
           CharStreams.toString(
               new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
     } catch (InterruptedException e) {
-      LOG.warning(
-          String.format(
-              "Interrupted exception running command %s: %s",
-              Arrays.toString(command), e.getMessage()));
       Thread.currentThread().interrupt();
-    } catch (Exception e) {
-      LOG.warning(
-          String.format(
-              "%s running command %s: %s",
-              e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
-    }
-    SeleniumManagerJsonOutput jsonOutput =
-        new Json().toType(output, SeleniumManagerJsonOutput.class);
-    if (code > 0) {
       throw new WebDriverException(
-          "Unsuccessful command executed: "
-              + Arrays.toString(command)
-              + "\n"
-              + jsonOutput.result.message);
+        "Interrupted while running command: "
+          + Arrays.toString(command),
+          e);
+    } catch (Exception e) {
+      throw new WebDriverException(
+        "Failed to run command: "
+          + Arrays.toString(command),
+          e);
     }
-    jsonOutput.logs.forEach(
-        logged -> {
-          if (logged.level.equalsIgnoreCase(WARN)) {
-            LOG.warning(logged.message);
-          }
-          if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
-            LOG.fine(logged.message);
-          }
-        });
+    SeleniumManagerJsonOutput jsonOutput = null;
+    JsonException failedToParse = null;
+    String dump = output;
+    if (!output.isEmpty()) {
+      try {
+        jsonOutput = new Json().toType(output, SeleniumManagerJsonOutput.class);
+        jsonOutput.logs.forEach(
+          logged -> {
+            if (logged.level.equalsIgnoreCase(WARN)) {
+              LOG.warning(logged.message);
+            }
+            if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
+              LOG.fine(logged.message);
+            }
+          });
+        dump = jsonOutput.result.message;
+      } catch (JsonException e) {
+        failedToParse = e;
+      }
+    }
+    if (code != 0) {
+      throw new WebDriverException(
+        "Command failed with code: "
+        + code
+        + ", executed: "
+        + Arrays.toString(command)
+        + "\n"
+        + dump, failedToParse);
+    } else if (failedToParse != null) {
+      throw new WebDriverException(
+        "Failed to parse json output, executed: "
+        + Arrays.toString(command)
+        + "\n"
+        + dump, failedToParse);
+    }
     return jsonOutput.result.message;
   }
 

@@ -378,7 +378,7 @@ public class ChromeDriverService extends DriverService {
 
       // Readable timestamp and append logs only work if a file is specified
       // Can only get readable logs via arguments; otherwise send service output as directed
-      if (getLogFile() != null && (readableTimestamp || appendLog)) {
+      if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
         if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");
@@ -392,12 +392,6 @@ public class ChromeDriverService extends DriverService {
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
-      //      if (silent != null && silent.equals(Boolean.TRUE)) {
-      //        args.add("--silent");
-      //      }
-      //      if (verbose != null && verbose.equals(Boolean.TRUE)) {
-      //        args.add("--verbose");
-      //      }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }

@@ -32,6 +32,8 @@ const spawnSync = require('child_process').spawnSync
  */
 const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
 
+let debugMessagePrinted = {};
+
 /**
  * Determines the path of the correct Selenium Manager binary
  * @returns {string}
@@ -71,9 +73,14 @@ function driverLocation(options) {
     )
   }
 
-  console.debug(
-    'Applicable driver not found; attempting to install with Selenium Manager (Beta)'
-  )
+  const browserName = options.getBrowserName().toLocaleLowerCase();
+
+  if (!debugMessagePrinted[browserName]) {
+    console.debug(
+      `Applicable driver not found for ${browserName}; attempting to install with Selenium Manager (Beta)`
+    )
+    debugMessagePrinted[browserName] = true; // Set the flag to true after printing the debug message
+  }
 
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 

@@ -114,8 +114,6 @@ build:remote --incompatible_enable_cc_toolchain_resolution
 build:remote --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 test:remote --test_env=DISPLAY=:99.0
 test:remote --test_tag_filters=-edge,-safari,-remote
-# Skip tests that we mark specifically as being unable to run on the rbe
-test:remote --test_tag_filters=-no-rbe
 
 # Env vars we can hard code
 build:remote --action_env=HOME=/home/dev
