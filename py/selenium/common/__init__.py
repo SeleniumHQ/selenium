@@ -19,8 +19,6 @@ from .exceptions import ElementClickInterceptedException
 from .exceptions import ElementNotInteractableException
 from .exceptions import ElementNotSelectableException
 from .exceptions import ElementNotVisibleException
-from .exceptions import ImeActivationFailedException
-from .exceptions import ImeNotAvailableException
 from .exceptions import InsecureCertificateException
 from .exceptions import InvalidArgumentException
 from .exceptions import InvalidCookieDomainException
@@ -71,8 +69,6 @@ __all__ = [
     "MoveTargetOutOfBoundsException",
     "UnexpectedTagNameException",
     "InvalidSelectorException",
-    "ImeNotAvailableException",
-    "ImeActivationFailedException",
     "InvalidArgumentException",
     "JavascriptException",
     "NoSuchCookieException",

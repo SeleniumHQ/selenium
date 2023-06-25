@@ -71,40 +71,34 @@ def test_raises_exception_for_unknown_error(handler, error):
         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.ELEMENT_IS_NOT_SELECTABLE)
-# def test_raises_exception_for_element_not_selectable(handler, error):
-#     with pytest.raises(exceptions.ElementNotSelectableException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["element not selectable"])
+def test_raises_exception_for_element_not_selectable(handler, error):
+    with pytest.raises(exceptions.ElementNotSelectableException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.JAVASCRIPT_ERROR)
-# def test_raises_exception_for_javascript_error(handler, error):
-#     with pytest.raises(exceptions.JavascriptException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["javascript error"])
+def test_raises_exception_for_javascript_error(handler, error):
+    with pytest.raises(exceptions.JavascriptException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.XPATH_LOOKUP_ERROR)
-# def test_raises_exception_for_xpath_lookup_error(handler, error):
-#     with pytest.raises(exceptions.WebDriverException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["timeout"])
+def test_raises_exception_for_timeout(handler, error):
+    with pytest.raises(exceptions.TimeoutException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.TIMEOUT)
-# def test_raises_exception_for_timeout(handler, error):
-#     with pytest.raises(exceptions.TimeoutException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["no such window"])
+def test_raises_exception_for_no_such_window(handler, error):
+    with pytest.raises(exceptions.NoSuchWindowException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.NO_SUCH_WINDOW)
-# def test_raises_exception_for_no_such_window(handler, error):
-#     with pytest.raises(exceptions.NoSuchWindowException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_COOKIE_DOMAIN)
-# def test_raises_exception_for_invalid_cookie_domain(handler, error):
-#     with pytest.raises(exceptions.InvalidCookieDomainException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["invalid cookie domain"])
+def test_raises_exception_for_invalid_cookie_domain(handler, error):
+    with pytest.raises(exceptions.InvalidCookieDomainException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
 # @pytest.mark.parametrize("error", ErrorCode.UNABLE_TO_SET_COOKIE)
@@ -135,19 +129,6 @@ def test_raises_exception_for_unknown_error(handler, error):
 # def test_raises_exception_for_invalid_element_coordinates(handler, error):
 #     with pytest.raises(exceptions.WebDriverException):
 #         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-
-# @pytest.mark.parametrize("error", ErrorCode.IME_NOT_AVAILABLE)
-# def test_raises_exception_for_ime_not_available(handler, error):
-#     with pytest.raises(exceptions.ImeNotAvailableException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-
-# @pytest.mark.parametrize("error", ErrorCode.IME_ENGINE_ACTIVATION_FAILED)
-# def test_raises_exception_for_ime_activation_failed(handler, error):
-#     with pytest.raises(exceptions.ImeActivationFailedException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
 
 # @pytest.mark.parametrize("error", ErrorCode.INVALID_SELECTOR)
 # def test_raises_exception_for_invalid_selector(handler, error):

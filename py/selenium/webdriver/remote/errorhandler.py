@@ -26,8 +26,6 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import ImeActivationFailedException
-from selenium.common.exceptions import ImeNotAvailableException
 from selenium.common.exceptions import InsecureCertificateException
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.common.exceptions import InvalidCookieDomainException

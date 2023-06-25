@@ -219,18 +219,6 @@ class InvalidSelectorException(WebDriverException):
         super().__init__(with_support, screen, stacktrace)
 
 
-class ImeNotAvailableException(WebDriverException):
-    """Thrown when IME support is not available.
-
-    This exception is thrown for every IME-related method call if IME
-    support is not available on the machine.
-    """
-
-
-class ImeActivationFailedException(WebDriverException):
-    """Thrown when activating an IME engine has failed."""
-
-
 class InvalidArgumentException(WebDriverException):
     """The arguments passed to a command are either invalid or malformed."""
 

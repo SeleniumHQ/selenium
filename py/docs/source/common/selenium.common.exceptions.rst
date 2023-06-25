@@ -25,8 +25,6 @@
       ElementNotInteractableException
       ElementNotSelectableException
       ElementNotVisibleException
-      ImeActivationFailedException
-      ImeNotAvailableException
       InsecureCertificateException
       InvalidArgumentException
       InvalidCookieDomainException
