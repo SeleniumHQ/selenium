@@ -342,7 +342,12 @@ class WebDriver(BaseWebDriver):
 
         response = self.command_executor.execute(driver_command, params)
         if response:
-            self.error_handler.check_response(response)
+            # the response has nested 'value'
+            payload = response.get("value")
+            if payload is not None:
+                # current python client has nested 'value' such as {'value': {'value': {exact error body}}, status: <status>}
+                # thus this check_response the internal value only.
+                self.error_handler.check_response(payload)
             response["value"] = self._unwrap_value(response.get("value", None))
             return response
         # If the server doesn't send a response, assume the command was

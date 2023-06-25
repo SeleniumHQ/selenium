@@ -121,27 +121,20 @@ class ErrorHandler:
 
         :Args:
          - response - The JSON response from the WebDriver server as a dictionary
-           object.
+           object. The format is expected to be {'value': {message body}}
 
         :Raises: If the response contains an error message.
         """
 
-        payload = response.get("value")
-        if payload is None:
-            # invalid response
-            return
-
-        payload_dict = payload
-        if type(payload) != dict:
+        payload_dict = response
+        if type(response) != dict:
             try:
-                payload_dict = json.loads(payload)
+                payload_dict = json.loads(response)
             except (json.JSONDecodeError, TypeError):
                 return
         if not isinstance(payload_dict, dict):
             return
 
-        # current python client has nested 'value',
-        # so this error could be {'value': {'value': {exact error body}}}
         payload_dict = payload_dict.get("value")
         if payload_dict is None:
             # invalid response
