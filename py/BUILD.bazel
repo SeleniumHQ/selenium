@@ -14,6 +14,9 @@ compile_pip_requirements(
     name = "requirements",
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
+    tags = [
+        "skip-remote",
+    ],
 )
 
 SE_VERSION = "4.11.2"
@@ -352,10 +355,13 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=chrome",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-    ],
+        "skip-remote",
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -380,6 +386,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -402,6 +409,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -422,10 +430,13 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=firefox",
-    ],
+    ] + BROWSERS["firefox"]["args"],
+    data = BROWSERS["firefox"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-    ],
+        "skip-remote",
+    ] + BROWSERS["firefox"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -449,6 +460,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -471,6 +483,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -494,6 +507,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -518,6 +532,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -542,6 +557,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
