@@ -65,7 +65,7 @@ BROWSERS = {
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge", "no-rbe"],
+        "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,
@@ -75,11 +75,11 @@ BROWSERS = {
     "ie": {
         "args": ["--driver=ie"],
         "data": [],
-        "tags": COMMON_TAGS + ["ie", "no-rbe"],
+        "tags": COMMON_TAGS + ["ie"],
     },
     "safari": {
         "args": ["--driver=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["safari", "no-rbe"],
+        "tags": COMMON_TAGS + ["safari"],
     },
 }
