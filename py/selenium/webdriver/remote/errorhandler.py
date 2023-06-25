@@ -131,8 +131,6 @@ class ErrorHandler:
             # invalid response
             return
 
-        print(f'===payload==> {payload}')
-
         payload_dict = payload
         if type(payload) != dict:
             try:
@@ -142,7 +140,15 @@ class ErrorHandler:
         if not isinstance(payload_dict, dict):
             return
 
+        # current python client has nested 'value',
+        # so this error could be {'value': {'value': {exact error body}}}
+        payload_dict = payload_dict.get("value")
+        if payload_dict is None:
+            # invalid response
+            return
+
         error = payload_dict.get('error')
+
         if not error:
             return
         message = payload_dict.get('message', error)
