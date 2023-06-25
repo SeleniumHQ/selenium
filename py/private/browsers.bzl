@@ -24,9 +24,6 @@ chrome_args = select({
         "--driver-binary=$(location @mac_chromedriver//:chromedriver)",
         "--browser-binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
     ],
-    "@selenium//common:use_local_chromedriver": [
-        "--driver-binary=$(location @selenium//common:chromedriver)",
-    ],
     "//conditions:default": [],
 }) + headless_args
 
@@ -34,9 +31,6 @@ edge_args = select({
     "@selenium//common:use_pinned_macos_edge": [
         "--driver-binary=$(location @mac_edgedriver//:msedgedriver)",
         "--browser-binary='$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge'",
-    ],
-    "@selenium//common:use_local_msedgedriver": [
-        "--driver-binary=$(location @selenium//common:msedgedriver)",
     ],
     "//conditions:default": [],
 }) + headless_args
@@ -50,9 +44,6 @@ firefox_args = select({
         "--driver-binary=$(location @mac_geckodriver//:geckodriver)",
         "--browser-binary=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
     ],
-    "@selenium//common:use_local_geckodriver": [
-        "--driver-binary=$(location @selenium//common:geckodriver)",
-    ],
     "//conditions:default": [],
 }) + headless_args
 
@@ -65,7 +56,7 @@ BROWSERS = {
     "edge": {
         "args": ["--driver=edge"] + edge_args,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge"],
+        "tags": COMMON_TAGS + ["edge", "no-rbe"],
     },
     "firefox": {
         "args": ["--driver=firefox"] + firefox_args,
@@ -75,11 +66,11 @@ BROWSERS = {
     "ie": {
         "args": ["--driver=ie"],
         "data": [],
-        "tags": COMMON_TAGS + ["ie"],
+        "tags": COMMON_TAGS + ["ie", "no-rbe"],
     },
     "safari": {
         "args": ["--driver=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["safari"],
+        "tags": COMMON_TAGS + ["safari", "no-rbe"],
     },
 }
