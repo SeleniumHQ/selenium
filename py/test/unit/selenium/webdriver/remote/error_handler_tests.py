@@ -101,137 +101,118 @@ def test_raises_exception_for_invalid_cookie_domain(handler, error):
         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.UNABLE_TO_SET_COOKIE)
-# def test_raises_exception_for_unable_to_set_cookie(handler, error):
-#     with pytest.raises(exceptions.UnableToSetCookieException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["unable to set cookie"])
+def test_raises_exception_for_unable_to_set_cookie(handler, error):
+    with pytest.raises(exceptions.UnableToSetCookieException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.UNEXPECTED_ALERT_OPEN)
-# def test_raises_exception_for_unexpected_alert_open(handler, error):
-#     with pytest.raises(exceptions.UnexpectedAlertPresentException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["unexpected alert open"])
+def test_raises_exception_for_unexpected_alert_open(handler, error):
+    with pytest.raises(exceptions.UnexpectedAlertPresentException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.NO_ALERT_OPEN)
-# def test_raises_exception_for_no_alert_open(handler, error):
-#     with pytest.raises(exceptions.NoAlertPresentException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["no such alert"])
+def test_raises_exception_for_no_alert_open(handler, error):
+    with pytest.raises(exceptions.NoAlertPresentException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.SCRIPT_TIMEOUT)
-# def test_raises_exception_for_script_timeout(handler, error):
-#     with pytest.raises(exceptions.TimeoutException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["script timeout"])
+def test_raises_exception_for_script_timeout(handler, error):
+    with pytest.raises(exceptions.TimeoutException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+
+@pytest.mark.parametrize("error", ["invalid selector"])
+def test_raises_exception_for_invalid_selector(handler, error):
+    with pytest.raises(exceptions.InvalidSelectorException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_ELEMENT_COORDINATES)
-# def test_raises_exception_for_invalid_element_coordinates(handler, error):
-#     with pytest.raises(exceptions.WebDriverException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_SELECTOR)
-# def test_raises_exception_for_invalid_selector(handler, error):
-#     with pytest.raises(exceptions.InvalidSelectorException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["session not created"])
+def test_raises_exception_for_session_not_created(handler, error):
+    with pytest.raises(exceptions.SessionNotCreatedException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.SESSION_NOT_CREATED)
-# def test_raises_exception_for_session_not_created(handler, error):
-#     with pytest.raises(exceptions.SessionNotCreatedException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["move target out of bounds"])
+def test_raises_exception_for_move_target_out_of_bounds(handler, error):
+    with pytest.raises(exceptions.MoveTargetOutOfBoundsException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS)
-# def test_raises_exception_for_move_target_out_of_bounds(handler, error):
-#     with pytest.raises(exceptions.MoveTargetOutOfBoundsException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["invalid selector"])
+def test_raises_exception_for_invalid_xpath_selector(handler, error):
+    with pytest.raises(exceptions.InvalidSelectorException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_XPATH_SELECTOR)
-# def test_raises_exception_for_invalid_xpath_selector(handler, error):
-#     with pytest.raises(exceptions.InvalidSelectorException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["element not interactable"])
+def test_raises_exception_for_element_not_interactable(handler, error):
+    with pytest.raises(exceptions.ElementNotInteractableException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER)
-# def test_raises_exception_for_invalid_xpath_selector_return_typer(handler, error):
-#     with pytest.raises(exceptions.InvalidSelectorException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["insecure certificate"])
+def test_raises_exception_for_insecure_certificate(handler, error):
+    with pytest.raises(exceptions.InsecureCertificateException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.ELEMENT_NOT_INTERACTABLE)
-# def test_raises_exception_for_element_not_interactable(handler, error):
-#     with pytest.raises(exceptions.ElementNotInteractableException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["invalid argument"])
+def test_raises_exception_for_invalid_argument(handler, error):
+    with pytest.raises(exceptions.InvalidArgumentException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INSECURE_CERTIFICATE)
-# def test_raises_exception_for_insecure_certificate(handler, error):
-#     with pytest.raises(exceptions.InsecureCertificateException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["invalid coordinates"])
+def test_raises_exception_for_invalid_coordinates(handler, error):
+    with pytest.raises(exceptions.InvalidCoordinatesException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_ARGUMENT)
-# def test_raises_exception_for_invalid_argument(handler, error):
-#     with pytest.raises(exceptions.InvalidArgumentException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["invalid session id"])
+def test_raises_exception_for_invalid_session_id(handler, error):
+    with pytest.raises(exceptions.InvalidSessionIdException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_COORDINATES)
-# def test_raises_exception_for_invalid_coordinates(handler, error):
-#     with pytest.raises(exceptions.InvalidCoordinatesException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["no such cookie"])
+def test_raises_exception_for_no_such_cookie(handler, error):
+    with pytest.raises(exceptions.NoSuchCookieException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.INVALID_SESSION_ID)
-# def test_raises_exception_for_invalid_session_id(handler, error):
-#     with pytest.raises(exceptions.InvalidSessionIdException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["unable to capture screen"])
+def test_raises_exception_for_unable_to_capture_screen_exception(handler, error):
+    with pytest.raises(exceptions.ScreenshotException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.NO_SUCH_COOKIE)
-# def test_raises_exception_for_no_such_cookie(handler, error):
-#     with pytest.raises(exceptions.NoSuchCookieException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["element click intercepted"])
+def test_raises_exception_for_element_click_intercepted(handler, error):
+    with pytest.raises(exceptions.ElementClickInterceptedException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.UNABLE_TO_CAPTURE_SCREEN)
-# def test_raises_exception_for_unable_to_capture_screen_exception(handler, error):
-#     with pytest.raises(exceptions.ScreenshotException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("error", ["unknown method"])
+def test_raises_exception_for_unknown_method(handler, error):
+    with pytest.raises(exceptions.UnknownMethodException):
+        handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
 
-# @pytest.mark.parametrize("error", ErrorCode.ELEMENT_CLICK_INTERCEPTED)
-# def test_raises_exception_for_element_click_intercepted(handler, error):
-#     with pytest.raises(exceptions.ElementClickInterceptedException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+@pytest.mark.parametrize("key", ["stackTrace", "stacktrace"])
+def test_relays_exception_stacktrace(handler, key):
+    import json
 
+    stacktrace = {"lineNumber": 100, "fileName": "egg", "methodName": "ham", "className": "Spam"}
+    value = {key: [stacktrace], "message": "very bad", "error": "unknown method"}
+    response = {"status": 400, "value": value}
+    with pytest.raises(exceptions.UnknownMethodException) as e:
+        handler.check_response(response)
 
-# @pytest.mark.parametrize("error", ErrorCode.UNKNOWN_METHOD)
-# def test_raises_exception_for_unknown_method(handler, error):
-#     with pytest.raises(exceptions.UnknownMethodException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-
-# @pytest.mark.parametrize("error", ErrorCode.METHOD_NOT_ALLOWED)
-# def test_raises_exception_for_method_not_allowed(handler, error):
-#     with pytest.raises(exceptions.WebDriverException):
-#         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
-
-
-
-# @pytest.mark.parametrize("key", ["stackTrace", "stacktrace"])
-# def test_relays_exception_stacktrace(handler, key):
-#     import json
-
-#     stacktrace = {"lineNumber": 100, "fileName": "egg", "methodName": "ham", "className": "Spam"}
-#     value = {key: [stacktrace], "message": "very bad", "error": ErrorCode.UNKNOWN_METHOD[0]}
-#     response = {"status": 400, "value": json.dumps({"value": value})}
-#     with pytest.raises(exceptions.UnknownMethodException) as e:
-#         handler.check_response(response)
-
-#     assert "Spam.ham" in e.value.stacktrace[0]
+    assert "Spam.ham" in e.value.stacktrace[0]
 
 
 def test_handle_errors_better(handler):

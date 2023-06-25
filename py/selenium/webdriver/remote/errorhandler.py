@@ -154,6 +154,9 @@ class ErrorHandler:
         # backtrace from remote in Ruby
         stacktrace = None
         st_value = payload_dict.get('stacktrace', '')
+        if st_value == '':
+            # backword compatibility
+            st_value = payload_dict.get('stackTrace', '')
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")
