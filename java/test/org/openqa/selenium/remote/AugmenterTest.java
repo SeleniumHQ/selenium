@@ -17,18 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-
 import com.google.common.collect.ImmutableMap;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -44,50 +33,64 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.decorators.WebDriverDecorator;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 @Tag("UnitTests")
 class AugmenterTest {
 
-  private Augmenter getAugmenter() {
-    return new Augmenter();
+  private org.openqa.selenium.remote.Augmenter getAugmenter() {
+    return new org.openqa.selenium.remote.Augmenter();
   }
 
   @Test
   void shouldAddInterfaceFromCapabilityIfNecessary() {
     final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .augment(driver);
 
     assertThat(returned).isNotSameAs(driver);
-    assertThat(returned).isInstanceOf(HasMagicNumbers.class);
+    assertThat(returned).isInstanceOf(org.openqa.selenium.remote.HasMagicNumbers.class);
   }
 
   @Test
   void shouldNotAddInterfaceWhenBooleanValueForItIsFalse() {
     Capabilities caps = new ImmutableCapabilities("magic.numbers", false);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .augment(driver);
 
     assertThat(returned).isSameAs(driver);
-    assertThat(returned).isNotInstanceOf(HasMagicNumbers.class);
+    assertThat(returned).isNotInstanceOf(org.openqa.selenium.remote.HasMagicNumbers.class);
   }
 
   @Test
   void shouldNotUseNonMatchingInterfaces() {
     Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .augment(driver);
     assertThat(returned).isNotInstanceOf(WebStorage.class);
   }
@@ -95,7 +98,7 @@ class AugmenterTest {
   @Test
   void shouldDelegateToHandlerIfAdded() {
     Capabilities caps = new ImmutableCapabilities("foo", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned =
         getAugmenter()
@@ -110,12 +113,12 @@ class AugmenterTest {
   void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
     Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "Title");
-    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+    stubExecutor.expect(org.openqa.selenium.remote.DriverCommand.GET_TITLE, new HashMap<>(), "Title");
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(stubExecutor, caps);
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .augment(driver);
 
     assertThat(returned.getTitle()).isEqualTo("Title");
@@ -131,7 +134,7 @@ class AugmenterTest {
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .augment(driver);
 
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -141,7 +144,7 @@ class AugmenterTest {
   @Test
   void shouldCopyFieldsFromTemplateInstanceIntoChildInstance() {
     ChildRemoteDriver driver = new ChildRemoteDriver();
-    HasMagicNumbers holder = (HasMagicNumbers) getAugmenter().augment(driver);
+    org.openqa.selenium.remote.HasMagicNumbers holder = (org.openqa.selenium.remote.HasMagicNumbers) getAugmenter().augment(driver);
 
     assertThat(holder.getMagicNumber()).isEqualTo(3);
   }
@@ -159,7 +162,7 @@ class AugmenterTest {
     final WebElement element = mock(WebElement.class);
     executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "magic", "value", "cheese"), element);
 
-    WebDriver driver = new RemoteWebDriver(executor, caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(executor, caps);
     WebDriver returned =
         getAugmenter()
             .addDriverAugmentation(
@@ -177,25 +180,25 @@ class AugmenterTest {
         new ImmutableCapabilities(
             "magic.numbers", true,
             "numbers", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .addDriverAugmentation(
                 "numbers",
                 HasNumbers.class,
                 (c, exe) ->
                     webDriver -> {
                       Require.precondition(
-                          webDriver instanceof HasMagicNumbers,
+                          webDriver instanceof org.openqa.selenium.remote.HasMagicNumbers,
                           "Driver must implement HasMagicNumbers");
-                      return ((HasMagicNumbers) webDriver).getMagicNumber();
+                      return ((org.openqa.selenium.remote.HasMagicNumbers) webDriver).getMagicNumber();
                     })
             .augment(driver);
 
     assertThat(returned).isNotSameAs(driver);
-    assertThat(returned).isInstanceOf(HasMagicNumbers.class);
+    assertThat(returned).isInstanceOf(org.openqa.selenium.remote.HasMagicNumbers.class);
     assertThat(returned).isInstanceOf(HasNumbers.class);
 
     int number = ((HasNumbers) returned).getNumbers(returned);
@@ -208,20 +211,20 @@ class AugmenterTest {
         new ImmutableCapabilities(
             "magic.numbers", true,
             "numbers", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver augmented =
         getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
             .addDriverAugmentation(
                 "numbers",
                 HasNumbers.class,
                 (c, exe) ->
                     webDriver -> {
                       Require.precondition(
-                          webDriver instanceof HasMagicNumbers,
+                          webDriver instanceof org.openqa.selenium.remote.HasMagicNumbers,
                           "Driver must implement HasMagicNumbers");
-                      return ((HasMagicNumbers) webDriver).getMagicNumber();
+                      return ((org.openqa.selenium.remote.HasMagicNumbers) webDriver).getMagicNumber();
                     })
             .augment(driver);
 
@@ -239,6 +242,36 @@ class AugmenterTest {
     int number = ((HasNumbers) decorated).getNumbers(decorated);
     assertThat(number).isEqualTo(42);
   }
+
+  @Test
+  void shouldAugmentDecoratedWebDriver() {
+    final Capabilities caps =
+      new ImmutableCapabilities(
+        "magic.numbers", true,
+        "numbers", true);
+    WebDriver driver = new org.openqa.selenium.remote.RemoteWebDriver(new StubExecutor(caps), caps);
+    WebDriver eventFiringDecorate = new EventFiringDecorator<>(new WebDriverListener() {
+      @Override
+      public void beforeAnyCall(Object target, Method method, Object[] args) {
+        System.out.println("Bazinga!");
+      }
+    }).decorate(driver);
+
+    WebDriver modifyTitleDecorate = new ModifyTitleWebDriverDecorator().decorate(eventFiringDecorate);
+
+    WebDriver augmented = getAugmenter()
+        .addDriverAugmentation("magic.numbers", org.openqa.selenium.remote.HasMagicNumbers.class, (c, exe) -> () -> 42)
+        .augment(modifyTitleDecorate);
+
+    assertThat(modifyTitleDecorate).isNotSameAs(driver);
+
+    assertThat(((HasMagicNumbers) augmented).getMagicNumber()).isEqualTo(42);
+    assertThat(augmented.getTitle()).isEqualTo("title");
+
+    assertThat(augmented).isNotSameAs(modifyTitleDecorate);
+    assertThat(augmented).isInstanceOf(Decorated.class);
+  }
+
 
   private static class ByMagic extends By {
 
@@ -259,7 +292,7 @@ class AugmenterTest {
     WebElement findByMagic(String magicWord);
   }
 
-  protected static class StubExecutor implements CommandExecutor {
+  protected static class StubExecutor implements org.openqa.selenium.remote.CommandExecutor {
 
     private final Capabilities capabilities;
     private final List<Data> expected = new ArrayList<>();
@@ -269,9 +302,9 @@ class AugmenterTest {
     }
 
     @Override
-    public Response execute(Command command) {
-      if (DriverCommand.NEW_SESSION.equals(command.getName())) {
-        Response response = new Response(new SessionId("foo"));
+    public org.openqa.selenium.remote.Response execute(Command command) {
+      if (org.openqa.selenium.remote.DriverCommand.NEW_SESSION.equals(command.getName())) {
+        org.openqa.selenium.remote.Response response = new org.openqa.selenium.remote.Response(new org.openqa.selenium.remote.SessionId("foo"));
         response.setValue(capabilities.asMap());
         return response;
       }
@@ -279,7 +312,7 @@ class AugmenterTest {
       for (Data possibleMatch : expected) {
         if (possibleMatch.commandName.equals(command.getName())
             && possibleMatch.args.equals(command.getParameters())) {
-          Response response = new Response(new SessionId("foo"));
+          org.openqa.selenium.remote.Response response = new org.openqa.selenium.remote.Response(new org.openqa.selenium.remote.SessionId("foo"));
           response.setValue(possibleMatch.returnValue);
           return response;
         }
@@ -311,7 +344,7 @@ class AugmenterTest {
     String getHelloWorld();
   }
 
-  public static class DetonatingDriver extends RemoteWebDriver {
+  public static class DetonatingDriver extends org.openqa.selenium.remote.RemoteWebDriver {
 
     private Capabilities caps;
 
@@ -340,7 +373,7 @@ class AugmenterTest {
     int getNumbers(WebDriver driver);
   }
 
-  public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
+  public static class ChildRemoteDriver extends org.openqa.selenium.remote.RemoteWebDriver implements org.openqa.selenium.remote.HasMagicNumbers {
 
     private int magicNumber = 3;
 
@@ -355,7 +388,7 @@ class AugmenterTest {
     }
   }
 
-  public static class WithFinals extends RemoteWebDriver {
+  public static class WithFinals extends org.openqa.selenium.remote.RemoteWebDriver {
 
     public final String finalField = "FINAL";
 

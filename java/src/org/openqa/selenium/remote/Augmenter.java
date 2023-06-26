@@ -17,22 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.unmodifiableSet;
-import static net.bytebuddy.matcher.ElementMatchers.anyOf;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -51,6 +35,23 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 import org.openqa.selenium.support.decorators.Decorated;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Collections.unmodifiableSet;
+import static net.bytebuddy.matcher.ElementMatchers.anyOf;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**
  * Enhance the interfaces implemented by an instance of the {@link org.openqa.selenium.WebDriver}
@@ -252,12 +253,12 @@ public class Augmenter {
       return (RemoteWebDriver) driver;
     }
 
-    if (driver instanceof WrapsDriver) {
-      return extractRemoteWebDriver(((WrapsDriver) driver).getWrappedDriver());
-    }
-
     if (driver instanceof Decorated) {
       return extractRemoteWebDriver((WebDriver) ((Decorated<?>) driver).getOriginal());
+    }
+
+    if (driver instanceof WrapsDriver) {
+      return extractRemoteWebDriver(((WrapsDriver) driver).getWrappedDriver());
     }
 
     return null;
