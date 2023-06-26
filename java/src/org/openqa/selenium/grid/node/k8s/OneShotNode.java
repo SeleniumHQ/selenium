@@ -378,7 +378,8 @@ public class OneShotNode extends Node {
                 Instant.EPOCH,
                 driver == null
                     ? null
-                    : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
+                    : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()),
+                slotMatcher)),
         isDraining() ? DRAINING : UP,
         heartbeatPeriod,
         getNodeVersion(),
