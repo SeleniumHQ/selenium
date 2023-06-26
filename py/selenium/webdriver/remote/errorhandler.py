@@ -15,12 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 from typing import Any
 from typing import Dict
+from typing import List
+from typing import Sequence
 from typing import Type
 from typing import Union
-from typing import Sequence
-from typing import List
 
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
@@ -49,8 +50,6 @@ from selenium.common.exceptions import UnableToSetCookieException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import UnknownMethodException
 from selenium.common.exceptions import WebDriverException
-
-import json
 
 ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
     'element click intercepted': ElementClickInterceptedException,

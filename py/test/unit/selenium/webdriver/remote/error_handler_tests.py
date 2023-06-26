@@ -18,7 +18,8 @@
 import pytest
 
 from selenium.common import exceptions
-from selenium.webdriver.remote.errorhandler import ErrorHandler, ERROR_TO_EXC_MAPPING
+from selenium.webdriver.remote.errorhandler import ERROR_TO_EXC_MAPPING
+from selenium.webdriver.remote.errorhandler import ErrorHandler
 
 
 @pytest.fixture
