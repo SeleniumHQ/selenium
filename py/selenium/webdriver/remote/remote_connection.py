@@ -30,6 +30,7 @@ from selenium import __version__
 
 from . import utils
 from .command import Command
+from .errorhandler import ErrorCode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -315,12 +316,12 @@ class RemoteConnection:
                 response = http.request(method, url, body=body, headers=headers)
             statuscode = response.status
         data = response.data.decode("UTF-8")
-        LOGGER.debug(f"Remote response: data={data} | headers={response.headers}")
+        LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
         try:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
-                return {"value": data}
+                return {"status": statuscode, "value": data}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")
@@ -328,14 +329,18 @@ class RemoteConnection:
                 try:
                     data = utils.load_json(data.strip())
                 except ValueError:
-                    return {"value": data.strip()}
+                    if 199 < statuscode < 300:
+                        status = ErrorCode.SUCCESS
+                    else:
+                        status = ErrorCode.UNKNOWN_ERROR
+                    return {"status": status, "value": data.strip()}
 
                 # Some drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if "value" not in data:
                     data["value"] = None
                 return data
-            data = {"value": data}
+            data = {"status": 0, "value": data}
             return data
         finally:
             LOGGER.debug("Finished Request")

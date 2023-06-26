@@ -86,6 +86,13 @@ ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
 }
 
 
+class ErrorCode:
+    """Error codes defined in the WebDriver wire protocol."""
+
+    # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
+    SUCCESS = 0
+    UNKNOWN_ERROR = 13
+
 def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
     if not original:
         return []
@@ -125,16 +132,17 @@ class ErrorHandler:
         :Raises: If the response contains an error message.
         """
 
-        payload_dict = response
-        if type(response) != dict:
+        response_dict = response
+        if not isinstance(response, dict):
             try:
-                payload_dict = json.loads(response)
+                response_dict = json.loads(response)
             except (json.JSONDecodeError, TypeError):
                 return
-        if not isinstance(payload_dict, dict):
+
+        if not isinstance(response_dict, dict):
             return
 
-        payload_dict = payload_dict.get("value")
+        payload_dict = response_dict.get("value")
         if payload_dict is None:
             # invalid response
             return
