@@ -242,3 +242,15 @@ def test_string_response_body(handler):
         handler.check_response(json.dumps(response))
 
     assert "Could not start a new session." in e.value.msg
+
+def test_string_response_body_flatten(handler):
+    """This test case comes from cookies test failure. Could be removed as non-w3c spec."""
+    response = {
+        "value": "\\u002fsession\\u002f9d02a203-60c1-46f8-bac7-e38e0a4ba184\\u002fcookie",
+        "message": "Unable to exec...0-1040-azure\', java.version: \'11.0.19\'\\nDriver info: driver.version: unknown",
+        "error": "invalid session id"
+    }
+    with pytest.raises(exceptions.InvalidSessionIdException) as e:
+        handler.check_response(json.dumps(response))
+
+    assert "Unable to exec" in e.value.msg

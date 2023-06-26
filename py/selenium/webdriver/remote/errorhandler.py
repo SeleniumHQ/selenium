@@ -93,6 +93,18 @@ class ErrorCode:
     SUCCESS = 0
     UNKNOWN_ERROR = 13
 
+
+def _get_stacktrace(payload_dict):
+    if not isinstance(payload_dict, dict):
+        return ''
+
+    st_value = payload_dict.get('stacktrace', '')
+    if st_value == '':
+        # backword compatibility
+        st_value = payload_dict.get('stackTrace', '')
+    return st_value
+
+
 def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
     if not original:
         return []
@@ -147,22 +159,28 @@ class ErrorHandler:
             # invalid response
             return
 
-        error = payload_dict.get('error')
-
+        # Could be removed, but cookies test failed, so add as a workaround
+        error = response_dict.get("error")
+        if error is None:
+            # w3c
+            error = payload_dict.get('error')
         if not error:
             return
-        message = payload_dict.get('message', error)
+
+        # Could be removed, but cookies test failed, so add as a workaround
+        message = response_dict.get("message")
+        if message is None:
+            # w3c
+            message = payload_dict.get('message', error)
 
         exception_class: Type[WebDriverException] = ERROR_TO_EXC_MAPPING.get(
             error, WebDriverException
         )
 
         # backtrace from remote in Ruby
+
         stacktrace = None
-        st_value = payload_dict.get('stacktrace', '')
-        if st_value == '':
-            # backword compatibility
-            st_value = payload_dict.get('stackTrace', '')
+        st_value = _get_stacktrace(payload_dict)
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")
@@ -182,6 +200,7 @@ class ErrorHandler:
                         stacktrace.append(msg)
                 except TypeError:
                     pass
+
         if exception_class is UnexpectedAlertPresentException:
             raise UnexpectedAlertPresentException(
                 msg=message,
