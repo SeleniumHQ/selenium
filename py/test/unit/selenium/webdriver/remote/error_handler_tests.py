@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
+
 import pytest
 
 from selenium.common import exceptions
@@ -215,7 +217,6 @@ def test_relays_exception_stacktrace(handler, key):
 
     assert "Spam.ham" in e.value.stacktrace[0]
 
-
 def test_handle_errors_better(handler):
     response = {
         "value": {
@@ -224,7 +225,20 @@ def test_handle_errors_better(handler):
             "stacktrace": ""
         },
     }
-    with pytest.raises(exceptions.WebDriverException) as e:
+    with pytest.raises(exceptions.SessionNotCreatedException) as e:
         handler.check_response(response)
+
+    assert "Could not start a new session." in e.value.msg
+
+def test_string_response_body(handler):
+    response = {
+        "value": {
+            "error": "session not created",
+            "message": "Could not start a new session. No Node supports the required capabilities: Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}}, Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}, version: }\nBuild info: version: '4.0.0-beta-3', revision: '5d108f9a67'\nSystem info: host: '9315f0a993d2', ip: '172.17.0.8', os.name: 'Linux', os.arch: 'amd64', os.version: '5.8.0-44-generic', java.version: '1.8.0_282'\nDriver info: driver.version: unknown",
+            "stacktrace": ""
+        },
+    }
+    with pytest.raises(exceptions.SessionNotCreatedException) as e:
+        handler.check_response(json.dumps(response))
 
     assert "Could not start a new session." in e.value.msg

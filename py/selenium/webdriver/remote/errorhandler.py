@@ -121,7 +121,7 @@ def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
 class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
-    def check_response(self, response: Dict[str, Any]) -> None:
+    def check_response(self, response: Dict[str, Any]|str) -> None:
         """Checks that a JSON response from the WebDriver does not have an
         error.
 
