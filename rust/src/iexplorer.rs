@@ -17,7 +17,6 @@
 
 use crate::config::ManagerConfig;
 use reqwest::Client;
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -44,14 +43,13 @@ pub const IEDRIVER_NAME: &str = "IEDriverServer";
 const DRIVER_URL: &str = "https://github.com/SeleniumHQ/selenium/releases/";
 const IEDRIVER_RELEASE: &str = "IEDriverServer_Win32_";
 
-thread_local!(static RELEASE_URL: RefCell<String> = RefCell::new("".to_string()));
-
 pub struct IExplorerManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub driver_url: Option<String>,
 }
 
 impl IExplorerManager {
@@ -67,6 +65,7 @@ impl IExplorerManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
+            driver_url: None,
         }))
     }
 }
@@ -132,9 +131,7 @@ impl SeleniumManager for IExplorerManager {
                         .filter(|url| url.browser_download_url.contains(IEDRIVER_RELEASE))
                         .collect();
                     let driver_url = &driver_releases.last().unwrap().browser_download_url;
-                    RELEASE_URL.with(|url| {
-                        *url.borrow_mut() = driver_url.to_string();
-                    });
+                    self.driver_url = Some(driver_url.to_string());
 
                     let index_release =
                         driver_url.rfind(IEDRIVER_RELEASE).unwrap() + IEDRIVER_RELEASE.len();
@@ -163,30 +160,27 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
-        let mut driver_url = "".to_string();
-        RELEASE_URL.with(|url| {
-            driver_url = url.borrow().to_string();
-        });
-        if driver_url.is_empty() {
-            let driver_version = self.get_driver_version();
-            let mut release_version = driver_version.to_string();
-            if !driver_version.ends_with('0') {
-                // E.g.: version 4.8.1 is shipped within release 4.8.0
-                let error_message = format!(
-                    "Wrong {} version: '{}'",
-                    self.get_driver_name(),
-                    driver_version
-                );
-                let index = release_version.rfind('.').ok_or(error_message)? + 1;
-                release_version = release_version[..index].to_string();
-                release_version.push('0');
-            }
-            driver_url = format!(
-                "{}download/selenium-{}/{}{}.zip",
-                DRIVER_URL, release_version, IEDRIVER_RELEASE, driver_version
-            );
+        if self.driver_url.is_some() {
+            return Ok(self.driver_url.as_ref().unwrap().to_string());
         }
-        Ok(driver_url)
+
+        let driver_version = self.get_driver_version();
+        let mut release_version = driver_version.to_string();
+        if !driver_version.ends_with('0') {
+            // E.g.: version 4.8.1 is shipped within release 4.8.0
+            let error_message = format!(
+                "Wrong {} version: '{}'",
+                self.get_driver_name(),
+                driver_version
+            );
+            let index = release_version.rfind('.').ok_or(error_message)? + 1;
+            release_version = release_version[..index].to_string();
+            release_version.push('0');
+        }
+        Ok(format!(
+            "{}download/selenium-{}/{}{}.zip",
+            DRIVER_URL, release_version, IEDRIVER_RELEASE, driver_version
+        ))
     }
 
     fn get_driver_path_in_cache(&self) -> PathBuf {
