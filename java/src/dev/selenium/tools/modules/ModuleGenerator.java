@@ -56,6 +56,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
@@ -164,11 +165,28 @@ public class ModuleGenerator {
     // It doesn't matter what we use for writing to the stream: jdeps doesn't use it. *facepalm*
     List<String> jdepsArgs = new LinkedList<>(List.of("--api-only", "--multi-release", "9"));
     if (!modulePath.isEmpty()) {
+      Path tmp = Files.createTempDirectory("automatic_module_jars");
       jdepsArgs.addAll(
           List.of(
               "--module-path",
               modulePath.stream()
-                  .map(Object::toString)
+                  .map((s) -> {
+                    String file = s.getFileName().toString();
+
+                    if (file.startsWith("processed_")) {
+                      Path copy = tmp.resolve(file.substring(10));
+
+                      try {
+                        Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
+                      } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                      }
+
+                      return copy.toString();
+                    }
+
+                    return s.toString();
+                  })
                   .collect(Collectors.joining(File.pathSeparator))));
     }
     jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
@@ -467,9 +485,9 @@ public class ModuleGenerator {
     @Override
     public void visit(ModuleRequiresDirective n, Void arg) {
       String name = n.getNameAsString();
-      if (name.startsWith("processed_")) {
+      if (name.startsWith("processed.")) {
         // When 'Automatic-Module-Name' is not set, we must derive the module name from the jar file
-        // name. Therefore, the 'processed_' prefix added by bazel must be removed to get the name.
+        // name. Therefore, the 'processed.' prefix added by bazel must be removed to get the name.
         name = name.substring(10);
       }
       byteBuddyVisitor.visitRequire(name, getByteBuddyModifier(n.getModifiers()), null);

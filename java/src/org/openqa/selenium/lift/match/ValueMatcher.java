@@ -23,6 +23,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
 /** Matches the value of an element, for example an input field. */
+@Deprecated
 public class ValueMatcher extends TypeSafeMatcher<WebElement> {
 
   private final Object value;
