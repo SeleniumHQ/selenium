@@ -33,9 +33,6 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
@@ -87,7 +84,7 @@ class SeleniumManager:
         proxy = options.proxy
         if proxy and (proxy.http_proxy or proxy.ssl_proxy):
             args.append("--proxy")
-            value = proxy.ssl_proxy if proxy.sslProxy else proxy.http_proxy
+            value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
             args.append(value)
 
         if logger.getEffectiveLevel() == logging.DEBUG:
