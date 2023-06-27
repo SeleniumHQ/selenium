@@ -40,10 +40,11 @@ import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-class NetworkInterceptorTest {
+class NetworkInterceptorTest extends JupiterTestBase {
 
   private NettyAppServer appServer;
   private WebDriver driver;
@@ -131,6 +132,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 

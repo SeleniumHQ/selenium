@@ -32,9 +32,6 @@ class DriverFinder:
     This implementation is still in beta, and may change.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_path(service: Service, options: BaseOptions) -> str:
         path = shutil.which(service.path)
