@@ -23,6 +23,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
 /** hamcrest matcher for attributes of {@link WebElement}s. */
+@Deprecated
 public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 
   private final Matcher<String> matcher;
