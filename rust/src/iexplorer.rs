@@ -17,7 +17,6 @@
 
 use crate::config::ManagerConfig;
 use reqwest::Client;
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -43,8 +42,6 @@ pub const IE_NAMES: &[&str] = &[
 pub const IEDRIVER_NAME: &str = "IEDriverServer";
 const DRIVER_URL: &str = "https://github.com/SeleniumHQ/selenium/releases/";
 const IEDRIVER_RELEASE: &str = "IEDriverServer_Win32_";
-
-thread_local!(static RELEASE_URL: RefCell<String> = RefCell::new("".to_string()));
 
 pub struct IExplorerManager {
     pub browser_name: &'static str,
