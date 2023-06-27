@@ -136,7 +136,7 @@ public class Augmenter {
   }
 
   /**
-   * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a {@link
+   * Enhance the interfaces implemented by this instance of WebDriver if that instance is a {@link
    * org.openqa.selenium.remote.RemoteWebDriver}. The WebDriver that is returned may well be a
    * dynamic proxy. You cannot rely on the concrete implementing class to remain constant.
    *
