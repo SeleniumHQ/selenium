@@ -33,9 +33,6 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
