@@ -191,6 +191,8 @@ public class SeleniumManager {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     }
+    LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
+
     return binary;
   }
 
