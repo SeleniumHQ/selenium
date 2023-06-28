@@ -107,7 +107,6 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     return telemetryPropagator;
   }
 
-  @Override
   public void setOpenTelemetryContext(Context context) {
     this.context = context;
   }

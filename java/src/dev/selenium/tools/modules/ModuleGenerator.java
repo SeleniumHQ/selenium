@@ -170,23 +170,24 @@ public class ModuleGenerator {
           List.of(
               "--module-path",
               modulePath.stream()
-                  .map((s) -> {
-                    String file = s.getFileName().toString();
+                  .map(
+                      (s) -> {
+                        String file = s.getFileName().toString();
 
-                    if (file.startsWith("processed_")) {
-                      Path copy = tmp.resolve(file.substring(10));
+                        if (file.startsWith("processed_")) {
+                          Path copy = tmp.resolve(file.substring(10));
 
-                      try {
-                        Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
-                      } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                      }
+                          try {
+                            Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
+                          } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                          }
 
-                      return copy.toString();
-                    }
+                          return copy.toString();
+                        }
 
-                    return s.toString();
-                  })
+                        return s.toString();
+                      })
                   .collect(Collectors.joining(File.pathSeparator))));
     }
     jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
