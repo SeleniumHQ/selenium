@@ -97,7 +97,7 @@ def selenium_java_deps():
             "org.mockito:mockito-core:4.11.0",
             "org.slf4j:slf4j-api:2.0.7",
             "org.slf4j:slf4j-jdk14:2.0.7",
-            "org.testng:testng:7.7.1",
+            "org.apache.logging.log4j:log4j-core:2.20.0",
             "org.zeromq:jeromq:0.5.3",
             "org.seleniumhq.selenium:htmlunit-driver:4.9.0",
             "org.redisson:redisson:3.21.1",
