@@ -162,7 +162,7 @@ class ChromiumOptions(ArgOptions):
             stacklevel=2,
         )
         args = {"--headless"}
-        if value is True:
+        if value:
             self._arguments.extend(args)
         else:
             self._arguments = list(set(self._arguments) - args)
