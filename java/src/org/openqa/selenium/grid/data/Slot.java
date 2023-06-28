@@ -141,7 +141,7 @@ public class Slot implements Serializable {
     return Objects.equals(this.id, that.id)
         && Objects.equals(this.stereotype, that.stereotype)
         && Objects.equals(this.session, that.session)
-        && Objects.equals(this.slotMatcher, that.slotMatcher)
+        && Objects.equals(this.slotMatcher.getClass().getCanonicalName(), that.slotMatcher.getClass().getCanonicalName())
         && Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
   }
 
