@@ -54,6 +54,12 @@ impl BrowserPath {
     }
 }
 
+pub fn create_parent_path_if_not_exists(path: &Path) {
+    if let Some(p) = path.parent() {
+        create_path_if_not_exists(p);
+    }
+}
+
 pub fn create_path_if_not_exists(path: &Path) {
     if !path.exists() {
         fs::create_dir_all(path).unwrap();
@@ -123,9 +129,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
                 target.display(),
                 file.size()
             ));
-            if let Some(p) = target.parent() {
-                create_path_if_not_exists(p);
-            }
+            create_parent_path_if_not_exists(target);
             if !target.exists() {
                 let mut outfile = File::create(&target)?;
 
