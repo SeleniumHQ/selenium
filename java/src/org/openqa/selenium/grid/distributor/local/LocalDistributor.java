@@ -67,6 +67,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -661,7 +662,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes());
+      Set<SlotId> slotIds =
+          slotSelector.selectSlot(caps, getAvailableNodes(), new DefaultSlotMatcher());
       if (slotIds.isEmpty()) {
         LOG.log(
             getDebugLogLevel(),
@@ -682,7 +684,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
   }
 
   private boolean isNotSupported(Capabilities caps) {
-    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps));
+    return getAvailableNodes().stream()
+        .noneMatch(node -> node.hasCapability(caps, new DefaultSlotMatcher()));
   }
 
   private boolean reserve(SlotId id) {
