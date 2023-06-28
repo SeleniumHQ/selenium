@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
-import io.opentelemetry.context.Context;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -32,7 +31,4 @@ public class NullTracer implements Tracer {
   public Propagator getPropagator() {
     return new NullPropagator();
   }
-
-  @Override
-  public void setOpenTelemetryContext(Context context) {}
 }
