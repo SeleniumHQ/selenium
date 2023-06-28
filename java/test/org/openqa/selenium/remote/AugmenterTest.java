@@ -17,7 +17,18 @@
 
 package org.openqa.selenium.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+
 import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -35,18 +46,6 @@ import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.decorators.WebDriverDecorator;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 @Tag("UnitTests")
 class AugmenterTest {
@@ -246,22 +245,27 @@ class AugmenterTest {
   @Test
   void shouldAugmentDecoratedWebDriver() {
     final Capabilities caps =
-      new ImmutableCapabilities(
-        "magic.numbers", true,
-        "numbers", true);
+        new ImmutableCapabilities(
+            "magic.numbers", true,
+            "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-    WebDriver eventFiringDecorate = new EventFiringDecorator<>(new WebDriverListener() {
-      @Override
-      public void beforeAnyCall(Object target, Method method, Object[] args) {
-        System.out.println("Bazinga!");
-      }
-    }).decorate(driver);
+    WebDriver eventFiringDecorate =
+        new EventFiringDecorator<>(
+                new WebDriverListener() {
+                  @Override
+                  public void beforeAnyCall(Object target, Method method, Object[] args) {
+                    System.out.println("Bazinga!");
+                  }
+                })
+            .decorate(driver);
 
-    WebDriver modifyTitleDecorate = new ModifyTitleWebDriverDecorator().decorate(eventFiringDecorate);
+    WebDriver modifyTitleDecorate =
+        new ModifyTitleWebDriverDecorator().decorate(eventFiringDecorate);
 
-    WebDriver augmented = getAugmenter()
-        .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-        .augment(modifyTitleDecorate);
+    WebDriver augmented =
+        getAugmenter()
+            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+            .augment(modifyTitleDecorate);
 
     assertThat(modifyTitleDecorate).isNotSameAs(driver);
 
@@ -271,7 +275,6 @@ class AugmenterTest {
     assertThat(augmented).isNotSameAs(modifyTitleDecorate);
     assertThat(augmented).isInstanceOf(Decorated.class);
   }
-
 
   private static class ByMagic extends By {
 
