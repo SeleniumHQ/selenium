@@ -46,6 +46,7 @@ class Options(ArgOptions):
     USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling"
     ATTACH_TO_EDGE_CHROME = "ie.edgechromium"
     EDGE_EXECUTABLE_PATH = "ie.edgepath"
+    IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch"
 
     def __init__(self) -> None:
         super().__init__()
@@ -288,6 +289,20 @@ class Options(ArgOptions):
          - value: boolean value
         """
         self._options[self.ATTACH_TO_EDGE_CHROME] = value
+
+    @property
+    def ignore_process_match(self) -> bool:
+        """:Returns: The options ignore process match when using IE Mode value"""
+        return self._options.get(self.IGNORE_PROCESS_MATCH)
+
+    @ignore_process_match.setter
+    def ignore_process_match(self, value: bool) -> None:
+        """Sets the options ignore process match when using IE Mode value.
+
+        :Args:
+         - value: boolean value
+        """
+        self._options[self.IGNORE_PROCESS_MATCH] = value
 
     @property
     def edge_executable_path(self) -> str:
