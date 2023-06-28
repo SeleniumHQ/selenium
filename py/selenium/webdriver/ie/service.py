@@ -32,6 +32,7 @@ class Service(service.Service):
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
         host: typing.Optional[str] = None,
+        service_args: typing.Optional[typing.List[str]] = None,
         log_level: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         log_file: typing.Optional[str] = None,
@@ -48,7 +49,7 @@ class Service(service.Service):
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
            Default is "stdout".
         """
-        self.service_args = []
+        self.service_args = service_args or []
         if host:
             self.service_args.append(f"--host={host}")
         if log_level:
