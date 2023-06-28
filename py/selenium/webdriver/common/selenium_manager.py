@@ -56,6 +56,8 @@ class SeleniumManager:
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
+        logger.debug("Selenium Manager binary found at: {location}")
+
         return path
 
     def driver_location(self, options: BaseOptions) -> str:
@@ -114,12 +116,13 @@ class SeleniumManager:
         except Exception as err:
             raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
 
+        for item in output["logs"]:
+            if item["level"] == "WARN":
+                logger.warning(item["message"])
+            if item["level"] == "DEBUG" or item["level"] == "INFO":
+                logger.debug(item["message"])
+
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
         else:
-            for item in output["logs"]:
-                if item["level"] == "WARN":
-                    logger.warning(item["message"])
-                if item["level"] == "DEBUG" or item["level"] == "INFO":
-                    logger.debug(item["message"])
             return result

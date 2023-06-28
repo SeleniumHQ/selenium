@@ -130,7 +130,7 @@ class FirefoxProfile:
 
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value) -> None:
-        if value not in [True, False]:
+        if not isinstance(value, bool):
             raise WebDriverException("Please pass in a Boolean to this call")
         self.set_preference("webdriver_accept_untrusted_certs", value)
 
@@ -140,7 +140,7 @@ class FirefoxProfile:
 
     @assume_untrusted_cert_issuer.setter
     def assume_untrusted_cert_issuer(self, value) -> None:
-        if value not in [True, False]:
+        if not isinstance(value, bool):
             raise WebDriverException("Please pass in a Boolean to this call")
 
         self.set_preference("webdriver_assume_untrusted_issuer", value)

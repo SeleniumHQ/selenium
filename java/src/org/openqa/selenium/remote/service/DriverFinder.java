@@ -14,11 +14,15 @@ public class DriverFinder {
 
   public static String getPath(DriverService service, Capabilities options) {
     Require.nonNull("Browser options", options);
-    String defaultPath = new ExecutableFinder().find(service.getDriverName());
-    String exePath = System.getProperty(service.getDriverProperty(), defaultPath);
+    String exePath = System.getProperty(service.getDriverProperty());
+
+    if (exePath == null) {
+      exePath = new ExecutableFinder().find(service.getDriverName());
+    }
 
     if (service.getDriverExecutable() != null) {
-      // This is the case for Safari and Safari Technology Preview
+      // This is needed for Safari Technology Preview until Selenium Manager manages locating on
+      // PATH
       exePath = service.getDriverExecutable().getAbsolutePath();
     }
 
