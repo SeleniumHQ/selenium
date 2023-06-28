@@ -20,9 +20,8 @@ package org.openqa.selenium.lift.find;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
 
-/**
- * {@link Finder} for HTML div tags.
- */
+/** {@link Finder} for HTML div tags. */
+@Deprecated
 public class DivFinder extends HtmlTagFinder {
 
   @Override
@@ -42,5 +41,4 @@ public class DivFinder extends HtmlTagFinder {
   public static HtmlTagFinder div(String id) {
     return div().with(attribute("id", equalTo(id)));
   }
-
 }

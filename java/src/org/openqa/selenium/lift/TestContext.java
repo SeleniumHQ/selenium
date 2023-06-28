@@ -22,17 +22,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
-/**
- * Interface for objects that provide a context (maintaining any state) for web tests.
- */
+/** Interface for objects that provide a context (maintaining any state) for web tests. */
+@Deprecated
 public interface TestContext {
 
   void goTo(String url);
 
   void assertPresenceOf(Finder<WebElement, WebDriver> finder);
 
-  void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder);
+  void assertPresenceOf(
+      Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder);
 
   void type(String input, Finder<WebElement, WebDriver> finder);
 
@@ -41,5 +40,4 @@ public interface TestContext {
   void waitFor(Finder<WebElement, WebDriver> finder, long timeout);
 
   void quit();
-
 }

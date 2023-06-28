@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 #if !NET45 && !NET46 && !NET47
@@ -38,21 +39,55 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
-        private static string basePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        private static string binary;
+        private readonly static string binaryFullPath;
+
+        static SeleniumManager()
+        {
+#if NET45
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+#else
+            var currentDirectory = AppContext.BaseDirectory;
+#endif
+
+            string binary;
+#if NET45 || NET46 || NET47
+                binary = "selenium-manager/windows/selenium-manager.exe";
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                binary = "selenium-manager/windows/selenium-manager.exe";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                binary = "selenium-manager/linux/selenium-manager";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                binary = "selenium-manager/macos/selenium-manager";
+            }
+            else
+            {
+                throw new WebDriverException("Selenium Manager did not find supported operating system");
+            }
+#endif
+
+            binaryFullPath = Path.Combine(currentDirectory, binary);
+
+            if (!File.Exists(binaryFullPath))
+            {
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
+            }
+        }
 
         /// <summary>
         /// Determines the location of the correct driver.
         /// </summary>
-        /// <param name="driverName">Which driver the service needs.</param>
+        /// <param name="options">The correct path depends on which options are being used.</param>
         /// <returns>
         /// The location of the driver.
         /// </returns>
         public static string DriverPath(DriverOptions options)
         {
-            var binaryFile = Binary;
-            if (binaryFile == null) return null;
-
             StringBuilder argsBuilder = new StringBuilder();
             argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
             argsBuilder.Append(" --output json");
@@ -68,8 +103,16 @@ namespace OpenQA.Selenium
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
             }
 
+            if (options.Proxy != null)
+            {
+                if (options.Proxy.SslProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
+                } else if (options.Proxy.HttpProxy != null) {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
+                }
+            }
 
-            return RunCommand(binaryFile, argsBuilder.ToString());
+            return RunCommand(binaryFullPath, argsBuilder.ToString());
         }
 
 
@@ -82,54 +125,17 @@ namespace OpenQA.Selenium
             string[] vendorOptionsCapabilities = { "moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions" };
             foreach (string vendorOptionsCapability in vendorOptionsCapabilities)
             {
-                try
+                IDictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as IDictionary<string, object>;
+
+                if (vendorOptions != null && vendorOptions.TryGetValue("binary", out object browserBinaryPath))
                 {
-                    Dictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as Dictionary<string, object>;
-                    return vendorOptions["binary"] as string;
-                }
-                catch (Exception)
-                {
-                    // no-op, it would be ideal to at least log the exception but the C# do not log anything at the moment 
+                    return browserBinaryPath as string;
                 }
             }
 
             return null;
         }
 
-        /// <summary>
-        /// Gets the location of the correct Selenium Manager binary.
-        /// </summary>
-        private static string Binary
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(binary))
-                {
-#if NET45 || NET46 || NET47
-                    binary = "selenium-manager/windows/selenium-manager.exe";
-#else
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        binary = "selenium-manager/windows/selenium-manager.exe";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        binary = "selenium-manager/linux/selenium-manager";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    {
-                        binary = "selenium-manager/macos/selenium-manager";
-                    }
-                    else
-                    {
-                        throw new WebDriverException("Selenium Manager did not find supported operating system");
-                    }
-#endif
-                }
-
-                return binary;
-            }
-        }
 
         /// <summary>
         /// Executes a process with the given arguments.
@@ -142,7 +148,7 @@ namespace OpenQA.Selenium
         private static string RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
-            process.StartInfo.FileName = $"{basePath}/{fileName}";
+            process.StartInfo.FileName = binaryFullPath;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
@@ -151,7 +157,6 @@ namespace OpenQA.Selenium
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
-            int processExitCode;
 
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
 
@@ -164,6 +169,13 @@ namespace OpenQA.Selenium
                 process.BeginOutputReadLine();
 
                 process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
+
+                    throw new WebDriverException($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}\n{outputBuilder}");
+                }
             }
             catch (Exception ex)
             {
@@ -171,7 +183,6 @@ namespace OpenQA.Selenium
             }
             finally
             {
-                processExitCode = process.ExitCode;
                 process.OutputDataReceived -= outputHandler;
             }
 
@@ -186,13 +197,6 @@ namespace OpenQA.Selenium
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
-            }
-
-            // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
-
-            if (processExitCode != 0)
-            {
-                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{result}");
             }
 
             return result;

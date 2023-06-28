@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.9'
+  '4.11'
 end
 
 def version
-  "#{release_version}.1"
+  "#{release_version}.0-SNAPSHOT"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v111:v111.publish
   //java/src/org/openqa/selenium/devtools/v112:v112.publish
   //java/src/org/openqa/selenium/devtools/v113:v113.publish
+  //java/src/org/openqa/selenium/devtools/v114:v114.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -206,11 +206,6 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:small-tests:run',
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
-
-# TODO(simon): test-core should go first, but it's changing the least for now.
-task test_selenium: [:'test-rc']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:firefox-rc-test:run']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
 
 task test_java_webdriver: %i[
   test_htmlunit
@@ -359,11 +354,18 @@ end
 
 task 'release-java': %i[prep-release-zip publish-maven]
 
-def read_user_pass_from_m2_settings
-  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
-  found_section = false
+def read_m2_user_pass
+  # First check env vars, then the settings.xml config inside .m2
   user = nil
   pass = nil
+  if ENV['SEL_M2_USER'] && ENV['SEL_M2_PASS']
+    puts 'Fetching m2 user and pass from environment variables.'
+    user = ENV['SEL_M2_USER']
+    pass = ENV['SEL_M2_PASS']
+    return [user, pass]
+  end
+  settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
+  found_section = false
   settings.each_line do |line|
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
@@ -380,16 +382,20 @@ def read_user_pass_from_m2_settings
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
- creds = read_user_pass_from_m2_settings
+  creds = read_m2_user_pass
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
   end
 end
 
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
- creds = read_user_pass_from_m2_settings
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
+  creds = read_m2_user_pass
+  if version.end_with?('-SNAPSHOT')
+    JAVA_RELEASE_TARGETS.each do |p|
+      Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
+    end
+  else
+    puts 'No SNAPSHOT version configured. Targets will not be pushed to the snapshot repo in SonaType.'
   end
 end
 

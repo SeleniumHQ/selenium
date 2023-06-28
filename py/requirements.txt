@@ -2,7 +2,7 @@ async-generator==1.10
 attrs==21.4.0
 certifi==2022.12.07
 cffi==1.15.0
-cryptography==39.0.1
+cryptography==41.0.0
 dataclasses==0.6
 debugpy==1.6.0
 h11==0.13.0

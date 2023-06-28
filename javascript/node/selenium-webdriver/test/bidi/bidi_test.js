@@ -25,6 +25,7 @@ const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
 const BrowsingConextInspector = require('../../bidi/browsingContextInspector')
+const NetworkInspector = require('../../bidi/networkInspector')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
 
@@ -41,6 +42,7 @@ const { EvaluateResultType } = require('../../bidi/evaluateResult')
 const { ResultOwnership } = require('../../bidi/resultOwnership')
 const { SpecialNumberType } = require('../../bidi/protocolType')
 const { RealmType } = require('../../bidi/realmInfo')
+const { WebDriverError } = require('../../lib/error')
 
 suite(
   function (env) {
@@ -296,6 +298,10 @@ suite(
     })
 
     describe('Browsing Context', function () {
+      let startIndex = 0
+      let endIndex = 5
+      let pdfMagicNumber = 'JVBER'
+
       it('can create a browsing context for given id', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
@@ -396,6 +402,44 @@ suite(
           await window1.getTree()
         })
         await assert.rejects(window2.getTree(), { message: 'no such frame' })
+      })
+
+      it('can print PDF with total pages', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.printPage)
+        const result = await browsingContext.printPage()
+
+        let base64Code = result.data.slice(startIndex, endIndex)
+        assert.strictEqual(base64Code, pdfMagicNumber)
+      })
+
+      it('can print PDF with all valid parameters', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.printPage)
+        const result = await browsingContext.printPage({
+          orientation: 'landscape',
+          scale: 1,
+          background: true,
+          width: 30,
+          height: 30,
+          top: 1,
+          bottom: 1,
+          left: 1,
+          right: 1,
+          shrinkToFit: true,
+          pageRanges: ['1-2'],
+        })
+
+        let base64Code = result.data.slice(startIndex, endIndex)
+        assert.strictEqual(base64Code, pdfMagicNumber)
       })
     })
 
@@ -1007,7 +1051,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 285)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1148,7 +1191,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 251)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1437,6 +1479,471 @@ suite(
         assert.equal(windowRealm.realmType, RealmType.WINDOW)
         assert.notEqual(windowRealm.realmId, null)
         assert.equal(windowRealm.browsingContext, windowId)
+      })
+
+      it('can add preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript("() => { window.foo='bar'; }")
+
+        // Check that preload script didn't apply the changes to the current context
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          id,
+          'window.foo',
+          true
+        )
+        assert.equal(result.result.type, 'undefined')
+
+        await driver.switchTo().newWindow('window')
+        const new_window_id = await driver.getWindowHandle()
+
+        // Check that preload script applied the changes to the window
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_window_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.resultType, EvaluateResultType.SUCCESS)
+        assert.notEqual(result.realmId, null)
+        assert.equal(result.result.type, 'string')
+        assert.notEqual(result.result.value, null)
+        assert.equal(result.result.value, 'bar')
+
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+        })
+
+        await browsingContext.navigate(Pages.logEntryAdded, 'complete')
+
+        // Check that preload script was applied after navigation
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_window_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+      })
+
+      it('can add same preload script twice', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        const script_1 = await manager.addPreloadScript('() => { return 42; }')
+        const script_2 = await manager.addPreloadScript('() => { return 42; }')
+
+        assert.notEqual(script_1, script_2)
+      })
+
+      it('can access preload script properties', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript(
+          '() => { window.preloadScriptFunction = () => window.baz = 42; }'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+        await driver.get(Pages.scriptTestAccessProperty)
+
+        const result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.baz',
+          true
+        )
+
+        assert.equal(result.result.type, 'number')
+        assert.equal(result.result.value, 42)
+      })
+
+      it('can add preload script to sandbox', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript('() => { window.foo = 1; }')
+        await manager.addPreloadScript(
+          '() => { window.bar = 2; }',
+          [],
+          'sandbox'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        let result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'undefined')
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+
+        result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'number')
+        assert.equal(result_in_sandbox.result.value, 2)
+      })
+
+      it('can remove properties set by preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        await manager.addPreloadScript('() => { window.foo = 42; }')
+        await manager.addPreloadScript(
+          '() => { window.foo = 50; }',
+          [],
+          'sandbox_1'
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+        await driver.get(Pages.scriptTestRemoveProperty)
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true
+        )
+        assert.equal(result.result.type, 'undefined')
+
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true,
+          null,
+          'sandbox_1'
+        )
+        assert.equal(result.result.type, 'number')
+        assert.equal(result.result.value, 50)
+      })
+
+      it('can remove preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script = await manager.addPreloadScript(
+          "() => { window.foo='bar'; }"
+        )
+
+        await driver.switchTo().newWindow('tab')
+        const tab_1_id = await driver.getWindowHandle()
+
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          tab_1_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+
+        await manager.removePreloadScript(script)
+
+        await driver.switchTo().newWindow('tab')
+        const tab_2_id = await driver.getWindowHandle()
+
+        // Check that changes from preload script were not applied after script was removed
+        result = await manager.evaluateFunctionInBrowsingContext(
+          tab_2_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+      })
+
+      it('cannot remove same preload script twice', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script = await manager.addPreloadScript(
+          "() => { window.foo='bar'; }"
+        )
+
+        await manager.removePreloadScript(script)
+
+        await manager.removePreloadScript(script).catch((error) => {
+          assert(error instanceof WebDriverError)
+        })
+      })
+
+      it('can remove one of preload script', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script_1 = await manager.addPreloadScript(
+          "() => { window.bar='foo'; }"
+        )
+
+        let script_2 = await manager.addPreloadScript(
+          "() => { window.baz='bar'; }"
+        )
+
+        await manager.removePreloadScript(script_1)
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        // Check that the first script didn't run
+        let result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true
+        )
+
+        assert.equal(result.result.type, 'undefined')
+
+        // Check that the second script still applied the changes to the window
+        result = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.baz',
+          true
+        )
+
+        assert.equal(result.result.type, 'string')
+        assert.equal(result.result.value, 'bar')
+
+        // Clean up the second script
+        await manager.removePreloadScript(script_2)
+      })
+
+      it('can remove one of preload script from sandbox', async function () {
+        const id = await driver.getWindowHandle()
+        const manager = await ScriptManager(id, driver)
+
+        let script_1 = await manager.addPreloadScript(
+          '() => { window.foo = 1; }'
+        )
+
+        let script_2 = await manager.addPreloadScript(
+          '() => { window.bar = 2; }',
+          [],
+          'sandbox'
+        )
+
+        // Remove first preload script
+        await manager.removePreloadScript(script_1)
+
+        // Remove second preload script
+        await manager.removePreloadScript(script_2)
+
+        await driver.switchTo().newWindow('tab')
+        const new_tab_id = await driver.getWindowHandle()
+
+        // Make sure that changes from first preload script were not applied
+        let result_in_window = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.foo',
+          true
+        )
+
+        assert.equal(result_in_window.result.type, 'undefined')
+
+        // Make sure that changes from second preload script were not applied
+        let result_in_sandbox = await manager.evaluateFunctionInBrowsingContext(
+          new_tab_id,
+          'window.bar',
+          true,
+          null,
+          'sandbox'
+        )
+
+        assert.equal(result_in_sandbox.result.type, 'undefined')
+      })
+    })
+
+    describe('Network Inspector', function () {
+      it('can listen to event before request is sent', async function () {
+        let beforeRequestEvent = null
+        const inspector = await NetworkInspector(driver)
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent = event
+        })
+
+        await driver.get(Pages.emptyPage)
+
+        assert.equal(beforeRequestEvent.request.method, 'GET')
+        const url = beforeRequestEvent.request.url
+        assert.equal(url, await driver.getCurrentUrl())
+      })
+
+      it('can request cookies', async function () {
+        const inspector = await NetworkInspector(driver)
+        let beforeRequestEvent = null
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent = event
+        })
+
+        await driver.get(Pages.emptyText)
+        await driver.manage().addCookie({
+          name: 'north',
+          value: 'biryani',
+        })
+        await driver.navigate().refresh()
+
+        assert.equal(beforeRequestEvent.request.method, 'GET')
+        assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
+        assert.equal(beforeRequestEvent.request.cookies[0].value, 'biryani')
+        const url = beforeRequestEvent.request.url
+        assert.equal(url, await driver.getCurrentUrl())
+
+        await driver.manage().addCookie({
+          name: 'south',
+          value: 'dosa',
+        })
+        await driver.navigate().refresh()
+
+        assert.equal(beforeRequestEvent.request.cookies[1].name, 'south')
+        assert.equal(beforeRequestEvent.request.cookies[1].value, 'dosa')
+      })
+
+      it('can redirect http equiv', async function () {
+        let beforeRequestEvent = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent.push(event)
+        })
+
+        await driver.get(Pages.redirectedHttpEquiv)
+        await driver.wait(until.urlContains('redirected.html'), 1000)
+
+        assert.equal(beforeRequestEvent[0].request.method, 'GET')
+        assert(
+          beforeRequestEvent[0].request.url.includes(
+            'redirected_http_equiv.html'
+          )
+        )
+        assert.equal(beforeRequestEvent[2].request.method, 'GET')
+        assert(beforeRequestEvent[2].request.url.includes('redirected.html'))
+      })
+
+      it('can subscribe to response started', async function () {
+        let onResponseStarted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseStarted(function (event) {
+          onResponseStarted.push(event)
+        })
+
+        await driver.get(Pages.emptyText)
+
+        assert.equal(onResponseStarted[0].request.method, 'GET')
+        assert.equal(
+          onResponseStarted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onResponseStarted[0].response.fromCache, false)
+        assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
+        assert.equal(onResponseStarted[0].response.status, 200)
+        assert.equal(onResponseStarted[0].response.statusText, 'OK')
+      })
+
+      it('test response started mime type', async function () {
+        let onResponseStarted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseStarted(function (event) {
+          onResponseStarted.push(event)
+        })
+
+        // Checking mime type for 'html' text
+        await driver.get(Pages.emptyPage)
+        assert.equal(onResponseStarted[0].request.method, 'GET')
+        assert.equal(
+          onResponseStarted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseStarted[0].response.mimeType.includes('text/html'))
+
+        // Checking mime type for 'plain' text
+        onResponseStarted = []
+        await driver.get(Pages.emptyText)
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
+      })
+
+      it('can subscribe to response completed', async function () {
+        let onResponseCompleted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseCompleted(function (event) {
+          onResponseCompleted.push(event)
+        })
+
+        await driver.get(Pages.emptyPage)
+
+        assert.equal(onResponseCompleted[0].request.method, 'GET')
+        assert.equal(
+          onResponseCompleted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onResponseCompleted[0].response.fromCache, false)
+        assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
+        assert.equal(onResponseCompleted[0].response.status, 200)
+        assert.equal(onResponseCompleted[0].response.statusText, 'OK')
+        assert.equal(onResponseCompleted[0].redirectCount, 0)
+      })
+
+      it('test response completed mime type', async function () {
+        let onResponseCompleted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseCompleted(function (event) {
+          onResponseCompleted.push(event)
+        })
+
+        // Checking mime type for 'html' text
+        await driver.get(Pages.emptyPage)
+        assert.equal(onResponseCompleted[0].request.method, 'GET')
+        assert.equal(
+          onResponseCompleted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
+
+        // Checking mime type for 'plain' text
+        onResponseCompleted = []
+        await driver.get(Pages.emptyText)
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })
     })
 

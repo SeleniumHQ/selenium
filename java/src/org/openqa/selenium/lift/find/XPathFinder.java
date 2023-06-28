@@ -16,16 +16,14 @@
 // under the License.
 package org.openqa.selenium.lift.find;
 
+import java.util.Collection;
 import org.hamcrest.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Collection;
-
-/**
- * A {@link Finder} for elements using XPath expressions
- */
+/** A {@link Finder} for elements using XPath expressions */
+@Deprecated
 public class XPathFinder extends BaseFinder<WebElement, WebDriver> {
   private final String xpath;
 

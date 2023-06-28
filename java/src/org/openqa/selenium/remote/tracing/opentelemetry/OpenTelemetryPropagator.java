@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.propagation.TextMapSetter;
+import java.util.function.BiFunction;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
-
-import java.util.function.BiFunction;
 
 class OpenTelemetryPropagator implements Propagator {
 
@@ -48,33 +47,35 @@ class OpenTelemetryPropagator implements Propagator {
 
     TextMapSetter<C> propagatorSetter = setter::set;
 
-    httpTextFormat.inject(((OpenTelemetryContext) toInject).getContext(), carrier, propagatorSetter);
+    httpTextFormat.inject(
+        ((OpenTelemetryContext) toInject).getContext(), carrier, propagatorSetter);
   }
 
   @Override
   public <C> OpenTelemetryContext extractContext(
-    TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
+      TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
     Require.nonNull("Trace context to extract from", existing);
     Require.nonNull("Carrier", carrier);
     Require.nonNull("Getter", getter);
     Require.argument("Trace context", existing).instanceOf(OpenTelemetryContext.class);
 
-    TextMapGetter<C> propagatorGetter = new TextMapGetter<C>() {
+    TextMapGetter<C> propagatorGetter =
+        new TextMapGetter<C>() {
 
-      @Override
-      public Iterable<String> keys(C carrier) {
-        return null;
-      }
+          @Override
+          public Iterable<String> keys(C carrier) {
+            return null;
+          }
 
-      @Override
-      public String get(C carrier, String key) {
-        return getter.apply(carrier, key);
-      }
-    };
+          @Override
+          public String get(C carrier, String key) {
+            return getter.apply(carrier, key);
+          }
+        };
 
     Context extracted =
-      httpTextFormat.extract(
-        ((OpenTelemetryContext) existing).getContext(), carrier, propagatorGetter);
+        httpTextFormat.extract(
+            ((OpenTelemetryContext) existing).getContext(), carrier, propagatorGetter);
 
     // If the extracted context is the root context, then we continue to be a
     // child span of the existing context.

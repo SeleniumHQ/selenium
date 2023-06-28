@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.List;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Locatable;
@@ -26,15 +32,8 @@ import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.List;
-
 /**
- * Default decorator for use with PageFactory. Will decorate 1) all of the WebElement fields and 2)
+ * Default decorator for use with PageFactory. Will decorate 1) all the WebElement fields and 2)
  * List&lt;WebElement&gt; fields that have {@literal @FindBy}, {@literal @FindBys}, or
  * {@literal @FindAll} annotation with a proxy that locates the elements using the passed in
  * ElementLocatorFactory.
@@ -49,8 +48,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
   @Override
   public Object decorate(ClassLoader loader, Field field) {
-    if (!(WebElement.class.isAssignableFrom(field.getType())
-          || isDecoratableList(field))) {
+    if (!(WebElement.class.isAssignableFrom(field.getType()) || isDecoratableList(field))) {
       return null;
     }
 
@@ -86,17 +84,21 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return false;
     }
 
-    return field.getAnnotation(FindBy.class) != null ||
-           field.getAnnotation(FindBys.class) != null ||
-           field.getAnnotation(FindAll.class) != null;
+    return field.getAnnotation(FindBy.class) != null
+        || field.getAnnotation(FindBys.class) != null
+        || field.getAnnotation(FindAll.class) != null;
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {
     InvocationHandler handler = new LocatingElementHandler(locator);
 
     WebElement proxy;
-    proxy = (WebElement) Proxy.newProxyInstance(
-        loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
+    proxy =
+        (WebElement)
+            Proxy.newProxyInstance(
+                loader,
+                new Class[] {WebElement.class, WrapsElement.class, Locatable.class},
+                handler);
     return proxy;
   }
 
@@ -105,9 +107,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     InvocationHandler handler = new LocatingElementListHandler(locator);
 
     List<WebElement> proxy;
-    proxy = (List<WebElement>) Proxy.newProxyInstance(
-        loader, new Class[]{List.class}, handler);
+    proxy = (List<WebElement>) Proxy.newProxyInstance(loader, new Class[] {List.class}, handler);
     return proxy;
   }
-
 }

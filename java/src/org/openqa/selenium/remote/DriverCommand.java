@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
 
+import com.google.common.collect.ImmutableMap;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
@@ -27,14 +33,6 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.print.PrintOptions;
-
-import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonMap;
 
 /**
  * An empty interface defining constants for the standard commands defined in the WebDriver JSON
@@ -168,8 +166,7 @@ public interface DriverCommand {
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
     return new CommandPayload(
-      NEW_SESSION,
-      ImmutableMap.of("capabilities", singleton(capabilities)));
+        NEW_SESSION, ImmutableMap.of("capabilities", singleton(capabilities)));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {
@@ -178,9 +175,7 @@ public interface DriverCommand {
       throw new IllegalArgumentException("Capabilities for new session must not be empty");
     }
 
-    return new CommandPayload(
-      NEW_SESSION,
-      ImmutableMap.of("capabilities", capabilities));
+    return new CommandPayload(NEW_SESSION, ImmutableMap.of("capabilities", capabilities));
   }
 
   static CommandPayload GET(String url) {
@@ -204,13 +199,13 @@ public interface DriverCommand {
   }
 
   static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, String value) {
-    return new CommandPayload(FIND_CHILD_ELEMENT,
-                              ImmutableMap.of("id", id, "using", strategy, "value", value));
+    return new CommandPayload(
+        FIND_CHILD_ELEMENT, ImmutableMap.of("id", id, "using", strategy, "value", value));
   }
 
   static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, String value) {
-    return new CommandPayload(FIND_CHILD_ELEMENTS,
-                              ImmutableMap.of("id", id, "using", strategy, "value", value));
+    return new CommandPayload(
+        FIND_CHILD_ELEMENTS, ImmutableMap.of("id", id, "using", strategy, "value", value));
   }
 
   static CommandPayload GET_ELEMENT_SHADOW_ROOT(String id) {
@@ -218,24 +213,24 @@ public interface DriverCommand {
     return new CommandPayload(GET_ELEMENT_SHADOW_ROOT, singletonMap("id", id));
   }
 
-  static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(String shadowId, String strategy,
-                                                      String value) {
+  static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(
+      String shadowId, String strategy, String value) {
     Require.nonNull("Shadow root ID", shadowId);
     Require.nonNull("Element finding strategy", strategy);
     Require.nonNull("Value for finding strategy", value);
     return new CommandPayload(
-      FIND_ELEMENT_FROM_SHADOW_ROOT,
-      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+        FIND_ELEMENT_FROM_SHADOW_ROOT,
+        ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(String shadowId, String strategy,
-                                                       String value) {
+  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(
+      String shadowId, String strategy, String value) {
     Require.nonNull("Shadow root ID", shadowId);
     Require.nonNull("Element finding strategy", strategy);
     Require.nonNull("Value for finding strategy", value);
     return new CommandPayload(
-      FIND_ELEMENTS_FROM_SHADOW_ROOT,
-      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+        FIND_ELEMENTS_FROM_SHADOW_ROOT,
+        ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
   }
 
   static CommandPayload CLEAR_ELEMENT(String id) {
@@ -275,8 +270,8 @@ public interface DriverCommand {
   }
 
   static CommandPayload EXECUTE_ASYNC_SCRIPT(String script, List<Object> args) {
-    return new CommandPayload(EXECUTE_ASYNC_SCRIPT,
-                              ImmutableMap.of("script", script, "args", args));
+    return new CommandPayload(
+        EXECUTE_ASYNC_SCRIPT, ImmutableMap.of("script", script, "args", args));
   }
 
   static CommandPayload GET_ELEMENT_TEXT(String id) {
@@ -308,8 +303,8 @@ public interface DriverCommand {
   }
 
   static CommandPayload GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(String id) {
-    return new CommandPayload(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                              ImmutableMap.of("id", id));
+    return new CommandPayload(
+        GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, ImmutableMap.of("id", id));
   }
 
   static CommandPayload GET_ELEMENT_SIZE(String id) {
@@ -329,8 +324,8 @@ public interface DriverCommand {
   }
 
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
-    return new CommandPayload(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                              ImmutableMap.of("id", id, "propertyName", name));
+    return new CommandPayload(
+        GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));
   }
 
   static CommandPayload GET_ELEMENT_ARIA_ROLE(String id) {
@@ -356,7 +351,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-      SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
@@ -366,7 +361,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-      SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
@@ -376,7 +371,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-      SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
+        SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
@@ -393,17 +388,17 @@ public interface DriverCommand {
 
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {
     return new CommandPayload(
-      SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
+        SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
   }
 
   static CommandPayload GET_CURRENT_WINDOW_POSITION() {
     return new CommandPayload(
-      GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
+        GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
   }
 
   static CommandPayload SET_CURRENT_WINDOW_SIZE(Dimension targetSize) {
     return new CommandPayload(
-      SET_CURRENT_WINDOW_SIZE,
-      ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+        SET_CURRENT_WINDOW_SIZE,
+        ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
   }
 }

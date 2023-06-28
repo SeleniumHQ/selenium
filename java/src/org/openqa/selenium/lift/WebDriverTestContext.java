@@ -19,6 +19,9 @@ package org.openqa.selenium.lift;
 
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.util.Collection;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -30,13 +33,8 @@ import org.openqa.selenium.support.ui.Sleeper;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.util.Collection;
-
-/**
- * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
- */
+/** Gives the context for a test, holds page state, and interacts with the {@link WebDriver}. */
+@Deprecated
 public class WebDriverTestContext implements TestContext {
 
   private WebDriver driver;
@@ -70,12 +68,12 @@ public class WebDriverTestContext implements TestContext {
 
   @Override
   public void assertPresenceOf(
-      Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder) {
+      Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
       Description description = new StringDescription();
-      description.appendText("\nExpected: ")
+      description
+          .appendText("\nExpected: ")
           .appendDescriptionOf(cardinalityConstraint)
           .appendText(" ")
           .appendDescriptionOf(finder)
@@ -132,12 +130,12 @@ public class WebDriverTestContext implements TestContext {
 
   @Override
   public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
-    final ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
-        finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
+    final ExpectedCondition<Boolean> elementsDisplayedPredicate =
+        driver -> finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
 
     final long defaultSleepTimeoutMillis = 500;
-    final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
-        ? defaultSleepTimeoutMillis : timeoutMillis / 2;
+    final long sleepTimeout =
+        (timeoutMillis > defaultSleepTimeoutMillis) ? defaultSleepTimeoutMillis : timeoutMillis / 2;
 
     Wait<WebDriver> wait =
         new WebDriverWait(

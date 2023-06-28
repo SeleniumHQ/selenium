@@ -17,21 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-/**
- * Commonly seen remote webdriver capabilities.
- */
+/** Commonly seen remote webdriver capabilities. */
 public interface CapabilityType {
-
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
 
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
@@ -43,5 +30,4 @@ public interface CapabilityType {
   String TIMEOUTS = "timeouts";
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
   String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
-
 }

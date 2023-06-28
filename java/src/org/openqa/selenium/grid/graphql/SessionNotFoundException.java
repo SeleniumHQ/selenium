@@ -21,7 +21,6 @@ import graphql.ErrorClassification;
 import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,9 +44,7 @@ public class SessionNotFoundException extends RuntimeException implements GraphQ
   @Override
   public Map<String, Object> getExtensions() {
     Map<String, Object> customAttributes = new LinkedHashMap<>();
-    if (sessionId.isPresent()) {
-      customAttributes.put("sessionId", sessionId.get());
-    }
+    sessionId.ifPresent(s -> customAttributes.put("sessionId", s));
     return customAttributes;
   }
 

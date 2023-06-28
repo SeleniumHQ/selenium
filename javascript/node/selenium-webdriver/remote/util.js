@@ -37,9 +37,7 @@ function getJavaPath() {
 function isSelenium3x(seleniumStandalonePath) {
   const javaPath = getJavaPath()
 
-  const execRes = cp.execSync(
-    `${javaPath} -jar ${seleniumStandalonePath} --version`
-  )
+  const execRes = cp.execFileSync(javaPath, ['-jar', seleniumStandalonePath, '--version'])
 
   return execRes.toString().trim().startsWith('Selenium server version: 3')
 }

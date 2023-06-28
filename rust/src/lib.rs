@@ -54,7 +54,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
+pub const REQUEST_TIMEOUT_SEC: u64 = 180; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -78,7 +78,6 @@ pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
 pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
-pub const FALLBACK_RETRIES: u32 = 5;
 pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_BROWSERS_SEC: u64 = 0;
@@ -104,9 +103,9 @@ pub trait SeleniumManager {
 
     fn get_driver_name(&self) -> &str;
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>>;
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>>;
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>>;
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>>;
 
     fn get_driver_path_in_cache(&self) -> PathBuf;
 
@@ -124,7 +123,7 @@ pub trait SeleniumManager {
     // Shared functions
     // ----------------------------------------------------------
 
-    fn download_driver(&self) -> Result<(), Box<dyn Error>> {
+    fn download_driver(&mut self) -> Result<(), Box<dyn Error>> {
         let driver_url = Self::get_driver_url(self)?;
         self.get_logger()
             .debug(format!("Driver URL: {}", driver_url));
@@ -149,7 +148,6 @@ pub trait SeleniumManager {
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
         let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
-        let browser_ttl = self.get_config().browser_ttl;
 
         match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
             Some(version) => {
@@ -164,7 +162,7 @@ pub trait SeleniumManager {
                     "Using shell command to find out {} version",
                     browser_name
                 ));
-                let mut browser_version = "".to_string();
+                let mut browser_version: Option<String> = None;
                 for command in commands.iter() {
                     let output = match self.run_shell_command_with_log(command.to_string()) {
                         Ok(out) => out,
@@ -175,35 +173,31 @@ pub trait SeleniumManager {
                     if full_browser_version.is_empty() {
                         continue;
                     }
-                    self.get_logger().debug(format!(
+                    self.get_logger().trace(format!(
                         "The version of {} is {}",
                         browser_name, full_browser_version
                     ));
-                    match self.get_major_version(&full_browser_version) {
-                        Ok(v) => browser_version = v,
-                        Err(_) => return None,
-                    }
+
+                    browser_version = Some(full_browser_version);
                     break;
                 }
-                if !self.is_safari() {
+
+                let browser_ttl = self.get_browser_ttl();
+                if browser_ttl > 0 && browser_version.is_some() && !self.is_safari() {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
-                        &browser_version,
+                        browser_version.as_ref().unwrap(),
                         browser_ttl,
                     ));
                     write_metadata(&metadata, self.get_logger());
                 }
-                if !browser_version.is_empty() {
-                    Some(browser_version)
-                } else {
-                    None
-                }
+                browser_version
             }
         }
     }
 
     fn discover_driver_version(&mut self) -> Result<String, String> {
-        let browser_version = self.get_browser_version();
+        let browser_version = self.get_major_browser_version();
         if browser_version.is_empty() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
                 Some(version) => {
@@ -387,6 +381,11 @@ pub trait SeleniumManager {
         self.get_config().browser_version.as_str()
     }
 
+    fn get_major_browser_version(&self) -> String {
+        self.get_major_version(self.get_browser_version())
+            .unwrap_or_default()
+    }
+
     fn set_browser_version(&mut self, browser_version: String) {
         if !browser_version.is_empty() {
             let mut config = self.get_config_mut();
@@ -396,6 +395,11 @@ pub trait SeleniumManager {
 
     fn get_driver_version(&self) -> &str {
         self.get_config().driver_version.as_str()
+    }
+
+    fn get_major_driver_version(&self) -> String {
+        self.get_major_version(self.get_driver_version())
+            .unwrap_or_default()
     }
 
     fn set_driver_version(&mut self, driver_version: String) {
@@ -435,9 +439,8 @@ pub trait SeleniumManager {
     }
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
-        let mut config = self.get_config_mut();
-        let default_timeout = config.timeout;
-        if timeout != default_timeout {
+        if timeout != REQUEST_TIMEOUT_SEC {
+            let mut config = self.get_config_mut();
             config.timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
@@ -452,6 +455,22 @@ pub trait SeleniumManager {
         let http_client = create_http_client(timeout, proxy)?;
         self.set_http_client(http_client);
         Ok(())
+    }
+
+    fn get_driver_ttl(&self) -> u64 {
+        self.get_config().driver_ttl
+    }
+
+    fn set_driver_ttl(&mut self, driver_ttl: u64) {
+        self.get_config_mut().driver_ttl = driver_ttl;
+    }
+
+    fn get_browser_ttl(&self) -> u64 {
+        self.get_config().browser_ttl
+    }
+
+    fn set_browser_ttl(&mut self, browser_ttl: u64) {
+        self.get_config_mut().browser_ttl = browser_ttl;
     }
 }
 
@@ -519,12 +538,12 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
-    let client_builder = Client::builder()
+    let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
-        Proxy::all(proxy)?;
+        client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
     Ok(client_builder.build().unwrap_or_default())
 }

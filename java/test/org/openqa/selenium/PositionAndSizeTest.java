@@ -32,8 +32,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-@Ignore(value = HTMLUNIT,
-          reason = "Getting coordinates requires rendering, others: not tested")
+@Ignore(value = HTMLUNIT, reason = "Getting coordinates requires rendering, others: not tested")
 class PositionAndSizeTest extends JupiterTestBase {
 
   @Test

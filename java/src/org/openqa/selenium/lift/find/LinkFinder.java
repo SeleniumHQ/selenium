@@ -20,13 +20,11 @@ package org.openqa.selenium.lift.find;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.TextMatcher.text;
 
-/**
- * A {@link Finder} for HTML anchor tags, "links".
- */
+/** A {@link Finder} for HTML anchor tags, "links". */
+@Deprecated
 public class LinkFinder extends HtmlTagFinder {
 
-  private LinkFinder() {
-  }
+  private LinkFinder() {}
 
   @Override
   protected String tagName() {

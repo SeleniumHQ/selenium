@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.session.remote;
 
+import java.io.IOException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.internal.Require;
@@ -26,8 +27,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
 
 class ActiveSessionCommandExecutor implements CommandExecutor {
 

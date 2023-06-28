@@ -18,15 +18,13 @@
 package org.openqa.selenium.devtools;
 
 import com.google.auto.service.AutoService;
-
+import java.net.URI;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
-
-import java.net.URI;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 @AutoService(AugmenterProvider.class)
 public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
@@ -47,7 +45,8 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
     CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
+    Optional<DevTools> devTools =
+        SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
 
     return () -> devTools;
   }

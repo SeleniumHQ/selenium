@@ -32,14 +32,14 @@ class Alert:
         Alert(driver).accept()
         Alert(driver).dismiss()
 
-    Inputting a value into an alert prompt:
+    Inputting a value into an alert prompt::
 
         name_prompt = Alert(driver)
         name_prompt.send_keys("Willian Shakesphere")
         name_prompt.accept()
 
 
-    Reading a the text of a prompt for verification:
+    Reading a the text of a prompt for verification::
 
         alert_text = Alert(driver).text
         self.assertEqual("Do you wish to quit?", alert_text)
@@ -65,8 +65,10 @@ class Alert:
     def accept(self):
         """Accepts the alert available.
 
-        Usage::
-        Alert(driver).accept() # Confirm a alert dialog.
+        :Usage:
+            ::
+
+                Alert(driver).accept() # Confirm a alert dialog.
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 

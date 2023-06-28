@@ -19,11 +19,10 @@ package org.openqa.selenium.bidi;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class BiDiSessionStatus {
 

@@ -24,14 +24,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
-
 import java.io.File;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 @Tag("UnitTests")
 class ChromeDriverServiceTest {
@@ -57,7 +56,6 @@ class ChromeDriverServiceTest {
     ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
     assertThat(builder.score(new ChromeOptions())).isPositive();
   }
-
 
   @Test
   void logLevelLastWins() {

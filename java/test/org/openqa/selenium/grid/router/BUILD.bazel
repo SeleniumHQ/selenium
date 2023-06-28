@@ -5,9 +5,12 @@ load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 LARGE_TESTS = [
     "DistributedCdpTest.java",
     "NewSessionCreationTest.java",
-    "RemoteWebDriverBiDiTest.java",
     "RemoteWebDriverDownloadTest.java",
     "StressTest.java",
+]
+
+FIREFOX_ONLY_LARGE_TESTS = [
+    "RemoteWebDriverBiDiTest.java",
 ]
 
 java_library(
@@ -54,20 +57,38 @@ java_selenium_test_suite(
         ":support",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/distributor",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/grid/testing",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
-        "//java/src/org/openqa/selenium/grid",
-        "//java/src/org/openqa/selenium/grid/config",
-        "//java/src/org/openqa/selenium/grid/distributor",
-        "//java/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+    ] + CDP_DEPS + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "firefox-only-large-tests",
+    size = "large",
+    srcs = FIREFOX_ONLY_LARGE_TESTS,
+    browsers = ["firefox"],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
@@ -77,7 +98,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS,
+        exclude = LARGE_TESTS + FIREFOX_ONLY_LARGE_TESTS,
     ),
     tags = [
         "requires-network",

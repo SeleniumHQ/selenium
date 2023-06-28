@@ -152,7 +152,7 @@ module Selenium
           'socksUsername' => socks_username,
           'socksPassword' => socks_password,
           'socksVersion' => socks_version
-        }.delete_if { |_k, v| v.nil? }
+        }.compact
 
         json_result if json_result.length > 1
       end

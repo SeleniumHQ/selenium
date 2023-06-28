@@ -23,8 +23,7 @@ package org.openqa.selenium;
  */
 public class StaleElementReferenceException extends WebDriverException {
 
-  private static final String SUPPORT_URL =
-    BASE_SUPPORT_URL + "#stale_element_reference";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#stale-element-reference-exception";
 
   public StaleElementReferenceException(String message) {
     super(message);

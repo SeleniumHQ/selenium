@@ -23,6 +23,7 @@ const {
 } = require('./evaluateResult')
 const { RealmInfo } = require('./realmInfo')
 const { RemoteValue } = require('./protocolValue')
+const { WebDriverError } = require('../lib/error')
 
 class ScriptManager {
   constructor(driver) {
@@ -177,6 +178,39 @@ class ScriptManager {
 
     let response = await this.bidi.send(command)
     return this.createEvaluateResult(response)
+  }
+
+  async addPreloadScript(
+    functionDeclaration,
+    argumentValueList = [],
+    sandbox = null
+  ) {
+    const params = {
+      functionDeclaration: functionDeclaration,
+      arguments: argumentValueList,
+      sandbox: sandbox,
+    }
+
+    const command = {
+      method: 'script.addPreloadScript',
+      params,
+    }
+
+    let response = await this.bidi.send(command)
+    return response.result.script
+  }
+
+  async removePreloadScript(script) {
+    const params = { script: script }
+    const command = {
+      method: 'script.removePreloadScript',
+      params,
+    }
+    let response = await this.bidi.send(command)
+    if ('error' in response) {
+      throw new WebDriverError(response.error)
+    }
+    return response.result
   }
 
   getCallFunctionParams(

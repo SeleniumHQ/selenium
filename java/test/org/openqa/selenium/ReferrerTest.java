@@ -17,21 +17,18 @@
 
 package org.openqa.selenium;
 
-import com.google.common.net.HostAndPort;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.SeleniumExtension;
+import static com.google.common.net.HttpHeaders.REFERER;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
+import com.google.common.net.HostAndPort;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -43,45 +40,49 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-
-import static com.google.common.net.HttpHeaders.REFERER;
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.build.InProject.locate;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Safely.safelyCall;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.SeleniumExtension;
 
 /**
- * Tests that "Referer" headers are generated as expected under various conditions.
- * Each test will perform the following steps in the browser:
+ * Tests that "Referer" headers are generated as expected under various conditions. Each test will
+ * perform the following steps in the browser:
+ *
  * <ol>
- * <li>navigate to page 1
- * <li>click a link to page 2
- * <li>click another link to page 3
- * <li>click a link to go back to page 2
- * <li>click a link to go forward to page 3
+ *   <li>navigate to page 1
+ *   <li>click a link to page 2
+ *   <li>click another link to page 3
+ *   <li>click a link to go back to page 2
+ *   <li>click a link to go forward to page 3
  * </ol>
  *
- * <p>After performing the steps above, the test will check that the test server(s)
- * recorded the expected HTTP requests. For each step, the tests expect:
+ * <p>After performing the steps above, the test will check that the test server(s) recorded the
+ * expected HTTP requests. For each step, the tests expect:
+ *
  * <ol>
- * <li>a request for page1; no Referer header
- * <li>a request for page2; Referer: $absolute-url-for-page1
- * <li>a request for page3; Referer: $absolute-url-for-page2
- * <li>no request
- * <li>no request
+ *   <li>a request for page1; no Referer header
+ *   <li>a request for page2; Referer: $absolute-url-for-page1
+ *   <li>a request for page3; Referer: $absolute-url-for-page2
+ *   <li>no request
+ *   <li>no request
  * </ol>
  *
- * <p>Note: depending on the condition under test, the various pages may or may
- * not be served by the same server.
+ * <p>Note: depending on the condition under test, the various pages may or may not be served by the
+ * same server.
  */
 class ReferrerTest {
 
-  @RegisterExtension
-  static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension static SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   private static final String PAGE_1 = "/page1.html";
   private static final String PAGE_2 = "/page2.html";
@@ -92,6 +93,11 @@ class ReferrerTest {
   private TestServer server1;
   private TestServer server2;
   private ProxyServer proxyServer;
+
+  @BeforeAll
+  public static void shouldTestBeRunAtAll() {
+    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
+  }
 
   @BeforeAll
   public static void readContents() throws IOException {
@@ -124,8 +130,8 @@ class ReferrerTest {
   }
 
   /**
-   * Tests navigation when all of the files are hosted on the same domain and the browser
-   * does not have a proxy configured.
+   * Tests navigation when all of the files are hosted on the same domain and the browser does not
+   * have a proxy configured.
    */
   @Test
   void basicHistoryNavigationWithoutAProxy() {
@@ -134,10 +140,11 @@ class ReferrerTest {
 
     performNavigation(seleniumExtension.getDriver(), page1Url);
 
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_2, page1Url),
-      new ExpectedRequest(PAGE_3, page2Url));
+    assertThat(server1.getRequests())
+        .containsExactly(
+            new ExpectedRequest(PAGE_1, null),
+            new ExpectedRequest(PAGE_2, page1Url),
+            new ExpectedRequest(PAGE_3, page2Url));
   }
 
   /**
@@ -155,10 +162,10 @@ class ReferrerTest {
     performNavigation(driver, page1Url);
 
     assertThat(server1.getRequests())
-      .containsExactly(
-        new ExpectedRequest(PAGE_1, null),
-        new ExpectedRequest(PAGE_2, page1Url),
-        new ExpectedRequest(PAGE_3, page2Url));
+        .containsExactly(
+            new ExpectedRequest(PAGE_1, null),
+            new ExpectedRequest(PAGE_2, page1Url),
+            new ExpectedRequest(PAGE_3, page2Url));
   }
 
   private static String encode(String url) {
@@ -170,7 +177,7 @@ class ReferrerTest {
   }
 
   private void performNavigation(WebDriver driver, String firstUrl) {
-    WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
     driver.get(firstUrl);
     wait.until(titleIs("Page 1"));
@@ -203,10 +210,7 @@ class ReferrerTest {
 
     @Override
     public String toString() {
-      return "ExpectedRequest{" +
-        "uri='" + uri + '\'' +
-        ", referer='" + referer + '\'' +
-        '}';
+      return "ExpectedRequest{" + "uri='" + uri + '\'' + ", referer='" + referer + '\'' + '}';
     }
 
     @Override
@@ -215,8 +219,7 @@ class ReferrerTest {
         return false;
       }
       ExpectedRequest that = (ExpectedRequest) o;
-      return this.uri.equals(that.uri) &&
-        Objects.equals(this.referer, that.referer);
+      return this.uri.equals(that.uri) && Objects.equals(this.referer, that.referer);
     }
 
     @Override
@@ -250,8 +253,8 @@ class ReferrerTest {
       }
 
       return new HttpResponse()
-        .setHeader("Content-Type", "text/html; charset=utf-8")
-        .setContent(Contents.utf8String(responseHtml));
+          .setHeader("Content-Type", "text/html; charset=utf-8")
+          .setContent(Contents.utf8String(responseHtml));
     }
 
     public List<ExpectedRequest> getRequests() {
@@ -292,16 +295,17 @@ class ReferrerTest {
     private String pacFileContents;
 
     public ProxyServer() {
-      server = new NettyAppServer(
-        req -> {
-          if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
-            return new HttpResponse()
-              .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
-              .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII)));
-          }
-          return handler.execute(req);
-        }
-      );
+      server =
+          new NettyAppServer(
+              req -> {
+                if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
+                  return new HttpResponse()
+                      .setHeader(
+                          "Content-Type", "application/x-javascript-config; charset=us-ascii")
+                      .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII)));
+                }
+                return handler.execute(req);
+              });
       server.start();
     }
 

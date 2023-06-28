@@ -22,8 +22,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -34,9 +36,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
-import java.util.List;
 
 @Tag("UnitTests")
 class PageFactoryTest {
@@ -169,10 +168,12 @@ class PageFactoryTest {
   @Test
   void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     WebDriver driver = mock(WebDriver.class);
-    when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
+    when(driver.findElement(ArgumentMatchers.any()))
+        .thenThrow(new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
-    Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
+    Wait<WebDriver> wait =
+        new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
 
     PublicPage page = new PublicPage();
     PageFactory.initElements(driver, page);
@@ -238,8 +239,9 @@ class PageFactoryTest {
   public static class UnmarkedListPage {
     private List<WebElement> elements;
     private List<Object> objects;
+
     @SuppressWarnings("rawtypes")
-    private List untyped;  // This list deliberately left untyped
+    private List untyped; // This list deliberately left untyped
   }
 
   public static class NonWebElementsPage {

@@ -37,6 +37,7 @@ const CACHE_FOLDER: &str = ".cache/selenium";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
 const XML: &str = "xml";
+const HTML: &str = "html";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -77,7 +78,7 @@ pub fn uncompress(
         unzip(file, target, log)?
     } else if extension.eq_ignore_ascii_case(GZ) {
         untargz(file, target, log)?
-    } else if extension.eq_ignore_ascii_case(XML) {
+    } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
             fs::read_to_string(compressed_file).unwrap_or_default()
@@ -116,7 +117,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
             continue;
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if target_file_name.eq_ignore_ascii_case(file.name()) {
+        if file.name().ends_with(target_file_name) {
             log.debug(format!(
                 "File extracted to {} ({} bytes)",
                 target.display(),

@@ -30,16 +30,21 @@ import java.util.Map;
 public class Json {
   public static final String JSON_UTF_8 = "application/json; charset=utf-8";
 
-  public static final Type LIST_OF_MAPS_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();
+  public static final Type LIST_OF_MAPS_TYPE =
+      new TypeToken<List<Map<String, Object>>>() {}.getType();
   public static final Type MAP_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
   private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
 
   public String toJson(Object toConvert) {
+    return toJson(toConvert, JsonOutput.MAX_DEPTH);
+  }
+
+  public String toJson(Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
         JsonOutput jsonOutput = newOutput(writer)) {
-      jsonOutput.write(toConvert);
+      jsonOutput.write(toConvert, maxDepth);
       return writer.toString();
     } catch (IOException e) {
       throw new JsonException(e);

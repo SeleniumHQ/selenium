@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.devtools.events;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.io.Resources;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -27,16 +35,6 @@ import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.EventType;
-import org.openqa.selenium.logging.HasLogEvents;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class CdpEventTypes {
 
@@ -56,7 +54,8 @@ public class CdpEventTypes {
 
       @Override
       public void initializeListener(WebDriver webDriver) {
-        Require.precondition(webDriver instanceof HasDevTools, "Loggable must implement HasDevTools");
+        Require.precondition(
+            webDriver instanceof HasDevTools, "Loggable must implement HasDevTools");
 
         DevTools tools = ((HasDevTools) webDriver).getDevTools();
         tools.createSessionIfThereIsNotOne(webDriver.getWindowHandle());
@@ -98,22 +97,28 @@ public class CdpEventTypes {
         // And add the script to the current page
         ((JavascriptExecutor) driver).executeScript(script);
 
-        tools.getDomains().javascript().addBindingCalledListener(
-          json -> {
-            Map<String, Object> values = JSON.toType(json, MAP_TYPE);
-            String id = (String) values.get("target");
+        tools
+            .getDomains()
+            .javascript()
+            .addBindingCalledListener(
+                json -> {
+                  Map<String, Object> values = JSON.toType(json, MAP_TYPE);
+                  String id = (String) values.get("target");
 
-            List<WebElement> elements = driver.findElements(By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
+                  List<WebElement> elements =
+                      driver.findElements(
+                          By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
 
-            if (!elements.isEmpty()) {
-              DomMutationEvent event = new DomMutationEvent(
-                elements.get(0),
-                String.valueOf(values.get("name")),
-                String.valueOf(values.get("value")),
-                String.valueOf(values.get("oldValue")));
-              handler.accept(event);
-            }
-          });
+                  if (!elements.isEmpty()) {
+                    DomMutationEvent event =
+                        new DomMutationEvent(
+                            elements.get(0),
+                            String.valueOf(values.get("name")),
+                            String.valueOf(values.get("value")),
+                            String.valueOf(values.get("oldValue")));
+                    handler.accept(event);
+                  }
+                });
       }
     };
   }

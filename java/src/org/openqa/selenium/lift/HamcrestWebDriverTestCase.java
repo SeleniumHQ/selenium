@@ -21,15 +21,13 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.exactly;
 import static org.openqa.selenium.lift.match.SelectionMatcher.selection;
 
 import junit.framework.TestCase;
-
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
-/**
- * Base class for tests using the LiFT style API to driver WebDriver.
- */
+/** Base class for tests using the LiFT style API to driver WebDriver. */
+@Deprecated
 public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   private static final long DEFAULT_TIMEOUT = 5000;
@@ -64,8 +62,8 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
     context.assertPresenceOf(finder);
   }
 
-  protected void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder) {
+  protected void assertPresenceOf(
+      Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
     context.assertPresenceOf(cardinalityConstraint, finder);
   }
 
@@ -117,21 +115,21 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * @return  the current page source
+   * @return the current page source
    */
   public String getPageSource() {
     return getWebDriver().getPageSource();
   }
 
   /**
-   * @return  the current page title
+   * @return the current page title
    */
   public String getTitle() {
     return getWebDriver().getTitle();
   }
 
   /**
-   * @return  the current URL
+   * @return the current URL
    */
   public String getCurrentUrl() {
     return getWebDriver().getCurrentUrl();
@@ -144,5 +142,4 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   protected void assertNotSelected(Finder<WebElement, WebDriver> finder) {
     assertPresenceOf(exactly(0), finder.with(selection()));
   }
-
 }

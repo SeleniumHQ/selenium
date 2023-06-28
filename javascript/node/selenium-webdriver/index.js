@@ -43,6 +43,7 @@ const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingConextInspector = require('./bidi/browsingContextInspector')
 const ScriptManager = require('./bidi/scriptManager')
+const NetworkInspector = require('./bidi/networkInspector')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -803,3 +804,4 @@ exports.LogInspector = LogInspector
 exports.BrowsingContext = BrowsingContext
 exports.BrowsingConextInspector = BrowsingConextInspector
 exports.ScriptManager = ScriptManager
+exports.NetworkInspector = NetworkInspector

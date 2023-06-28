@@ -49,9 +49,9 @@ class Timeouts:
          - script - Either an int or a float. The number passed in needs to how many
             seconds the driver will wait.
         """
-        self._implicit_wait = self._convert(implicit_wait)
-        self._page_load = self._convert(page_load)
-        self._script = self._convert(script)
+        self.implicit_wait = implicit_wait
+        self.page_load = page_load
+        self.script = script
 
     @property
     def implicit_wait(self) -> float:

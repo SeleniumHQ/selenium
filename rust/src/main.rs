@@ -136,6 +136,8 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_driver_ttl(cli.driver_ttl);
+    selenium_manager.set_browser_ttl(cli.browser_ttl);
 
     selenium_manager
         .set_timeout(cli.timeout)

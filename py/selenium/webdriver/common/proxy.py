@@ -284,13 +284,8 @@ class Proxy:
                 f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})"
             )
 
-    def add_to_capabilities(self, capabilities):
-        """Adds proxy information as capability in specified capabilities.
-
-        :Args:
-         - capabilities: The capabilities to which proxy will be added.
-        """
-        proxy_caps = {"proxyType": self.proxyType["string"]}
+    def to_capabilities(self):
+        proxy_caps = {"proxyType": self.proxyType["string"].lower()}
         if self.autodetect:
             proxy_caps["autodetect"] = self.autodetect
         if self.ftpProxy:
@@ -311,4 +306,4 @@ class Proxy:
             proxy_caps["socksPassword"] = self.socksPassword
         if self.socksVersion:
             proxy_caps["socksVersion"] = self.socksVersion
-        capabilities["proxy"] = proxy_caps
+        return proxy_caps

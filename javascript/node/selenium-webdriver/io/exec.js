@@ -134,11 +134,15 @@ function exec(command, opt_options) {
   proc.unref()
   process.once('exit', onProcessExit)
 
-  const result = new Promise((resolve) => {
+  const result = new Promise((resolve, reject) => {
     proc.once('exit', (code, signal) => {
       proc = null
       process.removeListener('exit', onProcessExit)
       resolve(new Result(code, signal))
+    })
+
+    proc.once('error', (err) => {
+      reject(err)
     })
   })
   return new Command(result, killCommand)

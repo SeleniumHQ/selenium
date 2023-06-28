@@ -19,16 +19,19 @@ use assert_cmd::Command;
 
 use exitcode::DATAERR;
 
-use wiremock::MockServer;
-
 #[tokio::test]
-async fn ok_proxy_test() {
-    let mock_server = MockServer::start().await;
+async fn wrong_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--proxy",
+        "http://localhost:12345",
+        "--clear-cache",
+    ])
+    .assert()
+    .failure()
+    .code(DATAERR);
 }
 
 #[test]

@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.SessionId;
+import static java.util.Collections.unmodifiableMap;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -29,8 +25,11 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.SessionId;
 
 /**
  * Represents a running instance of a WebDriver session. It is identified by a {@link SessionId}.
@@ -45,14 +44,19 @@ public class Session implements Serializable {
   private final Capabilities capabilities;
   private final Instant startTime;
 
-  public Session(SessionId id, URI uri, Capabilities stereotype, Capabilities capabilities, Instant startTime) {
+  public Session(
+      SessionId id,
+      URI uri,
+      Capabilities stereotype,
+      Capabilities capabilities,
+      Instant startTime) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
     this.startTime = Require.nonNull("Start time", startTime);
 
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
-    this.capabilities = ImmutableCapabilities.copyOf(
-        Require.nonNull("Session capabilities", capabilities));
+    this.capabilities =
+        ImmutableCapabilities.copyOf(Require.nonNull("Session capabilities", capabilities));
   }
 
   public SessionId getId() {
@@ -133,8 +137,7 @@ public class Session implements Serializable {
     }
 
     Session session = (Session) that;
-    return Objects.equals(id, session.getId()) &&
-           Objects.equals(uri, session.getUri());
+    return Objects.equals(id, session.getId()) && Objects.equals(uri, session.getUri());
   }
 
   @Override

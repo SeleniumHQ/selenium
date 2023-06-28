@@ -27,7 +27,9 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
+          $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
           WebDriver.logger.ignore(%i[logger_info selenium_manager])
+          SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil

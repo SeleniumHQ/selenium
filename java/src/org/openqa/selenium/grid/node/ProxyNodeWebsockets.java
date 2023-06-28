@@ -21,7 +21,15 @@ import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableSet;
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.Session;
@@ -36,18 +44,8 @@ import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-
-public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>,
-  Optional<Consumer<Message>>> {
+public class ProxyNodeWebsockets
+    implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
   private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/bidi");
@@ -55,12 +53,9 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
   private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
-    ImmutableSet.of("goog:chromeOptions",
-                    "moz:debuggerAddress",
-                    "ms:edgeOptions");
+      ImmutableSet.of("goog:chromeOptions", "moz:debuggerAddress", "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
-
 
   public ProxyNodeWebsockets(HttpClient.Factory clientFactory, Node node) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
@@ -74,16 +69,17 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     UrlTemplate.Match bidiMatch = BIDI_TEMPLATE.match(uri);
     UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
 
-    if (cdpMatch == null && vncMatch == null && fwdMatch == null) {
+    if (bidiMatch == null && cdpMatch == null && vncMatch == null && fwdMatch == null) {
       return Optional.empty();
     }
 
-    String sessionId = Stream.of(fwdMatch, cdpMatch, bidiMatch, vncMatch)
-      .filter(Objects::nonNull)
-      .findFirst()
-      .get()
-      .getParameters()
-      .get("sessionId");
+    String sessionId =
+        Stream.of(fwdMatch, cdpMatch, bidiMatch, vncMatch)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .get()
+            .getParameters()
+            .get("sessionId");
 
     LOG.fine("Matching websockets for session id: " + sessionId);
     SessionId id = new SessionId(sessionId);
@@ -117,32 +113,57 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     return findCdpEndpoint(downstream, caps);
   }
 
-  private Optional<Consumer<Message>> findCdpEndpoint(Consumer<Message> downstream,
-                                                      Capabilities caps) {
+  private Optional<Consumer<Message>> findCdpEndpoint(
+      Consumer<Message> downstream, Capabilities caps) {
     // Using strings here to avoid Node depending upon specific drivers.
     for (String cdpEndpointCap : CDP_ENDPOINT_CAPS) {
-      Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps)
-        .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+      Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps);
+      Optional<HttpClient> client =
+          reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(clientFactory, uri));
+      Optional<URI> cdpUri;
+
+      try {
+        cdpUri = client.flatMap(httpClient -> CdpEndpointFinder.getCdpEndPoint(httpClient));
+      } catch (Exception e) {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception ex) {
+          e.addSuppressed(ex);
+        }
+        throw e;
+      }
+
       if (cdpUri.isPresent()) {
         LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", cdpEndpointCap));
         return cdpUri.map(cdp -> createWsEndPoint(cdp, downstream));
+      } else {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception e) {
+          LOG.log(
+              Level.FINE,
+              "failed to close the http client used to check the reported CDP endpoint: "
+                  + reportedUri.get(),
+              e);
+        }
       }
     }
     return Optional.empty();
   }
 
-  private Optional<Consumer<Message>> findBiDiEndpoint(Consumer<Message> downstream, Capabilities caps) {
+  private Optional<Consumer<Message>> findBiDiEndpoint(
+      Consumer<Message> downstream, Capabilities caps) {
     try {
       URI uri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
       return Optional.of(uri).map(bidi -> createWsEndPoint(bidi, downstream));
     } catch (URISyntaxException e) {
-      LOG.warning("Unable to create URI from: " + caps.getCapability(""));
+      LOG.warning("Unable to create URI from: " + caps.getCapability("webSocketUrl"));
       return Optional.empty();
     }
   }
 
-  private Optional<Consumer<Message>> findForwardCdpEndpoint(Consumer<Message> downstream,
-                                                             Capabilities caps) {
+  private Optional<Consumer<Message>> findForwardCdpEndpoint(
+      Consumer<Message> downstream, Capabilities caps) {
     // When using Dynamic Grid, we need to connect to a container before using the debuggerAddress
     try {
       URI uri = new URI(String.valueOf(caps.getCapability("se:forwardCdp")));
@@ -153,8 +174,8 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     }
   }
 
-  private Optional<Consumer<Message>> findVncEndpoint(Consumer<Message> downstream,
-                                                      Capabilities caps) {
+  private Optional<Consumer<Message>> findVncEndpoint(
+      Consumer<Message> downstream, Capabilities caps) {
     String vncLocalAddress = (String) caps.getCapability("se:vncLocalAddress");
     Optional<URI> vncUri;
     try {
@@ -173,8 +194,8 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     LOG.info("Establishing connection to " + uri);
 
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
-    WebSocket upstream = client.openSocket(
-      new HttpRequest(GET, uri.toString()), new ForwardingListener(downstream));
+    WebSocket upstream =
+        client.openSocket(new HttpRequest(GET, uri.toString()), new ForwardingListener(downstream));
     return upstream::send;
   }
 

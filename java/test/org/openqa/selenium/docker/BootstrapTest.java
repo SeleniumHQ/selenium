@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.docker;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -39,6 +25,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 class BootstrapTest {
 
@@ -62,9 +61,10 @@ class BootstrapTest {
 
   @Test
   void shouldReportDockerIsUnsupportedIfRequestCausesAnIoException() {
-    HttpHandler client = req -> {
-      throw new UncheckedIOException(new IOException("Eeek!"));
-    };
+    HttpHandler client =
+        req -> {
+          throw new UncheckedIOException(new IOException("Eeek!"));
+        };
 
     boolean isSupported = new Docker(client).isSupported();
 
@@ -73,11 +73,15 @@ class BootstrapTest {
 
   @Test
   void shouldComplainBitterlyIfNoSupportedVersionOfDockerProtocolIsFound() {
-    HttpHandler client = req -> new HttpResponse()
-      .setStatus(HTTP_BAD_REQUEST)
-      .setHeader("Content-Type", "application/json")
-      .setContent(utf8String(
-        "{\"message\":\"client version 1.50 is too new. Maximum supported API version is 1.41\"}"));
+    HttpHandler client =
+        req ->
+            new HttpResponse()
+                .setStatus(HTTP_BAD_REQUEST)
+                .setHeader("Content-Type", "application/json")
+                .setContent(
+                    utf8String(
+                        "{\"message\":\"client version 1.50 is too new. Maximum supported API"
+                            + " version is 1.41\"}"));
 
     boolean isSupported = new Docker(client).isSupported();
 
@@ -90,7 +94,10 @@ class BootstrapTest {
     // It's not enough for the socket to exist. We must be able to connect to it
     assumeThat(Paths.get("/var/run/docker.sock")).exists();
 
-    HttpClient client = HttpClient.Factory.create("reactor").createClient(ClientConfig.defaultConfig().baseUri(new URI("unix:///var/run/docker.sock")));
+    HttpClient client =
+        HttpClient.Factory.create("reactor")
+            .createClient(
+                ClientConfig.defaultConfig().baseUri(new URI("unix:///var/run/docker.sock")));
     HttpResponse res = client.execute(new HttpRequest(GET, "/version"));
     assertThat(res.getStatus()).isEqualTo(HTTP_OK);
   }

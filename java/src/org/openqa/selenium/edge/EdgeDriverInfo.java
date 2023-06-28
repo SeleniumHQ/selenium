@@ -16,10 +16,13 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -29,10 +32,6 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.service.DriverFinder;
-
-import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.EDGE;
 
 @AutoService(WebDriverInfo.class)
 public class EdgeDriverInfo extends ChromiumDriverInfo {
@@ -50,19 +49,20 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
       // these sessions are relatively short-lived, the risk is reduced. Only set when the Java
       // 11 client is not used.
       return new ImmutableCapabilities(
-        CapabilityType.BROWSER_NAME, EDGE.browserName(),
-        EdgeOptions.CAPABILITY,
-        ImmutableMap.of("args", ImmutableList.of("--remote-allow-origins=*")));
+          CapabilityType.BROWSER_NAME,
+          EDGE.browserName(),
+          EdgeOptions.CAPABILITY,
+          ImmutableMap.of("args", ImmutableList.of("--remote-allow-origins=*")));
     }
     return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, EDGE.browserName());
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    //webview2 - support https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
+    // webview2 - support https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
     return EDGE.is(capabilities.getBrowserName())
-           || "webview2".equalsIgnoreCase(capabilities.getBrowserName())
-           || capabilities.getCapability("ms:edgeOptions") != null;
+        || WEBVIEW2_BROWSER_NAME.equalsIgnoreCase(capabilities.getBrowserName())
+        || capabilities.getCapability("ms:edgeOptions") != null;
   }
 
   @Override
@@ -97,7 +97,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

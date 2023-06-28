@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.edge;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import com.google.auto.service.AutoService;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
-import org.openqa.selenium.remote.service.DriverService;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -31,14 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.remote.service.DriverService;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.Browser.EDGE;
-
-/**
- * Manages the life and death of the MSEdgeDriver
- */
+/** Manages the life and death of the MSEdgeDriver */
 public class EdgeDriverService extends DriverService {
 
   public static final String EDGE_DRIVER_NAME = "msedgedriver";
@@ -49,9 +46,7 @@ public class EdgeDriverService extends DriverService {
    */
   public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
 
-  /**
-   * System property that toggles the formatting of the timestamps of the logs
-   */
+  /** System property that toggles the formatting of the timestamps of the logs */
   public static final String EDGE_DRIVER_READABLE_TIMESTAMP = "webdriver.edge.readableTimestamp";
 
   /**
@@ -60,14 +55,10 @@ public class EdgeDriverService extends DriverService {
    */
   public static final String EDGE_DRIVER_LOG_PROPERTY = "webdriver.edge.logfile";
 
-  /**
-   * System property that defines the log level when MSEdgeDriver output is logged.
-   */
+  /** System property that defines the log level when MSEdgeDriver output is logged. */
   public static final String EDGE_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.edge.loglevel";
 
-  /**
-   * System property that defines the {@link ChromiumDriverLogLevel} for MSEdgeDriver logs.
-   */
+  /** System property that defines the {@link ChromiumDriverLogLevel} for MSEdgeDriver logs. */
   public static final String EDGE_DRIVER_APPEND_LOG_PROPERTY = "webdriver.edge.appendLog";
 
   /**
@@ -95,22 +86,26 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_DISABLE_BUILD_CHECK = "webdriver.edge.disableBuildCheck";
 
   /**
-   * @param executable  The MSEdgeDriver executable.
-   * @param port        Which port to start the MSEdgeDriver on.
-   * @param timeout     Timeout waiting for driver server to start.
-   * @param args        The arguments to the launched server.
+   * @param executable The MSEdgeDriver executable.
+   * @param port Which port to start the MSEdgeDriver on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public EdgeDriverService(
-    File executable,
-    int port,
-    Duration timeout,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment)
+      throws IOException {
+    super(
+        executable,
+        port,
+        timeout,
+        unmodifiableList(new ArrayList<>(args)),
+        unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -128,10 +123,9 @@ public class EdgeDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In this
-   * configuration, the service will use the MSEdgeDriver executable identified by the
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current
-   * system.
+   * configuration, the service will use the MSEdgeDriver executable identified by the {@link
+   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
+   * service created by this method will be configured to use a free port on the current system.
    *
    * @return A new EdgeDriverService using the default configuration.
    */
@@ -149,9 +143,7 @@ public class EdgeDriverService extends DriverService {
     return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
   }
 
-  /**
-   * Builder used to configure new {@link EdgeDriverService} instances.
-   */
+  /** Builder used to configure new {@link EdgeDriverService} instances. */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
@@ -171,8 +163,9 @@ public class EdgeDriverService extends DriverService {
         score++;
       }
 
-      //webview2 - support https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
-      if ("webview2".equalsIgnoreCase(capabilities.getBrowserName())) {
+      // webview2 - support
+      // https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
+      if (WEBVIEW2_BROWSER_NAME.equalsIgnoreCase(capabilities.getBrowserName())) {
         score++;
       }
 
@@ -321,7 +314,7 @@ public class EdgeDriverService extends DriverService {
 
       // Readable timestamp and append logs only work if a file is specified
       // Can only get readable logs via arguments; otherwise send service output as directed
-      if (getLogFile() != null && (readableTimestamp || appendLog)) {
+      if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
         if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");
@@ -353,11 +346,7 @@ public class EdgeDriverService extends DriverService {
 
     @Override
     protected EdgeDriverService createDriverService(
-      File exe,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) {
+        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
         EdgeDriverService service = new EdgeDriverService(exe, port, timeout, args, environment);
         service.sendOutputTo(getLogOutput(EDGE_DRIVER_LOG_PROPERTY));

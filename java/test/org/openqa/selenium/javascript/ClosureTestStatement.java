@@ -17,21 +17,20 @@
 
 package org.openqa.selenium.javascript;
 
-import com.google.common.base.Stopwatch;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
+import com.google.common.base.Stopwatch;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 class ClosureTestStatement {
 
@@ -43,10 +42,10 @@ class ClosureTestStatement {
   private final long timeoutSeconds;
 
   public ClosureTestStatement(
-    Supplier<WebDriver> driverSupplier,
-    String testPath,
-    Function<String, URL> filePathToUrlFn,
-    long timeoutSeconds) {
+      Supplier<WebDriver> driverSupplier,
+      String testPath,
+      Function<String, URL> filePathToUrlFn,
+      long timeoutSeconds) {
     this.driverSupplier = driverSupplier;
     this.testPath = testPath;
     this.filePathToUrlFn = filePathToUrlFn;
@@ -83,10 +82,15 @@ class ClosureTestStatement {
     while (!getBoolean(executor, Query.IS_FINISHED)) {
       long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
-        throw new JavaScriptAssertionError("Tests timed out after " + elapsedTime + " s. \nCaptured Errors: " +
-          ((JavascriptExecutor) driver).executeScript("return window.errors;")
-          + "\nPageSource: " + driver.getPageSource() + "\nScreenshot: " +
-          ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64));
+        throw new JavaScriptAssertionError(
+            "Tests timed out after "
+                + elapsedTime
+                + " s. \nCaptured Errors: "
+                + ((JavascriptExecutor) driver).executeScript("return window.errors;")
+                + "\nPageSource: "
+                + driver.getPageSource()
+                + "\nScreenshot: "
+                + ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64));
       }
       TimeUnit.MILLISECONDS.sleep(100);
     }

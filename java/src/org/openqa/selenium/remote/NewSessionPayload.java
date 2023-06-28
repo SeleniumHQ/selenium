@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -26,14 +30,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
-import org.openqa.selenium.AcceptedW3CCapabilityKeys;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonOutput;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -50,10 +46,13 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
 
 public class NewSessionPayload implements Closeable {
 
@@ -67,11 +66,12 @@ public class NewSessionPayload implements Closeable {
   private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
     // payload.
-    int threshold = (int) Math.min(
-      Integer.MAX_VALUE,
-      Math.min(
-        Runtime.getRuntime().freeMemory() / 5,
-        Runtime.getRuntime().maxMemory() / 10));
+    int threshold =
+        (int)
+            Math.min(
+                Integer.MAX_VALUE,
+                Math.min(
+                    Runtime.getRuntime().freeMemory() / 5, Runtime.getRuntime().maxMemory() / 10));
 
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
@@ -98,7 +98,6 @@ public class NewSessionPayload implements Closeable {
     } catch (IOException e) {
       // Ignore
     }
-
   }
 
   public static NewSessionPayload create(Capabilities caps) {
@@ -109,18 +108,22 @@ public class NewSessionPayload implements Closeable {
   public static NewSessionPayload create(Collection<Capabilities> caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
-    return create(ImmutableMap.of(
-      "capabilities", ImmutableMap.of(
-        "firstMatch", caps.stream().map(Capabilities::asMap).collect(Collectors.toList()))));
+    return create(
+        ImmutableMap.of(
+            "capabilities",
+            ImmutableMap.of(
+                "firstMatch",
+                caps.stream().map(Capabilities::asMap).collect(Collectors.toList()))));
   }
 
   public static NewSessionPayload create(Map<String, ?> source) {
     // It is expected that the input to this method contains a properly formed
     // "new session" request, and not just a random blob of data. Make sure
     // this precondition is met before continuing.
-    Require.precondition(source.containsKey("capabilities"), "New session payload must contain capabilities");
+    Require.precondition(
+        source.containsKey("capabilities"), "New session payload must contain capabilities");
 
-    String json = new Json().toJson(Require.nonNull("Payload", source));
+    String json = new Json().toJson(Require.nonNull("Payload", source), 100);
     return new NewSessionPayload(new StringReader(json));
   }
 
@@ -144,39 +147,45 @@ public class NewSessionPayload implements Closeable {
     }
 
     firsts.stream()
-      .peek(map -> {
-        Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
-        if (!overlap.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Overlapping keys between w3c always and first match capabilities: " + overlap);
-        }
-      })
-      .map(first -> {
-        Map<String, Object> toReturn = new HashMap<>();
-        toReturn.putAll(always);
-        toReturn.putAll(first);
-        return toReturn;
-      })
-      .peek(map -> {
-        ImmutableSortedSet<String> nullKeys = map.entrySet().stream()
-          .filter(entry -> entry.getValue() == null)
-          .map(Map.Entry::getKey)
-          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-        if (!nullKeys.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Null values found in w3c capabilities. Keys are: " + nullKeys);
-        }
-      })
-      .peek(map -> {
-        ImmutableSortedSet<String> illegalKeys = map.keySet().stream()
-          .filter(ACCEPTED_W3C_PATTERNS.negate())
-          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-        if (!illegalKeys.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Illegal key values seen in w3c capabilities: " + illegalKeys);
-        }
-      })
-      .forEach(map -> {});
+        .peek(
+            map -> {
+              Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
+              if (!overlap.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Overlapping keys between w3c always and first match capabilities: " + overlap);
+              }
+            })
+        .map(
+            first -> {
+              Map<String, Object> toReturn = new HashMap<>();
+              toReturn.putAll(always);
+              toReturn.putAll(first);
+              return toReturn;
+            })
+        .peek(
+            map -> {
+              ImmutableSortedSet<String> nullKeys =
+                  map.entrySet().stream()
+                      .filter(entry -> entry.getValue() == null)
+                      .map(Map.Entry::getKey)
+                      .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+              if (!nullKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Null values found in w3c capabilities. Keys are: " + nullKeys);
+              }
+            })
+        .peek(
+            map -> {
+              ImmutableSortedSet<String> illegalKeys =
+                  map.keySet().stream()
+                      .filter(ACCEPTED_W3C_PATTERNS.negate())
+                      .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+              if (!illegalKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Illegal key values seen in w3c capabilities: " + illegalKeys);
+              }
+            })
+        .forEach(map -> {});
   }
 
   public void writeTo(Appendable appendable) throws IOException {
@@ -195,7 +204,7 @@ public class NewSessionPayload implements Closeable {
       getW3C().forEach(json::write);
       json.endArray();
 
-      json.endObject();  // Close "capabilities" object
+      json.endObject(); // Close "capabilities" object
 
       writeMetaData(json);
 
@@ -206,14 +215,14 @@ public class NewSessionPayload implements Closeable {
   private void writeMetaData(JsonOutput out) throws IOException {
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
         switch (name) {
           case "capabilities":
-          // These fields were used by the (now defunct) JSON Wire Protocol, but we
-          // keep them here since we might see them from ancient clients.
+            // These fields were used by the (now defunct) JSON Wire Protocol, but we
+            // keep them here since we might see them from ancient clients.
           case "desiredCapabilities":
           case "requiredCapabilities":
             input.skipValue();
@@ -229,16 +238,13 @@ public class NewSessionPayload implements Closeable {
   }
 
   /**
-   * Stream the {@link Capabilities} encoded in the payload used to create this instance. The
-   * {@link Stream} will expand each of the "{@code firstMatch}" and "{@code alwaysMatch}"
-   * contents as defined in the W3C WebDriver spec.
+   * Stream the {@link Capabilities} encoded in the payload used to create this instance. The {@link
+   * Stream} will expand each of the "{@code firstMatch}" and "{@code alwaysMatch}" contents as
+   * defined in the W3C WebDriver spec.
    */
   public Stream<Capabilities> stream() {
     try {
-      return getW3C()
-        .filter(Objects::nonNull)
-        .distinct()
-        .map(ImmutableCapabilities::new);
+      return getW3C().filter(Objects::nonNull).distinct().map(ImmutableCapabilities::new);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -249,11 +255,12 @@ public class NewSessionPayload implements Closeable {
   }
 
   public Map<String, Object> getMetadata() {
-    Set<String> ignoredMetadataKeys = ImmutableSet.of("capabilities", "desiredCapabilities", "requiredCapabilities");
+    Set<String> ignoredMetadataKeys =
+        ImmutableSet.of("capabilities", "desiredCapabilities", "requiredCapabilities");
 
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+        JsonInput input = json.newInput(reader)) {
       ImmutableMap.Builder<String, Object> toReturn = ImmutableMap.builder();
 
       input.beginObject();
@@ -298,7 +305,7 @@ public class NewSessionPayload implements Closeable {
     Collection<Map<String, Object>> firsts = getFirstMatches();
 
     if (alwaysMatch == null && firsts == null) {
-      fromW3c = Stream.of();  // No W3C capabilities.
+      fromW3c = Stream.of(); // No W3C capabilities.
     } else {
       if (alwaysMatch == null) {
         alwaysMatch = ImmutableMap.of();
@@ -308,8 +315,11 @@ public class NewSessionPayload implements Closeable {
         firsts = ImmutableList.of(ImmutableMap.of());
       }
 
-      fromW3c = firsts.stream()
-        .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
+      fromW3c =
+          firsts.stream()
+              .map(
+                  first ->
+                      ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
     }
 
     return fromW3c.distinct();
@@ -318,7 +328,7 @@ public class NewSessionPayload implements Closeable {
   private boolean isW3C() throws IOException {
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
@@ -335,7 +345,7 @@ public class NewSessionPayload implements Closeable {
   private Map<String, Object> getAlwaysMatch() throws IOException {
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
@@ -361,7 +371,7 @@ public class NewSessionPayload implements Closeable {
   private Collection<Map<String, Object>> getFirstMatches() throws IOException {
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();

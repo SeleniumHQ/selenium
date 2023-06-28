@@ -17,6 +17,13 @@
 
 package dev.selenium.tools.modules;
 
+import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
+import static net.bytebuddy.jar.asm.Opcodes.ASM9;
+
 import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -34,14 +41,6 @@ import com.github.javaparser.ast.modules.ModuleProvidesDirective;
 import com.github.javaparser.ast.modules.ModuleRequiresDirective;
 import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import net.bytebuddy.jar.asm.ClassReader;
-import net.bytebuddy.jar.asm.ClassVisitor;
-import net.bytebuddy.jar.asm.ClassWriter;
-import net.bytebuddy.jar.asm.MethodVisitor;
-import net.bytebuddy.jar.asm.ModuleVisitor;
-import net.bytebuddy.jar.asm.Type;
-import org.openqa.selenium.io.TemporaryFilesystem;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +56,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,13 +80,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
-import static net.bytebuddy.jar.asm.Opcodes.ASM9;
+import net.bytebuddy.jar.asm.ClassReader;
+import net.bytebuddy.jar.asm.ClassVisitor;
+import net.bytebuddy.jar.asm.ClassWriter;
+import net.bytebuddy.jar.asm.MethodVisitor;
+import net.bytebuddy.jar.asm.ModuleVisitor;
+import net.bytebuddy.jar.asm.Type;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class ModuleGenerator {
 
@@ -165,11 +165,28 @@ public class ModuleGenerator {
     // It doesn't matter what we use for writing to the stream: jdeps doesn't use it. *facepalm*
     List<String> jdepsArgs = new LinkedList<>(List.of("--api-only", "--multi-release", "9"));
     if (!modulePath.isEmpty()) {
+      Path tmp = Files.createTempDirectory("automatic_module_jars");
       jdepsArgs.addAll(
           List.of(
               "--module-path",
               modulePath.stream()
-                  .map(Object::toString)
+                  .map((s) -> {
+                    String file = s.getFileName().toString();
+
+                    if (file.startsWith("processed_")) {
+                      Path copy = tmp.resolve(file.substring(10));
+
+                      try {
+                        Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
+                      } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                      }
+
+                      return copy.toString();
+                    }
+
+                    return s.toString();
+                  })
                   .collect(Collectors.joining(File.pathSeparator))));
     }
     jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
@@ -467,8 +484,13 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleRequiresDirective n, Void arg) {
-      byteBuddyVisitor.visitRequire(
-          n.getNameAsString(), getByteBuddyModifier(n.getModifiers()), null);
+      String name = n.getNameAsString();
+      if (name.startsWith("processed.")) {
+        // When 'Automatic-Module-Name' is not set, we must derive the module name from the jar file
+        // name. Therefore, the 'processed.' prefix added by bazel must be removed to get the name.
+        name = name.substring(10);
+      }
+      byteBuddyVisitor.visitRequire(name, getByteBuddyModifier(n.getModifiers()), null);
     }
 
     @Override

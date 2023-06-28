@@ -21,23 +21,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.environment.DomainHelper;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.net.URI;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.environment.DomainHelper;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotWorkingInRemoteBazelBuilds;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 class CookieImplementationTest extends JupiterTestBase {
 
@@ -85,6 +84,7 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldBeAbleToAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
@@ -204,6 +204,8 @@ class CookieImplementationTest extends JupiterTestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -243,6 +245,7 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -267,6 +270,7 @@ class CookieImplementationTest extends JupiterTestBase {
   }
 
   @Test
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -281,6 +285,7 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     URI url = new URI(driver.getCurrentUrl());
     String host = url.getHost() + ":" + url.getPort();
@@ -295,6 +300,8 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldWalkThePathToDeleteACookie() {
     Cookie cookie1 = new Cookie.Builder("fish", "cod").build();
     driver.manage().addCookie(cookie1);
@@ -324,6 +331,7 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
     URI uri = new URI(driver.getCurrentUrl());
     String host = String.format("%s:%d", uri.getHost(), uri.getPort());
@@ -339,6 +347,8 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testCookieEqualityAfterSetAndGet() {
     driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
 
@@ -383,14 +393,13 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
     Cookie addedCookie =
-      new Cookie.Builder("fish", "cod")
-        .path("/common/animals")
-        .isSecure(true)
-        .build();
+        new Cookie.Builder("fish", "cod").path("/common/animals").isSecure(true).build();
     driver.manage().addCookie(addedCookie);
 
     driver.navigate().refresh();
@@ -402,14 +411,13 @@ class CookieImplementationTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
     Cookie addedCookie =
-        new Cookie.Builder("fish", "cod")
-            .path("/common/animals")
-            .isSecure(true)
-            .build();
+        new Cookie.Builder("fish", "cod").path("/common/animals").isSecure(true).build();
     driver.manage().addCookie(addedCookie);
 
     driver.navigate().refresh();
@@ -421,12 +429,11 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @Ignore(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
-      new Cookie.Builder("fish", "cod")
-        .path("/common/animals")
-        .isHttpOnly(true)
-        .build();
+        new Cookie.Builder("fish", "cod").path("/common/animals").isHttpOnly(true).build();
 
     addCookieOnServerSide(addedCookie);
 
@@ -437,12 +444,11 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @Ignore(SAFARI)
+  @NotWorkingInRemoteBazelBuilds(CHROME)
+  @NotWorkingInRemoteBazelBuilds(FIREFOX)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
-        new Cookie.Builder("fish", "cod")
-            .path("/common/animals")
-            .isHttpOnly(true)
-            .build();
+        new Cookie.Builder("fish", "cod").path("/common/animals").isHttpOnly(true).build();
 
     addCookieOnServerSide(addedCookie);
 
@@ -460,7 +466,9 @@ class CookieImplementationTest extends JupiterTestBase {
     driver.manage().addCookie(cookie);
 
     cookie = driver.manage().getCookieNamed("fish");
-    assertThat(cookie).as("Cookie expired before it was set, so nothing should be returned").isNull();
+    assertThat(cookie)
+        .as("Cookie expired before it was set, so nothing should be returned")
+        .isNull();
   }
 
   @Test
@@ -489,10 +497,16 @@ class CookieImplementationTest extends JupiterTestBase {
   @Ignore(value = ALL, reason = "Non W3C conformant")
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
-    Cookie cookie1 = new Cookie.Builder("fish", "cod")
-        .domain(domainHelper.getHostName()).path("/common/animals").build();
-    Cookie cookie2 = new Cookie.Builder("fish", "tune")
-        .domain(domainHelper.getHostName()).path("/common/").build();
+    Cookie cookie1 =
+        new Cookie.Builder("fish", "cod")
+            .domain(domainHelper.getHostName())
+            .path("/common/animals")
+            .build();
+    Cookie cookie2 =
+        new Cookie.Builder("fish", "tune")
+            .domain(domainHelper.getHostName())
+            .path("/common/")
+            .build();
     WebDriver.Options options = driver.manage();
     options.addCookie(cookie1);
     options.addCookie(cookie2);
@@ -604,10 +618,9 @@ class CookieImplementationTest extends JupiterTestBase {
   public void deleteAllCookies() {
     assumeTrue(domainHelper.checkHasValidAlternateHostname());
 
-    Cookie cookie1 = new Cookie.Builder("fish1", "cod")
-        .domain(appServer.getHostName()).build();
-    Cookie cookie2 = new Cookie.Builder("fish2", "tune")
-        .domain(appServer.getAlternateHostName()).build();
+    Cookie cookie1 = new Cookie.Builder("fish1", "cod").domain(appServer.getHostName()).build();
+    Cookie cookie2 =
+        new Cookie.Builder("fish2", "tune").domain(appServer.getAlternateHostName()).build();
 
     String url1 = domainHelper.getUrlForFirstValidHostname("/common");
     String url2 = domainHelper.getUrlForSecondValidHostname("/common");

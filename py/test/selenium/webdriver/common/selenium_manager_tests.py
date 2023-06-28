@@ -19,8 +19,11 @@ from unittest.mock import Mock
 
 import pytest
 
-from selenium.common.exceptions import SeleniumManagerException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
@@ -62,9 +65,40 @@ def test_browser_path_is_used_for_sm(mocker):
     assert "/opt/bin/browser-bin" in args[0]
 
 
+def test_proxy_is_used_for_sm(mocker):
+    import subprocess
+
+    mock_run = mocker.patch("subprocess.run")
+    mocked_result = Mock()
+    mocked_result.configure_mock(
+        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+    )
+    mock_run.return_value = mocked_result
+    options = Options()
+    options.capabilities["browserName"] = "chrome"
+    proxy = Proxy()
+    proxy.http_proxy = "http-proxy"
+    options.proxy = proxy
+
+    _ = SeleniumManager().driver_location(options)
+    args, kwargs = subprocess.run.call_args
+    assert "--proxy" in args[0]
+    assert "http-proxy" in args[0]
+
+
 def test_stderr_is_propagated_to_exception_messages():
-    msg = r"Selenium Manager failed for:.* --browser foo --output json\.\nInvalid browser name: foo\n"
-    with pytest.raises(SeleniumManagerException, match=msg):
+    msg = r"Unsuccessful command executed:.* --browser foo --output json\.\nInvalid browser name: foo\n"
+    with pytest.raises(WebDriverException, match=msg):
         manager = SeleniumManager()
         binary = manager.get_binary()
         _ = manager.run([str(binary), "--browser", "foo", "--output", "json"])
+
+
+def test_driver_finder_error(mocker):
+    mocker.patch("selenium.webdriver.common.selenium_manager.SeleniumManager.driver_location", return_value=None)
+
+    service = Service()
+    options = Options()
+    msg = r"Unable to locate or obtain chromedriver.*errors\/driver_location"
+    with pytest.raises(WebDriverException, match=msg):
+        DriverFinder.get_path(service, options)

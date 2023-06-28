@@ -42,7 +42,6 @@ class Options(ArgOptions):
         self._binary: typing.Optional[FirefoxBinary] = None
         self._preferences: dict = {}
         self._profile = None
-        self._proxy = None
         self.log = Log()
 
     @property
@@ -144,8 +143,6 @@ class Options(ArgOptions):
             opts["binary"] = self._binary._start_cmd
         if self._preferences:
             opts["prefs"] = self._preferences
-        if self._proxy:
-            self._proxy.add_to_capabilities(caps)
         if self._profile:
             opts["profile"] = self._profile.encoded
         if self._arguments:

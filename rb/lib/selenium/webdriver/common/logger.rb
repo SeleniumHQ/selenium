@@ -41,7 +41,7 @@ module Selenium
                      :debug?,
                      :info?,
                      :warn?,
-                     :error, :error?,
+                     :error?,
                      :fatal, :fatal?,
                      :level
 
@@ -127,14 +127,18 @@ module Selenium
       # @yield see #deprecate
       #
       def info(message, id: [], &block)
-        unless @first_warning
-          @first_warning = true
-          info("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
-            "https://selenium.dev/documentation/webdriver/troubleshooting/logging\n"
-          end
-        end
-
         discard_or_log(:info, message, id, &block)
+      end
+
+      #
+      # Used to supply information that suggests an error occurred
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def error(message, id: [], &block)
+        discard_or_log(:error, message, id, &block)
       end
 
       #
@@ -191,6 +195,15 @@ module Selenium
         id = Array(id)
         return if (@ignored & id).any?
         return if @allowed.any? && (@allowed & id).none?
+
+        return if ::Logger::Severity.const_get(level.upcase) < @logger.level
+
+        unless @first_warning
+          @first_warning = true
+          info("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
+            "https://selenium.dev/documentation/webdriver/troubleshooting/logging\n"
+          end
+        end
 
         msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
         msg += " #{yield}" if block_given?

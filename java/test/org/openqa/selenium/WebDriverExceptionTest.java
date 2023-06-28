@@ -18,12 +18,10 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-/**
- * Small test for name extraction
- */
+/** Small test for name extraction */
 @Tag("UnitTests")
 class WebDriverExceptionTest {
   @Test
@@ -90,9 +88,7 @@ class WebDriverExceptionTest {
     String myMessage = "My message";
     WebDriverException parent = new WebDriverException(parentMessage);
     WebDriverException ex = new WebDriverException(myMessage, parent);
-    assertThat(ex.getMessage())
-        .contains(myMessage)
-        .doesNotContain(parentMessage);
+    assertThat(ex.getMessage()).contains(myMessage).doesNotContain(parentMessage);
   }
 
   @Test
@@ -104,5 +100,4 @@ class WebDriverExceptionTest {
         .contains("date: today", "time unknown")
         .doesNotContain("time: time unknown");
   }
-
 }
