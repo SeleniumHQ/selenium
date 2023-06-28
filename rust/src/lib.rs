@@ -17,7 +17,7 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::compose_cache_folder;
+use crate::files::{compose_cache_folder, create_parent_path_if_not_exists};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
@@ -35,6 +35,7 @@ use std::time::Duration;
 
 use crate::downloads::download_driver_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
+use crate::grid::GRID_NAME;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
@@ -47,6 +48,7 @@ pub mod downloads;
 pub mod edge;
 pub mod files;
 pub mod firefox;
+pub mod grid;
 pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
@@ -85,6 +87,7 @@ pub const TTL_DRIVERS_SEC: u64 = 86400;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
+pub const SNAPSHOT: &str = "SNAPSHOT";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -129,8 +132,15 @@ pub trait SeleniumManager {
             .debug(format!("Driver URL: {}", driver_url));
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
-        let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
+
+        if self.is_grid() {
+            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
+            create_parent_path_if_not_exists(&driver_path_in_cache);
+            Ok(fs::rename(driver_zip_file, driver_path_in_cache)?)
+        } else {
+            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
+            uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
+        }
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
@@ -213,7 +223,7 @@ pub trait SeleniumManager {
                 None => {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version}' not found"));
-                    } else if !self.is_iexplorer() {
+                    } else if !self.is_iexplorer() && !self.is_grid() {
                         self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
@@ -294,6 +304,10 @@ pub trait SeleniumManager {
         self.get_browser_name().eq(IE_NAMES[0])
     }
 
+    fn is_grid(&self) -> bool {
+        self.get_browser_name().eq(GRID_NAME)
+    }
+
     fn is_browser_version_unstable(&self) -> bool {
         let browser_version = self.get_browser_version();
         browser_version.eq_ignore_ascii_case(BETA)
@@ -308,7 +322,7 @@ pub trait SeleniumManager {
             self.set_driver_version(driver_version);
         }
 
-        if !self.is_safari() {
+        if !self.is_safari() && !self.is_grid() {
             if let (Some(version), Some(path)) = self.find_driver_in_path() {
                 if version == self.get_driver_version() {
                     self.get_logger().debug(format!(
@@ -353,6 +367,27 @@ pub trait SeleniumManager {
 
     fn get_minor_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
         get_index_version(full_version, 1)
+    }
+
+    fn get_selenium_release_version(&self) -> Result<String, Box<dyn Error>> {
+        let driver_version = self.get_driver_version();
+        if driver_version.contains(SNAPSHOT) {
+            return Ok(NIGHTLY.to_string());
+        }
+
+        let mut release_version = driver_version.to_string();
+        if !driver_version.ends_with('0') {
+            // E.g.: version 4.8.1 is shipped within release 4.8.0
+            let error_message = format!(
+                "Wrong {} version: '{}'",
+                self.get_driver_name(),
+                driver_version
+            );
+            let index = release_version.rfind('.').ok_or(error_message)? + 1;
+            release_version = release_version[..index].to_string();
+            release_version.push('0');
+        }
+        Ok(format!("selenium-{release_version}"))
     }
 
     // ----------------------------------------------------------

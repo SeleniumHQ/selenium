@@ -25,6 +25,8 @@ Options:
           Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
       --driver <DRIVER>
           Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
+      --grid [<GRID_VERSION>]
+          Selenium Grid. If version is not provided, the latest version is downloaded
       --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
       --browser-version <BROWSER_VERSION>
