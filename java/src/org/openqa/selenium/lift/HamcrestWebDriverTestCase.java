@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
 /** Base class for tests using the LiFT style API to driver WebDriver. */
+@Deprecated
 public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   private static final long DEFAULT_TIMEOUT = 5000;

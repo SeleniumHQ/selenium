@@ -22,6 +22,7 @@ import static org.openqa.selenium.lift.Matchers.attribute;
 import static org.openqa.selenium.lift.Matchers.value;
 
 /** {@link Finder} for HTML input tags. */
+@Deprecated
 public class InputFinder extends HtmlTagFinder {
 
   @Override
