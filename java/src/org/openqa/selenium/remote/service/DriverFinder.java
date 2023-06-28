@@ -21,7 +21,8 @@ public class DriverFinder {
     }
 
     if (service.getDriverExecutable() != null) {
-      // This is needed for Safari Technology Preview until Selenium Manager manages locating on PATH
+      // This is needed for Safari Technology Preview until Selenium Manager manages locating on
+      // PATH
       exePath = service.getDriverExecutable().getAbsolutePath();
     }
 
