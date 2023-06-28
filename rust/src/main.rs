@@ -23,6 +23,7 @@ use exitcode::DATAERR;
 
 use exitcode::OK;
 use selenium_manager::config::BooleanKey;
+use selenium_manager::grid::GridManager;
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
@@ -48,6 +49,10 @@ struct Cli {
     /// Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
     #[clap(long, value_parser)]
     driver: Option<String>,
+
+    /// Selenium Grid. If version is not provided, the latest version is downloaded
+    #[clap(long, value_parser, num_args = 0..=1, default_missing_value = "", value_name = "GRID_VERSION")]
+    grid: Option<String>,
 
     /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
     #[clap(long, value_parser)]
@@ -105,6 +110,7 @@ fn main() {
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
+    let grid = cli.grid;
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(&log);
@@ -124,6 +130,11 @@ fn main() {
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
+        })
+    } else if grid.is_some() {
+        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
             log.error(err);
             flush_and_exit(DATAERR, &log);
         })
