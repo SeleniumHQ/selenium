@@ -59,7 +59,6 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.YesSlotMatcher;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
@@ -68,6 +67,7 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.safari.SafariDriverInfo;
+import org.openqa.selenium.grid.node.data.YesSlotMatcher;
 
 @SuppressWarnings("DuplicatedCode")
 class NodeOptionsTest {
@@ -75,6 +75,7 @@ class NodeOptionsTest {
   @SuppressWarnings("ReturnValueIgnored")
   @Test
   void canConfigureNodeWithDriverDetection() {
+
     // If the driver isn't on the path, we should skip the test
     assumeTrue(new ChromeDriverInfo().isPresent(), "ChromeDriver needs to be available");
 
@@ -693,7 +694,7 @@ class NodeOptionsTest {
   void settingSlotMatcherAvailable() {
     String[] rawConfig =
         new String[] {
-          "[node]", "slot-matcher = \"org.openqa.selenium.grid.data.YesSlotMatcher\"",
+          "[node]", "slot-matcher = \"org.openqa.selenium.grid.node.data.YesSlotMatcher\"",
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 

@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.data;
+package org.openqa.selenium.grid.node.data;
 
 import java.io.Serializable;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.SlotMatcher;
 
 /**
  * slot matcher that always says yes, for tests
