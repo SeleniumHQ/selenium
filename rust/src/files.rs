@@ -19,7 +19,7 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::path::MAIN_SEPARATOR;
+
 use std::path::{Path, PathBuf};
 
 use crate::config::OS;
@@ -131,7 +131,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
             ));
             create_parent_path_if_not_exists(target);
             if !target.exists() {
-                let mut outfile = File::create(&target)?;
+                let mut outfile = File::create(target)?;
 
                 // Set permissions in Unix-like systems
                 #[cfg(unix)]
@@ -152,7 +152,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
 pub fn compose_cache_folder() -> PathBuf {
     if let Some(base_dirs) = BaseDirs::new() {
         return Path::new(base_dirs.home_dir())
-            .join(String::from(CACHE_FOLDER).replace('/', &MAIN_SEPARATOR.to_string()));
+            .join(String::from(CACHE_FOLDER).replace('/', std::path::MAIN_SEPARATOR_STR));
     }
     PathBuf::new()
 }
