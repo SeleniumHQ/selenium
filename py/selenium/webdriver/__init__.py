@@ -37,8 +37,8 @@ from .remote.webdriver import WebDriver as Remote  # noqa
 from .safari.options import Options as SafariOptions
 from .safari.service import Service as SafariService  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
-from .support.select import Select
-from .support.wait import WebDriverWait
+from .support.select import Select  # noqa
+from .support.wait import WebDriverWait  # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
 from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
