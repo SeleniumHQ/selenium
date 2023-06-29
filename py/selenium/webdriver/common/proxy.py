@@ -115,6 +115,7 @@ class Proxy:
     ----------
     `value`: `str`
     """
+
     http_proxy = _ProxyTypeDescriptor("httpProxy", ProxyType.MANUAL)
     """Gets and Sets `http_proxy`
 
@@ -219,6 +220,7 @@ class Proxy:
     ---------
     `value`: `str`
     """
+
     socks_version = _ProxyTypeDescriptor("socksVersion", ProxyType.MANUAL)
     """Gets and Sets `socks_version`
 
