@@ -228,7 +228,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 downloadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Downloads folder associated with "
                                         + notification.getKey());
                               });
@@ -236,7 +236,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 uploadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Uploads folder associated with "
                                         + notification.getKey());
                               });

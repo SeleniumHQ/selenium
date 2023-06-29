@@ -42,6 +42,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -100,7 +101,7 @@ class DefaultSlotSelectorTest {
     nodes.add(twoBrowsers);
     nodes.add(oneBrowser);
 
-    Set<SlotId> slots = selector.selectSlot(caps, nodes);
+    Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
 
     ImmutableSet<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
@@ -124,7 +125,9 @@ class DefaultSlotSelectorTest {
     NodeStatus heavy = createNode(Collections.singletonList(caps), 10, 6);
     NodeStatus massive = createNode(Collections.singletonList(caps), 10, 8);
 
-    Set<SlotId> ids = selector.selectSlot(caps, ImmutableSet.of(heavy, medium, lightest, massive));
+    Set<SlotId> ids =
+        selector.selectSlot(
+            caps, ImmutableSet.of(heavy, medium, lightest, massive), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     assertThat(lightest.getSlots().stream()).anyMatch(slot -> expected.equals(slot.getId()));
@@ -139,7 +142,8 @@ class DefaultSlotSelectorTest {
     NodeStatus maximumLoad = createNode(ImmutableList.of(chrome), 12, 12);
 
     Set<SlotId> ids =
-        selector.selectSlot(chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad));
+        selector.selectSlot(
+            chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     // The slot should belong to the Node with light load
@@ -173,7 +177,8 @@ class DefaultSlotSelectorTest {
                 lightLoadAndThreeBrowsers,
                 mediumLoadAndTwoBrowsers,
                 mediumLoadAndOtherTwoBrowsers,
-                highLoadAndOneBrowser));
+                highLoadAndOneBrowser),
+            new DefaultSlotMatcher());
 
     // The slot should belong to the Node with high load because it only supports Chrome, leaving
     // the other Nodes with more availability for other browsers
