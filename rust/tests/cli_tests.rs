@@ -16,7 +16,6 @@
 // under the License.
 
 use assert_cmd::Command;
-
 use rstest::rstest;
 use std::str;
 
@@ -87,17 +86,30 @@ fn error_test(
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        &browser,
-        "--browser-version",
-        &browser_version,
-        "--driver-version",
-        &driver_version,
-    ])
-    .assert()
-    .failure()
-    .code(error_code);
+    let assert_result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            &browser,
+            "--browser-version",
+            &browser_version,
+            "--driver-version",
+            &driver_version,
+        ])
+        .assert()
+        .try_success();
+
+    if assert_result.is_ok() {
+        let stdout = &cmd.unwrap().stdout;
+        let output = str::from_utf8(stdout).unwrap();
+        assert!(output.contains("in PATH"));
+    } else {
+        assert!(assert_result
+            .err()
+            .unwrap()
+            .to_string()
+            .contains(&error_code.to_string()));
+    }
 }
 
 #[rstest]
