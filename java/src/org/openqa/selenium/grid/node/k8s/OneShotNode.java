@@ -57,7 +57,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
@@ -104,7 +103,6 @@ public class OneShotNode extends Node {
   private HttpClient client;
   private Capabilities capabilities;
   private Instant sessionStart = Instant.EPOCH;
-  private SlotMatcher slotMatcher;
 
   private OneShotNode(
       Tracer tracer,
@@ -115,8 +113,7 @@ public class OneShotNode extends Node {
       URI uri,
       URI gridUri,
       Capabilities stereotype,
-      WebDriverInfo driverInfo,
-      SlotMatcher slotMatcher) {
+      WebDriverInfo driverInfo) {
     super(tracer, id, uri, registrationSecret);
 
     this.heartbeatPeriod = heartbeatPeriod;
@@ -124,7 +121,6 @@ public class OneShotNode extends Node {
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.driverInfo = Require.nonNull("Driver info", driverInfo);
-    this.slotMatcher = slotMatcher;
 
     new JMXHelper().register(this);
   }
@@ -179,8 +175,7 @@ public class OneShotNode extends Node {
             .getPublicGridUri()
             .orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
         stereotype,
-        driverInfo,
-        nodeOptions.getSlotMatcher());
+        driverInfo);
   }
 
   @Override
@@ -378,8 +373,7 @@ public class OneShotNode extends Node {
                 Instant.EPOCH,
                 driver == null
                     ? null
-                    : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()),
-                slotMatcher)),
+                    : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
         isDraining() ? DRAINING : UP,
         heartbeatPeriod,
         getNodeVersion(),

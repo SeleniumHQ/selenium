@@ -343,8 +343,7 @@ class AddingNodesTest {
                           sessionUri,
                           CAPS,
                           CAPS,
-                          Instant.now()),
-                      new DefaultSlotMatcher())),
+                          Instant.now()))),
               UP,
               Duration.ofSeconds(10),
               status.getVersion(),
@@ -467,7 +466,7 @@ class AddingNodesTest {
           getUri(),
           1,
           ImmutableSet.of(
-              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess, new DefaultSlotMatcher())),
+              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
           UP,
           Duration.ofSeconds(10),
           getNodeVersion(),

@@ -29,7 +29,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.grid.data.SlotMatcher;
 
 public class Slot implements Serializable {
 
@@ -40,7 +39,7 @@ public class Slot implements Serializable {
   private final Session session;
   private final Instant lastStarted;
 
-  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session, SlotMatcher slotMatcher) {
+  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
@@ -52,7 +51,6 @@ public class Slot implements Serializable {
     Capabilities stereotype = null;
     Instant lastStarted = null;
     Session session = null;
-    SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
     input.beginObject();
     while (input.hasNext()) {
@@ -74,17 +72,6 @@ public class Slot implements Serializable {
           stereotype = input.read(Capabilities.class);
           break;
 
-        case "slotMatcher":
-          
-          String slotMatcherClass = input.read(String.class);
-          try {
-            Class<?> classClazz = Class.forName(slotMatcherClass, true, Thread.currentThread().getContextClassLoader());
-            slotMatcher = (SlotMatcher) classClazz.newInstance();
-          } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            LOG.warning(String.format("Slot matcher class '%s' cannot be found in classpath, defaulting to DefaultSlotMatcher", slotMatcherClass));
-          }
-          break;
-
         default:
           input.skipValue();
           break;
@@ -92,7 +79,7 @@ public class Slot implements Serializable {
     }
     input.endObject();
 
-    return new Slot(id, stereotype, lastStarted, session, slotMatcher);
+    return new Slot(id, stereotype, lastStarted, session);
   }
 
   private Map<String, Object> toJson() {
@@ -101,7 +88,6 @@ public class Slot implements Serializable {
     toReturn.put("lastStarted", getLastStarted());
     toReturn.put("session", getSession());
     toReturn.put("stereotype", getStereotype());
-    toReturn.put("slotMatcher", getSlotMatcher());
     return unmodifiableMap(toReturn);
   }
 
@@ -111,10 +97,6 @@ public class Slot implements Serializable {
 
   public Capabilities getStereotype() {
     return stereotype;
-  }
-
-  public String getSlotMatcher() {
-    return slotMatcher.getClass().getCanonicalName();
   }
 
   public Instant getLastStarted() {
@@ -139,7 +121,6 @@ public class Slot implements Serializable {
     return Objects.equals(this.id, that.id)
         && Objects.equals(this.stereotype, that.stereotype)
         && Objects.equals(this.session, that.session)
-        && Objects.equals(this.slotMatcher.getClass().getCanonicalName(), that.slotMatcher.getClass().getCanonicalName())
         && Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
   }
 

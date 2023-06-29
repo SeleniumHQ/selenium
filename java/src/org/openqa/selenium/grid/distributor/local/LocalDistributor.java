@@ -136,6 +136,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
+  private final SlotMatcher slotMatcher;
 
   private final ScheduledExecutorService newSessionService =
       Executors.newSingleThreadScheduledExecutor(
@@ -192,9 +193,10 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new GridModel(bus, slotMatcher);
+    this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
+    this.slotMatcher = slotMatcher;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
@@ -666,7 +668,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     writeLock.lock();
     try {
       Set<SlotId> slotIds =
-          slotSelector.selectSlot(caps, getAvailableNodes(), new DefaultSlotMatcher());
+          slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
       if (slotIds.isEmpty()) {
         LOG.log(
             getDebugLogLevel(),
@@ -688,7 +690,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
 
   private boolean isNotSupported(Capabilities caps) {
     return getAvailableNodes().stream()
-        .noneMatch(node -> node.hasCapability(caps, new DefaultSlotMatcher()));
+        .noneMatch(node -> node.hasCapability(caps, slotMatcher));
   }
 
   private boolean reserve(SlotId id) {

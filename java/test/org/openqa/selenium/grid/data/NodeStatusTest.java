@@ -54,7 +54,7 @@ class NodeStatusTest {
                         new URI("http://localhost:1235"),
                         stereotype,
                         new ImmutableCapabilities("peas", "sausages"),
-                        Instant.now()), new DefaultSlotMatcher())),
+                        Instant.now()))),
             UP,
             Duration.ofSeconds(10),
             "4.0.0",

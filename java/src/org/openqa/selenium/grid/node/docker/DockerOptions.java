@@ -182,7 +182,7 @@ public class DockerOptions {
                     assetsPath,
                     networkName,
                     info.isPresent(),
-                    options.getSlotMatcher()));
+                    capabilities -> options.getSlotMatcher().matches(caps, capabilities)));
           }
           LOG.info(
               String.format(

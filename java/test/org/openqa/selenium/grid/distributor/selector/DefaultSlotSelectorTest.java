@@ -214,12 +214,12 @@ class DefaultSlotSelectorTest {
                     stereotype,
                     now,
                     new Session(
-                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now), new DefaultSlotMatcher()));
+                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
           }
 
           for (int i = 0; i < count - currentLoad; i++) {
             slots.add(
-                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null, new DefaultSlotMatcher()));
+                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
           }
         });
 
