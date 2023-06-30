@@ -52,7 +52,6 @@ class SwitchTo:
                 alert = driver.switch_to.alert
         """
         alert = Alert(self._driver)
-        _ = alert.text
         return alert
 
     def default_content(self) -> None:
