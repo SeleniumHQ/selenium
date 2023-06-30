@@ -30,7 +30,7 @@ from .actions.wheel_input import ScrollOrigin
 from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
 
-any_device = Union[PointerInput, KeyInput, WheelInput]
+AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
 
 class ActionChains:
@@ -66,7 +66,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver, duration: int = 250, devices: Optional[List[any_device]] = None) -> None:
+    def __init__(self, driver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
@@ -187,7 +187,7 @@ class ActionChains:
         self.release()
         return self
 
-    def key_down(self, value, element=Optional[WebElement]) -> "ActionChains":
+    def key_down(self, value: str, element=Optional[WebElement]) -> "ActionChains":
         """Sends a key press only, without releasing it. Should only be used
         with modifier keys (Control, Alt and Shift).
 
@@ -208,7 +208,7 @@ class ActionChains:
 
         return self
 
-    def key_up(self, value, element=Optional[WebElement]) -> "ActionChains":
+    def key_up(self, value: str, element=Optional[WebElement]) -> "ActionChains":
         """Releases a modifier key.
 
         :Args:
