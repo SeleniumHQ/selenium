@@ -358,17 +358,19 @@ pub trait SeleniumManager {
             // If proper driver version is not the same as the driver in path, display warning
             if !self.get_driver_version().is_empty() && !version.eq(self.get_driver_version()) {
                 self.get_logger().warn(format!(
-                    "Incompatible release of {} (version {}) detected in PATH: {}",
+                    "The {} version ({}) detected in PATH at {} might not be compatible with the detected {} version ({}); it is recommended to delete the driver and retry",
                     self.get_driver_name(),
                     version,
-                    path
+                    path,
+                    self.get_browser_name(),
+                    self.get_browser_version()
                 ));
             }
             self.set_driver_version(version.to_string());
             return Ok(PathBuf::from(path));
         }
 
-        // If driver was not in the PATH, try to find it the cache
+        // If driver was not in the PATH, try to find it in the cache
         let driver_path = self.get_driver_path_in_cache();
         if driver_path.exists() {
             if !self.is_safari() {
