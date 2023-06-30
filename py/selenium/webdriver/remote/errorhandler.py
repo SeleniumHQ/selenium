@@ -86,25 +86,6 @@ ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
 }
 
 
-class ErrorCode:
-    """Error codes defined in the WebDriver wire protocol."""
-
-    # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
-    SUCCESS = 0
-    UNKNOWN_ERROR = 13
-
-
-def _get_stacktrace(payload_dict):
-    if not isinstance(payload_dict, dict):
-        return ''
-
-    st_value = payload_dict.get('stacktrace', '')
-    if st_value == '':
-        # backword compatibility
-        st_value = payload_dict.get('stackTrace', '')
-    return st_value
-
-
 def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
     if not original:
         return []
@@ -177,10 +158,11 @@ class ErrorHandler:
             error, WebDriverException
         )
 
-        # backtrace from remote in Ruby
-
         stacktrace = None
-        st_value = _get_stacktrace(payload_dict)
+        st_value = ''
+        if isinstance(payload_dict, dict):
+            st_value = payload_dict.get('stacktrace', '')
+
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")
