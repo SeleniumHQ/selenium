@@ -114,14 +114,9 @@ public class SeleniumManager {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new WebDriverException(
-        "Interrupted while running command: "
-          + Arrays.toString(command),
-          e);
+          "Interrupted while running command: " + Arrays.toString(command), e);
     } catch (Exception e) {
-      throw new WebDriverException(
-        "Failed to run command: "
-          + Arrays.toString(command),
-          e);
+      throw new WebDriverException("Failed to run command: " + Arrays.toString(command), e);
     }
     SeleniumManagerJsonOutput jsonOutput = null;
     JsonException failedToParse = null;
@@ -130,14 +125,14 @@ public class SeleniumManager {
       try {
         jsonOutput = new Json().toType(output, SeleniumManagerJsonOutput.class);
         jsonOutput.logs.forEach(
-          logged -> {
-            if (logged.level.equalsIgnoreCase(WARN)) {
-              LOG.warning(logged.message);
-            }
-            if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
-              LOG.fine(logged.message);
-            }
-          });
+            logged -> {
+              if (logged.level.equalsIgnoreCase(WARN)) {
+                LOG.warning(logged.message);
+              }
+              if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
+                LOG.fine(logged.message);
+              }
+            });
         dump = jsonOutput.result.message;
       } catch (JsonException e) {
         failedToParse = e;
@@ -145,18 +140,17 @@ public class SeleniumManager {
     }
     if (code != 0) {
       throw new WebDriverException(
-        "Command failed with code: "
-        + code
-        + ", executed: "
-        + Arrays.toString(command)
-        + "\n"
-        + dump, failedToParse);
+          "Command failed with code: "
+              + code
+              + ", executed: "
+              + Arrays.toString(command)
+              + "\n"
+              + dump,
+          failedToParse);
     } else if (failedToParse != null) {
       throw new WebDriverException(
-        "Failed to parse json output, executed: "
-        + Arrays.toString(command)
-        + "\n"
-        + dump, failedToParse);
+          "Failed to parse json output, executed: " + Arrays.toString(command) + "\n" + dump,
+          failedToParse);
     }
     return jsonOutput.result.message;
   }
@@ -191,6 +185,8 @@ public class SeleniumManager {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     }
+    LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
+
     return binary;
   }
 

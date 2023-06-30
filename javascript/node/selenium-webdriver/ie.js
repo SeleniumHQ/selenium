@@ -83,6 +83,7 @@ const Key = {
   FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
   ATTACH_TO_EDGE_CHROMIUM: 'ie.edgechromium',
   EDGE_EXECUTABLE_PATH: 'ie.edgepath',
+  IGNORE_PROCESS_MATCH: 'ie.ignoreprocessmatch',
 }
 
 /**
