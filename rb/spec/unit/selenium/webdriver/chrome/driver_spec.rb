@@ -33,6 +33,7 @@ module Selenium
            body: {value: {sessionId: 0, capabilities: {browserName: 'chrome'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
+        let(:logger) { WebDriver.logger }
 
         def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': {}}}}).to_json
@@ -102,7 +103,7 @@ module Selenium
 
           it 'accepts value as a Symbol' do
             expect_request
-            expect { described_class.new(capabilities: :chrome) }.to have_deprecated(:capabilities)
+            expect { described_class.new(capabilities: :chrome) }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
@@ -111,7 +112,7 @@ module Selenium
             expect {
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
-            }.to have_deprecated(:capabilities)
+            }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
@@ -120,7 +121,7 @@ module Selenium
             expect {
               capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
               expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
-            }.to have_deprecated(:capabilities)
+            }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
@@ -129,7 +130,7 @@ module Selenium
             expect {
               capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
               expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
-            }.to have_deprecated(:capabilities)
+            }.to have_deprecated(:capabilities, logger)
           end
 
           context 'when value is an Array' do
@@ -150,7 +151,7 @@ module Selenium
                 expect {
                   described_class.new(capabilities: [options])
                 }.not_to raise_exception
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Options instance with profile' do
@@ -166,14 +167,14 @@ module Selenium
                 expect {
                   described_class.new(capabilities: [options])
                 }.not_to raise_exception
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
 
-              expect { described_class.new(capabilities: [capabilities]) }.to have_deprecated(:capabilities)
+              expect { described_class.new(capabilities: [capabilities]) }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
@@ -182,7 +183,7 @@ module Selenium
                                                                  'company:key': 'value'}}})
               expect {
                 described_class.new(capabilities: [Options.new, as_json_object.new])
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
@@ -194,7 +195,7 @@ module Selenium
 
               expect {
                 described_class.new(capabilities: [capabilities, options, as_json_object.new])
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
           end
         end

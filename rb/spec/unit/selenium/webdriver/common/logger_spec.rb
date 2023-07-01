@@ -21,8 +21,13 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
+    # This spec is deprecated
     describe Logger do
-      subject(:logger) { described_class.new('Selenium', default_level: :info, ignored: [:logger_info]) }
+      subject(:logger) do
+        described_class.new('Selenium',
+                            default_level: :info,
+                            ignored: %i[logger_info webdriver_logger])
+      end
 
       around do |example|
         debug = $DEBUG
@@ -38,10 +43,11 @@ module Selenium
           expect { other_logger.warn('message') }.to output(msg).to_stdout_from_any_process
         end
 
-        it 'does not log info from constructor' do
+        # Can't use custom matchers for this
+        it 'logs deprecation from constructor' do
           expect {
             described_class.new('Selenium')
-          }.not_to output(/.+/).to_stdout_from_any_process
+          }.to output(/:webdriver_logger/).to_stdout_from_any_process
         end
       end
 
@@ -90,7 +96,9 @@ module Selenium
         before { logger.level = :debug }
 
         it 'logs message' do
-          expect { logger.debug 'String Value' }.to output(/DEBUG Selenium String Value/).to_stdout_from_any_process
+          expect {
+            logger.debug 'String Value'
+          }.to output(/DEBUG Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do
@@ -106,15 +114,15 @@ module Selenium
 
       describe '#info' do
         it 'logs info on first displayed logging only' do
-          logger = described_class.new('Selenium', default_level: :info)
-
-          logger.debug('first')
-          expect { logger.info('first') }.to output(/:logger_info/).to_stdout_from_any_process
-          expect { logger.info('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
+          expect {
+            described_class.new('Selenium', default_level: :info)
+          }.to output(/:logger_info/).to_stdout_from_any_process
         end
 
         it 'logs message' do
-          expect { logger.info 'String Value' }.to output(/INFO Selenium String Value/).to_stdout_from_any_process
+          expect {
+            logger.info 'String Value'
+          }.to output(/INFO Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do
@@ -130,7 +138,9 @@ module Selenium
 
       describe '#warn' do
         it 'logs message' do
-          expect { logger.warn 'String Value' }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
+          expect {
+            logger.warn 'String Value'
+          }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do
@@ -146,25 +156,25 @@ module Selenium
 
       describe '#deprecate' do
         it 'allows to deprecate functionality with replacement' do
-          message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\./
+          message = /\[DEPRECATION\] #old is deprecated, and will be removed in a future release\. Use #new instead\./
           expect { logger.deprecate('#old', '#new') }.to output(message).to_stdout_from_any_process
         end
 
         it 'allows to deprecate functionality without replacement' do
-          message = /WARN Selenium \[DEPRECATION\] #old is deprecated and will be removed in a future release\./
+          message = /WARN Selenium \[DEPRECATION\] #old is deprecated, and will be removed in a future release\./
           expect { logger.deprecate('#old') }.to output(message).to_stdout_from_any_process
         end
 
         it 'allows to deprecate functionality with a reference message' do
           ref_url = 'https://selenium.dev'
-          warn_msg = 'WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\.'
+          warn_msg = '\[DEPRECATION\] #old is deprecated, and will be removed in a future release\. Use #new instead\.'
           message = /#{warn_msg} See explanation for this deprecation: #{ref_url}/
           expect { logger.deprecate('#old', '#new', reference: ref_url) }.to output(message).to_stdout_from_any_process
         end
 
         it 'appends deprecation message with provided block' do
-          message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\. More Details\./
-          expect { logger.deprecate('#old', '#new') { 'More Details.' } }.to output(message).to_stdout_from_any_process
+          msg = /\[DEPRECATION\] #old is deprecated, and will be removed in a future release\. Use #new instead\. More/
+          expect { logger.deprecate('#old', '#new') { 'More' } }.to output(msg).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do
@@ -221,6 +231,46 @@ module Selenium
         it 'prevents logging any deprecation when ignoring :deprecations' do
           logger.allow(:deprecations)
           expect { logger.deprecate('#old', '#new') }.to output(/new/).to_stdout_from_any_process
+        end
+      end
+
+      describe 'matchers' do
+        after { logger.level = :info }
+
+        it 'matches logging type with multiple items logged' do
+          expect {
+            logger.deprecate('something', id: :foo)
+            logger.warn('another thing', id: :bar)
+          }.not_to have_warning(:foo, logger)
+        end
+
+        it 'does not match multiple ids with single id of that type logged' do
+          expect {
+            logger.deprecate('something', id: :foo)
+          }.not_to have_deprecated(%i[foo bar], logger)
+        end
+
+        it 'does not match multiple ids when not all are the given type' do
+          expect {
+            logger.deprecate('something', id: :foo)
+            logger.info('something else', id: :bar)
+          }.not_to have_info(%i[foo bar], logger)
+        end
+
+        it 'matches single id when multiple ids of that type logged' do
+          logger.level = :debug
+
+          expect {
+            logger.debug('something', id: :foo)
+            logger.debug('something else', id: :bar)
+          }.to have_debugged(:foo, logger)
+        end
+
+        it 'matches multiple ids of given type when all ids of that type are logged' do
+          expect {
+            logger.error('something', id: :foo)
+            logger.error('something else', id: :bar)
+          }.to have_error(%i[foo bar], logger)
         end
       end
     end

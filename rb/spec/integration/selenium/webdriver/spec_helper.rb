@@ -23,7 +23,6 @@ require 'rspec'
 
 require 'selenium-webdriver'
 require_relative 'spec_support'
-require_relative '../../../rspec_matchers'
 
 include Selenium # rubocop:disable Style/MixinUsage
 

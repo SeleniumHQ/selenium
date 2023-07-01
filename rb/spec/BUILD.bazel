@@ -6,7 +6,6 @@ load("@rules_ruby//ruby:defs.bzl", "rb_library")
 rb_library(
     name = "spec",
     testonly = True,
-    srcs = ["rspec_matchers.rb"],
     visibility = ["//rb:__pkg__"],
     deps = [
         "//rb/spec/integration/selenium/webdriver:action_builder",

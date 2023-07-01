@@ -87,16 +87,5 @@ module Selenium
     def self.for(*args)
       WebDriver::Driver.for(*args)
     end
-
-    #
-    # Returns logger instance that can be used across the whole Selenium.
-    #
-    # @return [Logger]
-    #
-
-    def self.logger(**opts)
-      level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
-      @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **opts)
-    end
   end # WebDriver
 end # Selenium
