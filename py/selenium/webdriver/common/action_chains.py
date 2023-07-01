@@ -16,7 +16,10 @@
 # under the License.
 
 """The ActionChains implementation,"""
+from __future__ import annotations
+
 import warnings
+from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
 from typing import Union
@@ -29,6 +32,15 @@ from .actions.pointer_input import PointerInput
 from .actions.wheel_input import ScrollOrigin
 from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
+
+if TYPE_CHECKING:
+    from selenium.webdriver import Chrome
+    from selenium.webdriver import Edge
+    from selenium.webdriver import Firefox
+    from selenium.webdriver import Ie
+    from selenium.webdriver import Safari
+
+    AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
@@ -66,7 +78,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
+    def __init__(self, driver: AnyDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
