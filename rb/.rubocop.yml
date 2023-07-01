@@ -28,6 +28,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Max: 18
   Exclude:
+    - 'lib/selenium/logger/matchers.rb'
     - 'spec/**/*.rb'
     - 'selenium-*.gemspec'
 

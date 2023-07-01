@@ -33,6 +33,7 @@ module Selenium
            body: {value: {sessionId: 0, capabilities: {browserName: 'safari'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
+        let(:logger) { WebDriver.logger }
 
         def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {alwaysMatch: {browserName: 'safari'}}}).to_json
@@ -101,28 +102,28 @@ module Selenium
 
           it 'accepts value as a Symbol' do
             expect_request(body: {capabilities: {alwaysMatch: {browserName: 'safari'}}})
-            expect { described_class.new(capabilities: :safari) }.to have_deprecated(:capabilities)
+            expect { described_class.new(capabilities: :safari) }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'safari', invalid: 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: 'safari', invalid: 'foobar'}}})
 
-            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities)
+            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'safari', invalid: 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: 'safari', invalid: 'foobar'}}})
 
-            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities)
+            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities, logger)
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'safari', 'invalid' => 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: 'safari', invalid: 'foobar'}}})
 
-            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities)
+            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities, logger)
           end
 
           context 'when value is an Array' do
@@ -141,14 +142,14 @@ module Selenium
 
               expect {
                 described_class.new(capabilities: [Options.new(**browser_opts)])
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'safari', invalid: 'foobar')
               expect_request(body: {capabilities: {alwaysMatch: {browserName: 'safari', invalid: 'foobar'}}})
 
-              expect { described_class.new(capabilities: [capabilities]) }.to have_deprecated(:capabilities)
+              expect { described_class.new(capabilities: [capabilities]) }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
@@ -157,7 +158,7 @@ module Selenium
 
               expect {
                 described_class.new(capabilities: [Options.new, as_json_object.new])
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
@@ -170,7 +171,7 @@ module Selenium
 
               expect {
                 described_class.new(capabilities: [capabilities, options, as_json_object.new])
-              }.to have_deprecated(:capabilities)
+              }.to have_deprecated(:capabilities, logger)
             end
           end
         end

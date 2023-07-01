@@ -16,28 +16,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+require 'selenium/logger/logger'
 
-require 'selenium/logger'
-
-module Selenium
-  module WebDriver
-    class Logger < Selenium::Logger
-      def initialize(progname = 'Selenium', default_level: nil, ignored: nil, allowed: nil)
-        super
-        deprecate 'Selenium::WebDriver::Logger', 'Selenium::Logger', id: :webdriver_logger
-      end
-    end
-
-    #
-    # Returns logger instance that can be used across the whole Selenium.
-    # Set level for backwards compatibility
-    #
-    # @return [Logger]
-    #
-
-    def self.logger(**opts)
-      level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
-      @logger ||= Selenium::Logger.new('Selenium', default_level: level, **opts)
-    end
-  end # WebDriver
-end # Selenium
+begin
+  require 'selenium/logger/matchers'
+rescue LoadError
+  # project is not using RSpec
+end
