@@ -45,10 +45,12 @@ def test_raises_exception_for_no_such_frame(handler, error):
     with pytest.raises(exceptions.NoSuchFrameException):
         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
 
-@pytest.mark.parametrize("error",["unknown command"])
+
+@pytest.mark.parametrize("error", ["unknown command"])
 def test_raises_exception_for_unknown_command(handler, error):
     with pytest.raises(exceptions.WebDriverException):
         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+
 
 @pytest.mark.parametrize("error", ["stale element reference"])
 def test_raises_exception_for_stale_element_reference(handler, error):
@@ -126,6 +128,7 @@ def test_raises_exception_for_no_alert_open(handler, error):
 def test_raises_exception_for_script_timeout(handler, error):
     with pytest.raises(exceptions.TimeoutException):
         handler.check_response({"value": {"error": error, "message": "error message", "stacktrace": ""}})
+
 
 @pytest.mark.parametrize("error", ["invalid selector"])
 def test_raises_exception_for_invalid_selector(handler, error):
@@ -217,12 +220,13 @@ def test_relays_exception_stacktrace(handler, key):
 
     assert "Spam.ham" in e.value.stacktrace[0]
 
+
 def test_handle_errors_better(handler):
     response = {
         "value": {
             "error": "session not created",
             "message": "Could not start a new session. No Node supports the required capabilities: Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}}, Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}, version: }\nBuild info: version: '4.0.0-beta-3', revision: '5d108f9a67'\nSystem info: host: '9315f0a993d2', ip: '172.17.0.8', os.name: 'Linux', os.arch: 'amd64', os.version: '5.8.0-44-generic', java.version: '1.8.0_282'\nDriver info: driver.version: unknown",
-            "stacktrace": ""
+            "stacktrace": "",
         },
     }
     with pytest.raises(exceptions.SessionNotCreatedException) as e:
@@ -230,12 +234,13 @@ def test_handle_errors_better(handler):
 
     assert "Could not start a new session." in e.value.msg
 
+
 def test_string_response_body(handler):
     response = {
         "value": {
             "error": "session not created",
             "message": "Could not start a new session. No Node supports the required capabilities: Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}}, Capabilities {browserName: chrome, goog:chromeOptions: {args: [headless, silent], extensions: [], w3c: false}, version: }\nBuild info: version: '4.0.0-beta-3', revision: '5d108f9a67'\nSystem info: host: '9315f0a993d2', ip: '172.17.0.8', os.name: 'Linux', os.arch: 'amd64', os.version: '5.8.0-44-generic', java.version: '1.8.0_282'\nDriver info: driver.version: unknown",
-            "stacktrace": ""
+            "stacktrace": "",
         },
     }
     with pytest.raises(exceptions.SessionNotCreatedException) as e:
@@ -243,12 +248,13 @@ def test_string_response_body(handler):
 
     assert "Could not start a new session." in e.value.msg
 
+
 def test_string_response_body_flatten(handler):
     """This test case comes from cookies test failure. Could be removed as non-w3c spec."""
     response = {
         "value": "\\u002fsession\\u002f9d02a203-60c1-46f8-bac7-e38e0a4ba184\\u002fcookie",
-        "message": "Unable to exec...0-1040-azure\', java.version: \'11.0.19\'\\nDriver info: driver.version: unknown",
-        "error": "invalid session id"
+        "message": "Unable to exec...0-1040-azure', java.version: '11.0.19'\\nDriver info: driver.version: unknown",
+        "error": "invalid session id",
     }
     with pytest.raises(exceptions.InvalidSessionIdException) as e:
         handler.check_response(json.dumps(response))

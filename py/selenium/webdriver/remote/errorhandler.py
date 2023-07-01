@@ -52,37 +52,37 @@ from selenium.common.exceptions import UnknownMethodException
 from selenium.common.exceptions import WebDriverException
 
 ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
-    'element click intercepted': ElementClickInterceptedException,
-    'element not interactable': ElementNotInteractableException,
-    'insecure certificate': InsecureCertificateException,
-    'invalid argument': InvalidArgumentException,
-    'invalid cookie domain': InvalidCookieDomainException,
-    'invalid element state': InvalidElementStateException,
-    'invalid selector': InvalidSelectorException,
-    'invalid session id': InvalidSessionIdException,
-    'javascript error': JavascriptException,
-    'move target out of bounds': MoveTargetOutOfBoundsException,
-    'no such alert': NoAlertPresentException,
-    'no such cookie': NoSuchCookieException,
-    'no such element': NoSuchElementException,
-    'no such frame': NoSuchFrameException,
-    'no such window': NoSuchWindowException,
-    'no such shadow root': NoSuchShadowRootException,
-    'script timeout': TimeoutException,
-    'session not created': SessionNotCreatedException,
-    'stale element reference': StaleElementReferenceException,
-    'detached shadow root': NoSuchShadowRootException,
-    'timeout': TimeoutException,
-    'unable to set cookie': UnableToSetCookieException,
-    'unable to capture screen': ScreenshotException,
-    'unexpected alert open': UnexpectedAlertPresentException,
-    'unknown command': UnknownMethodException,
-    'unknown error': WebDriverException,
-    'unknown method': UnknownMethodException,
-    'unsupported operation': UnknownMethodException,
-    'element not visible': ElementNotVisibleException,
-    'element not selectable': ElementNotSelectableException,
-    'invalid coordinates': InvalidCoordinatesException,
+    "element click intercepted": ElementClickInterceptedException,
+    "element not interactable": ElementNotInteractableException,
+    "insecure certificate": InsecureCertificateException,
+    "invalid argument": InvalidArgumentException,
+    "invalid cookie domain": InvalidCookieDomainException,
+    "invalid element state": InvalidElementStateException,
+    "invalid selector": InvalidSelectorException,
+    "invalid session id": InvalidSessionIdException,
+    "javascript error": JavascriptException,
+    "move target out of bounds": MoveTargetOutOfBoundsException,
+    "no such alert": NoAlertPresentException,
+    "no such cookie": NoSuchCookieException,
+    "no such element": NoSuchElementException,
+    "no such frame": NoSuchFrameException,
+    "no such window": NoSuchWindowException,
+    "no such shadow root": NoSuchShadowRootException,
+    "script timeout": TimeoutException,
+    "session not created": SessionNotCreatedException,
+    "stale element reference": StaleElementReferenceException,
+    "detached shadow root": NoSuchShadowRootException,
+    "timeout": TimeoutException,
+    "unable to set cookie": UnableToSetCookieException,
+    "unable to capture screen": ScreenshotException,
+    "unexpected alert open": UnexpectedAlertPresentException,
+    "unknown command": UnknownMethodException,
+    "unknown error": WebDriverException,
+    "unknown method": UnknownMethodException,
+    "unsupported operation": UnknownMethodException,
+    "element not visible": ElementNotVisibleException,
+    "element not selectable": ElementNotSelectableException,
+    "invalid coordinates": InvalidCoordinatesException,
 }
 
 
@@ -90,7 +90,7 @@ def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
     if not original:
         return []
     if isinstance(original, str):
-        return original.split('\n')
+        return original.split("\n")
 
     result: List[str] = []
     try:
@@ -98,14 +98,14 @@ def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
             if not isinstance(frame, dict):
                 continue
 
-            line = frame.get('lineNumber', '')
-            file = frame.get('fileName', '<anonymous>')
+            line = frame.get("lineNumber", "")
+            file = frame.get("fileName", "<anonymous>")
             if line:
-                file = f'{file}:{line}'
-            meth = frame.get('methodName', '<anonymous>')
-            if 'className' in frame:
-                meth = f'{frame["className"]}.{meth}'
-            result.append(f'    at {meth} ({file})')
+                file = f"{file}:{line}"
+            meth = frame.get("methodName", "<anonymous>")
+            if "className" in frame:
+                meth = f"{frame['className']}.{meth}"
+            result.append(f"    at {meth} ({file})")
     except TypeError:
         pass
     return result
@@ -114,13 +114,13 @@ def format_stacktrace(original: Union[None, str, Sequence]) -> List[str]:
 class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
-    def check_response(self, response: Dict[str, Any]|str) -> None:
+    def check_response(self, response: Dict[str, Any] | str) -> None:
         """Checks that a JSON response from the WebDriver does not have an
         error.
 
         :Args:
          - response - The JSON response from the WebDriver server as a dictionary
-           object. The format is expected to be {'value': {message body}}
+           object. The format is expected to be {"value": {message body}}
 
         :Raises: If the response contains an error message.
         """
@@ -144,7 +144,7 @@ class ErrorHandler:
         error = response_dict.get("error")
         if error is None:
             # w3c
-            error = payload_dict.get('error')
+            error = payload_dict.get("error")
         if not error:
             return
 
@@ -152,16 +152,14 @@ class ErrorHandler:
         message = response_dict.get("message")
         if message is None:
             # w3c
-            message = payload_dict.get('message', error)
+            message = payload_dict.get("message", error)
 
-        exception_class: Type[WebDriverException] = ERROR_TO_EXC_MAPPING.get(
-            error, WebDriverException
-        )
+        exception_class: Type[WebDriverException] = ERROR_TO_EXC_MAPPING.get(error, WebDriverException)
 
         stacktrace = None
-        st_value = ''
+        st_value = ""
         if isinstance(payload_dict, dict):
-            st_value = payload_dict.get('stacktrace', '')
+            st_value = payload_dict.get("stacktrace", "")
 
         if st_value:
             if isinstance(st_value, str):
@@ -187,6 +185,6 @@ class ErrorHandler:
             raise UnexpectedAlertPresentException(
                 msg=message,
                 stacktrace=format_stacktrace(stacktrace),
-                alert_text=payload_dict.get('data'),
+                alert_text=payload_dict.get("data"),
             )
         raise exception_class(msg=message, stacktrace=stacktrace)
