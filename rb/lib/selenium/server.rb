@@ -18,6 +18,7 @@
 # under the License.
 
 require 'selenium/webdriver/common/child_process'
+require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
 
@@ -185,7 +186,7 @@ module Selenium
       @jar = jar
       @host = '127.0.0.1'
       @role = opts.fetch(:role, 'standalone')
-      @port = opts.fetch(:port, 4444)
+      @port = opts.fetch(:port, WebDriver::PortProber.above(4444))
       @timeout = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
       @additional_args = opts.fetch(:args, [])
