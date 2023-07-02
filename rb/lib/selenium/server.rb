@@ -166,7 +166,7 @@ module Selenium
     # :standalone, #hub, #node
     #
 
-    attr_accessor :role, :port, :timeout, :background, :log
+    attr_accessor :role, :host, :port, :timeout, :background, :log
 
     #
     # @param [String] jar Path to the server jar.
