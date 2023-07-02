@@ -60,7 +60,7 @@ module Selenium
         end
 
         it 'errors if cannot find' do
-          allow(File).to receive(:exist?).with(a_string_including('selenium-manager')).and_return(false)
+          allow(File).to receive(:file?).with(a_string_including('selenium-manager')).and_return(false)
 
           expect {
             described_class.send(:binary)
@@ -85,7 +85,7 @@ module Selenium
           described_class.driver_path(Options.chrome)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
+            .with('selenium-manager', '--browser', 'chrome')
         end
 
         it 'uses browser version if specified' do
@@ -99,7 +99,6 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--browser-version', 1)
         end
 
@@ -115,7 +114,6 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--proxy', 'proxy')
         end
 
@@ -128,7 +126,7 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
+            .with('selenium-manager', '--browser', 'chrome', '--browser-path', '/path/to/browser')
         end
 
         it 'properly escapes plain spaces in browser location' do
@@ -140,7 +138,7 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json',
+            .with('selenium-manager', '--browser', 'chrome',
                   '--browser-path', '/path to/the/browser')
         end
       end

@@ -55,6 +55,9 @@ RSpec.configure do |c|
 
   root = Pathname.new('../../../../../../').realpath(__FILE__)
   $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
+  if File.exist?(root.join('bazel-bin/rb/bin'))
+    Selenium::WebDriver::SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s
+  end
 
   c.include Selenium::WebDriver::UnitSpecHelper
 

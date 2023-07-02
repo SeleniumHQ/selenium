@@ -26,23 +26,45 @@ module Selenium
       File.delete(@location) if @location && File.exist?(@location)
     end
 
-    it 'downloads latest version' do
-      @location = described_class.download
+    context 'when downloading with Selenium Manager' do
+      it 'downloads latest version' do
+        @location = described_class.download
 
-      expect(File.exist?(@location)).to be true
-      expect(@location).to eq("selenium-server-#{current_version}.jar")
+        expect(File.exist?(@location)).to be true
+        expect(@location).to include(".cache/selenium/grid/#{current_version}/selenium-server-#{current_version}.jar")
+      end
+
+      it 'downloads specified version' do
+        @location = described_class.download('4.9.0')
+
+        expect(File.exist?(@location)).to be true
+        expect(@location).to include('.cache/selenium/grid/4.9.0/selenium-server-4.9.0.jar')
+      end
     end
 
-    it 'downloads specified version' do
+    context 'when downloading from GitHub' do
+      before do
+        allow(described_class).to receive(:sm_download).and_raise(StandardError)
+      end
+
+      it 'downloads latest version' do
+        @location = described_class.download
+
+        expect(File.exist?(@location)).to be true
+        expect(@location).to eq("selenium-server-#{current_version}.jar")
+      end
+
+      it 'downloads specified version' do
         @location = described_class.download('4.9.0')
 
         expect(File.exist?(@location)).to be true
         expect(@location).to eq('selenium-server-4.9.0.jar')
       end
+    end
 
     it 'starts and stops server' do
       @location = described_class.download
-      @server = described_class.new(@location, background: true)
+      @server = described_class.new(@location, background: true, args: %w[--selenium-manager true])
       @server.start
       status = server_status("http://#{@server.host}:#{@server.port}")
       expect(status.code).to eq 200
