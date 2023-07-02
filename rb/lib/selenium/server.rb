@@ -208,12 +208,6 @@ module Selenium
     end
 
     def stop
-      begin
-        Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
-      rescue Errno::ECONNREFUSED
-        nil
-      end
-
       stop_process if @process
       poll_for_shutdown
 
@@ -235,13 +229,7 @@ module Selenium
     private
 
     def stop_process
-      return unless @process.alive?
-
-      begin
-        @process.poll_for_exit(5)
-      rescue WebDriver::ChildProcess::TimeoutError
-        @process.stop
-      end
+      @process.stop
     rescue Errno::ECHILD
       # already dead
     ensure
