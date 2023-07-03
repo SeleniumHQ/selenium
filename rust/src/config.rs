@@ -106,26 +106,29 @@ pub enum OS {
 }
 
 impl OS {
-    pub fn to_str(&self) -> &str {
+    pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            WINDOWS => "windows",
-            MACOS => "macos",
-            LINUX => "linux",
+            WINDOWS => vec!["windows", "win"],
+            MACOS => vec!["macos", "mac"],
+            LINUX => vec!["linux", "gnu/linux"],
         }
     }
 
     pub fn is(&self, os: &str) -> bool {
-        self.to_str().eq_ignore_ascii_case(os)
+        self.to_str_vector()
+            .contains(&os.to_ascii_lowercase().as_str())
     }
 }
 
-pub fn str_to_os(os: &str) -> OS {
+pub fn str_to_os(os: &str) -> Result<OS, Box<dyn Error>> {
     if WINDOWS.is(os) {
-        WINDOWS
+        Ok(WINDOWS)
     } else if MACOS.is(os) {
-        MACOS
+        Ok(MACOS)
+    } else if LINUX.is(os) {
+        Ok(LINUX)
     } else {
-        LINUX
+        Err(format!("Invalid operating system: {os}").into())
     }
 }
 
@@ -140,9 +143,9 @@ pub enum ARCH {
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => vec![ARCH_X86, "i386"],
+            ARCH::X32 => vec![ARCH_X86, "i386", "x32"],
             ARCH::X64 => vec![ARCH_AMD64, "x86_64", "x64", "i686", "ia64"],
-            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm", "arm64"],
         }
     }
 

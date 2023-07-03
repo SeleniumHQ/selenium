@@ -108,7 +108,7 @@ pub trait SeleniumManager {
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
-    fn discover_browser_version(&mut self) -> Option<String>;
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>>;
 
     fn get_driver_name(&self) -> &str;
 
@@ -169,7 +169,10 @@ pub trait SeleniumManager {
 
         let browser_path = self
             .get_browser_path_map()
-            .get(&BrowserPath::new(str_to_os(self.get_os()), browser_version))
+            .get(&BrowserPath::new(
+                str_to_os(self.get_os()).unwrap(),
+                browser_version,
+            ))
             .cloned()
             .unwrap_or_default();
 
@@ -261,7 +264,7 @@ pub trait SeleniumManager {
 
         // First, we try to discover the browser version
         if !download_browser {
-            match self.discover_browser_version() {
+            match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
                         self.get_logger().debug(format!(
@@ -676,7 +679,9 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        self.get_config_mut().os = os;
+        if !os.is_empty() {
+            self.get_config_mut().os = os;
+        }
     }
 
     fn get_arch(&self) -> &str {
@@ -684,7 +689,9 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        self.get_config_mut().arch = arch;
+        if !arch.is_empty() {
+            self.get_config_mut().arch = arch;
+        }
     }
 
     fn get_browser_version(&self) -> &str {

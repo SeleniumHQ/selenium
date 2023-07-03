@@ -62,7 +62,7 @@ impl IExplorerManager {
         let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
-        config.os = WINDOWS.to_str().to_string();
+        config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
