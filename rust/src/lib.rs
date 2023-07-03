@@ -482,6 +482,22 @@ pub trait SeleniumManager {
         self.get_config().browser_path.as_str()
     }
 
+    fn get_escaped_browser_path(&self) -> String {
+        let mut browser_path = self.get_browser_path().to_string();
+        let path = Path::new(&browser_path);
+        if path.exists() && WINDOWS.is(self.get_os()) {
+            browser_path = Path::new(path)
+                .canonicalize()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string()
+                .replace("\\\\?\\", "")
+                .replace("\\", "\\\\");
+        }
+        browser_path
+    }
+
     fn set_browser_path(&mut self, browser_path: String) {
         if !browser_path.is_empty() {
             let mut config = self.get_config_mut();
