@@ -387,4 +387,4 @@ class Options(ArgOptions):
 
     @property
     def default_capabilities(self) -> dict:
-        return DesiredCapabilities.INTERNETEXPLORER.copy()
+        DesiredCapabilities.INTERNETEXPLORER.copy()

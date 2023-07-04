@@ -75,7 +75,7 @@ class _PageSettingsDescriptor:
 
 
 class _MarginSettingsDescriptor:
-    """Descriptor which validates below attributes:
+    """Descriptor which validates below attributes.
 
     - top
     - bottom
@@ -146,26 +146,26 @@ class _ValidateTypeDescriptor:
 
 
 class _ValidateBackGround(_ValidateTypeDescriptor):
-    """Expected type of background attribute"""
+    """Expected type of background attribute."""
 
     expected_type = bool
 
 
 class _ValidateShrinkToFit(_ValidateTypeDescriptor):
-    """Expected type of shirnk to fit attribute"""
+    """Expected type of shirnk to fit attribute."""
 
     expected_type = bool
 
 
 class _ValidatePageRanges(_ValidateTypeDescriptor):
-    """Excepted type of page ranges attribute"""
+    """Excepted type of page ranges attribute."""
 
     expected_type = list
 
 
 class PrintOptions:
     page_height = _PageSettingsDescriptor("height")
-    """Gets and Sets page_height
+    """Gets and Sets page_height:
 
     Usage
     -----
@@ -187,7 +187,7 @@ class PrintOptions:
     """
 
     page_width = _PageSettingsDescriptor("width")
-    """Gets and Sets page_width
+    """Gets and Sets page_width:
 
     Usage
     -----
@@ -209,7 +209,7 @@ class PrintOptions:
     """
 
     margin_top = _MarginSettingsDescriptor("top")
-    """Gets and Sets margin_top
+    """Gets and Sets margin_top:
 
     Usage
     -----
@@ -231,7 +231,7 @@ class PrintOptions:
     """
 
     margin_bottom = _MarginSettingsDescriptor("bottom")
-    """Gets and Sets margin_bottom
+    """Gets and Sets margin_bottom:
 
     Usage
     -----
@@ -253,7 +253,7 @@ class PrintOptions:
     """
 
     margin_left = _MarginSettingsDescriptor("left")
-    """Gets and Sets margin_left
+    """Gets and Sets margin_left:
 
     Usage
     -----
@@ -275,7 +275,7 @@ class PrintOptions:
     """
 
     margin_right = _MarginSettingsDescriptor("right")
-    """Gets and Sets margin_right
+    """Gets and Sets margin_right:
 
     Usage
     -----
@@ -297,7 +297,7 @@ class PrintOptions:
     """
 
     scale = _ScaleDescriptor("scale")
-    """Gets and Sets scale
+    """Gets and Sets scale:
 
     Usage
     -----
@@ -319,7 +319,7 @@ class PrintOptions:
     """
 
     orientation = _PageOrientationDescriptor("orientation")
-    """Gets and Sets orientation
+    """Gets and Sets orientation:
 
     Usage
     -----
@@ -341,7 +341,7 @@ class PrintOptions:
     """
 
     background = _ValidateBackGround("background", bool)
-    """Gets and Sets background
+    """Gets and Sets background:
 
     Usage
     -----
@@ -363,7 +363,7 @@ class PrintOptions:
     """
 
     shrink_to_fit = _ValidateShrinkToFit("shrinkToFit", bool)
-    """Gets and Sets shrink_to_fit
+    """Gets and Sets shrink_to_fit:
 
     Usage
     -----
@@ -385,7 +385,7 @@ class PrintOptions:
     """
 
     page_ranges = _ValidatePageRanges("pageRanges", list)
-    """Gets and Sets page_ranges
+    """Gets and Sets page_ranges:
 
     Usage
     -----
