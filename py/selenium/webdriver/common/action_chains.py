@@ -110,7 +110,7 @@ class ActionChains:
         for device in self.w3c_actions.devices:
             device.clear_actions()
 
-    def click(self, on_element=Optional[WebElement]) -> "ActionChains":
+    def click(self, on_element: Optional[WebElement] = None) -> "ActionChains":
         """Clicks an element.
 
         :Args:
@@ -126,7 +126,7 @@ class ActionChains:
 
         return self
 
-    def click_and_hold(self, on_element=Optional[WebElement]) -> "ActionChains":
+    def click_and_hold(self, on_element: Optional[WebElement] = None) -> "ActionChains":
         """Holds down the left mouse button on an element.
 
         :Args:
@@ -141,7 +141,7 @@ class ActionChains:
 
         return self
 
-    def context_click(self, on_element=Optional[WebElement]) -> "ActionChains":
+    def context_click(self, on_element: Optional[WebElement] = None) -> "ActionChains":
         """Performs a context-click (right click) on an element.
 
         :Args:
@@ -157,7 +157,7 @@ class ActionChains:
 
         return self
 
-    def double_click(self, on_element=Optional[WebElement]) -> "ActionChains":
+    def double_click(self, on_element: Optional[WebElement] = None) -> "ActionChains":
         """Double-clicks an element.
 
         :Args:
@@ -199,7 +199,7 @@ class ActionChains:
         self.release()
         return self
 
-    def key_down(self, value: str, element=Optional[WebElement]) -> "ActionChains":
+    def key_down(self, value: str, element: Optional[WebElement] = None) -> "ActionChains":
         """Sends a key press only, without releasing it. Should only be used
         with modifier keys (Control, Alt and Shift).
 
@@ -220,7 +220,7 @@ class ActionChains:
 
         return self
 
-    def key_up(self, value: str, element=Optional[WebElement]) -> "ActionChains":
+    def key_up(self, value: str, element: Optional[WebElement] = None) -> "ActionChains":
         """Releases a modifier key.
 
         :Args:
@@ -288,7 +288,7 @@ class ActionChains:
 
         return self
 
-    def release(self, on_element=Optional[WebElement]) -> "ActionChains":
+    def release(self, on_element: Optional[WebElement] = None) -> "ActionChains":
         """Releasing a held mouse button on an element.
 
         :Args:
