@@ -98,4 +98,4 @@ public class FederatedCredentialManagementAccount {
   public String getPrivacyPolicyUrl() {
     return privacyPolicyUrl;
   }
-};
+}
