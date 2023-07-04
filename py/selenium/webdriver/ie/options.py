@@ -58,7 +58,7 @@ class _IeOptionsDescriptor:
         if not isinstance(value, self.expected_type):
             raise ValueError(f"{self.name} should be of type {self.expected_type.__name__}")
 
-        if self.name == "ELEMENT_SCROLL_BEHAVIOR" and value not in [
+        if self.name == "elementScrollBehavior" and value not in [
             ElementScrollBehavior.TOP.value,
             ElementScrollBehavior.BOTTOM.value,
         ]:
