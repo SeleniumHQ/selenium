@@ -63,7 +63,6 @@ class _IeOptionsDescriptor:
             ElementScrollBehavior.BOTTOM.value,
         ]:
             raise ValueError("Element Scroll Behavior out of range.")
-
         obj._options[self.name] = value
 
 
@@ -91,7 +90,7 @@ class Options(ArgOptions):
     IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch"
 
     # Creating descriptor objects for each of the above IE options
-    browser_attach_timeout = _IeOptionsDescriptor("BROWSER_ATTACH_TIMEOUT", int)
+    browser_attach_timeout = _IeOptionsDescriptor(BROWSER_ATTACH_TIMEOUT, int)
     """Gets and Sets `browser_attach_timeout`
 
     Usage
@@ -106,7 +105,7 @@ class Options(ArgOptions):
     `value`: `int` (Timeout) in milliseconds
     """
 
-    element_scroll_behavior = _IeOptionsDescriptor("ELEMENT_SCROLL_BEHAVIOR", int)
+    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, int)
     """Gets and Sets `element_scroll_behavior`
 
     Usage
@@ -121,7 +120,7 @@ class Options(ArgOptions):
     `value`: `int` either 0 - Top, 1 - Bottom
     """
 
-    ensure_clean_session = _IeOptionsDescriptor("ENSURE_CLEAN_SESSION", bool)
+    ensure_clean_session = _IeOptionsDescriptor(ENSURE_CLEAN_SESSION, bool)
     """Gets and Sets `ensure_clean_session`
 
     Usage
@@ -136,7 +135,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    file_upload_dialog_timeout = _IeOptionsDescriptor("FILE_UPLOAD_DIALOG_TIMEOUT", int)
+    file_upload_dialog_timeout = _IeOptionsDescriptor(FILE_UPLOAD_DIALOG_TIMEOUT, int)
     """Gets and Sets `file_upload_dialog_timeout`
 
     Usage
@@ -151,7 +150,7 @@ class Options(ArgOptions):
     `value`: `int` (Timeout) in milliseconds
     """
 
-    force_create_process_api = _IeOptionsDescriptor("FORCE_CREATE_PROCESS_API", bool)
+    force_create_process_api = _IeOptionsDescriptor(FORCE_CREATE_PROCESS_API, bool)
     """Gets and Sets `force_create_process_api`
 
     Usage
@@ -166,7 +165,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    force_shell_windows_api = _IeOptionsDescriptor("FORCE_SHELL_WINDOWS_API", bool)
+    force_shell_windows_api = _IeOptionsDescriptor(FORCE_SHELL_WINDOWS_API, bool)
     """Gets and Sets `force_shell_windows_api`
 
     Usage
@@ -181,7 +180,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    full_page_screenshot = _IeOptionsDescriptor("FULL_PAGE_SCREENSHOT", bool)
+    full_page_screenshot = _IeOptionsDescriptor(FULL_PAGE_SCREENSHOT, bool)
     """Gets and Sets `full_page_screenshot`
 
     Usage
@@ -196,7 +195,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    ignore_protected_mode_settings = _IeOptionsDescriptor("IGNORE_PROTECTED_MODE_SETTINGS", bool)
+    ignore_protected_mode_settings = _IeOptionsDescriptor(IGNORE_PROTECTED_MODE_SETTINGS, bool)
     """Gets and Sets `ignore_protected_mode_settings`
 
     Usage
@@ -211,7 +210,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    ignore_zoom_level = _IeOptionsDescriptor("IGNORE_ZOOM_LEVEL", bool)
+    ignore_zoom_level = _IeOptionsDescriptor(IGNORE_ZOOM_LEVEL, bool)
     """Gets and Sets `ignore_zoom_level`
 
     Usage
@@ -226,7 +225,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    initial_browser_url = _IeOptionsDescriptor("INITIAL_BROWSER_URL", str)
+    initial_browser_url = _IeOptionsDescriptor(INITIAL_BROWSER_URL, str)
     """Gets and Sets `initial_browser_url`
 
     Usage
@@ -241,7 +240,7 @@ class Options(ArgOptions):
     `value`: `str`
     """
 
-    native_events = _IeOptionsDescriptor("NATIVE_EVENTS", bool)
+    native_events = _IeOptionsDescriptor(NATIVE_EVENTS, bool)
     """Gets and Sets `native_events`
 
     Usage
@@ -256,7 +255,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    persistent_hover = _IeOptionsDescriptor("PERSISTENT_HOVER", bool)
+    persistent_hover = _IeOptionsDescriptor(PERSISTENT_HOVER, bool)
     """Gets and Sets `persistent_hover`
 
     Usage
@@ -271,7 +270,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    require_window_focus = _IeOptionsDescriptor("REQUIRE_WINDOW_FOCUS", bool)
+    require_window_focus = _IeOptionsDescriptor(REQUIRE_WINDOW_FOCUS, bool)
     """Gets and Sets `require_window_focus`
 
     Usage
@@ -286,7 +285,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    use_per_process_proxy = _IeOptionsDescriptor("USE_PER_PROCESS_PROXY", bool)
+    use_per_process_proxy = _IeOptionsDescriptor(USE_PER_PROCESS_PROXY, bool)
     """Gets and Sets `use_per_process_proxy`
 
     Usage
@@ -301,7 +300,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    use_legacy_file_upload_dialog_handling = _IeOptionsDescriptor("USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING", bool)
+    use_legacy_file_upload_dialog_handling = _IeOptionsDescriptor(USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING, bool)
     """Gets and Sets `use_legacy_file_upload_dialog_handling`
 
     Usage
@@ -316,7 +315,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    attach_to_edge_chrome = _IeOptionsDescriptor("ATTACH_TO_EDGE_CHROME", bool)
+    attach_to_edge_chrome = _IeOptionsDescriptor(ATTACH_TO_EDGE_CHROME, bool)
     """Gets and Sets `attach_to_edge_chrome`
 
     Usage
@@ -331,7 +330,7 @@ class Options(ArgOptions):
     `value`: `bool`
     """
 
-    edge_executable_path = _IeOptionsDescriptor("EDGE_EXECUTABLE_PATH", str)
+    edge_executable_path = _IeOptionsDescriptor(EDGE_EXECUTABLE_PATH, str)
     """Gets and Sets `edge_executable_path`
 
     Usage
