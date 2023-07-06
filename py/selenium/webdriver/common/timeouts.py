@@ -129,7 +129,7 @@ class Timeouts:
     def _convert(self, timeout: float) -> int:
         if isinstance(timeout, (int, float)):
             return int(float(timeout) * 1000)
-        raise TypeError("Timeouts can only be an int or float")
+        raise TypeError("Timeouts can only be an int or a float")
 
     def _to_json(self) -> JSONTimeouts:
         timeouts: JSONTimeouts = {}
