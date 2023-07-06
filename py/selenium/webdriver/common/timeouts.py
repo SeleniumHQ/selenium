@@ -53,10 +53,9 @@ class _TimeoutsDescriptor:
     def __get__(self, obj, cls) -> float:
         return getattr(obj, self.name) / 1000
 
-    def __set__(self, obj, value):
-        if not isinstance(value, (int, float)):
-            raise TypeError("Timeouts can only be an int or float")
-        setattr(obj, self.name, int(float(value) * 1000))
+    def __set__(self, obj, value) -> None:
+        converted_value = getattr(obj, "_convert")(value)
+        setattr(obj, self.name, converted_value)
 
 
 class Timeouts:
@@ -127,13 +126,18 @@ class Timeouts:
     `value`: `float`
     """
 
+    def _convert(self, timeout: float) -> int:
+        if isinstance(timeout, (int, float)):
+            return int(float(timeout) * 1000)
+        raise TypeError("Timeouts can only be an int or float")
+
     def _to_json(self) -> JSONTimeouts:
         timeouts: JSONTimeouts = {}
         if self._implicit_wait:
-            timeouts["implicit"] = self.implicit_wait
+            timeouts["implicit"] = self._implicit_wait
         if self._page_load:
-            timeouts["pageLoad"] = self.page_load
+            timeouts["pageLoad"] = self._page_load
         if self._script:
-            timeouts["script"] = self.script
+            timeouts["script"] = self._script
 
         return timeouts
