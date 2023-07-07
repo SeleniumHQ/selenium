@@ -42,6 +42,7 @@ pub struct ManagerConfig {
     pub browser_ttl: u64,
     pub driver_ttl: u64,
     pub offline: bool,
+    pub force_browser_download: bool,
 }
 
 impl ManagerConfig {
@@ -89,6 +90,7 @@ impl ManagerConfig {
             browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
+            force_browser_download: BooleanKey("force_browser_download", false).get_value(),
         }
     }
 }

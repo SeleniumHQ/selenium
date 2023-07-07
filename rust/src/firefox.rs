@@ -45,6 +45,7 @@ pub struct FirefoxManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub downloaded_browser: Option<PathBuf>,
 }
 
 impl FirefoxManager {
@@ -60,6 +61,7 @@ impl FirefoxManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
+            downloaded_browser: None,
         }))
     }
 }
@@ -289,6 +291,18 @@ impl SeleniumManager for FirefoxManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
+    }
+
+    fn get_downloaded_browser(&self) -> Option<PathBuf> {
+        self.downloaded_browser.to_owned()
+    }
+
+    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
+        self.downloaded_browser = downloaded_browser;
     }
 }
 

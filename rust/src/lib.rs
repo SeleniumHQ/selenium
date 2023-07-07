@@ -17,7 +17,7 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::{compose_cache_folder, create_parent_path_if_not_exists};
+use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
@@ -33,13 +33,11 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::Duration;
 
-use crate::downloads::download_driver_to_tmp_folder;
+use crate::downloads::download_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
 use crate::grid::GRID_NAME;
 use crate::logger::Logger;
-use crate::metadata::{
-    create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
-};
+use crate::metadata::{create_browser_metadata, get_browser_version_from_metadata};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 
 pub mod chrome;
@@ -56,7 +54,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 180; // The timeout is applied from when the request starts connecting until the response body has finished
+pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -82,7 +80,7 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
-pub const TTL_BROWSERS_SEC: u64 = 0;
+pub const TTL_BROWSERS_SEC: u64 = 86400;
 pub const TTL_DRIVERS_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const CRLF: &str = "\r\n";
@@ -124,6 +122,12 @@ pub trait SeleniumManager {
 
     fn set_logger(&mut self, log: Logger);
 
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>>;
+
+    fn get_downloaded_browser(&self) -> Option<PathBuf>;
+
+    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>);
+
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
@@ -133,7 +137,7 @@ pub trait SeleniumManager {
         self.get_logger()
             .debug(format!("Driver URL: {}", driver_url));
         let (_tmp_folder, driver_zip_file) =
-            download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
+            download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
 
         if self.is_grid() {
             let driver_path_in_cache = Self::get_driver_path_in_cache(self);
@@ -141,7 +145,13 @@ pub trait SeleniumManager {
             Ok(fs::rename(driver_zip_file, driver_path_in_cache)?)
         } else {
             let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-            uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
+            let driver_name_with_extension = self.get_driver_name_with_extension();
+            uncompress(
+                &driver_zip_file,
+                &driver_path_in_cache,
+                self.get_logger(),
+                Some(driver_name_with_extension),
+            )
         }
     }
 
@@ -158,57 +168,38 @@ pub trait SeleniumManager {
     }
 
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
-        let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
 
-        match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
-            Some(version) => {
-                self.get_logger().trace(format!(
-                    "Browser with valid TTL. Getting {} version from metadata",
-                    browser_name
-                ));
-                Some(version)
+        self.get_logger().debug(format!(
+            "Using shell command to find out {} version",
+            browser_name
+        ));
+        let mut browser_version: Option<String> = None;
+        for command in commands.iter() {
+            let output = match self.run_shell_command_with_log(command.to_string()) {
+                Ok(out) => out,
+                Err(_e) => continue,
+            };
+            let full_browser_version = parse_version(output, self.get_logger()).unwrap_or_default();
+            if full_browser_version.is_empty() {
+                continue;
             }
-            _ => {
-                self.get_logger().debug(format!(
-                    "Using shell command to find out {} version",
-                    browser_name
-                ));
-                let mut browser_version: Option<String> = None;
-                for command in commands.iter() {
-                    let output = match self.run_shell_command_with_log(command.to_string()) {
-                        Ok(out) => out,
-                        Err(_e) => continue,
-                    };
-                    let full_browser_version =
-                        parse_version(output, self.get_logger()).unwrap_or_default();
-                    if full_browser_version.is_empty() {
-                        continue;
-                    }
-                    self.get_logger().trace(format!(
-                        "The version of {} is {}",
-                        browser_name, full_browser_version
-                    ));
+            self.get_logger().trace(format!(
+                "The version of {} is {}",
+                browser_name, full_browser_version
+            ));
 
-                    browser_version = Some(full_browser_version);
-                    break;
-                }
-
-                let browser_ttl = self.get_browser_ttl();
-                if browser_ttl > 0 && browser_version.is_some() && !self.is_safari() {
-                    metadata.browsers.push(create_browser_metadata(
-                        browser_name,
-                        browser_version.as_ref().unwrap(),
-                        browser_ttl,
-                    ));
-                    write_metadata(&metadata, self.get_logger());
-                }
-                browser_version
-            }
+            browser_version = Some(full_browser_version);
+            break;
         }
+
+        browser_version
     }
 
-    fn discover_driver_version(&mut self) -> Result<String, String> {
+    fn discover_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+        if self.is_force_browser_download() {
+            self.download_browser()?;
+        }
         let browser_version = self.get_major_browser_version();
         if browser_version.is_empty() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
@@ -223,8 +214,20 @@ pub trait SeleniumManager {
                     }
                 }
                 None => {
-                    if self.is_browser_version_unstable() {
-                        return Err(format!("Browser version '{browser_version}' not found"));
+                    self.get_logger().debug(format!(
+                        "{} has not been discovered in the system",
+                        self.get_browser_name()
+                    ));
+                    let browser_path = self.download_browser()?;
+                    if browser_path.is_some() {
+                        self.get_logger().debug(format!(
+                            "{} {} downloaded to {}",
+                            self.get_browser_name(),
+                            self.get_browser_version(),
+                            browser_path.unwrap().display()
+                        ));
+                    } else if self.is_browser_version_unstable() {
+                        return Err(format!("Browser version '{browser_version}' not found").into());
                     } else if !self.is_iexplorer() && !self.is_grid() {
                         self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
@@ -234,26 +237,21 @@ pub trait SeleniumManager {
                 }
             }
         }
-        let driver_version = match self.request_driver_version() {
-            Ok(version) => {
-                if version.is_empty() {
-                    return Err(format!(
-                        "The {} version cannot be discovered",
-                        self.get_driver_name()
-                    ));
-                }
-                version
-            }
-            Err(err) => {
-                return Err(err.to_string());
-            }
-        };
-        self.get_logger().debug(format!(
-            "Required driver: {} {}",
-            self.get_driver_name(),
-            driver_version
-        ));
-        Ok(driver_version)
+        let driver_version = self.request_driver_version()?;
+        if driver_version.is_empty() {
+            Err(format!(
+                "The {} version cannot be discovered",
+                self.get_driver_name()
+            )
+            .into())
+        } else {
+            self.get_logger().debug(format!(
+                "Required driver: {} {}",
+                self.get_driver_name(),
+                driver_version
+            ));
+            Ok(driver_version)
+        }
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
@@ -324,6 +322,8 @@ pub trait SeleniumManager {
 
         // Try to find driver in PATH
         if !self.is_safari() && !self.is_grid() {
+            self.get_logger()
+                .debug(format!("Checking {} in PATH", self.get_driver_name()));
             (driver_in_path_version, driver_in_path) = self.find_driver_in_path();
             if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
                 self.get_logger().debug(format!(
@@ -332,6 +332,9 @@ pub trait SeleniumManager {
                     version,
                     path
                 ));
+            } else {
+                self.get_logger()
+                    .debug(format!("{} not found in PATH", self.get_driver_name()));
             }
         }
 
@@ -349,7 +352,7 @@ pub trait SeleniumManager {
                             err
                         ));
                     } else {
-                        return Err(err.into());
+                        return Err(err);
                     }
                 }
             }
@@ -436,6 +439,22 @@ pub trait SeleniumManager {
             return Err(format_one_arg(message, self.get_driver_name()).into());
         }
         Ok(())
+    }
+
+    fn get_driver_name_with_extension(&self) -> String {
+        format!(
+            "{}{}",
+            self.get_driver_name(),
+            get_binary_extension(self.get_os())
+        )
+    }
+
+    fn get_browser_name_with_extension(&self) -> String {
+        format!(
+            "{}{}",
+            self.get_browser_name(),
+            get_binary_extension(self.get_os())
+        )
     }
 
     // ----------------------------------------------------------
@@ -572,6 +591,16 @@ pub trait SeleniumManager {
     fn set_offline(&mut self, offline: bool) {
         if offline {
             self.get_config_mut().offline = true;
+        }
+    }
+
+    fn is_force_browser_download(&self) -> bool {
+        self.get_config().force_browser_download
+    }
+
+    fn set_force_browser_download(&mut self, force_browser_download: bool) {
+        if force_browser_download {
+            self.get_config_mut().force_browser_download = true;
         }
     }
 }

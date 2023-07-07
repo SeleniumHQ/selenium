@@ -26,13 +26,14 @@ use std::path::PathBuf;
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, get_cache_folder, BrowserPath};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, SeleniumManager, BETA,
+    create_browser_metadata, create_http_client, download_to_tmp_folder, format_one_arg,
+    format_three_args, get_browser_version_from_metadata, uncompress, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
     OFFLINE_REQUEST_ERR_MSG, REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
@@ -51,6 +52,7 @@ pub struct ChromeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub downloaded_browser: Option<PathBuf>,
     pub driver_url: Option<String>,
 }
 
@@ -68,6 +70,7 @@ impl ChromeManager {
             config,
             log: Logger::default(),
             driver_url: None,
+            downloaded_browser: None,
         }))
     }
 
@@ -107,10 +110,8 @@ impl ChromeManager {
     where
         T: Serialize + for<'a> Deserialize<'a>,
     {
-        self.log.debug(format!(
-            "Reading {} metadata from {}",
-            &self.driver_name, driver_url
-        ));
+        self.log
+            .debug(format!("Reading metadata from {}", driver_url));
         parse_json_from_url::<T>(self.get_http_client(), driver_url)
     }
 
@@ -131,14 +132,18 @@ impl ChromeManager {
             return self.request_driver_version_from_latest(self.create_latest_release_url());
         }
 
-        let url: Vec<&PlatformUrl> = chromedriver
+        let platform_url: Vec<&PlatformUrl> = chromedriver
             .as_ref()
             .unwrap()
             .iter()
             .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
             .collect();
-        self.log.trace(format!("URLs for CfT: {:?}", url));
-        self.driver_url = Some(url.first().unwrap().url.to_string());
+        self.log.trace(format!(
+            "CfT URLs for downloading {}: {:?}",
+            self.get_driver_name(),
+            platform_url
+        ));
+        self.driver_url = Some(platform_url.first().unwrap().url.to_string());
 
         Ok(stable_channel.version)
     }
@@ -203,6 +208,13 @@ impl ChromeManager {
         } else {
             "linux64"
         }
+    }
+
+    fn get_browser_path_in_cache(&self) -> PathBuf {
+        get_cache_folder()
+            .join(self.get_browser_name())
+            .join(self.get_platform_label())
+            .join(self.get_browser_version())
     }
 }
 
@@ -420,6 +432,103 @@ impl SeleniumManager for ChromeManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+
+        // Checking latest version of Chrome for Testing (CfT)
+        let mut metadata = get_metadata(self.get_logger());
+        let browser_version;
+        let mut browser_url = None;
+        match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
+            Some(version) => {
+                self.get_logger().trace(format!(
+                    "Browser with valid TTL. Getting {} version from metadata",
+                    browser_name
+                ));
+                browser_version = version;
+                self.set_browser_version(browser_version.clone());
+            }
+            _ => {
+                self.get_logger().debug(format!(
+                    "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
+                    browser_name
+                ));
+                let versions_with_downloads = self
+                    .request_versions_from_cft::<LatestVersionsWithDownloads>(
+                        self.create_latest_versions_url(),
+                    )?;
+
+                let stable_channel = versions_with_downloads.channels.stable;
+                let chrome = stable_channel.downloads.chrome;
+                let platform_url: Vec<&PlatformUrl> = chrome
+                    .iter()
+                    .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
+                    .collect();
+                self.log.trace(format!(
+                    "CfT URLs for downloading {}: {:?}",
+                    self.get_browser_name(),
+                    platform_url
+                ));
+                browser_url = Some(platform_url.first().unwrap().url.to_string());
+                browser_version = stable_channel.version;
+
+                self.set_browser_version(browser_version.clone());
+                let browser_ttl = self.get_browser_ttl();
+                if browser_ttl > 0 && !browser_version.is_empty() {
+                    metadata.browsers.push(create_browser_metadata(
+                        browser_name,
+                        &browser_version,
+                        browser_ttl,
+                    ));
+                    write_metadata(&metadata, self.get_logger());
+                }
+            }
+        }
+        self.get_logger().debug(format!(
+            "Required browser: {} {}",
+            browser_name, browser_version
+        ));
+
+        // Checking if that browser version is in the cache
+        let browser_path_in_cache = Self::get_browser_path_in_cache(self);
+        let browser_path = Some(browser_path_in_cache.join(self.get_browser_name_with_extension()));
+        if browser_path.clone().unwrap().exists() {
+            self.get_logger().debug(format!(
+                "{} {} already in the cache",
+                browser_name, browser_version
+            ));
+        } else {
+            // If browser is not in the cache, download it
+            let download_url = browser_url.unwrap();
+            self.get_logger().debug(format!(
+                "Downloading {} {} from {}",
+                self.get_browser_name(),
+                self.get_browser_version(),
+                download_url
+            ));
+            let (_tmp_folder, driver_zip_file) =
+                download_to_tmp_folder(self.get_http_client(), download_url, self.get_logger())?;
+
+            uncompress(
+                &driver_zip_file,
+                &browser_path_in_cache,
+                self.get_logger(),
+                None,
+            )?;
+        }
+        self.set_downloaded_browser(browser_path.clone());
+
+        Ok(browser_path)
+    }
+
+    fn get_downloaded_browser(&self) -> Option<PathBuf> {
+        self.downloaded_browser.to_owned()
+    }
+
+    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
+        self.downloaded_browser = downloaded_browser;
     }
 }
 

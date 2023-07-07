@@ -49,6 +49,7 @@ pub struct IExplorerManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub downloaded_browser: Option<PathBuf>,
     pub driver_url: Option<String>,
 }
 
@@ -66,6 +67,7 @@ impl IExplorerManager {
             config,
             log: Logger::default(),
             driver_url: None,
+            downloaded_browser: None,
         }))
     }
 }
@@ -204,5 +206,17 @@ impl SeleniumManager for IExplorerManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
+    }
+
+    fn get_downloaded_browser(&self) -> Option<PathBuf> {
+        self.downloaded_browser.to_owned()
+    }
+
+    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
+        self.downloaded_browser = downloaded_browser;
     }
 }

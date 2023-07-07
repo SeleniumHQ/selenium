@@ -7075,9 +7075,9 @@
       },
       "license": "Apache-2.0/ISC/MIT"
     },
-    "selenium-manager 1.0.0-M3": {
+    "selenium-manager 1.0.0-M4": {
       "name": "selenium-manager",
-      "version": "1.0.0-M3",
+      "version": "1.0.0-M4",
       "repository": null,
       "targets": [
         {
@@ -7182,7 +7182,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "1.0.0-M3"
+        "version": "1.0.0-M4"
       },
       "license": "Apache-2.0"
     },
@@ -11822,7 +11822,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 1.0.0-M3": "rust"
+    "selenium-manager 1.0.0-M4": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [

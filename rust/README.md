@@ -16,7 +16,7 @@ Selenium Manager can be executed using Cargo as follows:
 
 ```
 $ cargo run -- --help
-selenium-manager 1.0.0-M3
+selenium-manager 1.0.0-M4
 Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
 
 Usage: selenium-manager [OPTIONS]
@@ -38,11 +38,11 @@ Options:
       --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 180]
+          Timeout for network requests (in seconds) [default: 300]
       --driver-ttl <DRIVER_TTL>
           Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
-          Browser TTL (time-to-live) [default: 0]
+          Browser TTL (time-to-live) [default: 86400]
       --clear-cache
           Clear cache folder (~/.cache/selenium)
       --clear-metadata
@@ -53,6 +53,8 @@ Options:
           Display TRACE messages
       --offline
           Offline mode (i.e., disabling network requests and downloads)
+      --force-browser-download
+          Force to download browser. Currently Chrome for Testing (CfT) is supported
   -h, --help
           Print help
   -V, --version

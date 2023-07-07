@@ -70,6 +70,7 @@ pub fn uncompress(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
+    single_file: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
     let file = File::open(compressed_file)?;
     let kind = infer::get_from_path(compressed_file)?
@@ -81,7 +82,7 @@ pub fn uncompress(
     ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
-        unzip(file, target, log)?
+        unzip(file, target, log, single_file)?
     } else if extension.eq_ignore_ascii_case(GZ) {
         untargz(file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
@@ -113,37 +114,53 @@ pub fn untargz(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Er
     Ok(())
 }
 
-pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn unzip(
+    file: File,
+    target: &Path,
+    log: &Logger,
+    single_file: Option<String>,
+) -> Result<(), Box<dyn Error>> {
     log.trace(format!("Unzipping file to {}", target.display()));
+    let mut out_path = target.to_path_buf();
     let mut archive = ZipArchive::new(file)?;
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
-        if target.exists() {
-            continue;
+        let path: PathBuf = match file.enclosed_name() {
+            Some(p) => p.to_owned().iter().skip(1).collect(),
+            None => continue,
+        };
+        if single_file.is_none() {
+            create_path_if_not_exists(target);
+            out_path = target.join(path);
         }
-        let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if target_file_name.eq(get_raw_file_name(file.name())) {
-            log.debug(format!(
+
+        if single_file.is_none() && file.name().ends_with('/') {
+            log.trace(format!("File {} extracted to {}", i, out_path.display()));
+            fs::create_dir_all(&out_path)?;
+        } else if single_file.is_none()
+            || (single_file.is_some()
+                && get_raw_file_name(file.name()).eq(&single_file.clone().unwrap()))
+        {
+            log.trace(format!(
                 "File extracted to {} ({} bytes)",
-                target.display(),
+                out_path.display(),
                 file.size()
             ));
-            create_parent_path_if_not_exists(target);
-            if !target.exists() {
-                let mut outfile = File::create(target)?;
+            create_parent_path_if_not_exists(out_path.as_path());
 
-                // Set permissions in Unix-like systems
-                #[cfg(unix)]
-                {
-                    use std::os::unix::fs::PermissionsExt;
+            let mut outfile = File::create(&out_path)?;
+            io::copy(&mut file, &mut outfile)?;
 
-                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+            // Set permissions in Unix-like systems
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+
+                if let Some(mode) = file.unix_mode() {
+                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode)).unwrap();
                 }
-
-                io::copy(&mut file, &mut outfile)?;
             }
-            break;
         }
     }
     Ok(())

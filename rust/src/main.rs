@@ -20,12 +20,10 @@ use std::process::exit;
 use clap::Parser;
 
 use exitcode::DATAERR;
-use exitcode::UNAVAILABLE;
-
 use exitcode::OK;
 use selenium_manager::config::BooleanKey;
 use selenium_manager::grid::GridManager;
-use selenium_manager::logger::Logger;
+use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
 use selenium_manager::TTL_DRIVERS_SEC;
@@ -108,6 +106,10 @@ struct Cli {
     /// Offline mode (i.e., disabling network requests and downloads)
     #[clap(long)]
     offline: bool,
+
+    /// Force to download browser. Currently Chrome for Testing (CfT) is supported
+    #[clap(long)]
+    force_browser_download: bool,
 }
 
 fn main() {
@@ -155,6 +157,7 @@ fn main() {
     selenium_manager.set_driver_ttl(cli.driver_ttl);
     selenium_manager.set_browser_ttl(cli.browser_ttl);
     selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_force_browser_download(cli.force_browser_download);
 
     selenium_manager
         .set_timeout(cli.timeout)
@@ -162,13 +165,16 @@ fn main() {
         .and_then(|_| selenium_manager.resolve_driver())
         .map(|path| {
             let log = selenium_manager.get_logger();
-            if path.exists() {
-                log.info(path.display());
-                flush_and_exit(OK, log);
-            } else {
-                log.error("Driver unavailable in the cache".to_string());
-                flush_and_exit(UNAVAILABLE, log);
+            log.info(format!("{}{}", DRIVER_PATH, path.display()));
+            let downloaded_browser = selenium_manager.get_downloaded_browser();
+            if downloaded_browser.is_some() {
+                log.info(format!(
+                    "{}{}",
+                    BROWSER_PATH,
+                    downloaded_browser.unwrap().display()
+                ));
             }
+            flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
