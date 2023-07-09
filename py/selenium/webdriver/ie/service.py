@@ -62,7 +62,7 @@ class Service(service.Service):
             executable_path,
             port=port,
             log_output=log_output,
-            start_error_message="Please download the binary from https://www.selenium.dev/downloads/ and https://www.selenium.dev/documentation/ie_driver_server/",
+            start_error_message="Please download the binary from https://www.selenium.dev/downloads/ and read up at https://www.selenium.dev/documentation/ie_driver_server/",
             **kwargs,
         )
 
