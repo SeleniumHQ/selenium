@@ -65,6 +65,7 @@ class Service(service.Service):
             port=port,
             log_output=log_output,
             env=env,
+            start_error_message="Please download the binary from https://github.com/mozilla/geckodriver/releases",
             **kwargs,
         )
 
