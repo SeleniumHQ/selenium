@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class TomlConfigTest {
 
@@ -56,12 +55,12 @@ class TomlConfigTest {
 
     List<String> expected =
         Arrays.asList(
-            "name=\"soft cheese\"", "default=\"brie\"",
-            "name=\"Medium-hard cheese\"", "default=\"Emmental\"");
+            "default=\"brie\"", "name=\"soft cheese\"",
+            "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
-        .containsAll(expected);
+        .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
-        .containsAll(expected.subList(0, 2));
+        .isEqualTo(expected.subList(0, 2));
   }
 
   @Test

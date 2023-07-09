@@ -33,9 +33,6 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
@@ -58,6 +55,8 @@ class SeleniumManager:
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
+
+        logger.debug("Selenium Manager binary found at: {location}")
 
         return path
 
@@ -87,7 +86,7 @@ class SeleniumManager:
         proxy = options.proxy
         if proxy and (proxy.http_proxy or proxy.ssl_proxy):
             args.append("--proxy")
-            value = proxy.ssl_proxy if proxy.sslProxy else proxy.http_proxy
+            value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
             args.append(value)
 
         if logger.getEffectiveLevel() == logging.DEBUG:
@@ -117,12 +116,13 @@ class SeleniumManager:
         except Exception as err:
             raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
 
+        for item in output["logs"]:
+            if item["level"] == "WARN":
+                logger.warning(item["message"])
+            if item["level"] == "DEBUG" or item["level"] == "INFO":
+                logger.debug(item["message"])
+
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
         else:
-            for item in output["logs"]:
-                if item["level"] == "WARN":
-                    logger.warning(item["message"])
-                if item["level"] == "DEBUG" or item["level"] == "INFO":
-                    logger.debug(item["message"])
             return result

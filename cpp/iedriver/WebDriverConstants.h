@@ -66,6 +66,7 @@
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
 #define ATTACH_TO_EDGE_CHROME "ie.edgechromium"
 #define EDGE_EXECUTABLE_PATH "ie.edgepath"
+#define IGNORE_PROCESS_MATCH "ie.ignoreprocessmatch"
 
 // New top-level browsing context types
 #define WINDOW_WINDOW_TYPE "window"

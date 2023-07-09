@@ -380,7 +380,7 @@ public class FirefoxDriver extends RemoteWebDriver
     }
 
     return maybeGetBiDi()
-        .orElseThrow(() -> new DevToolsException("Unable to initialize Bidi connection"));
+        .orElseThrow(() -> new BiDiException("Unable to initialize Bidi connection"));
   }
 
   @Override

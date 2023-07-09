@@ -45,27 +45,27 @@
   // about an undefined symbol.
   window.webdriver = {};
 
-  var scripts = document.getElementsByTagName('script');
-  var directoryPath = './';
-  var thisFile = 'webdriver-bootstrap.js';
+  let scripts = document.getElementsByTagName('script');
+  let directoryPath = './';
+  let thisFile = 'webdriver-bootstrap.js';
 
-  for (var i = 0; i < scripts.length; i++) {
-    var src = scripts[i].src;
-    var len = src.length;
+  for (let i = 0; i < scripts.length; i++) {
+    let src = scripts[i].src;
+    let len = src.length;
     if (src.substr(len - thisFile.length) == thisFile) {
-      directoryPath = src.substr(0, len - thisFile.length);
+        directoryPath = src.substr(0, len - thisFile.length);
       break;
     }
   }
 
   // All of the files to load. Files are specified in the order they must be
   // loaded, NOT alphabetical order.
-  var webdriverFiles = [
+  const webdriverFiles = [
     '../../third_party/closure/goog/base.js',
     'deps.js'
   ];
 
-  for (var j = 0; j < webdriverFiles.length; j++) {
+  for (let j = 0; j < webdriverFiles.length; j++) {
     document.write('<script type="text/javascript" src="' +
         directoryPath + webdriverFiles[j] + '"></script>');
   }

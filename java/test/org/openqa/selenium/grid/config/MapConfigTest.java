@@ -17,13 +17,16 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.json.Json;
-
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.openqa.selenium.json.Json;
+import org.junit.jupiter.api.Test;
 
 class MapConfigTest {
 
@@ -38,9 +41,23 @@ class MapConfigTest {
 
   @Test
   void shouldContainConfigFromArrayOfTables() {
-    String json = "{\"cheeses\": {\"default\": \"manchego\", "
-    + "\"type\": [{\"name\": \"soft cheese\", \"default\": \"brie\"}, "
-    + "{\"name\": \"Medium-hard cheese\", \"default\": \"Emmental\"}]}}";
+    String json = String.join("", "",
+      "{",
+        "`cheeses`: {",
+          "`default`: `manchego`,",
+          "`type`: [",
+            "{",
+              "`name`: `soft cheese`,",
+              "`default`: `brie`",
+            "},",
+            "{",
+              "`name`: `Medium-hard cheese`,",
+              "`default`: `Emmental`",
+            "}",
+          "]",
+        "}",
+      "}"
+    ).replace("`", "\"");
     Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
     Config config = new MapConfig(raw);
 
@@ -48,19 +65,32 @@ class MapConfigTest {
 
     List<String> expected =
       Arrays.asList(
-        "name=\"soft cheese\"", "default=\"brie\"",
-        "name=\"Medium-hard cheese\"", "default=\"Emmental\"");
+        "default=\"brie\"", "name=\"soft cheese\"",
+        "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
-      .containsAll(expected);
+      .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
-      .containsAll(expected.subList(0, 2));
+      .isEqualTo(expected.subList(0, 2));
   }
 
   @Test
   void ensureCanReadListOfMaps() {
-    String json = "{\"node\":{\"detect-drivers\":false,"
-      + "\"driver-configuration\":[{\"display-name\":\"htmlunit\","
-      + "\"stereotype\":{\"browserName\":\"htmlunit\",\"browserVersion\":\"chrome\"}}]}}";
+    String json = String.join("", "",
+      "{",
+        "`node`: {",
+          "`detect-drivers`: false,",
+          "`driver-configuration`: [",
+            "{",
+              "`display-name`: `htmlunit`,",
+              "`stereotype`: {",
+                "`browserName`: `htmlunit`,",
+                "`browserVersion`: `chrome`",
+              "}",
+            "}",
+          "]",
+        "}",
+      "}"
+    ).replace("`", "\"");
     Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
     Config config = new MapConfig(raw);
 

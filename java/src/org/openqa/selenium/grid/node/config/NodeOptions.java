@@ -18,28 +18,26 @@
 package org.openqa.selenium.grid.node.config;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.*;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.*;
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.Urls;
-import org.openqa.selenium.remote.Browser;
-import org.openqa.selenium.remote.service.DriverService;
-
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import java.io.File;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -47,6 +45,25 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.remote.service.DriverService;
 
 public class NodeOptions {
 
@@ -705,7 +722,7 @@ public class NodeOptions {
   private String unquote(String input) {
     int len = input.length();
     if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
-      return input.substring(1, len - 1).replace("\\\"", "\"");
+      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
     }
     return input;
   }
