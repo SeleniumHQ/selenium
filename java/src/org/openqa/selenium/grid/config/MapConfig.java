@@ -21,14 +21,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+
+import java.util.*;
 
 public class MapConfig implements Config {
 
@@ -76,12 +72,19 @@ public class MapConfig implements Config {
       Collection<?> collection = (Collection<?>) value;
       // Case when an array of map is used as config
       if (collection.stream().anyMatch(item -> item instanceof Map)) {
-        List<String> toReturn = collection.stream()
+        List<String> toReturn = new ArrayList<>();
+        collection.stream()
           .map(item -> (Map<?, ?>) item)
-          .flatMap(map -> map.entrySet().stream())
-          .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-          .sorted()
-          .collect(Collectors.toList());
+          .forEach(
+            mapItem ->
+              mapItem.entrySet().stream()
+                .map(entry -> {
+                  StringBuilder jsonStr = new StringBuilder();
+                  new Json().newOutput(jsonStr).setPrettyPrint(false).write(entry.getValue());
+                  return String.format("%s=%s", entry.getKey(), jsonStr);
+                })
+                .sorted()
+                .forEach(toReturn::add));
         return Optional.of(toReturn);
       }
     }

@@ -23,16 +23,14 @@ import io.ous.jtoml.JToml;
 import io.ous.jtoml.ParseException;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import org.openqa.selenium.internal.Require;
+import java.util.*;
 
 public class TomlConfig implements Config {
 
@@ -89,13 +87,17 @@ public class TomlConfig implements Config {
       if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
         List<String> toReturn = new ArrayList<>();
         collection.stream()
-            .map(item -> (TomlTable) item)
-            .forEach(
-                tomlTable ->
-                    tomlTable.toMap().entrySet().stream()
-                        .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                        .sorted()
-                        .forEach(toReturn::add));
+          .map(item -> (TomlTable) item)
+          .forEach(
+            tomlTable ->
+              tomlTable.toMap().entrySet().stream()
+                .map(entry -> {
+                  StringBuilder jsonStr = new StringBuilder();
+                  new Json().newOutput(jsonStr).setPrettyPrint(false).write(entry.getValue());
+                  return String.format("%s=%s", entry.getKey(), jsonStr);
+                })
+                .sorted()
+                .forEach(toReturn::add));
         return Optional.of(toReturn);
       }
       List<String> values =
