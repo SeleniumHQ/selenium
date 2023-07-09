@@ -59,6 +59,8 @@ class Options(ArgOptions):
         :Args:
          - value : path to the browser binary
         """
+        if not isinstance(value, str):
+            raise TypeError("Binary location must be a string")
         self._binary_location = value
 
     def to_capabilities(self) -> dict:
@@ -97,6 +99,8 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Automatic Inspection must be a boolean")
         self.set_capability(self.AUTOMATIC_INSPECTION, value)
 
     @property
@@ -111,6 +115,8 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Automatic Profiling must be a boolean")
         self.set_capability(self.AUTOMATIC_PROFILING, value)
 
     @property
@@ -126,4 +132,6 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Use Technology Preview must be a boolean")
         self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")
