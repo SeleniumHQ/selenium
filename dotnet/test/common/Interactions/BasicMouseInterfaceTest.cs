@@ -135,18 +135,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void ShouldMoveToLocationAndClick()
+        public void ShouldMoveToLocation()
         {
-            driver.Url = javascriptPage;
-            IWebElement element = driver.FindElement(By.Id("clickField"));
-            var location = element.Location;
+            driver.Url = mouseInteractionPage;
 
             Actions actionProvider = new Actions(driver);
-            IAction moveAndClick = actionProvider.MoveToLocation(location.X,location.Y).Click().Build();
+            actionProvider.MoveToLocation(100, 200).Build().Perform();
 
-            moveAndClick.Perform();
-
-            WaitFor(ValueToBe(element, "Clicked"), "Value was not expected value");
+            IWebElement location = driver.FindElement(By.Id("absolute-location"));
+            var coordinates = location.Text.Split(',');
+            Assert.AreEqual("100", coordinates[0].Trim());
+            Assert.AreEqual("200", coordinates[1].Trim());
         }
 
         [Test]
