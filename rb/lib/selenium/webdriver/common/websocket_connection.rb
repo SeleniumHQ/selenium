@@ -119,7 +119,7 @@ module Selenium
 
       def callback_thread(params)
         Thread.new do
-          Thread.current.abort_on_exception = false
+          Thread.current.abort_on_exception = true
 
           # We might end up blocked forever when we have an error in event.
           # For example, if network interception event raises error,
@@ -129,7 +129,7 @@ module Selenium
           Thread.current.report_on_exception = true
 
           yield params
-        rescue *CONNECTION_ERRORS
+        rescue Error::WebDriverError, *CONNECTION_ERRORS
           Thread.stop
         end
       end
