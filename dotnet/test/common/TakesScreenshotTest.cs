@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotOfCurrentViewport()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldTakeScreenshotsOfAnElement()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -124,7 +124,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtFramePage()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -167,7 +167,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -208,7 +208,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -247,7 +247,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {
-#if NETCOREAPP3_1 || NET6_0
+#if NET6_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -323,7 +323,7 @@ namespace OpenQA.Selenium
         {
             HashSet<string> colors = new HashSet<string>();
 
-#if !NETCOREAPP3_1 && !NET6_0
+#if !NET6_0
             try
             {
                 Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
@@ -357,7 +357,7 @@ namespace OpenQA.Selenium
         {
             Color pixelColor = Color.Black;
 
-#if !NETCOREAPP3_1 && !NET6_0
+#if !NET6_0
             Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
             Bitmap bitmap = new Bitmap(image);
             pixelColor = bitmap.GetPixel(1, 1);
