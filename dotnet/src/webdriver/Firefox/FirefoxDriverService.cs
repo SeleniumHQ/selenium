@@ -230,6 +230,11 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath)
         {
+            if (Path.GetFileName(driverPath) == FirefoxDriverServiceFileName())
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, FirefoxDriverServiceFileName());
         }
 

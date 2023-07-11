@@ -169,6 +169,11 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
+            if (Path.GetFileName(driverPath) == InternetExplorerDriverServiceFileName)
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName);
         }
 

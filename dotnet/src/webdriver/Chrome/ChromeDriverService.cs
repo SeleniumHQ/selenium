@@ -67,6 +67,11 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
+            if (Path.GetFileName(driverPath).Contains(DefaultChromeDriverServiceExecutableName))
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName));
         }
 

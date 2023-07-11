@@ -180,6 +180,11 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath)
         {
+            if (Path.GetFileName(driverPath) == DefaultSafariDriverServiceExecutableName)
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, DefaultSafariDriverServiceExecutableName);
         }
 
