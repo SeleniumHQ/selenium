@@ -23,9 +23,8 @@ from selenium.webdriver.common.proxy import Proxy
 
 
 class _BaseOptionsDescriptor:
-    def __init__(self, name, expected_type):
+    def __init__(self, name):
         self.name = name
-        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect"):
@@ -33,8 +32,6 @@ class _BaseOptionsDescriptor:
         return obj._caps.get(self.name)
 
     def __set__(self, obj, value):
-        if not isinstance(value, self.expected_type):
-            raise TypeError(f"{self.name} should be of type {self.expected_type}")
         obj.set_capability(self.name, value)
 
 
@@ -45,16 +42,13 @@ class _PageLoadStrategyDescriptor:
     :param strategy: the strategy corresponding to a document readiness state
     """
 
-    def __init__(self, name, expected_type):
+    def __init__(self, name):
         self.name = name
-        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         return obj._caps.get(self.name)
 
     def __set__(self, obj, value):
-        if not isinstance(value, self.expected_type):
-            raise TypeError(f"{self.name} should be of type {self.expected_type}")
         if value in ("normal", "eager", "none"):
             obj.set_capability(self.name, value)
         else:
@@ -71,16 +65,13 @@ class _UnHandledPromptBehaviorDescriptor:
     :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
-    def __init__(self, name, expected_type):
+    def __init__(self, name):
         self.name = name
-        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         return obj._caps.get(self.name)
 
     def __set__(self, obj, value):
-        if not isinstance(value, self.expected_type):
-            raise TypeError(f"{self.name} should be of type {self.expected_type}")
         if value in ("dismiss", "accept", "dismiss and notify", "accept and notify", "ignore"):
             obj.set_capability(self.name, value)
         else:
@@ -99,16 +90,13 @@ class _TimeoutsDescriptor:
     :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
-    def __init__(self, name, expected_type):
+    def __init__(self, name):
         self.name = name
-        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         return self._caps.get(self.name)
 
     def __set__(self, obj, value):
-        if not isinstance(value, self.expected_type):
-            raise TypeError(f"{self.name} should be of type {self.expected_type}")
         if all(x in ("implicit", "pageLoad", "script") for x in value.keys()):
             obj.set_capability(self.name, value)
         else:
@@ -120,15 +108,14 @@ class _ProxyDescriptor:
     :Returns: Proxy if set, otherwise None.
     """
 
-    def __init__(self, name, expected_type):
+    def __init__(self, name):
         self.name = name
-        self.expected_type = expected_type
 
     def __get__(self, obj, cls):
         return obj._proxy
 
     def __set__(self, obj, value):
-        if not isinstance(value, self.expected_type):
+        if not isinstance(value, Proxy):
             raise InvalidArgumentException("Only Proxy objects can be passed in.")
         obj._proxy = value
         obj._caps[self.name] = value.to_capabilities()
@@ -138,7 +125,7 @@ class BaseOptions(metaclass=ABCMeta):
     """Base class for individual browser options."""
 
     # Creating _BaseOptions descriptors
-    browser_version = _BaseOptionsDescriptor("browserVersion", str)
+    browser_version = _BaseOptionsDescriptor("browserVersion")
     """Gets and Sets the version of the browser.
 
     Usage
@@ -160,7 +147,7 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
-    platform_name = _BaseOptionsDescriptor("platformName", str)
+    platform_name = _BaseOptionsDescriptor("platformName")
     """Gets and Sets name of the platform.
 
     Usage
@@ -181,7 +168,7 @@ class BaseOptions(metaclass=ABCMeta):
     - Set
         - `None`
     """
-    accept_insecure_certs = _BaseOptionsDescriptor("acceptInsecureCerts", bool)
+    accept_insecure_certs = _BaseOptionsDescriptor("acceptInsecureCerts")
     """Gets and Set wheather the session accepts insecure certificates.
 
     Usage
@@ -203,7 +190,7 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
-    strict_file_interactability = _BaseOptionsDescriptor("strictFileInteractability", bool)
+    strict_file_interactability = _BaseOptionsDescriptor("strictFileInteractability")
     """Gets and Sets wheather session is about file interactiability.
 
     Usage
@@ -225,7 +212,7 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
-    set_window_rect = _BaseOptionsDescriptor("setWindowRect", bool)
+    set_window_rect = _BaseOptionsDescriptor("setWindowRect")
     """Gets and Sets window size and position.
 
     Usage
@@ -247,7 +234,7 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
     # Creating _PageLoadStrategy descriptor
-    page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy", str)
+    page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy")
     """
     :Gets and Sets page load strategy, the default is "normal".
 
@@ -270,7 +257,7 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
     # Creating _UnHandledPromptBehavior descriptor
-    unhandled_prompt_behavior = _UnHandledPromptBehaviorDescriptor("unhandledPromptBehavior", str)
+    unhandled_prompt_behavior = _UnHandledPromptBehaviorDescriptor("unhandledPromptBehavior")
     """
     :Gets and Sets unhandled prompt behavior, the default is "dismiss and notify"
 
@@ -294,7 +281,7 @@ class BaseOptions(metaclass=ABCMeta):
     """
 
     # Creating _Timeouts descriptor
-    timeouts = _TimeoutsDescriptor("timeouts", dict)
+    timeouts = _TimeoutsDescriptor("timeouts")
     """
     :Gets and Sets implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
 
@@ -318,7 +305,7 @@ class BaseOptions(metaclass=ABCMeta):
     """
 
     # Creating _Proxy descriptor
-    proxy = _ProxyDescriptor("proxy", Proxy)
+    proxy = _ProxyDescriptor("proxy")
     """Sets and Gets Proxy.
 
     Usage
