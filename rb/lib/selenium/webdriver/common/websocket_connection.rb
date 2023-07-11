@@ -129,6 +129,8 @@ module Selenium
           Thread.current.report_on_exception = true
 
           yield params
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
