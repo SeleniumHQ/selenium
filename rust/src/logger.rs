@@ -29,12 +29,15 @@ use std::io::Write;
 use std::ops::Deref;
 use Color::{Blue, Cyan, Green, Red, Yellow};
 
+#[derive(Default)]
 enum OutputType {
+    #[default]
     Logger,
     Json,
     Shell,
 }
 
+#[derive(Default)]
 pub struct Logger {
     debug: bool,
     trace: bool,
@@ -42,30 +45,26 @@ pub struct Logger {
     json: RefCell<JsonOutput>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct Logs {
     pub level: String,
     pub timestamp: u64,
     pub message: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct Result {
     pub code: i32,
     pub message: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct JsonOutput {
     pub logs: Vec<Logs>,
     pub result: Result,
 }
 
 impl Logger {
-    pub fn default() -> Self {
-        Logger::create("", false, false)
-    }
-
     pub fn create(output: &str, debug: bool, trace: bool) -> Self {
         let output_type;
         if output.eq_ignore_ascii_case("json") {

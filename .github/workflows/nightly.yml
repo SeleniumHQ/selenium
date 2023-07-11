@@ -10,13 +10,14 @@ on:
         type: string
         default: ''
       language:
-        description: Configured artefacts for the language will be built and pushed
+        description: Language artefacts
         required: true
         type: choice
         default: "ruby"
         options:
           - java
           - ruby
+          - grid
 
 jobs:
   ruby:
@@ -44,10 +45,12 @@ jobs:
     with:
       name: Release
       cache-key: java-nightly
-      run: ./go publish-maven-snapshot
+      run: |
+        ./go publish-maven-snapshot
+    secrets: inherit
 
   grid:
-    if: inputs.language == 'java' || github.event_name == 'schedule'
+    if: inputs.language == 'grid' || github.event_name == 'schedule'
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:

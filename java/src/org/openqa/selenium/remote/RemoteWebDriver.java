@@ -363,24 +363,6 @@ public class RemoteWebDriver
     return elementLocation.findElements(this, context, findCommand, locator);
   }
 
-  /**
-   * @deprecated Rely on using {@link By.Remotable} instead
-   */
-  @Deprecated
-  protected WebElement findElement(String by, String using) {
-    throw new UnsupportedOperationException(
-        "`findElement` has been replaced by usages of " + By.Remotable.class);
-  }
-
-  /**
-   * @deprecated Rely on using {@link By.Remotable} instead
-   */
-  @Deprecated
-  protected List<WebElement> findElements(String by, String using) {
-    throw new UnsupportedOperationException(
-        "`findElement` has been replaced by usages of " + By.Remotable.class);
-  }
-
   protected void setFoundBy(SearchContext context, WebElement element, String by, String using) {
     if (element instanceof RemoteWebElement) {
       RemoteWebElement remoteElement = (RemoteWebElement) element;

@@ -18,6 +18,7 @@
 package org.openqa.selenium.lift.find;
 
 /** A {@link Finder} for HTML table tags. */
+@Deprecated
 public class TableFinder extends HtmlTagFinder {
 
   private TableFinder() {}

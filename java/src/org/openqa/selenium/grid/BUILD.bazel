@@ -32,14 +32,14 @@ java_binary(
     name = "pinned-grid",
     data = select({
         "//common:linux": [
-            "@linux_chromedriver//:chromedriver",
             "@linux_chrome//:chrome-linux/chrome",
-            "@linux_geckodriver//:geckodriver",
+            "@linux_chromedriver//:chromedriver",
             "@linux_firefox//:firefox/firefox",
+            "@linux_geckodriver//:geckodriver",
         ],
         "//common:macos": [
-            "@mac_chromedriver//:chromedriver",
             "@mac_chrome//:Chromium.app",
+            "@mac_chromedriver//:chromedriver",
             "@mac_firefox//:Firefox.app",
             "@mac_geckodriver//:geckodriver",
         ],
@@ -145,11 +145,9 @@ java_export(
     runtime_deps = [
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/edge",
-        "//java/src/org/openqa/selenium/firefox",
-        "//java/src/org/openqa/selenium/ie",
-        "//java/src/org/openqa/selenium/safari",
         "//java/src/org/openqa/selenium/events/local",
         "//java/src/org/openqa/selenium/events/zeromq",
+        "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid/commands",
         "//java/src/org/openqa/selenium/grid/distributor/httpd",
         "//java/src/org/openqa/selenium/grid/node/httpd",
@@ -157,6 +155,8 @@ java_export(
         "//java/src/org/openqa/selenium/grid/session",
         "//java/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/safari",
         "//javascript/grid-ui:react_jar",
     ] + CDP_DEPS,
     deps = [
