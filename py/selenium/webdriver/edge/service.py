@@ -64,6 +64,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             log_output=log_output,
             env=env,
-            start_error_message="Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
             **kwargs,
         )

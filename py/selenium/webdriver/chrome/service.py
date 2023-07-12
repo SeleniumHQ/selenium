@@ -50,6 +50,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             log_output=log_output,
             env=env,
-            start_error_message="Please see https://chromedriver.chromium.org/home",
             **kwargs,
         )
