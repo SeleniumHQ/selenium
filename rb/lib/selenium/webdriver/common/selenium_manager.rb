@@ -49,10 +49,21 @@ module Selenium
           location
         end
 
+        def grid_path(required_version)
+          command = [binary, '--grid']
+          command << required_version if required_version
+
+          location = run(*command)
+          WebDriver.logger.debug("Grid found at #{location}", id: :selenium_manager)
+          Platform.assert_file location
+
+          location
+        end
+
         private
 
         def generate_command(binary, options)
-          command = [binary, '--browser', options.browser_name, '--output', 'json']
+          command = [binary, '--browser', options.browser_name]
           if options.browser_version
             command << '--browser-version'
             command << options.browser_version
@@ -65,7 +76,6 @@ module Selenium
             command << '--proxy'
             (command << options.proxy.ssl) || options.proxy.http
           end
-          command << '--debug' if WebDriver.logger.debug?
           command
         end
 
@@ -98,6 +108,8 @@ module Selenium
         end
 
         def run(*command)
+          command += %w[--output json]
+          command << '--debug' if WebDriver.logger.debug?
           WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
           begin

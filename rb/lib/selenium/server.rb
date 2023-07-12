@@ -79,25 +79,14 @@ module Selenium
       #
 
       def download(required_version = :latest)
-        required_version = latest if required_version == :latest
-        download_file_name = "selenium-server-#{required_version}.jar"
-
-        return download_file_name if File.exist? download_file_name
-
+        sm_download(required_version)
+      rescue StandardError => e
         begin
-          download_location = available_assets[download_file_name]['browser_download_url']
-          released = Net::HTTP.get_response(URI.parse(download_location))
-          redirected = URI.parse released.header['location']
-
-          File.open(download_file_name, 'wb') do |destination|
-            download_server(redirected, destination)
-          end
-        rescue StandardError
-          FileUtils.rm_rf download_file_name
-          raise
+          gh_download(required_version)
+        rescue StandardError => ex2
+          msg = "Unable to locate grid with Manager (#{e.message}) or from GitHub (#{ex2.message})"
+          raise Error, msg
         end
-
-        download_file_name
       end
 
       #
@@ -158,6 +147,35 @@ module Selenium
 
           raise Error, "#{resp.code} for #{destination.path}" unless resp.is_a? Net::HTTPSuccess
         end
+      end
+
+      private
+
+      def sm_download(required_version)
+        required_version = nil if required_version == :latest
+        WebDriver::SeleniumManager.grid_path(required_version)
+      end
+
+      def gh_download(required_version)
+        required_version = latest if required_version == :latest
+        download_file_name = "selenium-server-#{required_version}.jar"
+
+        return download_file_name if File.exist? download_file_name
+
+        begin
+          download_location = available_assets[download_file_name]['browser_download_url']
+          released = Net::HTTP.get_response(URI.parse(download_location))
+          redirected = URI.parse released.header['location']
+
+          File.open(download_file_name, 'wb') do |destination|
+            download_server(redirected, destination)
+          end
+        rescue StandardError
+          FileUtils.rm_rf download_file_name
+          raise
+        end
+
+        download_file_name
       end
     end
 

@@ -176,7 +176,6 @@ module Selenium
     it 'only downloads a jar if it is not present in the current directory' do
       required_version = '10.2.0'
       expected_download_file_name = "selenium-server-#{required_version}.jar"
-
       allow(File).to receive(:exist?).with(expected_download_file_name).and_return true
 
       described_class.download required_version
