@@ -63,7 +63,7 @@ module Selenium
         end
 
         it 'does not require any parameters' do
-          allow(Platform).to receive(:find_binary).and_return('/path/to/safaridriver')
+          allow(SeleniumManager).to receive(:driver_path).and_return('/path/to/safaridriver')
           allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:assert_executable)
           expect_request
@@ -72,7 +72,7 @@ module Selenium
         end
 
         it 'accepts provided Options as sole parameter' do
-          allow(Platform).to receive(:find_binary).and_return('path/to/safaridriver')
+          allow(SeleniumManager).to receive(:driver_path).and_return('/path/to/safaridriver')
           allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:assert_executable)
           opts = {automatic_inspection: true}
