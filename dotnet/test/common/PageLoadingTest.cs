@@ -64,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResources()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -85,7 +84,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResourcesOnRefresh()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -111,7 +109,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldWaitForDocumentToBeLoaded()
         {
             InitLocalDriver(PageLoadStrategy.Eager);

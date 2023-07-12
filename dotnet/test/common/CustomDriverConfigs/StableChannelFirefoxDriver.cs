@@ -7,20 +7,19 @@ namespace OpenQA.Selenium.Firefox
     // constructor.
     public class StableChannelFirefoxDriver : FirefoxDriver
     {
-        public StableChannelFirefoxDriver(FirefoxDriverService service)
-            : this(service, DefaultOptions)
+        public StableChannelFirefoxDriver()
+            : base(DefaultOptions)
         {
         }
 
-        public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
-            : base(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+        public StableChannelFirefoxDriver(FirefoxOptions options)
+            : base(options)
         {
         }
 
         public static FirefoxOptions DefaultOptions
         {
-            // If you are running with Firefox installed to a custom location, you will need
-            // to add a property to the below options: BrowserExecutableLocation = <path to Firefox.exe>
             get { return new FirefoxOptions() { AcceptInsecureCertificates = true }; }
         }
     }
