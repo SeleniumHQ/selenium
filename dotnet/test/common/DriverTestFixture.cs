@@ -26,6 +26,8 @@ namespace OpenQA.Selenium
 
         public string javascriptPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("javascriptPage.html");
 
+        public string loginPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("login.html");
+        
         public string clickEventPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clickEventPage.html");
 
         public string resultPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("resultPage.html");
