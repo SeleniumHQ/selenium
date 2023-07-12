@@ -1623,6 +1623,22 @@ class WebDriver {
     }
   }
 
+  async createSandbox(frameId, name = null, grantUniversalAccess = false) {
+    let connection
+    if (Object.is(this._cdpConnection, undefined)) {
+      connection = await this.createCDPConnection('page')
+    } else {
+      connection = this._cdpConnection
+    }
+
+    return await connection.send(
+      'Page.createIsolatedWorld',
+      frameId,
+      name,
+      grantUniversalAccess
+    )
+  }
+
   /**
    *
    * @returns The value of authenticator ID added
