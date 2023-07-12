@@ -55,7 +55,6 @@ class Service(service.Service):
             executable=executable_path,
             port=port,
             env=env,
-            start_error_message=f"Using Safari built-in binary from {DEFAULT_EXECUTABLE_PATH}",
             **kwargs,
         )
 

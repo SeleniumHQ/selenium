@@ -43,7 +43,6 @@ class ChromiumService(service.Service):
         log_path: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
@@ -65,7 +64,6 @@ class ChromiumService(service.Service):
             port=port,
             env=env,
             log_output=self.log_output,
-            start_error_message=start_error_message,
             **kwargs,
         )
 
