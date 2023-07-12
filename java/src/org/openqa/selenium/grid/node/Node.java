@@ -153,9 +153,6 @@ public abstract class Node implements HasReadyState, Routable {
                 .to(() -> new ForwardWebDriverCommand(this))
                 .with(spanDecorator("node.forward_command")),
             new CustomLocatorHandler(this, registrationSecret, customLocators),
-            post("/session/{sessionId}/file")
-                .to(params -> new UploadFile(this, sessionIdFrom(params)))
-                .with(spanDecorator("node.upload_file")),
             post("/session/{sessionId}/se/file")
                 .to(params -> new UploadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.upload_file")),
