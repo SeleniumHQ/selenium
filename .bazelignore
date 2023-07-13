@@ -3,3 +3,9 @@ java/client/build
 java/server/build
 node_modules
 java/build/production
+.ijwb
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-selenium
+bazel-testlogs

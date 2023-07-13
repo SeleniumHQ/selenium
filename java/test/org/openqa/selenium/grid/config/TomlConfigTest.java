@@ -55,11 +55,32 @@ class TomlConfigTest {
 
     List<String> expected =
         Arrays.asList(
-            "name=soft cheese", "default=brie",
-            "name=Medium-hard cheese", "default=Emmental");
+            "default=\"brie\"", "name=\"soft cheese\"",
+            "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
-        .containsAll(expected);
+        .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
-        .containsAll(expected.subList(0, 2));
+        .isEqualTo(expected.subList(0, 2));
+  }
+
+  @Test
+  void ensureCanReadListOfMaps() {
+    String[] rawConfig =
+      new String[] {
+        "[node]",
+        "detect-drivers = false",
+        "[[node.driver-configuration]]",
+        "display-name = \"htmlunit\"",
+        "[node.driver-configuration.stereotype]",
+        "browserName = \"htmlunit\"",
+        "browserVersion = \"chrome\""
+      };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    List<String> expected = Arrays.asList(
+      "display-name=\"htmlunit\"",
+      "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}"
+    );
+    Optional<List<String>> content = config.getAll("node", "driver-configuration");
+    assertThat(content).isEqualTo(Optional.of(expected));
   }
 }

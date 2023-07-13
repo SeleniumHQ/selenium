@@ -18,27 +18,30 @@
 package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.json.Json;
 import org.junit.jupiter.api.Test;
 
-class JsonConfigTest {
+class MapConfigTest {
 
   @Test
   void shouldUseATableAsASection() {
-    String raw = "{\"cheeses\": {\"selected\": \"brie\"}}";
-    Config config = new JsonConfig(new StringReader(raw));
+    String json = "{\"cheeses\": {\"selected\": \"brie\"}}";
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
 
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
   }
 
   @Test
   void shouldContainConfigFromArrayOfTables() {
-    String raw = String.join("", "",
+    String json = String.join("", "",
       "{",
         "`cheeses`: {",
           "`default`: `manchego`,",
@@ -55,7 +58,8 @@ class JsonConfigTest {
         "}",
       "}"
     ).replace("`", "\"");
-    Config config = new JsonConfig(new StringReader(raw));
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
 
     assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
 
@@ -71,7 +75,7 @@ class JsonConfigTest {
 
   @Test
   void ensureCanReadListOfMaps() {
-    String raw = String.join("", "",
+    String json = String.join("", "",
       "{",
         "`node`: {",
           "`detect-drivers`: false,",
@@ -87,7 +91,9 @@ class JsonConfigTest {
         "}",
       "}"
     ).replace("`", "\"");
-    Config config = new JsonConfig(new StringReader(raw));
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
+
     List<String> expected = Arrays.asList(
       "display-name=\"htmlunit\"",
       "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}"

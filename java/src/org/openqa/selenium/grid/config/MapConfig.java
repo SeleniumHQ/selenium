@@ -21,14 +21,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 
 public class MapConfig implements Config {
 
@@ -72,19 +75,22 @@ public class MapConfig implements Config {
       return Optional.empty();
     }
 
-    if (value instanceof Collection<?>) {
+    if (value instanceof Collection) {
       Collection<?> collection = (Collection<?>) value;
       // Case when an array of map is used as config
       if (collection.stream().anyMatch(item -> item instanceof Map)) {
-        List<String> toReturn = collection.stream()
-          .map(item -> (Map<?, ?>) item)
-          .flatMap(map -> map.entrySet().stream())
-          .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-          .sorted()
-          .collect(Collectors.toList());
-        return Optional.of(toReturn);
+        return Optional.of(collection.stream()
+          .map(item -> (Map<String, Object>) item)
+          .map(this::toEntryList)
+          .flatMap(Collection::stream)
+          .collect(ImmutableList.toImmutableList()));
       }
     }
+
+    if (value instanceof Map) {
+      return Optional.of(toEntryList((Map<String, Object>) value));
+    }
+
     return Optional.of(ImmutableList.of(String.valueOf(value)));
   }
 
