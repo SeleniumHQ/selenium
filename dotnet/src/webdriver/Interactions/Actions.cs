@@ -445,7 +445,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToLocation(int offsetX, int offsetY)
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
+            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
