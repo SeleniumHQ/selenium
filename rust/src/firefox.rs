@@ -120,7 +120,8 @@ impl SeleniumManager for FirefoxManager {
 
     fn discover_browser_version(&self) -> Option<String> {
         let mut commands;
-        let mut browser_path = self.get_browser_path();
+        let escaped_browser_path = self.get_escaped_browser_path();
+        let mut browser_path = escaped_browser_path.as_str();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {

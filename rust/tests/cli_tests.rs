@@ -17,6 +17,7 @@
 
 use assert_cmd::Command;
 use rstest::rstest;
+use std::env::consts::OS;
 use std::str;
 
 #[rstest]
@@ -132,15 +133,22 @@ fn beta_test(#[case] browser: String, #[case] driver_name: String) {
 
 #[rstest]
 #[case(
+    "windows",
     "chrome",
     r#"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"#
 )]
-#[case("chrome", "/usr/bin/google-chrome")]
 #[case(
+    "windows",
+    "chrome",
+    r#"C:\Program Files\Google\Chrome\Application\chrome.exe"#
+)]
+#[case("linux", "chrome", "/usr/bin/google-chrome")]
+#[case(
+    "macos",
     "chrome",
     r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
 )]
-fn path_test(#[case] browser: String, #[case] browser_path: String) {
+fn path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
     println!(
         "Path test browser={} -- browser_path={}",
         browser, browser_path
@@ -151,4 +159,11 @@ fn path_test(#[case] browser: String, #[case] browser_path: String) {
         .assert()
         .success()
         .code(0);
+
+    if OS.eq(&os) {
+        let stdout = &cmd.unwrap().stdout;
+        let output = str::from_utf8(stdout).unwrap();
+        println!("output {:?}", output);
+        assert!(!output.contains("WARN"));
+    }
 }
