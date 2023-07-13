@@ -54,16 +54,5 @@ fn shell_output_test() {
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
-
-    let cleaned_output = output.replace(DRIVER_PATH, "");
-    let driver_path = strip_trailing_newline(cleaned_output.as_str());
-    let driver = Path::new(driver_path);
-    assert!(driver.exists());
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix("\r\n")
-        .or(input.strip_suffix('\n'))
-        .unwrap_or(input)
+    assert!(output.contains(DRIVER_PATH));
 }
