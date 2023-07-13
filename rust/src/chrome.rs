@@ -117,12 +117,46 @@ impl ChromeManager {
         parse_json_from_url::<T>(self.get_http_client(), driver_url)
     }
 
-    fn request_latest_driver_version_from_cft(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_cft(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+        self.get_logger().trace(format!(
+            "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
+            browser_name
+        ));
+
         let versions_with_downloads = self
             .request_versions_from_cft::<LatestVersionsWithDownloads>(
                 self.create_latest_versions_url(),
             )?;
+        let stable_channel = versions_with_downloads.channels.stable;
+        let chrome = stable_channel.downloads.chrome;
 
+        let platform_url: Vec<&PlatformUrl> = chrome
+            .iter()
+            .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
+            .collect();
+        self.log.trace(format!(
+            "CfT URLs for downloading {}: {:?}",
+            self.get_browser_name(),
+            platform_url
+        ));
+        let browser_version = stable_channel.version;
+        self.download_url = Some(platform_url.first().unwrap().url.to_string());
+
+        Ok(browser_version)
+    }
+
+    fn request_latest_driver_version_from_cft(&mut self) -> Result<String, Box<dyn Error>> {
+        let driver_name = self.driver_name;
+        self.get_logger().trace(format!(
+            "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
+            driver_name
+        ));
+
+        let versions_with_downloads = self
+            .request_versions_from_cft::<LatestVersionsWithDownloads>(
+                self.create_latest_versions_url(),
+            )?;
         let stable_channel = versions_with_downloads.channels.stable;
         let chromedriver = stable_channel.downloads.chromedriver;
         if chromedriver.is_none() {
@@ -217,33 +251,6 @@ impl ChromeManager {
             .join(self.get_browser_name())
             .join(self.get_platform_label())
             .join(self.get_browser_version())
-    }
-
-    fn request_latest_cft(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_name = self.browser_name;
-        self.get_logger().debug(format!(
-            "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
-            browser_name
-        ));
-        let versions_with_downloads = self
-            .request_versions_from_cft::<LatestVersionsWithDownloads>(
-                self.create_latest_versions_url(),
-            )?;
-        let stable_channel = versions_with_downloads.channels.stable;
-        let chrome = stable_channel.downloads.chrome;
-        let platform_url: Vec<&PlatformUrl> = chrome
-            .iter()
-            .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-            .collect();
-        self.log.trace(format!(
-            "CfT URLs for downloading {}: {:?}",
-            self.get_browser_name(),
-            platform_url
-        ));
-        let browser_version = stable_channel.version;
-        self.download_url = Some(platform_url.first().unwrap().url.to_string());
-
-        Ok(browser_version)
     }
 }
 
@@ -479,7 +486,7 @@ impl SeleniumManager for ChromeManager {
                 self.set_browser_version(browser_version.clone());
             }
             _ => {
-                browser_version = self.request_latest_cft()?;
+                browser_version = self.request_latest_browser_version_from_cft()?;
                 self.set_browser_version(browser_version.clone());
                 let browser_ttl = self.get_browser_ttl();
                 if browser_ttl > 0 && !browser_version.is_empty() {
@@ -514,7 +521,7 @@ impl SeleniumManager for ChromeManager {
             let download_url = if let Some(url) = self.download_url.clone() {
                 url
             } else {
-                self.request_latest_cft()?;
+                self.request_latest_browser_version_from_cft()?;
                 self.download_url.clone().unwrap()
             };
             self.get_logger().debug(format!(
