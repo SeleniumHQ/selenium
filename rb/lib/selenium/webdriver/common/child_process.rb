@@ -81,11 +81,11 @@ module Selenium
       end
 
       def exited?
-        return unless @pid
+        return false unless @pid
 
         WebDriver.logger.debug("Checking if #{@pid} is exited:", id: :process)
         _, @status = Process.waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
-        return if @status.nil?
+        return false if @status.nil?
 
         exit_code = @status.exitstatus || @status.termsig
         WebDriver.logger.debug("  -> exit code is #{exit_code.inspect}", id: :process)

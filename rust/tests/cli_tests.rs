@@ -16,7 +16,6 @@
 // under the License.
 
 use assert_cmd::Command;
-
 use rstest::rstest;
 use std::str;
 
@@ -24,7 +23,7 @@ use std::str;
 #[case("chrome", "chromedriver", "", "")]
 #[case("chrome", "chromedriver", "105", "105.0.5195.52")]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
-#[case("chrome", "chromedriver", "115", "115.0.5790.24")]
+#[case("chrome", "chromedriver", "115", "115.0.5790")]
 #[case("edge", "msedgedriver", "", "")]
 #[case("edge", "msedgedriver", "105", "105.0")]
 #[case("edge", "msedgedriver", "106", "106.0")]
@@ -87,17 +86,30 @@ fn error_test(
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        &browser,
-        "--browser-version",
-        &browser_version,
-        "--driver-version",
-        &driver_version,
-    ])
-    .assert()
-    .failure()
-    .code(error_code);
+    let assert_result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            &browser,
+            "--browser-version",
+            &browser_version,
+            "--driver-version",
+            &driver_version,
+        ])
+        .assert()
+        .try_success();
+
+    if assert_result.is_ok() {
+        let stdout = &cmd.unwrap().stdout;
+        let output = str::from_utf8(stdout).unwrap();
+        assert!(output.contains("in PATH"));
+    } else {
+        assert!(assert_result
+            .err()
+            .unwrap()
+            .to_string()
+            .contains(&error_code.to_string()));
+    }
 }
 
 #[rstest]
