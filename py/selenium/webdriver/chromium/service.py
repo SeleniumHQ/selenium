@@ -37,7 +37,7 @@ class ChromiumService(service.Service):
 
     def __init__(
         self,
-        executable_path: str,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,

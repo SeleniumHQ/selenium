@@ -50,7 +50,7 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str,
+        executable: str = None,
         port: int = 0,
         log_file: SubprocessStdAlias = None,
         log_output: SubprocessStdAlias = None,
