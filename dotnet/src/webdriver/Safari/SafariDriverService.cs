@@ -32,6 +32,7 @@ namespace OpenQA.Selenium.Safari
     {
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
         private const string DefaultSafariDriverServiceExecutablePath = "/usr/bin";
+        private const string DefaultSafariPreviewDriverServiceExecutablePath = "/Applications/Safari Technology Preview.app/Contents/MacOS/";
 
         private static readonly Uri SafariDriverDownloadUrl = new Uri("http://apple.com");
 
@@ -161,6 +162,20 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService that implements default settings.</returns>
         public static SafariDriverService CreateDefaultService()
         {
+            return CreateDefaultService(DefaultSafariDriverServiceExecutablePath);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the SafariDriverService.
+        /// </summary>
+        /// <returns>A SafariDriverService that implements default settings.</returns>
+        public static SafariDriverService CreateDefaultService(SafariOptions options)
+        {
+            if (options.TechnologyPreview)
+            {
+                return CreateDefaultService(DefaultSafariPreviewDriverServiceExecutablePath);
+            }
+
             return CreateDefaultService(DefaultSafariDriverServiceExecutablePath);
         }
 

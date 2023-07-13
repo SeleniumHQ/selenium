@@ -1,9 +1,5 @@
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Remote
 {

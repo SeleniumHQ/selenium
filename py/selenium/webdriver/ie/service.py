@@ -62,7 +62,6 @@ class Service(service.Service):
             executable_path,
             port=port,
             log_output=log_output,
-            start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
             **kwargs,
         )
 
