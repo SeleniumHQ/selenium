@@ -14,16 +14,24 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class SafariRemoteConnection(RemoteConnection):
     browser_name = DesiredCapabilities.SAFARI["browserName"]
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = True, ignore_proxy: bool = False) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: typing.Optional[bool] = None,
+        ignore_proxy: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
+    ) -> None:
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy, client_config=client_config)
         self._commands["GET_PERMISSIONS"] = ("GET", "/session/$sessionId/apple/permissions")
         self._commands["SET_PERMISSIONS"] = ("POST", "/session/$sessionId/apple/permissions")
         self._commands["ATTACH_DEBUGGER"] = ("POST", "/session/$sessionId/apple/attach_debugger")

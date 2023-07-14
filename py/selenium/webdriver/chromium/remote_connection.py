@@ -16,6 +16,7 @@
 # under the License.
 import typing
 
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
@@ -25,10 +26,11 @@ class ChromiumRemoteConnection(RemoteConnection):
         remote_server_addr: str,
         vendor_prefix: str,
         browser_name: str,
-        keep_alive: bool = True,
-        ignore_proxy: typing.Optional[bool] = False,
+        keep_alive: typing.Optional[bool] = None,
+        ignore_proxy: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy, client_config=client_config)
         self.browser_name = browser_name
         self._commands["launchApp"] = ("POST", "/session/$sessionId/chromium/launch_app")
         self._commands["setPermissions"] = ("POST", "/session/$sessionId/permissions")

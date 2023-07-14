@@ -14,9 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import Service
 
@@ -28,7 +30,8 @@ class WebDriver(ChromiumDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive: bool = True,
+        keep_alive: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
         """Creates a new instance of the edge driver. Starts the service and
         then creates new instance of edge driver.
@@ -37,8 +40,9 @@ class WebDriver(ChromiumDriver):
          - options - this takes an instance of EdgeOptions
          - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+         - client_config - configuration values for the http client
         """
         service = service if service else Service()
         options = options if options else Options()
 
-        super().__init__(options=options, service=service, keep_alive=keep_alive)
+        super().__init__(options=options, service=service, keep_alive=keep_alive, client_config=client_config)

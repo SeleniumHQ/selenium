@@ -50,7 +50,10 @@ from selenium.webdriver.common.virtual_authenticator import (
 )
 from selenium.webdriver.support.relative_locator import RelativeBy
 
+from ..common.proxy import Proxy
+from ..common.proxy import ProxyType
 from .bidi_connection import BidiConnection
+from .client_config import ClientConfig
 from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector
@@ -90,7 +93,7 @@ def _create_caps(caps):
     return {"capabilities": {"firstMatch": [{}], "alwaysMatch": always_match}}
 
 
-def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
+def get_remote_connection(capabilities, command_executor, client_config):
     from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
     from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
@@ -99,7 +102,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     candidates = [ChromeRemoteConnection, EdgeRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
 
-    return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
+    return handler(command_executor, client_config=client_config)
 
 
 def create_matches(options: List[BaseOptions]) -> Dict:
@@ -163,9 +166,10 @@ class WebDriver(BaseWebDriver):
     def __init__(
         self,
         command_executor="http://127.0.0.1:4444",
-        keep_alive=True,
+        keep_alive: typing.Optional[bool] = None,
         file_detector=None,
         options: Union[BaseOptions, List[BaseOptions]] = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
         protocol.
@@ -173,26 +177,37 @@ class WebDriver(BaseWebDriver):
         :Args:
          - command_executor - Either a string representing URL of the remote server or a custom
              remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
-         - keep_alive - Whether to configure remote_connection.RemoteConnection to use
+         - keep_alive - Deprecated: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive. Defaults to True.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
+         - client_config - configuration values for the http client
         """
+        if client_config is None:
+            client_config = ClientConfig()
+
+        if keep_alive is not None:
+            warnings.warn(
+                "setting keep_alive directly in WebDriver has been deprecated, pass it in with ClientConfig instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            client_config.keep_alive = keep_alive
 
         if isinstance(options, list):
             capabilities = create_matches(options)
-            _ignore_local_proxy = False
         else:
             capabilities = options.to_capabilities()
-            _ignore_local_proxy = options._ignore_local_proxy
+            if options._ignore_local_proxy:
+                client_config.proxy = Proxy({"proxyType": ProxyType.DIRECT})
+
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(
                 capabilities,
                 command_executor=command_executor,
-                keep_alive=keep_alive,
-                ignore_local_proxy=_ignore_local_proxy,
+                client_config=client_config,
             )
         self._is_remote = True
         self.session_id = None

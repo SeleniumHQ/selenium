@@ -14,12 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.service import Service
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -31,10 +33,11 @@ class ChromiumDriver(RemoteWebDriver):
         self,
         browser_name: str = None,
         vendor_prefix: str = None,
-        options: ArgOptions = ArgOptions(),
+        options: ArgOptions = None,
         service: Service = None,
-        keep_alive: bool = True,
-        remote_connection: ChromiumRemoteConnection = None,
+        keep_alive: typing.Optional[bool] = None,
+        remote_connection: typing.Optional[ChromiumRemoteConnection] = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
@@ -44,7 +47,8 @@ class ChromiumDriver(RemoteWebDriver):
          - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
          - options - this takes an instance of ChromiumOptions
          - service - Service object for handling the browser driver if you need to pass extra details
-         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+         - client_config - configuration values for the http client
         """
 
         if browser_name:
@@ -73,7 +77,12 @@ class ChromiumDriver(RemoteWebDriver):
         command_executor = remote_connection if remote_connection else self.service.service_url
 
         try:
-            super().__init__(command_executor=command_executor, options=options, keep_alive=keep_alive)
+            super().__init__(
+                command_executor=command_executor,
+                options=options,
+                keep_alive=keep_alive,
+                client_config=client_config,
+            )
         except Exception:
             self.quit()
             raise

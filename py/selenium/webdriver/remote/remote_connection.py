@@ -20,6 +20,8 @@ import os
 import platform
 import socket
 import string
+import typing
+import warnings
 from base64 import b64encode
 from urllib import parse
 
@@ -28,7 +30,10 @@ import urllib3
 
 from selenium import __version__
 
+from ..common.proxy import Proxy
+from ..common.proxy import ProxyType
 from . import utils
+from .client_config import ClientConfig
 from .command import Command
 from .errorhandler import ErrorCode
 
@@ -128,8 +133,8 @@ remote_commands = {
 class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
-    Communicates with the server using the WebDriver wire protocol:
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+    Communicates with the server using the w3c WebDriver protocol:
+    https://w3c.github.io/webdriver
     """
 
     browser_name = None
@@ -205,11 +210,19 @@ class RemoteConnection:
 
         return headers
 
-    def _get_proxy_url(self):
-        if self._url.startswith("https://"):
-            return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
-        if self._url.startswith("http://"):
-            return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
+    def _get_proxy_url(self, proxy=None):
+        proxy = Proxy({"proxyType": ProxyType.SYSTEM}) if proxy is None else proxy
+
+        if proxy.proxyType == ProxyType.SYSTEM:
+            if self._url.startswith("https://"):
+                return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
+            if self._url.startswith("http://"):
+                return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
+        else:
+            if self._url.startswith("https://"):
+                return proxy.sslProxy
+            if self._url.startswith("http://"):
+                return proxy.http_proxy
 
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
@@ -242,31 +255,37 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
-        self.keep_alive = keep_alive
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: typing.Optional[bool] = None,
+        ignore_proxy: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
+    ) -> None:
         self._url = remote_server_addr
+        client_config = ClientConfig() if client_config is None else client_config
 
-        # Env var NO_PROXY will override this part of the code
-        _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
-        if _no_proxy:
-            for npu in _no_proxy.split(","):
-                npu = npu.strip()
-                if npu == "*":
-                    ignore_proxy = True
-                    break
-                n_url = parse.urlparse(npu)
-                remote_add = parse.urlparse(self._url)
-                if n_url.netloc:
-                    if remote_add.netloc == n_url.netloc:
-                        ignore_proxy = True
-                        break
-                else:
-                    if n_url.path in remote_add.netloc:
-                        ignore_proxy = True
-                        break
+        if keep_alive is not None:
+            warnings.warn(
+                "setting keep_alive in RemoteConnection has been deprecated, pass it in with ClientConfig instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            client_config.keep_alive = keep_alive
 
-        self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
-        if keep_alive:
+        if ignore_proxy is not None:
+            warnings.warn(
+                "setting ignore_proxy in RemoteConnection has been deprecated, pass it in with ClientConfig instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if ignore_proxy:
+                client_config.ignore_proxy = Proxy({"proxyType": ProxyType.DIRECT})
+
+        self._keep_alive = client_config.keep_alive
+
+        self._proxy_url = self._get_proxy_url(client_config.proxy) if self._use_proxy(client_config.proxy) else None
+        if self._keep_alive:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
 
@@ -303,12 +322,12 @@ class RemoteConnection:
         """
         LOGGER.debug(f"{method} {url} {body}")
         parsed_url = parse.urlparse(url)
-        headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
+        headers = self.get_remote_connection_headers(parsed_url, self._keep_alive)
         response = None
         if body and method not in ("POST", "PUT"):
             body = None
 
-        if self.keep_alive:
+        if self._keep_alive:
             response = self._conn.request(method, url, body=body, headers=headers)
             statuscode = response.status
         else:
@@ -346,6 +365,27 @@ class RemoteConnection:
         finally:
             LOGGER.debug("Finished Request")
             response.close()
+
+    def _use_proxy(self, proxy: Proxy):
+        if proxy.proxyType == ProxyType.DIRECT:
+            return False
+
+        _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
+        if _no_proxy:
+            for npu in _no_proxy.split(","):
+                npu = npu.strip()
+                if npu == "*":
+                    return False
+                n_url = parse.urlparse(npu)
+                remote_add = parse.urlparse(self._url)
+                if n_url.netloc:
+                    if remote_add.netloc == n_url.netloc:
+                        return False
+                else:
+                    if n_url.path in remote_add.netloc:
+                        return False
+
+        return True
 
     def close(self):
         """Clean up resources when finished with the remote_connection."""

@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 import warnings
 
 from selenium.common.exceptions import WebDriverException
@@ -22,6 +22,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from ..common.driver_finder import DriverFinder
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import Service
 
@@ -34,19 +35,21 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         reuse_service=False,
-        keep_alive=True,
+        keep_alive: typing.Optional[bool] = None,
         options: Options = None,
         service: Service = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
         """Creates a new Safari driver instance and launches or finds a running
         safaridriver service.
 
         :Args:
-         - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
-         - keep_alive - Whether to configure SafariRemoteConnection to use
-             HTTP keep-alive. Defaults to True.
+         - reuse_service - Deprecated: If True, do not spawn a safaridriver instance;
+             instead, connect to an already-running service that was launched externally.
+         - keep_alive - Deprecated: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
          - options - Instance of ``options.Options``.
          - service - Service object for handling the browser driver if you need to pass extra details
+         - client_config - configuration values for the http client
         """
         if reuse_service:
             warnings.warn(
@@ -65,7 +68,12 @@ class WebDriver(RemoteWebDriver):
             self.service.start()
 
         try:
-            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+            super().__init__(
+                command_executor=self.service.service_url,
+                options=options,
+                keep_alive=keep_alive,
+                client_config=client_config,
+            )
         except Exception:
             self.quit()
             raise

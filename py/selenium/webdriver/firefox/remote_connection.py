@@ -14,16 +14,24 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class FirefoxRemoteConnection(RemoteConnection):
     browser_name = DesiredCapabilities.FIREFOX["browserName"]
 
-    def __init__(self, remote_server_addr, keep_alive=True, ignore_proxy=False) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+    def __init__(
+        self,
+        remote_server_addr,
+        keep_alive: typing.Optional[bool] = None,
+        ignore_proxy: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
+    ) -> None:
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy, client_config=client_config)
 
         self._commands["GET_CONTEXT"] = ("GET", "/session/$sessionId/moz/context")
         self._commands["SET_CONTEXT"] = ("POST", "/session/$sessionId/moz/context")

@@ -17,6 +17,7 @@
 import base64
 import logging
 import os
+import typing
 import warnings
 import zipfile
 from contextlib import contextmanager
@@ -25,6 +26,7 @@ from io import BytesIO
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
+from ..remote.client_config import ClientConfig
 from .options import Options
 from .service import Service
 
@@ -41,15 +43,17 @@ class WebDriver(RemoteWebDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive: bool = True,
+        keep_alive: typing.Optional[bool] = None,
+        client_config: typing.Optional[ClientConfig] = None,
     ) -> None:
         """Creates a new instance of the Firefox driver. Starts the service and
         then creates new instance of Firefox driver.
 
         :Args:
-         - options - Instance of ``options.Options``.
+         - options - (Optional) Instance of ``options.Options``.
          - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+         - client_config - configuration values for the http client
         """
 
         self.service = service if service else Service()
@@ -59,7 +63,12 @@ class WebDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+            super().__init__(
+                command_executor=self.service.service_url,
+                options=options,
+                keep_alive=keep_alive,
+                client_config=client_config,
+            )
         except Exception:
             self.quit()
             raise
