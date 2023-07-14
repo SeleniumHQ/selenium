@@ -41,7 +41,7 @@ class Options(ArgOptions):
          - value : path to the browser binary
         """
         if not isinstance(value, str):
-            raise TypeError("Binary Location must be a string")
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self._binary_location = value
 
     def to_capabilities(self):
