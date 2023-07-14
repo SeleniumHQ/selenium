@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.driver_finder import DriverFinder
@@ -28,11 +29,12 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name,
-        vendor_prefix,
-        options: ArgOptions,
-        service: Service,
-        keep_alive=True,
+        browser_name: str = None,
+        vendor_prefix: str = None,
+        options: ArgOptions = ArgOptions(),
+        service: Service = None,
+        keep_alive: bool = True,
+        remote_connection: ChromiumRemoteConnection = None,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
@@ -44,25 +46,34 @@ class ChromiumDriver(RemoteWebDriver):
          - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        self.vendor_prefix = vendor_prefix
+
+        if browser_name:
+            warnings.warn(
+                "browser_name is not necessary when an Options class is used", DeprecationWarning, stacklevel=2
+            )
 
         self.service = service
-
         self.service.path = DriverFinder.get_path(self.service, options)
-
         self.service.start()
 
-        try:
-            super().__init__(
-                command_executor=ChromiumRemoteConnection(
-                    remote_server_addr=self.service.service_url,
-                    browser_name=browser_name,
-                    vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive,
-                    ignore_proxy=options._ignore_local_proxy,
-                ),
-                options=options,
+        if vendor_prefix:
+            warnings.warn(
+                "vendor_prefix is deprecated, use a ChromiumRemoteConnection with command_executor instead",
+                DeprecationWarning,
+                stacklevel=2,
             )
+            remote_connection = ChromiumRemoteConnection(
+                remote_server_addr=self.service.service_url,
+                browser_name=browser_name,
+                vendor_prefix=vendor_prefix,
+                keep_alive=keep_alive,
+                ignore_proxy=options._ignore_local_proxy,
+            )
+
+        command_executor = remote_connection if remote_connection else self.service.service_url
+
+        try:
+            super().__init__(command_executor=command_executor, options=options, keep_alive=keep_alive)
         except Exception:
             self.quit()
             raise
@@ -181,8 +192,7 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute("stopCasting", {"sinkName": sink_name})
 
     def quit(self) -> None:
-        """Closes the browser and shuts down the ChromiumDriver executable that
-        is started when starting the ChromiumDriver."""
+        """Ends the driver session and shuts down the ChromiumDriver executable."""
         try:
             super().quit()
         except Exception:

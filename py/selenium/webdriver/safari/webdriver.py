@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.client as http_client
 import warnings
 
 from selenium.common.exceptions import WebDriverException
@@ -23,7 +22,6 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from ..common.driver_finder import DriverFinder
 from .options import Options
-from .remote_connection import SafariRemoteConnection
 from .service import Service
 
 
@@ -63,22 +61,20 @@ class WebDriver(RemoteWebDriver):
         if not self._reuse_service:
             self.service.start()
 
-        executor = SafariRemoteConnection(
-            remote_server_addr=self.service.service_url,
-            keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
-        )
-
-        super().__init__(command_executor=executor, options=options)
+        try:
+            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+        except Exception:
+            self.quit()
+            raise
 
         self._is_remote = False
 
     def quit(self):
-        """Closes the browser and shuts down the SafariDriver executable that
-        is started when starting the SafariDriver."""
+        """Ends the driver session and shuts down the safaridriver executable if necessary."""
         try:
             super().quit()
-        except http_client.BadStatusLine:
+        except Exception:
+            # We don't care about the message because something probably has gone wrong
             pass
         finally:
             if not self._reuse_service:
