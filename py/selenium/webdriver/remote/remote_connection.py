@@ -27,6 +27,7 @@ from urllib import parse
 
 import certifi
 import urllib3
+from urllib3 import Retry
 
 from selenium import __version__
 
@@ -265,6 +266,14 @@ class RemoteConnection:
         self._url = remote_server_addr
         client_config = ClientConfig() if client_config is None else client_config
 
+        self._retry = Retry.from_int(client_config.redirects)
+
+        if client_config.timeout is not None:
+            self.set_timeout(client_config.timeout)
+
+        if client_config.certificate_path is not None:
+            self.set_certificate_bundle_path(client_config.certificate_path)
+
         if keep_alive is not None:
             warnings.warn(
                 "setting keep_alive in RemoteConnection has been deprecated, pass it in with ClientConfig instead",
@@ -328,7 +337,7 @@ class RemoteConnection:
             body = None
 
         if self._keep_alive:
-            response = self._conn.request(method, url, body=body, headers=headers)
+            response = self._conn.request(method, url, body=body, headers=headers, retries=self._retry)
             statuscode = response.status
         else:
             conn = self._get_connection_manager()

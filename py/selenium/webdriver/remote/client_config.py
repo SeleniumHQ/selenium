@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.proxy import ProxyType
@@ -24,9 +25,15 @@ class ClientConfig:
         self,
         keep_alive: bool = True,
         proxy: Proxy = Proxy({"proxyType": ProxyType.SYSTEM}),
+        timeout: typing.Optional[int] = 120,
+        certificate_path: typing.Optional[str] = None,
+        redirects: int = 20,
     ) -> None:
         self.keep_alive = keep_alive
         self.proxy = proxy
+        self.timeout = timeout
+        self.certificate_path = certificate_path
+        self.redirects = redirects
 
     @property
     def keep_alive(self) -> bool:
@@ -55,3 +62,49 @@ class ClientConfig:
          - value: the proxy information to use to communicate with the driver or server
         """
         self._proxy = proxy
+
+    @property
+    def timeout(self) -> int:
+        """:Returns: The amount of time to wait for a http response."""
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, time: int) -> None:
+        """Sets the amount of time to wait for a http response.
+
+        :Args:
+         - value: number of seconds to wait for a http response
+        """
+        self._timeout = time
+
+    @property
+    def certificate_path(self) -> str:
+        """:Returns: The path of the .pem encoded certificate
+        used to verify connection to the driver or server
+        """
+        return self._certificate_path
+
+    @certificate_path.setter
+    def certificate_path(self, path: str) -> None:
+        """Sets the path to the certificate bundle to verify connection to
+        command executor. Can also be set to None to disable certificate
+        validation.
+
+        :Args:
+            - path - path of a .pem encoded certificate chain.
+        """
+        self._certificate_path = path
+
+    @property
+    def redirects(self) -> int:
+        """:Returns: The redirect value"""
+        return self._redirects
+
+    @redirects.setter
+    def redirects(self, redirects: 20) -> None:
+        """Sets the number of times the client will follow a redirect command.
+
+        :Args:
+         - value: how many times client will follow a redirect command.
+        """
+        self._redirects = redirects

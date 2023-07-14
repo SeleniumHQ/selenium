@@ -103,7 +103,7 @@ def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
 def test_default_socket_timeout_is_correct():
     remote_connection = RemoteConnection("http://remote", keep_alive=True)
     conn = remote_connection._get_connection_manager()
-    assert conn.connection_pool_kw["timeout"] is None
+    assert conn.connection_pool_kw["timeout"] is 120
 
 
 def test_get_connection_manager_with_proxy(mock_proxy_settings):
