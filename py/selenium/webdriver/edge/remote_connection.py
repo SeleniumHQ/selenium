@@ -14,17 +14,25 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 
 
-class SafariRemoteConnection(RemoteConnection):
-    browser_name = DesiredCapabilities.SAFARI["browserName"]
+class EdgeRemoteConnection(ChromiumRemoteConnection):
+    browser_name = DesiredCapabilities.EDGE["browserName"]
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = True, ignore_proxy: bool = False) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy)
-
-        self._commands["GET_PERMISSIONS"] = ("GET", "/session/$sessionId/apple/permissions")
-        self._commands["SET_PERMISSIONS"] = ("POST", "/session/$sessionId/apple/permissions")
-        self._commands["ATTACH_DEBUGGER"] = ("POST", "/session/$sessionId/apple/attach_debugger")
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: bool = True,
+        ignore_proxy: typing.Optional[bool] = False,
+    ) -> None:
+        super().__init__(
+            remote_server_addr=remote_server_addr,
+            vendor_prefix="goog",
+            browser_name=EdgeRemoteConnection.browser_name,
+            keep_alive=keep_alive,
+            ignore_proxy=ignore_proxy,
+        )
