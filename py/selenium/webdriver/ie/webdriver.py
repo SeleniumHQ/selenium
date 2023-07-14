@@ -16,7 +16,6 @@
 # under the License.
 
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
@@ -49,15 +48,20 @@ class WebDriver(RemoteWebDriver):
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
-        executor = RemoteConnection(
-            remote_server_addr=self.service.service_url,
-            keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
-        )
+        try:
+            super().__init__(command_executor=self.service.service_url, options=options, keep_alive=keep_alive)
+        except Exception:
+            self.quit()
+            raise
 
-        super().__init__(command_executor=executor, options=options)
         self._is_remote = False
 
-    def quit(self) -> None:
-        super().quit()
-        self.service.stop()
+    def quit(self):
+        """Ends the driver session and shuts down the safaridriver executable if necessary."""
+        try:
+            super().quit()
+        except Exception:
+            # We don't care about the message because something probably has gone wrong
+            pass
+        finally:
+            self.service.stop()

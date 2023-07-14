@@ -16,7 +16,6 @@
 # under the License.
 
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from .options import Options
 from .service import Service
@@ -42,10 +41,4 @@ class WebDriver(ChromiumDriver):
         service = service if service else Service()
         options = options if options else Options()
 
-        super().__init__(
-            DesiredCapabilities.CHROME["browserName"],
-            "goog",
-            options,
-            service,
-            keep_alive,
-        )
+        super().__init__(options=options, service=service, keep_alive=keep_alive)
