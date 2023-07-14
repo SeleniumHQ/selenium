@@ -68,7 +68,7 @@ class Options(ArgOptions):
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
         if not isinstance(value, str):
-            raise TypeError("Binary Location must be a string")
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self.binary = value
 
     @property
