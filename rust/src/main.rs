@@ -64,7 +64,7 @@ struct Cli {
 
     /// Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome,
     /// "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome",
-    /// "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+    /// "C:\Program Files\Google\Chrome\Application\chrome.exe")
     #[clap(long, value_parser)]
     browser_path: Option<String>,
 

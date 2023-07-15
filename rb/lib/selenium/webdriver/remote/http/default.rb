@@ -96,6 +96,7 @@ module Selenium
             end
 
             if response.is_a? Net::HTTPRedirection
+              WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
               raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
 
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)

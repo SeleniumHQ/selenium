@@ -50,16 +50,12 @@ module Selenium
           end
 
           it 'does not create args by default' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new
 
             expect(service.extra_args).to be_empty
           end
 
           it 'uses provided args' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
@@ -67,8 +63,6 @@ module Selenium
 
           # This is deprecated behavior
           it 'uses args when passed in as a Hash' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             expect {
               service = described_class.new(args: {log_file: '/path/to/log',
                                                    silent: true})

@@ -51,6 +51,7 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import UnknownMethodException
 from selenium.common.exceptions import WebDriverException
 
+
 ERROR_TO_EXC_MAPPING: Dict[str, Type[WebDriverException]] = {
     "element click intercepted": ElementClickInterceptedException,
     "element not interactable": ElementNotInteractableException,

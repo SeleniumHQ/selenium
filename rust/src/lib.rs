@@ -317,27 +317,60 @@ pub trait SeleniumManager {
     }
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
-        if self.get_driver_version().is_empty() {
-            let driver_version = self.discover_driver_version()?;
-            self.set_driver_version(driver_version);
+        let mut driver_in_path = None;
+        let mut driver_in_path_version = None;
+
+        // Try to find driver in PATH
+        if !self.is_safari() && !self.is_grid() {
+            (driver_in_path_version, driver_in_path) = self.find_driver_in_path();
+            if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
+                self.get_logger().debug(format!(
+                    "Found {} {} in PATH: {}",
+                    self.get_driver_name(),
+                    version,
+                    path
+                ));
+            }
         }
 
-        if !self.is_safari() && !self.is_grid() {
-            if let (Some(version), Some(path)) = self.find_driver_in_path() {
-                if version == self.get_driver_version() {
-                    self.get_logger().debug(format!(
-                        "Found {} {version} in PATH: {path}",
-                        self.get_driver_name()
-                    ));
-                    return Ok(PathBuf::from(path));
-                } else {
-                    self.get_logger().warn(format!(
-                        "Incompatible release of {} (version {version}) detected in PATH: {path}",
-                        self.get_driver_name()
-                    ));
+        // Discover proper driver version
+        if self.get_driver_version().is_empty() {
+            match self.discover_driver_version() {
+                Ok(driver_version) => {
+                    self.set_driver_version(driver_version);
+                }
+                Err(err) => {
+                    if driver_in_path_version.is_some() {
+                        self.get_logger().warn(format!(
+                            "Exception trying to discover {} version: {}",
+                            self.get_driver_name(),
+                            err
+                        ));
+                    } else {
+                        return Err(err.into());
+                    }
                 }
             }
         }
+
+        // If driver is in path, always use it
+        if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
+            // If proper driver version is not the same as the driver in path, display warning
+            if !self.get_driver_version().is_empty() && !version.eq(self.get_driver_version()) {
+                self.get_logger().warn(format!(
+                    "The {} version ({}) detected in PATH at {} might not be compatible with the detected {} version ({}); it is recommended to delete the driver and retry",
+                    self.get_driver_name(),
+                    version,
+                    path,
+                    self.get_browser_name(),
+                    self.get_browser_version()
+                ));
+            }
+            self.set_driver_version(version.to_string());
+            return Ok(PathBuf::from(path));
+        }
+
+        // If driver was not in the PATH, try to find it in the cache
         let driver_path = self.get_driver_path_in_cache();
         if driver_path.exists() {
             if !self.is_safari() {
@@ -348,6 +381,7 @@ pub trait SeleniumManager {
                 ));
             }
         } else {
+            // If driver is not in the cache, download it
             self.download_driver()?;
         }
         Ok(driver_path)
@@ -446,6 +480,22 @@ pub trait SeleniumManager {
 
     fn get_browser_path(&self) -> &str {
         self.get_config().browser_path.as_str()
+    }
+
+    fn get_escaped_browser_path(&self) -> String {
+        let mut browser_path = self.get_browser_path().to_string();
+        let path = Path::new(&browser_path);
+        if path.exists() && WINDOWS.is(self.get_os()) {
+            browser_path = Path::new(path)
+                .canonicalize()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string()
+                .replace("\\\\?\\", "")
+                .replace("\\", "\\\\");
+        }
+        browser_path
     }
 
     fn set_browser_path(&mut self, browser_path: String) {

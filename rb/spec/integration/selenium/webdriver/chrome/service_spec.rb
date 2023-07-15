@@ -30,7 +30,6 @@ module Selenium
         after { service_manager.stop }
 
         it 'auto uses chromedriver' do
-          allow(Platform).to receive(:find_binary)
           expect(service_manager.uri).to be_a(URI)
         end
       end
