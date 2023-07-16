@@ -8,6 +8,7 @@ java_test_suite(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
         artifact("io.ous:jtoml"),
