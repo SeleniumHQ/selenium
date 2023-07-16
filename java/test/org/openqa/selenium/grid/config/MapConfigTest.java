@@ -18,59 +18,73 @@
 package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.json.Json;
 import org.junit.jupiter.api.Test;
 
-class TomlConfigTest {
+class MapConfigTest {
 
   @Test
   void shouldUseATableAsASection() {
-    String raw = "[cheeses]\nselected=brie";
-    Config config = new TomlConfig(new StringReader(raw));
+    String json = "{\"cheeses\": {\"selected\": \"brie\"}}";
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
 
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
   }
 
   @Test
   void shouldContainConfigFromArrayOfTables() {
-    String[] rawConfig =
-        new String[] {
-          "[cheeses]",
-          "default = manchego",
-          "[[cheeses.type]]",
-          "name = \"soft cheese\"",
-          "default = \"brie\"",
-          "[[cheeses.type]]",
-          "name = \"Medium-hard cheese\"",
-          "default = \"Emmental\""
-        };
-    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    String json = String.join("", "",
+      "{",
+        "`cheeses`: {",
+          "`default`: `manchego`,",
+          "`type`: [",
+            "{",
+              "`name`: `soft cheese`,",
+              "`default`: `brie`",
+            "},",
+            "{",
+              "`name`: `Medium-hard cheese`,",
+              "`default`: `Emmental`",
+            "}",
+          "]",
+        "}",
+      "}"
+    ).replace("`", "\"");
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
 
     assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
 
     List<String> expected =
-        Arrays.asList(
-            "default=\"brie\"", "name=\"soft cheese\"",
-            "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
+      Arrays.asList(
+        "default=\"brie\"", "name=\"soft cheese\"",
+        "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
-        .isEqualTo(expected);
+      .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
-        .isEqualTo(expected.subList(0, 2));
+      .isEqualTo(expected.subList(0, 2));
   }
 
   @Test
   void ensureCanReadListOfStrings() {
-    String[] rawConfig =
-      new String[] {
-        "[relay]",
-        "configs = [\"2\", '{\"browserName\": \"chrome\"}']"
-    };
-    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    String json = String.join("", "",
+      "{",
+        "`relay`: {",
+          "`configs`: [`2`, `{\\`browserName\\`: \\`chrome\\`}`]",
+        "}",
+      "}"
+    ).replace("`", "\"");
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
+
     List<String> expected = Arrays.asList(
       "2",
       "{\"browserName\": \"chrome\"}"
@@ -81,20 +95,28 @@ class TomlConfigTest {
 
   @Test
   void ensureCanReadListOfMaps() {
-    String[] rawConfig =
-      new String[] {
-        "[node]",
-        "detect-drivers = false",
-        "[[node.driver-configuration]]",
-        "display-name = \"htmlunit\"",
-        "[node.driver-configuration.stereotype]",
-        "browserName = \"htmlunit\"",
-        "browserVersion = \"chrome\""
-      };
-    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    String json = String.join("", "",
+      "{",
+        "`node`: {",
+          "`detect-drivers`: false,",
+          "`driver-configuration`: [",
+            "{",
+              "`display-name`: `htmlunit`,",
+              "`stereotype`: {",
+                "`browserName`: `htmlunit`,",
+                "`browserVersion`: `chrome`",
+              "}",
+            "}",
+          "]",
+        "}",
+      "}"
+    ).replace("`", "\"");
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
+
     List<String> expected = Arrays.asList(
       "display-name=\"htmlunit\"",
-      "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}"
+      "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}"
     );
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).isEqualTo(Optional.of(expected));
