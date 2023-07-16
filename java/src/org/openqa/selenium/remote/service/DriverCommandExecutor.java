@@ -142,10 +142,16 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
               },
               executorService);
 
-      CompletableFuture<Response> processFinished =
-          CompletableFuture.supplyAsync(
+      CompletableFuture<Response> processFinished = CompletableFuture.supplyAsync(
               () -> {
-                service.process.waitFor(service.getTimeout().toMillis());
+                try {
+                  if (!service.process.waitFor(service.getTimeout().toMillis(), TimeUnit.MILLISECONDS)) {
+                    throw new WebDriverException("Timed out waiting for driver server to stop.");
+                  }
+                } catch (InterruptedException ex)  {
+                  Thread.currentThread().interrupt();
+                  throw new WebDriverException("Interrupted waiting for process to stop.");
+                }
                 return null;
               },
               executorService);
@@ -161,7 +167,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
         throw new WebDriverException("Timed out waiting for driver server to stop.", e);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        throw new WebDriverException("Timed out waiting for driver server to stop.", e);
+        throw new WebDriverException("Interrupted waiting for driver server to stop.", e);
       } finally {
         close();
       }

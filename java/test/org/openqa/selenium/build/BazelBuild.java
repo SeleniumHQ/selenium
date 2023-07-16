@@ -20,11 +20,14 @@ package org.openqa.selenium.build;
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.io.CircularOutputStream;
+import org.openqa.selenium.io.MultiOutputStream;
+import org.openqa.selenium.io.StreamHelper;
 
 public class BazelBuild {
   private static final Logger LOG = Logger.getLogger(BazelBuild.class.getName());
@@ -58,13 +61,20 @@ public class BazelBuild {
     }
     LOG.info("\nBuilding " + target + " ...");
 
-    CommandLine commandLine = new CommandLine("bazel", "build", target);
-    commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
-    commandLine.copyOutputTo(System.err);
-    commandLine.execute();
+    try (CircularOutputStream output = new CircularOutputStream(32768)) {
+      Process process = new ProcessBuilder()
+        .command("bazel", "build", target)
+        .directory(projectRoot.toAbsolutePath().toFile())
+        .redirectErrorStream(true)
+        .start();
 
-    if (!commandLine.isSuccessful()) {
-      throw new WebDriverException("Build failed! " + target + "\n" + commandLine.getStdOut());
+      StreamHelper.asyncTransferTo(process.getInputStream(), new MultiOutputStream(output, System.err));
+
+      if (process.waitFor() != 0) {
+        throw new WebDriverException("Build failed! " + target + "\n" + output.toString());
+      }
+    } catch (InterruptedException | IOException e) {
+      throw new WebDriverException("Build failed! " + target, e);
     }
   }
 }

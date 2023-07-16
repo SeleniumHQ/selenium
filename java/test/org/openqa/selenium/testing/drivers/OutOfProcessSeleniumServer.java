@@ -20,6 +20,8 @@ package org.openqa.selenium.testing.drivers;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -29,17 +31,19 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.io.CircularOutputStream;
+import org.openqa.selenium.io.MultiOutputStream;
+import org.openqa.selenium.io.StreamHelper;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
 
 class OutOfProcessSeleniumServer {
 
   private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 
   private String baseUrl;
-  private CommandLine command;
+  private Process process;
 
   @SuppressWarnings("unused")
   private boolean captureLogs = false;
@@ -55,7 +59,7 @@ class OutOfProcessSeleniumServer {
    */
   public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
     LOG.info("Got a request to start a new selenium server");
-    if (command != null) {
+    if (process != null) {
       LOG.info("Server already started");
       throw new RuntimeException("Server already started");
     }
@@ -67,46 +71,57 @@ class OutOfProcessSeleniumServer {
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
     // Make sure we inherit system properties.
-    Stream<String> javaFlags =
+    Stream<String> javaCall =
+        Stream.concat(Stream.of("java"),
         System.getProperties().entrySet().stream()
             .filter(
                 entry -> {
                   String key = String.valueOf(entry.getKey());
                   return key.startsWith("selenium") || key.startsWith("webdriver");
                 })
-            .map(entry -> "-D" + entry.getKey() + "=" + entry.getValue());
+            .map(entry -> "-D" + entry.getKey() + "=" + entry.getValue())
+        );
 
-    command =
-        new CommandLine(
-            "java",
-            Stream.concat(
-                    javaFlags,
-                    Stream.concat(
-                        Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
-                        Stream.of(extraFlags)))
-                .toArray(String[]::new));
+    String[] cmd = Stream.concat(
+      javaCall,
+      Stream.concat(
+        Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
+        Stream.of(extraFlags))
+    ).toArray(String[]::new);
+
+    ProcessBuilder builder = new ProcessBuilder()
+      .command(cmd)
+      .redirectErrorStream(true);
+
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
-      command.setWorkingDirectory(workingDir.getAbsolutePath());
+      builder.directory(workingDir.getAbsoluteFile());
     }
 
-    command.copyOutputTo(System.err);
-    LOG.info("Starting selenium server: " + command.toString());
-    command.executeAsync();
+    LOG.info("Starting selenium server: " + String.join(" ", cmd));
 
-    try {
-      URL url = new URL(baseUrl + "/status");
-      LOG.info("Waiting for server status on URL " + url);
-      new UrlChecker().waitUntilAvailable(10, SECONDS, url);
-      LOG.info("Server is ready");
-    } catch (UrlChecker.TimeoutException e) {
-      LOG.severe("Server failed to start: " + e.getMessage());
-      command.destroy();
-      LOG.severe(command.getStdOut());
-      command = null;
-      throw new RuntimeException(e);
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+    try (CircularOutputStream output = new CircularOutputStream(32768)) {
+      process = builder.start();
+
+      StreamHelper.asyncTransferTo(process.getInputStream(), new MultiOutputStream(output, System.err));
+
+      try {
+        URL url = new URL(baseUrl + "/status");
+        LOG.info("Waiting for server status on URL " + url);
+        new UrlChecker().waitUntilAvailable(10, SECONDS, url);
+        LOG.info("Server is ready");
+      } catch (UrlChecker.TimeoutException e) {
+        LOG.severe("Server failed to start: " + e.getMessage());
+        process.destroyForcibly();
+        LOG.severe(output.toString());
+        process = null;
+        throw new RuntimeException(e);
+      } catch (MalformedURLException e) {
+        process.destroyForcibly();
+        throw new RuntimeException(e);
+      }
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
     }
 
     WebDriverBuilder.addShutdownAction(this::stop);
@@ -123,13 +138,13 @@ class OutOfProcessSeleniumServer {
   }
 
   public void stop() {
-    if (command == null) {
+    if (process == null) {
       return;
     }
     LOG.info("Stopping selenium server");
-    command.destroy();
+    process.destroyForcibly();
     LOG.info("Selenium server stopped");
-    command = null;
+    process = null;
   }
 
   private String buildServerAndClasspath() {

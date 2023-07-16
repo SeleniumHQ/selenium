@@ -80,7 +80,6 @@ def selenium_java_deps():
             "net.bytebuddy:byte-buddy:1.14.4",
             "dev.failsafe:failsafe:3.3.1",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
-            "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.24.2",
             maven.artifact(
                 group = "org.asynchttpclient",

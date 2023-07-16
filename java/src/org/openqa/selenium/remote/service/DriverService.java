@@ -32,6 +32,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -47,9 +49,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.StreamHelper;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
 /**
@@ -94,7 +96,7 @@ public class DriverService implements Closeable {
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
-  protected CommandLine process = null;
+  protected Process process = null;
 
   private OutputStream outputStream = System.err;
 
@@ -179,7 +181,7 @@ public class DriverService implements Closeable {
   public boolean isRunning() {
     lock.lock();
     try {
-      return process != null && process.isRunning();
+      return process != null && process.isAlive();
     } catch (IllegalThreadStateException e) {
       return true;
     } finally {
@@ -207,13 +209,16 @@ public class DriverService implements Closeable {
         this.executable = DriverFinder.getPath(this, getDefaultDriverOptions());
       }
       LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
-      process.setEnvironmentVariables(environment);
-      process.copyOutputTo(getOutputStream());
-      process.executeAsync();
-      if (!process.waitForProcessStarted(timeout.toMillis(), TimeUnit.MILLISECONDS)) {
-        throw new WebDriverException("Timed out waiting for driver process to start.");
-      }
+      List<String> cmd = new ArrayList<>(Collections.singletonList(this.executable));
+      cmd.addAll(this.args);
+
+      ProcessBuilder builder = new ProcessBuilder()
+        .command(cmd)
+        .redirectErrorStream(true);
+      builder.environment().putAll(environment);
+      process = builder.start();
+
+      StreamHelper.asyncTransferTo(process.getInputStream(), getOutputStream());
 
       CompletableFuture<StartOrDie> serverStarted =
           CompletableFuture.supplyAsync(
@@ -227,11 +232,14 @@ public class DriverService implements Closeable {
           CompletableFuture.supplyAsync(
               () -> {
                 try {
-                  process.waitFor(getTimeout().toMillis());
-                } catch (org.openqa.selenium.TimeoutException ex) {
-                  return StartOrDie.PROCESS_IS_ACTIVE;
+                  if (process.waitFor(getTimeout().toMillis(), TimeUnit.MILLISECONDS)) {
+                    return StartOrDie.PROCESS_DIED;
+                  } else {
+                    return StartOrDie.PROCESS_IS_ACTIVE;
+                  }
+                } catch (InterruptedException ex) {
+                  return StartOrDie.INTERRUPTED;
                 }
-                return StartOrDie.PROCESS_DIED;
               },
               executorService);
 
@@ -241,6 +249,8 @@ public class DriverService implements Closeable {
                 CompletableFuture.anyOf(serverStarted, processFinished)
                     .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
         switch (status) {
+          case INTERRUPTED:
+            throw new WebDriverException("Interrupted while waiting for driver server to start.");
           case SERVER_STARTED:
             processFinished.cancel(true);
             break;
@@ -254,7 +264,7 @@ public class DriverService implements Closeable {
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+        throw new WebDriverException("Interrupted while waiting for driver server to start.", e);
       }
     } finally {
       lock.unlock();
@@ -302,7 +312,7 @@ public class DriverService implements Closeable {
         }
       }
 
-      process.destroy();
+      process.destroyForcibly();
 
       if (getOutputStream() instanceof FileOutputStream) {
         try {
@@ -339,6 +349,7 @@ public class DriverService implements Closeable {
   }
 
   private enum StartOrDie {
+    INTERRUPTED,
     SERVER_STARTED,
     PROCESS_IS_ACTIVE,
     PROCESS_DIED

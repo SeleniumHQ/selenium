@@ -7,7 +7,7 @@ java_library(
     visibility = ["//java/test:__subpackages__"],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/os",
+        "//java/src/org/openqa/selenium/io",
         artifact("org.junit.jupiter:junit-jupiter-api"),
     ] + JUNIT5_DEPS,
 )
