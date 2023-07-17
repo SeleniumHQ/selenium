@@ -88,6 +88,8 @@ pub const UNAME_COMMAND: &str = "uname -{}";
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
+pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
+pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -382,6 +384,7 @@ pub trait SeleniumManager {
             }
         } else {
             // If driver is not in the cache, download it
+            self.assert_online_or_err(OFFLINE_DOWNLOAD_ERR_MSG)?;
             self.download_driver()?;
         }
         Ok(driver_path)
@@ -422,6 +425,13 @@ pub trait SeleniumManager {
             release_version.push('0');
         }
         Ok(format!("selenium-{release_version}"))
+    }
+
+    fn assert_online_or_err(&self, message: &str) -> Result<(), Box<dyn Error>> {
+        if self.is_offline() {
+            return Err(format_one_arg(message, self.get_driver_name()).into());
+        }
+        Ok(())
     }
 
     // ----------------------------------------------------------
@@ -493,7 +503,7 @@ pub trait SeleniumManager {
                 .unwrap()
                 .to_string()
                 .replace("\\\\?\\", "")
-                .replace("\\", "\\\\");
+                .replace('\\', "\\\\");
         }
         browser_path
     }
@@ -510,7 +520,7 @@ pub trait SeleniumManager {
     }
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
-        if !proxy.is_empty() {
+        if !proxy.is_empty() && !self.is_offline() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
             let mut config = self.get_config_mut();
             config.proxy = proxy;
@@ -556,6 +566,16 @@ pub trait SeleniumManager {
 
     fn set_browser_ttl(&mut self, browser_ttl: u64) {
         self.get_config_mut().browser_ttl = browser_ttl;
+    }
+
+    fn is_offline(&self) -> bool {
+        self.get_config().offline
+    }
+
+    fn set_offline(&mut self, offline: bool) {
+        if offline {
+            self.get_config_mut().offline = true;
+        }
     }
 }
 
