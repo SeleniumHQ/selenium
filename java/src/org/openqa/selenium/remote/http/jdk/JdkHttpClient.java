@@ -352,10 +352,10 @@ public class JdkHttpClient implements HttpClient {
       URI rawUri = messages.getRawUri(req);
 
       // We need a custom handling of redirects to:
-      // - increase the maximum number of retries to 100
+      // - increase the maximum number of retries to 20
       // - avoid a downgrade of POST requests, see the javadoc of j.n.h.HttpClient.Redirect
       // - not run into https://bugs.openjdk.org/browse/JDK-8304701
-      for (int i = 0; i < 100; i++) {
+      for (int i = 0; i < 20; i++) {
         java.net.http.HttpRequest request = messages.createRequest(req, method, rawUri);
         java.net.http.HttpResponse<byte[]> response;
 

@@ -55,7 +55,7 @@ public class ClientConfig {
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
-        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null);
+        null, Duration.ofSeconds(10), Duration.ofMinutes(2), DEFAULT_FILTER, null, null);
   }
 
   public ClientConfig baseUri(URI baseUri) {

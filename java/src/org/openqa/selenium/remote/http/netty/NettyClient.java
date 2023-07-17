@@ -84,7 +84,7 @@ public class NettyClient implements HttpClient {
             .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
             .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
             .setFollowRedirect(true)
-            .setMaxRedirects(100)
+            .setMaxRedirects(20)
             .setUseProxyProperties(true)
             .setUseProxySelector(true)
             .setMaxRequestRetry(0);
