@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
@@ -57,6 +58,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
@@ -390,7 +392,7 @@ public class NodeOptions {
                     .forEach(
                         keyValue -> {
                           String[] values = keyValue.split("=", 2);
-                          configMap.put(values[0], values[1]);
+                          configMap.put(values[0], unquote(values[1]));
                         });
                 driversMap.add(configMap);
               }
@@ -715,5 +717,13 @@ public class NodeOptions {
             caps.toString().replaceAll("\\s+", " "),
             entry.getValue().size(),
             entry.getKey().isPresent() ? "Host" : "SM"));
+  }
+
+  private String unquote(String input) {
+    int len = input.length();
+    if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
+      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
+    }
+    return input;
   }
 }
