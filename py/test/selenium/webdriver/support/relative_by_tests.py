@@ -19,14 +19,13 @@ import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import locate_with
-from selenium.webdriver.support.relative_locator import with_tag_name
 
 
 def test_should_be_able_to_find_first_one(driver, pages):
     pages.load("relative_locators.html")
     lowest = driver.find_element(By.ID, "below")
 
-    el = driver.find_element(with_tag_name("p").above(lowest))
+    el = driver.find_element(locate_with(By.TAG_NAME, "p").above(lowest))
 
     assert el.get_attribute("id") == "mid"
 
@@ -35,7 +34,7 @@ def test_should_be_able_to_find_elements_above_another(driver, pages):
     pages.load("relative_locators.html")
     lowest = driver.find_element(By.ID, "below")
 
-    elements = driver.find_elements(with_tag_name("p").above(lowest))
+    elements = driver.find_elements(locate_with(By.TAG_NAME, "p").above(lowest))
 
     ids = [el.get_attribute("id") for el in elements]
     assert "above" in ids
@@ -46,7 +45,7 @@ def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
     elements = driver.find_elements(
-        with_tag_name("td")
+        locate_with(By.TAG_NAME, "td")
         .above(driver.find_element(By.ID, "center"))
         .to_right_of(driver.find_element(By.ID, "second"))
     )

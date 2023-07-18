@@ -23,21 +23,15 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-
-def with_tag_name(tag_name: str) -> "RelativeBy":
-    """Start searching for relative objects using a tag name.
-
-    Note: This method may be removed in future versions, please use
-    `locate_with` instead.
-    :Args:
-        - tag_name: the DOM tag of element to start searching.
-    :Returns:
-        - RelativeBy - use this object to create filters within a
-            `find_elements` call.
-    """
-    if not tag_name:
-        raise WebDriverException("tag_name can not be null")
-    return RelativeBy({"css selector": tag_name})
+valid_locators = (
+    By.ID,
+    By.XPATH,
+    By.NAME,
+    By.TAG_NAME,
+    By.PARTIAL_LINK_TEXT,
+    By.CLASS_NAME,
+    By.CSS_SELECTOR,
+)
 
 
 def locate_with(by: By, using: str) -> "RelativeBy":
@@ -50,8 +44,12 @@ def locate_with(by: By, using: str) -> "RelativeBy":
         - RelativeBy - use this object to create filters within a
             `find_elements` call.
     """
-    assert by is not None, "Please pass in a by argument"
-    assert using is not None, "Please pass in a using argument"
+    if by not in valid_locators:
+        raise ValueError(f"Locator must be one of the following {valid_locators}")
+    if not using.strip():
+        raise TypeError("Please provide valid locator value")
+    if by == "tagname":
+        return RelativeBy({By.CSS_SELECTOR: using})
     return RelativeBy({by: using})
 
 
