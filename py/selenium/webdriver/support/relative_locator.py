@@ -48,7 +48,7 @@ def locate_with(by: By, using: str) -> "RelativeBy":
         raise ValueError(f"Locator must be one of the following {valid_locators}")
     if not using.strip():
         raise TypeError("Please provide valid locator value")
-    if by == "tagname":
+    if by == "tag name":
         return RelativeBy({By.CSS_SELECTOR: using})
     return RelativeBy({by: using})
 
