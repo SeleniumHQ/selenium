@@ -36,7 +36,7 @@ pub struct SafariManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub downloaded_browser: Option<PathBuf>,
+    pub resolved_browser_path: Option<PathBuf>,
 }
 
 impl SafariManager {
@@ -52,7 +52,7 @@ impl SafariManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
-            downloaded_browser: None,
+            resolved_browser_path: None,
         }))
     }
 }
@@ -77,19 +77,18 @@ impl SeleniumManager for SafariManager {
         )])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        let escaped_browser_path = self.get_escaped_browser_path();
-        let mut browser_path = escaped_browser_path.as_str();
+    fn discover_browser_version(&mut self) -> Option<String> {
+        let mut browser_path = self.get_browser_path().to_string();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
+                    browser_path = self.get_escaped_path_buf(path);
                 }
                 _ => return None,
             }
         }
         let command = if MACOS.is(self.get_os()) {
-            vec![format_one_arg(PLIST_COMMAND, browser_path)]
+            vec![format_one_arg(PLIST_COMMAND, &browser_path)]
         } else {
             return None;
         };
@@ -136,11 +135,11 @@ impl SeleniumManager for SafariManager {
         Ok(None)
     }
 
-    fn get_downloaded_browser(&self) -> Option<PathBuf> {
-        self.downloaded_browser.to_owned()
+    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
+        self.resolved_browser_path.to_owned()
     }
 
-    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
-        self.downloaded_browser = downloaded_browser;
+    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
+        self.resolved_browser_path = browser_path;
     }
 }

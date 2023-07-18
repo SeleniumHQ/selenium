@@ -62,7 +62,7 @@ struct Cli {
     browser_version: Option<String>,
 
     /// Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome,
-    /// "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome",
+    /// "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     /// "C:\Program Files\Google\Chrome\Application\chrome.exe")
     #[clap(long, value_parser)]
     browser_path: Option<String>,
@@ -166,12 +166,12 @@ fn main() {
         .map(|path| {
             let log = selenium_manager.get_logger();
             log.info(format!("{}{}", DRIVER_PATH, path.display()));
-            let downloaded_browser = selenium_manager.get_downloaded_browser();
-            if downloaded_browser.is_some() {
+            let resolved_browser_path = selenium_manager.get_resolved_browser_path();
+            if resolved_browser_path.is_some() {
                 log.info(format!(
                     "{}{}",
                     BROWSER_PATH,
-                    downloaded_browser.unwrap().display()
+                    resolved_browser_path.unwrap().display()
                 ));
             }
             flush_and_exit(OK, log);

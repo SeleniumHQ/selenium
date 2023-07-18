@@ -29,9 +29,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, Logger, SeleniumManager, BETA, DASH_DASH_VERSION, DEV,
+    NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -46,7 +45,7 @@ pub struct EdgeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub downloaded_browser: Option<PathBuf>,
+    pub resolved_browser_path: Option<PathBuf>,
 }
 
 impl EdgeManager {
@@ -62,7 +61,7 @@ impl EdgeManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
-            downloaded_browser: None,
+            resolved_browser_path: None,
         }))
     }
 }
@@ -84,65 +83,53 @@ impl SeleniumManager for EdgeManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"\\Microsoft\\Edge\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"\\Microsoft\\Edge Beta\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge Beta\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"\\Microsoft\\Edge Dev\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge Dev\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"\\Microsoft\\Edge SxS\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge SxS\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge"#,
+                r#"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"#,
             ),
             (
                 BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Microsoft\ Edge\ Beta.app/Contents/MacOS/Microsoft\ Edge\ Beta"#,
+                r#"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta"#,
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Microsoft\ Edge\ Dev.app/Contents/MacOS/Microsoft\ Edge\ Dev"#,
+                r#"/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev"#,
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Microsoft\ Edge\ Canary.app/Contents/MacOS/Microsoft\ Edge\ Canary"#,
+                r#"/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary"#,
             ),
-            (BrowserPath::new(LINUX, STABLE), "microsoft-edge"),
-            (BrowserPath::new(LINUX, BETA), "microsoft-edge-beta"),
-            (BrowserPath::new(LINUX, DEV), "microsoft-edge-dev"),
+            (BrowserPath::new(LINUX, STABLE), "/usr/bin/microsoft-edge"),
+            (
+                BrowserPath::new(LINUX, BETA),
+                "/usr/bin/microsoft-edge-beta",
+            ),
+            (BrowserPath::new(LINUX, DEV), "/usr/bin/microsoft-edge-dev"),
         ])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         let mut commands;
-        let escaped_browser_path = self.get_escaped_browser_path();
-        let mut browser_path = escaped_browser_path.as_str();
+        let mut browser_path = self.get_browser_path().to_string();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
-                    commands = vec![
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES_X86,
-                            "",
-                            browser_path,
-                        ),
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES,
-                            REMOVE_X86,
-                            browser_path,
-                        ),
-                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
-                    ];
+                    browser_path = self.get_escaped_path_buf(path);
+                    commands = vec![format_one_arg(WMIC_COMMAND, &browser_path)];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
                             REG_QUERY,
@@ -153,10 +140,13 @@ impl SeleniumManager for EdgeManager {
                 _ => return None,
             }
         } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
+            commands = vec![format_one_arg(
+                WMIC_COMMAND,
+                &self.get_escaped_path(browser_path.to_string()),
+            )];
         }
         if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_DASH_VERSION, browser_path)]
+            commands = vec![format_one_arg(DASH_DASH_VERSION, &browser_path)]
         }
         self.detect_browser_version(commands)
     }
@@ -306,11 +296,11 @@ impl SeleniumManager for EdgeManager {
         Ok(None)
     }
 
-    fn get_downloaded_browser(&self) -> Option<PathBuf> {
-        self.downloaded_browser.to_owned()
+    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
+        self.resolved_browser_path.to_owned()
     }
 
-    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
-        self.downloaded_browser = downloaded_browser;
+    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
+        self.resolved_browser_path = browser_path;
     }
 }

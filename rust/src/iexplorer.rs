@@ -49,7 +49,7 @@ pub struct IExplorerManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub downloaded_browser: Option<PathBuf>,
+    pub resolved_browser_path: Option<PathBuf>,
     pub driver_url: Option<String>,
 }
 
@@ -67,7 +67,7 @@ impl IExplorerManager {
             config,
             log: Logger::default(),
             driver_url: None,
-            downloaded_browser: None,
+            resolved_browser_path: None,
         }))
     }
 }
@@ -89,7 +89,7 @@ impl SeleniumManager for IExplorerManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         None
     }
 
@@ -212,11 +212,11 @@ impl SeleniumManager for IExplorerManager {
         Ok(None)
     }
 
-    fn get_downloaded_browser(&self) -> Option<PathBuf> {
-        self.downloaded_browser.to_owned()
+    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
+        self.resolved_browser_path.to_owned()
     }
 
-    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
-        self.downloaded_browser = downloaded_browser;
+    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
+        self.resolved_browser_path = browser_path;
     }
 }

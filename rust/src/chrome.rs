@@ -33,9 +33,8 @@ use crate::metadata::{
 };
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_one_arg,
-    format_three_args, get_browser_version_from_metadata, uncompress, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    get_browser_version_from_metadata, uncompress, SeleniumManager, BETA, DASH_DASH_VERSION, DEV,
+    NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
 };
 
 pub const CHROME_NAME: &str = "chrome";
@@ -54,7 +53,7 @@ pub struct ChromeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub downloaded_browser: Option<PathBuf>,
+    pub resolved_browser_path: Option<PathBuf>,
     pub download_url: Option<String>,
 }
 
@@ -72,7 +71,7 @@ impl ChromeManager {
             config,
             log: Logger::default(),
             download_url: None,
-            downloaded_browser: None,
+            resolved_browser_path: None,
         }))
     }
 
@@ -271,65 +270,53 @@ impl SeleniumManager for ChromeManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"\\Google\\Chrome\\Application\\chrome.exe"#,
+                r#"Google\Chrome\Application\chrome.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"\\Google\\Chrome Beta\\Application\\chrome.exe"#,
+                r#"Google\Chrome Beta\Application\chrome.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"\\Google\\Chrome Dev\\Application\\chrome.exe"#,
+                r#"Google\Chrome Dev\Application\chrome.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"\\Google\\Chrome SxS\\Application\\chrome.exe"#,
+                r#"Google\Chrome SxS\Application\chrome.exe"#,
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#,
+                r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#,
             ),
             (
                 BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Google\ Chrome\ Beta.app/Contents/MacOS/Google\ Chrome\ Beta"#,
+                r#"/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta"#,
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Google\ Chrome\ Dev.app/Contents/MacOS/Google\ Chrome\ Dev"#,
+                r#"/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev"#,
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"#,
+                r#"/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"#,
             ),
-            (BrowserPath::new(LINUX, STABLE), "google-chrome"),
-            (BrowserPath::new(LINUX, BETA), "google-chrome-beta"),
-            (BrowserPath::new(LINUX, DEV), "google-chrome-unstable"),
+            (BrowserPath::new(LINUX, STABLE), "/usr/bin/google-chrome"),
+            (BrowserPath::new(LINUX, BETA), "/usr/bin/google-chrome-beta"),
+            (
+                BrowserPath::new(LINUX, DEV),
+                "/usr/bin/google-chrome-unstable",
+            ),
         ])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         let mut commands;
-        let escaped_browser_path = self.get_escaped_browser_path();
-        let mut browser_path = escaped_browser_path.as_str();
+        let mut browser_path = self.get_browser_path().to_string();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
-                    commands = vec![
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES,
-                            REMOVE_X86,
-                            browser_path,
-                        ),
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES_X86,
-                            "",
-                            browser_path,
-                        ),
-                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
-                    ];
+                    browser_path = self.get_escaped_path_buf(path);
+                    commands = vec![format_one_arg(WMIC_COMMAND, &browser_path)];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
                             REG_QUERY,
@@ -340,10 +327,13 @@ impl SeleniumManager for ChromeManager {
                 _ => return None,
             }
         } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
+            commands = vec![format_one_arg(
+                WMIC_COMMAND,
+                &self.get_escaped_path(browser_path.to_string()),
+            )];
         }
         if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_DASH_VERSION, browser_path)]
+            commands = vec![format_one_arg(DASH_DASH_VERSION, &browser_path)]
         }
         self.detect_browser_version(commands)
     }
@@ -540,17 +530,17 @@ impl SeleniumManager for ChromeManager {
                 None,
             )?;
         }
-        self.set_downloaded_browser(browser_path.clone());
+        self.set_resolved_browser_path(browser_path.clone());
 
         Ok(browser_path)
     }
 
-    fn get_downloaded_browser(&self) -> Option<PathBuf> {
-        self.downloaded_browser.to_owned()
+    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
+        self.resolved_browser_path.to_owned()
     }
 
-    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>) {
-        self.downloaded_browser = downloaded_browser;
+    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
+        self.resolved_browser_path = browser_path;
     }
 }
 

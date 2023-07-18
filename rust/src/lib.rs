@@ -21,7 +21,7 @@ use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_b
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use std::fs;
+use std::{env, fs};
 
 use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
@@ -61,8 +61,6 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
-pub const WMIC_COMMAND_ENV: &str =
-    r#"set PFILES=%{}{}%&& wmic datafile where name='!PFILES:\=\\!{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
 pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
@@ -73,7 +71,7 @@ pub const DASH_DASH_VERSION: &str = "{} --version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
-pub const REMOVE_X86: &str = ": (x86)=";
+pub const ENV_X86: &str = " (x86)";
 pub const ARCH_X86: &str = "x86";
 pub const ARCH_AMD64: &str = "amd64";
 pub const ARCH_ARM64: &str = "arm64";
@@ -102,7 +100,7 @@ pub trait SeleniumManager {
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
-    fn discover_browser_version(&self) -> Option<String>;
+    fn discover_browser_version(&mut self) -> Option<String>;
 
     fn get_driver_name(&self) -> &str;
 
@@ -124,9 +122,9 @@ pub trait SeleniumManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>>;
 
-    fn get_downloaded_browser(&self) -> Option<PathBuf>;
+    fn get_resolved_browser_path(&self) -> Option<PathBuf>;
 
-    fn set_downloaded_browser(&mut self, downloaded_browser: Option<PathBuf>);
+    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>);
 
     // ----------------------------------------------------------
     // Shared functions
@@ -155,16 +153,50 @@ pub trait SeleniumManager {
         }
     }
 
-    fn detect_browser_path(&self) -> Option<&str> {
+    fn detect_browser_path(&mut self) -> Option<PathBuf> {
         let mut browser_version = self.get_browser_version();
         if browser_version.eq_ignore_ascii_case(CANARY) {
             browser_version = NIGHTLY;
         } else if browser_version.is_empty() {
             browser_version = STABLE;
         }
-        self.get_browser_path_map()
+        let browser_path = self
+            .get_browser_path_map()
             .get(&BrowserPath::new(str_to_os(self.get_os()), browser_version))
             .cloned()
+            .unwrap_or_default();
+
+        let mut full_browser_path = Path::new(browser_path).to_path_buf();
+        if WINDOWS.is(self.get_os()) {
+            let envs = vec![ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, ENV_LOCALAPPDATA];
+
+            for env in envs {
+                let mut env_value = env::var(env).unwrap_or_default();
+                if env.eq(ENV_PROGRAM_FILES) && env_value.contains(ENV_X86) {
+                    // This special case is required to keep compliance between x32 and x64
+                    // architectures (since the selenium-manager in Windows is compiled as x32 binary)
+                    env_value = env_value.replace(ENV_X86, "");
+                }
+                let parent_path = Path::new(&env_value);
+                full_browser_path = parent_path.join(browser_path);
+                if full_browser_path.exists() {
+                    break;
+                }
+            }
+        }
+
+        if full_browser_path.exists() {
+            self.get_logger().debug(format!(
+                "{} detected at {}",
+                self.get_browser_name(),
+                full_browser_path.display()
+            ));
+            let browser_path = Some(full_browser_path);
+            self.set_resolved_browser_path(browser_path.clone());
+            browser_path
+        } else {
+            None
+        }
     }
 
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
@@ -399,7 +431,7 @@ pub trait SeleniumManager {
 
     fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
         self.get_logger()
-            .debug(format!("Running command: {:?}", command));
+            .debug(format!("Running command: {}", command));
         let output = run_shell_command(self.get_os(), command)?;
         self.get_logger().debug(format!("Output: {:?}", output));
         Ok(output)
@@ -511,20 +543,27 @@ pub trait SeleniumManager {
         self.get_config().browser_path.as_str()
     }
 
-    fn get_escaped_browser_path(&self) -> String {
-        let mut browser_path = self.get_browser_path().to_string();
-        let path = Path::new(&browser_path);
-        if path.exists() && WINDOWS.is(self.get_os()) {
-            browser_path = Path::new(path)
+    fn get_escaped_path(&self, string_path: String) -> String {
+        let mut escaped_path = string_path.clone();
+        let path = Path::new(&string_path);
+        if path.exists() {
+            escaped_path = Path::new(path)
                 .canonicalize()
                 .unwrap()
                 .to_str()
                 .unwrap()
-                .to_string()
-                .replace("\\\\?\\", "")
-                .replace('\\', "\\\\");
+                .to_string();
+            if WINDOWS.is(self.get_os()) {
+                escaped_path = escaped_path.replace("\\\\?\\", "").replace('\\', "\\\\");
+            } else {
+                escaped_path = escaped_path.replace(' ', "\\ ");
+            }
         }
-        browser_path
+        escaped_path
+    }
+
+    fn get_escaped_path_buf(&self, path_buf: PathBuf) -> String {
+        self.get_escaped_path(path_buf.into_os_string().into_string().unwrap_or_default())
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
@@ -681,7 +720,7 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn E
 
 pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
     let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/v/c")
+        ("cmd", "/c")
     } else {
         ("sh", "-c")
     };
