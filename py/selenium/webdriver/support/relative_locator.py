@@ -23,6 +23,17 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
+valid_locators = (
+    By.ID,
+    By.XPATH,
+    By.NAME,
+    By.TAG_NAME,
+    By.LINK_TEXT,
+    By.PARTIAL_LINK_TEXT,
+    By.CLASS_NAME,
+    By.CSS_SELECTOR,
+)
+
 
 def with_tag_name(tag_name: str) -> "RelativeBy":
     """Start searching for relative objects using a tag name.
@@ -50,8 +61,10 @@ def locate_with(by: By, using: str) -> "RelativeBy":
         - RelativeBy - use this object to create filters within a
             `find_elements` call.
     """
-    assert by is not None, "Please pass in a by argument"
-    assert using is not None, "Please pass in a using argument"
+    if by not in valid_locators:
+        raise ValueError(f"Locator must be one of the following {valid_locators}")
+    if not using.strip():
+        raise TypeError("Please provide valid locator value")
     return RelativeBy({by: using})
 
 
