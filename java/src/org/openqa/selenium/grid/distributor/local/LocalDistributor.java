@@ -762,7 +762,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         loop = !inQueue.isEmpty();
       } else {
         inQueue = null;
-        loop = true;
+        loop = !sessionQueue.peekEmpty();
       }
       while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
