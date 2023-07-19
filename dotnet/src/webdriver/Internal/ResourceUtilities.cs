@@ -143,22 +143,20 @@ namespace OpenQA.Selenium.Internal
             PlatformID platformId = Environment.OSVersion.Platform;
             if (platformId == PlatformID.Unix || platformId == PlatformID.MacOSX || (int)platformId == PlatformMonoUnixValue)
             {
-                using (Process unameProcess = new Process())
+                using Process unameProcess = new Process();
+                unameProcess.StartInfo.FileName = "uname";
+                unameProcess.StartInfo.UseShellExecute = false;
+                unameProcess.StartInfo.RedirectStandardOutput = true;
+                unameProcess.Start();
+                unameProcess.WaitForExit(1000);
+                string output = unameProcess.StandardOutput.ReadToEnd();
+                if (output.ToLowerInvariant().StartsWith("darwin"))
                 {
-                    unameProcess.StartInfo.FileName = "uname";
-                    unameProcess.StartInfo.UseShellExecute = false;
-                    unameProcess.StartInfo.RedirectStandardOutput = true;
-                    unameProcess.Start();
-                    unameProcess.WaitForExit(1000);
-                    string output = unameProcess.StandardOutput.ReadToEnd();
-                    if (output.ToLowerInvariant().StartsWith("darwin"))
-                    {
-                        platformName = "mac";
-                    }
-                    else
-                    {
-                        platformName = "linux";
-                    }
+                    platformName = "mac";
+                }
+                else
+                {
+                    platformName = "linux";
                 }
             }
             else if (platformId == PlatformID.Win32NT || platformId == PlatformID.Win32S || platformId == PlatformID.Win32Windows || platformId == PlatformID.WinCE)

@@ -1,4 +1,4 @@
-﻿// <copyright file="Preferences.cs" company="WebDriver Committers">
+// <copyright file="Preferences.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -133,13 +133,11 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="filePath">The full path to the file to be written.</param>
         internal void WriteToFile(string filePath)
         {
-            using (TextWriter writer = File.CreateText(filePath))
+            using TextWriter writer = File.CreateText(filePath);
+            foreach (KeyValuePair<string, string> preference in this.preferences)
             {
-                foreach (KeyValuePair<string, string> preference in this.preferences)
-                {
-                    string escapedValue = preference.Value.Replace(@"\", @"\\");
-                    writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
-                }
+                string escapedValue = preference.Value.Replace(@"\", @"\\");
+                writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
             }
         }
 

@@ -96,20 +96,14 @@ namespace OpenQA.Selenium
             }
 #endif
 
-            using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
-            {
-                using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                {
+            using MemoryStream imageStream = new MemoryStream(this.AsByteArray);
+            using FileStream fileStream = new FileStream(fileName, FileMode.Create);
 #if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0
-                    imageStream.WriteTo(fileStream);
+            imageStream.WriteTo(fileStream);
 #else
-                    using (Image screenshotImage = Image.FromStream(imageStream))
-                    {
-                        screenshotImage.Save(fileStream, ConvertScreenshotImageFormat(format));
-                    }
+            using Image screenshotImage = Image.FromStream(imageStream);
+            screenshotImage.Save(fileStream, ConvertScreenshotImageFormat(format));
 #endif
-                }
-            }
         }
 
 #if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0

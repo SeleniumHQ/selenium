@@ -44,14 +44,9 @@ namespace OpenQA.Selenium
             {
                 throw new ArgumentException("The file name to be saved cannot be null or the empty string", nameof(fileName));
             }
-
-            using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
-            {
-                using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                {
-                    imageStream.WriteTo(fileStream);
-                }
-            }
+            using MemoryStream imageStream = new MemoryStream(this.AsByteArray);
+            using FileStream fileStream = new FileStream(fileName, FileMode.Create);
+            imageStream.WriteTo(fileStream);
         }
     }
 }
