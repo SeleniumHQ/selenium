@@ -250,44 +250,43 @@ namespace OpenQA.Selenium.Remote
             this.OnSendingRemoteHttpRequest(eventArgs);
 
             HttpMethod method = new HttpMethod(requestInfo.HttpMethod);
-            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri))
+
+            using HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri);
+
+            foreach (KeyValuePair<string, string> header in eventArgs.Headers)
             {
-                foreach (KeyValuePair<string, string> header in eventArgs.Headers)
-                {
-                    requestMessage.Headers.Add(header.Key, header.Value);
-                }
-
-                if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
-                {
-                    CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
-                    cacheControlHeader.NoCache = true;
-                    requestMessage.Headers.CacheControl = cacheControlHeader;
-                }
-
-                if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
-                {
-                    MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
-                    acceptHeader.CharSet = Utf8CharsetType;
-                    requestMessage.Headers.Accept.Add(acceptHeader);
-
-                    byte[] bytes = Encoding.UTF8.GetBytes(eventArgs.RequestBody);
-                    requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
-
-                    MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
-                    contentTypeHeader.CharSet = Utf8CharsetType;
-                    requestMessage.Content.Headers.ContentType = contentTypeHeader;
-                }
-
-                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage))
-                {
-                    HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
-                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
-                    httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
-                    httpResponseInfo.StatusCode = responseMessage.StatusCode;
-
-                    return httpResponseInfo;
-                }
+                requestMessage.Headers.Add(header.Key, header.Value);
             }
+
+            if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
+            {
+                CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
+                cacheControlHeader.NoCache = true;
+                requestMessage.Headers.CacheControl = cacheControlHeader;
+            }
+
+            if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
+            {
+                MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
+                acceptHeader.CharSet = Utf8CharsetType;
+                requestMessage.Headers.Accept.Add(acceptHeader);
+
+                byte[] bytes = Encoding.UTF8.GetBytes(eventArgs.RequestBody);
+                requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+
+                MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
+                contentTypeHeader.CharSet = Utf8CharsetType;
+                requestMessage.Content.Headers.ContentType = contentTypeHeader;
+            }
+
+            using HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage);
+
+            HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
+            httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
+            httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
+            httpResponseInfo.StatusCode = responseMessage.StatusCode;
+
+            return httpResponseInfo;
         }
 
         private Response CreateResponse(HttpResponseInfo responseInfo)

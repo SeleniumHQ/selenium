@@ -336,14 +336,9 @@ namespace OpenQA.Selenium
         private string GetMutationListenerScript()
         {
             string listenerScript = string.Empty;
-            using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", "mutation-listener.js"))
-            {
-                using (StreamReader resourceReader = new StreamReader(resourceStream))
-                {
-                    listenerScript = resourceReader.ReadToEnd();
-                }
-            }
-
+            using Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", "mutation-listener.js");
+            using StreamReader resourceReader = new StreamReader(resourceStream);
+            listenerScript = resourceReader.ReadToEnd();
             return listenerScript;
         }
 

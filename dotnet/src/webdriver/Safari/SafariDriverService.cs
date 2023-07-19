@@ -119,34 +119,31 @@ namespace OpenQA.Selenium.Safari
                 // we'll attempt to poll for a different URL which has no side effects.
                 // We've chosen to poll on the "quit" URL, passing in a nonexistent
                 // session id.
-                using (var httpClient = new HttpClient())
+                using var httpClient = new HttpClient();
+
+                httpClient.DefaultRequestHeaders.ConnectionClose = true;
+                httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                using var httpRequest = new HttpRequestMessage(HttpMethod.Delete, serviceHealthUri);
+
+                try
                 {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+                    using var httpResponse = Task.Run(async () => await httpClient.SendAsync(httpRequest)).GetAwaiter().GetResult();
 
-                    using (var httpRequest = new HttpRequestMessage(HttpMethod.Delete, serviceHealthUri))
-                    {
-                        try
-                        {
-                            using (var httpResponse = Task.Run(async () => await httpClient.SendAsync(httpRequest)).GetAwaiter().GetResult())
-                            {
-                                isInitialized = (httpResponse.StatusCode == HttpStatusCode.OK
-                                        || httpResponse.StatusCode == HttpStatusCode.InternalServerError
-                                        || httpResponse.StatusCode == HttpStatusCode.NotFound)
-                                    && httpResponse.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                            }
-                        }
+                    isInitialized = (httpResponse.StatusCode == HttpStatusCode.OK
+                            || httpResponse.StatusCode == HttpStatusCode.InternalServerError
+                            || httpResponse.StatusCode == HttpStatusCode.NotFound)
+                        && httpResponse.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                }
 
-                        // Checking the response from deleting a nonexistent session. Note that we are simply
-                        // checking that the HTTP status returned is a 200 status, and that the resposne has
-                        // the correct Content-Type header. A more sophisticated check would parse the JSON
-                        // response and validate its values. At the moment we do not do this more sophisticated
-                        // check.
-                        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                    }
+                // Checking the response from deleting a nonexistent session. Note that we are simply
+                // checking that the HTTP status returned is a 200 status, and that the resposne has
+                // the correct Content-Type header. A more sophisticated check would parse the JSON
+                // response and validate its values. At the moment we do not do this more sophisticated
+                // check.
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
+                {
+                    Console.WriteLine(ex);
                 }
 
                 return isInitialized;

@@ -102,10 +102,8 @@ namespace OpenQA.Selenium.Firefox
             byte[] zipContent = Convert.FromBase64String(base64);
             using (MemoryStream zipStream = new MemoryStream(zipContent))
             {
-                using (ZipArchive profileZipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
-                {
-                    profileZipArchive.ExtractToDirectory(destinationDirectory);
-                }
+                using ZipArchive profileZipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read);
+                profileZipArchive.ExtractToDirectory(destinationDirectory);
             }
 
             return new FirefoxProfile(destinationDirectory, true);
@@ -200,21 +198,17 @@ namespace OpenQA.Selenium.Firefox
             string base64zip = string.Empty;
             this.WriteToDisk();
 
-            using (MemoryStream profileMemoryStream = new MemoryStream())
-            {
-                using (ZipArchive profileZipArchive = new ZipArchive(profileMemoryStream, ZipArchiveMode.Create, true))
-                {
-                    string[] files = Directory.GetFiles(this.profileDir, "*.*", SearchOption.AllDirectories);
-                    foreach (string file in files)
-                    {
-                        string fileNameInZip = file.Substring(this.profileDir.Length + 1).Replace(Path.DirectorySeparatorChar, '/');
-                        profileZipArchive.CreateEntryFromFile(file, fileNameInZip);
-                    }
-                }
+            using MemoryStream profileMemoryStream = new MemoryStream();
+            using ZipArchive profileZipArchive = new ZipArchive(profileMemoryStream, ZipArchiveMode.Create, true);
 
-                base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
-                this.Clean();
+            string[] files = Directory.GetFiles(this.profileDir, "*.*", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                string fileNameInZip = file.Substring(this.profileDir.Length + 1).Replace(Path.DirectorySeparatorChar, '/');
+                profileZipArchive.CreateEntryFromFile(file, fileNameInZip);
             }
+            base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+            this.Clean();
 
             return base64zip;
         }
@@ -297,17 +291,13 @@ namespace OpenQA.Selenium.Firefox
 
         private void ReadDefaultPreferences()
         {
-            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_prefs.json"))
-            {
-                using (StreamReader reader = new StreamReader(defaultPrefsStream))
-                {
-                    string defaultPreferences = reader.ReadToEnd();
-                    Dictionary<string, object> deserializedPreferences = JsonConvert.DeserializeObject<Dictionary<string, object>>(defaultPreferences, new ResponseValueJsonConverter());
-                    Dictionary<string, object> immutableDefaultPreferences = deserializedPreferences["frozen"] as Dictionary<string, object>;
-                    Dictionary<string, object> editableDefaultPreferences = deserializedPreferences["mutable"] as Dictionary<string, object>;
-                    this.profilePreferences = new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
-                }
-            }
+            using Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_prefs.json");
+            using StreamReader reader = new StreamReader(defaultPrefsStream);
+            string defaultPreferences = reader.ReadToEnd();
+            Dictionary<string, object> deserializedPreferences = JsonConvert.DeserializeObject<Dictionary<string, object>>(defaultPreferences, new ResponseValueJsonConverter());
+            Dictionary<string, object> immutableDefaultPreferences = deserializedPreferences["frozen"] as Dictionary<string, object>;
+            Dictionary<string, object> editableDefaultPreferences = deserializedPreferences["mutable"] as Dictionary<string, object>;
+            this.profilePreferences = new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
         }
 
         /// <summary>

@@ -511,22 +511,17 @@ namespace OpenQA.Selenium.DevTools
 
                     if (this.sessionSocket.State == WebSocketState.Open && result.MessageType != WebSocketMessageType.Close)
                     {
-                        using (var stream = new MemoryStream())
+                        using var stream = new MemoryStream();
+                        stream.Write(buffer.Array, 0, result.Count);
+                        while (!result.EndOfMessage)
                         {
+                            result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
                             stream.Write(buffer.Array, 0, result.Count);
-                            while (!result.EndOfMessage)
-                            {
-                                result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
-                                stream.Write(buffer.Array, 0, result.Count);
-                            }
-
-                            stream.Seek(0, SeekOrigin.Begin);
-                            using (var reader = new StreamReader(stream, Encoding.UTF8))
-                            {
-                                string message = reader.ReadToEnd();
-                                ProcessIncomingMessage(message);
-                            }
                         }
+                        stream.Seek(0, SeekOrigin.Begin);
+                        using var reader = new StreamReader(stream, Encoding.UTF8);
+                        string message = reader.ReadToEnd();
+                        ProcessIncomingMessage(message);
                     }
                 }
             }

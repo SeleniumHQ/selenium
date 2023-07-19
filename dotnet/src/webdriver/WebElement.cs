@@ -711,10 +711,8 @@ namespace OpenQA.Selenium
             string atom = string.Empty;
             using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
             {
-                using (StreamReader atomReader = new StreamReader(atomStream))
-                {
-                    atom = atomReader.ReadToEnd();
-                }
+                using StreamReader atomReader = new StreamReader(atomStream);
+                atom = atomReader.ReadToEnd();
             }
 
             string atomName = atomResourceName.Replace(".js", "");
