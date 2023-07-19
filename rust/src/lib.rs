@@ -443,8 +443,7 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        let mut config = self.get_config_mut();
-        config.os = os;
+        self.get_config_mut().os = os;
     }
 
     fn get_arch(&self) -> &str {
@@ -452,8 +451,7 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = self.get_config_mut();
-        config.arch = arch;
+        self.get_config_mut().arch = arch;
     }
 
     fn get_browser_version(&self) -> &str {
@@ -467,8 +465,7 @@ pub trait SeleniumManager {
 
     fn set_browser_version(&mut self, browser_version: String) {
         if !browser_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_version = browser_version;
+            self.get_config_mut().browser_version = browser_version;
         }
     }
 
@@ -483,8 +480,7 @@ pub trait SeleniumManager {
 
     fn set_driver_version(&mut self, driver_version: String) {
         if !driver_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.driver_version = driver_version;
+            self.get_config_mut().driver_version = driver_version;
         }
     }
 
@@ -510,8 +506,7 @@ pub trait SeleniumManager {
 
     fn set_browser_path(&mut self, browser_path: String) {
         if !browser_path.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_path = browser_path;
+            self.get_config_mut().browser_path = browser_path;
         }
     }
 
@@ -522,8 +517,7 @@ pub trait SeleniumManager {
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
         if !proxy.is_empty() && !self.is_offline() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
-            let mut config = self.get_config_mut();
-            config.proxy = proxy;
+            self.get_config_mut().proxy = proxy;
             self.update_http_client()?;
         }
         Ok(())
@@ -535,8 +529,7 @@ pub trait SeleniumManager {
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
         if timeout != REQUEST_TIMEOUT_SEC {
-            let mut config = self.get_config_mut();
-            config.timeout = timeout;
+            self.get_config_mut().timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
             self.update_http_client()?;
