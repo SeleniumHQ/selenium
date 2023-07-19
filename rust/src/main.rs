@@ -20,6 +20,7 @@ use std::process::exit;
 use clap::Parser;
 
 use exitcode::DATAERR;
+use exitcode::UNAVAILABLE;
 
 use exitcode::OK;
 use selenium_manager::config::BooleanKey;
@@ -103,6 +104,10 @@ struct Cli {
     /// Display TRACE messages
     #[clap(long)]
     trace: bool,
+
+    /// Offline mode (i.e., disabling network requests and downloads)
+    #[clap(long)]
+    offline: bool,
 }
 
 fn main() {
@@ -149,6 +154,7 @@ fn main() {
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
     selenium_manager.set_driver_ttl(cli.driver_ttl);
     selenium_manager.set_browser_ttl(cli.browser_ttl);
+    selenium_manager.set_offline(cli.offline);
 
     selenium_manager
         .set_timeout(cli.timeout)
@@ -156,13 +162,23 @@ fn main() {
         .and_then(|_| selenium_manager.resolve_driver())
         .map(|path| {
             let log = selenium_manager.get_logger();
-            log.info(path.display());
-            flush_and_exit(OK, log);
+            if path.exists() {
+                log.info(path.display());
+                flush_and_exit(OK, log);
+            } else {
+                log.error("Driver unavailable in the cache".to_string());
+                flush_and_exit(UNAVAILABLE, log);
+            }
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            log.error(err.to_string());
-            flush_and_exit(DATAERR, log);
+            if selenium_manager.is_offline() {
+                log.warn(err.to_string());
+                flush_and_exit(OK, log);
+            } else {
+                log.error(err.to_string());
+                flush_and_exit(DATAERR, log);
+            }
         });
 }
 
