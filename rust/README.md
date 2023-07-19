@@ -51,6 +51,8 @@ Options:
           Display DEBUG messages
       --trace
           Display TRACE messages
+      --offline
+          Offline mode (i.e., disabling network requests and downloads)
   -h, --help
           Print help
   -V, --version
