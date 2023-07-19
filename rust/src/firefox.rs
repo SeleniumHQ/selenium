@@ -30,7 +30,7 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, NIGHTLY, REG_QUERY_FIND, STABLE, WMIC_COMMAND,
+    DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_QUERY_FIND, STABLE, WMIC_COMMAND,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";

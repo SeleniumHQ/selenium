@@ -34,7 +34,7 @@ use crate::metadata::{
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_one_arg,
     get_browser_version_from_metadata, uncompress, SeleniumManager, BETA, DASH_DASH_VERSION, DEV,
-    NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
+    NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_QUERY, STABLE, WMIC_COMMAND,
 };
 
 pub const CHROME_NAME: &str = "chrome";

@@ -195,7 +195,22 @@ pub trait SeleniumManager {
             self.set_resolved_browser_path(browser_path.clone());
             browser_path
         } else {
-            None
+            // Check browser in PATH
+            let browser_name = self.get_browser_name();
+            self.get_logger()
+                .debug(format!("Checking {} in PATH", browser_name));
+            let browser_in_path = self.find_browser_in_path();
+            if let Some(path) = &browser_in_path {
+                self.get_logger().debug(format!(
+                    "Found {} in PATH: {}",
+                    browser_name,
+                    path.display()
+                ));
+            } else {
+                self.get_logger()
+                    .debug(format!("{} not found in PATH", browser_name));
+            }
+            browser_in_path
         }
     }
 
@@ -253,7 +268,7 @@ pub trait SeleniumManager {
                     let browser_path = self.download_browser()?;
                     if browser_path.is_some() {
                         self.get_logger().debug(format!(
-                            "{} {} downloaded to {}",
+                            "{} {} has been downloaded at {}",
                             self.get_browser_name(),
                             self.get_browser_version(),
                             browser_path.unwrap().display()
@@ -286,6 +301,14 @@ pub trait SeleniumManager {
         }
     }
 
+    fn find_browser_in_path(&self) -> Option<PathBuf> {
+        let browser_path = self.execute_which_in_shell(self.get_browser_name());
+        if let Some(path) = browser_path {
+            return Some(Path::new(&path).to_path_buf());
+        }
+        None
+    }
+
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
         match self
             .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
@@ -293,38 +316,52 @@ pub trait SeleniumManager {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
-                    let which_command = if WINDOWS.is(self.get_os()) {
-                        WHERE_COMMAND
-                    } else {
-                        WHICH_COMMAND
-                    };
-                    let driver_path = match self.run_shell_command_with_log(format_one_arg(
-                        which_command,
-                        self.get_driver_name(),
-                    )) {
-                        Ok(path) => {
-                            let path_vector = split_lines(path.as_str());
-                            if path_vector.len() == 1 {
-                                Some(path_vector.first().unwrap().to_string())
-                            } else {
-                                let exec_paths: Vec<&str> = path_vector
-                                    .into_iter()
-                                    .filter(|p| Path::new(p).is_executable())
-                                    .collect();
-                                if exec_paths.is_empty() {
-                                    None
-                                } else {
-                                    Some(exec_paths.first().unwrap().to_string())
-                                }
-                            }
-                        }
-                        Err(_) => None,
-                    };
+                    let driver_path = self.execute_which_in_shell(self.get_driver_name());
                     return (Some(parsed_version), driver_path);
                 }
                 (None, None)
             }
             Err(_) => (None, None),
+        }
+    }
+
+    fn execute_which_in_shell(&self, command: &str) -> Option<String> {
+        let which_command = if WINDOWS.is(self.get_os()) {
+            WHERE_COMMAND
+        } else {
+            WHICH_COMMAND
+        };
+        let path = match self.run_shell_command_with_log(format_one_arg(which_command, command)) {
+            Ok(path) => {
+                let path_vector = split_lines(path.as_str());
+                if path_vector.len() == 1 {
+                    self.get_first_in_vector(path_vector)
+                } else {
+                    let exec_paths: Vec<&str> = path_vector
+                        .into_iter()
+                        .filter(|p| Path::new(p).is_executable())
+                        .collect();
+                    if exec_paths.is_empty() {
+                        None
+                    } else {
+                        self.get_first_in_vector(exec_paths)
+                    }
+                }
+            }
+            Err(_) => None,
+        };
+        path
+    }
+
+    fn get_first_in_vector(&self, vector: Vec<&str>) -> Option<String> {
+        if vector.is_empty() {
+            return None;
+        }
+        let first = vector.first().unwrap().to_string();
+        if first.is_empty() {
+            None
+        } else {
+            Some(first)
         }
     }
 

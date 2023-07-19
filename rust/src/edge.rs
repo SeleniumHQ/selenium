@@ -30,7 +30,7 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_one_arg, Logger, SeleniumManager, BETA, DASH_DASH_VERSION, DEV,
-    NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
+    NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_QUERY, STABLE, WMIC_COMMAND,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
