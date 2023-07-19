@@ -80,6 +80,7 @@ class ChromiumDriver(RemoteWebDriver):
             {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
             'offline': False}
         """
+        ChromiumRemoteConnection.add_network_commands(self.command_executor)
         return self.execute("getNetworkConditions")["value"]
 
     def set_network_conditions(self, **network_conditions) -> None:
@@ -99,10 +100,12 @@ class ChromiumDriver(RemoteWebDriver):
 
             Note: 'throughput' can be used to set both (for download and upload).
         """
+        ChromiumRemoteConnection.add_network_commands(self.command_executor)
         self.execute("setNetworkConditions", {"network_conditions": network_conditions})
 
     def delete_network_conditions(self) -> None:
         """Resets Chromium network emulation settings."""
+        ChromiumRemoteConnection.add_network_commands(self.command_executor)
         self.execute("deleteNetworkConditions")
 
     def set_permissions(self, name: str, value: str) -> None:

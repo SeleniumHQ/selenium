@@ -97,11 +97,11 @@ class WebDriver(RemoteWebDriver):
                 ... do stuff ...
         """
         initial_context = self.execute("GET_CONTEXT").pop("value")
-        self.set_context(context)
+        WebDriver.set_context(self, context)
         try:
             yield
         finally:
-            self.set_context(initial_context)
+            WebDriver.set_context(self, initial_context)
 
     def install_addon(self, path, temporary=False) -> str:
         """Installs Firefox addon.
@@ -163,7 +163,7 @@ class WebDriver(RemoteWebDriver):
                 "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
                 UserWarning,
             )
-        png = self.get_full_page_screenshot_as_png()
+        png = WebDriver.get_full_page_screenshot_as_png(self)
         try:
             with open(filename, "wb") as f:
                 f.write(png)
@@ -187,7 +187,7 @@ class WebDriver(RemoteWebDriver):
 
                 driver.save_full_page_screenshot('/Screenshots/foo.png')
         """
-        return self.get_full_page_screenshot_as_file(filename)
+        return WebDriver.get_full_page_screenshot_as_file(self, filename)
 
     def get_full_page_screenshot_as_png(self) -> bytes:
         """Gets the full document screenshot of the current window as a binary
@@ -198,7 +198,7 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
+        return base64.b64decode(WebDriver.get_full_page_screenshot_as_base64(self).encode("ascii"))
 
     def get_full_page_screenshot_as_base64(self) -> str:
         """Gets the full document screenshot of the current window as a base64
