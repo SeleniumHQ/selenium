@@ -636,13 +636,13 @@ public class RemoteWebDriver
     }
     switch (when) {
       case BEFORE:
-        LOG.log(level, "Executing: " + commandName + " " + text);
+        LOG.log(level, "Executing: {0} {1}", new Object[] {commandName, text});
         break;
       case AFTER:
-        LOG.log(level, "Executed: " + commandName + " " + text);
+        LOG.log(level, "Executed: {0} {1}", new Object[] {commandName, text});
         break;
       case EXCEPTION:
-        LOG.log(level, "Exception: " + commandName + " " + text);
+        LOG.log(level, "Exception: {0} {1}", new Object[] {commandName, text});
         break;
       default:
         LOG.log(level, text);
