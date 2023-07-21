@@ -830,7 +830,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           try (Span childSpan = span.createSpan("distributor.retry")) {
             LOG.log(
                 Debug.getDebugLogLevel(),
-                String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
+                "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
