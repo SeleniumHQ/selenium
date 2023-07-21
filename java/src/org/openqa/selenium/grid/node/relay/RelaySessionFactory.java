@@ -144,7 +144,7 @@ public class RelaySessionFactory implements SessionFactory {
           new SessionNotCreatedException(
               "New session request capabilities do not " + "match the stereotype."));
     }
-
+    capabilities = capabilities.merge(stereotype);
     LOG.info("Starting session for " + capabilities);
 
     try (Span span = tracer.getCurrentContext().createSpan("relay_session_factory.apply")) {
