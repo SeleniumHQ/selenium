@@ -26,7 +26,7 @@ const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
 
-let debugMessagePrinted = {};
+let debugMessagePrinted = false;
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -51,6 +51,11 @@ function getBinary() {
     throw new Error(`Unable to obtain Selenium Manager`)
   }
 
+  if (!debugMessagePrinted) {
+    console.debug(`Selenium Manager binary found at ${filePath}`)
+    debugMessagePrinted = true; // Set the flag to true after printing the debug message
+  }
+
   return filePath
 }
 
@@ -61,15 +66,6 @@ function getBinary() {
  */
 
 function driverLocation(options) {
-  const browserName = options.getBrowserName().toLocaleLowerCase();
-
-  if (!debugMessagePrinted[browserName]) {
-    console.debug(
-      `Applicable driver not found for ${browserName}; attempting to install with Selenium Manager (Beta)`
-    )
-    debugMessagePrinted[browserName] = true; // Set the flag to true after printing the debug message
-  }
-
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
@@ -111,6 +107,7 @@ function driverLocation(options) {
     if (spawnResult.stdout.toString()) {
       try {
         output = JSON.parse(spawnResult.stdout.toString())
+        logOutput(output)
         errorMessage = output.result.message
       } catch (e) {
         errorMessage = e.toString()
@@ -122,19 +119,27 @@ function driverLocation(options) {
   }
   try {
     output = JSON.parse(spawnResult.stdout.toString())
+    console.log(output)
   } catch (e) {
     throw new Error(
       `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
     )
   }
 
+  logOutput(output)
+
+  return output.result.message
+}
+
+function logOutput (output) {
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       console.warn(`${output.logs[key].message}`)
     }
+    if (['DEBUG', 'INFO'].includes(output.logs[key].level)) {
+      console.debug(`${output.logs[key].message}`)
+    }
   }
-
-  return output.result.message
 }
 
 // PUBLIC API
