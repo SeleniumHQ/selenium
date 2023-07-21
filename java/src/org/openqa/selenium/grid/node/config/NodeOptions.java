@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -190,7 +191,7 @@ public class NodeOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
       /* Danger! Java stereotype ahead! */
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
     boolean overrideMaxSessions =
@@ -336,7 +337,7 @@ public class NodeOptions {
   }
 
   private void addDriverConfigs(
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
       ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
     config
@@ -459,10 +460,11 @@ public class NodeOptions {
                         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
                         .ifPresent(
                             builder -> {
+                              ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
                                 driverConfigs.putAll(
-                                    driverInfoConfig, factoryFactory.apply(stereotype));
+                                    driverInfoConfig, factoryFactory.apply(immutable));
                               }
                             });
                   });
@@ -554,7 +556,7 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-      int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();
@@ -595,9 +597,10 @@ public class NodeOptions {
               .max(Comparator.comparingInt(builder -> builder.score(caps)))
               .ifPresent(
                   builder -> {
+                    ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
                     int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
                     for (int i = 0; i < maxDriverSessions; i++) {
-                      toReturn.putAll(info, factoryFactory.apply(caps));
+                      toReturn.putAll(info, factoryFactory.apply(immutable));
                     }
                   });
         });
