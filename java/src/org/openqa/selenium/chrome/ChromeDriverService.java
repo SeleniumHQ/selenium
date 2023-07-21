@@ -183,16 +183,6 @@ public class ChromeDriverService extends DriverService {
     return new Builder().withLogLevel(level).build();
   }
 
-  /**
-   * Checks if the ChromeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(CHROME_DRIVER_NAME, CHROME_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link ChromeDriverService} instances. */
   @AutoService(DriverService.Builder.class)
   public static class Builder

@@ -59,7 +59,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
@@ -569,18 +568,15 @@ public class NodeOptions {
             .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
             .collect(Collectors.toList());
 
-    LOG.log(Level.INFO, "Driver(s) already present on the host: {0}", infos.size());
-
     if (config.getBool(NODE_SECTION, "selenium-manager").orElse(DEFAULT_USE_SELENIUM_MANAGER)) {
       List<String> present =
           infos.stream().map(WebDriverInfo::getDisplayName).collect(Collectors.toList());
       List<WebDriverInfo> driversSM =
           StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-              .filter(WebDriverInfo::isAvailable)
               .filter(info -> !present.contains(info.getDisplayName()))
+              .filter(WebDriverInfo::isAvailable)
               .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
               .collect(Collectors.toList());
-      LOG.log(Level.INFO, "Driver(s) available through Selenium Manager: {0}", driversSM.size());
       infos.addAll(driversSM);
     }
 
@@ -715,11 +711,10 @@ public class NodeOptions {
 
     LOG.info(
         String.format(
-            "Adding %s for %s %d times (%s)",
+            "Adding %s for %s %d times",
             entry.getKey().getDisplayName(),
             caps.toString().replaceAll("\\s+", " "),
-            entry.getValue().size(),
-            entry.getKey().isPresent() ? "Host" : "SM"));
+            entry.getValue().size()));
   }
 
   private String unquote(String input) {
