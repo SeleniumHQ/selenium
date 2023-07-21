@@ -5,26 +5,13 @@ import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
-import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.remote.NoSuchDriverException;
 
 public class DriverFinder {
 
-  private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
-
   public static String getPath(DriverService service, Capabilities options) {
     Require.nonNull("Browser options", options);
     String exePath = System.getProperty(service.getDriverProperty());
-
-    if (exePath == null) {
-      exePath = new ExecutableFinder().find(service.getDriverName());
-    }
-
-    if (service.getDriverExecutable() != null) {
-      // This is needed for Safari Technology Preview until Selenium Manager manages locating on
-      // PATH
-      exePath = service.getDriverExecutable().getAbsolutePath();
-    }
 
     if (exePath == null) {
       try {
