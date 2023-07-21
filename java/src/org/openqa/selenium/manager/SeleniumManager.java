@@ -224,7 +224,6 @@ public class SeleniumManager {
    * @return the location of the driver.
    */
   public String getDriverPath(Capabilities options, boolean offline) {
-    LOG.fine("Applicable driver not found; attempting to install with Selenium Manager (Beta)");
     File binaryFile = getBinary();
     if (binaryFile == null) {
       return null;
