@@ -40,7 +40,7 @@ Options:
       --timeout <TIMEOUT>
           Timeout for network requests (in seconds) [default: 180]
       --driver-ttl <DRIVER_TTL>
-          Driver TTL (time-to-live) [default: 86400]
+          Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
           Browser TTL (time-to-live) [default: 0]
       --clear-cache
