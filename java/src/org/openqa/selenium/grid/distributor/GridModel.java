@@ -97,7 +97,7 @@ public class GridModel {
             && next.getExternalUri().equals(node.getExternalUri())) {
           iterator.remove();
 
-          LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id %s", node.getNodeId());
+          LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id {0}", node.getNodeId());
           NodeStatus refreshed = rewrite(node, next.getAvailability());
           nodes.add(refreshed);
           nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
@@ -135,8 +135,8 @@ public class GridModel {
       // Nodes are initially added in the "down" state until something changes their availability
       LOG.log(
           Debug.getDebugLogLevel(),
-          String.format(
-              "Adding node with id %s and URI %s", node.getNodeId(), node.getExternalUri()));
+          "Adding node with id {0} and URI {1}",
+          new Object[]{ node.getNodeId(), node.getExternalUri()});
       NodeStatus refreshed = rewrite(node, DOWN);
       nodes.add(refreshed);
       nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());

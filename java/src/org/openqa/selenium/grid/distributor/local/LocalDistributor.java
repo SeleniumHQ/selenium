@@ -762,7 +762,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         loop = !inQueue.isEmpty();
       } else {
         inQueue = null;
-        loop = true;
+        loop = !sessionQueue.peekEmpty();
       }
       while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
@@ -830,7 +830,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           try (Span childSpan = span.createSpan("distributor.retry")) {
             LOG.log(
                 Debug.getDebugLogLevel(),
-                String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
+                "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
