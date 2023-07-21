@@ -91,6 +91,12 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
+  public boolean peekEmpty() {
+    // we have no fast-path, assume we might be not empty
+    return false;
+  }
+
+  @Override
   public HttpResponse addToQueue(SessionRequest request) {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);

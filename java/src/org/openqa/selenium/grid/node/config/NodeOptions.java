@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -57,6 +59,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
@@ -188,7 +191,7 @@ public class NodeOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
       /* Danger! Java stereotype ahead! */
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
     boolean overrideMaxSessions =
@@ -334,7 +337,7 @@ public class NodeOptions {
   }
 
   private void addDriverConfigs(
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
       ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
     config
@@ -390,7 +393,7 @@ public class NodeOptions {
                     .forEach(
                         keyValue -> {
                           String[] values = keyValue.split("=", 2);
-                          configMap.put(values[0], values[1]);
+                          configMap.put(values[0], unquote(values[1]));
                         });
                 driversMap.add(configMap);
               }
@@ -457,10 +460,11 @@ public class NodeOptions {
                         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
                         .ifPresent(
                             builder -> {
+                              ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
                                 driverConfigs.putAll(
-                                    driverInfoConfig, factoryFactory.apply(stereotype));
+                                    driverInfoConfig, factoryFactory.apply(immutable));
                               }
                             });
                   });
@@ -552,7 +556,7 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-      int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();
@@ -593,9 +597,10 @@ public class NodeOptions {
               .max(Comparator.comparingInt(builder -> builder.score(caps)))
               .ifPresent(
                   builder -> {
+                    ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
                     int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
                     for (int i = 0; i < maxDriverSessions; i++) {
-                      toReturn.putAll(info, factoryFactory.apply(caps));
+                      toReturn.putAll(info, factoryFactory.apply(immutable));
                     }
                   });
         });
@@ -715,5 +720,13 @@ public class NodeOptions {
             caps.toString().replaceAll("\\s+", " "),
             entry.getValue().size(),
             entry.getKey().isPresent() ? "Host" : "SM"));
+  }
+
+  private String unquote(String input) {
+    int len = input.length();
+    if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
+      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
+    }
+    return input;
   }
 }
