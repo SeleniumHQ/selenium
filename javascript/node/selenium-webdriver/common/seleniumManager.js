@@ -26,12 +26,6 @@ const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
 
-/**
- * currently supported browsers for selenium-manager
- * @type {string[]}
- */
-const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
-
 let debugMessagePrinted = {};
 
 /**
@@ -67,12 +61,6 @@ function getBinary() {
  */
 
 function driverLocation(options) {
-  if (!Browser.includes(options.getBrowserName().toLocaleString())) {
-    throw new Error(
-      `Unable to locate driver associated with browser name: ${options.getBrowserName()}`
-    )
-  }
-
   const browserName = options.getBrowserName().toLocaleLowerCase();
 
   if (!debugMessagePrinted[browserName]) {
