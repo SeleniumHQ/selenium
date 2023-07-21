@@ -27,7 +27,7 @@ const { driverLocation } = require('./seleniumManager')
  * Determines the path of the correct Selenium Manager binary
  * @returns {string}
  */
-function getPath(service, capabilities) {
+function getPath(capabilities) {
   try {
     return driverLocation(capabilities)
   } catch (e) {
