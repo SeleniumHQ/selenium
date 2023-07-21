@@ -1,0 +1,39 @@
+<html>
+
+<head> 
+  <title>Login</title>
+</head>
+
+<body>
+  <main id="main-holder">
+    <h1 id="login-header">Login</h1> 
+    <form id="login-form">
+      <input type="text" name="username" id="username-field" class="login-form-field" placeholder="Username">
+      <input type="password" name="password" id="password-field" class="login-form-field" placeholder="Password">
+      <input type="submit" value="Login" id="login-form-submit">
+    </form>
+  
+  </main>
+</body>
+
+<script type="text/javascript">
+const loginForm = document.getElementById("login-form");
+const loginButton = document.getElementById("login-form-submit");
+
+loginButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const username = loginForm.username.value;
+    const password = loginForm.password.value;
+
+    if (username === "username" && password === "password") {
+        alert("You have successfully logged in.");
+    } else {
+        alert("Please enter valid credentials");
+        location.reload();
+    }
+})
+  
+</script>
+
+</html>

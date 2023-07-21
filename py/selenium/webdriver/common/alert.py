@@ -45,7 +45,7 @@ class Alert:
         self.assertEqual("Do you wish to quit?", alert_text)
     """
 
-    def __init__(self, driver):
+    def __init__(self, driver) -> None:
         """Creates a new Alert.
 
         :Args:
@@ -54,15 +54,15 @@ class Alert:
         self.driver = driver
 
     @property
-    def text(self):
+    def text(self) -> str:
         """Gets the text of the Alert."""
         return self.driver.execute(Command.W3C_GET_ALERT_TEXT)["value"]
 
-    def dismiss(self):
+    def dismiss(self) -> None:
         """Dismisses the alert available."""
         self.driver.execute(Command.W3C_DISMISS_ALERT)
 
-    def accept(self):
+    def accept(self) -> None:
         """Accepts the alert available.
 
         :Usage:
@@ -72,7 +72,7 @@ class Alert:
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
-    def send_keys(self, keysToSend):
+    def send_keys(self, keysToSend: str) -> None:
         """Send Keys to the Alert.
 
         :Args:

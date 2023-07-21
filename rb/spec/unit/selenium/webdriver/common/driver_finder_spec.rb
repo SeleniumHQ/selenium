@@ -54,20 +54,7 @@ module Selenium
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'uses path from PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-          allow(Platform).to receive(:find_binary).and_return('path')
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
         it 'gives original error if not found by Selenium Manager' do
-          allow(Platform).to receive(:find_binary)
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
@@ -108,20 +95,7 @@ module Selenium
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'uses path from PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-          allow(Platform).to receive(:find_binary).and_return('path')
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
         it 'gives original error if not found by Selenium Manager' do
-          allow(Platform).to receive(:find_binary)
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
@@ -162,20 +136,7 @@ module Selenium
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'uses path from PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-          allow(Platform).to receive(:find_binary).and_return('path')
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
         it 'gives original error if not found by Selenium Manager' do
-          allow(Platform).to receive(:find_binary)
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
@@ -216,20 +177,7 @@ module Selenium
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'uses path from PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-          allow(Platform).to receive(:find_binary).and_return('path')
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
         it 'gives original error if not found by Selenium Manager' do
-          allow(Platform).to receive(:find_binary)
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {
@@ -270,20 +218,7 @@ module Selenium
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'uses path from PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-          allow(Platform).to receive(:find_binary).and_return('path')
-
-          described_class.path(options, service)
-
-          expect(SeleniumManager).not_to have_received(:driver_path)
-          expect(Platform).to have_received(:assert_executable).with('path')
-        end
-
         it 'gives original error if not found by Selenium Manager' do
-          allow(Platform).to receive(:find_binary)
           allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
 
           expect {

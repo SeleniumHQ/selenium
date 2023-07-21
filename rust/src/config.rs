@@ -41,6 +41,7 @@ pub struct ManagerConfig {
     pub timeout: u64,
     pub browser_ttl: u64,
     pub driver_ttl: u64,
+    pub offline: bool,
 }
 
 impl ManagerConfig {
@@ -87,6 +88,7 @@ impl ManagerConfig {
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
             browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
+            offline: BooleanKey("offline", false).get_value(),
         }
     }
 }

@@ -34,7 +34,7 @@ use crate::metadata::{
 use crate::{
     create_http_client, format_one_arg, format_three_args, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    OFFLINE_REQUEST_ERR_MSG, REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const CHROME_NAME: &str = "chrome";
@@ -261,7 +261,8 @@ impl SeleniumManager for ChromeManager {
 
     fn discover_browser_version(&self) -> Option<String> {
         let mut commands;
-        let mut browser_path = self.get_browser_path();
+        let escaped_browser_path = self.get_escaped_browser_path();
+        let mut browser_path = escaped_browser_path.as_str();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
@@ -318,6 +319,8 @@ impl SeleniumManager for ChromeManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let major_browser_version = browser_version.parse::<i32>().unwrap_or_default();
                 let driver_version = if !browser_version.is_empty() && major_browser_version < 115 {
                     // For old versions (chromedriver 114-), the traditional method should work:

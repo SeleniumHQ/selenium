@@ -32,7 +32,7 @@ Options:
       --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
       --browser-path <BROWSER_PATH>
-          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\Program Files\Google\Chrome\Application\chrome.exe")
       --output <OUTPUT>
           Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like) [default: LOGGER]
       --proxy <PROXY>
@@ -51,6 +51,8 @@ Options:
           Display DEBUG messages
       --trace
           Display TRACE messages
+      --offline
+          Offline mode (i.e., disabling network requests and downloads)
   -h, --help
           Print help
   -V, --version

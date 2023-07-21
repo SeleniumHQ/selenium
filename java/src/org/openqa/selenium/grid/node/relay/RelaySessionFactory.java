@@ -220,7 +220,7 @@ public class RelaySessionFactory implements SessionFactory {
       HttpClient client = clientFactory.createClient(serviceStatusUrl);
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
-      LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
+      LOG.log(Debug.getDebugLogLevel(), () -> Contents.string(response));
       return response.getStatus() == 200;
     } catch (Exception e) {
       LOG.log(

@@ -88,6 +88,8 @@ pub const UNAME_COMMAND: &str = "uname -{}";
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
+pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
+pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -382,6 +384,7 @@ pub trait SeleniumManager {
             }
         } else {
             // If driver is not in the cache, download it
+            self.assert_online_or_err(OFFLINE_DOWNLOAD_ERR_MSG)?;
             self.download_driver()?;
         }
         Ok(driver_path)
@@ -424,6 +427,13 @@ pub trait SeleniumManager {
         Ok(format!("selenium-{release_version}"))
     }
 
+    fn assert_online_or_err(&self, message: &str) -> Result<(), Box<dyn Error>> {
+        if self.is_offline() {
+            return Err(format_one_arg(message, self.get_driver_name()).into());
+        }
+        Ok(())
+    }
+
     // ----------------------------------------------------------
     // Getters and setters for configuration parameters
     // ----------------------------------------------------------
@@ -433,8 +443,7 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        let mut config = self.get_config_mut();
-        config.os = os;
+        self.get_config_mut().os = os;
     }
 
     fn get_arch(&self) -> &str {
@@ -442,8 +451,7 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = self.get_config_mut();
-        config.arch = arch;
+        self.get_config_mut().arch = arch;
     }
 
     fn get_browser_version(&self) -> &str {
@@ -457,8 +465,7 @@ pub trait SeleniumManager {
 
     fn set_browser_version(&mut self, browser_version: String) {
         if !browser_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_version = browser_version;
+            self.get_config_mut().browser_version = browser_version;
         }
     }
 
@@ -473,8 +480,7 @@ pub trait SeleniumManager {
 
     fn set_driver_version(&mut self, driver_version: String) {
         if !driver_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.driver_version = driver_version;
+            self.get_config_mut().driver_version = driver_version;
         }
     }
 
@@ -482,10 +488,25 @@ pub trait SeleniumManager {
         self.get_config().browser_path.as_str()
     }
 
+    fn get_escaped_browser_path(&self) -> String {
+        let mut browser_path = self.get_browser_path().to_string();
+        let path = Path::new(&browser_path);
+        if path.exists() && WINDOWS.is(self.get_os()) {
+            browser_path = Path::new(path)
+                .canonicalize()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string()
+                .replace("\\\\?\\", "")
+                .replace('\\', "\\\\");
+        }
+        browser_path
+    }
+
     fn set_browser_path(&mut self, browser_path: String) {
         if !browser_path.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_path = browser_path;
+            self.get_config_mut().browser_path = browser_path;
         }
     }
 
@@ -494,10 +515,9 @@ pub trait SeleniumManager {
     }
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
-        if !proxy.is_empty() {
+        if !proxy.is_empty() && !self.is_offline() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
-            let mut config = self.get_config_mut();
-            config.proxy = proxy;
+            self.get_config_mut().proxy = proxy;
             self.update_http_client()?;
         }
         Ok(())
@@ -509,8 +529,7 @@ pub trait SeleniumManager {
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
         if timeout != REQUEST_TIMEOUT_SEC {
-            let mut config = self.get_config_mut();
-            config.timeout = timeout;
+            self.get_config_mut().timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
             self.update_http_client()?;
@@ -540,6 +559,16 @@ pub trait SeleniumManager {
 
     fn set_browser_ttl(&mut self, browser_ttl: u64) {
         self.get_config_mut().browser_ttl = browser_ttl;
+    }
+
+    fn is_offline(&self) -> bool {
+        self.get_config().offline
+    }
+
+    fn set_offline(&mut self, offline: bool) {
+        if offline {
+            self.get_config_mut().offline = true;
+        }
     }
 }
 
