@@ -42,7 +42,7 @@ Options:
       --driver-ttl <DRIVER_TTL>
           Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
-          Browser TTL (time-to-live) [default: 86400]
+          Browser TTL (time-to-live) [default: 3600]
       --clear-cache
           Clear cache folder (~/.cache/selenium)
       --clear-metadata
