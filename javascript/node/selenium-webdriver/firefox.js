@@ -453,27 +453,6 @@ const Context = {
   CHROME: 'chrome',
 }
 
-const GECKO_DRIVER_EXE =
-  process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver'
-
-/**
- * _Synchronously_ attempts to locate the geckodriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(GECKO_DRIVER_EXE, true)
-}
-
-/**
- * @return {string} .
- * @throws {Error}
- */
-function findGeckoDriver() {
-  return locateSynchronously()
-}
-
 /**
  * @param {string} file Path to the file to find, relative to the program files
  *     root.
@@ -555,7 +534,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findGeckoDriver())
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 
@@ -832,5 +811,4 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }

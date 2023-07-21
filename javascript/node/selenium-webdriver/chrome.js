@@ -131,14 +131,6 @@ const io = require('./io')
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
 
-/**
- * Name of the ChromeDriver executable.
- * @type {string}
- * @const
- */
-const CHROMEDRIVER_EXE =
-  process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
-
 /** @type {remote.DriverService} */
 
 /**
@@ -156,8 +148,7 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously()
-    super(exe)
+    super(opt_exe)
   }
 }
 
@@ -242,16 +233,6 @@ class Driver extends chromium.Driver {
   }
 }
 
-/**
- * _Synchronously_ attempts to locate the chromedriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(CHROMEDRIVER_EXE, true)
-}
-
 Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
 Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
 Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
@@ -261,5 +242,4 @@ module.exports = {
   Driver: Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }
