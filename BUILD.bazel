@@ -3,14 +3,22 @@ load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
 load("//java:defs.bzl", "artifact")
 
+# Can only use this if it returns a single file.
+filegroup(
+    name = "global-license",
+    srcs = ["LICENSE"],
+    visibility = ["//visibility:public"],
+)
+
 filegroup(
     name = "license",
     srcs = [
-        "LICENSE",
+        ":global-license",
         "NOTICE",
     ],
     visibility = ["//visibility:public"],
 )
+
 
 alias(
     name = "grid",

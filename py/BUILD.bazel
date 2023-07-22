@@ -112,6 +112,12 @@ copy_file(
     out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
+copy_file(
+    name = "copy-global-license",
+    src = "//:global-license",
+    out = "LICENSE"
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -161,6 +167,7 @@ pkg_files(
     name = "selenium-sdist-pkg",
     srcs = [
         "CHANGES",
+        ":copy-global-license",
         "MANIFEST.in",
         "README.rst",
         "setup.py",
@@ -178,6 +185,7 @@ pkg_tar(
     package_dir = "selenium-%s" % SE_VERSION,
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
 )
+
 
 genrule(
     name = "selenium-pkginfo",
@@ -227,6 +235,7 @@ py_wheel(
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
+        "//:global-license",
     ],
 )
 
