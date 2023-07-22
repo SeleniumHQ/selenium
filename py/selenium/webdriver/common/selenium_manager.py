@@ -106,7 +106,7 @@ class SeleniumManager:
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
         try:
-            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            completed_proc = subprocess.run(args, capture_output=True)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
             output = json.loads(stdout)

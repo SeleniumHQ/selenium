@@ -16,19 +16,14 @@
 # under the License.
 
 
-import sys
 from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
 
 # necessary to support types for Python 3.7
 if TYPE_CHECKING:
-    if sys.version_info >= (3, 8):
-        from typing import Literal
-        from typing import TypedDict
-    else:
-        from typing_extensions import Literal
-        from typing_extensions import TypedDict
+    from typing import Literal
+    from typing import TypedDict
 
     Orientation = Literal["portrait", "landscape"]
 

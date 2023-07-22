@@ -39,10 +39,10 @@ def test_uses_chromedriver_logging() -> None:
     service = Service(log_output=log_file, service_args=service_args)
     try:
         driver1 = Chrome(service=service)
-        with open(log_file, "r") as fp:
+        with open(log_file) as fp:
             lines = len(fp.readlines())
         driver2 = Chrome(service=service)
-        with open(log_file, "r") as fp:
+        with open(log_file) as fp:
             assert len(fp.readlines()) >= 2 * lines
     finally:
         driver1.quit()
@@ -55,7 +55,7 @@ def test_log_output_as_filename() -> None:
     service = Service(log_output=log_file)
     try:
         driver = Chrome(service=service)
-        with open(log_file, "r") as fp:
+        with open(log_file) as fp:
             assert "Starting ChromeDriver" in fp.readline()
     finally:
         driver.quit()
@@ -69,7 +69,7 @@ def test_log_output_as_file() -> None:
     try:
         driver = Chrome(service=service)
         time.sleep(1)
-        with open(log_name, "r") as fp:
+        with open(log_name) as fp:
             assert "Starting ChromeDriver" in fp.readline()
     finally:
         driver.quit()
