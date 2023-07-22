@@ -1,3 +1,7 @@
+Selenium 4.11.0
+* Drop support for `python3.7`
+* Fixed a bug where `Popen.wait()` calls caught the wrong exceptions when timing out
+
 Selenium 4.10.0
 * Add CDP files for v114 and remove v111
 * Fix bug preventing proxy from working in Options classes (#12029)
