@@ -174,7 +174,7 @@ class Service(ABC):
             self.process.terminate()
             try:
                 self.process.wait(60)
-            except subprocess.TimeoutError:
+            except subprocess.TimeoutExpired:
                 logger.error(
                     "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
                     exc_info=True,
