@@ -21,6 +21,7 @@ use clap::Parser;
 
 use exitcode::DATAERR;
 use exitcode::OK;
+use exitcode::UNAVAILABLE;
 use selenium_manager::config::BooleanKey;
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
@@ -163,9 +164,14 @@ fn main() {
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.resolve_driver())
-        .map(|path| {
+        .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log.info(format!("{}{}", DRIVER_PATH, path.display()));
+            if driver_path.exists() {
+                log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
+            } else {
+                log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+                flush_and_exit(UNAVAILABLE, log);
+            }
             let resolved_browser_path = selenium_manager.get_resolved_browser_path();
             if resolved_browser_path.is_some() {
                 log.info(format!(

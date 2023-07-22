@@ -123,6 +123,7 @@ pub fn unzip(
     log.trace(format!("Unzipping file to {}", target.display()));
     let mut out_path = target.to_path_buf();
     let mut archive = ZipArchive::new(file)?;
+    let mut unzipped_files = 0;
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
@@ -151,6 +152,7 @@ pub fn unzip(
 
             let mut outfile = File::create(&out_path)?;
             io::copy(&mut file, &mut outfile)?;
+            unzipped_files += 1;
 
             // Set permissions in Unix-like systems
             #[cfg(unix)]
@@ -164,6 +166,13 @@ pub fn unzip(
                 }
             }
         }
+    }
+    if unzipped_files == 0 || (single_file.is_some() && unzipped_files != 1) {
+        return Err(format!(
+            "Problem uncompressing zip ({} files extracted)",
+            unzipped_files
+        )
+        .into());
     }
     Ok(())
 }
