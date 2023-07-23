@@ -203,7 +203,6 @@ py_wheel(
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development :: Libraries",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -212,7 +211,7 @@ py_wheel(
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
-    python_requires = ">=3.7",
+    python_requires = ">=3.8",
     python_tag = "py3",
     requires = [
         "urllib3[socks]>=1.26,<3",
