@@ -24,7 +24,7 @@ use std::path::PathBuf;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG};
+use crate::{create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -57,9 +57,10 @@ impl IExplorerManager {
     pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = IE_NAMES[0];
         let driver_name = IEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        config.os = WINDOWS.to_str().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
