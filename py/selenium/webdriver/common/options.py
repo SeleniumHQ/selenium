@@ -204,9 +204,7 @@ class BaseOptions(metaclass=ABCMeta):
 
     @property
     def proxy(self) -> Proxy:
-        """
-        :Returns: Proxy if set, otherwise None.
-        """
+        """:Returns: Proxy if set, otherwise None."""
         return self._proxy
 
     @proxy.setter
@@ -234,9 +232,7 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """
-        :Returns: A list of arguments needed for the browser
-        """
+        """:Returns: A list of arguments needed for the browser."""
         return self._arguments
 
     def add_argument(self, argument):

@@ -407,9 +407,7 @@ class PrintOptions:
         self._margin: _MarginOpts = {}
 
     def to_dict(self) -> _PrintOpts:
-        """
-        :Returns: A hash of print options configured
-        """
+        """:Returns: A hash of print options configured."""
         return self._print_options
 
     def _validate_num_property(self, property_name: str, value: float) -> None:

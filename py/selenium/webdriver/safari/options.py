@@ -47,9 +47,8 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        :Returns: The location of the browser binary otherwise an empty string
-        """
+        """:Returns: The location of the browser binary otherwise an empty
+        string."""
         return self._binary_location
 
     @binary_location.setter
@@ -87,7 +86,7 @@ class Options(ArgOptions):
 
     @property
     def automatic_inspection(self) -> bool:
-        """:Returns: The option Automatic Inspection value"""
+        """:Returns: The option Automatic Inspection value."""
         return self._caps.get(self.AUTOMATIC_INSPECTION)
 
     @automatic_inspection.setter
@@ -101,7 +100,7 @@ class Options(ArgOptions):
 
     @property
     def automatic_profiling(self) -> bool:
-        """:Returns: The options Automatic Profiling value"""
+        """:Returns: The options Automatic Profiling value."""
         return self._caps.get(self.AUTOMATIC_PROFILING)
 
     @automatic_profiling.setter
@@ -115,7 +114,8 @@ class Options(ArgOptions):
 
     @property
     def use_technology_preview(self) -> bool:
-        """:Returns: whether BROWSER_NAME is equal to Safari Technology Preview"""
+        """:Returns: whether BROWSER_NAME is equal to Safari Technology
+        Preview."""
         return self._caps.get("browserName") == self.SAFARI_TECH_PREVIEW
 
     @use_technology_preview.setter

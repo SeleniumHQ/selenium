@@ -35,10 +35,8 @@ class Options(ChromiumOptions):
         self._use_webview = bool(value)
 
     def to_capabilities(self) -> dict:
-        """
-        Creates a capabilities with all the options that have been set and
-        :Returns: A dictionary with everything
-        """
+        """Creates a capabilities with all the options that have been set and
+        :Returns: A dictionary with everything."""
         caps = super().to_capabilities()
         if self._use_webview:
             caps["browserName"] = "webview2"

@@ -67,15 +67,15 @@ class Mobile:
 
     @property
     def context(self):
-        """returns the current context (Native or WebView)."""
+        """Returns the current context (Native or WebView)."""
         return self._driver.execute(Command.CURRENT_CONTEXT_HANDLE)
 
     @context.setter
     def context(self, new_context) -> None:
-        """sets the current context."""
+        """Sets the current context."""
         self._driver.execute(Command.SWITCH_TO_CONTEXT, {"name": new_context})
 
     @property
     def contexts(self):
-        """returns a list of available contexts."""
+        """Returns a list of available contexts."""
         return self._driver.execute(Command.CONTEXT_HANDLES)

@@ -138,9 +138,10 @@ class RemoteConnection:
 
     @classmethod
     def get_timeout(cls):
-        """
-        :Returns:
-            Timeout value in seconds for all http requests made to the Remote Connection
+        """:Returns:
+
+        Timeout value in seconds for all http requests made to the
+        Remote Connection
         """
         return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
 
@@ -160,9 +161,10 @@ class RemoteConnection:
 
     @classmethod
     def get_certificate_bundle_path(cls):
-        """
-        :Returns:
-            Paths of the .pem encoded certificate to verify connection to command executor
+        """:Returns:
+
+        Paths of the .pem encoded certificate to verify connection to
+        command executor
         """
         return cls._ca_certs
 

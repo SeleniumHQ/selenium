@@ -61,8 +61,8 @@ class SeleniumManager:
         return path
 
     def driver_location(self, options: BaseOptions) -> str:
-        """
-        Determines the path of the correct driver.
+        """Determines the path of the correct driver.
+
         :Args:
          - browser: which browser to get the driver path for.
         :Returns: The driver path to use
@@ -97,8 +97,8 @@ class SeleniumManager:
 
     @staticmethod
     def run(args: List[str]) -> str:
-        """
-        Executes the Selenium Manager Binary.
+        """Executes the Selenium Manager Binary.
+
         :Args:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
