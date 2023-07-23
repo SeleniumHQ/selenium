@@ -22,7 +22,7 @@ use std::error::Error;
 use std::path::PathBuf;
 use std::string::ToString;
 
-use crate::files::BrowserPath;
+use crate::files::{path_buf_to_string, BrowserPath};
 
 use crate::config::OS::MACOS;
 use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
@@ -82,7 +82,7 @@ impl SeleniumManager for SafariManager {
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = self.get_escaped_path_buf(path);
+                    browser_path = self.get_escaped_path(path_buf_to_string(path));
                 }
                 _ => return None,
             }

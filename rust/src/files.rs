@@ -244,3 +244,7 @@ pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<d
     }
     Ok(parsed_version)
 }
+
+pub fn path_buf_to_string(path_buf: PathBuf) -> String {
+    path_buf.into_os_string().into_string().unwrap_or_default()
+}

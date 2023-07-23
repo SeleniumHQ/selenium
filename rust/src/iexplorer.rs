@@ -24,7 +24,9 @@ use std::path::PathBuf;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS};
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,

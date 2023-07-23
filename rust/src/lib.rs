@@ -66,8 +66,10 @@ pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
 pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
-pub const DASH_VERSION: &str = "{} -v";
-pub const DASH_DASH_VERSION: &str = "{} --version";
+pub const DASH_VERSION: &str = "{}{}{} -v";
+pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
+pub const DOUBLE_QUOTE: &str = "\"";
+pub const SINGLE_QUOTE: &str = "'";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
@@ -81,6 +83,7 @@ pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_BROWSERS_SEC: u64 = 3600;
 pub const TTL_DRIVERS_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
+pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
@@ -469,7 +472,7 @@ pub trait SeleniumManager {
     fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
         self.get_logger()
             .debug(format!("Running command: {}", command));
-        let output = run_shell_command(self.get_os(), command)?;
+        let output = run_shell_command_by_os(self.get_os(), command)?;
         self.get_logger().debug(format!("Output: {:?}", output));
         Ok(output)
     }
@@ -581,8 +584,9 @@ pub trait SeleniumManager {
     }
 
     fn get_escaped_path(&self, string_path: String) -> String {
-        let mut escaped_path = string_path.clone();
-        let path = Path::new(&string_path);
+        let original_path = string_path.clone();
+        let mut escaped_path = string_path;
+        let path = Path::new(&original_path);
         if path.exists() {
             escaped_path = Path::new(path)
                 .canonicalize()
@@ -593,14 +597,19 @@ pub trait SeleniumManager {
             if WINDOWS.is(self.get_os()) {
                 escaped_path = escaped_path.replace("\\\\?\\", "").replace('\\', "\\\\");
             } else {
-                escaped_path = escaped_path.replace(' ', "\\ ");
+                escaped_path = run_shell_command(
+                    "bash",
+                    "-c",
+                    format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()),
+                )
+                .unwrap_or_default();
             }
         }
+        self.get_logger().trace(format!(
+            "Original path: {} - Escaped path: {}",
+            original_path, escaped_path
+        ));
         escaped_path
-    }
-
-    fn get_escaped_path_buf(&self, path_buf: PathBuf) -> String {
-        self.get_escaped_path(path_buf.into_os_string().into_string().unwrap_or_default())
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
@@ -755,12 +764,11 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn E
     Ok(client_builder.build().unwrap_or_default())
 }
 
-pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
-    let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/c")
-    } else {
-        ("sh", "-c")
-    };
+pub fn run_shell_command(
+    shell: &str,
+    flag: &str,
+    command: String,
+) -> Result<String, Box<dyn Error>> {
     let output = Command::new(shell)
         .args([flag, command.as_str()])
         .output()?;
@@ -768,6 +776,15 @@ pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Er
         strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
             .to_string(),
     )
+}
+
+pub fn run_shell_command_by_os(os: &str, command: String) -> Result<String, Box<dyn Error>> {
+    let (shell, flag) = if WINDOWS.is(os) {
+        ("cmd", "/c")
+    } else {
+        ("sh", "-c")
+    };
+    run_shell_command(shell, flag, command)
 }
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
