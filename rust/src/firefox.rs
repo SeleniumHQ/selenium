@@ -45,7 +45,6 @@ pub struct FirefoxManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub resolved_browser_path: Option<PathBuf>,
 }
 
 impl FirefoxManager {
@@ -61,7 +60,6 @@ impl FirefoxManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
-            resolved_browser_path: None,
         }))
     }
 }
@@ -123,7 +121,7 @@ impl SeleniumManager for FirefoxManager {
     fn discover_browser_version(&mut self) -> Option<String> {
         let mut commands;
         let mut browser_path = self.get_browser_path().to_string();
-        let mut escaped_browser_path = self.get_browser_path().to_string();
+        let escaped_browser_path;
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
@@ -141,16 +139,15 @@ impl SeleniumManager for FirefoxManager {
                 _ => return None,
             }
         } else {
-            commands = vec![format_one_arg(
-                WMIC_COMMAND,
-                &self.get_escaped_path(browser_path.to_string()),
-            )];
+            escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+            commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
         }
         if !WINDOWS.is(self.get_os()) {
             commands = vec![
                 format_three_args(DASH_VERSION, "", &escaped_browser_path, ""),
                 format_three_args(DASH_VERSION, DOUBLE_QUOTE, &browser_path, DOUBLE_QUOTE),
                 format_three_args(DASH_VERSION, SINGLE_QUOTE, &browser_path, SINGLE_QUOTE),
+                format_three_args(DASH_VERSION, "", &browser_path, ""),
             ]
         }
         self.detect_browser_version(commands)
@@ -290,14 +287,6 @@ impl SeleniumManager for FirefoxManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
-    }
-
-    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
-        self.resolved_browser_path.to_owned()
-    }
-
-    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
-        self.resolved_browser_path = browser_path;
     }
 }
 

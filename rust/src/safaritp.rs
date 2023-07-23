@@ -41,7 +41,6 @@ pub struct SafariTPManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
-    pub resolved_browser_path: Option<PathBuf>,
 }
 
 impl SafariTPManager {
@@ -57,7 +56,6 @@ impl SafariTPManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::default(),
-            resolved_browser_path: None,
         }))
     }
 }
@@ -138,13 +136,5 @@ impl SeleniumManager for SafariTPManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
-    }
-
-    fn get_resolved_browser_path(&self) -> Option<PathBuf> {
-        self.resolved_browser_path.to_owned()
-    }
-
-    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>) {
-        self.resolved_browser_path = browser_path;
     }
 }

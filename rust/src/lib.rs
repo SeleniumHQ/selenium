@@ -17,7 +17,10 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension};
+use crate::files::{
+    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
+    path_buf_to_string,
+};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
@@ -125,10 +128,6 @@ pub trait SeleniumManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>>;
 
-    fn get_resolved_browser_path(&self) -> Option<PathBuf>;
-
-    fn set_resolved_browser_path(&mut self, browser_path: Option<PathBuf>);
-
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
@@ -194,9 +193,9 @@ pub trait SeleniumManager {
                 self.get_browser_name(),
                 full_browser_path.display()
             ));
-            let browser_path = Some(full_browser_path);
-            self.set_resolved_browser_path(browser_path.clone());
-            browser_path
+            self.set_browser_path(path_buf_to_string(full_browser_path.clone()));
+            
+            Some(full_browser_path)
         } else {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
@@ -313,9 +312,12 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        match self
-            .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
-        {
+        match self.run_shell_command_with_log(format_three_args(
+            DASH_DASH_VERSION,
+            self.get_driver_name(),
+            "",
+            "",
+        )) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -583,6 +585,12 @@ pub trait SeleniumManager {
         self.get_config().browser_path.as_str()
     }
 
+    fn set_browser_path(&mut self, browser_path: String) {
+        if !browser_path.is_empty() {
+            self.get_config_mut().browser_path = browser_path;
+        }
+    }
+
     fn get_escaped_path(&self, string_path: String) -> String {
         let original_path = string_path.clone();
         let mut escaped_path = string_path;
@@ -603,6 +611,9 @@ pub trait SeleniumManager {
                     format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()),
                 )
                 .unwrap_or_default();
+                if escaped_path.is_empty() {
+                    escaped_path = original_path.clone();
+                }
             }
         }
         self.get_logger().trace(format!(
@@ -610,12 +621,6 @@ pub trait SeleniumManager {
             original_path, escaped_path
         ));
         escaped_path
-    }
-
-    fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() {
-            self.get_config_mut().browser_path = browser_path;
-        }
     }
 
     fn get_proxy(&self) -> &str {

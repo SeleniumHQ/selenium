@@ -172,13 +172,9 @@ fn main() {
                 log.error(format!("Driver unavailable: {}", DRIVER_PATH));
                 flush_and_exit(UNAVAILABLE, log);
             }
-            let resolved_browser_path = selenium_manager.get_resolved_browser_path();
-            if resolved_browser_path.is_some() {
-                log.info(format!(
-                    "{}{}",
-                    BROWSER_PATH,
-                    resolved_browser_path.unwrap().display()
-                ));
+            let browser_path = selenium_manager.get_browser_path();
+            if !browser_path.is_empty() {
+                log.info(format!("{}{}", BROWSER_PATH, browser_path));
             }
             flush_and_exit(OK, log);
         })
