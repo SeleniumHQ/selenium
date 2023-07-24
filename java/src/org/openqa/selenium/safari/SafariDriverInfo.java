@@ -77,7 +77,12 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isPresent() {
-    return SafariDriverService.isPresent();
+    try {
+      DriverFinder.getPath(SafariDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      return true;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
   }
 
   @Override

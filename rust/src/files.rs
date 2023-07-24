@@ -123,7 +123,7 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
             continue;
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if file.name().ends_with(target_file_name) {
+        if target_file_name.eq(get_raw_file_name(file.name())) {
             log.debug(format!(
                 "File extracted to {} ({} bytes)",
                 target.display(),
@@ -147,6 +147,15 @@ pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Erro
         }
     }
     Ok(())
+}
+
+pub fn get_raw_file_name(file_name: &str) -> &str {
+    let mut raw_file_name = file_name;
+    let separator_index = file_name.rfind('/').unwrap_or_default();
+    if separator_index != 0 {
+        raw_file_name = &file_name[separator_index + 1..]
+    }
+    raw_file_name
 }
 
 pub fn compose_cache_folder() -> PathBuf {

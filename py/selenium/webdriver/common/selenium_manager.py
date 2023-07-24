@@ -68,8 +68,6 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
-        logger.debug("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
-
         browser = options.capabilities["browserName"]
 
         args = [str(self.get_binary()), "--browser", browser, "--output", "json"]

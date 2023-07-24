@@ -172,7 +172,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
+        public void AlertShouldNotAllowAdditionalCommandsIfDismissed()
         {
             driver.Url = CreateAlertPage("cheese");
 

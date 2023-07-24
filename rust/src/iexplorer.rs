@@ -24,7 +24,7 @@ use std::path::PathBuf;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager};
+use crate::{create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -110,6 +110,8 @@ impl SeleniumManager for IExplorerManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
                     MIRROR_URL.to_string(),

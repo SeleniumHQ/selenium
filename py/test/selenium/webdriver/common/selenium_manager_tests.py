@@ -99,6 +99,6 @@ def test_driver_finder_error(mocker):
 
     service = Service()
     options = Options()
-    msg = r"Unable to locate or obtain chromedriver.*errors\/driver_location"
+    msg = r"Unable to locate or obtain driver for chrome.*errors\/driver_location"
     with pytest.raises(WebDriverException, match=msg):
         DriverFinder.get_path(service, options)
