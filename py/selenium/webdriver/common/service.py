@@ -30,6 +30,7 @@ from urllib import request
 from urllib.error import URLError
 
 from selenium.common.exceptions import WebDriverException
+from selenium.deprecated import LOG_FILE_DEPRECATED
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
@@ -67,7 +68,7 @@ class Service(ABC):
             self.log_output = log_output
 
         if log_file is not None:
-            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            warnings.warn(LOG_FILE_DEPRECATED, stacklevel=2)
             self.log_output = open(log_file, "a+", encoding="utf-8")
 
         self._path = executable

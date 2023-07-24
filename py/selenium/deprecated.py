@@ -21,3 +21,7 @@ DESIRED_CAPABILITIES_DEPRECATED = SeleniumRemovedIn412Warning(
     "desired_capabilities has been deprecated and will be removed in 4.12.  Please provide\n"
     "an options instance instead."
 )
+
+LOG_FILE_DEPRECATED = SeleniumRemovedIn412Warning("log_file has been deprecated and will be removed in 4.12.")
+
+LOG_PATH_DEPRECATED = SeleniumRemovedIn412Warning("log_path has been deprecated and will be removed in 4.12.")

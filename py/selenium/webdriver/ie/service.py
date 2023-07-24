@@ -18,6 +18,7 @@ import typing
 import warnings
 from typing import List
 
+from selenium.deprecated import LOG_FILE_DEPRECATED
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -53,7 +54,7 @@ class Service(service.Service):
         if log_level:
             self.service_args.append(f"--log-level={log_level}")
         if log_file:
-            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            warnings.warn(LOG_FILE_DEPRECATED, stacklevel=2)
             self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(

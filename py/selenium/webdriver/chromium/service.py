@@ -18,6 +18,7 @@ import typing
 import warnings
 
 from selenium.common import InvalidArgumentException
+from selenium.deprecated import LOG_PATH_DEPRECATED
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -46,7 +47,7 @@ class ChromiumService(service.Service):
         self.service_args = service_args or []
         self.log_output = log_output
         if log_path is not None:
-            warnings.warn("log_path has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            warnings.warn(LOG_PATH_DEPRECATED, stacklevel=2)
             self.log_output = log_path
 
         if "--append-log" in self.service_args or "--readable-timestamp" in self.service_args:

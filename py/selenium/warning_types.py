@@ -19,16 +19,10 @@
 class SeleniumWarning(UserWarning):
     """Base class for all warnings emitted by selenium."""
 
-    __module__ = "selenium"
-
 
 class SeleniumDeprecationWarning(SeleniumWarning, DeprecationWarning):
     """Warning class for features that will be removed in a future version."""
 
-    __module__ = "selenium"
-
 
 class SeleniumRemovedIn412Warning(SeleniumDeprecationWarning):
     """Warning class for features that will be removed in selenium 4.12."""
-
-    __module__ = "selenium"
