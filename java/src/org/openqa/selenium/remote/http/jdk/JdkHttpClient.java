@@ -51,7 +51,19 @@ import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
- import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.remote.http.BinaryMessage;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpClientName;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Message;
+import org.openqa.selenium.remote.http.TextMessage;
+import org.openqa.selenium.remote.http.WebSocket;
 
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
