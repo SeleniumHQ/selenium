@@ -22,7 +22,7 @@ use std::error::Error;
 use std::path::PathBuf;
 use std::string::ToString;
 
-use crate::files::BrowserPath;
+use crate::files::{path_buf_to_string, BrowserPath};
 
 use crate::config::OS::MACOS;
 use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
@@ -80,19 +80,18 @@ impl SeleniumManager for SafariTPManager {
         )])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        let escaped_browser_path = self.get_escaped_browser_path();
-        let mut browser_path = escaped_browser_path.as_str();
+    fn discover_browser_version(&mut self) -> Option<String> {
+        let mut browser_path = self.get_browser_path().to_string();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
+                    browser_path = self.get_escaped_path(path_buf_to_string(path));
                 }
                 _ => return None,
             }
         }
         let command = if MACOS.is(self.get_os()) {
-            vec![format_one_arg(PLIST_COMMAND, browser_path)]
+            vec![format_one_arg(PLIST_COMMAND, &browser_path)]
         } else {
             return None;
         };
@@ -133,5 +132,9 @@ impl SeleniumManager for SafariTPManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

@@ -18,41 +18,34 @@
 use assert_cmd::Command;
 use std::path::Path;
 
-use selenium_manager::logger::{JsonOutput, DRIVER_PATH};
+use is_executable::is_executable;
+use selenium_manager::logger::JsonOutput;
 use std::str;
 
 #[test]
-fn json_output_test() {
+fn chrome_download_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "chrome", "--output", "json"])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--force-browser-download",
+        "--output",
+        "json",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
 
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    assert!(!json.logs.is_empty());
+    let driver_path = Path::new(&json.result.driver_path);
+    assert!(driver_path.exists());
+    assert!(is_executable(driver_path));
 
-    let output_code = json.result.code;
-    assert_eq!(output_code, 0);
-
-    let driver = Path::new(&json.result.message);
-    assert!(driver.exists());
-}
-
-#[test]
-fn shell_output_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "chrome", "--output", "shell"])
-        .assert()
-        .success()
-        .code(0);
-
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-    assert!(output.contains(DRIVER_PATH));
+    let browser_path = Path::new(&json.result.browser_path);
+    assert!(browser_path.exists());
+    assert!(is_executable(browser_path));
 }

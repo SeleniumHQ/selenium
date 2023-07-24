@@ -453,27 +453,6 @@ const Context = {
   CHROME: 'chrome',
 }
 
-const GECKO_DRIVER_EXE =
-  process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver'
-
-/**
- * _Synchronously_ attempts to locate the geckodriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(GECKO_DRIVER_EXE, true)
-}
-
-/**
- * @return {string} .
- * @throws {Error}
- */
-function findGeckoDriver() {
-  return locateSynchronously()
-}
-
 /**
  * @param {string} file Path to the file to find, relative to the program files
  *     root.
@@ -555,7 +534,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findGeckoDriver())
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 
@@ -609,14 +588,14 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        opt_executor.setExecutable(getPath(opt_executor, opt_config))
+        opt_executor.setExecutable(getPath(opt_config))
       }
       executor = createExecutor(opt_executor.start())
       onQuit = () => opt_executor.kill()
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        service.setExecutable(getPath(service, opt_config))
+        service.setExecutable(getPath(opt_config))
       }
       executor = createExecutor(service.start())
       onQuit = () => service.kill()
@@ -832,5 +811,4 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }

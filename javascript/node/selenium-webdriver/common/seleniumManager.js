@@ -119,7 +119,6 @@ function driverLocation(options) {
   }
   try {
     output = JSON.parse(spawnResult.stdout.toString())
-    console.log(output)
   } catch (e) {
     throw new Error(
       `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
