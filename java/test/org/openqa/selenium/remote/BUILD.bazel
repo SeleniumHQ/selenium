@@ -33,7 +33,7 @@ java_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
-        artifact("org.mockito:mockito-inline")
+        artifact("org.mockito:mockito-inline"),
     ] + JUNIT5_DEPS,
 )
 

@@ -701,7 +701,7 @@ class RemoteWebDriverUnitTest {
         .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
         .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
         .withMessageContaining(
-            String.format("Command: [%s, getCurrentUrl {}]", fixture.driver.getSessionId()))
+            String.format("Command: [%s, getCurrentUrl []]", fixture.driver.getSessionId()))
         .havingCause()
         .withMessage("BOOM!!!");
 
@@ -719,7 +719,7 @@ class RemoteWebDriverUnitTest {
         new ImmutableCapabilities(
           "browserName", "cheese", "platformName", "WINDOWS"),
         echoCapabilities, exceptionResponder);
-      assertThatExceptionOfType(WebDriverException.class)
+      assertThatExceptionOfType(UnreachableBrowserException.class)
         .isThrownBy(() -> fixture.driver.execute(commandPayload))
         .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
         .withMessageContaining("Build info: ")
@@ -747,7 +747,7 @@ class RemoteWebDriverUnitTest {
         new ImmutableCapabilities(
           "browserName", "cheese", "platformName", "WINDOWS"),
         echoCapabilities, exceptionResponder);
-      assertThatExceptionOfType(WebDriverException.class)
+      assertThatExceptionOfType(UnreachableBrowserException.class)
         .isThrownBy(() -> fixture.driver.execute(commandPayload))
         .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
         .withMessageContaining("Build info: ")

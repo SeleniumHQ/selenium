@@ -30,6 +30,8 @@ import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResp
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -37,6 +39,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 
 @Tag("UnitTests")
 class RemoteWebElementTest {
@@ -110,7 +113,7 @@ class RemoteWebElementTest {
         .withMessageContaining(String.format(
           "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
         .withMessageContaining(String.format(
-          "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()))
+          "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]", fixture.driver.getSessionId()))
         .havingCause()
         .withMessage("BOOM!!!");
 

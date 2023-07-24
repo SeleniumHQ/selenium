@@ -542,7 +542,15 @@ public class RemoteWebDriver
             new UnreachableBrowserException(
                 "Error communicating with the remote browser. It may have died.", e);
       }
-      populateWebDriverException(toThrow, command);
+      populateWebDriverException(toThrow);
+      // Showing full command information when user is debugging
+      // Avoid leaking user/pwd values for authenticated Grids.
+      if (toThrow instanceof UnreachableBrowserException && !Debug.isDebugging()) {
+        toThrow.addInfo("Command", "[" + command.getSessionId() + ", " + command.getName()
+                                   + " " + command.getParameters().keySet() + "]");
+      } else {
+        toThrow.addInfo("Command", command.toString());
+      }
       throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
@@ -551,24 +559,20 @@ public class RemoteWebDriver
     try {
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
-      populateWebDriverException(ex, command);
+      populateWebDriverException(ex);
+      ex.addInfo("Command", command.toString());
       throw ex;
     }
     return response;
   }
 
-  private void populateWebDriverException(WebDriverException ex, Command command) {
+  private void populateWebDriverException(WebDriverException ex) {
     ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
     if (getSessionId() != null) {
       ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
     }
     if (getCapabilities() != null) {
       ex.addInfo("Capabilities", getCapabilities().toString());
-    }
-    if (ex instanceof UnreachableBrowserException && !Debug.isDebugging()) {
-      ex.addInfo("Command", "[" + command.getSessionId() + ", " + command.getName() + " " + command.getParameters().keySet() + "]");
-    } else {
-      ex.addInfo("Command", command.toString());
     }
   }
 
