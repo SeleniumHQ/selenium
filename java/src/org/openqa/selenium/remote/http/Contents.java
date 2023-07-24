@@ -136,6 +136,9 @@ public class Contents {
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
+    if (delegate instanceof MemoizedSupplier) {
+      return delegate;
+    }
     return new MemoizedSupplier(delegate);
   }
 

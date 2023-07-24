@@ -38,8 +38,10 @@ from .safari.options import Options as SafariOptions
 from .safari.service import Service as SafariService  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
+from .webkitgtk.service import Service as WebKitGTKService  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
 from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
+from .wpewebkit.service import Service as WPEWebKitService  # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 
 __version__ = "4.10.0"
@@ -65,8 +67,10 @@ __all__ = [
     "SafariService",
     "WebKitGTK",
     "WebKitGTKOptions",
+    "WebKitGTKService",
     "WPEWebKit",
     "WPEWebKitOptions",
+    "WPEWebKitService",
     "Remote",
     "DesiredCapabilities",
     "ActionChains",
