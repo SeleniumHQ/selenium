@@ -275,7 +275,7 @@ class CdpBase:
             # Otherwise, continue the generator to parse the JSON result
             # into a CDP object.
             try:
-                response = cmd.send(data["result"])
+                _ = cmd.send(data["result"])
                 raise InternalError("The command's generator function " "did not exit when expected!")
             except StopIteration as exit:
                 return_ = exit.value
