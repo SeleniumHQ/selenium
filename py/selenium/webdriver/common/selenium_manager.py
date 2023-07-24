@@ -56,7 +56,7 @@ class SeleniumManager:
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
-        logger.debug("Selenium Manager binary found at: {location}")
+        logger.debug(f"Selenium Manager binary found at: {path}")
 
         return path
 
@@ -123,7 +123,7 @@ class SeleniumManager:
             output = json.loads(stdout)
             result = output["result"]
         except Exception as err:
-            raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
+            raise WebDriverException(f"Unsuccessful command executed: {command}") from err
 
         for item in output["logs"]:
             if item["level"] == "WARN":
