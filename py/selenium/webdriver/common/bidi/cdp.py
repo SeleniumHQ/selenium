@@ -276,7 +276,7 @@ class CdpBase:
             # into a CDP object.
             try:
                 _ = cmd.send(data["result"])
-                raise InternalError("The command's generator function " "did not exit when expected!")
+                raise InternalError("The command's generator function did not exit when expected!")
             except StopIteration as exit:
                 return_ = exit.value
             self.inflight_result[cmd_id] = return_

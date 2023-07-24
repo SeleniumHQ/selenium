@@ -160,7 +160,7 @@ class WebDriver(RemoteWebDriver):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.get_full_page_screenshot_as_png()
