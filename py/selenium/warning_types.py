@@ -16,9 +16,19 @@
 # under the License.
 
 
-__version__ = "4.10.0"
+class SeleniumWarning(UserWarning):
+    """Base class for all warnings emitted by selenium."""
 
-from selenium.warning_types import SeleniumDeprecationWarning
-from selenium.warning_types import SeleniumRemovedIn412Warning
+    __module__ = "selenium"
 
-__all__ = ("SeleniumDeprecationWarning", "SeleniumRemovedIn412Warning")
+
+class SeleniumDeprecationWarning(SeleniumWarning, DeprecationWarning):
+    """Warning class for features that will be removed in a future version."""
+
+    __module__ = "selenium"
+
+
+class SeleniumRemovedIn412Warning(SeleniumDeprecationWarning):
+    """Warning class for features that will be removed in selenium 4.12."""
+
+    __module__ = "selenium"

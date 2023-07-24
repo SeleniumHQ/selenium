@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
-__version__ = "4.10.0"
-
-from selenium.warning_types import SeleniumDeprecationWarning
 from selenium.warning_types import SeleniumRemovedIn412Warning
 
-__all__ = ("SeleniumDeprecationWarning", "SeleniumRemovedIn412Warning")
+DESIRED_CAPABILITIES_DEPRECATED = SeleniumRemovedIn412Warning(
+    "desired_capabilities has been deprecated and will be removed in 4.12.  Please provide\n"
+    "an options instance instead."
+)
