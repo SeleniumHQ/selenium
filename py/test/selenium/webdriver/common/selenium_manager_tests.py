@@ -38,7 +38,7 @@ def test_browser_version_is_used_for_sm(mocker):
     mock_run.return_value = mocked_result
     options = Options()
     options.capabilities["browserName"] = "chrome"
-    options.browser_version = 110
+    options.browser_version = "110"
 
     _ = SeleniumManager().driver_location(options)
     args, kwargs = subprocess.run.call_args
