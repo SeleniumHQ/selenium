@@ -28,7 +28,7 @@ use crate::files::parse_version;
 use crate::Logger;
 
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(
+pub async fn download_to_tmp_folder(
     http_client: &Client,
     url: String,
     log: &Logger,

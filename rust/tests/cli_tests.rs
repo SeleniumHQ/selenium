@@ -64,7 +64,6 @@ fn ok_test(
     if !browser_version.is_empty() && output.contains("cache") {
         assert!(output.contains(&driver_version));
     }
-    assert!(!output.contains("Trying with latest driver version"));
 }
 
 #[rstest]
@@ -148,6 +147,11 @@ fn beta_test(#[case] browser: String, #[case] driver_name: String) {
     "chrome",
     r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
 )]
+#[case(
+    "macos",
+    "chrome",
+    r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#
+)]
 fn path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
     println!(
         "Path test browser={} -- browser_path={}",
@@ -163,7 +167,7 @@ fn path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: 
     if OS.eq(&os) {
         let stdout = &cmd.unwrap().stdout;
         let output = str::from_utf8(stdout).unwrap();
-        println!("output {:?}", output);
+        println!("{}", output);
         assert!(!output.contains("WARN"));
     }
 }

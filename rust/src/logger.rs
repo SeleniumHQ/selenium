@@ -29,6 +29,9 @@ use std::io::Write;
 use std::ops::Deref;
 use Color::{Blue, Cyan, Green, Red, Yellow};
 
+pub const DRIVER_PATH: &str = "Driver path: ";
+pub const BROWSER_PATH: &str = "Browser path: ";
+
 #[derive(Default)]
 enum OutputType {
     #[default]
@@ -56,6 +59,8 @@ pub struct Logs {
 pub struct Result {
     pub code: i32,
     pub message: String,
+    pub driver_path: String,
+    pub browser_path: String,
 }
 
 #[derive(Default, Serialize, Deserialize)]
@@ -125,6 +130,8 @@ impl Logger {
                 result: Result {
                     code: 0,
                     message: "".to_string(),
+                    driver_path: "".to_string(),
+                    browser_path: "".to_string(),
                 },
             }),
         }
@@ -163,14 +170,23 @@ impl Logger {
                         .push(self.create_json_log(message.to_string(), level));
                 }
                 if level == Level::Info || level <= Level::Error {
-                    self.json.borrow_mut().result.message = message;
+                    if message.starts_with(DRIVER_PATH) {
+                        let driver_path = message.replace(DRIVER_PATH, "");
+                        self.json.borrow_mut().result.driver_path = driver_path.to_owned();
+                        self.json.borrow_mut().result.message = driver_path;
+                    } else if message.starts_with(BROWSER_PATH) {
+                        let browser_path = message.replace(BROWSER_PATH, "");
+                        self.json.borrow_mut().result.browser_path = browser_path;
+                    } else {
+                        self.json.borrow_mut().result.message = message;
+                    }
                 }
             }
             OutputType::Shell => {
                 if level == Level::Info {
-                    print!("{}", message);
+                    println!("{}", message);
                 } else if level == Level::Error {
-                    eprint!("{}", message);
+                    eprintln!("{}", message);
                 }
             }
             _ => {

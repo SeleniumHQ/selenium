@@ -86,7 +86,7 @@ impl SeleniumManager for GridManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         None
     }
 
@@ -208,5 +208,9 @@ impl SeleniumManager for GridManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }
