@@ -59,7 +59,7 @@ public class NettyClient implements HttpClient {
 
   private NettyClient(ClientConfig config) {
     this.config = Require.nonNull("HTTP client config", config);
-    this.handler = new NettyHttpHandler(config, client).with(config.filter());
+    this.handler = new NettyHttpHandler(config, client);
     this.toWebSocket = NettyWebSocket.create(config, client);
   }
 
@@ -103,14 +103,6 @@ public class NettyClient implements HttpClient {
     Require.nonNull("WebSocket listener", listener);
 
     return toWebSocket.apply(request, listener);
-  }
-
-  @Override
-  public HttpClient with(Filter filter) {
-    Require.nonNull("Filter", filter);
-
-    // TODO: We should probably ensure that websocket requests are run through the filter.
-    return new NettyClient(config.withFilter(filter));
   }
 
   @Override
