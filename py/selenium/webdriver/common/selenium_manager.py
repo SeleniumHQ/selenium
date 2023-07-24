@@ -122,5 +122,4 @@ class SeleniumManager:
 
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
-        else:
-            return result
+        return result
