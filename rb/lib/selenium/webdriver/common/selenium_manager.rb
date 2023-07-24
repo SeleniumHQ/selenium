@@ -37,9 +37,6 @@ module Selenium
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
-          message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
-          WebDriver.logger.debug(message, id: :selenium_manager)
-
           command = generate_command(binary, options)
 
           location = run(*command)

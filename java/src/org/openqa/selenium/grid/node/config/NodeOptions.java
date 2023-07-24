@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -188,7 +190,7 @@ public class NodeOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
       /* Danger! Java stereotype ahead! */
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
     boolean overrideMaxSessions =
@@ -334,7 +336,7 @@ public class NodeOptions {
   }
 
   private void addDriverConfigs(
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
       ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
     config
@@ -390,7 +392,7 @@ public class NodeOptions {
                     .forEach(
                         keyValue -> {
                           String[] values = keyValue.split("=", 2);
-                          configMap.put(values[0], values[1]);
+                          configMap.put(values[0], unquote(values[1]));
                         });
                 driversMap.add(configMap);
               }
@@ -457,10 +459,11 @@ public class NodeOptions {
                         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
                         .ifPresent(
                             builder -> {
+                              ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
                                 driverConfigs.putAll(
-                                    driverInfoConfig, factoryFactory.apply(stereotype));
+                                    driverInfoConfig, factoryFactory.apply(immutable));
                               }
                             });
                   });
@@ -552,7 +555,7 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-      int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();
@@ -565,18 +568,15 @@ public class NodeOptions {
             .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
             .collect(Collectors.toList());
 
-    LOG.log(Level.INFO, "Driver(s) already present on the host: {0}", infos.size());
-
     if (config.getBool(NODE_SECTION, "selenium-manager").orElse(DEFAULT_USE_SELENIUM_MANAGER)) {
       List<String> present =
           infos.stream().map(WebDriverInfo::getDisplayName).collect(Collectors.toList());
       List<WebDriverInfo> driversSM =
           StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-              .filter(WebDriverInfo::isAvailable)
               .filter(info -> !present.contains(info.getDisplayName()))
+              .filter(WebDriverInfo::isAvailable)
               .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
               .collect(Collectors.toList());
-      LOG.log(Level.INFO, "Driver(s) available through Selenium Manager: {0}", driversSM.size());
       infos.addAll(driversSM);
     }
 
@@ -593,9 +593,10 @@ public class NodeOptions {
               .max(Comparator.comparingInt(builder -> builder.score(caps)))
               .ifPresent(
                   builder -> {
+                    ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
                     int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
                     for (int i = 0; i < maxDriverSessions; i++) {
-                      toReturn.putAll(info, factoryFactory.apply(caps));
+                      toReturn.putAll(info, factoryFactory.apply(immutable));
                     }
                   });
         });
@@ -710,10 +711,17 @@ public class NodeOptions {
 
     LOG.info(
         String.format(
-            "Adding %s for %s %d times (%s)",
+            "Adding %s for %s %d times",
             entry.getKey().getDisplayName(),
             caps.toString().replaceAll("\\s+", " "),
-            entry.getValue().size(),
-            entry.getKey().isPresent() ? "Host" : "SM"));
+            entry.getValue().size()));
+  }
+
+  private String unquote(String input) {
+    int len = input.length();
+    if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
+      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
+    }
+    return input;
   }
 }

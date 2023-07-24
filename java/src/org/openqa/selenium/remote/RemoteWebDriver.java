@@ -74,6 +74,7 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -542,7 +543,14 @@ public class RemoteWebDriver
                 "Error communicating with the remote browser. It may have died.", e);
       }
       populateWebDriverException(toThrow);
-      toThrow.addInfo("Command", command.toString());
+      // Showing full command information when user is debugging
+      // Avoid leaking user/pwd values for authenticated Grids.
+      if (toThrow instanceof UnreachableBrowserException && !Debug.isDebugging()) {
+        toThrow.addInfo("Command", "[" + command.getSessionId() + ", " + command.getName()
+                                   + " " + command.getParameters().keySet() + "]");
+      } else {
+        toThrow.addInfo("Command", command.toString());
+      }
       throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
@@ -636,13 +644,13 @@ public class RemoteWebDriver
     }
     switch (when) {
       case BEFORE:
-        LOG.log(level, "Executing: " + commandName + " " + text);
+        LOG.log(level, "Executing: {0} {1}", new Object[] {commandName, text});
         break;
       case AFTER:
-        LOG.log(level, "Executed: " + commandName + " " + text);
+        LOG.log(level, "Executed: {0} {1}", new Object[] {commandName, text});
         break;
       case EXCEPTION:
-        LOG.log(level, "Exception: " + commandName + " " + text);
+        LOG.log(level, "Exception: {0} {1}", new Object[] {commandName, text});
         break;
       default:
         LOG.log(level, text);

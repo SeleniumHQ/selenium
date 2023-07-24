@@ -24,7 +24,9 @@ use std::path::PathBuf;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager};
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -56,9 +58,10 @@ impl IExplorerManager {
     pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = IE_NAMES[0];
         let driver_name = IEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        config.os = WINDOWS.to_str().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
@@ -87,7 +90,7 @@ impl SeleniumManager for IExplorerManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         None
     }
 
@@ -110,6 +113,8 @@ impl SeleniumManager for IExplorerManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
                     MIRROR_URL.to_string(),
@@ -202,5 +207,9 @@ impl SeleniumManager for IExplorerManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

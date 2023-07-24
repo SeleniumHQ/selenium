@@ -19,8 +19,6 @@ import typing
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
-DEFAULT_EXECUTABLE_PATH = "chromedriver"
-
 
 class Service(service.ChromiumService):
     """A Service class that is responsible for the starting and stopping of
@@ -35,7 +33,7 @@ class Service(service.ChromiumService):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path=None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
@@ -50,6 +48,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             log_output=log_output,
             env=env,
-            start_error_message="Please see https://chromedriver.chromium.org/home",
             **kwargs,
         )

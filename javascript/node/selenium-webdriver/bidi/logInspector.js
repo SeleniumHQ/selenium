@@ -54,10 +54,11 @@ class LogInspector {
   /**
    * Listen to Console logs
    * @param callback
+   * @param filterBy
    * @returns {Promise<void>}
    */
   async onConsoleEntry(callback, filterBy = undefined) {
-    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+    if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
@@ -78,7 +79,7 @@ class LogInspector {
           params.stackTrace
         )
 
-        if (filterBy != undefined) {
+        if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
             callback(consoleEntry)
           }
@@ -93,10 +94,11 @@ class LogInspector {
   /**
    * Listen to JS logs
    * @param callback
+   * @param filterBy
    * @returns {Promise<void>}
    */
   async onJavascriptLog(callback, filterBy = undefined) {
-    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+    if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
@@ -114,7 +116,7 @@ class LogInspector {
           params.stackTrace
         )
 
-        if (filterBy != undefined) {
+        if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
             callback(jsEntry)
           }
@@ -163,10 +165,11 @@ class LogInspector {
   /**
    * Listen to any logs
    * @param callback
+   * @param filterBy
    * @returns {Promise<void>}
    */
   async onLog(callback, filterBy = undefined) {
-    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+    if (filterBy !== undefined && !(filterBy instanceof FilterBy)) {
       throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
@@ -183,7 +186,7 @@ class LogInspector {
           params.stackTrace
         )
 
-        if (filterBy != undefined) {
+        if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
             callback(jsEntry)
           }
@@ -193,7 +196,7 @@ class LogInspector {
         callback(jsEntry)
         return
       }
-  
+
       if (params?.type === 'console') {
         let consoleEntry = new ConsoleLogEntry(
           params.level,
@@ -205,8 +208,8 @@ class LogInspector {
           params.args,
           params.stackTrace
         )
-        
-        if (filterBy != undefined) {
+
+        if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
             callback(consoleEntry)
           }
@@ -218,7 +221,7 @@ class LogInspector {
       }
 
       if (
-        params != undefined &&
+        params !== undefined &&
         !['console', 'javascript'].includes(params?.type)
       ) {
         let genericEntry = new GenericLogEntry(
@@ -229,7 +232,7 @@ class LogInspector {
           params.stackTrace
         )
 
-        if (filterBy != undefined) {
+        if (filterBy !== undefined) {
           if (params?.level === filterBy.getLevel()) {
             callback(genericEntry)
           }

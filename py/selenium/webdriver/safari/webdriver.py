@@ -22,6 +22,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
+from ..common.driver_finder import DriverFinder
 from .options import Options
 from .remote_connection import SafariRemoteConnection
 from .service import Service
@@ -57,8 +58,9 @@ class WebDriver(RemoteWebDriver):
             )
 
         self.service = service if service else Service()
-        self.options = options if options else Options()
-        self.keep_alive = keep_alive
+        options = options if options else Options()
+
+        self.service.path = DriverFinder.get_path(self.service, options)
 
         self._reuse_service = reuse_service and self.service.reuse_service
         if not self._reuse_service:
@@ -66,11 +68,11 @@ class WebDriver(RemoteWebDriver):
 
         executor = SafariRemoteConnection(
             remote_server_addr=self.service.service_url,
-            keep_alive=self.keep_alive,
-            ignore_proxy=self.options._ignore_local_proxy,
+            keep_alive=keep_alive,
+            ignore_proxy=options._ignore_local_proxy,
         )
 
-        super().__init__(command_executor=executor, options=self.options)
+        super().__init__(command_executor=executor, options=options)
 
         self._is_remote = False
 
