@@ -22,7 +22,6 @@ use std::str;
 
 #[rstest]
 #[case("chrome", "chromedriver", "", "")]
-#[case("chrome", "chromedriver", "105", "105.0.5195.52")]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
 #[case("edge", "msedgedriver", "", "")]

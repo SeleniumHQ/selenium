@@ -160,13 +160,13 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        let mut browser_version = self.get_major_browser_version();
+        let mut major_browser_version = self.get_major_browser_version();
         let mut metadata = get_metadata(self.get_logger());
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
             self.driver_name,
-            browser_version.as_str(),
+            major_browser_version.as_str(),
         ) {
             Some(driver_version) => {
                 self.log.trace(format!(
@@ -178,7 +178,7 @@ impl SeleniumManager for EdgeManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                if browser_version.is_empty() {
+                if major_browser_version.is_empty() {
                     let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
@@ -189,17 +189,18 @@ impl SeleniumManager for EdgeManager {
                         latest_stable_url,
                         self.get_logger(),
                     )?;
-                    browser_version = self.get_major_version(latest_driver_version.as_str())?;
+                    major_browser_version =
+                        self.get_major_version(latest_driver_version.as_str())?;
                     self.log.debug(format!(
                         "Latest {} major version is {}",
-                        &self.driver_name, browser_version
+                        &self.driver_name, major_browser_version
                     ));
                 }
                 let driver_url = format!(
                     "{}{}_{}_{}",
                     DRIVER_URL,
                     LATEST_RELEASE,
-                    browser_version,
+                    major_browser_version,
                     self.get_os().to_uppercase()
                 );
                 self.log.debug(format!(
@@ -210,9 +211,9 @@ impl SeleniumManager for EdgeManager {
                     read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_driver_ttl();
-                if driver_ttl > 0 && !browser_version.is_empty() {
+                if driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
-                        browser_version.as_str(),
+                        major_browser_version.as_str(),
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
