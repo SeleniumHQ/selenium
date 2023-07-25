@@ -25,6 +25,7 @@ const http = require('./http')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
+const { getPath } = require('./common/driverFinder')
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -43,7 +44,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
   }
 }
 
-const OPTIONS_CAPABILITY_KEY = 'safari.options'
+const OPTIONS_CAPABILITY_KEY = 'safari:options'
 const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview'
 
 /**
@@ -122,6 +123,9 @@ class Driver extends webdriver.WebDriver {
     }
 
     let service = new ServiceBuilder(exe).build()
+    if (!service.getExecutable()) {
+      service.setExecutable(getPath(caps).driverPath)
+    }
     let executor = new http.Executor(
       service.start().then((url) => new http.HttpClient(url))
     )
