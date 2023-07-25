@@ -17,12 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chromium/service'
-
 module Selenium
   module WebDriver
     module Edge
-      class Service < Chromium::Service
+      class Service < WebDriver::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'msedgedriver'
         SHUTDOWN_SUPPORTED = true

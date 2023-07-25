@@ -60,16 +60,6 @@ module Selenium
 
             expect(service.extra_args).to eq ['--foo', '--bar']
           end
-
-          # This is deprecated behavior
-          it 'uses args when passed in as a Hash' do
-            expect {
-              service = described_class.new(args: {log_file: '/path/to/log',
-                                                   silent: true})
-
-              expect(service.extra_args).to eq ['--log-file=/path/to/log', '--silent']
-            }.to have_deprecated(:driver_opts)
-          end
         end
 
         context 'when initializing driver' do
