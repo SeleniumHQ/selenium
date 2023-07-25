@@ -54,82 +54,10 @@ module Selenium
         end
 
         #
-        # Backward compatibility
-        #
-
-        def version
-          WebDriver.logger.deprecate('`Capabilities#version`', '`Capabilities#browser_version`', id: :jwp_caps)
-          browser_version
-        end
-
-        def version=(value)
-          WebDriver.logger.deprecate('`Capabilities#version=`', '`Capabilities#browser_version=`', id: :jwp_caps)
-          self.browser_version = value
-        end
-
-        def platform
-          WebDriver.logger.deprecate('`Capabilities#platform`', '`Capabilities#platform_name`', id: :jwp_caps)
-          platform_name
-        end
-
-        def platform=(value)
-          WebDriver.logger.deprecate('`Capabilities#platform=`', '`Capabilities#platform_name=`', id: :jwp_caps)
-          self.platform_name = value
-        end
-
-        #
         # Convenience methods for the common choices.
         #
 
         class << self
-          def chrome(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.chrome', 'Options.chrome', id: :caps_browsers)
-            new({
-              browser_name: 'chrome'
-            }.merge(opts))
-          end
-
-          def edge(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.edge', 'Options.edge', id: :caps_browsers)
-            new({
-              browser_name: 'MicrosoftEdge'
-            }.merge(opts))
-          end
-          alias microsoftedge edge
-
-          def firefox(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.firefox', 'Options.firefox', id: :caps_browsers)
-            new({
-              browser_name: 'firefox'
-            }.merge(opts))
-          end
-          alias ff firefox
-
-          def safari(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.safari', 'Options.safari', id: :caps_browsers)
-            new({
-              browser_name: Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
-            }.merge(opts))
-          end
-
-          def htmlunit(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.htmlunit',
-                                       'as argument in constructor',
-                                       id: :caps_browsers)
-            new({
-              browser_name: 'htmlunit'
-            }.merge(opts))
-          end
-
-          def internet_explorer(opts = {})
-            WebDriver.logger.deprecate('Remote::Capabilities.ie', 'Options.ie', id: :caps_browsers)
-            new({
-              browser_name: 'internet explorer',
-              platform_name: :windows
-            }.merge(opts))
-          end
-          alias ie internet_explorer
-
           def always_match(capabilities)
             new(always_match: capabilities)
           end
