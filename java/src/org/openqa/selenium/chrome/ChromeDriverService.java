@@ -82,16 +82,6 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.chrome.withAllowedIps";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
-   * connect to ChromeDriver.
-   *
-   * @deprecated use {@link #CHROME_DRIVER_ALLOWED_IPS_PROPERTY}
-   */
-  @Deprecated
-  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
-      "webdriver.chrome.whitelistedIps";
-
-  /**
    * System property that defines whether the ChromeDriver executable should check for build version
    * compatibility between ChromeDriver and the browser.
    */
@@ -333,10 +323,7 @@ public class ChromeDriverService extends DriverService {
         withSilent(Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY));
       }
       if (allowedListIps == null) {
-        this.allowedListIps =
-            System.getProperty(
-                CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
-                System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
+        this.allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY);
       }
       if (logLevel == null && System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null) {
         String level = System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY);
