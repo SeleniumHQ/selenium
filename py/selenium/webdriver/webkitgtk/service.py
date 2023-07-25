@@ -18,8 +18,6 @@ import typing
 
 from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH = "WebKitWebDriver"
-
 
 class Service(service.Service):
     """A Service class that is responsible for the starting and stopping of
@@ -34,7 +32,7 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,

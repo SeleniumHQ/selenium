@@ -22,7 +22,6 @@ from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
 
@@ -31,7 +30,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        executable_path=DEFAULT_EXECUTABLE_PATH,
+        executable_path=None,
         port=0,
         options=None,
         desired_capabilities=DesiredCapabilities.WPEWEBKIT,
@@ -55,7 +54,7 @@ class WebDriver(RemoteWebDriver):
         else:
             options = Options()
 
-        self.service = Service(executable_path, port=port, log_path=service_log_path)
+        self.service = Service()
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
