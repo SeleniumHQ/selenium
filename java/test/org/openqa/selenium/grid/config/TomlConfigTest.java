@@ -66,15 +66,9 @@ class TomlConfigTest {
   @Test
   void ensureCanReadListOfStrings() {
     String[] rawConfig =
-      new String[] {
-        "[relay]",
-        "configs = [\"2\", '{\"browserName\": \"chrome\"}']"
-    };
+        new String[] {"[relay]", "configs = [\"2\", '{\"browserName\": \"chrome\"}']"};
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    List<String> expected = Arrays.asList(
-      "2",
-      "{\"browserName\": \"chrome\"}"
-    );
+    List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
     assertThat(content).isEqualTo(Optional.of(expected));
   }
@@ -82,20 +76,20 @@ class TomlConfigTest {
   @Test
   void ensureCanReadListOfMaps() {
     String[] rawConfig =
-      new String[] {
-        "[node]",
-        "detect-drivers = false",
-        "[[node.driver-configuration]]",
-        "display-name = \"htmlunit\"",
-        "[node.driver-configuration.stereotype]",
-        "browserName = \"htmlunit\"",
-        "browserVersion = \"chrome\""
-      };
+        new String[] {
+          "[node]",
+          "detect-drivers = false",
+          "[[node.driver-configuration]]",
+          "display-name = \"htmlunit\"",
+          "[node.driver-configuration.stereotype]",
+          "browserName = \"htmlunit\"",
+          "browserVersion = \"chrome\""
+        };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    List<String> expected = Arrays.asList(
-      "display-name=\"htmlunit\"",
-      "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}"
-    );
+    List<String> expected =
+        Arrays.asList(
+            "display-name=\"htmlunit\"",
+            "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}");
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).isEqualTo(Optional.of(expected));
   }

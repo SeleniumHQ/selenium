@@ -756,9 +756,10 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
       Set<RequestId> inQueue;
       boolean loop;
       if (rejectUnsupportedCaps) {
-        inQueue = sessionQueue.getQueueContents().stream()
-          .map(SessionRequestCapability::getRequestId)
-          .collect(Collectors.toSet());
+        inQueue =
+            sessionQueue.getQueueContents().stream()
+                .map(SessionRequestCapability::getRequestId)
+                .collect(Collectors.toSet());
         loop = !inQueue.isEmpty();
       } else {
         inQueue = null;
@@ -772,11 +773,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         Map<Capabilities, Long> stereotypes =
             getAvailableNodes().stream()
                 .filter(NodeStatus::hasCapacity)
-                .flatMap(
-                    node ->
-                        node.getSlots().stream()
-                            .map(Slot::getStereotype))
-                .collect(Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
+                .flatMap(node -> node.getSlots().stream().map(Slot::getStereotype))
+                .collect(
+                    Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
 
         if (!stereotypes.isEmpty()) {
           List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
@@ -788,9 +787,10 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         }
       }
       if (rejectUnsupportedCaps) {
-        checkMatchingSlot(sessionQueue.getQueueContents().stream()
-          .filter((src) -> inQueue.contains(src.getRequestId()))
-          .collect(Collectors.toList()));
+        checkMatchingSlot(
+            sessionQueue.getQueueContents().stream()
+                .filter((src) -> inQueue.contains(src.getRequestId()))
+                .collect(Collectors.toList()));
       }
     }
 
@@ -829,8 +829,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try (Span childSpan = span.createSpan("distributor.retry")) {
             LOG.log(
-                Debug.getDebugLogLevel(),
-                "Retrying {0}", sessionRequest.getDesiredCapabilities());
+                Debug.getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));

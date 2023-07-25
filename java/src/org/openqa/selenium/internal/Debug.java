@@ -24,6 +24,7 @@ import java.util.logging.Level;
 public class Debug {
 
   private static final boolean IS_DEBUG;
+
   static {
     boolean debugFlag =
         ManagementFactory.getRuntimeMXBean().getInputArguments().stream()

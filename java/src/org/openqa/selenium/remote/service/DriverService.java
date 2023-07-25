@@ -50,7 +50,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 
 /**
  * Manages the life and death of a native executable driver server. It is expected that the driver

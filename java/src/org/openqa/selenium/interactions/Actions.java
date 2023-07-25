@@ -30,7 +30,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
@@ -354,8 +353,8 @@ public class Actions {
 
   /**
    * Moves the mouse from its current position (or 0,0) by the given offset. If the final
-   * coordinates of the move are outside the viewport (the mouse will end up outside the browser window),
-   * an exception is raised.
+   * coordinates of the move are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
    *
    * @param xOffset horizontal offset. A negative value means moving the mouse left.
    * @param yOffset vertical offset. A negative value means moving the mouse up.
@@ -370,21 +369,23 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse to provided coordinates on screen regardless of starting position of
-   * the mouse. If the coordinates
-   * provided are outside the viewport (the mouse will end up outside the browser window),
-   * an exception is raised.
+   * Moves the mouse to provided coordinates on screen regardless of starting position of the mouse.
+   * If the coordinates provided are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
    *
-   * @param xCoordinate positive pixel value along horizontal axis in viewport. Numbers increase going right.
-   * @param yCoordinate positive pixel value along vertical axis in viewport. Numbers increase going down.
+   * @param xCoordinate positive pixel value along horizontal axis in viewport. Numbers increase
+   *     going right.
+   * @param yCoordinate positive pixel value along vertical axis in viewport. Numbers increase going
+   *     down.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
    *     boundaries.
    */
   public Actions moveToLocation(int xCoordinate, int yCoordinate) {
     return tick(
-      getActivePointer()
-        .createPointerMove(Duration.ofMillis(250), Origin.viewport(), xCoordinate, yCoordinate));
+        getActivePointer()
+            .createPointerMove(
+                Duration.ofMillis(250), Origin.viewport(), xCoordinate, yCoordinate));
   }
 
   /**

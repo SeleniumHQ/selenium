@@ -711,56 +711,52 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGeneralExceptionInNonDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
-      final ImmutableMap<String, String> parameters = ImmutableMap.of(
-        "url", "https://user:password@somedomain.com", "token", "12345Secret");
+      final ImmutableMap<String, String> parameters =
+          ImmutableMap.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(false);
-      WebDriverFixture fixture = new WebDriverFixture(
-        new ImmutableCapabilities(
-          "browserName", "cheese", "platformName", "WINDOWS"),
-        echoCapabilities, exceptionResponder);
+      WebDriverFixture fixture =
+          new WebDriverFixture(
+              new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
+              echoCapabilities,
+              exceptionResponder);
       assertThatExceptionOfType(UnreachableBrowserException.class)
-        .isThrownBy(() -> fixture.driver.execute(commandPayload))
-        .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
-        .withMessageContaining("Build info: ")
-        .withMessageContaining(
-          "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-        .withMessageContaining(String.format(
-          "Session ID: %s", fixture.driver.getSessionId()))
-        .withMessageContaining(String.format(
-          "%s", fixture.driver.getCapabilities()))
-        .withMessageContaining(String.format(
-          "Command: [%s, get [url, token]]", fixture.driver.getSessionId()))
-        .havingCause()
-        .withMessage("BOOM!!!");
+          .isThrownBy(() -> fixture.driver.execute(commandPayload))
+          .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
+          .withMessageContaining("Build info: ")
+          .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+          .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+          .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+          .withMessageContaining(
+              String.format("Command: [%s, get [url, token]]", fixture.driver.getSessionId()))
+          .havingCause()
+          .withMessage("BOOM!!!");
     }
   }
 
   @Test
   void canHandleGeneralExceptionInDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
-      final ImmutableMap<String, String> parameters = ImmutableMap.of(
-        "url", "https://user:password@somedomain.com", "token", "12345Secret");
+      final ImmutableMap<String, String> parameters =
+          ImmutableMap.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(true);
-      WebDriverFixture fixture = new WebDriverFixture(
-        new ImmutableCapabilities(
-          "browserName", "cheese", "platformName", "WINDOWS"),
-        echoCapabilities, exceptionResponder);
+      WebDriverFixture fixture =
+          new WebDriverFixture(
+              new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
+              echoCapabilities,
+              exceptionResponder);
       assertThatExceptionOfType(UnreachableBrowserException.class)
-        .isThrownBy(() -> fixture.driver.execute(commandPayload))
-        .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
-        .withMessageContaining("Build info: ")
-        .withMessageContaining(
-          "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-        .withMessageContaining(String.format(
-          "Session ID: %s", fixture.driver.getSessionId()))
-        .withMessageContaining(String.format(
-          "%s", fixture.driver.getCapabilities()))
-        .withMessageContaining(String.format(
-          "Command: [%s, get %s]", fixture.driver.getSessionId(), parameters))
-        .havingCause()
-        .withMessage("BOOM!!!");
+          .isThrownBy(() -> fixture.driver.execute(commandPayload))
+          .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
+          .withMessageContaining("Build info: ")
+          .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+          .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+          .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+          .withMessageContaining(
+              String.format("Command: [%s, get %s]", fixture.driver.getSessionId(), parameters))
+          .havingCause()
+          .withMessage("BOOM!!!");
     }
   }
 

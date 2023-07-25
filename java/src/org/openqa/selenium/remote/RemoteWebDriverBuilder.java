@@ -24,7 +24,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;

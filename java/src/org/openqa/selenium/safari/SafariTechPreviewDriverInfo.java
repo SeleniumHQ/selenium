@@ -81,7 +81,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   public boolean isPresent() {
     try {
       DriverFinder.getPath(
-        SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+          SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

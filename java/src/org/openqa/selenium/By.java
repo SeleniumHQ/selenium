@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -416,7 +415,8 @@ public abstract class By {
   }
 
   private abstract static class PreW3CLocator extends By implements Remotable {
-    private static final Pattern CSS_ESCAPE = Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
+    private static final Pattern CSS_ESCAPE =
+        Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 

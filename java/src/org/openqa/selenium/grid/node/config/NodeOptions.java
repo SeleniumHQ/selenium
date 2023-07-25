@@ -459,7 +459,8 @@ public class NodeOptions {
                         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
                         .ifPresent(
                             builder -> {
-                              ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
+                              ImmutableCapabilities immutable =
+                                  new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
                                 driverConfigs.putAll(

@@ -136,7 +136,7 @@ public class GridModel {
       LOG.log(
           Debug.getDebugLogLevel(),
           "Adding node with id {0} and URI {1}",
-          new Object[]{ node.getNodeId(), node.getExternalUri()});
+          new Object[] {node.getNodeId(), node.getExternalUri()});
       NodeStatus refreshed = rewrite(node, DOWN);
       nodes.add(refreshed);
       nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
