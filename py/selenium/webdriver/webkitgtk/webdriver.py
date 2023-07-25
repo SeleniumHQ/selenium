@@ -59,8 +59,7 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities = capabilities
 
         self.service = Service()
-        self.options = options
-        self.service.path = DriverFinder.get_path(self.service, self.options)
+        self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         super().__init__(
