@@ -17,10 +17,7 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::{
-    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
-    path_buf_to_string,
-};
+use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
@@ -92,6 +89,7 @@ pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
+pub const UNC_PREFIX: &str = r#"\\?\"#;
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -189,15 +187,15 @@ pub trait SeleniumManager {
         }
 
         if full_browser_path.exists() {
-            let canon_browser_path = full_browser_path.as_path().canonicalize().unwrap();
+            let canon_browser_path = self.canonicalize_path(full_browser_path);
             self.get_logger().debug(format!(
                 "{} detected at {}",
                 self.get_browser_name(),
-                canon_browser_path.display()
+                canon_browser_path
             ));
-            self.set_browser_path(path_buf_to_string(canon_browser_path.clone()));
+            self.set_browser_path(canon_browser_path.clone());
 
-            Some(canon_browser_path)
+            Some(Path::new(&canon_browser_path).to_path_buf())
         } else {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
@@ -617,19 +615,30 @@ pub trait SeleniumManager {
         }
     }
 
+    fn canonicalize_path(&self, path_buf: PathBuf) -> String {
+        let canon_path = path_buf
+            .as_path()
+            .canonicalize()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        if WINDOWS.is(self.get_os()) {
+            canon_path.replace(UNC_PREFIX, "")
+        } else {
+            canon_path
+        }
+    }
+
     fn get_escaped_path(&self, string_path: String) -> String {
         let original_path = string_path.clone();
         let mut escaped_path = string_path;
         let path = Path::new(&original_path);
+
         if path.exists() {
-            escaped_path = Path::new(path)
-                .canonicalize()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string();
+            escaped_path = self.canonicalize_path(path.to_path_buf());
             if WINDOWS.is(self.get_os()) {
-                escaped_path = escaped_path.replace("\\\\?\\", "").replace('\\', "\\\\");
+                escaped_path = escaped_path.replace('\\', "\\\\");
             } else {
                 escaped_path = run_shell_command(
                     "bash",
