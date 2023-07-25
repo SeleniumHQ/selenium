@@ -62,18 +62,6 @@ module Selenium
         end
       end
 
-      def bitsize
-        @bitsize ||= if defined?(FFI::Platform::ADDRESS_SIZE)
-                       FFI::Platform::ADDRESS_SIZE
-                     elsif defined?(FFI)
-                       FFI.type_size(:pointer) == 4 ? 32 : 64
-                     elsif jruby?
-                       Integer(ENV_JAVA['sun.arch.data.model'])
-                     else
-                       1.size == 4 ? 32 : 64
-                     end
-      end
-
       def jruby?
         engine == :jruby
       end
@@ -156,43 +144,6 @@ module Selenium
         pid = Process.pid
 
         at_exit { yield if Process.pid == pid }
-      end
-
-      def find_binary(*binary_names)
-        paths = ENV['PATH'].split(File::PATH_SEPARATOR)
-
-        if windows?
-          binary_names.map! { |n| "#{n}.exe" }
-          binary_names.dup.each { |n| binary_names << n.gsub('exe', 'bat') }
-        end
-
-        binary_names.each do |binary_name|
-          paths.each do |path|
-            full_path = File.join(path, binary_name)
-            full_path = unix_path(full_path) if windows?
-            exe = Dir.glob(full_path).find { |f| File.executable?(f) }
-            return exe if exe
-          end
-        end
-
-        nil
-      end
-
-      def find_in_program_files(*binary_names)
-        paths = [
-          ENV.fetch('PROGRAMFILES', '\\Program Files'),
-          ENV.fetch('ProgramFiles(x86)', '\\Program Files (x86)'),
-          ENV.fetch('ProgramW6432', '\\Program Files')
-        ]
-
-        paths.each do |root|
-          binary_names.each do |name|
-            exe = File.join(root, name)
-            return exe if File.executable?(exe)
-          end
-        end
-
-        nil
       end
 
       def localhost

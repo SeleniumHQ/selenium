@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+import warnings
 from typing import List
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
-
-DEFAULT_EXECUTABLE_PATH = "geckodriver"
 
 
 class Service(service.Service):
@@ -37,21 +37,31 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
-        # Todo: This is vastly inconsistent, requires a follow up to standardise.
-        file = log_path or "geckodriver.log"
-        log_file = open(file, "a+", encoding="utf-8")
         self.service_args = service_args or []
+        if log_path is not None:
+            warnings.warn("log_path has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            log_output = open(log_path, "a+", encoding="utf-8")
+
+        if log_path is None and log_output is None:
+            warnings.warn(
+                "Firefox will soon stop logging to geckodriver.log by default; Specify desired logs with log_output",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            log_output = open("geckodriver.log", "a+", encoding="utf-8")
+
         super().__init__(
             executable=executable_path,
             port=port,
-            log_file=log_file,
+            log_output=log_output,
             env=env,
             **kwargs,
         )

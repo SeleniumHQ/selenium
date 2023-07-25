@@ -795,7 +795,7 @@ class WebDriver(BaseWebDriver):
         """
         if not str(filename).lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.get_screenshot_as_png()
@@ -1053,9 +1053,9 @@ class WebDriver(BaseWebDriver):
         http = urllib3.PoolManager()
         _firefox = False
         if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get(
-                "debuggerAddress"
-            )
+            debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
+        elif self.caps.get("browserName") == "msedge":
+            debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")

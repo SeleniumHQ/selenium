@@ -17,7 +17,7 @@
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::files::get_cache_folder;
-use crate::{format_one_arg, run_shell_command, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
+use crate::{format_one_arg, run_shell_command_by_os, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
 use std::env;
 use std::env::consts::OS;
@@ -41,6 +41,8 @@ pub struct ManagerConfig {
     pub timeout: u64,
     pub browser_ttl: u64,
     pub driver_ttl: u64,
+    pub offline: bool,
+    pub force_browser_download: bool,
 }
 
 impl ManagerConfig {
@@ -48,7 +50,7 @@ impl ManagerConfig {
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
             let wmic_output =
-                run_shell_command(self_os, WMIC_COMMAND_OS.to_string()).unwrap_or_default();
+                run_shell_command_by_os(self_os, WMIC_COMMAND_OS.to_string()).unwrap_or_default();
             if wmic_output.contains("32") {
                 ARCH_X86.to_string()
             } else if wmic_output.contains("ARM") {
@@ -58,7 +60,7 @@ impl ManagerConfig {
             }
         } else {
             let uname_a = format_one_arg(UNAME_COMMAND, "a");
-            if run_shell_command(self_os, uname_a)
+            if run_shell_command_by_os(self_os, uname_a)
                 .unwrap_or_default()
                 .to_ascii_lowercase()
                 .contains(ARCH_ARM64)
@@ -66,7 +68,7 @@ impl ManagerConfig {
                 ARCH_ARM64.to_string()
             } else {
                 let uname_m = format_one_arg(UNAME_COMMAND, "m");
-                run_shell_command(self_os, uname_m).unwrap_or_default()
+                run_shell_command_by_os(self_os, uname_m).unwrap_or_default()
             }
         };
 
@@ -87,6 +89,8 @@ impl ManagerConfig {
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
             browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
+            offline: BooleanKey("offline", false).get_value(),
+            force_browser_download: BooleanKey("force_browser_download", false).get_value(),
         }
     }
 }

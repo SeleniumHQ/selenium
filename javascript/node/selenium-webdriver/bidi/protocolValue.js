@@ -123,7 +123,7 @@ class RemoteValue {
     this.sharedId = null
 
     if ('type' in remoteValue) {
-      var typeString = remoteValue['type']
+      const typeString = remoteValue['type']
       if (PrimitiveType.findByName(typeString) != null) {
         this.type = PrimitiveType.findByName(typeString)
       } else if (NonPrimitiveType.findByName(typeString) != null) {

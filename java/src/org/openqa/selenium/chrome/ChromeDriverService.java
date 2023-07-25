@@ -183,16 +183,6 @@ public class ChromeDriverService extends DriverService {
     return new Builder().withLogLevel(level).build();
   }
 
-  /**
-   * Checks if the ChromeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(CHROME_DRIVER_NAME, CHROME_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link ChromeDriverService} instances. */
   @AutoService(DriverService.Builder.class)
   public static class Builder
@@ -378,7 +368,7 @@ public class ChromeDriverService extends DriverService {
 
       // Readable timestamp and append logs only work if a file is specified
       // Can only get readable logs via arguments; otherwise send service output as directed
-      if (getLogFile() != null && (readableTimestamp || appendLog)) {
+      if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
         if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");
@@ -392,12 +382,6 @@ public class ChromeDriverService extends DriverService {
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
-      //      if (silent != null && silent.equals(Boolean.TRUE)) {
-      //        args.add("--silent");
-      //      }
-      //      if (verbose != null && verbose.equals(Boolean.TRUE)) {
-      //        args.add("--verbose");
-      //      }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }

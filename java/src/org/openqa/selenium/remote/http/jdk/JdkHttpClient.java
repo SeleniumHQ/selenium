@@ -34,6 +34,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpTimeoutException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
@@ -53,8 +54,10 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpClientName;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -65,8 +68,9 @@ import org.openqa.selenium.remote.http.WebSocket;
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
+  private final HttpHandler handler;
   private java.net.http.HttpClient client;
-  private WebSocket websocket;
+  private final List<WebSocket> websockets;
   private final ExecutorService executorService;
   private final Duration readTimeout;
 
@@ -75,6 +79,8 @@ public class JdkHttpClient implements HttpClient {
 
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
+    this.websockets = new ArrayList<>();
+    this.handler = config.filter().andFinally(this::execute0);
 
     executorService = Executors.newCachedThreadPool();
 
@@ -143,7 +149,13 @@ public class JdkHttpClient implements HttpClient {
 
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-    URI uri = getWebSocketUri(request);
+    URI uri;
+
+    try {
+      uri = getWebSocketUri(request);
+    } catch (URISyntaxException e) {
+      throw new ConnectionFailedException("JdkWebSocket initial request execution error", e);
+    }
 
     CompletableFuture<java.net.http.WebSocket> webSocketCompletableFuture =
         client
@@ -218,28 +230,20 @@ public class JdkHttpClient implements HttpClient {
       underlyingSocket =
           webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (CancellationException e) {
-      throw new WebDriverException(e.getMessage(), e);
+      throw new ConnectionFailedException("JdkWebSocket initial request canceled", e);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
-
-      if (cause instanceof HttpTimeoutException) {
-        throw new TimeoutException(cause);
-      } else if (cause instanceof IOException) {
-        throw new UncheckedIOException((IOException) cause);
-      } else if (cause instanceof RuntimeException) {
-        throw (RuntimeException) cause;
-      }
-
-      throw new WebDriverException((cause != null) ? cause : e);
+      throw new ConnectionFailedException(
+          "JdkWebSocket initial request execution error", (cause != null) ? cause : e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new RuntimeException(e);
+      throw new ConnectionFailedException("JdkWebSocket initial request interrupted", e);
     } catch (java.util.concurrent.TimeoutException e) {
       webSocketCompletableFuture.cancel(true);
-      throw new TimeoutException(e);
+      throw new ConnectionFailedException("JdkWebSocket initial request timeout", e);
     }
 
-    this.websocket =
+    WebSocket websocket =
         new WebSocket() {
           @Override
           public WebSocket send(Message message) {
@@ -305,52 +309,45 @@ public class JdkHttpClient implements HttpClient {
           @Override
           public void close() {
             LOG.fine("Closing websocket");
-            synchronized (underlyingSocket) {
-              if (!underlyingSocket.isOutputClosed()) {
-                underlyingSocket.sendClose(1000, "WebDriver closing socket");
-              }
-            }
+            send(new CloseMessage(1000, "WebDriver closing socket"));
           }
         };
-    return this.websocket;
+    websockets.add(websocket);
+    return websocket;
   }
 
-  private URI getWebSocketUri(HttpRequest request) {
+  private URI getWebSocketUri(HttpRequest request) throws URISyntaxException {
     URI uri = messages.getRawUri(request);
     if ("http".equalsIgnoreCase(uri.getScheme())) {
-      try {
-        uri =
-            new URI(
-                "ws",
-                uri.getUserInfo(),
-                uri.getHost(),
-                uri.getPort(),
-                uri.getPath(),
-                uri.getQuery(),
-                uri.getFragment());
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      uri =
+          new URI(
+              "ws",
+              uri.getUserInfo(),
+              uri.getHost(),
+              uri.getPort(),
+              uri.getPath(),
+              uri.getQuery(),
+              uri.getFragment());
     } else if ("https".equalsIgnoreCase(uri.getScheme())) {
-      try {
-        uri =
-            new URI(
-                "wss",
-                uri.getUserInfo(),
-                uri.getHost(),
-                uri.getPort(),
-                uri.getPath(),
-                uri.getQuery(),
-                uri.getFragment());
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      uri =
+          new URI(
+              "wss",
+              uri.getUserInfo(),
+              uri.getHost(),
+              uri.getPort(),
+              uri.getPath(),
+              uri.getQuery(),
+              uri.getFragment());
     }
     return uri;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return handler.execute(req);
+  }
+
+  private HttpResponse execute0(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
 
     LOG.fine("Executing request: " + req);
@@ -443,11 +440,18 @@ public class JdkHttpClient implements HttpClient {
 
   @Override
   public void close() {
-    executorService.shutdownNow();
-    if (this.websocket != null) {
-      this.websocket.close();
+    if (this.client == null) {
+      return;
     }
     this.client = null;
+    for (WebSocket websocket : websockets) {
+      try {
+        websocket.close();
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "failed to close the websocket: " + websocket, e);
+      }
+    }
+    executorService.shutdownNow();
   }
 
   @AutoService(HttpClient.Factory.class)

@@ -40,6 +40,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 
 /**
  * This implementation is still in beta, and may change.
@@ -101,8 +102,8 @@ public class SeleniumManager {
    */
   private static String runCommand(String... command) {
     LOG.fine(String.format("Executing Process: %s", Arrays.toString(command)));
-    String output = "";
-    int code = 0;
+    String output;
+    int code;
     try {
       Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
       process.waitFor();
@@ -111,35 +112,46 @@ public class SeleniumManager {
           CharStreams.toString(
               new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
     } catch (InterruptedException e) {
-      LOG.warning(
-          String.format(
-              "Interrupted exception running command %s: %s",
-              Arrays.toString(command), e.getMessage()));
       Thread.currentThread().interrupt();
-    } catch (Exception e) {
-      LOG.warning(
-          String.format(
-              "%s running command %s: %s",
-              e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
-    }
-    SeleniumManagerJsonOutput jsonOutput =
-        new Json().toType(output, SeleniumManagerJsonOutput.class);
-    if (code > 0) {
       throw new WebDriverException(
-          "Unsuccessful command executed: "
+          "Interrupted while running command: " + Arrays.toString(command), e);
+    } catch (Exception e) {
+      throw new WebDriverException("Failed to run command: " + Arrays.toString(command), e);
+    }
+    SeleniumManagerJsonOutput jsonOutput = null;
+    JsonException failedToParse = null;
+    String dump = output;
+    if (!output.isEmpty()) {
+      try {
+        jsonOutput = new Json().toType(output, SeleniumManagerJsonOutput.class);
+        jsonOutput.logs.forEach(
+            logged -> {
+              if (logged.level.equalsIgnoreCase(WARN)) {
+                LOG.warning(logged.message);
+              }
+              if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
+                LOG.fine(logged.message);
+              }
+            });
+        dump = jsonOutput.result.message;
+      } catch (JsonException e) {
+        failedToParse = e;
+      }
+    }
+    if (code != 0) {
+      throw new WebDriverException(
+          "Command failed with code: "
+              + code
+              + ", executed: "
               + Arrays.toString(command)
               + "\n"
-              + jsonOutput.result.message);
+              + dump,
+          failedToParse);
+    } else if (failedToParse != null) {
+      throw new WebDriverException(
+          "Failed to parse json output, executed: " + Arrays.toString(command) + "\n" + dump,
+          failedToParse);
     }
-    jsonOutput.logs.forEach(
-        logged -> {
-          if (logged.level.equalsIgnoreCase(WARN)) {
-            LOG.warning(logged.message);
-          }
-          if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
-            LOG.fine(logged.message);
-          }
-        });
     return jsonOutput.result.message;
   }
 
@@ -173,6 +185,8 @@ public class SeleniumManager {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     }
+    LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
+
     return binary;
   }
 
@@ -209,8 +223,7 @@ public class SeleniumManager {
    * @param options Browser Options instance.
    * @return the location of the driver.
    */
-  public String getDriverPath(Capabilities options) {
-    LOG.fine("Applicable driver not found; attempting to install with Selenium Manager (Beta)");
+  public String getDriverPath(Capabilities options, boolean offline) {
     File binaryFile = getBinary();
     if (binaryFile == null) {
       return null;
@@ -235,6 +248,10 @@ public class SeleniumManager {
 
     if (getLogLevel().intValue() <= Level.FINE.intValue()) {
       commandList.add("--debug");
+    }
+
+    if (offline) {
+      commandList.add("--offline");
     }
 
     Proxy proxy = (Proxy) options.getCapability("proxy");

@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.TextMatcher.text;
 
 /** A {@link Finder} for HTML title tags. */
+@Deprecated
 public class PageTitleFinder extends HtmlTagFinder {
 
   private PageTitleFinder() {}

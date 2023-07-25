@@ -27,7 +27,6 @@ jobs:
         framework:
           - net48
           - net6.0
-          - netcoreapp3.1
         include:
           - driver: Chrome
             browser: chrome

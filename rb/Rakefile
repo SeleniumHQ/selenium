@@ -14,5 +14,5 @@ end
 
 desc 'Run all integration tests in chrome'
 task :spec do
-  system "bazel test --test_size_filters large //rb/..."
+  system 'bazel test --test_size_filters large //rb/...'
 end

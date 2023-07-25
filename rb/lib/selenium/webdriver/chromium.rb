@@ -26,7 +26,6 @@ module Selenium
       autoload :Driver, 'selenium/webdriver/chromium/driver'
       autoload :Profile, 'selenium/webdriver/chromium/profile'
       autoload :Options, 'selenium/webdriver/chromium/options'
-      autoload :Service, 'selenium/webdriver/chromium/service'
     end # Chromium
   end # WebDriver
 end # Selenium

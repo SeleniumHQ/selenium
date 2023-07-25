@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import org.hamcrest.Matcher;
 
 /** Various numerical hamcrest {@link Matcher}s. */
+@Deprecated
 public class NumericalMatchers {
 
   public static Matcher<Integer> atLeast(int i) {

@@ -15,6 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+from typing import Union
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
@@ -26,7 +29,7 @@ from .command import Command
 
 
 class SwitchTo:
-    def __init__(self, driver):
+    def __init__(self, driver) -> None:
         import weakref
 
         self._driver = weakref.proxy(driver)
@@ -65,7 +68,7 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": None})
 
-    def frame(self, frame_reference) -> None:
+    def frame(self, frame_reference: Union[str, int, WebElement]) -> None:
         """Switches focus to the specified frame, by index, name, or
         webelement.
 
@@ -86,12 +89,12 @@ class SwitchTo:
             except NoSuchElementException:
                 try:
                     frame_reference = self._driver.find_element(By.NAME, frame_reference)
-                except NoSuchElementException:
-                    raise NoSuchFrameException(frame_reference)
+                except NoSuchElementException as exc:
+                    raise NoSuchFrameException(frame_reference) from exc
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": frame_reference})
 
-    def new_window(self, type_hint=None) -> None:
+    def new_window(self, type_hint: Optional[str] = None) -> None:
         """Switches to a new top-level browsing context.
 
         The type hint can be one of "tab" or "window". If not specified the
@@ -116,7 +119,7 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_PARENT_FRAME)
 
-    def window(self, window_name) -> None:
+    def window(self, window_name: str) -> None:
         """Switches focus to the specified window.
 
         :Args:
@@ -129,7 +132,7 @@ class SwitchTo:
         """
         self._w3c_window(window_name)
 
-    def _w3c_window(self, window_name):
+    def _w3c_window(self, window_name: str) -> None:
         def send_handle(h):
             self._driver.execute(Command.SWITCH_TO_WINDOW, {"handle": h})
 

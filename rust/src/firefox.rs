@@ -24,14 +24,14 @@ use std::path::PathBuf;
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::read_redirect_from_link;
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, path_buf_to_string, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
     create_http_client, format_one_arg, format_three_args, format_two_args, Logger,
-    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    REG_QUERY_FIND, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    SeleniumManager, BETA, DASH_VERSION, DEV, DOUBLE_QUOTE, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_QUERY_FIND, SINGLE_QUOTE, STABLE, WMIC_COMMAND,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -81,19 +81,19 @@ impl SeleniumManager for FirefoxManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"\\Mozilla Firefox\\firefox.exe"#,
+                r#"Mozilla Firefox\firefox.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"\\Mozilla Firefox\\firefox.exe"#,
+                r#"Mozilla Firefox\firefox.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"\\Firefox Developer Edition\\firefox.exe"#,
+                r#"Firefox Developer Edition\firefox.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"\\Firefox Nightly\\firefox.exe"#,
+                r#"Firefox Nightly\firefox.exe"#,
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
@@ -105,40 +105,29 @@ impl SeleniumManager for FirefoxManager {
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox"#,
+                r#"/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"#,
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Firefox\ Nightly.app/Contents/MacOS/firefox"#,
+                r#"/Applications/Firefox Nightly.app/Contents/MacOS/firefox"#,
             ),
-            (BrowserPath::new(LINUX, STABLE), "firefox"),
-            (BrowserPath::new(LINUX, BETA), "firefox"),
-            (BrowserPath::new(LINUX, DEV), "firefox"),
-            (BrowserPath::new(LINUX, NIGHTLY), "firefox-trunk"),
+            (BrowserPath::new(LINUX, STABLE), "/usr/bin/firefox"),
+            (BrowserPath::new(LINUX, BETA), "/usr/bin/firefox"),
+            (BrowserPath::new(LINUX, DEV), "/usr/bin/firefox"),
+            (BrowserPath::new(LINUX, NIGHTLY), "/usr/bin/firefox-trunk"),
         ])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         let mut commands;
-        let mut browser_path = self.get_browser_path();
+        let mut browser_path = self.get_browser_path().to_string();
+        let escaped_browser_path;
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
-                    commands = vec![
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES,
-                            REMOVE_X86,
-                            browser_path,
-                        ),
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES_X86,
-                            "",
-                            browser_path,
-                        ),
-                    ];
+                    browser_path = path_buf_to_string(path);
+                    escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+                    commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_two_args(
                             REG_QUERY_FIND,
@@ -150,10 +139,16 @@ impl SeleniumManager for FirefoxManager {
                 _ => return None,
             }
         } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
+            escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+            commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
         }
         if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_VERSION, browser_path)]
+            commands = vec![
+                format_three_args(DASH_VERSION, "", &escaped_browser_path, ""),
+                format_three_args(DASH_VERSION, DOUBLE_QUOTE, &browser_path, DOUBLE_QUOTE),
+                format_three_args(DASH_VERSION, SINGLE_QUOTE, &browser_path, SINGLE_QUOTE),
+                format_three_args(DASH_VERSION, "", &browser_path, ""),
+            ]
         }
         self.detect_browser_version(commands)
     }
@@ -162,13 +157,16 @@ impl SeleniumManager for FirefoxManager {
         self.driver_name
     }
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+        let major_browser_version_binding = self.get_major_browser_version();
+        let major_browser_version = major_browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
-        let driver_ttl = self.get_config().driver_ttl;
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            major_browser_version,
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -177,13 +175,16 @@ impl SeleniumManager for FirefoxManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let latest_url = format!("{}{}", DRIVER_URL, LATEST_RELEASE);
                 let driver_version =
                     read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
 
-                if !browser_version.is_empty() {
+                let driver_ttl = self.get_driver_ttl();
+                if driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
-                        browser_version,
+                        major_browser_version,
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
@@ -196,7 +197,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -285,6 +286,10 @@ impl SeleniumManager for FirefoxManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }
 

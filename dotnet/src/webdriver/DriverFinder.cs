@@ -28,31 +28,39 @@ namespace OpenQA.Selenium
     public static class DriverFinder
     {
         /// <summary>
-        /// Checks if the driver path exists, else uses Selenium Manager to return it.
+        /// Use Selenium Manager to locate the driver
         /// </summary>
-        /// <param name="service">DriverService with the current path.</param>
         /// <param name="options">DriverOptions with the current browser options.</param>
         /// <returns>
-        /// The service with a verified driver executable path.
+        /// The full path and name of the driver
         /// </returns>
-        public static DriverService VerifyDriverServicePath(DriverService service, DriverOptions options)
+        /// <exception cref="NoSuchDriverException"></exception>
+        public static string FullPath(DriverOptions options)
         {
-            string executablePath = Path.Combine(service.DriverServicePath, service.DriverServiceExecutableName);
-            if (File.Exists(executablePath)) return service;
+            string executablePath;
             try
             {
                 executablePath = SeleniumManager.DriverPath(options);
-                service.DriverServicePath = Path.GetDirectoryName(executablePath);
-                service.DriverServiceExecutableName = Path.GetFileName(executablePath);
             }
             catch (Exception e)
             {
-                throw new NoSuchDriverException($"Unable to obtain {service.DriverServiceExecutableName} using Selenium Manager", e);
+                throw new NoSuchDriverException($"Unable to obtain {options.BrowserName} using Selenium Manager", e);
             }
 
-            if (File.Exists(executablePath)) return service;
+            string message;
+            if (executablePath == null)
+            {
+                message = $"Unable to locate or obtain {options.BrowserName} driver";
+            } else if (!File.Exists(executablePath))
+            {
+                message = $"{options.BrowserName} driver located at {executablePath}, but invalid";
+            }
+            else
+            {
+                return executablePath;
+            }
 
-            throw new NoSuchDriverException($"Unable to locate or obtain {service.DriverServiceExecutableName}");
+            throw new NoSuchDriverException(message);
         }
     }
 }

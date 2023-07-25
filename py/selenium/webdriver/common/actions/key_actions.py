@@ -16,29 +16,34 @@
 # under the License.
 from __future__ import annotations
 
+from typing import Optional
+from typing import Union
+
 from ..utils import keys_to_typing
 from .interaction import KEY
 from .interaction import Interaction
 from .key_input import KeyInput
+from .pointer_input import PointerInput
+from .wheel_input import WheelInput
 
 
 class KeyActions(Interaction):
-    def __init__(self, source=None):
+    def __init__(self, source: Optional[KeyInput, PointerInput, WheelInput] = None) -> None:
         if not source:
             source = KeyInput(KEY)
         self.source = source
         super().__init__(source)
 
-    def key_down(self, letter):
+    def key_down(self, letter: str) -> KeyActions:
         return self._key_action("create_key_down", letter)
 
-    def key_up(self, letter):
+    def key_up(self, letter: str) -> KeyActions:
         return self._key_action("create_key_up", letter)
 
-    def pause(self, duration=0):
+    def pause(self, duration: int = 0) -> KeyActions:
         return self._key_action("create_pause", duration)
 
-    def send_keys(self, text):
+    def send_keys(self, text: Union[str, list]) -> KeyActions:
         if not isinstance(text, list):
             text = keys_to_typing(text)
         for letter in text:
@@ -46,7 +51,7 @@ class KeyActions(Interaction):
             self.key_up(letter)
         return self
 
-    def _key_action(self, action, letter) -> KeyActions:
+    def _key_action(self, action: str, letter) -> KeyActions:
         meth = getattr(self.source, action)
         meth(letter)
         return self

@@ -21,7 +21,7 @@ from .interaction import Pause
 
 
 class KeyInput(InputDevice):
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         super().__init__()
         self.name = name
         self.type = interaction.KEY

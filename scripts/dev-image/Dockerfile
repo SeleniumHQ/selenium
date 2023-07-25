@@ -1,6 +1,8 @@
 # Used to create a development image for working on Selenium
 FROM shs96c/selenium-remote-build:latest
 
+USER root
+
 RUN apt-get update -qqy && apt-get install -y wget curl gnupg2
 
 # So we can install browsers later
@@ -22,7 +24,6 @@ RUN apt-get update -qqy && \
 ADD https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 /usr/bin/bazelisk
 RUN chmod 755 /usr/bin/bazelisk && ln -sf /usr/bin/bazelisk /usr/bin/bazel
 
-RUN useradd -ms /bin/bash dev
 RUN chmod 777 /
 USER dev
 WORKDIR /home/dev

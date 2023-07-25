@@ -20,10 +20,11 @@ use std::process::exit;
 use clap::Parser;
 
 use exitcode::DATAERR;
-
 use exitcode::OK;
+use exitcode::UNAVAILABLE;
 use selenium_manager::config::BooleanKey;
-use selenium_manager::logger::Logger;
+use selenium_manager::grid::GridManager;
+use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
 use selenium_manager::TTL_DRIVERS_SEC;
@@ -49,6 +50,10 @@ struct Cli {
     #[clap(long, value_parser)]
     driver: Option<String>,
 
+    /// Selenium Grid. If version is not provided, the latest version is downloaded
+    #[clap(long, value_parser, num_args = 0..=1, default_missing_value = "", value_name = "GRID_VERSION")]
+    grid: Option<String>,
+
     /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
     #[clap(long, value_parser)]
     driver_version: Option<String>,
@@ -58,8 +63,8 @@ struct Cli {
     browser_version: Option<String>,
 
     /// Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome,
-    /// "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome",
-    /// "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+    /// "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    /// "C:\Program Files\Google\Chrome\Application\chrome.exe")
     #[clap(long, value_parser)]
     browser_path: Option<String>,
 
@@ -98,6 +103,14 @@ struct Cli {
     /// Display TRACE messages
     #[clap(long)]
     trace: bool,
+
+    /// Offline mode (i.e., disabling network requests and downloads)
+    #[clap(long)]
+    offline: bool,
+
+    /// Force to download browser. Currently Chrome for Testing (CfT) is supported
+    #[clap(long)]
+    force_browser_download: bool,
 }
 
 fn main() {
@@ -105,6 +118,7 @@ fn main() {
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
+    let grid = cli.grid;
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(&log);
@@ -127,6 +141,11 @@ fn main() {
             log.error(err);
             flush_and_exit(DATAERR, &log);
         })
+    } else if grid.is_some() {
+        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
+        })
     } else {
         log.error("You need to specify a browser or driver");
         flush_and_exit(DATAERR, &log);
@@ -136,20 +155,38 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_driver_ttl(cli.driver_ttl);
+    selenium_manager.set_browser_ttl(cli.browser_ttl);
+    selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_force_browser_download(cli.force_browser_download);
 
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.resolve_driver())
-        .map(|path| {
+        .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log.info(path.display());
+            if driver_path.exists() {
+                log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
+            } else {
+                log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+                flush_and_exit(UNAVAILABLE, log);
+            }
+            let browser_path = selenium_manager.get_browser_path();
+            if !browser_path.is_empty() {
+                log.info(format!("{}{}", BROWSER_PATH, browser_path));
+            }
             flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            log.error(err.to_string());
-            flush_and_exit(DATAERR, log);
+            if selenium_manager.is_offline() {
+                log.warn(err.to_string());
+                flush_and_exit(OK, log);
+            } else {
+                log.error(err.to_string());
+                flush_and_exit(DATAERR, log);
+            }
         });
 }
 

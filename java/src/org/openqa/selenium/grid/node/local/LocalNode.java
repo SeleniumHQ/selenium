@@ -223,7 +223,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 downloadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Downloads folder associated with "
                                         + notification.getKey());
                               });
@@ -231,7 +231,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 uploadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Uploads folder associated with "
                                         + notification.getKey());
                               });
@@ -902,7 +902,7 @@ public class LocalNode extends Node {
       int remainingSessions = this.sessionCount.decrementAndGet();
       LOG.log(
           Debug.getDebugLogLevel(),
-          String.format("%s remaining sessions before draining Node", remainingSessions));
+          "{0} remaining sessions before draining Node", remainingSessions);
       if (remainingSessions <= 0) {
         LOG.info(
             String.format(

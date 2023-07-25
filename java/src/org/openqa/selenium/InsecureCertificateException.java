@@ -18,18 +18,19 @@
 package org.openqa.selenium;
 
 /**
- * Indicates that navigation caused by the user agent hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.
+ * Indicates that navigation caused by the user agent hit a certificate warning, which is usually
+ * the result of an expired or invalid TLS certificate.
  */
 public class InsecureCertificateException extends WebDriverException {
-    public InsecureCertificateException(String message) {
-      super(message);
-    }
+  public InsecureCertificateException(String message) {
+    super(message);
+  }
 
-    public InsecureCertificateException(Throwable cause) {
-      super(cause);
-    }
+  public InsecureCertificateException(Throwable cause) {
+    super(cause);
+  }
 
-    public InsecureCertificateException(String message, Throwable cause) {
-      super(message, cause);
-    }
+  public InsecureCertificateException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

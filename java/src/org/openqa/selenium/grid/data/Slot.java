@@ -35,14 +35,12 @@ public class Slot implements Serializable {
   private final Capabilities stereotype;
   private final Session session;
   private final Instant lastStarted;
-  private final SlotMatcher slotMatcher;
 
   public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
     this.session = session;
-    this.slotMatcher = new DefaultSlotMatcher();
   }
 
   private static Slot fromJson(JsonInput input) {
@@ -106,7 +104,7 @@ public class Slot implements Serializable {
     return session;
   }
 
-  public boolean isSupporting(Capabilities caps) {
+  public boolean isSupporting(Capabilities caps, SlotMatcher slotMatcher) {
     return slotMatcher.matches(getStereotype(), caps);
   }
 

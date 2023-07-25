@@ -33,9 +33,6 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
@@ -59,6 +56,8 @@ class SeleniumManager:
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
+        logger.debug(f"Selenium Manager binary found at: {path}")
+
         return path
 
     def driver_location(self, options: BaseOptions) -> str:
@@ -69,11 +68,9 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
-        logger.debug("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
-
         browser = options.capabilities["browserName"]
 
-        args = [str(self.get_binary()), "--browser", browser, "--output", "json"]
+        args = [str(self.get_binary()), "--browser", browser]
 
         if options.browser_version:
             args.append("--browser-version")
@@ -87,42 +84,53 @@ class SeleniumManager:
         proxy = options.proxy
         if proxy and (proxy.http_proxy or proxy.ssl_proxy):
             args.append("--proxy")
-            value = proxy.ssl_proxy if proxy.sslProxy else proxy.http_proxy
+            value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
             args.append(value)
 
-        if logger.getEffectiveLevel() == logging.DEBUG:
-            args.append("--debug")
+        output = self.run(args)
 
-        result = self.run(args)
-        executable = result.split("\t")[-1].strip()
-        logger.debug(f"Using driver at: {executable}")
-        return executable
+        browser_path = output["browser_path"]
+        driver_path = output["driver_path"]
+        logger.debug(f"Using driver at: {driver_path}")
+
+        try:
+            options.binary_location = browser_path
+            options.browser_version = None  # geckodriver complains if this dev / nightly, etc
+        except AttributeError:
+            pass  # do not set on options classes that do not support it
+
+        return driver_path
 
     @staticmethod
-    def run(args: List[str]) -> str:
+    def run(args: List[str]) -> dict:
         """
         Executes the Selenium Manager Binary.
         :Args:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
+        args.append("--output")
+        args.append("json")
+
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
         try:
-            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
             output = json.loads(stdout)
-            result = output["result"]["message"]
+            result = output["result"]
         except Exception as err:
-            raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
+            raise WebDriverException(f"Unsuccessful command executed: {command}") from err
+
+        for item in output["logs"]:
+            if item["level"] == "WARN":
+                logger.warning(item["message"])
+            if item["level"] == "DEBUG" or item["level"] == "INFO":
+                logger.debug(item["message"])
 
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
-        else:
-            for item in output["logs"]:
-                if item["level"] == "WARN":
-                    logger.warning(item["message"])
-                if item["level"] == "DEBUG" or item["level"] == "INFO":
-                    logger.debug(item["message"])
-            return result
+        return result

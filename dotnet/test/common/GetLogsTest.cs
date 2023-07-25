@@ -82,10 +82,9 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsChrome(driver))
             {
-                ChromeDriverService service = ChromeDriverService.CreateDefaultService(EnvironmentManager.Instance.DriverServiceDirectory);
                 ChromeOptions options = new ChromeOptions();
                 options.SetLoggingPreference(logType, logLevel);
-                localDriver = new ChromeDriver(service, options);
+                localDriver = new ChromeDriver(options);
             }
 
             localDriver.Url = simpleTestPage;

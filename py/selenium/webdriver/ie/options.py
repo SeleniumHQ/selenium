@@ -25,6 +25,47 @@ class ElementScrollBehavior(Enum):
     BOTTOM = 1
 
 
+class _IeOptionsDescriptor:
+    """IeOptionsDescriptor which validates below attributes of Options class:
+
+    - BROWSER_ATTACH_TIMEOUT
+    - ELEMENT_SCROLL_BEHAVIOR
+    - ENSURE_CLEAN_SESSION
+    - FILE_UPLOAD_DIALOG_TIMEOUT
+    - FORCE_CREATE_PROCESS_API
+    - FORCE_SHELL_WINDOWS_API
+    - FULL_PAGE_SCREENSHOT
+    - IGNORE_PROTECTED_MODE_SETTINGS
+    - IGNORE_ZOOM_LEVEL
+    - INITIAL_BROWSER_URL
+    - NATIVE_EVENTS
+    - PERSISTENT_HOVER
+    - REQUIRE_WINDOW_FOCUS
+    - USE_PER_PROCESS_PROXY
+    - USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING
+    - ATTACH_TO_EDGE_CHROME
+    - EDGE_EXECUTABLE_PATH
+    """
+
+    def __init__(self, name, expected_type):
+        self.name = name
+        self.expected_type = expected_type
+
+    def __get__(self, obj, cls):
+        return obj._options.get(self.name)
+
+    def __set__(self, obj, value) -> None:
+        if not isinstance(value, self.expected_type):
+            raise ValueError(f"{self.name} should be of type {self.expected_type.__name__}")
+
+        if self.name == "elementScrollBehavior" and value not in [
+            ElementScrollBehavior.TOP.value,
+            ElementScrollBehavior.BOTTOM.value,
+        ]:
+            raise ValueError("Element Scroll Behavior out of range.")
+        obj._options[self.name] = value
+
+
 class Options(ArgOptions):
     KEY = "se:ieOptions"
     SWITCHES = "ie.browserCommandLineSwitches"
@@ -46,6 +87,263 @@ class Options(ArgOptions):
     USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling"
     ATTACH_TO_EDGE_CHROME = "ie.edgechromium"
     EDGE_EXECUTABLE_PATH = "ie.edgepath"
+    IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch"
+
+    # Creating descriptor objects for each of the above IE options
+    browser_attach_timeout = _IeOptionsDescriptor(BROWSER_ATTACH_TIMEOUT, int)
+    """Gets and Sets `browser_attach_timeout`
+
+    Usage
+    -----
+    - Get
+        - `self.browser_attach_timeout`
+    - Set
+        - `self.browser_attach_timeout` = `value`
+
+    Parameters
+    ----------
+    `value`: `int` (Timeout) in milliseconds
+    """
+
+    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, int)
+    """Gets and Sets `element_scroll_behavior`
+
+    Usage
+    -----
+    - Get
+        - `self.element_scroll_behavior`
+    - Set
+        - `self.element_scroll_behavior` = `value`
+
+    Parameters
+    ----------
+    `value`: `int` either 0 - Top, 1 - Bottom
+    """
+
+    ensure_clean_session = _IeOptionsDescriptor(ENSURE_CLEAN_SESSION, bool)
+    """Gets and Sets `ensure_clean_session`
+
+    Usage
+    -----
+    - Get
+        - `self.ensure_clean_session`
+    - Set
+        - `self.ensure_clean_session` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    file_upload_dialog_timeout = _IeOptionsDescriptor(FILE_UPLOAD_DIALOG_TIMEOUT, int)
+    """Gets and Sets `file_upload_dialog_timeout`
+
+    Usage
+    -----
+    - Get
+        - `self.file_upload_dialog_timeout`
+    - Set
+        - `self.file_upload_dialog_timeout` = `value`
+
+    Parameters
+    ----------
+    `value`: `int` (Timeout) in milliseconds
+    """
+
+    force_create_process_api = _IeOptionsDescriptor(FORCE_CREATE_PROCESS_API, bool)
+    """Gets and Sets `force_create_process_api`
+
+    Usage
+    -----
+    - Get
+        - `self.force_create_process_api`
+    - Set
+        - `self.force_create_process_api` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    force_shell_windows_api = _IeOptionsDescriptor(FORCE_SHELL_WINDOWS_API, bool)
+    """Gets and Sets `force_shell_windows_api`
+
+    Usage
+    -----
+    - Get
+        - `self.force_shell_windows_api`
+    - Set
+        - `self.force_shell_windows_api` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    full_page_screenshot = _IeOptionsDescriptor(FULL_PAGE_SCREENSHOT, bool)
+    """Gets and Sets `full_page_screenshot`
+
+    Usage
+    -----
+    - Get
+        - `self.full_page_screenshot`
+    - Set
+        - `self.full_page_screenshot` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    ignore_protected_mode_settings = _IeOptionsDescriptor(IGNORE_PROTECTED_MODE_SETTINGS, bool)
+    """Gets and Sets `ignore_protected_mode_settings`
+
+    Usage
+    -----
+    - Get
+        - `self.ignore_protected_mode_settings`
+    - Set
+        - `self.ignore_protected_mode_settings` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    ignore_zoom_level = _IeOptionsDescriptor(IGNORE_ZOOM_LEVEL, bool)
+    """Gets and Sets `ignore_zoom_level`
+
+    Usage
+    -----
+    - Get
+        - `self.ignore_zoom_level`
+    - Set
+        - `self.ignore_zoom_level` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    initial_browser_url = _IeOptionsDescriptor(INITIAL_BROWSER_URL, str)
+    """Gets and Sets `initial_browser_url`
+
+    Usage
+    -----
+    - Get
+        - `self.initial_browser_url`
+    - Set
+        - `self.initial_browser_url` = `value`
+
+    Parameters
+    ----------
+    `value`: `str`
+    """
+
+    native_events = _IeOptionsDescriptor(NATIVE_EVENTS, bool)
+    """Gets and Sets `native_events`
+
+    Usage
+    -----
+    - Get
+        - `self.native_events`
+    - Set
+        - `self.native_events` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    persistent_hover = _IeOptionsDescriptor(PERSISTENT_HOVER, bool)
+    """Gets and Sets `persistent_hover`
+
+    Usage
+    -----
+    - Get
+        - `self.persistent_hover`
+    - Set
+        - `self.persistent_hover` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    require_window_focus = _IeOptionsDescriptor(REQUIRE_WINDOW_FOCUS, bool)
+    """Gets and Sets `require_window_focus`
+
+    Usage
+    -----
+    - Get
+        - `self.require_window_focus`
+    - Set
+        - `self.require_window_focus` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    use_per_process_proxy = _IeOptionsDescriptor(USE_PER_PROCESS_PROXY, bool)
+    """Gets and Sets `use_per_process_proxy`
+
+    Usage
+    -----
+    - Get
+        - `self.use_per_process_proxy`
+    - Set
+        - `self.use_per_process_proxy` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    use_legacy_file_upload_dialog_handling = _IeOptionsDescriptor(USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING, bool)
+    """Gets and Sets `use_legacy_file_upload_dialog_handling`
+
+    Usage
+    -----
+    - Get
+        - `self.use_legacy_file_upload_dialog_handling`
+    - Set
+        - `self.use_legacy_file_upload_dialog_handling` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    attach_to_edge_chrome = _IeOptionsDescriptor(ATTACH_TO_EDGE_CHROME, bool)
+    """Gets and Sets `attach_to_edge_chrome`
+
+    Usage
+    -----
+    - Get
+        - `self.attach_to_edge_chrome`
+    - Set
+        - `self.attach_to_edge_chrome` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+
+    edge_executable_path = _IeOptionsDescriptor(EDGE_EXECUTABLE_PATH, str)
+    """Gets and Sets `edge_executable_path`
+
+    Usage
+    -----
+    - Get
+        - `self.edge_executable_path`
+    - Set
+        - `self.edge_executable_path` = `value`
+
+    Parameters
+    ----------
+    `value`: `str`
+    """
 
     def __init__(self) -> None:
         super().__init__()
@@ -56,252 +354,6 @@ class Options(ArgOptions):
     def options(self) -> dict:
         """:Returns: A dictionary of browser options"""
         return self._options
-
-    @property
-    def browser_attach_timeout(self) -> int:
-        """
-        :Returns: The options Browser Attach Timeout in milliseconds
-        """
-        return self._options.get(self.BROWSER_ATTACH_TIMEOUT)
-
-    @browser_attach_timeout.setter
-    def browser_attach_timeout(self, value: int) -> None:
-        """Sets the options Browser Attach Timeout.
-
-        :Args:
-         - value: Timeout in milliseconds
-        """
-        if not isinstance(value, int):
-            raise ValueError("Browser Attach Timeout must be an integer.")
-        self._options[self.BROWSER_ATTACH_TIMEOUT] = value
-
-    @property
-    def element_scroll_behavior(self) -> ElementScrollBehavior:
-        """:Returns: The options Element Scroll Behavior value"""
-        return self._options.get(self.ELEMENT_SCROLL_BEHAVIOR)
-
-    @element_scroll_behavior.setter
-    def element_scroll_behavior(self, value: ElementScrollBehavior) -> None:
-        """Sets the options Element Scroll Behavior.
-
-        :Args:
-         - value: 0 - Top, 1 - Bottom
-        """
-        if value not in [ElementScrollBehavior.TOP, ElementScrollBehavior.BOTTOM]:
-            raise ValueError("Element Scroll Behavior out of range.")
-        self._options[self.ELEMENT_SCROLL_BEHAVIOR] = value
-
-    @property
-    def ensure_clean_session(self) -> bool:
-        """:Returns: The options Ensure Clean Session value"""
-        return self._options.get(self.ENSURE_CLEAN_SESSION)
-
-    @ensure_clean_session.setter
-    def ensure_clean_session(self, value: bool) -> None:
-        """Sets the options Ensure Clean Session value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.ENSURE_CLEAN_SESSION] = value
-
-    @property
-    def file_upload_dialog_timeout(self) -> int:
-        """:Returns: The options File Upload Dialog Timeout in milliseconds"""
-        return self._options.get(self.FILE_UPLOAD_DIALOG_TIMEOUT)
-
-    @file_upload_dialog_timeout.setter
-    def file_upload_dialog_timeout(self, value: int) -> None:
-        """Sets the options File Upload Dialog Timeout value.
-
-        :Args:
-         - value: Timeout in milliseconds
-        """
-        if not isinstance(value, int):
-            raise ValueError("File Upload Dialog Timeout must be an integer.")
-        self._options[self.FILE_UPLOAD_DIALOG_TIMEOUT] = value
-
-    @property
-    def force_create_process_api(self) -> bool:
-        """:Returns: The options Force Create Process Api value"""
-        return self._options.get(self.FORCE_CREATE_PROCESS_API)
-
-    @force_create_process_api.setter
-    def force_create_process_api(self, value: bool) -> None:
-        """Sets the options Force Create Process Api value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.FORCE_CREATE_PROCESS_API] = value
-
-    @property
-    def force_shell_windows_api(self) -> bool:
-        """:Returns: The options Force Shell Windows Api value"""
-        return self._options.get(self.FORCE_SHELL_WINDOWS_API)
-
-    @force_shell_windows_api.setter
-    def force_shell_windows_api(self, value: bool) -> None:
-        """Sets the options Force Shell Windows Api value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.FORCE_SHELL_WINDOWS_API] = value
-
-    @property
-    def full_page_screenshot(self) -> bool:
-        """:Returns: The options Full Page Screenshot value"""
-        return self._options.get(self.FULL_PAGE_SCREENSHOT)
-
-    @full_page_screenshot.setter
-    def full_page_screenshot(self, value: bool) -> None:
-        """Sets the options Full Page Screenshot value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.FULL_PAGE_SCREENSHOT] = value
-
-    @property
-    def ignore_protected_mode_settings(self) -> bool:
-        """:Returns: The options Ignore Protected Mode Settings value"""
-        return self._options.get(self.IGNORE_PROTECTED_MODE_SETTINGS)
-
-    @ignore_protected_mode_settings.setter
-    def ignore_protected_mode_settings(self, value: bool) -> None:
-        """Sets the options Ignore Protected Mode Settings value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.IGNORE_PROTECTED_MODE_SETTINGS] = value
-
-    @property
-    def ignore_zoom_level(self) -> bool:
-        """:Returns: The options Ignore Zoom Level value"""
-        return self._options.get(self.IGNORE_ZOOM_LEVEL)
-
-    @ignore_zoom_level.setter
-    def ignore_zoom_level(self, value: bool) -> None:
-        """Sets the options Ignore Zoom Level value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.IGNORE_ZOOM_LEVEL] = value
-
-    @property
-    def initial_browser_url(self) -> str:
-        """:Returns: The options Initial Browser Url value"""
-        return self._options.get(self.INITIAL_BROWSER_URL)
-
-    @initial_browser_url.setter
-    def initial_browser_url(self, value: str) -> None:
-        """Sets the options Initial Browser Url value.
-
-        :Args:
-         - value: URL string
-        """
-        self._options[self.INITIAL_BROWSER_URL] = value
-
-    @property
-    def native_events(self) -> bool:
-        """:Returns: The options Native Events value"""
-        return self._options.get(self.NATIVE_EVENTS)
-
-    @native_events.setter
-    def native_events(self, value: bool) -> None:
-        """Sets the options Native Events value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.NATIVE_EVENTS] = value
-
-    @property
-    def persistent_hover(self) -> bool:
-        """:Returns: The options Persistent Hover value"""
-        return self._options.get(self.PERSISTENT_HOVER)
-
-    @persistent_hover.setter
-    def persistent_hover(self, value: bool) -> None:
-        """Sets the options Persistent Hover value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.PERSISTENT_HOVER] = value
-
-    @property
-    def require_window_focus(self: bool):
-        """:Returns: The options Require Window Focus value"""
-        return self._options.get(self.REQUIRE_WINDOW_FOCUS)
-
-    @require_window_focus.setter
-    def require_window_focus(self, value: bool) -> None:
-        """Sets the options Require Window Focus value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.REQUIRE_WINDOW_FOCUS] = value
-
-    @property
-    def use_per_process_proxy(self) -> bool:
-        """:Returns: The options User Per Process Proxy value"""
-        return self._options.get(self.USE_PER_PROCESS_PROXY)
-
-    @use_per_process_proxy.setter
-    def use_per_process_proxy(self, value: bool) -> None:
-        """Sets the options User Per Process Proxy value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.USE_PER_PROCESS_PROXY] = value
-
-    @property
-    def use_legacy_file_upload_dialog_handling(self) -> bool:
-        """:Returns: The options Use Legacy File Upload Dialog Handling value"""
-        return self._options.get(self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING)
-
-    @use_legacy_file_upload_dialog_handling.setter
-    def use_legacy_file_upload_dialog_handling(self, value: bool) -> None:
-        """Sets the options Use Legacy File Upload Dialog Handling value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING] = value
-
-    @property
-    def attach_to_edge_chrome(self) -> bool:
-        """:Returns: The options Attach to Edge Chrome value"""
-        return self._options.get(self.ATTACH_TO_EDGE_CHROME)
-
-    @attach_to_edge_chrome.setter
-    def attach_to_edge_chrome(self, value: bool) -> None:
-        """Sets the options Attach to Edge Chrome value.
-
-        :Args:
-         - value: boolean value
-        """
-        self._options[self.ATTACH_TO_EDGE_CHROME] = value
-
-    @property
-    def edge_executable_path(self) -> str:
-        """:Returns: The options Edge Executable Path value"""
-        return self._options.get(self.EDGE_EXECUTABLE_PATH)
-
-    @edge_executable_path.setter
-    def edge_executable_path(self, value: str) -> None:
-        """Sets the options Initial Browser Url value.
-
-        :Args:
-         - value: Path string
-        """
-        self._options[self.EDGE_EXECUTABLE_PATH] = value
 
     @property
     def additional_options(self) -> dict:
@@ -322,13 +374,13 @@ class Options(ArgOptions):
         caps = self._caps
 
         opts = self._options.copy()
-        if len(self._arguments) > 0:
+        if self._arguments:
             opts[self.SWITCHES] = " ".join(self._arguments)
 
-        if len(self._additional) > 0:
+        if self._additional:
             opts.update(self._additional)
 
-        if len(opts) > 0:
+        if opts:
             caps[Options.KEY] = opts
         return caps
 
