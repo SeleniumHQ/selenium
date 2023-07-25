@@ -19,11 +19,12 @@ use assert_cmd::Command;
 use std::path::Path;
 
 use is_executable::is_executable;
+use rstest::rstest;
 use selenium_manager::logger::JsonOutput;
 use std::str;
 
 #[test]
-fn chrome_download_test() {
+fn chrome_latest_download_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
@@ -36,6 +37,30 @@ fn chrome_download_test() {
     .success()
     .code(0);
 
+    assert_driver_and_browser(&mut cmd);
+}
+
+#[rstest]
+#[case("113")]
+#[case("beta")]
+fn chrome_version_download_test(#[case] browser_version: String) {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--browser-version",
+        &browser_version,
+        "--output",
+        "json",
+    ])
+    .assert()
+    .success()
+    .code(0);
+
+    assert_driver_and_browser(&mut cmd);
+}
+
+fn assert_driver_and_browser(cmd: &mut Command) {
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);

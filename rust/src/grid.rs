@@ -95,12 +95,15 @@ impl SeleniumManager for GridManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_version_binding = self.get_major_browser_version();
-        let browser_version = browser_version_binding.as_str();
+        let major_browser_version_binding = self.get_major_browser_version();
+        let major_browser_version = major_browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            major_browser_version,
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -148,7 +151,7 @@ impl SeleniumManager for GridManager {
                     let driver_ttl = self.get_driver_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
-                            browser_version,
+                            major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,

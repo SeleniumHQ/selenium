@@ -17,10 +17,7 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::{
-    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
-    path_buf_to_string,
-};
+use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
@@ -92,6 +89,7 @@ pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
+pub const UNC_PREFIX: &str = r#"\\?\"#;
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -133,7 +131,7 @@ pub trait SeleniumManager {
     // ----------------------------------------------------------
 
     fn download_driver(&mut self) -> Result<(), Box<dyn Error>> {
-        let driver_url = Self::get_driver_url(self)?;
+        let driver_url = self.get_driver_url()?;
         self.get_logger()
             .debug(format!("Driver URL: {}", driver_url));
         let (_tmp_folder, driver_zip_file) =
@@ -159,9 +157,10 @@ pub trait SeleniumManager {
         let mut browser_version = self.get_browser_version();
         if browser_version.eq_ignore_ascii_case(CANARY) {
             browser_version = NIGHTLY;
-        } else if browser_version.is_empty() {
+        } else if !self.is_browser_version_unstable() {
             browser_version = STABLE;
         }
+
         let browser_path = self
             .get_browser_path_map()
             .get(&BrowserPath::new(str_to_os(self.get_os()), browser_version))
@@ -188,14 +187,15 @@ pub trait SeleniumManager {
         }
 
         if full_browser_path.exists() {
+            let canon_browser_path = self.canonicalize_path(full_browser_path);
             self.get_logger().debug(format!(
                 "{} detected at {}",
                 self.get_browser_name(),
-                full_browser_path.display()
+                canon_browser_path
             ));
-            self.set_browser_path(path_buf_to_string(full_browser_path.clone()));
-            
-            Some(full_browser_path)
+            self.set_browser_path(canon_browser_path.clone());
+
+            Some(Path::new(&canon_browser_path).to_path_buf())
         } else {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
@@ -246,11 +246,11 @@ pub trait SeleniumManager {
     }
 
     fn discover_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        if self.is_force_browser_download() {
-            self.download_browser()?;
-        }
-        let browser_version = self.get_major_browser_version();
-        if browser_version.is_empty() || self.is_browser_version_unstable() {
+        let mut download_browser = self.is_force_browser_download();
+        let major_browser_version = self.get_major_browser_version();
+
+        // First, we try to discover the browser version
+        if !download_browser {
             match self.discover_browser_version() {
                 Some(version) => {
                     if !self.is_safari() {
@@ -259,6 +259,20 @@ pub trait SeleniumManager {
                             self.get_browser_name(),
                             version
                         ));
+                    }
+                    let discovered_major_browser_version =
+                        self.get_major_version(&version).unwrap_or_default();
+                    if !major_browser_version.is_empty()
+                        && !self.is_browser_version_unstable()
+                        && !major_browser_version.eq(&discovered_major_browser_version)
+                    {
+                        self.get_logger().debug(format!(
+                            "Discovered browser version ({}) different to specified browser version ({})",
+                            discovered_major_browser_version,
+                            major_browser_version,
+                        ));
+                        download_browser = true;
+                    } else {
                         self.set_browser_version(version);
                     }
                 }
@@ -267,25 +281,31 @@ pub trait SeleniumManager {
                         "{} has not been discovered in the system",
                         self.get_browser_name()
                     ));
-                    let browser_path = self.download_browser()?;
-                    if browser_path.is_some() {
-                        self.get_logger().debug(format!(
-                            "{} {} has been downloaded at {}",
-                            self.get_browser_name(),
-                            self.get_browser_version(),
-                            browser_path.unwrap().display()
-                        ));
-                    } else if self.is_browser_version_unstable() {
-                        return Err(format!("Browser version '{browser_version}' not found").into());
-                    } else if !self.is_iexplorer() && !self.is_grid() {
-                        self.get_logger().warn(format!(
-                        "The version of {} cannot be detected. Trying with latest driver version",
-                        self.get_browser_name()
-                        ));
-                    }
+                    download_browser = true;
                 }
             }
         }
+
+        if download_browser {
+            let browser_path = self.download_browser()?;
+            if browser_path.is_some() {
+                self.get_logger().debug(format!(
+                    "{} {} has been downloaded at {}",
+                    self.get_browser_name(),
+                    self.get_browser_version(),
+                    browser_path.unwrap().display()
+                ));
+            } else if self.is_browser_version_unstable() {
+                return Err(format!("Browser version '{major_browser_version}' not found").into());
+            } else if !self.is_iexplorer() && !self.is_grid() {
+                self.get_logger().warn(format!(
+                    "The version of {} cannot be detected. Trying with latest driver version",
+                    self.get_browser_name()
+                ));
+            }
+        }
+
+        // Second, we request the driver version using online metadata
         let driver_version = self.request_driver_version()?;
         if driver_version.is_empty() {
             Err(format!(
@@ -556,8 +576,12 @@ pub trait SeleniumManager {
     }
 
     fn get_major_browser_version(&self) -> String {
-        self.get_major_version(self.get_browser_version())
-            .unwrap_or_default()
+        if self.is_browser_version_unstable() {
+            self.get_browser_version().to_string()
+        } else {
+            self.get_major_version(self.get_browser_version())
+                .unwrap_or_default()
+        }
     }
 
     fn set_browser_version(&mut self, browser_version: String) {
@@ -591,19 +615,30 @@ pub trait SeleniumManager {
         }
     }
 
+    fn canonicalize_path(&self, path_buf: PathBuf) -> String {
+        let canon_path = path_buf
+            .as_path()
+            .canonicalize()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        if WINDOWS.is(self.get_os()) {
+            canon_path.replace(UNC_PREFIX, "")
+        } else {
+            canon_path
+        }
+    }
+
     fn get_escaped_path(&self, string_path: String) -> String {
         let original_path = string_path.clone();
         let mut escaped_path = string_path;
         let path = Path::new(&original_path);
+
         if path.exists() {
-            escaped_path = Path::new(path)
-                .canonicalize()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string();
+            escaped_path = self.canonicalize_path(path.to_path_buf());
             if WINDOWS.is(self.get_os()) {
-                escaped_path = escaped_path.replace("\\\\?\\", "").replace('\\', "\\\\");
+                escaped_path = escaped_path.replace('\\', "\\\\");
             } else {
                 escaped_path = run_shell_command(
                     "bash",
