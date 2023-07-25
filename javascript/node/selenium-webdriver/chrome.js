@@ -130,6 +130,7 @@
 const io = require('./io')
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
+const CHROME_CAPABILITY_KEY = 'goog:chromeOptions'
 
 /** @type {remote.DriverService} */
 
@@ -220,7 +221,7 @@ class Driver extends chromium.Driver {
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
     return /** @type {!Driver} */ (
-      super.createSession(caps, opt_serviceExecutor)
+      super.createSession(caps, opt_serviceExecutor, 'goog', CHROME_CAPABILITY_KEY)
     )
   }
 
@@ -233,13 +234,12 @@ class Driver extends chromium.Driver {
   }
 }
 
-Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
+Options.prototype.CAPABILITY_KEY = CHROME_CAPABILITY_KEY
 Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
-Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
 module.exports = {
-  Driver: Driver,
+  Driver,
   Options,
   ServiceBuilder,
 }

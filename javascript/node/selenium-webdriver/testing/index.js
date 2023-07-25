@@ -117,13 +117,12 @@ function getBrowsersToTestFromEnv() {
 function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
-  getPath(safari.Options)
   let targets = [
-    [getPath(chrome.Options), Browser.CHROME],
-    [getPath(edge.Options), Browser.EDGE],
-    [getPath(firefox.Options), Browser.FIREFOX],
-    [getPath(ie.Options), Browser.INTERNET_EXPLORER],
-    [getPath(safari.Options), Browser.SAFARI],
+    [getPath(chrome.Options).driverPath, Browser.CHROME],
+    [getPath(edge.Options).driverPath, Browser.EDGE],
+    [getPath(firefox.Options).driverPath, Browser.FIREFOX],
+    [getPath(ie.Options).driverPath, Browser.INTERNET_EXPLORER],
+    [getPath(safari.Options).driverPath, Browser.SAFARI],
   ]
 
   let availableBrowsers = []
