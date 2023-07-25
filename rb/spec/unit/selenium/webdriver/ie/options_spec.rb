@@ -102,20 +102,6 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option with ordered pairs' do
-            expect {
-              options.add_option(:foo, 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
-          it 'adds an option with Hash' do
-            expect {
-              options.add_option(foo: 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
           it 'adds vendor namespaced options with ordered pairs' do
             options.add_option('foo:bar', {bar: 'foo'})
             expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
