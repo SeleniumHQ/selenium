@@ -68,7 +68,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeOptions options) {
-    this(ChromeDriverService.createServiceWithConfig(options), options);
+    this(ChromeDriverService.createDefaultService(), options);
   }
 
   /**

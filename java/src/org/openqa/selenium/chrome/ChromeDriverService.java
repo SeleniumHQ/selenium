@@ -166,23 +166,6 @@ public class ChromeDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
-   * this configuration, the service will use the ChromeDriver executable identified by {@link
-   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
-   * service created by this method will be configured to use a free port on the current system.
-   *
-   * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
-   * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)} }
-   */
-  @Deprecated
-  public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
-    ChromeDriverLogLevel oldLevel = options.getLogLevel();
-    ChromiumDriverLogLevel level =
-        (oldLevel == null) ? null : ChromiumDriverLogLevel.fromString(oldLevel.toString());
-    return new Builder().withLogLevel(level).build();
-  }
-
   /** Builder used to configure new {@link ChromeDriverService} instances. */
   @AutoService(DriverService.Builder.class)
   public static class Builder
