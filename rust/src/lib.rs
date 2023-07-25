@@ -188,14 +188,15 @@ pub trait SeleniumManager {
         }
 
         if full_browser_path.exists() {
+            let canon_browser_path = full_browser_path.as_path().canonicalize().unwrap();
             self.get_logger().debug(format!(
                 "{} detected at {}",
                 self.get_browser_name(),
-                full_browser_path.display()
+                canon_browser_path.display()
             ));
-            self.set_browser_path(path_buf_to_string(full_browser_path.clone()));
-            
-            Some(full_browser_path)
+            self.set_browser_path(path_buf_to_string(canon_browser_path.clone()));
+
+            Some(canon_browser_path)
         } else {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
