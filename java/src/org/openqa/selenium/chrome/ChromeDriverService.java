@@ -207,21 +207,6 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
-     * Configures the driver server verbosity.
-     *
-     * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
-     * @return A self reference.
-     * @deprecated use {@link #withLogLevel(ChromiumDriverLogLevel)} instead.
-     */
-    @Deprecated
-    public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
-      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
-      this.silent = false;
-      this.verbose = false;
-      return this;
-    }
-
-    /**
      * Configures the driver server log level.
      *
      * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
