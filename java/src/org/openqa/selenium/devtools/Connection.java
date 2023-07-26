@@ -271,7 +271,7 @@ public class Connection implements Closeable {
       LOG.log(
           getDebugLogLevel(),
           "Method {0} called with {1} callbacks available",
-          new Object[] { raw.get("method"), eventCallbacks.keySet().size() });
+          new Object[] {raw.get("method"), eventCallbacks.keySet().size()});
       Lock lock = callbacksLock.readLock();
       lock.lock();
       try {
@@ -282,7 +282,7 @@ public class Connection implements Closeable {
                     LOG.log(
                         getDebugLogLevel(),
                         "Matching {0} with {1}",
-                        new Object[]{ raw.get("method"), event.getMethod()}))
+                        new Object[] {raw.get("method"), event.getMethod()}))
             .filter(event -> raw.get("method").equals(event.getMethod()))
             .forEach(
                 event -> {
@@ -317,7 +317,7 @@ public class Connection implements Closeable {
                       LOG.log(
                           getDebugLogLevel(),
                           "Calling callback for {0} using {1} being passed {2}",
-                          new Object[] { event, obj, finalValue });
+                          new Object[] {event, obj, finalValue});
                       obj.accept(finalValue);
                     }
                   }

@@ -190,7 +190,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Lock readLock = lock.readLock();
     readLock.lock();
     try {
-      return requests.isEmpty() && queue.isEmpty() ;
+      return requests.isEmpty() && queue.isEmpty();
     } finally {
       readLock.unlock();
     }

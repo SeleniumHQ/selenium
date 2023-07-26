@@ -305,7 +305,7 @@ public class Connection implements Closeable {
                 LOG.log(
                     getDebugLogLevel(),
                     "Matching {0} with {1}",
-                    new Object[] { rawDataMap.get("method"), event.getMethod() });
+                    new Object[] {rawDataMap.get("method"), event.getMethod()});
                 return rawDataMap.get("method").equals(event.getMethod());
               })
           .forEach(
@@ -327,7 +327,7 @@ public class Connection implements Closeable {
                   LOG.log(
                       getDebugLogLevel(),
                       "Calling callback for {0} using {1} being passed {2}",
-                      new Object[] { event, obj, finalValue });
+                      new Object[] {event, obj, finalValue});
                   obj.accept(finalValue);
                 }
               });

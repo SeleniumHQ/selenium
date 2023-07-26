@@ -51,10 +51,12 @@ class UrlTemplateTest {
 
   @Test
   void shouldExpandTwoParameters() {
-    UrlTemplate.Match match = new UrlTemplate("/i/like/{flavor}/{veggie}").match("/i/like/sweet/cake");
+    UrlTemplate.Match match =
+        new UrlTemplate("/i/like/{flavor}/{veggie}").match("/i/like/sweet/cake");
 
     assertThat(match.getUrl()).isEqualTo("/i/like/sweet/cake");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("flavor", "sweet", "veggie", "cake"));
+    assertThat(match.getParameters())
+        .isEqualTo(ImmutableMap.of("flavor", "sweet", "veggie", "cake"));
   }
 
   @Test

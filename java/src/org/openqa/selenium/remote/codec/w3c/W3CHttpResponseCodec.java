@@ -75,9 +75,10 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String content = string(encodedResponse).trim();
-    LOG.log(Level.FINE,
-          "Decoding response. Response code was: {0} and content: {1}",
-          new Object[] { encodedResponse.getStatus(), content });
+    LOG.log(
+        Level.FINE,
+        "Decoding response. Response code was: {0} and content: {1}",
+        new Object[] {encodedResponse.getStatus(), content});
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
 
     Response response = new Response();

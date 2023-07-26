@@ -88,7 +88,8 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(EdgeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      DriverFinder.getPath(
+          EdgeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

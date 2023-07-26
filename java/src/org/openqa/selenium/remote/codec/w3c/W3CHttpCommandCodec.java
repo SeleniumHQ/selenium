@@ -100,7 +100,8 @@ import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
-  private static final Pattern CSS_ESCAPE = Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
+  private static final Pattern CSS_ESCAPE =
+      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
 
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
@@ -344,18 +345,22 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private Map<String, ?> executeAtom(String atomFileName, Object... args) {
     try {
-      String script = ATOM_SCRIPTS.computeIfAbsent(atomFileName, (fileName) -> {
-        String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
-        URL url = getClass().getResource(scriptName);
-        String rawFunction;
-        try {
-          rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-          throw new UncheckedIOException(e);
-        }
-        String atomName = fileName.replace(".js", "");
-        return String.format("/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
-      });
+      String script =
+          ATOM_SCRIPTS.computeIfAbsent(
+              atomFileName,
+              (fileName) -> {
+                String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
+                URL url = getClass().getResource(scriptName);
+                String rawFunction;
+                try {
+                  rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                  throw new UncheckedIOException(e);
+                }
+                String atomName = fileName.replace(".js", "");
+                return String.format(
+                    "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
+              });
       return toScript(script, args);
     } catch (UncheckedIOException e) {
       throw new WebDriverException(e.getCause());

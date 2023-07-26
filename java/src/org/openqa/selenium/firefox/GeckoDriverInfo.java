@@ -78,7 +78,8 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      DriverFinder.getPath(
+          GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

@@ -19,15 +19,12 @@ import http.client as http_client
 import warnings
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from ..common.driver_finder import DriverFinder
 from .options import Options
 from .remote_connection import SafariRemoteConnection
 from .service import Service
-
-DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 
 
 class WebDriver(RemoteWebDriver):

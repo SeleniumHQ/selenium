@@ -372,6 +372,8 @@ class BaseOptions(metaclass=ABCMeta):
 
 
 class ArgOptions(BaseOptions):
+    BINARY_LOCATION_ERROR = "Binary Location Must be a String"
+
     def __init__(self) -> None:
         super().__init__()
         self._arguments = []

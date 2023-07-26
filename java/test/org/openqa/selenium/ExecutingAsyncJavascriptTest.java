@@ -139,6 +139,7 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4525")
   void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 

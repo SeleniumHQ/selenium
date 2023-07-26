@@ -60,7 +60,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     local.add(node);
     local.add(node);
@@ -102,7 +103,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     Distributor distributor =
         new RemoteDistributor(
             tracer,
@@ -156,7 +158,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofSeconds(1),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     handler.addHandler(local);
     local.add(alwaysDown);
     waitForAllNodesToMeetCondition(local, 1, DOWN);
@@ -234,7 +237,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofSeconds(1),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     handler.addHandler(local);
     local.add(node);
 
@@ -287,7 +291,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofSeconds(1),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     handler.addHandler(local);
     local.add(node);
     waitForAllNodesToMeetCondition(local, 1, DOWN);
@@ -338,7 +343,8 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     local.add(node);
     waitToHaveCapacity(local);
 

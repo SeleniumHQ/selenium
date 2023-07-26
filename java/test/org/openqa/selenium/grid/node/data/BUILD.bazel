@@ -1,0 +1,17 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "data",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+    ],
+)

@@ -550,8 +550,15 @@ public class RemoteWebDriver
       // Showing full command information when user is debugging
       // Avoid leaking user/pwd values for authenticated Grids.
       if (toThrow instanceof UnreachableBrowserException && !Debug.isDebugging()) {
-        toThrow.addInfo("Command", "[" + command.getSessionId() + ", " + command.getName()
-                                   + " " + command.getParameters().keySet() + "]");
+        toThrow.addInfo(
+            "Command",
+            "["
+                + command.getSessionId()
+                + ", "
+                + command.getName()
+                + " "
+                + command.getParameters().keySet()
+                + "]");
       } else {
         toThrow.addInfo("Command", command.toString());
       }
