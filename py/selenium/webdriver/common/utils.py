@@ -24,7 +24,6 @@ from typing import Optional
 from typing import Union
 
 from selenium.types import AnyKey
-from selenium.webdriver.common.keys import Keys
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
@@ -127,13 +126,10 @@ def is_url_connectable(port: Union[int, str]) -> bool:
 
 def keys_to_typing(value: Iterable[AnyKey]) -> List[str]:
     """Processes the values that will be typed in the element."""
-    characters: List[str] = []
+    _typing: List[str] = []
     for val in value:
-        if isinstance(val, Keys):
-            # Todo: Does this even work?
-            characters.append(val)
-        elif isinstance(val, (int, float)):
-            characters.extend(str(val))
-        else:
-            characters.extend(val)
-    return characters
+        if isinstance(val, (int, float)):
+            val = str(val)
+        for _val in val:
+            _typing.append(_val)
+    return _typing
