@@ -36,9 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Objects;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -59,15 +56,14 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.data.YesSlotMatcher;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.safari.SafariDriverInfo;
-import org.openqa.selenium.grid.node.data.YesSlotMatcher;
 
 @SuppressWarnings("DuplicatedCode")
 class NodeOptionsTest {
@@ -686,8 +682,7 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getSlotMatcher())
-        .isExactlyInstanceOf(DefaultSlotMatcher.class);
+    assertThat(nodeOptions.getSlotMatcher()).isExactlyInstanceOf(DefaultSlotMatcher.class);
   }
 
   @Test
@@ -699,8 +694,7 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getSlotMatcher())
-        .isExactlyInstanceOf(YesSlotMatcher.class);
+    assertThat(nodeOptions.getSlotMatcher()).isExactlyInstanceOf(YesSlotMatcher.class);
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
@@ -732,5 +726,4 @@ class NodeOptionsTest {
       };
     }
   }
-
 }

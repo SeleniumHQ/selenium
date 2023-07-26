@@ -21,14 +21,11 @@ import java.io.Serializable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.SlotMatcher;
 
-/**
- * slot matcher that always says yes, for tests
- */
+/** slot matcher that always says yes, for tests */
 public class YesSlotMatcher implements SlotMatcher, Serializable {
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
     return true;
   }
-
 }

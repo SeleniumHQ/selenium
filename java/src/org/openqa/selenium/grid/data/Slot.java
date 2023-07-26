@@ -24,15 +24,12 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 public class Slot implements Serializable {
-
-  private static final Logger LOG = Logger.getLogger(Slot.class.getName());
 
   private final SlotId id;
   private final Capabilities stereotype;

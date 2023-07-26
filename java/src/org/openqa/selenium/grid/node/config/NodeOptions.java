@@ -55,9 +55,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -84,8 +84,7 @@ public class NodeOptions {
   static final int DEFAULT_REGISTER_PERIOD = 120;
   static final String DEFAULT_NODE_IMPLEMENTATION =
       "org.openqa.selenium.grid.node.local.LocalNodeFactory";
-  static final String DEFAULT_SLOT_MATCHER = 
-      "org.openqa.selenium.grid.data.DefaultSlotMatcher";
+  static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
@@ -176,8 +175,7 @@ public class NodeOptions {
   }
 
   public SlotMatcher getSlotMatcher() {
-    return config.getClass(
-        NODE_SECTION, "slot-matcher", SlotMatcher.class, DEFAULT_SLOT_MATCHER);
+    return config.getClass(NODE_SECTION, "slot-matcher", SlotMatcher.class, DEFAULT_SLOT_MATCHER);
   }
 
   public Duration getRegisterPeriod() {

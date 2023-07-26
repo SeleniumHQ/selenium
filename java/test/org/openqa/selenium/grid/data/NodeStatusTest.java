@@ -28,7 +28,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;

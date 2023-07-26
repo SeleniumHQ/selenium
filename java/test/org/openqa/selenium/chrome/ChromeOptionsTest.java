@@ -361,10 +361,7 @@ class ChromeOptionsTest {
   @Test
   void isW3CSafe() {
     Map<String, Object> converted =
-        new ChromeOptions()
-            .setBinary("some/path")
-            .addArguments("--headless")
-            .asMap();
+        new ChromeOptions().setBinary("some/path").addArguments("--headless").asMap();
 
     Predicate<String> badKeys = new AcceptedW3CCapabilityKeys().negate();
     Set<String> seen = converted.keySet().stream().filter(badKeys).collect(toSet());
