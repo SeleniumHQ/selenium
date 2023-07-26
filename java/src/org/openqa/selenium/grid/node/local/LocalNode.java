@@ -902,7 +902,8 @@ public class LocalNode extends Node {
       int remainingSessions = this.sessionCount.decrementAndGet();
       LOG.log(
           Debug.getDebugLogLevel(),
-          String.format("%s remaining sessions before draining Node", remainingSessions));
+          "{0} remaining sessions before draining Node",
+          remainingSessions);
       if (remainingSessions <= 0) {
         LOG.info(
             String.format(

@@ -223,8 +223,7 @@ public class SeleniumManager {
    * @param options Browser Options instance.
    * @return the location of the driver.
    */
-  public String getDriverPath(Capabilities options) {
-    LOG.fine("Applicable driver not found; attempting to install with Selenium Manager (Beta)");
+  public String getDriverPath(Capabilities options, boolean offline) {
     File binaryFile = getBinary();
     if (binaryFile == null) {
       return null;
@@ -249,6 +248,10 @@ public class SeleniumManager {
 
     if (getLogLevel().intValue() <= Level.FINE.intValue()) {
       commandList.add("--debug");
+    }
+
+    if (offline) {
+      commandList.add("--offline");
     }
 
     Proxy proxy = (Proxy) options.getCapability("proxy");

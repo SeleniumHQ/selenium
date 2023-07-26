@@ -60,8 +60,9 @@ public class HttpTracing {
     if (LOG.isLoggable(Level.FINE)) {
       StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
       LOG.log(
-        Level.FINE, "Injecting {0} into {1} at {2}:{3}",
-        new Object[] {request, context, caller.getClassName(), caller.getLineNumber()});
+          Level.FINE,
+          "Injecting {0} into {1} at {2}:{3}",
+          new Object[] {request, context, caller.getClassName(), caller.getLineNumber()});
     }
 
     tracer.getPropagator().inject(context, request, (req, key, value) -> req.setHeader(key, value));

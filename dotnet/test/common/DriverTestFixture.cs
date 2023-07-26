@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System;
-using OpenQA.Selenium.Remote;
+using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium
 {
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
         public string javascriptPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("javascriptPage.html");
 
         public string loginPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("login.html");
-        
+
         public string clickEventPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clickEventPage.html");
 
         public string resultPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("resultPage.html");
@@ -113,13 +113,22 @@ namespace OpenQA.Selenium
         [OneTimeSetUp]
         public void SetUp()
         {
-            driver = EnvironmentManager.Instance.GetCurrentDriver();
+            driver = EnvironmentManager.Instance.CreateFreshDriver();
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
             // EnvironmentManager.Instance.CloseCurrentDriver();
+        }
+
+        [TearDown]
+        public void ResetOnError()
+        {
+            if (TestContext.CurrentContext.Result.Outcome == Error)
+            {
+                driver = EnvironmentManager.Instance.CreateFreshDriver();
+            }
         }
 
         /*

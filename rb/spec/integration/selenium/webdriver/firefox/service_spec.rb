@@ -30,7 +30,6 @@ module Selenium
         after { service_manager.stop }
 
         it 'auto uses geckodriver' do
-          allow(Platform).to receive(:find_binary)
           service_manager = service.launch
           expect(service_manager.uri).to be_a(URI)
         end

@@ -133,16 +133,6 @@ public class EdgeDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the MSEdgeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link EdgeDriverService} instances. */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {

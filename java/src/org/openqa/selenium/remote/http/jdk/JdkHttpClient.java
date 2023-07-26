@@ -57,6 +57,7 @@ import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpClientName;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -67,6 +68,7 @@ import org.openqa.selenium.remote.http.WebSocket;
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
+  private final HttpHandler handler;
   private java.net.http.HttpClient client;
   private final List<WebSocket> websockets;
   private final ExecutorService executorService;
@@ -78,6 +80,7 @@ public class JdkHttpClient implements HttpClient {
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
     this.websockets = new ArrayList<>();
+    this.handler = config.filter().andFinally(this::execute0);
 
     executorService = Executors.newCachedThreadPool();
 
@@ -341,6 +344,10 @@ public class JdkHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return handler.execute(req);
+  }
+
+  private HttpResponse execute0(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
 
     LOG.fine("Executing request: " + req);

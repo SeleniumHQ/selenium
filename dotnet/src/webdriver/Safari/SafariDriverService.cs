@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -31,10 +32,6 @@ namespace OpenQA.Selenium.Safari
     public sealed class SafariDriverService : DriverService
     {
         private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
-        private const string DefaultSafariDriverServiceExecutablePath = "/usr/bin";
-        private const string DefaultSafariPreviewDriverServiceExecutablePath = "/Applications/Safari Technology Preview.app/Contents/MacOS/";
-
-        private static readonly Uri SafariDriverDownloadUrl = new Uri("http://apple.com");
 
         private bool useLegacyProtocol;
 
@@ -45,7 +42,7 @@ namespace OpenQA.Selenium.Safari
         /// <param name="executableFileName">The file name of the SafariDriver executable.</param>
         /// <param name="port">The port on which the SafariDriver executable should listen.</param>
         private SafariDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, SafariDriverDownloadUrl)
+            : base(executablePath, port, executableFileName)
         {
         }
 
@@ -162,21 +159,18 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService that implements default settings.</returns>
         public static SafariDriverService CreateDefaultService()
         {
-            return CreateDefaultService(DefaultSafariDriverServiceExecutablePath);
+            return CreateDefaultService(new SafariOptions());
         }
 
         /// <summary>
         /// Creates a default instance of the SafariDriverService.
         /// </summary>
+        /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
         /// <returns>A SafariDriverService that implements default settings.</returns>
         public static SafariDriverService CreateDefaultService(SafariOptions options)
         {
-            if (options.TechnologyPreview)
-            {
-                return CreateDefaultService(DefaultSafariPreviewDriverServiceExecutablePath);
-            }
-
-            return CreateDefaultService(DefaultSafariDriverServiceExecutablePath);
+            string fullServicePath = DriverFinder.FullPath(options);
+            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
         }
 
         /// <summary>
@@ -186,6 +180,11 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath)
         {
+            if (Path.GetFileName(driverPath) == DefaultSafariDriverServiceExecutableName)
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, DefaultSafariDriverServiceExecutableName);
         }
 

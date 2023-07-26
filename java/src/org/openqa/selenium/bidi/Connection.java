@@ -142,7 +142,7 @@ public class Connection implements Closeable {
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
       out.write(serialized.build());
     }
-    LOG.log(getDebugLogLevel(), () -> String.format("-> %s", json));
+    LOG.log(getDebugLogLevel(), "-> {0}", json);
     socket.sendText(json);
 
     if (!command.getSendsResponse()) {
@@ -245,7 +245,7 @@ public class Connection implements Closeable {
     // TODO: decode once, and once only
 
     String asString = String.valueOf(data);
-    LOG.log(getDebugLogLevel(), () -> String.format("<- %s", asString));
+    LOG.log(getDebugLogLevel(), "<- {0}", asString);
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
@@ -304,8 +304,8 @@ public class Connection implements Closeable {
               event -> {
                 LOG.log(
                     getDebugLogLevel(),
-                    String.format(
-                        "Matching %s with %s", rawDataMap.get("method"), event.getMethod()));
+                    "Matching {0} with {1}",
+                    new Object[] {rawDataMap.get("method"), event.getMethod()});
                 return rawDataMap.get("method").equals(event.getMethod());
               })
           .forEach(
@@ -326,9 +326,8 @@ public class Connection implements Closeable {
                   Consumer<Object> obj = (Consumer<Object>) action;
                   LOG.log(
                       getDebugLogLevel(),
-                      String.format(
-                          "Calling callback for %s using %s being passed %s",
-                          event, obj, finalValue));
+                      "Calling callback for {0} using {1} being passed {2}",
+                      new Object[] {event, obj, finalValue});
                   obj.accept(finalValue);
                 }
               });

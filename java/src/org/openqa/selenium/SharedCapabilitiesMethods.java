@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.logging.LogLevelMapping;
@@ -29,19 +29,31 @@ import org.openqa.selenium.logging.LoggingPreferences;
 
 class SharedCapabilitiesMethods {
 
+  private static final String[] EMPTY_ARRAY = new String[0];
+
   private SharedCapabilitiesMethods() {
     // Utility class
   }
 
   static int hashCode(Capabilities caps) {
-    return caps.getCapabilityNames().stream()
-        .sorted()
-        .mapToInt(name -> Objects.hash(name, caps.getCapability(name)))
-        .reduce(0, (l, r) -> l ^ r);
+    String[] sortedNames = caps.getCapabilityNames().toArray(EMPTY_ARRAY);
+    Arrays.sort(sortedNames, String::compareTo);
+    // we only use the names to generate a hash code, this might result in hash collisions. thanks
+    // to the
+    // moz:firefoxOptions, goog:chromeOptions and ms:edgeOptions, these hash collisions should not
+    // happen too often.
+    return Arrays.hashCode(sortedNames);
   }
 
   static boolean equals(Capabilities left, Capabilities right) {
-    return left.hashCode() == right.hashCode();
+    if (left == right) {
+      return true;
+    }
+    // deeply compare the keys & values, usually only called when the hash codes of two objects are
+    // identical.
+    // note: there should be no arrays (directly or nested) inside the map, otherwise the equals
+    // will not work.
+    return left.asMap().equals(right.asMap());
   }
 
   static void setCapability(Map<String, Object> caps, String key, Object value) {

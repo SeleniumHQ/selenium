@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.openqa.selenium.json.Json;
 
 public interface Config {
 
@@ -54,5 +57,21 @@ public interface Config {
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);
     }
+  }
+
+  default List<String> toEntryList(Map<String, Object> mapItem) {
+    return mapItem.entrySet().stream()
+        .map(
+            entry -> {
+              return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
+            })
+        .sorted()
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  default String toJson(Object value) {
+    StringBuilder jsonStr = new StringBuilder();
+    new Json().newOutput(jsonStr).setPrettyPrint(false).write(value);
+    return jsonStr.toString();
   }
 }

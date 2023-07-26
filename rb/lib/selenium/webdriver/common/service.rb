@@ -81,8 +81,7 @@ module Selenium
                else
                  log
                end
-
-        @args = args.is_a?(Hash) ? extract_service_args(args) : args
+        @args = args
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
@@ -93,15 +92,6 @@ module Selenium
 
       def shutdown_supported
         self.class::SHUTDOWN_SUPPORTED
-      end
-
-      protected
-
-      def extract_service_args(driver_opts)
-        WebDriver.logger.deprecate('initializing Service class with :args using Hash',
-                                   ':args parameter with an Array of String values',
-                                   id: :driver_opts)
-        driver_opts.key?(:args) ? driver_opts.delete(:args) : []
       end
     end # Service
   end # WebDriver

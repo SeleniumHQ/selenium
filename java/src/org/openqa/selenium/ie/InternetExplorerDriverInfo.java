@@ -75,7 +75,16 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isPresent() {
-    return InternetExplorerDriverService.isPresent();
+    try {
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        DriverFinder.getPath(
+            InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+        return true;
+      }
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
   }
 
   @Override

@@ -50,7 +50,7 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str,
+        executable: str = None,
         port: int = 0,
         log_file: SubprocessStdAlias = None,
         log_output: SubprocessStdAlias = None,
@@ -174,7 +174,7 @@ class Service(ABC):
             self.process.terminate()
             try:
                 self.process.wait(60)
-            except subprocess.TimeoutError:
+            except subprocess.TimeoutExpired:
                 logger.error(
                     "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
                     exc_info=True,
@@ -218,7 +218,5 @@ class Service(ABC):
             raise
         except OSError as err:
             if err.errno == errno.EACCES:
-                raise WebDriverException(
-                    f"'{os.path.basename(self._path)}' executable may have wrong permissions. {self.start_error_message}"
-                )
+                raise WebDriverException(f"'{os.path.basename(self._path)}' executable may have wrong permissions.") from err
             raise

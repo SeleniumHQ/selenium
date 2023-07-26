@@ -34,12 +34,14 @@ class Options(ArgOptions):
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value) -> None:
+    def binary_location(self, value: str) -> None:
         """Allows you to set the browser binary to launch.
 
         :Args:
          - value : path to the browser binary
         """
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self._binary_location = value
 
     def to_capabilities(self):

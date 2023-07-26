@@ -24,7 +24,9 @@ use std::path::PathBuf;
 use crate::files::{get_cache_folder, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager, SNAPSHOT};
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT,
+};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -84,7 +86,7 @@ impl SeleniumManager for GridManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Option<String> {
         None
     }
 
@@ -93,12 +95,15 @@ impl SeleniumManager for GridManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_version_binding = self.get_major_browser_version();
-        let browser_version = browser_version_binding.as_str();
+        let major_browser_version_binding = self.get_major_browser_version();
+        let major_browser_version = major_browser_version_binding.as_str();
         let mut metadata = get_metadata(self.get_logger());
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            major_browser_version,
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -107,6 +112,8 @@ impl SeleniumManager for GridManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
                     MIRROR_URL.to_string(),
@@ -144,7 +151,7 @@ impl SeleniumManager for GridManager {
                     let driver_ttl = self.get_driver_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
-                            browser_version,
+                            major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
@@ -204,5 +211,9 @@ impl SeleniumManager for GridManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }
