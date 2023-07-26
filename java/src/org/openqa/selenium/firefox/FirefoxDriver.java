@@ -50,6 +50,8 @@ import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManagerOutput;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -137,8 +139,9 @@ public class FirefoxDriver extends RemoteWebDriver
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(service, options);
-      service.setExecutable(path);
+      Result result = DriverFinder.getPath(service, options);
+      service.setExecutable(result.getDriverPath());
+      options.setBinary(result.getBrowserPath());
     }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }

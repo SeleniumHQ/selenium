@@ -41,6 +41,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 
 /**
  * This implementation is still in beta, and may change.
@@ -100,7 +101,7 @@ public class SeleniumManager {
    * @param command the file and arguments to execute.
    * @return the standard output of the execution.
    */
-  private static String runCommand(String... command) {
+  private static Result runCommand(String... command) {
     LOG.fine(String.format("Executing Process: %s", Arrays.toString(command)));
     String output;
     int code;
@@ -118,12 +119,12 @@ public class SeleniumManager {
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + Arrays.toString(command), e);
     }
-    SeleniumManagerJsonOutput jsonOutput = null;
+    SeleniumManagerOutput jsonOutput = null;
     JsonException failedToParse = null;
     String dump = output;
     if (!output.isEmpty()) {
       try {
-        jsonOutput = new Json().toType(output, SeleniumManagerJsonOutput.class);
+        jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
         jsonOutput.logs.forEach(
             logged -> {
               if (logged.level.equalsIgnoreCase(WARN)) {
@@ -147,12 +148,12 @@ public class SeleniumManager {
               + "\n"
               + dump,
           failedToParse);
-    } else if (failedToParse != null) {
+    } else if (failedToParse != null || jsonOutput == null) {
       throw new WebDriverException(
           "Failed to parse json output, executed: " + Arrays.toString(command) + "\n" + dump,
           failedToParse);
     }
-    return jsonOutput.result.message;
+    return jsonOutput.result;
   }
 
   /**
@@ -223,7 +224,7 @@ public class SeleniumManager {
    * @param options Browser Options instance.
    * @return the location of the driver.
    */
-  public String getDriverPath(Capabilities options, boolean offline) {
+  public Result getDriverPath(Capabilities options, boolean offline) {
     File binaryFile = getBinary();
     if (binaryFile == null) {
       return null;
@@ -265,9 +266,12 @@ public class SeleniumManager {
       }
     }
 
-    String path = runCommand(commandList.toArray(new String[0]));
-    LOG.fine(String.format("Using driver at location: %s", path));
-    return path;
+    Result result = runCommand(commandList.toArray(new String[0]));
+    LOG.fine(
+        String.format(
+            "Using driver at location: %s, browser at location %s",
+            result.getDriverPath(), result.getBrowserPath()));
+    return result;
   }
 
   private Level getLogLevel() {
