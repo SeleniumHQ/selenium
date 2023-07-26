@@ -197,6 +197,10 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
+    }
+
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();

@@ -110,6 +110,8 @@ pub trait SeleniumManager {
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>>;
 
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>>;
+
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>>;
 
     fn get_driver_path_in_cache(&self) -> PathBuf;
@@ -262,7 +264,28 @@ pub trait SeleniumManager {
                     }
                     let discovered_major_browser_version =
                         self.get_major_version(&version).unwrap_or_default();
-                    if !major_browser_version.is_empty()
+
+                    if self.is_browser_version_stable() {
+                        let online_browser_version = self.request_browser_version()?;
+                        if online_browser_version.is_some() {
+                            let major_online_browser_version =
+                                self.get_major_version(&online_browser_version.unwrap())?;
+                            if major_browser_version.eq(&major_online_browser_version) {
+                                self.get_logger().debug(format!(
+                                    "Online stable browser version ({}) different to specified browser version ({})",
+                                    major_online_browser_version,
+                                    major_browser_version,
+                                ));
+                                download_browser = true;
+                            } else {
+                                self.get_logger().debug(format!(
+                                    "Online stable {} version ({}) is the same as the one installed in the system",
+                                    self.get_browser_name(),
+                                    major_online_browser_version,
+                                ));
+                            }
+                        }
+                    } else if !major_browser_version.is_empty()
                         && !self.is_browser_version_unstable()
                         && !major_browser_version.eq(&discovered_major_browser_version)
                     {
@@ -408,6 +431,11 @@ pub trait SeleniumManager {
             || browser_version.eq_ignore_ascii_case(DEV)
             || browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
+    }
+
+    fn is_browser_version_stable(&self) -> bool {
+        let browser_version = self.get_browser_version();
+        browser_version.is_empty() || browser_version.eq_ignore_ascii_case(STABLE)
     }
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
@@ -576,7 +604,9 @@ pub trait SeleniumManager {
     }
 
     fn get_major_browser_version(&self) -> String {
-        if self.is_browser_version_unstable() {
+        if self.is_browser_version_stable() {
+            STABLE.to_string()
+        } else if self.is_browser_version_unstable() {
             self.get_browser_version().to_string()
         } else {
             self.get_major_version(self.get_browser_version())

@@ -167,6 +167,10 @@ impl SeleniumManager for IExplorerManager {
         }
     }
 
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
+    }
+
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         if self.driver_url.is_some() {
             return Ok(self.driver_url.as_ref().unwrap().to_string());
