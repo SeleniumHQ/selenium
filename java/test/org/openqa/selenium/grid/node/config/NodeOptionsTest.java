@@ -677,7 +677,7 @@ class NodeOptionsTest {
   void notSettingSlotMatcherAvailable() {
     String[] rawConfig =
         new String[] {
-          "[node]", "slot-matcher = \"org.openqa.selenium.grid.data.DefaultSlotMatcher\"",
+          "[distributor]", "slot-matcher = \"org.openqa.selenium.grid.data.DefaultSlotMatcher\"",
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
@@ -689,7 +689,7 @@ class NodeOptionsTest {
   void settingSlotMatcherAvailable() {
     String[] rawConfig =
         new String[] {
-          "[node]", "slot-matcher = \"org.openqa.selenium.grid.node.data.YesSlotMatcher\"",
+          "[distributor]", "slot-matcher = \"org.openqa.selenium.grid.node.data.YesSlotMatcher\"",
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 

@@ -175,7 +175,7 @@ public class NodeOptions {
   }
 
   public SlotMatcher getSlotMatcher() {
-    return config.getClass(NODE_SECTION, "slot-matcher", SlotMatcher.class, DEFAULT_SLOT_MATCHER);
+    return config.getClass("distributor", "slot-matcher", SlotMatcher.class, DEFAULT_SLOT_MATCHER);
   }
 
   public Duration getRegisterPeriod() {
