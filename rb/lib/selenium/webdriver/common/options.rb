@@ -126,7 +126,7 @@ module Selenium
       end
 
       def process_w3c_options(options)
-        w3c_options = options.select { |key, _val| w3c?(key) }
+        w3c_options = options.select { |key, val| w3c?(key) && !val.nil? }
         w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
         options.delete_if { |key, _val| w3c?(key) }
         w3c_options
