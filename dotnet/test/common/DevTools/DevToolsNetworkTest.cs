@@ -15,35 +15,6 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsNetworkTest : DevToolsTestFixture
     {
         [Test]
-        public void AAA()
-        {
-            //var net = this.driver.Manage().Network;
-
-            //net.NetworkRequestSent += (driver, e) => { Console.WriteLine(e.RequestUrl); };
-
-            //net.StartMonitoring().GetAwaiter().GetResult();
-
-            //driver.Url = "https://www.yahoo.com";
-
-            //net.StopMonitoring().GetAwaiter().GetResult();
-
-            driver.Manage().Network.AddRequestHandler(new NetworkRequestHandler
-            {
-                RequestMatcher = httpData => true,
-                RequestTransformer = httpData => httpData
-            });
-
-            driver.Manage().Network.StartMonitoring().Wait();
-
-            // here you need a website which would perform a POST request with a non-empty body.
-            // in my case the request was from an auto-POST form but my guess is that any POST request
-            // with a body would result in a failure.
-            // my colleague has reported that Yahoo main page is also a working example.
-            driver.Navigate().GoToUrl("https://www.yahoo.com/");
-            //driver.Navigate().GoToUrl("https://google.com");
-        }
-
-        [Test]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
