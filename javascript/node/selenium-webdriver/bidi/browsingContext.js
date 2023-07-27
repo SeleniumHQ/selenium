@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 class BrowsingContext {
   constructor(driver) {
@@ -164,6 +165,69 @@ class BrowsingContext {
 
     const response = await this.bidi.send(params)
     return new PrintResult(response.result.data)
+  }
+
+  async captureScreenshot() {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+      },
+    }
+
+    const response = await this.bidi.send(params)
+
+    if ('error' in response) {
+      const error = response['error']
+      const msg = response['message']
+      if (error == 'invalid argument') {
+        throw new InvalidArgumentError(msg)
+      } else if (error == 'no such frame') {
+        throw new NoSuchFrameError(msg)
+      }
+    }
+
+    return response['result']['data']
+  }
+
+  async captureBoxScreenshot(x, y, width, height) {
+    if (width < 0) {
+      x = x + width
+      width = -width
+    }
+
+    if (height < 0) {
+      y = y + height
+      height = -height
+    }
+
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'viewport',
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+
+    if ('error' in response) {
+      const error = response['error']
+      const msg = response['message']
+      if (error == 'invalid argument') {
+        throw new InvalidArgumentError(msg)
+      } else if (error == 'no such frame') {
+        throw new NoSuchFrameError(msg)
+      }
+    }
+
+    return response['result']['data']
   }
 }
 

@@ -301,6 +301,7 @@ suite(
       let startIndex = 0
       let endIndex = 5
       let pdfMagicNumber = 'JVBER'
+      let pngMagicNumber = 'iVBOR'
 
       it('can create a browsing context for given id', async function () {
         const id = await driver.getWindowHandle()
@@ -440,6 +441,36 @@ suite(
 
         let base64Code = result.data.slice(startIndex, endIndex)
         assert.strictEqual(base64Code, pdfMagicNumber)
+      })
+
+      it('can take screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const response = await browsingContext.captureScreenshot()
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can take box screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const response = await browsingContext.captureBoxScreenshot(
+          5,
+          5,
+          10,
+          10
+        )
+
+        console.log("response = ", response)
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+        assert(false)
       })
     })
 
