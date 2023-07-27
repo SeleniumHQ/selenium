@@ -18,6 +18,7 @@ import typing
 import warnings
 from typing import List
 
+from selenium.deprecated import deprecated_attributes
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
@@ -35,6 +36,7 @@ class Service(service.Service):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
+    @deprecated_attributes("log_path", message="log_path has been deprecated, please use log_output")
     def __init__(
         self,
         executable_path: str = None,
@@ -46,8 +48,7 @@ class Service(service.Service):
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        if log_path is not None:
-            warnings.warn("log_path has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+        if log_path:
             log_output = open(log_path, "a+", encoding="utf-8")
 
         if log_path is None and log_output is None:

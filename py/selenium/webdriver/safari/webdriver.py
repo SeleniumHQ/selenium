@@ -16,9 +16,9 @@
 # under the License.
 
 import http.client as http_client
-import warnings
 
 from selenium.common.exceptions import WebDriverException
+from selenium.deprecated import deprecated_attributes
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from ..common.driver_finder import DriverFinder
@@ -30,6 +30,9 @@ from .service import Service
 class WebDriver(RemoteWebDriver):
     """Controls the SafariDriver and allows you to drive the browser."""
 
+    @deprecated_attributes(
+        "reuse_service", message="reuse_service has been deprecated, please use the Service class to set it"
+    )
     def __init__(
         self,
         reuse_service=False,
@@ -47,13 +50,6 @@ class WebDriver(RemoteWebDriver):
          - options - Instance of ``options.Options``.
          - service - Service object for handling the browser driver if you need to pass extra details
         """
-        if reuse_service:
-            warnings.warn(
-                "reuse_service has been deprecated, please use the Service class to set it",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
         self.service = service if service else Service()
         options = options if options else Options()
 

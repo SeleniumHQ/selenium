@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from typing import List
 
+from selenium.deprecated import deprecated_attributes
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -25,6 +25,7 @@ from selenium.webdriver.common import service
 class Service(service.Service):
     """Object that manages the starting and stopping of the IEDriver."""
 
+    @deprecated_attributes("log_path", message="log_file has been deprecated, please use log_output")
     def __init__(
         self,
         executable_path: str = None,
@@ -53,7 +54,6 @@ class Service(service.Service):
         if log_level:
             self.service_args.append(f"--log-level={log_level}")
         if log_file:
-            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
             self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(

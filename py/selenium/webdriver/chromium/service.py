@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 
 from selenium.common import InvalidArgumentException
+from selenium.deprecated import deprecated_attributes
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -33,6 +33,7 @@ class ChromiumService(service.Service):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
+    @deprecated_attributes("log_path", message="log_path has been deprecated, please use log_output")
     def __init__(
         self,
         executable_path: str = None,
@@ -45,9 +46,7 @@ class ChromiumService(service.Service):
     ) -> None:
         self.service_args = service_args or []
         self.log_output = log_output
-        if log_path is not None:
-            warnings.warn("log_path has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
-            self.log_output = log_path
+        self.log_output = log_path
 
         if "--append-log" in self.service_args or "--readable-timestamp" in self.service_args:
             if isinstance(self.log_output, str):

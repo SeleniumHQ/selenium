@@ -29,6 +29,7 @@ from io import BytesIO
 from xml.dom import minidom
 
 from selenium.common.exceptions import WebDriverException
+from selenium.deprecated import deprecated_function
 
 WEBDRIVER_EXT = "webdriver.xpi"
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
@@ -43,6 +44,7 @@ class FirefoxProfile:
     ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = None
 
+    @deprecated_function("firefox_profile has been deprecated, please use an Options object")
     def __init__(self, profile_directory=None):
         """Initialises a new instance of a Firefox Profile.
 
@@ -53,9 +55,6 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-        warnings.warn(
-            "firefox_profile has been deprecated, please use an Options object", DeprecationWarning, stacklevel=2
-        )
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(
                 os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES), encoding="utf-8"
