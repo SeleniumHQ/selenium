@@ -17,28 +17,69 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/manager'
+
 module Selenium
   module WebDriver
     class DriverFinder
-      def self.path(options, klass)
-        path = klass.driver_path
-        path = path.call if path.is_a?(Proc)
+      class << self
+        def path(options, klass)
+          path = klass.driver_path
+          path = path.call if path.is_a?(Proc)
 
-        path ||= begin
-          SeleniumManager.driver_path(options) unless options.is_a?(Remote::Capabilities)
-        rescue StandardError => e
-          raise Error::NoSuchDriverError, "Unable to obtain #{klass::EXECUTABLE} using Selenium Manager; #{e.message}"
+          unless path || options.is_a?(Remote::Capabilities)
+            results = begin
+              Selenium::Manager.results(convert_options(options))
+            rescue StandardError => e
+              raise Error::NoSuchDriverError,
+                    "Unable to obtain #{klass::EXECUTABLE} using Selenium Manager; #{e.message}"
+            end
+
+            path = process_results(results, options)
+          end
+
+          begin
+            Platform.assert_executable(path)
+          rescue TypeError
+            raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"
+          rescue Error::WebDriverError => e
+            raise Error::NoSuchDriverError, "#{klass::EXECUTABLE} located, but: #{e.message}"
+          end
+
+          path
         end
 
-        begin
-          Platform.assert_executable(path)
-        rescue TypeError
-          raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"
-        rescue Error::WebDriverError => e
-          raise Error::NoSuchDriverError, "#{klass::EXECUTABLE} located, but: #{e.message}"
+        private
+
+        def convert_options(options)
+          args = ['--browser', options.browser_name]
+          if options.browser_version
+            args << '--browser-version'
+            args << options.browser_version
+          end
+          if options.respond_to?(:binary) && !options.binary.nil?
+            args << '--browser-path'
+            args << options.binary.gsub('\\', '\\\\\\')
+          end
+          if options.proxy
+            args << '--proxy'
+            (args << options.proxy.ssl) || options.proxy.http
+          end
+          args
         end
 
-        path
+        def process_results(results, options)
+          browser_path = results['browser_path']
+          driver_path = results['driver_path']
+          Platform.assert_executable driver_path
+
+          if options.respond_to? :binary
+            options.binary = browser_path
+            options.browser_version = nil
+          end
+
+          driver_path
+        end
       end
     end
   end

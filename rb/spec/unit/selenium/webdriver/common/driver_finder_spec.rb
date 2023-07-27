@@ -22,126 +22,171 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe DriverFinder do
+      let(:results) do
+        {'browser_path' => 'browser',
+         'driver_path' => 'driver'}
+      end
+
+      before do
+        allow(Selenium::Manager).to receive(:results).and_return(results)
+        allow(Platform).to receive(:assert_executable)
+      end
+
+      describe '#path' do
+        let(:options) { Options.chrome }
+        let(:service) { Chrome::Service }
+
+        it 'uses browser name by default' do
+          described_class.path(options, service)
+
+          expect(Selenium::Manager).to have_received(:results).with(%w[--browser chrome])
+        end
+
+        it 'uses browser version if specified' do
+          options.browser_version = '1'
+
+          described_class.path(options, service)
+
+          expect(Selenium::Manager).to have_received(:results).with(%w[--browser chrome --browser-version 1])
+        end
+
+        it 'uses proxy if specified' do
+          proxy = Selenium::WebDriver::Proxy.new(ssl: 'proxy')
+          options.proxy = proxy
+
+          described_class.path(options, service)
+
+          expect(Selenium::Manager).to have_received(:results).with(%w[--browser chrome --proxy proxy])
+        end
+
+        it 'uses browser location if specified' do
+          options.binary = '/path/to/browser'
+
+          described_class.path(options, service)
+
+          expect(Selenium::Manager).to have_received(:results)
+            .with(%w[--browser chrome --browser-path /path/to/browser])
+        end
+
+        it 'properly escapes plain spaces in browser location' do
+          options.binary = '/path to/the/browser'
+
+          described_class.path(options, service)
+
+          expect(Selenium::Manager).to have_received(:results)
+            .with(['--browser', 'chrome', '--browser-path', '/path to/the/browser'])
+        end
+      end
+
       context 'when Chrome' do
         let(:options) { Options.chrome }
         let(:service) { Chrome::Service }
-        let(:driver) { 'chromedriver' }
 
-        after { Chrome::Service.driver_path = nil }
+        after { service.driver_path = nil }
 
         it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = 'path'
+
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
         end
 
         it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = proc { 'path' }
 
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
+        it 'gives documented error if not found by Selenium Manager' do
+          allow(Selenium::Manager).to receive(:results).and_raise(Error::WebDriverError)
 
           expect {
             described_class.path(options, service)
           }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
+        end
+
+        it 'sets binary location and removes browser version on options' do
+          options.browser_version = 1
+
+          path = described_class.path(options, service)
+
+          expect(path).to eq 'driver'
+          expect(options.binary).to eq 'browser'
+          expect(options.browser_version).to be_nil
         end
       end
 
       context 'when Edge' do
         let(:options) { Options.edge }
         let(:service) { Edge::Service }
-        let(:driver) { 'msedgedriver' }
 
         after { service.driver_path = nil }
 
         it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = 'path'
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
         end
 
         it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = proc { 'path' }
 
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
+        it 'sets binary location and removes browser version on options' do
+          options.browser_version = 1
 
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
+          path = described_class.path(options, service)
+
+          expect(path).to eq 'driver'
+          expect(options.binary).to eq 'browser'
+          expect(options.browser_version).to be_nil
         end
       end
 
       context 'when Firefox' do
         let(:options) { Options.firefox }
         let(:service) { Firefox::Service }
-        let(:driver) { 'geckodriver' }
 
         after { service.driver_path = nil }
 
         it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = 'path'
+
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
         end
 
         it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = proc { 'path' }
 
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
+        it 'sets binary location and removes browser version on options' do
+          options.browser_version = 1
 
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
+          path = described_class.path(options, service)
+
+          expect(path).to eq 'driver'
+          expect(options.binary).to eq 'browser'
+          expect(options.browser_version).to be_nil
         end
       end
 
@@ -153,36 +198,31 @@ module Selenium
         after { service.driver_path = nil }
 
         it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = 'path'
+
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
         end
 
         it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = proc { 'path' }
 
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
+        it 'does not set binary location or reset version on options' do
+          options.browser_version = '1'
 
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
+          path = described_class.path(options, service)
+
+          expect(path).to eq 'driver'
+          expect(options).not_to respond_to(:binary)
+          expect(options.browser_version).to eq '1'
         end
       end
 
@@ -194,36 +234,31 @@ module Selenium
         after { service.driver_path = nil }
 
         it 'accepts path set on class as String' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = 'path'
+
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path').exactly(2).times
         end
 
         it 'accepts path set on class as proc' do
-          allow(SeleniumManager).to receive(:driver_path)
-          allow(Platform).to receive(:assert_file)
-          allow(Platform).to receive(:assert_executable)
-
           service.driver_path = proc { 'path' }
 
           described_class.path(options, service)
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(Selenium::Manager).not_to have_received(:results)
           expect(Platform).to have_received(:assert_executable).with('path')
         end
 
-        it 'gives original error if not found by Selenium Manager' do
-          allow(SeleniumManager).to receive(:driver_path).and_raise(Error::WebDriverError)
+        it 'does not set binary location or reset version on options' do
+          options.browser_version = '1'
 
-          expect {
-            described_class.path(options, service)
-          }.to raise_error(WebDriver::Error::NoSuchDriverError, %r{errors/driver_location})
+          path = described_class.path(options, service)
+
+          expect(path).to eq 'driver'
+          expect(options).not_to respond_to(:binary)
+          expect(options.browser_version).to eq '1'
         end
       end
     end
