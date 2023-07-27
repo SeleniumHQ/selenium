@@ -29,6 +29,8 @@ use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_C
 
 pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
+const SAFARI_PATH: &str = r#"/Applications/Safari.app"#;
+const SAFARI_FULL_PATH: &str = r#"/Applications/Safari.app/Contents/MacOS/Safari"#;
 
 pub struct SafariManager {
     pub browser_name: &'static str,
@@ -69,10 +71,7 @@ impl SeleniumManager for SafariManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::from([(
-            BrowserPath::new(MACOS, STABLE),
-            r#"/Applications/Safari.app"#,
-        )])
+        HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARI_PATH)])
     }
 
     fn discover_browser_version(&mut self) -> Option<String> {
@@ -90,6 +89,7 @@ impl SeleniumManager for SafariManager {
         } else {
             return None;
         };
+        self.set_browser_path(SAFARI_FULL_PATH.to_string());
         self.detect_browser_version(command)
     }
 
