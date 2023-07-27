@@ -1,0 +1,6 @@
+{
+  "accounts_endpoint": "accounts.json",
+  "client_metadata_endpoint": "client_metadata.json",
+  "id_assertion_endpoint": "id_assertion",
+  "signin_url": "/signin"
+}
