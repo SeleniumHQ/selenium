@@ -178,7 +178,7 @@ impl SeleniumManager for EdgeManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                if major_browser_version.is_empty() {
+                if self.is_browser_version_stable() || major_browser_version.is_empty() {
                     let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
@@ -224,6 +224,10 @@ impl SeleniumManager for EdgeManager {
                 Ok(driver_version)
             }
         }
+    }
+
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {

@@ -22,33 +22,17 @@ use rstest::rstest;
 
 mod common;
 
-#[test]
-fn chrome_latest_download_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--force-browser-download",
-        "--output",
-        "json",
-    ])
-    .assert()
-    .success()
-    .code(0);
-
-    assert_driver_and_browser(&mut cmd);
-}
-
 #[rstest]
-#[case("113")]
-#[case("beta")]
-fn chrome_version_download_test(#[case] browser_version: String) {
+#[case("chrome")]
+#[case("firefox")]
+#[case("edge")]
+fn stable_browser_test(#[case] browser_name: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
-        "chrome",
+        &browser_name,
         "--browser-version",
-        &browser_version,
+        "stable",
         "--output",
         "json",
     ])

@@ -449,15 +449,15 @@ impl SeleniumManager for ChromeManager {
                 let major_browser_version_int =
                     major_browser_version.parse::<i32>().unwrap_or_default();
                 let driver_version =
-                    if !major_browser_version.is_empty() && major_browser_version_int < 115 {
+                    if self.is_browser_version_stable() || major_browser_version.is_empty() {
+                        // For discovering the latest driver version, the CfT endpoints are also used
+                        self.request_latest_driver_version_from_cft()?
+                    } else if !major_browser_version.is_empty() && major_browser_version_int < 115 {
                         // For old versions (chromedriver 114-), the traditional method should work:
                         // https://chromedriver.chromium.org/downloads
                         self.request_driver_version_from_latest(
                             self.create_latest_release_with_version_url(),
                         )?
-                    } else if major_browser_version.is_empty() {
-                        // For discovering the latest driver version, the CfT endpoints are also used
-                        self.request_latest_driver_version_from_cft()?
                     } else {
                         // As of chromedriver 115+, the metadata for version discovery are published
                         // by the "Chrome for Testing" (CfT) JSON endpoints:
@@ -479,6 +479,10 @@ impl SeleniumManager for ChromeManager {
                 Ok(driver_version)
             }
         }
+    }
+
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(Some(self.request_latest_browser_version_from_cft()?))
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
@@ -551,15 +555,14 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        let browser_version;
         let browser_name = self.browser_name;
-        let browser_version_unstable = self.is_browser_version_unstable();
         let mut metadata = get_metadata(self.get_logger());
-        let mut browser_version = self.get_browser_version().to_string();
         let major_browser_version = self.get_major_browser_version();
         let major_browser_version_int = major_browser_version.parse::<i32>().unwrap_or_default();
 
-        if !browser_version_unstable
-            && !major_browser_version.is_empty()
+        if !self.is_browser_version_unstable()
+            && !self.is_browser_version_stable()
             && major_browser_version_int < MIN_CHROME_VERSION_CFT
         {
             return Err(format_three_args(
@@ -587,13 +590,15 @@ impl SeleniumManager for ChromeManager {
             }
             _ => {
                 // If not in metadata, discover version using Chrome for Testing (CfT) endpoints
-                if browser_version.is_empty() {
+                if self.is_browser_version_stable() {
                     browser_version = self.request_latest_browser_version_from_cft()?;
                 } else {
                     browser_version = self.request_fixed_browser_version_from_cft()?;
                 }
+                self.set_browser_version(browser_version.clone());
+
                 let browser_ttl = self.get_browser_ttl();
-                if browser_ttl > 0 && !browser_version.is_empty() {
+                if browser_ttl > 0 && !self.is_browser_version_stable() {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
                         &major_browser_version,
@@ -608,7 +613,6 @@ impl SeleniumManager for ChromeManager {
             "Required browser: {} {}",
             browser_name, browser_version
         ));
-        self.set_browser_version(browser_version.clone());
 
         // Checking if browser version is in the cache
         let browser_binary_path = self.get_browser_binary_path_in_cache();
@@ -622,7 +626,7 @@ impl SeleniumManager for ChromeManager {
             let browser_url = if let Some(url) = self.browser_url.clone() {
                 url
             } else {
-                if browser_version.is_empty() {
+                if self.is_browser_version_stable() {
                     self.request_latest_browser_version_from_cft()?;
                 } else {
                     self.request_fixed_browser_version_from_cft()?;
