@@ -28,8 +28,7 @@ import org.openqa.selenium.remote.http.UrlPath;
 
 class WellKnownWebIdentityHandler implements HttpHandler {
 
-  private static final String RESPONSE_STRING =
-      "{\"provider_urls\": [\"%s\"]}";
+  private static final String RESPONSE_STRING = "{\"provider_urls\": [\"%s\"]}";
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
@@ -38,8 +37,7 @@ class WellKnownWebIdentityHandler implements HttpHandler {
     response.setHeader("Cache-Control", "no-store");
     String targetLocation = UrlPath.relativeToContext(req, "/fedcm/fedcm.json");
 
-    response.setContent(
-        Contents.string(String.format(RESPONSE_STRING, targetLocation), UTF_8));
+    response.setContent(Contents.string(String.format(RESPONSE_STRING, targetLocation), UTF_8));
 
     return response;
   }

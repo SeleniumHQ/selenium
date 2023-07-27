@@ -33,18 +33,21 @@ public class FederatedCredentialManagementAccount {
   private final String name;
   private final String givenName;
   private final String pictureUrl;
+
   /**
    * The config URL of the identity provider that provided this account.
    *
-   * This allows identifying the IDP in multi-IDP cases.
+   * <p>This allows identifying the IDP in multi-IDP cases.
    */
   private final String idpConfigUrl;
+
   /**
    * The login state for this account.
    *
-   * One of LOGIN_STATE_SIGNIN and LOGIN_STATE_SIGNUP.
+   * <p>One of LOGIN_STATE_SIGNIN and LOGIN_STATE_SIGNUP.
    */
   private final String loginState;
+
   private final String termsOfServiceUrl;
   private final String privacyPolicyUrl;
 

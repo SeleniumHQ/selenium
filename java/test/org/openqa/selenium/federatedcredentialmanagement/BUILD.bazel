@@ -9,8 +9,8 @@ java_selenium_test_suite(
         "chrome",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/environment",

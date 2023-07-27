@@ -50,7 +50,6 @@ import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;

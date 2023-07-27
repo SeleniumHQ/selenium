@@ -16,9 +16,8 @@
 // under the License.
 package org.openqa.selenium.manager;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.List;
+import org.openqa.selenium.json.JsonInput;
 
 public class SeleniumManagerOutput {
 

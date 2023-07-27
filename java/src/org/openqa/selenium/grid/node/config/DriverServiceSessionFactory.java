@@ -341,21 +341,21 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private Capabilities setBrowserBinary(Capabilities options, String browserPath) {
     List<String> vendorOptionsCapabilities =
-      Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
     for (String vendorOptionsCapability : vendorOptionsCapabilities) {
       if (options.asMap().containsKey(vendorOptionsCapability)) {
         try {
           @SuppressWarnings("unchecked")
           Map<String, Object> vendorOptions =
-            (Map<String, Object>) options.getCapability(vendorOptionsCapability);
+              (Map<String, Object>) options.getCapability(vendorOptionsCapability);
           vendorOptions.put("binary", browserPath);
           return new PersistentCapabilities(options)
-            .setCapability(vendorOptionsCapability, vendorOptions);
+              .setCapability(vendorOptionsCapability, vendorOptions);
         } catch (Exception e) {
           LOG.warning(
-            String.format(
-              "Exception while setting the browser binary path. %s: %s",
-              options, e.getMessage()));
+              String.format(
+                  "Exception while setting the browser binary path. %s: %s",
+                  options, e.getMessage()));
         }
       }
     }

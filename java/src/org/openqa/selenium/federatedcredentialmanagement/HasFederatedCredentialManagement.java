@@ -19,37 +19,31 @@ package org.openqa.selenium.federatedcredentialmanagement;
 
 import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can interact with FedCM dialogs.
- */
+/** Used by classes to indicate that they can interact with FedCM dialogs. */
 @Beta
 public interface HasFederatedCredentialManagement {
   /**
    * Disables the promise rejection delay.
    *
-   * FedCM by default delays promise resolution in failure cases for privacy
-   * reasons (https://fedidcg.github.io/FedCM/#ref-for-setdelayenabled);
-   * this function allows turning it off to let tests run faster where this
-   * is not relevant.
+   * <p>FedCM by default delays promise resolution in failure cases for privacy reasons
+   * (https://fedidcg.github.io/FedCM/#ref-for-setdelayenabled); this function allows turning it off
+   * to let tests run faster where this is not relevant.
    */
   void setDelayEnabled(boolean enabled);
 
   /**
    * Resets the FedCM dialog cooldown.
    *
-   * If a user agent triggers a cooldown when the account chooser is dismissed,
-   * this function resets that cooldown so that the dialog can be triggered
-   * again immediately.
+   * <p>If a user agent triggers a cooldown when the account chooser is dismissed, this function
+   * resets that cooldown so that the dialog can be triggered again immediately.
    */
   void resetCooldown();
 
   /**
    * Gets the currently open FedCM dialog, or null if there is no dialog.
    *
-   * Can be used with WebDriverWait like:
-   * wait.until(driver -> ((HasFederatedCredentialManagement) driver).
-   *     getFederatedCredentialManagementDialog() != null);
+   * <p>Can be used with WebDriverWait like: wait.until(driver ->
+   * ((HasFederatedCredentialManagement) driver). getFederatedCredentialManagementDialog() != null);
    */
   FederatedCredentialManagementDialog getFederatedCredentialManagementDialog();
 }
-

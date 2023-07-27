@@ -19,29 +19,20 @@ package org.openqa.selenium.federatedcredentialmanagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.assertj.core.api.Fail.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
-import org.openqa.selenium.federatedcredentialmanagement.HasFederatedCredentialManagement;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -54,8 +45,9 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
   @BeforeEach
   public void setup() {
     ChromeOptions options = (ChromeOptions) Browser.CHROME.getCapabilities();
-    //options.setAcceptInsecureCerts(true);
-    options.addArguments(String.format("host-resolver-rules=MAP localhost:443 localhost:%d", getSecurePort()));
+    // options.setAcceptInsecureCerts(true);
+    options.addArguments(
+        String.format("host-resolver-rules=MAP localhost:443 localhost:%d", getSecurePort()));
     options.addArguments("ignore-certificate-errors");
     localDriver = seleniumExtension.createNewDriver(options);
 
@@ -71,7 +63,10 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
 
   private void waitForDialog() {
     WebDriverWait wait = new WebDriverWait(localDriver, Duration.ofSeconds(5));
-    wait.until(driver -> ((HasFederatedCredentialManagement) driver).getFederatedCredentialManagementDialog() != null);
+    wait.until(
+        driver ->
+            ((HasFederatedCredentialManagement) driver).getFederatedCredentialManagementDialog()
+                != null);
   }
 
   private int getSecurePort() {
@@ -93,7 +88,8 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
 
     waitForDialog();
 
-    FederatedCredentialManagementDialog dialog = fedcmDriver.getFederatedCredentialManagementDialog();
+    FederatedCredentialManagementDialog dialog =
+        fedcmDriver.getFederatedCredentialManagementDialog();
 
     assertEquals("Sign in to localhost with localhost", dialog.getTitle());
     assertEquals("AccountChooser", dialog.getDialogType());
@@ -101,16 +97,18 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
     dialog.cancelDialog();
 
     // Check that the dialog was indeed closed (i.e. the promise now resolves).
-    assertThrows(JavascriptException.class, () -> {
-      try {
-        jsAwareDriver.executeScript("await promise");
-      } catch (InvalidSelectorException ex) {
-        // Due to a bug in Chromedriver (https://crbug.com/1454586), we may
-        // get an invalid selector exception here instead of a JavascriptException.
-        // Turn it into a JavascriptException to make the test pass for now.
-        throw new JavascriptException(ex.getMessage(), ex);
-      }
-    });
+    assertThrows(
+        JavascriptException.class,
+        () -> {
+          try {
+            jsAwareDriver.executeScript("await promise");
+          } catch (InvalidSelectorException ex) {
+            // Due to a bug in Chromedriver (https://crbug.com/1454586), we may
+            // get an invalid selector exception here instead of a JavascriptException.
+            // Turn it into a JavascriptException to make the test pass for now.
+            throw new JavascriptException(ex.getMessage(), ex);
+          }
+        });
   }
 
   @Test
@@ -122,7 +120,8 @@ class FederatedCredentialManagementTest extends JupiterTestBase {
 
     waitForDialog();
 
-    FederatedCredentialManagementDialog dialog = fedcmDriver.getFederatedCredentialManagementDialog();
+    FederatedCredentialManagementDialog dialog =
+        fedcmDriver.getFederatedCredentialManagementDialog();
 
     assertEquals("Sign in to localhost with localhost", dialog.getTitle());
     assertEquals("AccountChooser", dialog.getDialogType());

@@ -23,7 +23,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;

@@ -412,12 +412,10 @@ public interface DriverCommand {
   }
 
   static CommandPayload SELECT_ACCOUNT(int index) {
-    return new CommandPayload(
-        SELECT_ACCOUNT, ImmutableMap.of("accountIndex", index));
+    return new CommandPayload(SELECT_ACCOUNT, ImmutableMap.of("accountIndex", index));
   }
 
   static CommandPayload SET_DELAY_ENABLED(boolean enabled) {
-    return new CommandPayload(
-        SET_DELAY_ENABLED, ImmutableMap.of("enabled", enabled));
+    return new CommandPayload(SET_DELAY_ENABLED, ImmutableMap.of("enabled", enabled));
   }
 }

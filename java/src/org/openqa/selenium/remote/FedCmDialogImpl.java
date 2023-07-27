@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementAccount;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.ExecuteMethod;
 
 class FedCmDialogImpl implements FederatedCredentialManagementDialog {
   private final ExecuteMethod executeMethod;
@@ -51,20 +48,24 @@ class FedCmDialogImpl implements FederatedCredentialManagementDialog {
 
   @Override
   public String getTitle() {
-    Map<String, Object> result = (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
+    Map<String, Object> result =
+        (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
     return (String) result.getOrDefault("title", null);
   }
 
   @Override
   public String getSubtitle() {
-    Map<String, Object> result = (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
+    Map<String, Object> result =
+        (Map<String, Object>) executeMethod.execute(DriverCommand.GET_FEDCM_TITLE, null);
     return (String) result.getOrDefault("subtitle", null);
   }
 
   @Override
   public List<FederatedCredentialManagementAccount> getAccounts() {
-    List<Map<String, String>> list = (List<Map<String, String>>) executeMethod.execute(DriverCommand.GET_ACCOUNTS, null);
-    ArrayList<FederatedCredentialManagementAccount> accounts = new ArrayList<FederatedCredentialManagementAccount>();
+    List<Map<String, String>> list =
+        (List<Map<String, String>>) executeMethod.execute(DriverCommand.GET_ACCOUNTS, null);
+    ArrayList<FederatedCredentialManagementAccount> accounts =
+        new ArrayList<FederatedCredentialManagementAccount>();
     for (Map<String, String> map : list) {
       accounts.add(new FederatedCredentialManagementAccount(map));
     }

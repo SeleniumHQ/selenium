@@ -28,12 +28,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 /**
  * Implements FedCM's ID assertion endpoint.
  *
- * https://fedidcg.github.io/FedCM/#idp-api-id-assertion-endpoint
+ * <p>https://fedidcg.github.io/FedCM/#idp-api-id-assertion-endpoint
  */
 class FedCmIdAssertion implements HttpHandler {
 
-  private static final String RESPONSE_STRING =
-      "{\"token\": \"%s\"}";
+  private static final String RESPONSE_STRING = "{\"token\": \"%s\"}";
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
@@ -41,8 +40,7 @@ class FedCmIdAssertion implements HttpHandler {
     response.setHeader("Content-Type", "application/json");
     response.setHeader("Cache-Control", "no-store");
 
-    response.setContent(
-        Contents.string(String.format(RESPONSE_STRING, "a token"), UTF_8));
+    response.setContent(Contents.string(String.format(RESPONSE_STRING, "a token"), UTF_8));
 
     return response;
   }

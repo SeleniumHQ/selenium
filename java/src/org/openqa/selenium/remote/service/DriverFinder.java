@@ -29,10 +29,14 @@ public class DriverFinder {
     if (result.getDriverPath() == null) {
       message = String.format("Unable to locate or obtain %s", service.getDriverName());
     } else if (!new File(result.getDriverPath()).exists()) {
-      message = String.format("%s located at %s, but invalid", service.getDriverName(), result.getDriverPath());
+      message =
+          String.format(
+              "%s located at %s, but invalid", service.getDriverName(), result.getDriverPath());
     } else if (!new File(result.getDriverPath()).canExecute()) {
       message =
-          String.format("%s located at %s, cannot be executed", service.getDriverName(), result.getDriverPath());
+          String.format(
+              "%s located at %s, cannot be executed",
+              service.getDriverName(), result.getDriverPath());
     } else {
       return result;
     }
