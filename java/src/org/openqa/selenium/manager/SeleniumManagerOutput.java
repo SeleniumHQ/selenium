@@ -17,8 +17,9 @@
 package org.openqa.selenium.manager;
 
 import java.util.List;
+import org.openqa.selenium.json.JsonInput;
 
-public class SeleniumManagerJsonOutput {
+public class SeleniumManagerOutput {
 
   public List<Log> logs;
   public Result result;
@@ -72,6 +73,19 @@ public class SeleniumManagerJsonOutput {
   public static class Result {
     public int code;
     public String message;
+    public String driverPath;
+    public String browserPath;
+
+    public Result(String driverPath) {
+      this.driverPath = driverPath;
+    }
+
+    public Result(int code, String message, String driverPath, String browserPath) {
+      this.code = code;
+      this.message = message;
+      this.driverPath = driverPath;
+      this.browserPath = browserPath;
+    }
 
     public int getCode() {
       return code;
@@ -87,6 +101,57 @@ public class SeleniumManagerJsonOutput {
 
     public void setMessage(String message) {
       this.message = message;
+    }
+
+    public String getDriverPath() {
+      return driverPath;
+    }
+
+    public void setDriverPath(String driverPath) {
+      this.driverPath = driverPath;
+    }
+
+    public String getBrowserPath() {
+      return browserPath;
+    }
+
+    public void setBrowserPath(String browserPath) {
+      this.browserPath = browserPath;
+    }
+
+    public static Result fromJson(JsonInput input) {
+      int code = 0;
+      String message = null;
+      String driverPath = null;
+      String browserPath = null;
+
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "code":
+            code = input.read(Integer.class);
+            break;
+
+          case "message":
+            message = input.read(String.class);
+            break;
+
+          case "driver_path":
+            driverPath = input.read(String.class);
+            break;
+
+          case "browser_path":
+            browserPath = input.read(String.class);
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+      input.endObject();
+
+      return new Result(code, message, driverPath, browserPath);
     }
   }
 }

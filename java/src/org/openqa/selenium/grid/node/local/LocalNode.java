@@ -791,8 +791,11 @@ public class LocalNode extends Node {
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
     }
 
+    // Check if the user wants to use BiDi
+    boolean webSocketUrl = toUse.asMap().containsKey("webSocketUrl");
     // Add se:bidi if necessary to send the bidi url back
-    if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
+    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("se:bidi") != null;
+    if (bidiSupported && bidiEnabled && webSocketUrl) {
       String bidiPath = String.format("/session/%s/se/bidi", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
     } else {

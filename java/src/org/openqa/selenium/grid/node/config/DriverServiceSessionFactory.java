@@ -26,7 +26,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -48,6 +50,7 @@ import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -58,6 +61,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
@@ -134,6 +138,13 @@ public class DriverServiceSessionFactory implements SessionFactory {
           AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
 
       DriverService service = builder.build();
+      if (service.getExecutable() == null) {
+        Result result = DriverFinder.getPath(service, capabilities);
+        service.setExecutable(result.getDriverPath());
+        if (result.getBrowserPath() != null) {
+          capabilities = setBrowserBinary(capabilities, result.getBrowserPath());
+        }
+      }
       try {
         service.start();
 
@@ -326,5 +337,28 @@ public class DriverServiceSessionFactory implements SessionFactory {
     } catch (WebDriverException e) {
       return HostIdentifier.getHostName();
     }
+  }
+
+  private Capabilities setBrowserBinary(Capabilities options, String browserPath) {
+    List<String> vendorOptionsCapabilities =
+        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+    for (String vendorOptionsCapability : vendorOptionsCapabilities) {
+      if (options.asMap().containsKey(vendorOptionsCapability)) {
+        try {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> vendorOptions =
+              (Map<String, Object>) options.getCapability(vendorOptionsCapability);
+          vendorOptions.put("binary", browserPath);
+          return new PersistentCapabilities(options)
+              .setCapability(vendorOptionsCapability, vendorOptions);
+        } catch (Exception e) {
+          LOG.warning(
+              String.format(
+                  "Exception while setting the browser binary path. %s: %s",
+                  options, e.getMessage()));
+        }
+      }
+    }
+    return options;
   }
 }
