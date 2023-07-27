@@ -24,7 +24,7 @@ def deprecated_attributes(*attrs, message):
                 _attr = getattr(args[0], attr, None)
                 if _attr:
                     warn(f"'{message}': will be removed from {removed_from_version}", DeprecationWarning, stacklevel=2)
-                    return result
+            return result
 
         return wrapper
 
