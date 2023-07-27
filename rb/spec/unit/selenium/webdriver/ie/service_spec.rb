@@ -95,7 +95,7 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)
