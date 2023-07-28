@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -58,7 +57,7 @@ namespace OpenQA.Selenium.Interactions
             get { return this.actionExecutor; }
         }
 
-        public Actions setActivePointer(PointerKind kind, String name)
+        public Actions SetActivePointer(PointerKind kind, String name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -89,7 +88,7 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        public Actions setActiveKeyboard(String name)
+        public Actions SetActiveKeyboard(String name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -120,7 +119,7 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-         public Actions setActiveWheel(String name)
+         public Actions SetActiveWheel(String name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -156,16 +155,16 @@ namespace OpenQA.Selenium.Interactions
         {
             if (this.activePointer == null)
             {
-                setActivePointer(PointerKind.Mouse, "default mouse");
+                SetActivePointer(PointerKind.Mouse, "default mouse");
             }
             return this.activePointer;
         }
 
-        public KeyInputDevice getActiveKeyboard()
+        public KeyInputDevice GetActiveKeyboard()
         {
             if (this.activeKeyboard == null)
             {
-                setActiveKeyboard("default keyboard");
+                SetActiveKeyboard("default keyboard");
             }
             return this.activeKeyboard;
         }
@@ -174,7 +173,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (this.activeWheel == null)
             {
-                setActiveWheel("default wheel");
+                SetActiveWheel("default wheel");
             }
             return this.activeWheel;
         }
@@ -220,8 +219,8 @@ namespace OpenQA.Selenium.Interactions
                 this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyDown(theKey[0]));
-            this.actionBuilder.AddAction(new PauseInteraction(this.getActiveKeyboard(), TimeSpan.FromMilliseconds(100)));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(theKey[0]));
+            this.actionBuilder.AddAction(new PauseInteraction(this.GetActiveKeyboard(), TimeSpan.FromMilliseconds(100)));
             return this;
         }
 
@@ -264,7 +263,7 @@ namespace OpenQA.Selenium.Interactions
                 this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyUp(theKey[0]));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(theKey[0]));
             return this;
         }
 
@@ -301,8 +300,8 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (char key in keysToSend)
             {
-                this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyDown(key));
-                this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyUp(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(key));
             }
 
             return this;

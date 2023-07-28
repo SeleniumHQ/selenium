@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Interactions
         public void ShouldSetActiveWheel()
         {
             Actions actionProvider = new Actions(driver);
-            actionProvider.setActiveWheel("test wheel");
+            actionProvider.SetActiveWheel("test wheel");
 
             WheelInputDevice device = actionProvider.getActiveWheel();
 

@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Interactions
         public void ShouldSetActivePointer()
         {
             Actions actionProvider = new Actions(driver);
-            actionProvider.setActivePointer(PointerKind.Mouse, "test mouse");
+            actionProvider.SetActivePointer(PointerKind.Mouse, "test mouse");
 
             PointerInputDevice device = actionProvider.getActivePointer();
 
