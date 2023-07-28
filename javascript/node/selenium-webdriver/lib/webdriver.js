@@ -1396,13 +1396,20 @@ class WebDriver {
    * @param httpResponse Object representing what we are intercepting
    *                     as well as what should be returned.
    * @param callback callback called when we intercept requests.
+   * @param processPostCallback callback with post data to return a new httpResponse
    */
-  async onIntercept(connection, httpResponse, callback) {
+  async onIntercept(connection, httpResponse, callback, processPostCallback) {
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
+          if (processCallback) {
+            if (requestPausedParams['request'].hasOwnProperty('postData')) {
+              const postData = requestPausedParams['request']['postData']
+              httpResponse = processPostCallback(postData)
+            }
+          }
           connection.execute('Fetch.fulfillRequest', {
             requestId: requestPausedParams['requestId'],
             responseCode: httpResponse.status,
@@ -1427,6 +1434,7 @@ class WebDriver {
       null
     )
   }
+  
   /**
    *
    * @param connection
