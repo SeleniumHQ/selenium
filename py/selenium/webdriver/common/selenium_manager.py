@@ -117,7 +117,10 @@ class SeleniumManager:
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
         try:
-            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            if sys.platform == "win32":
+                completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+            else: 
+                completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
             output = json.loads(stdout)
