@@ -16,7 +16,7 @@
 # under the License.
 import typing
 
-from selenium.deprecated import deprecated_attributes
+from selenium.deprecated import deprecated_attribute
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
@@ -34,9 +34,7 @@ class Service(service.ChromiumService):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
-    @deprecated_attributes(
-        "verbose", message="verbose=True is deprecated. Use `service_args=['--verbose', ...]` instead."
-    )
+    @deprecated_attribute("verbose=True is deprecated. Use `service_args=['--verbose', ...]` instead.", verbose=True)
     def __init__(
         self,
         executable_path: str = None,

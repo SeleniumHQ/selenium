@@ -17,7 +17,7 @@
 import typing
 
 from selenium.common import InvalidArgumentException
-from selenium.deprecated import deprecated_attributes
+from selenium.deprecated import deprecated_attribute
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -33,7 +33,7 @@ class ChromiumService(service.Service):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
-    @deprecated_attributes("log_path", message="log_path has been deprecated, please use log_output")
+    @deprecated_attribute("log_path has been deprecated, please use log_output", log_path=True)
     def __init__(
         self,
         executable_path: str = None,

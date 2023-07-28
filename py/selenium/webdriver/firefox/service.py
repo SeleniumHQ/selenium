@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from typing import List
 
-from selenium.deprecated import deprecated_attributes
+from selenium.deprecated import deprecated_attribute
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
@@ -36,7 +35,11 @@ class Service(service.Service):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
-    @deprecated_attributes("log_path", message="log_path has been deprecated, please use log_output")
+    @deprecated_attribute("log_path has been deprecated, please use log_output", log_path=True)
+    @deprecated_attribute(
+        "Firefox will soon stop logging to geckodriver.log by default; Specify desired logs with log_output",
+        log_output=False,
+    )
     def __init__(
         self,
         executable_path: str = None,
@@ -52,11 +55,6 @@ class Service(service.Service):
             log_output = open(log_path, "a+", encoding="utf-8")
 
         if log_path is None and log_output is None:
-            warnings.warn(
-                "Firefox will soon stop logging to geckodriver.log by default; Specify desired logs with log_output",
-                DeprecationWarning,
-                stacklevel=2,
-            )
             log_output = open("geckodriver.log", "a+", encoding="utf-8")
 
         super().__init__(

@@ -17,7 +17,7 @@
 import typing
 from typing import List
 
-from selenium.deprecated import deprecated_attributes
+from selenium.deprecated import deprecated_attribute
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -25,7 +25,7 @@ from selenium.webdriver.common import service
 class Service(service.Service):
     """Object that manages the starting and stopping of the IEDriver."""
 
-    @deprecated_attributes("log_path", message="log_file has been deprecated, please use log_output")
+    @deprecated_attribute("log_file has been deprecated, please use log_output", log_file=True)
     def __init__(
         self,
         executable_path: str = None,

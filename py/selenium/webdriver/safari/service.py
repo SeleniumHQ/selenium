@@ -17,7 +17,7 @@
 
 import typing
 
-from selenium.deprecated import deprecated_attributes
+from selenium.deprecated import deprecated_attribute
 from selenium.webdriver.common import service
 
 
@@ -32,7 +32,7 @@ class Service(service.Service):
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
-    @deprecated_attributes("quiet", message="quiet is no longer needed to supress output")
+    @deprecated_attribute(message="quiet is no longer needed to supress output", quiet=True)
     def __init__(
         self,
         executable_path: str = None,
