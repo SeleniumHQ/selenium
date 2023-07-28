@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Interactions
             Actions actionProvider = new Actions(driver);
             actionProvider.SetActivePointer(PointerKind.Mouse, "test mouse");
 
-            PointerInputDevice device = actionProvider.getActivePointer();
+            PointerInputDevice device = actionProvider.GetActivePointer();
 
             Assert.AreEqual("test mouse", device.DeviceName);
         }

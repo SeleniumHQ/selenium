@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Interactions
             Actions actionProvider = new Actions(driver);
             actionProvider.SetActiveWheel("test wheel");
 
-            WheelInputDevice device = actionProvider.getActiveWheel();
+            WheelInputDevice device = actionProvider.GetActiveWheel();
 
             Assert.AreEqual("test wheel", device.DeviceName);
         }
