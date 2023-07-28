@@ -41,7 +41,7 @@ def deprecated_attribute(message, **dep_attr):
         def wrapper(*args, **kwargs):
             func(*args, **kwargs)
             dep_attr_name = list(dep_attr.keys())[0]  # getting the name of deprecated attr
-            dep_attr_type = list(dep_attr.values())[0]  # getting should the value be truthy or falsy?
+            dep_attr_type = list(dep_attr.values())[0]  # should the value be truthy or falsy?
             # get the value of the deprecated attributes
             dep_attr_value = getattr(args[0], dep_attr_name)  # getting actual value passed to depattr
             # check the truthiness of the deprecated attribute
