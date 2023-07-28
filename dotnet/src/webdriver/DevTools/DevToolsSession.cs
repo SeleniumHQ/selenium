@@ -582,7 +582,10 @@ namespace OpenQA.Selenium.DevTools
                 var eventData = messageObject["params"];
 
                 LogTrace("Recieved Event {0}: {1}", method, eventData.ToString());
-                OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
+
+                // fire and forget
+                Task.Run(() => OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData)));
+
                 return;
             }
 
