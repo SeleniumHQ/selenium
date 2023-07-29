@@ -283,6 +283,7 @@ pub trait SeleniumManager {
                                     self.get_browser_name(),
                                     major_online_browser_version,
                                 ));
+                                self.set_browser_version(version);
                             }
                         }
                     } else if !major_browser_version.is_empty()

@@ -482,7 +482,43 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        Ok(Some(self.request_latest_browser_version_from_cft()?))
+        let browser_name = self.browser_name;
+        let browser_version;
+        let major_browser_version = self.get_major_browser_version();
+        let mut metadata = get_metadata(self.get_logger());
+
+        // First, browser version is checked in the local metadata
+        match get_browser_version_from_metadata(
+            &metadata.browsers,
+            browser_name,
+            &major_browser_version,
+        ) {
+            Some(version) => {
+                self.get_logger().trace(format!(
+                    "Browser with valid TTL. Getting {} version from metadata",
+                    browser_name
+                ));
+                browser_version = version;
+                self.set_browser_version(browser_version.clone());
+            }
+            _ => {
+                // If not in metadata, discover version using Chrome for Testing (CfT) endpoints
+                browser_version = self.request_latest_browser_version_from_cft()?;
+
+                let browser_ttl = self.get_browser_ttl();
+                if browser_ttl > 0 {
+                    metadata.browsers.push(create_browser_metadata(
+                        browser_name,
+                        &major_browser_version,
+                        &browser_version,
+                        browser_ttl,
+                    ));
+                    write_metadata(&metadata, self.get_logger());
+                }
+            }
+        }
+
+        Ok(Some(browser_version))
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
