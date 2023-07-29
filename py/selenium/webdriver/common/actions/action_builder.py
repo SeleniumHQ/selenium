@@ -39,19 +39,16 @@ class ActionBuilder:
         keyboard: Optional[KeyInput] = None,
         duration: int = 250,
     ) -> None:
-        if not mouse:
-            mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
-        if not keyboard:
-            keyboard = KeyInput(interaction.KEY)
-        if not wheel:
-            wheel = WheelInput(interaction.WHEEL)
+        mouse = mouse or PointerInput(interaction.POINTER_MOUSE, "mouse")
+        keyboard = keyboard or KeyInput(interaction.KEY)
+        wheel = wheel or WheelInput(interaction.WHEEL)
         self.devices = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name: str) -> Union["WheelInput", "PointerInput", "KeyInput"]:
+    def get_device_with(self, name: str) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
