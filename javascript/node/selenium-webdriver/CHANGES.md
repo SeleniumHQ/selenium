@@ -1,3 +1,28 @@
+## v4.11.0
+
+#### :nail_care: Polish
+
+* [BiDi] fix addPreloadScript failing tests (#12182)
+* [bazel] Run buildifier in the format script
+* Print debug message once for each browser when selenium manager used
+* Add forgotten RelativeBy in check options (#12289)
+* SM supports all browsers in Selenium since a while ago
+* Using SM to check drivers on the PATH
+* Display info about SM activity
+* Removing logic to find drivers, delegating to SM
+* Removing service parameter from getPath
+* add support for Chrome 115 and remove support for Chrome 112
+
+#### :rocket: New Feature
+
+* [BiDi] add Network module events (#12197)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* Add browser output from Selenium Manager to options (#12411)
+
+#### :bug: Bug Fix
+
+* fix SeleniumServer.start() crashes on MacOS with nodejs selenium-webdriver (#12158)
+
 ## v4.10.0
 
 #### :nail_care: Polish
@@ -1307,3 +1332,12 @@ major version release (i.e. 1.0.0).
 * Initial release for npm:
 
         npm install selenium-webdriver
+
+
+
+
+
+    
+
+
+    
