@@ -599,6 +599,7 @@ impl SeleniumManager for ChromeManager {
 
         if !self.is_browser_version_unstable()
             && !self.is_browser_version_stable()
+            && !self.is_browser_version_empty()
             && major_browser_version_int < MIN_CHROME_VERSION_CFT
         {
             return Err(format_three_args(
@@ -626,7 +627,7 @@ impl SeleniumManager for ChromeManager {
             }
             _ => {
                 // If not in metadata, discover version using Chrome for Testing (CfT) endpoints
-                if self.is_browser_version_stable() {
+                if self.is_browser_version_stable() || self.is_browser_version_empty() {
                     browser_version = self.request_latest_browser_version_from_cft()?;
                 } else {
                     browser_version = self.request_fixed_browser_version_from_cft()?;
@@ -634,7 +635,10 @@ impl SeleniumManager for ChromeManager {
                 self.set_browser_version(browser_version.clone());
 
                 let browser_ttl = self.get_browser_ttl();
-                if browser_ttl > 0 && !self.is_browser_version_stable() {
+                if browser_ttl > 0
+                    && !self.is_browser_version_empty()
+                    && !self.is_browser_version_stable()
+                {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
                         &major_browser_version,
@@ -662,7 +666,7 @@ impl SeleniumManager for ChromeManager {
             let browser_url = if let Some(url) = self.browser_url.clone() {
                 url
             } else {
-                if self.is_browser_version_stable() {
+                if self.is_browser_version_stable() || self.is_browser_version_empty() {
                     self.request_latest_browser_version_from_cft()?;
                 } else {
                     self.request_fixed_browser_version_from_cft()?;
