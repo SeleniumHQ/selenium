@@ -257,13 +257,13 @@ namespace OpenQA.Selenium.DevTools.V114
         }
 
         /// <summary>
-        /// Asynchronously contines an intercepted network response without modification.
+        /// Asynchronously continues an intercepted network response without modification.
         /// </summary>
         /// <param name="responseData">The <see cref="HttpResponseData"/> of the network response.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task ContinueResponseWithoutModification(HttpResponseData responseData)
         {
-            await fetch.ContinueRequest(new ContinueRequestCommandSettings() { RequestId = responseData.RequestId });
+            await fetch.ContinueResponse(new ContinueResponseCommandSettings() { RequestId = responseData.RequestId });
         }
 
         private void OnFetchAuthRequired(object sender, Fetch.AuthRequiredEventArgs e)
