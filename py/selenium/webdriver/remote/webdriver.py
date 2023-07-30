@@ -870,6 +870,7 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_size()
         """
 
+        self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
         if size.get("value", None):
