@@ -118,8 +118,10 @@ class SeleniumManager:
         logger.debug(f"Executing process: {command}")
         try:
             if sys.platform == "win32":
-                completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
-            else: 
+                completed_proc = subprocess.run(
+                    args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+            else:
                 completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
