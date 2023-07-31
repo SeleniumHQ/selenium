@@ -1,5 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 LARGE_TESTS = [
@@ -21,7 +22,7 @@ java_library(
     ],
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     runtime_deps = [
         artifact("org.slf4j:slf4j-jdk14"),
@@ -48,7 +49,7 @@ java_selenium_test_suite(
     ],
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     tags = [
         "selenium-remote",

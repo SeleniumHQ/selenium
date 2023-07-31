@@ -1,5 +1,6 @@
 # Disabled until we actually have a test. Where did it go?
-
+#load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+#
 #java_test_suite(
 #    name = "SmallTests",
 #    size = "small",
@@ -11,7 +12,7 @@
 #    ],
 #    javacopts = [
 #        "--release",
-#        "11",
+#        TOOLS_JAVA_VERSION,
 #    ],
 #    deps = [
 #        "//java/src/dev/selenium/tools/modules:ModuleGenerator",

@@ -1,5 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -65,7 +66,7 @@ java_selenium_test_suite(
     ],
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     deps = [
         ":helpers",
