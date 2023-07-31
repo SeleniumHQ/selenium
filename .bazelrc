@@ -142,3 +142,7 @@ test:remote --test_timeout=600
 build:remote-ci --config=remote
 build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
 build:remote-ci --bes_upload_mode=wait_for_upload_complete
+
+# Configuration changes suggested by EngFlow
+build:remote --grpc_keepalive_time=30s
+build:remote --nolegacy_important_outputs
