@@ -205,7 +205,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         NodeHeartBeatEvent.listener(
             nodeStatus -> {
               if (nodes.containsKey(nodeStatus.getNodeId())) {
-                model.touch(nodeStatus.getNodeId());
+                model.touch(nodeStatus);
               } else {
                 register(nodeStatus);
               }
