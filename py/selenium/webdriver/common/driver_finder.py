@@ -37,8 +37,8 @@ class DriverFinder:
         try:
             path = SeleniumManager().driver_location(options) if path is None else path
         except Exception as err:
-            msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager; {err}"
-            raise NoSuchDriverException(msg)
+            msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager."
+            raise NoSuchDriverException(msg) from err
 
         if path is None or not Path(path).is_file():
             raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")

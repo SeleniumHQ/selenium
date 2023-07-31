@@ -797,6 +797,7 @@ class WebDriver(BaseWebDriver):
             warnings.warn(
                 "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.get_screenshot_as_png()
         try:
@@ -857,8 +858,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_size(800,600)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle: str = "current") -> dict:
@@ -870,8 +870,7 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_size()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
         if size.get("value", None):
@@ -891,8 +890,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_position(0,0)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle="current") -> dict:
@@ -904,11 +902,15 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_position()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
         return {k: position[k] for k in ("x", "y")}
+
+    def _check_if_window_handle_is_current(windowHandle: str) -> None:
+        """Warns if the window handle is not equal to `current`."""
+        if windowHandle != "current":
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
 
     def get_window_rect(self) -> dict:
         """Gets the x, y coordinates of the window as well as height and width
