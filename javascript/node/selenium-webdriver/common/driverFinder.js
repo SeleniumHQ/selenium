@@ -22,37 +22,22 @@
  */
 
 const { driverLocation } = require('./seleniumManager')
-const fs = require('fs')
 
 /**
  * Determines the path of the correct Selenium Manager binary
- * @returns {string}
+ * @returns {{browserPath: string, driverPath: string}} path of the driver
+ * and browser location
  */
-function getPath(service, capabilities) {
+function getPath(capabilities) {
   try {
-    return pathExists(service.getExecutable()) || driverLocation(capabilities)
+    return driverLocation(capabilities)
   } catch (e) {
     throw Error(
       `Unable to obtain browser driver.
         For more information on how to install drivers see
-        https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/. ${e}`
+        https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/. ${e}`
     )
   }
-}
-
-/**
- * _Synchronously_ attempts to locate the driver executable on the current
- * system.
- *
- * @param {!string} driverPath
- *
- * @return {?string} the located executable, or `null`.
- */
-function pathExists(driverPath) {
-  if (!driverPath || !fs.existsSync(driverPath)) {
-    return null
-  }
-  return driverPath
 }
 
 // PUBLIC API

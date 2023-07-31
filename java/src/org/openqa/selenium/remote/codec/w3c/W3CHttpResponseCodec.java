@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
@@ -74,10 +75,10 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String content = string(encodedResponse).trim();
-    LOG.fine(
-        String.format(
-            "Decoding response. Response code was: %d and content: %s",
-            encodedResponse.getStatus(), content));
+    LOG.log(
+        Level.FINE,
+        "Decoding response. Response code was: {0} and content: {1}",
+        new Object[] {encodedResponse.getStatus(), content});
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
 
     Response response = new Response();

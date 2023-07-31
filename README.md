@@ -310,10 +310,11 @@ More information about running Selenium's .NET tests can be found in this [READM
 
 Targets:
 
-| Command                               | Description                         |
-|---------------------------------------|-------------------------------------|
-| `bazel build //rust:selenium-manager` | Build selenium-manager binary       |
-| `bazel test //rust/...`               | Run both unit and integration tests |
+| Command                                           | Description                               |
+|---------------------------------------------------|-------------------------------------------|
+| `bazel build //rust:selenium-manager`             | Build selenium-manager binary             |
+| `bazel test //rust/...`                           | Run both unit and integration tests       |
+| `CARGO_BAZEL_REPIN=true bazel sync --only=crates` | Sync `Cargo.Bazel.lock` with `Cargo.lock` |
 
 </details>
 

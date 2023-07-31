@@ -170,7 +170,8 @@ public class ChromiumDriver extends RemoteWebDriver
                               + " where the version (\"v86\") matches the version of the"
                               + " chromium-based browser you're using and the version number of the"
                               + " artifact is the same as Selenium's.",
-                          capabilities.getBrowserVersion(), new BuildInfo().getReleaseLabel()));
+                          originalCapabilities.getBrowserVersion(),
+                          new BuildInfo().getReleaseLabel()));
                   return new NoOpCdpInfo();
                 });
 

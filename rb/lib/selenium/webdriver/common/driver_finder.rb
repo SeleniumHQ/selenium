@@ -23,7 +23,6 @@ module Selenium
       def self.path(options, klass)
         path = klass.driver_path
         path = path.call if path.is_a?(Proc)
-        path ||= Platform.find_binary(klass::EXECUTABLE)
 
         path ||= begin
           SeleniumManager.driver_path(options) unless options.is_a?(Remote::Capabilities)
@@ -32,7 +31,6 @@ module Selenium
         end
 
         begin
-          Platform.assert_file(path)
           Platform.assert_executable(path)
         rescue TypeError
           raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"

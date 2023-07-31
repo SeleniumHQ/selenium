@@ -67,6 +67,8 @@ class Options(ArgOptions):
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self.binary = value
 
     @property
@@ -122,6 +124,8 @@ class Options(ArgOptions):
         warnings.warn(
             "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
         )
+        if not isinstance(value, bool):
+            raise TypeError("value must be a boolean")
         if value:
             self._arguments.append("-headless")
         elif "-headless" in self._arguments:

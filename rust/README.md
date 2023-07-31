@@ -16,7 +16,7 @@ Selenium Manager can be executed using Cargo as follows:
 
 ```
 $ cargo run -- --help
-selenium-manager 1.0.0-M3
+selenium-manager 1.0.0-M4
 Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
 
 Usage: selenium-manager [OPTIONS]
@@ -25,22 +25,24 @@ Options:
           Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
       --driver <DRIVER>
           Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
+      --grid [<GRID_VERSION>]
+          Selenium Grid. If version is not provided, the latest version is downloaded
       --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
       --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
       --browser-path <BROWSER_PATH>
-          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "C:\Program Files\Google\Chrome\Application\chrome.exe")
       --output <OUTPUT>
           Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like) [default: LOGGER]
       --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 180]
+          Timeout for network requests (in seconds) [default: 300]
       --driver-ttl <DRIVER_TTL>
-          Driver TTL (time-to-live) [default: 86400]
+          Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
-          Browser TTL (time-to-live) [default: 0]
+          Browser TTL (time-to-live) [default: 3600]
       --clear-cache
           Clear cache folder (~/.cache/selenium)
       --clear-metadata
@@ -49,6 +51,10 @@ Options:
           Display DEBUG messages
       --trace
           Display TRACE messages
+      --offline
+          Offline mode (i.e., disabling network requests and downloads)
+      --force-browser-download
+          Force to download browser. Currently Chrome for Testing (CfT) is supported
   -h, --help
           Print help
   -V, --version

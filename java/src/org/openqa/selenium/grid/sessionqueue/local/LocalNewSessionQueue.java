@@ -186,6 +186,17 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
+  public boolean peekEmpty() {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      return requests.isEmpty() && queue.isEmpty();
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  @Override
   public HttpResponse addToQueue(SessionRequest request) {
     Require.nonNull("New session request", request);
     Require.nonNull("Request id", request.getRequestId());

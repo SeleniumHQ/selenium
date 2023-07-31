@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use reqwest::Client;
+use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fs::File;
@@ -28,7 +28,7 @@ use crate::files::parse_version;
 use crate::Logger;
 
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(
+pub async fn download_to_tmp_folder(
     http_client: &Client,
     url: String,
     log: &Logger,
@@ -40,7 +40,12 @@ pub async fn download_driver_to_tmp_folder(
         tmp_dir.path()
     ));
 
-    let response = http_client.get(url).send().await?;
+    let response = http_client.get(&url).send().await?;
+    let status_code = response.status();
+    if status_code != StatusCode::OK {
+        return Err(format!("Unsuccessful response ({}) for URL {}", status_code, url).into());
+    }
+
     let target_path;
     let mut tmp_file = {
         let target_name = response

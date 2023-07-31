@@ -144,7 +144,8 @@ class RouterTest {
             Duration.ofSeconds(1),
             false,
             Duration.ofSeconds(5),
-            Runtime.getRuntime().availableProcessors());
+            Runtime.getRuntime().availableProcessors(),
+            new DefaultSlotMatcher());
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);

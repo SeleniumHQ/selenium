@@ -133,7 +133,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
       service = InternetExplorerDriverService.createDefaultService();
     }
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(service, options);
+      String path = DriverFinder.getPath(service, options).getDriverPath();
       service.setExecutable(path);
     }
     if (clientConfig == null) {

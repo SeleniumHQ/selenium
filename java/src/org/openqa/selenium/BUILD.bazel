@@ -12,6 +12,7 @@ java_export(
     name = "core",
     srcs = glob([
         "*.java",
+        "federatedcredentialmanagement/*.java",
         "html5/*.java",
         "internal/*.java",
         "interactions/**/*.java",

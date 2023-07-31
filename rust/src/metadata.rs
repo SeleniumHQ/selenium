@@ -31,13 +31,14 @@ const METADATA_FILE: &str = "selenium-manager.json";
 #[derive(Serialize, Deserialize)]
 pub struct Browser {
     pub browser_name: String,
+    pub major_browser_version: String,
     pub browser_version: String,
     pub browser_ttl: u64,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Driver {
-    pub browser_version: String,
+    pub major_browser_version: String,
     pub driver_name: String,
     pub driver_version: String,
     pub driver_ttl: u64,
@@ -92,10 +93,13 @@ pub fn get_metadata(log: &Logger) -> Metadata {
 pub fn get_browser_version_from_metadata(
     browsers_metadata: &[Browser],
     browser_name: &str,
+    major_browser_version: &str,
 ) -> Option<String> {
     let browser: Vec<&Browser> = browsers_metadata
         .iter()
-        .filter(|b| b.browser_name.eq(browser_name))
+        .filter(|b| {
+            b.browser_name.eq(browser_name) && b.major_browser_version.eq(major_browser_version)
+        })
         .collect();
     if browser.is_empty() {
         None
@@ -107,11 +111,13 @@ pub fn get_browser_version_from_metadata(
 pub fn get_driver_version_from_metadata(
     drivers_metadata: &[Driver],
     driver_name: &str,
-    browser_version: &str,
+    major_browser_version: &str,
 ) -> Option<String> {
     let driver: Vec<&Driver> = drivers_metadata
         .iter()
-        .filter(|d| d.driver_name.eq(driver_name) && d.browser_version.eq(browser_version))
+        .filter(|d| {
+            d.driver_name.eq(driver_name) && d.major_browser_version.eq(major_browser_version)
+        })
         .collect();
     if driver.is_empty() {
         None
@@ -122,24 +128,26 @@ pub fn get_driver_version_from_metadata(
 
 pub fn create_browser_metadata(
     browser_name: &str,
-    browser_version: &String,
+    major_browser_version: &str,
+    browser_version: &str,
     browser_ttl: u64,
 ) -> Browser {
     Browser {
         browser_name: browser_name.to_string(),
+        major_browser_version: major_browser_version.to_string(),
         browser_version: browser_version.to_string(),
         browser_ttl: now_unix_timestamp() + browser_ttl,
     }
 }
 
 pub fn create_driver_metadata(
-    browser_version: &str,
+    major_browser_version: &str,
     driver_name: &str,
     driver_version: &str,
     driver_ttl: u64,
 ) -> Driver {
     Driver {
-        browser_version: browser_version.to_string(),
+        major_browser_version: major_browser_version.to_string(),
         driver_name: driver_name.to_string(),
         driver_version: driver_version.to_string(),
         driver_ttl: now_unix_timestamp() + driver_ttl,

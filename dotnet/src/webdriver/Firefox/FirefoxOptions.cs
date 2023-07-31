@@ -104,6 +104,15 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Gets or sets the path and file name of the Firefox browser executable.
         /// </summary>
+        public override string BinaryLocation
+        {
+            get { return this.browserBinaryLocation; }
+            set { this.browserBinaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path and file name of the Firefox browser executable.
+        /// </summary>
         public string BrowserExecutableLocation
         {
             get { return this.browserBinaryLocation; }

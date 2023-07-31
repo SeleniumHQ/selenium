@@ -1238,8 +1238,8 @@ class WebDriver {
     } else {
       const seCdp = caps['map_'].get('se:cdp')
       const vendorInfo =
-        caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
-        caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
+        caps['map_'].get('goog:chromeOptions') ||
+        caps['map_'].get('ms:edgeOptions') ||
         caps['map_'].get('moz:debuggerAddress') ||
         new Map()
       debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo

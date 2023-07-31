@@ -96,6 +96,13 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     return new RequestId(UUID.fromString(params.get("requestId")));
   }
 
+  /**
+   * A fast-path to detect if the queue is empty, returns false if there is no fast-path available.
+   *
+   * @return true if the queue is empty, false if it is not empty or unknown
+   */
+  public abstract boolean peekEmpty();
+
   public abstract HttpResponse addToQueue(SessionRequest request);
 
   public abstract boolean retryAddToQueue(SessionRequest request);

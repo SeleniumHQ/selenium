@@ -37,22 +37,26 @@ module Selenium
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
-          message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
-          WebDriver.logger.debug(message, id: :selenium_manager)
-
           command = generate_command(binary, options)
 
-          location = run(*command)
-          WebDriver.logger.debug("Driver found at #{location}", id: :selenium_manager)
-          Platform.assert_executable location
+          output = run(*command)
 
-          location
+          browser_path = output['browser_path']
+          driver_path = output['driver_path']
+          Platform.assert_executable driver_path
+
+          if options.respond_to? :binary
+            options.binary = browser_path
+            options.browser_version = nil
+          end
+
+          driver_path
         end
 
         private
 
         def generate_command(binary, options)
-          command = [binary, '--browser', options.browser_name, '--output', 'json']
+          command = [binary, '--browser', options.browser_name]
           if options.browser_version
             command << '--browser-version'
             command << options.browser_version
@@ -65,7 +69,6 @@ module Selenium
             command << '--proxy'
             (command << options.proxy.ssl) || options.proxy.http
           end
-          command << '--debug' if WebDriver.logger.debug?
           command
         end
 
@@ -98,12 +101,15 @@ module Selenium
         end
 
         def run(*command)
+          command += %w[--output json]
+          command << '--debug' if WebDriver.logger.debug?
+
           WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
           begin
             stdout, stderr, status = Open3.capture3(*command)
             json_output = stdout.empty? ? nil : JSON.parse(stdout)
-            result = json_output&.dig('result', 'message')
+            result = json_output['result']
           rescue StandardError => e
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end

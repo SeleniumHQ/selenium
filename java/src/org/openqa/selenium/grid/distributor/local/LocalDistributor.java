@@ -80,6 +80,7 @@ import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.GridModel;
@@ -134,6 +135,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
+  private final SlotMatcher slotMatcher;
 
   private final ScheduledExecutorService newSessionService =
       Executors.newSingleThreadScheduledExecutor(
@@ -179,7 +181,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
       Duration healthcheckInterval,
       boolean rejectUnsupportedCaps,
       Duration sessionRequestRetryInterval,
-      int newSessionThreadPoolSize) {
+      int newSessionThreadPoolSize,
+      SlotMatcher slotMatcher) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -192,6 +195,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
+    this.slotMatcher = slotMatcher;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
@@ -201,7 +205,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         NodeHeartBeatEvent.listener(
             nodeStatus -> {
               if (nodes.containsKey(nodeStatus.getNodeId())) {
-                model.touch(nodeStatus.getNodeId());
+                model.touch(nodeStatus);
               } else {
                 register(nodeStatus);
               }
@@ -263,7 +267,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         distributorOptions.getHealthCheckInterval(),
         distributorOptions.shouldRejectUnsupportedCaps(),
         newSessionQueueOptions.getSessionRequestRetryInterval(),
-        distributorOptions.getNewSessionThreadPoolSize());
+        distributorOptions.getNewSessionThreadPoolSize(),
+        distributorOptions.getSlotMatcher());
   }
 
   @Override
@@ -661,7 +666,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes());
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
       if (slotIds.isEmpty()) {
         LOG.log(
             getDebugLogLevel(),
@@ -682,7 +687,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
   }
 
   private boolean isNotSupported(Capabilities caps) {
-    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps));
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps, slotMatcher));
   }
 
   private boolean reserve(SlotId id) {
@@ -750,7 +755,18 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
 
     @Override
     public void run() {
-      boolean loop = true;
+      Set<RequestId> inQueue;
+      boolean loop;
+      if (rejectUnsupportedCaps) {
+        inQueue =
+            sessionQueue.getQueueContents().stream()
+                .map(SessionRequestCapability::getRequestId)
+                .collect(Collectors.toSet());
+        loop = !inQueue.isEmpty();
+      } else {
+        inQueue = null;
+        loop = !sessionQueue.peekEmpty();
+      }
       while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
         // starting the session, we just put the request back on the queue.
@@ -759,13 +775,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         Map<Capabilities, Long> stereotypes =
             getAvailableNodes().stream()
                 .filter(NodeStatus::hasCapacity)
-                .map(
-                    node ->
-                        node.getSlots().stream()
-                            .map(Slot::getStereotype)
-                            .collect(Collectors.toList()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(ImmutableCapabilities::new, Collectors.counting()));
+                .flatMap(node -> node.getSlots().stream().map(Slot::getStereotype))
+                .collect(
+                    Collectors.groupingBy(ImmutableCapabilities::copyOf, Collectors.counting()));
 
         if (!stereotypes.isEmpty()) {
           List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
@@ -777,7 +789,10 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         }
       }
       if (rejectUnsupportedCaps) {
-        checkMatchingSlot(sessionQueue.getQueueContents());
+        checkMatchingSlot(
+            sessionQueue.getQueueContents().stream()
+                .filter((src) -> inQueue.contains(src.getRequestId()))
+                .collect(Collectors.toList()));
       }
     }
 
@@ -816,8 +831,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try (Span childSpan = span.createSpan("distributor.retry")) {
             LOG.log(
-                Debug.getDebugLogLevel(),
-                String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
+                Debug.getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));

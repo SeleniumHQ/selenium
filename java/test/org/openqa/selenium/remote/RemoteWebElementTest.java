@@ -30,6 +30,8 @@ import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResp
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -37,6 +39,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 
 @Tag("UnitTests")
 class RemoteWebElementTest {
@@ -91,33 +94,36 @@ class RemoteWebElementTest {
 
   @Test
   void canHandleGeneralExceptionThrownByCommandExecutor() {
-    WebElementFixture fixture =
-        new WebElementFixture(
-            new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
-            echoCapabilities,
-            exceptionResponder);
+    try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
+      debugMock.when(Debug::isDebugging).thenReturn(true);
+      WebElementFixture fixture =
+          new WebElementFixture(
+              new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
+              echoCapabilities,
+              exceptionResponder);
 
-    assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(fixture.element::click)
-        .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
-        .withMessageContaining("Build info: ")
-        .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-        .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
-        .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
-        .withMessageContaining(
-            String.format(
-                "Command: [%s, clickElement {id=%s}]",
-                fixture.driver.getSessionId(), fixture.element.getId()))
-        .withMessageContaining(
-            String.format(
-                "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]",
-                fixture.driver.getSessionId()))
-        .havingCause()
-        .withMessage("BOOM!!!");
+      assertThatExceptionOfType(WebDriverException.class)
+          .isThrownBy(fixture.element::click)
+          .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
+          .withMessageContaining("Build info: ")
+          .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+          .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+          .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+          .withMessageContaining(
+              String.format(
+                  "Command: [%s, clickElement {id=%s}]",
+                  fixture.driver.getSessionId(), fixture.element.getId()))
+          .withMessageContaining(
+              String.format(
+                  "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]",
+                  fixture.driver.getSessionId()))
+          .havingCause()
+          .withMessage("BOOM!!!");
 
-    fixture.verifyCommands(
-        new CommandPayload(
-            DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+      fixture.verifyCommands(
+          new CommandPayload(
+              DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+    }
   }
 
   @Test

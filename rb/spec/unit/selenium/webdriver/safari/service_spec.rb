@@ -56,8 +56,6 @@ module Selenium
           end
 
           it 'does not create args by default' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new
 
             expect(service.extra_args).to be_empty
@@ -71,8 +69,6 @@ module Selenium
           end
 
           it 'uses provided args' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
@@ -101,7 +97,7 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
-            allow(Platform).to receive(:find_binary).and_return('/path/to/safaridriver')
+            allow(DriverFinder).to receive(:path).and_return('/path/to/safaridriver')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
@@ -112,7 +108,7 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(Platform).to receive(:find_binary).and_return('path/to/safaridriver')
+            allow(DriverFinder).to receive(:path).and_return('/path/to/safaridriver')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)

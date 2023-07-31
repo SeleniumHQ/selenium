@@ -87,12 +87,13 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isPresent() {
-    return EdgeDriverService.isPresent();
-  }
-
-  @Override
-  public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors();
+    try {
+      DriverFinder.getPath(
+          EdgeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      return true;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
   }
 
   @Override

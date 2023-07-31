@@ -129,4 +129,13 @@ class CapabilitiesTest {
     assertThat(one.hashCode()).isEqualTo(three.hashCode());
     assertThat(two.hashCode()).isEqualTo(three.hashCode());
   }
+
+  @Test
+  void ensureEqualHashCodesMightBeNotEqual() {
+    Capabilities one = new ImmutableCapabilities("key", "DB");
+    Capabilities two = new ImmutableCapabilities("key", "Ca");
+
+    assertThat(one.hashCode()).isEqualTo(two.hashCode());
+    assertThat(one).isNotEqualTo(two);
+  }
 }
