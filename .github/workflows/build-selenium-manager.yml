@@ -83,7 +83,7 @@ jobs:
           cargo build --release --target aarch64-apple-darwin
       - name: "Build universal"
         run: |
-          cd rust/
+          cd rust
           lipo -create \
             -output target/selenium-manager \
             target/aarch64-apple-darwin/release/selenium-manager \
@@ -91,7 +91,7 @@ jobs:
       - name: "Tar binary (to keep executable permission)"
         run: |
           cd rust/target
-          tar -cvf ../../../../selenium-manager.tar selenium-manager
+          tar -cvf ../../selenium-manager.tar selenium-manager
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
         with:
