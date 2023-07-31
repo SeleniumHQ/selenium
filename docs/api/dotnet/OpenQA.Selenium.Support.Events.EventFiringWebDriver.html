@@ -1,0 +1,2052 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EventFiringWebDriver
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EventFiringWebDriver
+ ">
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Support_Events_EventFiringWebDriver.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Support.Events.EventFiringWebDriver%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+  </head>
+
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver">
+
+
+
+  <h1 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver" class="text-break">
+    Class EventFiringWebDriver
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.Support.html">Support</a>.<a class="xref" href="OpenQA.Selenium.Support.Events.html">Events</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.Support.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A wrapper around an arbitrary WebDriver instance which supports registering for
+events, e.g. for logging purposes.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class EventFiringWebDriver : IWebDriver, ISearchContext, IDisposable, IJavaScriptExecutor, ITakesScreenshot, IWrapsDriver</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">EventFiringWebDriver</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ISearchContext.html">ISearchContext</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IJavaScriptExecutor.html">IJavaScriptExecutor</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.ITakesScreenshot.html">ITakesScreenshot</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.IWrapsDriver.html">IWrapsDriver</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="OpenQA.Selenium.Support.Extensions.WebDriverExtensions.html#OpenQA_Selenium_Support_Extensions_WebDriverExtensions_ExecuteJavaScript_OpenQA_Selenium_IWebDriver_System_String_System_Object___">WebDriverExtensions.ExecuteJavaScript(IWebDriver, string, params object[])</a>
+  </div>
+  <div>
+      <a class="xref" href="OpenQA.Selenium.Support.Extensions.WebDriverExtensions.html#OpenQA_Selenium_Support_Extensions_WebDriverExtensions_ExecuteJavaScript__1_OpenQA_Selenium_IWebDriver_System_String_System_Object___">WebDriverExtensions.ExecuteJavaScript&lt;T&gt;(IWebDriver, string, params object[])</a>
+  </div>
+  <div>
+      <a class="xref" href="OpenQA.Selenium.Support.Extensions.WebDriverExtensions.html#OpenQA_Selenium_Support_Extensions_WebDriverExtensions_TakeScreenshot_OpenQA_Selenium_IWebDriver_">WebDriverExtensions.TakeScreenshot(IWebDriver)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver__ctor_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver__ctor_OpenQA_Selenium_IWebDriver_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.#ctor(OpenQA.Selenium.IWebDriver)">
+  EventFiringWebDriver(IWebDriver)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html">EventFiringWebDriver</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EventFiringWebDriver(IWebDriver parentDriver)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>parentDriver</code> <a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></dt>
+    <dd><p>The driver to register events for.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_CurrentWindowHandle_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.CurrentWindowHandle*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_CurrentWindowHandle" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.CurrentWindowHandle">
+  CurrentWindowHandle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current window handle, which is an opaque handle to this
+window that uniquely identifies it within this driver instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CurrentWindowHandle { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_PageSource_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.PageSource*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_PageSource" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.PageSource">
+  PageSource
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L219"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the source of the page last loaded by the browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PageSource { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_PageSource_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If the page has been modified after loading (for example, by JavaScript)
+there is no guarantee that the returned text is that of the modified page.
+Please consult the documentation of the particular driver being used to
+determine whether the returned text reflects the current state of the page
+or the text last sent by the web server. The page source returned is a
+representation of the underlying DOM: do not expect it to be formatted
+or escaped in the same way as the response sent from the web server.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Title_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Title*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Title" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Title">
+  Title
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the title of the current browser window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Title { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Url*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Url">
+  Url
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the URL the browser is currently displaying.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Url { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Setting the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url">Url</a> property will load a new web page in the current browser window.
+This is done using an HTTP GET operation, and the method will block until the
+load is complete. This will follow redirects issued either by the server or
+as a meta-redirect from within the returned HTML. Should a meta-redirect &quot;rest&quot;
+for any duration of time, it is best to wait until this timeout is over, since
+should the underlying page change while your test is executing the results of
+future calls against this interface will be against the freshly loaded page.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="OpenQA.Selenium.INavigation.html#OpenQA.Selenium.INavigation.GoToUrl(System.String)">GoToUrl</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>)</div>
+    <div><a class="xref" href="OpenQA.Selenium.INavigation.html#OpenQA.Selenium.INavigation.GoToUrl(System.Uri)">GoToUrl</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a>)</div>
+    </dd>
+  </dl>
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_WindowHandles_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.WindowHandles*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_WindowHandles" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.WindowHandles">
+  WindowHandles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the window handles of open browser windows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyCollection&lt;string&gt; WindowHandles { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_WrappedDriver_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.WrappedDriver*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_WrappedDriver" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.WrappedDriver">
+  WrappedDriver
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the <a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a> wrapped by this EventsFiringWebDriver instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IWebDriver WrappedDriver { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.IWebDriver.html">IWebDriver</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Close_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Close*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Close" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Close">
+  Close()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L286"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Close the current window, quitting the browser if it is the last window currently open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Close()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L405"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frees all managed and unmanaged resources used by this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_System_Boolean_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L588"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Frees all managed and, optionally, unmanaged resources used by this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to dispose of only managed resources;
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to dispose of managed and unmanaged resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteAsyncScript_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteAsyncScript*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteAsyncScript_System_String_System_Object___" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteAsyncScript(System.String,System.Object[])">
+  ExecuteAsyncScript(string, params object[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L540"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes JavaScript asynchronously in the context of the currently selected frame or window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object ExecuteAsyncScript(string script, params object[] args)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>script</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The JavaScript code to execute.</p>
+</dd>
+    <dt><code>args</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>[]</dt>
+    <dd><p>The arguments to the script.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The value returned by the script.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteScript*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_OpenQA_Selenium_PinnedScript_System_Object___" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteScript(OpenQA.Selenium.PinnedScript,System.Object[])">
+  ExecuteScript(PinnedScript, params object[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L508"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes JavaScript in the context of the currently selected frame or window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object ExecuteScript(PinnedScript script, params object[] args)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>script</code> <a class="xref" href="OpenQA.Selenium.PinnedScript.html">PinnedScript</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.PinnedScript.html">PinnedScript</a> object containing the code to execute.</p>
+</dd>
+    <dt><code>args</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>[]</dt>
+    <dd><p>The arguments to the script.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The value returned by the script.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_OpenQA_Selenium_PinnedScript_System_Object____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_System_String_System_Object___">ExecuteScript(string, params object[])</a>method executes JavaScript in the context of
+the currently selected frame or window. This means that "document" will refer
+to the current document. If the script has a return value, then the following
+steps will be taken:
+</p>
+<p>
+<ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> of that type, following the rules above. Nested lists are not
+supported.</li><li>If the value is null or there is no return value,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is returned.</li></ul>
+
+<p>
+Arguments must be a number (which will be converted to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>),
+a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> or a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>,
+or a <a class="xref" href="OpenQA.Selenium.IWrapsElement.html">IWrapsElement</a>.
+An exception will be thrown if the arguments do not meet these criteria.
+The arguments will be made available to the JavaScript via the "arguments" magic
+variable, as if the function were called via "Function.apply"
+</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteScript*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_System_String_System_Object___" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExecuteScript(System.String,System.Object[])">
+  ExecuteScript(string, params object[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L446"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes JavaScript in the context of the currently selected frame or window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object ExecuteScript(string script, params object[] args)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>script</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The JavaScript code to execute.</p>
+</dd>
+    <dt><code>args</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>[]</dt>
+    <dd><p>The arguments to the script.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The value returned by the script.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_System_String_System_Object____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript_System_String_System_Object___">ExecuteScript(string, params object[])</a>method executes JavaScript in the context of
+the currently selected frame or window. This means that "document" will refer
+to the current document. If the script has a return value, then the following
+steps will be taken:
+</p>
+<p>
+<ul><li>For an HTML element, this method returns a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></li><li>For a number, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is returned</li><li>For a boolean, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> is returned</li><li>For all other cases a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> is returned.</li><li>For an array,we check the first element, and attempt to return a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> of that type, following the rules above. Nested lists are not
+supported.</li><li>If the value is null or there is no return value,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is returned.</li></ul>
+
+<p>
+Arguments must be a number (which will be converted to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>),
+a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> or a <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>,
+or a <a class="xref" href="OpenQA.Selenium.IWrapsElement.html">IWrapsElement</a>.
+An exception will be thrown if the arguments do not meet these criteria.
+The arguments will be made available to the JavaScript via the "arguments" magic
+variable, as if the function were called via "Function.apply"
+</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElement_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindElement*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElement_OpenQA_Selenium_By_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindElement(OpenQA.Selenium.By)">
+  FindElement(By)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L351"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Find the first <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> using the given method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IWebElement FindElement(By by)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>by</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>The locating mechanism to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></dt>
+    <dd><p>The first matching <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> on the current context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.NoSuchElementException.html">NoSuchElementException</a></dt>
+    <dd><p>If no element matches the criteria.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElements_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindElements*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElements_OpenQA_Selenium_By_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindElements(OpenQA.Selenium.By)">
+  FindElements(By)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L378"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Find all <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElements</a> within the current context
+using the given mechanism.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyCollection&lt;IWebElement&gt; FindElements(By by)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>by</code> <a class="xref" href="OpenQA.Selenium.By.html">By</a></dt>
+    <dd><p>The locating mechanism to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.readonlycollection-1">ReadOnlyCollection&lt;T&gt;</a> of all <a class="xref" href="OpenQA.Selenium.IWebElement.html">WebElements</a>
+matching the current criteria, or an empty list if nothing matches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_GetScreenshot_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.GetScreenshot*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_GetScreenshot" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.GetScreenshot">
+  GetScreenshot()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L570"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="OpenQA.Selenium.Screenshot.html">Screenshot</a> object representing the image of the page on the screen.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Screenshot GetScreenshot()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Screenshot.html">Screenshot</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Screenshot.html">Screenshot</a> object containing the image.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Manage_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Manage*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Manage" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Manage">
+  Manage()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L320"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to change its settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOptions Manage()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.IOptions.html">IOptions</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.IOptions.html">IOptions</a> object allowing the user to change
+the settings of the driver.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigate_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Navigate*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigate" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Navigate">
+  Navigate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L330"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to navigate the browser to another location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public INavigation Navigate()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.INavigation.html">INavigation</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.INavigation.html">INavigation</a> object allowing the user to access
+the browser's history and to navigate to a given URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicked_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementClicked*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicked_OpenQA_Selenium_Support_Events_WebElementEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementClicked(OpenQA.Selenium.Support.Events.WebElementEventArgs)">
+  OnElementClicked(WebElementEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L684"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicked">ElementClicked</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnElementClicked(WebElementEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicking_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementClicking*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicking_OpenQA_Selenium_Support_Events_WebElementEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementClicking(OpenQA.Selenium.Support.Events.WebElementEventArgs)">
+  OnElementClicking(WebElementEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L672"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicking">ElementClicking</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnElementClicking(WebElementEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanged_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementValueChanged*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanged_OpenQA_Selenium_Support_Events_WebElementValueEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementValueChanged(OpenQA.Selenium.Support.Events.WebElementValueEventArgs)">
+  OnElementValueChanged(WebElementValueEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L708"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanged">ElementValueChanged</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnElementValueChanged(WebElementValueEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanging_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementValueChanging*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanging_OpenQA_Selenium_Support_Events_WebElementValueEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnElementValueChanging(OpenQA.Selenium.Support.Events.WebElementValueEventArgs)">
+  OnElementValueChanging(WebElementValueEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L696"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanging">ElementValueChanging</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnElementValueChanging(WebElementValueEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnException_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnException*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnException_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnException(OpenQA.Selenium.Support.Events.WebDriverExceptionEventArgs)">
+  OnException(WebDriverExceptionEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L792"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExceptionThrown">ExceptionThrown</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnException(WebDriverExceptionEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverExceptionEventArgs.html">WebDriverExceptionEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverExceptionEventArgs.html">WebDriverExceptionEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindElementCompleted_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnFindElementCompleted*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindElementCompleted_OpenQA_Selenium_Support_Events_FindElementEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnFindElementCompleted(OpenQA.Selenium.Support.Events.FindElementEventArgs)">
+  OnFindElementCompleted(FindElementEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L732"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElementCompleted">FindElementCompleted</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnFindElementCompleted(FindElementEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindingElement_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnFindingElement*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindingElement_OpenQA_Selenium_Support_Events_FindElementEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnFindingElement(OpenQA.Selenium.Support.Events.FindElementEventArgs)">
+  OnFindingElement(FindElementEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L720"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindingElement">FindingElement</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnFindingElement(FindElementEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGetShadowRootCompleted_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnGetShadowRootCompleted*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGetShadowRootCompleted_OpenQA_Selenium_Support_Events_GetShadowRootEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnGetShadowRootCompleted(OpenQA.Selenium.Support.Events.GetShadowRootEventArgs)">
+  OnGetShadowRootCompleted(GetShadowRootEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L756"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGetShadowRootCompleted_OpenQA_Selenium_Support_Events_GetShadowRootEventArgs_">OnGetShadowRootCompleted(GetShadowRootEventArgs)</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnGetShadowRootCompleted(GetShadowRootEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGettingShadowRoot_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnGettingShadowRoot*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGettingShadowRoot_OpenQA_Selenium_Support_Events_GetShadowRootEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnGettingShadowRoot(OpenQA.Selenium.Support.Events.GetShadowRootEventArgs)">
+  OnGettingShadowRoot(GetShadowRootEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L744"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnGettingShadowRoot_OpenQA_Selenium_Support_Events_GetShadowRootEventArgs_">OnGettingShadowRoot(GetShadowRootEventArgs)</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnGettingShadowRoot(GetShadowRootEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigated_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigated*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigated_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigated(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigated(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L612"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigated">Navigated</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigated(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedBack_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatedBack*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedBack_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatedBack(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigatedBack(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L636"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedBack">NavigatedBack</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigatedBack(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedForward_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatedForward*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedForward_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatedForward(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigatedForward(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L660"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedForward">NavigatedForward</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigatedForward(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigating_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigating*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigating_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigating(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigating(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L600"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigating">Navigating</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigating(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingBack_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatingBack*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingBack_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatingBack(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigatingBack(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L624"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingBack">NavigatingBack</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigatingBack(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingForward_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatingForward*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingForward_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnNavigatingForward(OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs)">
+  OnNavigatingForward(WebDriverNavigationEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L648"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingForward">NavigatingForward</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnNavigatingForward(WebDriverNavigationEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuted_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnScriptExecuted*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuted_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnScriptExecuted(OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs)">
+  OnScriptExecuted(WebDriverScriptEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L780"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuted">ScriptExecuted</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnScriptExecuted(WebDriverScriptEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuting_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnScriptExecuting*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuting_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.OnScriptExecuting(OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs)">
+  OnScriptExecuting(WebDriverScriptEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L768"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.Support.Events.EventFiringWebDriver.html#OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting">ScriptExecuting</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnScriptExecuting(WebDriverScriptEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Quit_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Quit*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Quit" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Quit">
+  Quit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Quits this driver, closing every associated window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Quit()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_SwitchTo_" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.SwitchTo*"></a>
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_SwitchTo" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.SwitchTo">
+  SwitchTo()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L340"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Instructs the driver to send future commands to a different frame or window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ITargetLocator SwitchTo()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.ITargetLocator.html">ITargetLocator</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.ITargetLocator.html">ITargetLocator</a> object which can be used to select
+a frame or window.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicked" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ElementClicked">
+  ElementClicked
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver has clicked on an element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebElementEventArgs&gt; ElementClicked</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicking" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ElementClicking">
+  ElementClicking
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver clicks on an element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebElementEventArgs&gt; ElementClicking</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebElementEventArgs.html">WebElementEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanged" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ElementValueChanged">
+  ElementValueChanged
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver has changed the value of an element via Clear(), SendKeys() or Toggle().</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebElementValueEventArgs&gt; ElementValueChanged</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanging" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ElementValueChanging">
+  ElementValueChanging
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver changes the value of an element via Clear(), SendKeys() or Toggle().</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebElementValueEventArgs&gt; ElementValueChanging</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebElementValueEventArgs.html">WebElementValueEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExceptionThrown" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ExceptionThrown">
+  ExceptionThrown
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires when an exception is thrown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverExceptionEventArgs&gt; ExceptionThrown</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverExceptionEventArgs.html">WebDriverExceptionEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElementCompleted" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindElementCompleted">
+  FindElementCompleted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver completes finding an element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;FindElementEventArgs&gt; FindElementCompleted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindingElement" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.FindingElement">
+  FindingElement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver starts to find an element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;FindElementEventArgs&gt; FindingElement</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.FindElementEventArgs.html">FindElementEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_GetShadowRootCompleted" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.GetShadowRootCompleted">
+  GetShadowRootCompleted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver completes getting a shadow root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;GetShadowRootEventArgs&gt; GetShadowRootCompleted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_GettingShadowRoot" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.GettingShadowRoot">
+  GettingShadowRoot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver starts to get a shadow root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;GetShadowRootEventArgs&gt; GettingShadowRoot</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.GetShadowRootEventArgs.html">GetShadowRootEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigated" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Navigated">
+  Navigated
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver completes navigation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; Navigated</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedBack" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.NavigatedBack">
+  NavigatedBack
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver completes navigation back one entry in the browser history list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; NavigatedBack</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedForward" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.NavigatedForward">
+  NavigatedForward
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after the driver completes navigation forward one entry in the browser history list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; NavigatedForward</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigating" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.Navigating">
+  Navigating
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver begins navigation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; Navigating</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingBack" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.NavigatingBack">
+  NavigatingBack
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver begins navigation back one entry in the browser history list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; NavigatingBack</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingForward" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.NavigatingForward">
+  NavigatingForward
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before the driver begins navigation forward one entry in the browser history list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverNavigationEventArgs&gt; NavigatingForward</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.html">WebDriverNavigationEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuted" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ScriptExecuted">
+  ScriptExecuted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires after a script is executed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverScriptEventArgs&gt; ScriptExecuted</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting" data-uid="OpenQA.Selenium.Support.Events.EventFiringWebDriver.ScriptExecuting">
+  ScriptExecuting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fires before a script is executed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;WebDriverScriptEventArgs&gt; ScriptExecuting</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.Support.Events.WebDriverScriptEventArgs.html">WebDriverScriptEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/support/Events/EventFiringWebDriver.cs/#L30" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

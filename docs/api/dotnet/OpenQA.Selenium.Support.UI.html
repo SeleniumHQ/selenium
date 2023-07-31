@@ -91,8 +91,49 @@ configured on the fly.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.LoadableComponentException.html">LoadableComponentException</a></dt>
+      <dd><p>This exception is thrown by <a class="xref" href="OpenQA.Selenium.Support.UI.LoadableComponent-1.html">LoadableComponent&lt;T&gt;</a> to indicate that
+the component was not successfully loaded.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.LoadableComponent-1.html">LoadableComponent&lt;T&gt;</a></dt>
+      <dd><p>Represents any abstraction of something that can be loaded. This may be an entire web page, or
+simply a component within that page (such as a login box or menu) or even a service.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.PopupWindowFinder.html">PopupWindowFinder</a></dt>
+      <dd><p>Provides a mechanism by which the window handle of an invoked
+popup browser window may be determined.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.SelectElement.html">SelectElement</a></dt>
+      <dd><p>Provides a convenience method for manipulating selections of options in an HTML select element.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.SlowLoadableComponent-1.html">SlowLoadableComponent&lt;T&gt;</a></dt>
+      <dd><p>A <a class="xref" href="OpenQA.Selenium.Support.UI.LoadableComponent-1.html">LoadableComponent&lt;T&gt;</a> which might not have finished loading when Load() returns. After a
+call to Load(), the IsLoaded property should continue to return false until the component has fully
+loaded. Use the HandleErrors() method to check for error conditions which caused the Load() to fail.</p>
+<p>
+<pre class="code">
+new SlowHypotheticalComponent().Load();
+</pre>
+
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.Support.UI.SystemClock.html">SystemClock</a></dt>
       <dd><p>Uses the system clock to calculate time for timeouts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.UnexpectedTagNameException.html">UnexpectedTagNameException</a></dt>
+      <dd><p>The exception thrown when using the Select class on a tag that
+does not support the HTML select element's selection semantics.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -106,6 +147,12 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.Support.UI.IClock.html">IClock</a></dt>
       <dd><p>An interface describing time handling functions for timeouts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="OpenQA.Selenium.Support.UI.ILoadableComponent.html">ILoadableComponent</a></dt>
+      <dd><p>Interface allows for the component to be used in Nested Component scenarios such that the
+child component class does not have to declare the generic type of the parent explicitly.</p>
 </dd>
     </dl>
     <dl class="jumplist">

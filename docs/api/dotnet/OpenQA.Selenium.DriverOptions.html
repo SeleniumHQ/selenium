@@ -213,6 +213,39 @@ SSL certificates.</p>
 
 
 
+  <a id="OpenQA_Selenium_DriverOptions_BinaryLocation_" data-uid="OpenQA.Selenium.DriverOptions.BinaryLocation*"></a>
+
+  <h3 id="OpenQA_Selenium_DriverOptions_BinaryLocation" data-uid="OpenQA.Selenium.DriverOptions.BinaryLocation">
+  BinaryLocation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set or Get the location of the browser
+Override in subclass</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual string BinaryLocation { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_DriverOptions_BrowserName_" data-uid="OpenQA.Selenium.DriverOptions.BrowserName*"></a>
 
   <h3 id="OpenQA_Selenium_DriverOptions_BrowserName" data-uid="OpenQA.Selenium.DriverOptions.BrowserName">
@@ -481,7 +514,7 @@ a WebSocket to be used for bidirectional communication.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_AddAdditionalOption_System_String_System_Object_" data-uid="OpenQA.Selenium.DriverOptions.AddAdditionalOption(System.String,System.Object)">
   AddAdditionalOption(string, object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L235"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Provides a means to add additional capabilities not yet added as type safe options
@@ -530,7 +563,7 @@ when <code class="paramref">optionName</code> is <a href="https://learn.microsof
 
   <h3 id="OpenQA_Selenium_DriverOptions_AddKnownCapabilityName_System_String_System_String_" data-uid="OpenQA.Selenium.DriverOptions.AddKnownCapabilityName(System.String,System.String)">
   AddKnownCapabilityName(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L358"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L368"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a known capability to the list of known capabilities and associates it
@@ -567,7 +600,7 @@ with the type-safe property name of the options class to be used instead.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_GenerateDesiredCapabilities_System_Boolean_" data-uid="OpenQA.Selenium.DriverOptions.GenerateDesiredCapabilities(System.Boolean)">
   GenerateDesiredCapabilities(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L425"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L435"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Generates the current options as a capabilities object for further processing.</p>
@@ -606,7 +639,7 @@ with the type-safe property name of the options class to be used instead.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_GenerateLoggingPreferencesDictionary" data-uid="OpenQA.Selenium.DriverOptions.GenerateLoggingPreferencesDictionary">
   GenerateLoggingPreferencesDictionary()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L414"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Generates the logging preferences dictionary for transmission as a desired capability.</p>
@@ -639,7 +672,7 @@ with the type-safe property name of the options class to be used instead.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_GetMergeResult_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.DriverOptions.GetMergeResult(OpenQA.Selenium.DriverOptions)">
   GetMergeResult(DriverOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L255"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Compares this <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a> object with another to see if there
@@ -679,7 +712,7 @@ are merge conflicts between them.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_GetTypeSafeOptionName_System_String_" data-uid="OpenQA.Selenium.DriverOptions.GetTypeSafeOptionName(System.String)">
   GetTypeSafeOptionName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L390"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L400"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of the type-safe option for a given capability name.</p>
@@ -718,7 +751,7 @@ are merge conflicts between them.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_IsKnownCapabilityName_System_String_" data-uid="OpenQA.Selenium.DriverOptions.IsKnownCapabilityName(System.String)">
   IsKnownCapabilityName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L380"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L390"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.</p>
@@ -757,7 +790,7 @@ are merge conflicts between them.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_RemoveKnownCapabilityName_System_String_" data-uid="OpenQA.Selenium.DriverOptions.RemoveKnownCapabilityName(System.String)">
   RemoveKnownCapabilityName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L367"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L377"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Remove a capability from the list of known capabilities</p>
@@ -790,7 +823,7 @@ are merge conflicts between them.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_SetLoggingPreference_System_String_OpenQA_Selenium_LogLevel_" data-uid="OpenQA.Selenium.DriverOptions.SetLoggingPreference(System.String,OpenQA.Selenium.LogLevel)">
   SetLoggingPreference(string, LogLevel)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L299"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L309"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the logging preferences for this driver.</p>
@@ -827,7 +860,7 @@ Known log types can be found in the <a class="xref" href="OpenQA.Selenium.LogTyp
 
   <h3 id="OpenQA_Selenium_DriverOptions_ToCapabilities" data-uid="OpenQA.Selenium.DriverOptions.ToCapabilities">
   ToCapabilities()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L247"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the <a class="xref" href="OpenQA.Selenium.ICapabilities.html">ICapabilities</a> for the specific browser driver with these
@@ -862,7 +895,7 @@ changes will be reflected in the returned capabilities.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_ToString" data-uid="OpenQA.Selenium.DriverOptions.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L308"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L318"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns a string representation of this <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a>.</p>
@@ -895,7 +928,7 @@ changes will be reflected in the returned capabilities.</p>
 
   <h3 id="OpenQA_Selenium_DriverOptions_ValidateCapabilityName_System_String_" data-uid="OpenQA.Selenium.DriverOptions.ValidateCapabilityName(System.String)">
   ValidateCapabilityName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L337"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverOptions.cs/#L347"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Validates the name of the capability to verify it is not a capability

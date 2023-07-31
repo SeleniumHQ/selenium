@@ -171,7 +171,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl)</code></pre>
+    <pre><code class="lang-csharp hljs">protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -186,7 +186,7 @@
     <dd><p>The file name of the driver service executable.</p>
 </dd>
     <dt><code>driverServiceDownloadUrl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
-    <dd><p>A URL at which the driver service executable may be downloaded.</p>
+    <dd><p>This parameter is no longer used; kept for backwards compatibility.</p>
 </dd>
   </dl>
 
@@ -705,7 +705,7 @@ diagnostic information should be shown by the driver server executable.</p>
 
   <h3 id="OpenQA_Selenium_DriverService_Dispose_System_Boolean_" data-uid="OpenQA.Selenium.DriverService.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L305"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L291"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Releases all resources associated with this <a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a>.</p>
@@ -734,59 +734,11 @@ diagnostic information should be shown by the driver server executable.</p>
 
 
 
-  <a id="OpenQA_Selenium_DriverService_FindDriverServiceExecutable_" data-uid="OpenQA.Selenium.DriverService.FindDriverServiceExecutable*"></a>
-
-  <h3 id="OpenQA_Selenium_DriverService_FindDriverServiceExecutable_System_String_System_Uri_" data-uid="OpenQA.Selenium.DriverService.FindDriverServiceExecutable(System.String,System.Uri)">
-  FindDriverServiceExecutable(string, Uri)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L296"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Finds the specified driver service executable.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected static string FindDriverServiceExecutable(string executableName, Uri downloadUrl)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>executableName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The file name of the executable to find.</p>
-</dd>
-    <dt><code>downloadUrl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uri">Uri</a></dt>
-    <dd><p>A URL at which the driver service executable may be downloaded.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The directory containing the driver service executable.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.DriverServiceNotFoundException.html">DriverServiceNotFoundException</a></dt>
-    <dd><p>If the specified driver service executable does not exist in the current directory or in a directory on the system path.</p>
-</dd>
-  </dl>
-
-
-
   <a id="OpenQA_Selenium_DriverService_OnDriverProcessStarted_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarted*"></a>
 
   <h3 id="OpenQA_Selenium_DriverService_OnDriverProcessStarted_OpenQA_Selenium_DriverProcessStartedEventArgs_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarted(OpenQA.Selenium.DriverProcessStartedEventArgs)">
   OnDriverProcessStarted(DriverProcessStartedEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L339"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L325"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarted">DriverProcessStarted</a> event.</p>
@@ -819,7 +771,7 @@ diagnostic information should be shown by the driver server executable.</p>
 
   <h3 id="OpenQA_Selenium_DriverService_OnDriverProcessStarting_OpenQA_Selenium_DriverProcessStartingEventArgs_" data-uid="OpenQA.Selenium.DriverService.OnDriverProcessStarting(OpenQA.Selenium.DriverProcessStartingEventArgs)">
   OnDriverProcessStarting(DriverProcessStartingEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverService.cs/#L308"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarting">DriverProcessStarting</a> event.</p>

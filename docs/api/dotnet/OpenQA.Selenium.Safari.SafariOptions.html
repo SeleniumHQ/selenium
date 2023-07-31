@@ -140,6 +140,9 @@
       <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_UseStrictFileInteractability">DriverOptions.UseStrictFileInteractability</a>
     </div>
     <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_BinaryLocation">DriverOptions.BinaryLocation</a>
+    </div>
+    <div>
       <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_AddAdditionalOption_System_String_System_Object_">DriverOptions.AddAdditionalOption(string, object)</a>
     </div>
     <div>
@@ -217,7 +220,7 @@ options.SkipExtensionInstallation = true;</code></pre>
 
   <h3 id="OpenQA_Selenium_Safari_SafariOptions__ctor" data-uid="OpenQA.Selenium.Safari.SafariOptions.#ctor">
   SafariOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L59"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Safari.SafariOptions.html">SafariOptions</a> class.</p>
@@ -248,7 +251,7 @@ options.SkipExtensionInstallation = true;</code></pre>
 
   <h3 id="OpenQA_Selenium_Safari_SafariOptions_EnableAutomaticInspection" data-uid="OpenQA.Selenium.Safari.SafariOptions.EnableAutomaticInspection">
   EnableAutomaticInspection
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to have the driver preload the
@@ -281,7 +284,7 @@ Web Inspector and JavaScript debugger in the background.</p>
 
   <h3 id="OpenQA_Selenium_Safari_SafariOptions_EnableAutomaticProfiling" data-uid="OpenQA.Selenium.Safari.SafariOptions.EnableAutomaticProfiling">
   EnableAutomaticProfiling
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L99"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to have the driver preload the
@@ -310,6 +313,39 @@ Web Inspector and start a timeline recording in the background.</p>
 
 
 
+  <a id="OpenQA_Selenium_Safari_SafariOptions_TechnologyPreview_" data-uid="OpenQA.Selenium.Safari.SafariOptions.TechnologyPreview*"></a>
+
+  <h3 id="OpenQA_Selenium_Safari_SafariOptions_TechnologyPreview" data-uid="OpenQA.Selenium.Safari.SafariOptions.TechnologyPreview">
+  TechnologyPreview
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to have the driver preload the
+Web Inspector and JavaScript debugger in the background.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TechnologyPreview { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -318,7 +354,7 @@ Web Inspector and start a timeline recording in the background.</p>
 
   <h3 id="OpenQA_Selenium_Safari_SafariOptions_ToCapabilities" data-uid="OpenQA.Selenium.Safari.SafariOptions.ToCapabilities">
   ToCapabilities()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns ICapabilities for Safari with these options included as
@@ -338,6 +374,33 @@ reflected in the returned capabilities.</p>
     <dd><p>The ICapabilities for Safari with these options.</p>
 </dd>
   </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Safari_SafariOptions_UseTechnologyPreview_" data-uid="OpenQA.Selenium.Safari.SafariOptions.UseTechnologyPreview*"></a>
+
+  <h3 id="OpenQA_Selenium_Safari_SafariOptions_UseTechnologyPreview" data-uid="OpenQA.Selenium.Safari.SafariOptions.UseTechnologyPreview">
+  UseTechnologyPreview()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Safari/SafariOptions.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows the Options class to be used with a Safari Technology Preview driver</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void UseTechnologyPreview()</code></pre>
+  </div>
+
+
 
 
 

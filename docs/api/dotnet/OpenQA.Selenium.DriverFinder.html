@@ -144,26 +144,23 @@ This implementation is still in beta, and may change.</p>
 </h2>
 
 
-  <a id="OpenQA_Selenium_DriverFinder_VerifyDriverServicePath_" data-uid="OpenQA.Selenium.DriverFinder.VerifyDriverServicePath*"></a>
+  <a id="OpenQA_Selenium_DriverFinder_FullPath_" data-uid="OpenQA.Selenium.DriverFinder.FullPath*"></a>
 
-  <h3 id="OpenQA_Selenium_DriverFinder_VerifyDriverServicePath_OpenQA_Selenium_DriverService_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.DriverFinder.VerifyDriverServicePath(OpenQA.Selenium.DriverService,OpenQA.Selenium.DriverOptions)">
-  VerifyDriverServicePath(DriverService, DriverOptions)
+  <h3 id="OpenQA_Selenium_DriverFinder_FullPath_OpenQA_Selenium_DriverOptions_" data-uid="OpenQA.Selenium.DriverFinder.FullPath(OpenQA.Selenium.DriverOptions)">
+  FullPath(DriverOptions)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DriverFinder.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks if the driver path exists, else uses Selenium Manager to return it.</p>
+  <div class="markdown level1 summary"><p>Use Selenium Manager to locate the driver</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DriverService VerifyDriverServicePath(DriverService service, DriverOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">public static string FullPath(DriverOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>service</code> <a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a></dt>
-    <dd><p>DriverService with the current path.</p>
-</dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a></dt>
     <dd><p>DriverOptions with the current browser options.</p>
 </dd>
@@ -171,8 +168,8 @@ This implementation is still in beta, and may change.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a></dt>
-    <dd><p>The service with a verified driver executable path.</p>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full path and name of the driver</p>
 </dd>
   </dl>
 
@@ -183,6 +180,11 @@ This implementation is still in beta, and may change.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.NoSuchDriverException.html">NoSuchDriverException</a></dt>
+    <dd></dd>
+  </dl>
 
 
 
