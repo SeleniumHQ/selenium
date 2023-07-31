@@ -907,7 +907,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: position[k] for k in ("x", "y")}
 
-    def _check_if_window_handle_is_current(windowHandle: str) -> None:
+    def _check_if_window_handle_is_current(self, windowHandle: str) -> None:
         """Warns if the window handle is not equal to `current`."""
         if windowHandle != "current":
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
