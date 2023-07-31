@@ -142,7 +142,7 @@ namespace OpenQA.Selenium.DevTools.V115
 
             if (!string.IsNullOrEmpty(requestData.PostData))
             {
-                commandSettings.PostData = requestData.PostData;
+                commandSettings.PostData = Convert.ToBase64String(Encoding.UTF8.GetBytes(requestData.PostData));
             }
 
             await fetch.ContinueRequest(commandSettings);
@@ -245,13 +245,16 @@ namespace OpenQA.Selenium.DevTools.V115
             if (responseData.StatusCode < 300 || responseData.StatusCode > 399)
             {
                 var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
-                if (bodyResponse.Base64Encoded)
+                if (bodyResponse != null)
                 {
-                    responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
-                }
-                else
-                {
-                    responseData.Body = bodyResponse.Body;
+                    if (bodyResponse.Base64Encoded)
+                    {
+                        responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                    }
+                    else
+                    {
+                        responseData.Body = bodyResponse.Body;
+                    }
                 }
             }
         }

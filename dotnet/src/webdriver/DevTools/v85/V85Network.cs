@@ -142,7 +142,7 @@ namespace OpenQA.Selenium.DevTools.V85
 
             if (!string.IsNullOrEmpty(requestData.PostData))
             {
-                commandSettings.PostData = requestData.PostData;
+                commandSettings.PostData = Convert.ToBase64String(Encoding.UTF8.GetBytes(requestData.PostData));
             }
 
             await fetch.ContinueRequest(commandSettings);
