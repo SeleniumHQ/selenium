@@ -1,3 +1,15 @@
+4.11.0 (2023-07-31)
+=========================
+Ruby:
+  * Made network interception threads fail silently (#12226)
+  * Have Selenium Manager binary locate drivers on PATH (#12345)
+  * Add browser output from selenium manager to options (#12398)
+  * Remove deprecated code (#12417)
+BiDi:
+  * Released selenium-devtools 0.115.0 (supports CDP v85, v113, v114, v115)
+Edge:
+  * Adding ignore process match for IE Mode across bindings (#12279)
+
 4.10.0 (2023-06-07)
 =========================
 Ruby:

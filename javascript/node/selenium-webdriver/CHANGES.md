@@ -3,15 +3,15 @@
 #### :nail_care: Polish
 
 * [BiDi] fix addPreloadScript failing tests (#12182)
-* [bazel] Run buildifier in the format script
 * Print debug message once for each browser when selenium manager used
 * Add forgotten RelativeBy in check options (#12289)
 * SM supports all browsers in Selenium since a while ago
 * Using SM to check drivers on the PATH
 * Display info about SM activity
-* Removing logic to find drivers, delegating to SM
+* Removing logic to find drivers, delegating to Selenium Manager
 * Removing service parameter from getPath
 * add support for Chrome 115 and remove support for Chrome 112
+* Update webdriver-bootstrap.js (#12276)
 
 #### :rocket: New Feature
 
@@ -22,6 +22,7 @@
 #### :bug: Bug Fix
 
 * fix SeleniumServer.start() crashes on MacOS with nodejs selenium-webdriver (#12158)
+* Update by.js: Add forgotten RelativeBy in check options (#12289)
 
 ## v4.10.0
 
