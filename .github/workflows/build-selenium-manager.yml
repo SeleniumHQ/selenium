@@ -1,4 +1,4 @@
-name: build-selenium-manager
+name: Build selenium-manager
 
 on: workflow_dispatch
 
@@ -75,8 +75,8 @@ jobs:
           rustc -vV
       - name: "Build release"
         run: |
-          export SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)
-          export MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)
+          export SDKROOT=$(xcrun -sdk macosx12.0 --show-sdk-path)
+          export MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx12.0 --show-sdk-platform-version)
           cd rust
           cargo build --release --target aarch64-apple-darwin
       - name: "Tar binary (to keep executable permission)"
