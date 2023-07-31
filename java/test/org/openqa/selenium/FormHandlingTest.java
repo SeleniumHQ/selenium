@@ -184,6 +184,10 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
+    // Apparently on chrome we need to wait for the element to be gone if we're loading the same
+    // page again
+    wait.until(d -> d.findElements(By.id("upload")).isEmpty());
+
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
     assertThat(uploadElement.getAttribute("value")).isEmpty();
