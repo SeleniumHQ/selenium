@@ -494,7 +494,8 @@ public class ModuleGenerator {
       }
       int modifiers = getByteBuddyModifier(n.getModifiers());
       if (!name.startsWith("org.seleniumhq.selenium.") && !name.startsWith("java.")) {
-        // Some people like to exclude jars from the classpath. To allow this we need to make these modules static,
+        // Some people like to exclude jars from the classpath. To allow this we need to make these
+        // modules static,
         // otherwise a 'module not found' error while compiling their code would be the consequence.
         modifiers |= ACC_STATIC_PHASE;
       }
