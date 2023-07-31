@@ -143,17 +143,6 @@ View source code online:
 | Official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
 
-More Docs
-=============
-
-.. toctree::
-   :maxdepth: 1
-
-   API Docs <../api.rst>
-
-* :ref:`genindex`
-* :ref:`modindex`
-
 Contributing
 =============
 
