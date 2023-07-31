@@ -73,19 +73,28 @@ jobs:
           rustup update
           rustup target add aarch64-apple-darwin
           rustc -vV
-      - name: "Build release"
+      - name: "Build x64"
         run: |
-          export SDKROOT=$(xcrun -sdk macosx12.0 --show-sdk-path)
-          export MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx12.0 --show-sdk-platform-version)
+          cd rust
+          cargo build --release --target x86_64-apple-darwin
+      - name: "Build arm64"
+        run: |
           cd rust
           cargo build --release --target aarch64-apple-darwin
+      - name: "Build universal"
+        run: |
+          cd rust/
+          lipo -create \
+            -output target/selenium-manager \
+            target/aarch64-apple-darwin/release/selenium-manager \
+            target/x86_64-apple-darwin/release/selenium-manager
       - name: "Tar binary (to keep executable permission)"
         run: |
-          cd rust/target/aarch64-apple-darwin/release
+          cd rust/target
           tar -cvf ../../../../selenium-manager.tar selenium-manager
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
         with:
-          name: selenium-manager_macos-x64
+          name: selenium-manager_macos-universal
           path: selenium-manager.tar
           retention-days: 6
