@@ -93,7 +93,7 @@ class SeleniumManager:
         driver_path = output["driver_path"]
         logger.debug(f"Using driver at: {driver_path}")
 
-        if hasattr(options.__class__, 'binary_location'):
+        if hasattr(options.__class__, "binary_location"):
             options.binary_location = browser_path
             options.browser_version = None  # if we have the binary location we no longer need the version
 
