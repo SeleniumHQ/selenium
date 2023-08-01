@@ -56,12 +56,13 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 
 <div class="viewcode-block" id="InputDevice"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.input_device.html#selenium.webdriver.common.actions.input_device.InputDevice">[docs]</a><span class="k">class</span> <span class="nc">InputDevice</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the input device being used for the action.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -72,7 +73,7 @@
 <div class="viewcode-block" id="InputDevice.clear_actions"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.input_device.html#selenium.webdriver.common.actions.input_device.InputDevice.clear_actions">[docs]</a>    <span class="k">def</span> <span class="nf">clear_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="InputDevice.create_pause"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.input_device.html#selenium.webdriver.common.actions.input_device.InputDevice.create_pause">[docs]</a>    <span class="k">def</span> <span class="nf">create_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="InputDevice.create_pause"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.input_device.html#selenium.webdriver.common.actions.input_device.InputDevice.create_pause">[docs]</a>    <span class="k">def</span> <span class="nf">create_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

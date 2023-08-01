@@ -60,66 +60,12 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
 
 
-<div class="viewcode-block" id="Log"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Log">[docs]</a><span class="k">class</span> <span class="nc">Log</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="kc">None</span>
-
-<div class="viewcode-block" id="Log.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Log.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;log&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">}}</span>
-        <span class="k">return</span> <span class="p">{}</span></div></div>
-
-
 <div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
-    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;safari.options&quot;</span>
-
     <span class="c1"># @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari</span>
     <span class="n">AUTOMATIC_INSPECTION</span> <span class="o">=</span> <span class="s2">&quot;safari:automaticInspection&quot;</span>
     <span class="n">AUTOMATIC_PROFILING</span> <span class="o">=</span> <span class="s2">&quot;safari:automaticProfiling&quot;</span>
 
     <span class="n">SAFARI_TECH_PREVIEW</span> <span class="o">=</span> <span class="s2">&quot;Safari Technology Preview&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: The location of the browser binary otherwise an empty string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
-
-    <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value : path to the browser binary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
-
-<div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marshals the  options to an desired capabilities object.&quot;&quot;&quot;</span>
-        <span class="c1"># This intentionally looks at the internal properties</span>
-        <span class="c1"># so if a binary or profile has _not_ been set,</span>
-        <span class="c1"># it will defer to geckodriver to find the system Firefox</span>
-        <span class="c1"># and generate a fresh profile.</span>
-        <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
-        <span class="n">opts</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
-        <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
-
-        <span class="k">if</span> <span class="n">opts</span><span class="p">:</span>
-            <span class="n">caps</span><span class="p">[</span><span class="n">Options</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span>
-
-        <span class="k">return</span> <span class="n">caps</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
@@ -137,6 +83,8 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Automatic Inspection must be a boolean&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_INSPECTION</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -151,6 +99,8 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Automatic Profiling must be a boolean&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_PROFILING</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -166,6 +116,8 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Use Technology Preview must be a boolean&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;browserName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SAFARI_TECH_PREVIEW</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;safari&quot;</span><span class="p">)</span></div>
 </pre></div>
 

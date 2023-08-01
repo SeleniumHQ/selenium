@@ -99,8 +99,352 @@
     <span class="n">_MarginOpts</span> <span class="o">=</span> <span class="n">_PageOpts</span> <span class="o">=</span> <span class="n">_PrintOpts</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="PrintOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.print_page_options.html#selenium.webdriver.common.print_page_options.PrintOptions">[docs]</a><span class="k">class</span> <span class="nc">PrintOptions</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">_PageSettingsDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Descriptor which validates `height` and &#39;width&#39; of page.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_validate_num_property&quot;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_page</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_page</span>
+
+
+<span class="k">class</span> <span class="nc">_MarginSettingsDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Descriptor which validates below attributes.</span>
+
+<span class="sd">    - top</span>
+<span class="sd">    - bottom</span>
+<span class="sd">    - left</span>
+<span class="sd">    - right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_validate_num_property&quot;</span><span class="p">)(</span><span class="sa">f</span><span class="s2">&quot;Margin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_margin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_margin</span>
+
+
+<span class="k">class</span> <span class="nc">_ScaleDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Scale descriptor which validates scale.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_validate_num_property&quot;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Value of scale should be between 0.1 and 2&quot;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<span class="k">class</span> <span class="nc">_PageOrientationDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PageOrientation descriptor which validates orientation of page.&quot;&quot;&quot;</span>
+
     <span class="n">ORIENTATION_VALUES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;portrait&quot;</span><span class="p">,</span> <span class="s2">&quot;landscape&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Orientation</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ORIENTATION_VALUES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orientation value must be one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ORIENTATION_VALUES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<span class="k">class</span> <span class="nc">_ValidateTypeDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Class Descriptor which validates type of any subclass attribute.&quot;&quot;&quot;</span>
+
+    <span class="n">expected_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<span class="k">class</span> <span class="nc">_ValidateBackGround</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of background attribute.&quot;&quot;&quot;</span>
+
+    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">bool</span>
+
+
+<span class="k">class</span> <span class="nc">_ValidateShrinkToFit</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expected type of shirnk to fit attribute.&quot;&quot;&quot;</span>
+
+    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">bool</span>
+
+
+<span class="k">class</span> <span class="nc">_ValidatePageRanges</span><span class="p">(</span><span class="n">_ValidateTypeDescriptor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Excepted type of page ranges attribute.&quot;&quot;&quot;</span>
+
+    <span class="n">expected_type</span> <span class="o">=</span> <span class="nb">list</span>
+
+
+<div class="viewcode-block" id="PrintOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.print_page_options.html#selenium.webdriver.common.print_page_options.PrintOptions">[docs]</a><span class="k">class</span> <span class="nc">PrintOptions</span><span class="p">:</span>
+    <span class="n">page_height</span> <span class="o">=</span> <span class="n">_PageSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets page_height:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.page_height`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.page_height` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">page_width</span> <span class="o">=</span> <span class="n">_PageSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets page_width:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.page_width`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.page_width` = `value`</span>
+
+<span class="sd">    Patameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">margin_top</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets margin_top:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.margin_top`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `slef.margin_top` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">margin_bottom</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets margin_bottom:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.margin_bottom`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.margin_bottom` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">margin_left</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets margin_left:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.margin_left`</span>
+<span class="sd">    -Set</span>
+<span class="sd">        - `self.margin_left` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">margin_right</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets margin_right:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.margin_right`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.margin_right` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">_ScaleDescriptor</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets scale:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.scale`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.scale` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `float`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[float]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">orientation</span> <span class="o">=</span> <span class="n">_PageOrientationDescriptor</span><span class="p">(</span><span class="s2">&quot;orientation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets orientation:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.orientation`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.orientation` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `Orientation`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[Orientation]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">background</span> <span class="o">=</span> <span class="n">_ValidateBackGround</span><span class="p">(</span><span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets background:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.backgorund`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.background` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[bool]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">shrink_to_fit</span> <span class="o">=</span> <span class="n">_ValidateShrinkToFit</span><span class="p">(</span><span class="s2">&quot;shrinkToFit&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets shrink_to_fit:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.shrink_to_fit`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.shrink_to_fit` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[bool]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">page_ranges</span> <span class="o">=</span> <span class="n">_ValidatePageRanges</span><span class="p">(</span><span class="s2">&quot;pageRanges&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets page_ranges:</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.page_ranges`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.page_ranges` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: ` List[str]`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Optional[List[str]]`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">:</span> <span class="n">_PrintOpts</span> <span class="o">=</span> <span class="p">{}</span>
@@ -113,215 +457,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Orientation</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Orientation that was set for the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orientation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@orientation</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Orientation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set orientation of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Either portrait or landscape</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ORIENTATION_VALUES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orientation value must be one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ORIENTATION_VALUES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Scale that was set for the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@scale</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to to set scale for the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: integer or float between 0.1 and 2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Scale&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.1</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Scale value should be between 0.1 and 2&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">background</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Background value that was set</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@background</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set the boolean value for the background</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Boolean</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Set background value should be a boolean&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;background&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Page width that was set</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@page_width</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set width of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Page Width&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Page height that was set</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@page_height</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set height of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Page Height&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">margin_top</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Top margin of the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@margin_top</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">margin_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set top margin of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Margin top&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">margin_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Left margin of the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@margin_left</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">margin_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set left margin of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Margin left&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">margin_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Bottom margin of the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@margin_bottom</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">margin_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set bottom margin of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Margin bottom&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">margin_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Right margin of the page</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@margin_right</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">margin_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set right margin of the page</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A positive integer or float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_num_property</span><span class="p">(</span><span class="s2">&quot;Margin right&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shrink_to_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Value set for shrinkToFit</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shrinkToFit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@shrink_to_fit</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">shrink_to_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set shrinkToFit</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Boolean</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Set shrink to fit value should be a boolean&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;shrinkToFit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: value set for pageRanges</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageRanges&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@page_ranges</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set pageRanges for the print command</span>
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: A list of page ranges. Eg: [&#39;1-2&#39;]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Page ranges should be a list&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span><span class="p">[</span><span class="s2">&quot;pageRanges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="nf">__validate_num_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_validate_num_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to validate some of the properties.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s2"> should be an integer or a float&quot;</span><span class="p">)</span>

@@ -93,6 +93,22 @@
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No proxy type is found for </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
 
 
+<span class="k">class</span> <span class="nc">_ProxyTypeDescriptor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span> <span class="o">=</span> <span class="n">p_type</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;autodetect&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Autodetect proxy value needs to be a boolean&quot;</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_verify_proxy_type_compatibility&quot;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;proxyType&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Proxy"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy">[docs]</a><span class="k">class</span> <span class="nc">Proxy</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Proxy contains information about proxy type and necessary proxy</span>
 <span class="sd">    settings.&quot;&quot;&quot;</span>
@@ -108,6 +124,157 @@
     <span class="n">socksUsername</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">socksPassword</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">socksVersion</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># create descriptor type objects</span>
+    <span class="n">auto_detect</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;autodetect&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `auto_detect`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.auto_detect`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.auto_detect` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ftp_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;ftpProxy&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ftp_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.ftp_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.ftp_proxy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">http_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;httpProxy&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `http_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.http_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.http_proxy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">no_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;noProxy&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `no_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.no_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.no_proxy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">proxy_autoconfig_url</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;proxyAutoconfigUrl&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `proxy_autoconfig_url`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.proxy_autoconfig_url`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.proxy_autoconfig_url` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ssl_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;sslProxy&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ssl_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.ssl_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.ssl_proxy` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">socks_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;socksProxy&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `socks_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.sock_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.socks_proxy` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">socks_username</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;socksUsername&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `socks_password`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.socks_password`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.socks_password` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">socks_password</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;socksPassword&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `socks_password`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.socks_password`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.socks_password` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">socks_version</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">&quot;socksVersion&quot;</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `socks_version`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.socks_version`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.socks_version` = `value`</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new Proxy.</span>
@@ -154,198 +321,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">auto_detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns autodetect setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span>
-
-    <span class="nd">@auto_detect</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">auto_detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets autodetect setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The autodetect value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Autodetect proxy value needs to be a boolean&quot;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ftp_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns ftp proxy setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span>
-
-    <span class="nd">@ftp_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ftp_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets ftp proxy setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The ftp proxy value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">http_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns http proxy setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">httpProxy</span>
-
-    <span class="nd">@http_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">http_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets http proxy setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The http proxy value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">httpProxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">no_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns noproxy setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span>
-
-    <span class="nd">@no_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">no_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets noproxy setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The noproxy value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">proxy_autoconfig_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns proxy autoconfig url setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyAutoconfigUrl</span>
-
-    <span class="nd">@proxy_autoconfig_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">proxy_autoconfig_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets proxy autoconfig url setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The proxy autoconfig url value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyAutoconfigUrl</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ssl_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns https proxy setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span>
-
-    <span class="nd">@ssl_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ssl_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets https proxy setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The https proxy value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">socks_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns socks proxy setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span>
-
-    <span class="nd">@socks_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">socks_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets socks proxy setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The socks proxy value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">socks_username</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns socks proxy username setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span>
-
-    <span class="nd">@socks_username</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">socks_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets socks proxy username setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The socks proxy username value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">socks_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns socks proxy password setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span>
-
-    <span class="nd">@socks_password</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">socks_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets socks proxy password setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The socks proxy password value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">socks_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns socks proxy version setting.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksVersion</span>
-
-    <span class="nd">@socks_version</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">socks_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets socks proxy version setting.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: The socks proxy version value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">socksVersion</span> <span class="o">=</span> <span class="n">value</span>
-
     <span class="k">def</span> <span class="nf">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compatible_proxy</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">UNSPECIFIED</span><span class="p">,</span> <span class="n">compatible_proxy</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Specified proxy type (</span><span class="si">{</span><span class="n">compatible_proxy</span><span class="si">}</span><span class="s2">) not compatible with current setting (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="si">}</span><span class="s2">)&quot;</span>
             <span class="p">)</span>
 
 <div class="viewcode-block" id="Proxy.to_capabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">proxy_caps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proxyType&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;autodetect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;ftpProxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">httpProxy</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;httpProxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">httpProxy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyAutoconfigUrl</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;proxyAutoconfigUrl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyAutoconfigUrl</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;sslProxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;noProxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;socksProxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;socksUsername&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;socksPassword&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksVersion</span><span class="p">:</span>
-            <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;socksVersion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksVersion</span>
+        <span class="n">proxies</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;autodetect&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ftpProxy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;httpProxy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;proxyAutoconfigUrl&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sslProxy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;noProxy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;socksProxy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;socksUsername&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;socksPassword&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;socksVersion&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">proxy</span> <span class="ow">in</span> <span class="n">proxies</span><span class="p">:</span>
+            <span class="n">attr_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxy</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">attr_value</span><span class="p">:</span>
+                <span class="n">proxy_caps</span><span class="p">[</span><span class="n">proxy</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_value</span>
         <span class="k">return</span> <span class="n">proxy_caps</span></div></div>
 </pre></div>
 

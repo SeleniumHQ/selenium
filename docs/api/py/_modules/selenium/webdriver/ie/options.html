@@ -65,6 +65,47 @@
     <span class="n">BOTTOM</span> <span class="o">=</span> <span class="mi">1</span></div>
 
 
+<span class="k">class</span> <span class="nc">_IeOptionsDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IeOptionsDescriptor which validates below attributes of Options class:</span>
+
+<span class="sd">    - BROWSER_ATTACH_TIMEOUT</span>
+<span class="sd">    - ELEMENT_SCROLL_BEHAVIOR</span>
+<span class="sd">    - ENSURE_CLEAN_SESSION</span>
+<span class="sd">    - FILE_UPLOAD_DIALOG_TIMEOUT</span>
+<span class="sd">    - FORCE_CREATE_PROCESS_API</span>
+<span class="sd">    - FORCE_SHELL_WINDOWS_API</span>
+<span class="sd">    - FULL_PAGE_SCREENSHOT</span>
+<span class="sd">    - IGNORE_PROTECTED_MODE_SETTINGS</span>
+<span class="sd">    - IGNORE_ZOOM_LEVEL</span>
+<span class="sd">    - INITIAL_BROWSER_URL</span>
+<span class="sd">    - NATIVE_EVENTS</span>
+<span class="sd">    - PERSISTENT_HOVER</span>
+<span class="sd">    - REQUIRE_WINDOW_FOCUS</span>
+<span class="sd">    - USE_PER_PROCESS_PROXY</span>
+<span class="sd">    - USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span>
+<span class="sd">    - ATTACH_TO_EDGE_CHROME</span>
+<span class="sd">    - EDGE_EXECUTABLE_PATH</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span> <span class="o">=</span> <span class="n">expected_type</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elementScrollBehavior&quot;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Element Scroll Behavior out of range.&quot;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
 <div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
     <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;se:ieOptions&quot;</span>
     <span class="n">SWITCHES</span> <span class="o">=</span> <span class="s2">&quot;ie.browserCommandLineSwitches&quot;</span>
@@ -86,6 +127,263 @@
     <span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span> <span class="o">=</span> <span class="s2">&quot;ie.useLegacyFileUploadDialogHandling&quot;</span>
     <span class="n">ATTACH_TO_EDGE_CHROME</span> <span class="o">=</span> <span class="s2">&quot;ie.edgechromium&quot;</span>
     <span class="n">EDGE_EXECUTABLE_PATH</span> <span class="o">=</span> <span class="s2">&quot;ie.edgepath&quot;</span>
+    <span class="n">IGNORE_PROCESS_MATCH</span> <span class="o">=</span> <span class="s2">&quot;ie.ignoreprocessmatch&quot;</span>
+
+    <span class="c1"># Creating descriptor objects for each of the above IE options</span>
+    <span class="n">browser_attach_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `browser_attach_timeout`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.browser_attach_timeout`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.browser_attach_timeout` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `int` (Timeout) in milliseconds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">element_scroll_behavior</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `element_scroll_behavior`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.element_scroll_behavior`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.element_scroll_behavior` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `int` either 0 - Top, 1 - Bottom</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ensure_clean_session</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ensure_clean_session`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.ensure_clean_session`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.ensure_clean_session` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file_upload_dialog_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `file_upload_dialog_timeout`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.file_upload_dialog_timeout`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.file_upload_dialog_timeout` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `int` (Timeout) in milliseconds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">force_create_process_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `force_create_process_api`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.force_create_process_api`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.force_create_process_api` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">force_shell_windows_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `force_shell_windows_api`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.force_shell_windows_api`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.force_shell_windows_api` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">full_page_screenshot</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `full_page_screenshot`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.full_page_screenshot`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.full_page_screenshot` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ignore_protected_mode_settings</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ignore_protected_mode_settings`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.ignore_protected_mode_settings`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.ignore_protected_mode_settings` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ignore_zoom_level</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ignore_zoom_level`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.ignore_zoom_level`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.ignore_zoom_level` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">initial_browser_url</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `initial_browser_url`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.initial_browser_url`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.initial_browser_url` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">native_events</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">NATIVE_EVENTS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `native_events`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.native_events`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.native_events` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">persistent_hover</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">PERSISTENT_HOVER</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `persistent_hover`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.persistent_hover`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.persistent_hover` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">require_window_focus</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `require_window_focus`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.require_window_focus`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.require_window_focus` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">use_per_process_proxy</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `use_per_process_proxy`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.use_per_process_proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.use_per_process_proxy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">use_legacy_file_upload_dialog_handling</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `use_legacy_file_upload_dialog_handling`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.use_legacy_file_upload_dialog_handling`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.use_legacy_file_upload_dialog_handling` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">attach_to_edge_chrome</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `attach_to_edge_chrome`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.attach_to_edge_chrome`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.attach_to_edge_chrome` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">edge_executable_path</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `edge_executable_path`</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.edge_executable_path`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.edge_executable_path` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -96,252 +394,6 @@
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: A dictionary of browser options&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">browser_attach_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: The options Browser Attach Timeout in milliseconds</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">)</span>
-
-    <span class="nd">@browser_attach_timeout</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">browser_attach_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Browser Attach Timeout.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Timeout in milliseconds</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Browser Attach Timeout must be an integer.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">element_scroll_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ElementScrollBehavior</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Element Scroll Behavior value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">)</span>
-
-    <span class="nd">@element_scroll_behavior</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">element_scroll_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ElementScrollBehavior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Element Scroll Behavior.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: 0 - Top, 1 - Bottom</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Element Scroll Behavior out of range.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ensure_clean_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Ensure Clean Session value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">)</span>
-
-    <span class="nd">@ensure_clean_session</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ensure_clean_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Ensure Clean Session value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">file_upload_dialog_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options File Upload Dialog Timeout in milliseconds&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">)</span>
-
-    <span class="nd">@file_upload_dialog_timeout</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">file_upload_dialog_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options File Upload Dialog Timeout value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Timeout in milliseconds</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;File Upload Dialog Timeout must be an integer.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">force_create_process_api</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Force Create Process Api value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">)</span>
-
-    <span class="nd">@force_create_process_api</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">force_create_process_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Force Create Process Api value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">force_shell_windows_api</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Force Shell Windows Api value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">)</span>
-
-    <span class="nd">@force_shell_windows_api</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">force_shell_windows_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Force Shell Windows Api value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Full Page Screenshot value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">)</span>
-
-    <span class="nd">@full_page_screenshot</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Full Page Screenshot value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ignore_protected_mode_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Ignore Protected Mode Settings value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">)</span>
-
-    <span class="nd">@ignore_protected_mode_settings</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ignore_protected_mode_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Ignore Protected Mode Settings value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ignore_zoom_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Ignore Zoom Level value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">)</span>
-
-    <span class="nd">@ignore_zoom_level</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ignore_zoom_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Ignore Zoom Level value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_browser_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Initial Browser Url value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">)</span>
-
-    <span class="nd">@initial_browser_url</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_browser_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Initial Browser Url value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: URL string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">native_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Native Events value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS</span><span class="p">)</span>
-
-    <span class="nd">@native_events</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">native_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Native Events value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">persistent_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Persistent Hover value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PERSISTENT_HOVER</span><span class="p">)</span>
-
-    <span class="nd">@persistent_hover</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">persistent_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Persistent Hover value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">PERSISTENT_HOVER</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">require_window_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Require Window Focus value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">)</span>
-
-    <span class="nd">@require_window_focus</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">require_window_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Require Window Focus value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">use_per_process_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options User Per Process Proxy value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">)</span>
-
-    <span class="nd">@use_per_process_proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">use_per_process_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options User Per Process Proxy value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">use_legacy_file_upload_dialog_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Use Legacy File Upload Dialog Handling value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">)</span>
-
-    <span class="nd">@use_legacy_file_upload_dialog_handling</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">use_legacy_file_upload_dialog_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Use Legacy File Upload Dialog Handling value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">attach_to_edge_chrome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Attach to Edge Chrome value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">)</span>
-
-    <span class="nd">@attach_to_edge_chrome</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">attach_to_edge_chrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Attach to Edge Chrome value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: boolean value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">edge_executable_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Edge Executable Path value&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">)</span>
-
-    <span class="nd">@edge_executable_path</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">edge_executable_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the options Initial Browser Url value.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - value: Path string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">additional_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -362,13 +414,13 @@
         <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
 
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
             <span class="n">opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SWITCHES</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">:</span>
             <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">opts</span><span class="p">:</span>
             <span class="n">caps</span><span class="p">[</span><span class="n">Options</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span>
         <span class="k">return</span> <span class="n">caps</span></div>
 

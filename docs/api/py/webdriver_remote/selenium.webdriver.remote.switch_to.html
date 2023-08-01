@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>1.9.12. selenium.webdriver.remote.switch_to &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -16,9 +16,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="1.10.1. selenium.webdriver.safari.options" href="../webdriver_safari/selenium.webdriver.safari.options.html" />
-    <link rel="prev" title="1.9.11. selenium.webdriver.remote.script_key" href="selenium.webdriver.remote.script_key.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,14 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../webdriver_safari/selenium.webdriver.safari.options.html" title="1.10.1. selenium.webdriver.safari.options"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.script_key.html" title="1.9.11. selenium.webdriver.remote.script_key"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,7 +37,7 @@
           <div class="body" role="main">
             
   <div class="section" id="module-selenium.webdriver.remote.switch_to">
-<span id="selenium-webdriver-remote-switch-to"></span><h1>1.9.12. selenium.webdriver.remote.switch_to<a class="headerlink" href="#module-selenium.webdriver.remote.switch_to" title="Permalink to this headline">¶</a></h1>
+<span id="selenium-webdriver-remote-switch-to"></span><h1>selenium.webdriver.remote.switch_to<a class="headerlink" href="#module-selenium.webdriver.remote.switch_to" title="Permalink to this headline">¶</a></h1>
 <p class="rubric">Classes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -115,7 +106,7 @@
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.switch_to.SwitchTo.frame">
-<code class="descname">frame</code><span class="sig-paren">(</span><em>frame_reference</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.frame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">frame</code><span class="sig-paren">(</span><em>frame_reference: Union[str, int, selenium.webdriver.remote.webelement.WebElement]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switches focus to the specified frame, by index, name, or
 webelement.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -144,7 +135,7 @@ webelement.</p>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.switch_to.SwitchTo.new_window">
-<code class="descname">new_window</code><span class="sig-paren">(</span><em>type_hint=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.new_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.new_window" title="Permalink to this definition">¶</a></dt>
+<code class="descname">new_window</code><span class="sig-paren">(</span><em>type_hint: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.new_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.new_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switches to a new top-level browsing context.</p>
 <p>The type hint can be one of “tab” or “window”. If not specified the
 browser will automatically select it.</p>
@@ -181,7 +172,7 @@ top level browsing context, the context remains unchanged.</p>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.switch_to.SwitchTo.window">
-<code class="descname">window</code><span class="sig-paren">(</span><em>window_name</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.window" title="Permalink to this definition">¶</a></dt>
+<code class="descname">window</code><span class="sig-paren">(</span><em>window_name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/switch_to.html#SwitchTo.window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.switch_to.SwitchTo.window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switches focus to the specified window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -211,12 +202,6 @@ top level browsing context, the context remains unchanged.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.remote.script_key.html"
-                        title="previous chapter">1.9.11. selenium.webdriver.remote.script_key</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../webdriver_safari/selenium.webdriver.safari.options.html"
-                        title="next chapter">1.10.1. selenium.webdriver.safari.options</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -249,14 +234,7 @@ top level browsing context, the context remains unchanged.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../webdriver_safari/selenium.webdriver.safari.options.html" title="1.10.1. selenium.webdriver.safari.options"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.script_key.html" title="1.9.11. selenium.webdriver.remote.script_key"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

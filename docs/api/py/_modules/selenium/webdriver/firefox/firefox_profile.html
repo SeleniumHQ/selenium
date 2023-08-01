@@ -170,7 +170,7 @@
 
     <span class="nd">@accept_untrusted_certs</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Please pass in a Boolean to this call&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s2">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -180,7 +180,7 @@
 
     <span class="nd">@assume_untrusted_cert_issuer</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Please pass in a Boolean to this call&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s2">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>

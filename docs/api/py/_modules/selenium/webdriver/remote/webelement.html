@@ -149,8 +149,8 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">JavascriptException</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;To submit an element, it must be nested inside a form element&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">JavascriptException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;To submit an element, it must be nested inside a form element&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
 
 <div class="viewcode-block" id="WebElement.clear"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the text if it&#39;s a text entry element.&quot;&quot;&quot;</span>
@@ -381,7 +381,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;name used for saved screenshot does not match file &quot;</span> <span class="s2">&quot;type. It should end with a `.png` extension&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;name used for saved screenshot does not match file type. It should end with a `.png` extension&quot;</span><span class="p">,</span>
                 <span class="ne">UserWarning</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_png</span>

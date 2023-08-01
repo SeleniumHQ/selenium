@@ -62,8 +62,310 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span>
 
 
+<span class="k">class</span> <span class="nc">_BaseOptionsDescriptor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span> <span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">,</span> <span class="s2">&quot;setWindowRect&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PageLoadStrategyDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines the point at which a navigation command is returned:</span>
+<span class="sd">    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
+
+<span class="sd">    :param strategy: the strategy corresponding to a document readiness state</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Strategy can only be one of the following: normal, eager, none&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_UnHandledPromptBehaviorDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;How the driver should respond when an alert is present and the:</span>
+<span class="sd">    command sent is not handling the alert:</span>
+<span class="sd">    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:</span>
+
+<span class="sd">    :param behavior: behavior to use when an alert is encountered</span>
+
+<span class="sd">    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;dismiss&quot;</span><span class="p">,</span> <span class="s2">&quot;accept&quot;</span><span class="p">,</span> <span class="s2">&quot;dismiss and notify&quot;</span><span class="p">,</span> <span class="s2">&quot;accept and notify&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Behavior can only be one of the following: dismiss, accept, dismiss and notify, &quot;</span>
+                <span class="s2">&quot;accept and notify, ignore&quot;</span>
+            <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_TimeoutsDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;How long the driver should wait for actions to complete before:</span>
+<span class="sd">    returning an error https://w3c.github.io/webdriver/#timeouts:</span>
+
+<span class="sd">    :param timeouts: values in milliseconds for implicit wait, page load and script timeout</span>
+
+<span class="sd">    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;implicit&quot;</span><span class="p">,</span> <span class="s2">&quot;pageLoad&quot;</span><span class="p">,</span> <span class="s2">&quot;script&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Timeout keys can only be one of the following: implicit, pageLoad, script&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_ProxyDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :Returns: Proxy if set, otherwise None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_proxy</span>
+
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Proxy</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">&quot;Only Proxy objects can be passed in.&quot;</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_proxy</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+
+
 <div class="viewcode-block" id="BaseOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions">[docs]</a><span class="k">class</span> <span class="nc">BaseOptions</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for individual browser options.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Creating _BaseOptions descriptors</span>
+    <span class="n">browser_version</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;browserVersion&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets the version of the browser.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.browser_version`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.browser_version` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `str`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">platform_name</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;platformName&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets name of the platform.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.platform_name`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.platform_name` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `str`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">accept_insecure_certs</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Set wheather the session accepts insecure certificates.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.accept_insecure_certs`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.accept_insecure_certs` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `bool`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">strict_file_interactability</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets wheather session is about file interactiability.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.strict_file_interactability`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.strict_file_interactability` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `bool`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">set_window_rect</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;setWindowRect&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets window size and position.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.set_window_rect`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.set_window_rect` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `bool`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Creating _PageLoadStrategy descriptor</span>
+    <span class="n">page_load_strategy</span> <span class="o">=</span> <span class="n">_PageLoadStrategyDescriptor</span><span class="p">(</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :Gets and Sets page load strategy, the default is &quot;normal&quot;.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.page_load_strategy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.page_load_strategy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `str`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Creating _UnHandledPromptBehavior descriptor</span>
+    <span class="n">unhandled_prompt_behavior</span> <span class="o">=</span> <span class="n">_UnHandledPromptBehaviorDescriptor</span><span class="p">(</span><span class="s2">&quot;unhandledPromptBehavior&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :Gets and Sets unhandled prompt behavior, the default is &quot;dismiss and notify&quot;</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.unhandled_prompt_behavior`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.unhandled_prompt_behavior` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `str`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `str`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Creating _Timeouts descriptor</span>
+    <span class="n">timeouts</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;timeouts&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :Gets and Sets implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.timeouts`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.timeouts` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `dict`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `dict`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Creating _Proxy descriptor</span>
+    <span class="n">proxy</span> <span class="o">=</span> <span class="n">_ProxyDescriptor</span><span class="p">(</span><span class="s2">&quot;proxy&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets and Gets Proxy.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.proxy` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `Proxy`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `Proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -79,99 +381,6 @@
 <div class="viewcode-block" id="BaseOptions.set_capability"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.set_capability">[docs]</a>    <span class="k">def</span> <span class="nf">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a capability.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">browser_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: the version of the browser if set, otherwise None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;browserVersion&quot;</span><span class="p">)</span>
-
-    <span class="nd">@browser_version</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">browser_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Requires the major version of the browser to match provided value:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-browser-version.</span>
-
-<span class="sd">        :param version: The required version of the browser</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;browserVersion&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">platform_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: The name of the platform</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;platformName&quot;</span><span class="p">]</span>
-
-    <span class="nd">@platform_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">platform_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Requires the platform to match the provided value:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-platform-name.</span>
-
-<span class="sd">        :param platform: the required name of the platform</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;platformName&quot;</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: page load strategy if set, the default is &quot;normal&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">]</span>
-
-    <span class="nd">@page_load_strategy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the point at which a navigation command is returned:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
-
-<span class="sd">        :param strategy: the strategy corresponding to a document readiness state</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Strategy can only be one of the following: normal, eager, none&quot;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">unhandled_prompt_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: unhandled prompt behavior if set, the default is &quot;dismiss and notify&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;unhandledPromptBehavior&quot;</span><span class="p">]</span>
-
-    <span class="nd">@unhandled_prompt_behavior</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">unhandled_prompt_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;How the driver should respond when an alert is present and the</span>
-<span class="sd">        command sent is not handling the alert:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
-
-<span class="sd">        :param behavior: behavior to use when an alert is encountered</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">behavior</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dismiss&quot;</span><span class="p">,</span> <span class="s2">&quot;accept&quot;</span><span class="p">,</span> <span class="s2">&quot;dismiss and notify&quot;</span><span class="p">,</span> <span class="s2">&quot;accept and notify&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;unhandledPromptBehavior&quot;</span><span class="p">,</span> <span class="n">behavior</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Behavior can only be one of the following: dismiss, accept, dismiss and notify, &quot;</span>
-                <span class="s2">&quot;accept and notify, ignore&quot;</span>
-            <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">timeouts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;timeouts&quot;</span><span class="p">]</span>
-
-    <span class="nd">@timeouts</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">timeouts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeouts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;How long the driver should wait for actions to complete before</span>
-<span class="sd">        returning an error https://w3c.github.io/webdriver/#timeouts.</span>
-
-<span class="sd">        :param timeouts: values in milliseconds for implicit wait, page load and script timeout</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;implicit&quot;</span><span class="p">,</span> <span class="s2">&quot;pageLoad&quot;</span><span class="p">,</span> <span class="s2">&quot;script&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timeouts</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;timeouts&quot;</span><span class="p">,</span> <span class="n">timeouts</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Timeout keys can only be one of the following: implicit, pageLoad, script&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseOptions.enable_mobile"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.enable_mobile">[docs]</a>    <span class="k">def</span> <span class="nf">enable_mobile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -192,70 +401,6 @@
         <span class="k">if</span> <span class="n">device_serial</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mobile_options</span><span class="p">[</span><span class="s2">&quot;androidDeviceSerial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">device_serial</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">accept_insecure_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: whether the session accepts insecure certificates</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@accept_insecure_certs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">accept_insecure_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether untrusted and self-signed TLS certificates are implicitly</span>
-<span class="sd">        trusted: https://w3c.github.io/webdriver/#dfn-insecure-tls-</span>
-<span class="sd">        certificates.</span>
-
-<span class="sd">        :param value: whether to accept insecure certificates</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strict_file_interactability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: whether session is strict about file interactability</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@strict_file_interactability</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">strict_file_interactability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether interactability checks will be applied to file type input</span>
-<span class="sd">        elements. The default is false.</span>
-
-<span class="sd">        :param value: whether file interactability is strict</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :returns: whether the remote end supports setting window size and position</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;setWindowRect&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-    <span class="nd">@set_window_rect</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the remote end supports all of the resizing and positioning</span>
-<span class="sd">        commands. The default is false. https://w3c.github.io/webdriver/#dfn-</span>
-<span class="sd">        strict-file-interactability.</span>
-
-<span class="sd">        :param value: whether remote end must support setting window resizing and repositioning</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;setWindowRect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Proxy</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Proxy if set, otherwise None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span>
-
-    <span class="nd">@proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Proxy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Proxy</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">&quot;Only Proxy objects can be passed in.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
-
 <div class="viewcode-block" id="BaseOptions.to_capabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.to_capabilities">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert options into capabilities dictionary.&quot;&quot;&quot;</span></div>
@@ -267,6 +412,8 @@
 
 
 <div class="viewcode-block" id="ArgOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions">[docs]</a><span class="k">class</span> <span class="nc">ArgOptions</span><span class="p">(</span><span class="n">BaseOptions</span><span class="p">):</span>
+    <span class="n">BINARY_LOCATION_ERROR</span> <span class="o">=</span> <span class="s2">&quot;Binary Location Must be a String&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="p">[]</span>

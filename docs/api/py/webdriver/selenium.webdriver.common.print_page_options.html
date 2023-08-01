@@ -16,9 +16,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="1.2.8. selenium.webdriver.common.proxy" href="selenium.webdriver.common.proxy.html" />
-    <link rel="prev" title="1.2.6. selenium.webdriver.common.log" href="selenium.webdriver.common.log.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,14 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.proxy.html" title="1.2.8. selenium.webdriver.common.proxy"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.log.html" title="1.2.6. selenium.webdriver.common.log"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -63,151 +54,480 @@
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.common.print_page_options.</code><code class="descname">PrintOptions</code><a class="reference internal" href="../_modules/selenium/webdriver/common/print_page_options.html#PrintOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
-<dt id="selenium.webdriver.common.print_page_options.PrintOptions.ORIENTATION_VALUES">
-<code class="descname">ORIENTATION_VALUES</code><em class="property"> = ['portrait', 'landscape']</em><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.ORIENTATION_VALUES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.background">
 <code class="descname">background</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.background" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Background value that was set</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets background:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.backgorund</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.background</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>bool</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[bool]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.margin_bottom">
 <code class="descname">margin_bottom</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.margin_bottom" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Bottom margin of the page</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets margin_bottom:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_bottom</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_bottom</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.margin_left">
 <code class="descname">margin_left</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.margin_left" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
+<dd><p>Gets and Sets margin_left:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_left</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Left margin of the page</td>
-</tr>
+<tr><td class="option-group">
+<kbd><span class="option">-S<var>et</var></span></kbd></td>
+<td><ul class="first last simple">
+<li><cite>self.margin_left</cite> = <cite>value</cite></li>
+</ul>
+</td></tr>
 </tbody>
 </table>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.margin_right">
 <code class="descname">margin_right</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.margin_right" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Right margin of the page</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets margin_right:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_right</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_right</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.margin_top">
 <code class="descname">margin_top</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.margin_top" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Top margin of the page</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets margin_top:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.margin_top</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>slef.margin_top</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.orientation">
 <code class="descname">orientation</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.orientation" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Orientation that was set for the page</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets orientation:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.orientation</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.orientation</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>Orientation</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[Orientation]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.page_height">
 <code class="descname">page_height</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.page_height" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Page height that was set</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets page_height:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.page_height</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.page_height</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.page_ranges">
 <code class="descname">page_ranges</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.page_ranges" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value set for pageRanges</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets page_ranges:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.page_ranges</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.page_ranges</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: ` List[str]`</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[List[str]]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.page_width">
 <code class="descname">page_width</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.page_width" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Page width that was set</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets page_width:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.page_width</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.page_width</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.scale">
 <code class="descname">scale</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.scale" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Scale that was set for the page</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets scale:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.scale</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.scale</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>float</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[float]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.print_page_options.PrintOptions.shrink_to_fit">
 <code class="descname">shrink_to_fit</code><a class="headerlink" href="#selenium.webdriver.common.print_page_options.PrintOptions.shrink_to_fit" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Value set for shrinkToFit</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Gets and Sets shrink_to_fit:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>self.shrink_to_fit</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>self.shrink_to_fit</cite> = <cite>value</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><cite>value</cite>: <cite>bool</cite></p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Get</dt>
+<dd><ul class="first last">
+<li><cite>Optional[bool]</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set</dt>
+<dd><ul class="first last">
+<li><cite>None</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -233,12 +553,6 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.log.html"
-                        title="previous chapter">1.2.6. selenium.webdriver.common.log</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.proxy.html"
-                        title="next chapter">1.2.8. selenium.webdriver.common.proxy</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -271,14 +585,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.proxy.html" title="1.2.8. selenium.webdriver.common.proxy"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.log.html" title="1.2.6. selenium.webdriver.common.log"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

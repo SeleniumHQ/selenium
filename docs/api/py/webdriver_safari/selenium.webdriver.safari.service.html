@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>1.10.3. selenium.webdriver.safari.service &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.safari.service &#8212; Selenium 4.10 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -16,9 +16,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="1.10.4. selenium.webdriver.safari.webdriver" href="selenium.webdriver.safari.webdriver.html" />
-    <link rel="prev" title="1.10.2. selenium.webdriver.safari.remote_connection" href="selenium.webdriver.safari.remote_connection.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,14 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.safari.webdriver.html" title="1.10.4. selenium.webdriver.safari.webdriver"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.safari.remote_connection.html" title="1.10.2. selenium.webdriver.safari.remote_connection"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,7 +37,7 @@
           <div class="body" role="main">
             
   <div class="section" id="module-selenium.webdriver.safari.service">
-<span id="selenium-webdriver-safari-service"></span><h1>1.10.3. selenium.webdriver.safari.service<a class="headerlink" href="#module-selenium.webdriver.safari.service" title="Permalink to this headline">¶</a></h1>
+<span id="selenium-webdriver-safari-service"></span><h1>selenium.webdriver.safari.service<a class="headerlink" href="#module-selenium.webdriver.safari.service" title="Permalink to this headline">¶</a></h1>
 <p class="rubric">Classes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -61,7 +52,7 @@
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.safari.service.Service">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.safari.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = '/usr/bin/safaridriver'</em>, <em>port: int = 0</em>, <em>quiet: bool = False</em>, <em>service_args: Optional[List[str]] = None</em>, <em>env: Optional[Mapping[str</em>, <em>str]] = None</em>, <em>reuse_service=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.service.Service" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.safari.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = None</em>, <em>port: int = 0</em>, <em>quiet: bool = None</em>, <em>service_args: Optional[List[str]] = None</em>, <em>env: Optional[Mapping[str</em>, <em>str]] = None</em>, <em>reuse_service=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.service.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Service class that is responsible for the starting and stopping of
 <cite>safaridriver</cite>  This is only supported on MAC OSX.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -71,7 +62,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>executable_path</strong> – install path of the safaridriver executable, defaults to <cite>/usr/bin/safaridriver</cite>.</li>
 <li><strong>port</strong> – Port for the service to run on, defaults to 0 where the operating system will decide.</li>
-<li><strong>quiet</strong> – Suppress driver stdout &amp; stderr, redirects to os.devnull if enabled.</li>
+<li><strong>quiet</strong> – (Deprecated) Suppress driver stdout &amp; stderr, redirects to os.devnull if enabled.</li>
 <li><strong>service_args</strong> – (Optional) List of args to be passed to the subprocess when launching the executable.</li>
 <li><strong>env</strong> – (Optional) Mapping of environment variables for the new process, defaults to <cite>os.environ</cite>.</li>
 </ul>
@@ -155,12 +146,6 @@ or when it can’t connect to the service</li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.safari.remote_connection.html"
-                        title="previous chapter">1.10.2. selenium.webdriver.safari.remote_connection</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.safari.webdriver.html"
-                        title="next chapter">1.10.4. selenium.webdriver.safari.webdriver</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -193,14 +178,7 @@ or when it can’t connect to the service</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.safari.webdriver.html" title="1.10.4. selenium.webdriver.safari.webdriver"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.safari.remote_connection.html" title="1.10.2. selenium.webdriver.safari.remote_connection"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >1. Selenium Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

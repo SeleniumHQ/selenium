@@ -90,6 +90,46 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 
 
+<div class="viewcode-block" id="ExceptionMapping"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping">[docs]</a><span class="k">class</span> <span class="nc">ExceptionMapping</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :Maps each errorcode in ErrorCode object to corresponding exception</span>
+<span class="sd">    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">NO_SUCH_ELEMENT</span> <span class="o">=</span> <span class="n">NoSuchElementException</span>
+    <span class="n">NO_SUCH_FRAME</span> <span class="o">=</span> <span class="n">NoSuchFrameException</span>
+    <span class="n">NO_SUCH_SHADOW_ROOT</span> <span class="o">=</span> <span class="n">NoSuchShadowRootException</span>
+    <span class="n">STALE_ELEMENT_REFERENCE</span> <span class="o">=</span> <span class="n">StaleElementReferenceException</span>
+    <span class="n">ELEMENT_NOT_VISIBLE</span> <span class="o">=</span> <span class="n">ElementNotVisibleException</span>
+    <span class="n">INVALID_ELEMENT_STATE</span> <span class="o">=</span> <span class="n">InvalidElementStateException</span>
+    <span class="n">UNKNOWN_ERROR</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+    <span class="n">ELEMENT_IS_NOT_SELECTABLE</span> <span class="o">=</span> <span class="n">ElementNotSelectableException</span>
+    <span class="n">JAVASCRIPT_ERROR</span> <span class="o">=</span> <span class="n">JavascriptException</span>
+    <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="n">TimeoutException</span>
+    <span class="n">NO_SUCH_WINDOW</span> <span class="o">=</span> <span class="n">NoSuchWindowException</span>
+    <span class="n">INVALID_COOKIE_DOMAIN</span> <span class="o">=</span> <span class="n">InvalidCookieDomainException</span>
+    <span class="n">UNABLE_TO_SET_COOKIE</span> <span class="o">=</span> <span class="n">UnableToSetCookieException</span>
+    <span class="n">UNEXPECTED_ALERT_OPEN</span> <span class="o">=</span> <span class="n">UnexpectedAlertPresentException</span>
+    <span class="n">NO_ALERT_OPEN</span> <span class="o">=</span> <span class="n">NoAlertPresentException</span>
+    <span class="n">SCRIPT_TIMEOUT</span> <span class="o">=</span> <span class="n">TimeoutException</span>
+    <span class="n">IME_NOT_AVAILABLE</span> <span class="o">=</span> <span class="n">ImeNotAvailableException</span>
+    <span class="n">IME_ENGINE_ACTIVATION_FAILED</span> <span class="o">=</span> <span class="n">ImeActivationFailedException</span>
+    <span class="n">INVALID_SELECTOR</span> <span class="o">=</span> <span class="n">InvalidSelectorException</span>
+    <span class="n">SESSION_NOT_CREATED</span> <span class="o">=</span> <span class="n">SessionNotCreatedException</span>
+    <span class="n">MOVE_TARGET_OUT_OF_BOUNDS</span> <span class="o">=</span> <span class="n">MoveTargetOutOfBoundsException</span>
+    <span class="n">INVALID_XPATH_SELECTOR</span> <span class="o">=</span> <span class="n">InvalidSelectorException</span>
+    <span class="n">INVALID_XPATH_SELECTOR_RETURN_TYPER</span> <span class="o">=</span> <span class="n">InvalidSelectorException</span>
+    <span class="n">ELEMENT_NOT_INTERACTABLE</span> <span class="o">=</span> <span class="n">ElementNotInteractableException</span>
+    <span class="n">INSECURE_CERTIFICATE</span> <span class="o">=</span> <span class="n">InsecureCertificateException</span>
+    <span class="n">INVALID_ARGUMENT</span> <span class="o">=</span> <span class="n">InvalidArgumentException</span>
+    <span class="n">INVALID_COORDINATES</span> <span class="o">=</span> <span class="n">InvalidCoordinatesException</span>
+    <span class="n">INVALID_SESSION_ID</span> <span class="o">=</span> <span class="n">InvalidSessionIdException</span>
+    <span class="n">NO_SUCH_COOKIE</span> <span class="o">=</span> <span class="n">NoSuchCookieException</span>
+    <span class="n">UNABLE_TO_CAPTURE_SCREEN</span> <span class="o">=</span> <span class="n">ScreenshotException</span>
+    <span class="n">ELEMENT_CLICK_INTERCEPTED</span> <span class="o">=</span> <span class="n">ElementClickInterceptedException</span>
+    <span class="n">UNKNOWN_METHOD</span> <span class="o">=</span> <span class="n">UnknownMethodException</span></div>
+
+
 <div class="viewcode-block" id="ErrorCode"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode">[docs]</a><span class="k">class</span> <span class="nc">ErrorCode</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error codes defined in the WebDriver wire protocol.&quot;&quot;&quot;</span>
 
@@ -177,72 +217,16 @@
                     <span class="k">pass</span>
 
         <span class="n">exception_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">WebDriverException</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_ELEMENT</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchElementException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_FRAME</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchFrameException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_SHADOW_ROOT</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchShadowRootException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_WINDOW</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchWindowException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">STALE_ELEMENT_REFERENCE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">StaleElementReferenceException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_NOT_VISIBLE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotVisibleException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_ELEMENT_STATE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidElementStateException</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_SELECTOR</span>
-            <span class="ow">or</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_XPATH_SELECTOR</span>
-            <span class="ow">or</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_XPATH_SELECTOR_RETURN_TYPER</span>
-        <span class="p">):</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidSelectorException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_IS_NOT_SELECTABLE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotSelectableException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_NOT_INTERACTABLE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotInteractableException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COOKIE_DOMAIN</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidCookieDomainException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_SET_COOKIE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">UnableToSetCookieException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">TimeoutException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SCRIPT_TIMEOUT</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">TimeoutException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNEXPECTED_ALERT_OPEN</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">UnexpectedAlertPresentException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_ALERT_OPEN</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoAlertPresentException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">IME_NOT_AVAILABLE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ImeNotAvailableException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">IME_ENGINE_ACTIVATION_FAILED</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ImeActivationFailedException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MOVE_TARGET_OUT_OF_BOUNDS</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">MoveTargetOutOfBoundsException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JAVASCRIPT_ERROR</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">JavascriptException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SESSION_NOT_CREATED</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">SessionNotCreatedException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_ARGUMENT</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidArgumentException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_COOKIE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchCookieException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_CAPTURE_SCREEN</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ScreenshotException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_CLICK_INTERCEPTED</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementClickInterceptedException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INSECURE_CERTIFICATE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InsecureCertificateException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COORDINATES</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidCoordinatesException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_SESSION_ID</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidSessionIdException</span>
-        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNKNOWN_METHOD</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">UnknownMethodException</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="p">()</span>
+        <span class="n">error_codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">error_code</span> <span class="ow">in</span> <span class="n">error_codes</span><span class="p">:</span>
+            <span class="n">error_info</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ErrorCode</span><span class="p">,</span> <span class="n">error_code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error_info</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">error_info</span><span class="p">:</span>
+                <span class="n">exception_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ExceptionMapping</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">WebDriverException</span><span class="p">)</span>
+                <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

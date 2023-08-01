@@ -57,14 +57,13 @@
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.webdriver</span> <span class="kn">import</span> <span class="n">ChromiumDriver</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.driver_finder</span> <span class="kn">import</span> <span class="n">DriverFinder</span>
 
 <span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_edge/selenium.webdriver.edge.webdriver.html#selenium.webdriver.edge.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">ChromiumDriver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controls the MDEdgeDriver and allows you to drive the browser.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controls the MSEdgeDriver and allows you to drive the browser.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -80,18 +79,15 @@
 <span class="sd">         - service - Service object for handling the browser driver if you need to pass extra details</span>
 <span class="sd">         - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">EDGE</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">],</span>
             <span class="s2">&quot;ms&quot;</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">,</span>
+            <span class="n">options</span><span class="p">,</span>
+            <span class="n">service</span><span class="p">,</span>
+            <span class="n">keep_alive</span><span class="p">,</span>
         <span class="p">)</span></div>
 </pre></div>
 

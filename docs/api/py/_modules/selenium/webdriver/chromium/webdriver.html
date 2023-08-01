@@ -56,6 +56,7 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="kn">import</span> <span class="n">ChromiumRemoteConnection</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.driver_finder</span> <span class="kn">import</span> <span class="n">DriverFinder</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.service</span> <span class="kn">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
@@ -86,7 +87,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vendor_prefix</span> <span class="o">=</span> <span class="n">vendor_prefix</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
@@ -97,9 +99,9 @@
                     <span class="n">browser_name</span><span class="o">=</span><span class="n">browser_name</span><span class="p">,</span>
                     <span class="n">vendor_prefix</span><span class="o">=</span><span class="n">vendor_prefix</span><span class="p">,</span>
                     <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span>
-                    <span class="n">ignore_proxy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
+                    <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
                 <span class="p">),</span>
-                <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
