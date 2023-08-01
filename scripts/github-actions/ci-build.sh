@@ -7,7 +7,7 @@ set -x
 # The ruby version may have been set by the CI runner. Stash
 # changes while we check to see if we need to reformat the
 # code.
-git commit -am 'Temp commit to allow format to run cleanly'
+git commit -am 'Temp commit to allow format to run cleanly' --author="CI Build <selenium@example.com>"
 
 # Fail the build if the format script needs to be re-run
 ./scripts/format.sh
