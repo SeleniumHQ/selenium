@@ -487,9 +487,14 @@ pub trait SeleniumManager {
         // If driver is in path, always use it
         if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
             // If proper driver version is not the same as the driver in path, display warning
-            if !self.get_driver_version().is_empty() && !version.eq(self.get_driver_version()) {
+            let major_version = self.get_major_version(version)?;
+            if !self.get_driver_version().is_empty()
+                && !major_version.eq(&self.get_major_browser_version())
+            {
                 self.get_logger().warn(format!(
-                    "The {} version ({}) detected in PATH at {} might not be compatible with the detected {} version ({}); currently, {} {} is recommended for {} {}.*, so it is advised to delete the driver in PATH and retry",
+                    "The {} version ({}) detected in PATH at {} might not be compatible with \
+                    the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
+                    so it is advised to delete the driver in PATH and retry",
                     self.get_driver_name(),
                     version,
                     path,
