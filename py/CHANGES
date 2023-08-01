@@ -1,3 +1,6 @@
+Selenium 4.11.2
+* better bug fix for #12454
+
 Selenium 4.11.1
 * Delete unusable Safari Options parameters to fix bug preventing Safari execution (#12454)
 
