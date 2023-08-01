@@ -59,8 +59,8 @@ class _IeOptionsDescriptor:
             raise ValueError(f"{self.name} should be of type {self.expected_type.__name__}")
 
         if self.name == "elementScrollBehavior" and value not in [
-            ElementScrollBehavior.TOP.value,
-            ElementScrollBehavior.BOTTOM.value,
+            ElementScrollBehavior.TOP,
+            ElementScrollBehavior.BOTTOM,
         ]:
             raise ValueError("Element Scroll Behavior out of range.")
         obj._options[self.name] = value
