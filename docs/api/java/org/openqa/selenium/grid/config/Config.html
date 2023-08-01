@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":18,"i1":6,"i2":18,"i3":18,"i4":18,"i5":6,"i6":6};
+var data = {"i0":18,"i1":6,"i2":18,"i3":18,"i4":18,"i5":6,"i6":6,"i7":18,"i8":18};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -194,6 +194,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSectionNames()">getSectionNames</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>default java.util.List&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toEntryList(java.util.Map)">toEntryList</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;mapItem)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>default java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toJson(java.lang.Object)">toJson</a></span>&#8203;(java.lang.Object&nbsp;value)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -272,13 +282,31 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <a id="getClass(java.lang.String,java.lang.String,java.lang.Class,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getClass</h4>
 <pre class="methodSignature">default&nbsp;&lt;X&gt;&nbsp;X&nbsp;getClass&#8203;(java.lang.String&nbsp;section,
                        java.lang.String&nbsp;option,
                        java.lang.Class&lt;X&gt;&nbsp;typeOfClass,
                        java.lang.String&nbsp;defaultClazz)</pre>
+</li>
+</ul>
+<a id="toEntryList(java.util.Map)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toEntryList</h4>
+<pre class="methodSignature">default&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;toEntryList&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;mapItem)</pre>
+</li>
+</ul>
+<a id="toJson(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toJson</h4>
+<pre class="methodSignature">default&nbsp;java.lang.String&nbsp;toJson&#8203;(java.lang.Object&nbsp;value)</pre>
 </li>
 </ul>
 </li>

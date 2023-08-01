@@ -102,7 +102,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li><a href="#interface">Interfaces</a></li>
 <li><a href="#class">Classes</a></li>
-<li><a href="#enum">Enums</a></li>
 <li><a href="#field">Fields</a></li>
 <li><a href="#method">Methods</a></li>
 <li><a href="#constructor">Constructors</a></li>
@@ -156,28 +155,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </table>
 </li>
 </ul>
-<a id="enum">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table class="deprecatedSummary">
-<caption><span>Enums</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Enum</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">org.openqa.selenium.chrome.ChromeDriverLogLevel</a></th>
-<td class="colLast">
-<div class="deprecationComment">use <a href="org/openqa/selenium/chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium"><code>ChromiumDriverLogLevel</code></a></div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
 <a id="field">
 <!--   -->
 </a>
@@ -191,24 +168,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_WHITELISTED_IPS_PROPERTY">org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_WHITELISTED_IPS_PROPERTY</a></th>
-<td class="colLast">
-<div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_ALLOWED_IPS_PROPERTY"><code>ChromeDriverService.CHROME_DRIVER_ALLOWED_IPS_PROPERTY</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html#BROWSER_LOGFILE">org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_LOGFILE</a></th>
 <td class="colLast">
 <div class="deprecationComment">equivalent constant located at <a href="org/openqa/selenium/firefox/GeckoDriverService.html#GECKO_DRIVER_LOG_PROPERTY"><code>GeckoDriverService.GECKO_DRIVER_LOG_PROPERTY</code></a></div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#NATIVE_EVENTS">org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS</a></th>
 <td class="colLast">
 <div class="deprecationComment">Non W3C compliant</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#UNEXPECTED_ALERT_BEHAVIOR">org.openqa.selenium.ie.InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#UNHANDLED_PROMPT_BEHAVIOUR"><code>CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR</code></a></div>
@@ -235,34 +206,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">org.openqa.selenium.chrome.ChromeDriverService.Builder.withLogLevel&#8203;(ChromeDriverLogLevel)</a></th>
-<td class="colLast">
-<div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> instead.</div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withWhitelistedIps(java.lang.String)">org.openqa.selenium.chrome.ChromeDriverService.Builder.withWhitelistedIps&#8203;(String)</a></th>
 <td class="colLast">
 <div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withAllowedListIps(java.lang.String)"><code>ChromeDriverService.Builder.withAllowedListIps(String)</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.html#createServiceWithConfig(org.openqa.selenium.chrome.ChromeOptions)">org.openqa.selenium.chrome.ChromeDriverService.createServiceWithConfig&#8203;(ChromeOptions)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> }</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeOptions.html#getLogLevel()">org.openqa.selenium.chrome.ChromeOptions.getLogLevel()</a></th>
-<td class="colLast">
-<div class="deprecationComment">Log Level only applies to <a href="org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a>.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeOptions.html#setLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">org.openqa.selenium.chrome.ChromeOptions.setLogLevel&#8203;(ChromeDriverLogLevel)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set
-     log level.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -334,18 +280,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElement&#8203;(String, String)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElements&#8203;(String, String)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
@@ -356,18 +290,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElement&#8203;(String, String)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElements&#8203;(String, String)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
-</td>
 </tr>
 <tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>

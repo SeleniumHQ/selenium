@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -243,11 +243,18 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#peekEmpty()">peekEmpty</a></span>()</code></th>
+<td class="colLast">
+<div class="block">A fast-path to detect if the queue is empty, returns false if there is no fast-path available.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#retryAddToQueue(org.openqa.selenium.grid.data.SessionRequest)">retryAddToQueue</a></span>&#8203;(<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -318,6 +325,23 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <li class="blockList">
 <h4>create</h4>
 <pre class="methodSignature">public static&nbsp;<a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;create&#8203;(<a href="../../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</pre>
+</li>
+</ul>
+<a id="peekEmpty()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>peekEmpty</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;peekEmpty()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../NewSessionQueue.html#peekEmpty()">NewSessionQueue</a></code></span></div>
+<div class="block">A fast-path to detect if the queue is empty, returns false if there is no fast-path available.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../NewSessionQueue.html#peekEmpty()">peekEmpty</a></code>&nbsp;in class&nbsp;<code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the queue is empty, false if it is not empty or unknown</dd>
+</dl>
 </li>
 </ul>
 <a id="addToQueue(org.openqa.selenium.grid.data.SessionRequest)">

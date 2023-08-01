@@ -190,8 +190,9 @@ implements <a href="SlotSelector.html" title="interface in org.openqa.selenium.g
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#selectSlot(org.openqa.selenium.Capabilities,java.util.Set)">selectSlot</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
-          java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#selectSlot(org.openqa.selenium.Capabilities,java.util.Set,org.openqa.selenium.grid.data.SlotMatcher)">selectSlot</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+          java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes,
+          <a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -246,17 +247,18 @@ implements <a href="SlotSelector.html" title="interface in org.openqa.selenium.g
 <pre class="methodSignature">public static&nbsp;<a href="SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;create&#8203;(<a href="../../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</pre>
 </li>
 </ul>
-<a id="selectSlot(org.openqa.selenium.Capabilities,java.util.Set)">
+<a id="selectSlot(org.openqa.selenium.Capabilities,java.util.Set,org.openqa.selenium.grid.data.SlotMatcher)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>selectSlot</h4>
 <pre class="methodSignature">public&nbsp;java.util.Set&lt;<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&gt;&nbsp;selectSlot&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
-                                        java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes)</pre>
+                                        java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes,
+                                        <a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="SlotSelector.html#selectSlot(org.openqa.selenium.Capabilities,java.util.Set)">selectSlot</a></code>&nbsp;in interface&nbsp;<code><a href="SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></code></dd>
+<dd><code><a href="SlotSelector.html#selectSlot(org.openqa.selenium.Capabilities,java.util.Set,org.openqa.selenium.grid.data.SlotMatcher)">selectSlot</a></code>&nbsp;in interface&nbsp;<code><a href="SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></code></dd>
 </dl>
 </li>
 </ul>

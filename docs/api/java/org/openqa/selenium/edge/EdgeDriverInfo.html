@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -209,14 +209,6 @@ extends <a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Some browsers require all the resources of the current system in order to run (for example,
- Safari on iOS) and so do not support multiple simultaneous sessions on the same system.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAvailable()">isAvailable</a></span>()</code></th>
 <td class="colLast">
@@ -224,29 +216,36 @@ extends <a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa
  present (such as a vendor-provided executable which speaks the WebDriver Protocol).</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPresent()">isPresent</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Checks whether the browser driver is already present on the host machine.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupportingBiDi()">isSupportingBiDi</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupportingCdp()">isSupportingCdp</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.chromium.ChromiumDriverInfo">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.chromium.<a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa.selenium.chromium">ChromiumDriverInfo</a></h3>
+<code><a href="../chromium/ChromiumDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -390,28 +389,6 @@ extends <a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether the browser driver is present on the host machine.</dd>
-</dl>
-</li>
-</ul>
-<a id="getMaximumSimultaneousSessions()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getMaximumSimultaneousSessions</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;getMaximumSimultaneousSessions()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">WebDriverInfo</a></code></span></div>
-<div class="block">Some browsers require all the resources of the current system in order to run (for example,
- Safari on iOS) and so do not support multiple simultaneous sessions on the same system. Other
- browsers can create isolated state for each new <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance.
-
- <p>The count of simultaneous sessions is typically 1, some multiple of the available number of
- cores, or <code>Integer.MAX_VALUE</code> if the number is unbounded or no-one cares.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../chromium/ChromiumDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in class&nbsp;<code><a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa.selenium.chromium">ChromiumDriverInfo</a></code></dd>
 </dl>
 </li>
 </ul>

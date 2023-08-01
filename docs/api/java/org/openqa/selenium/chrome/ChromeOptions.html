@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":42,"i1":10,"i2":42};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var data = {"i0":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -244,36 +244,17 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLogLevel()">getLogLevel</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Log Level only applies to <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></th>
 <td class="colLast">
 <div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">setLogLevel</a></span>&#8203;(<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set
-     log level.</div>
-</div>
 </td>
 </tr>
 </table>
@@ -384,24 +365,10 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="setLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setLogLevel</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setLogLevel&#8203;(<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set
-     log level.</div>
-</div>
-</li>
-</ul>
 <a id="merge(org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
@@ -413,19 +380,6 @@ public&nbsp;<a href="ChromeOptions.html" title="class in org.openqa.selenium.chr
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
 </dl>
-</li>
-</ul>
-<a id="getLogLevel()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getLogLevel</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;getLogLevel()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Log Level only applies to <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a>.</div>
-</div>
 </li>
 </ul>
 </li>

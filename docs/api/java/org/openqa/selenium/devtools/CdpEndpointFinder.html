@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -180,17 +180,22 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static java.util.Optional&lt;java.net.URI&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCdpEndPoint(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI)">getCdpEndPoint</a></span>&#8203;(<a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-              java.net.URI&nbsp;reportedUri)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCdpEndPoint(org.openqa.selenium.remote.http.HttpClient)">getCdpEndPoint</a></span>&#8203;(<a href="../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHttpClient(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI)">getHttpClient</a></span>&#8203;(<a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+             java.net.URI&nbsp;reportedUri)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static java.util.Optional&lt;java.net.URI&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReportedUri(java.lang.String,org.openqa.selenium.Capabilities)">getReportedUri</a></span>&#8203;(java.lang.String&nbsp;capabilityKey,
               <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.util.Optional&lt;java.net.URI&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReportedUri(org.openqa.selenium.Capabilities)">getReportedUri</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -238,14 +243,23 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="getCdpEndPoint(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI)">
+<a id="getHttpClient(org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHttpClient</h4>
+<pre class="methodSignature">public static&nbsp;<a href="../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;getHttpClient&#8203;(<a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                                       java.net.URI&nbsp;reportedUri)</pre>
+</li>
+</ul>
+<a id="getCdpEndPoint(org.openqa.selenium.remote.http.HttpClient)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getCdpEndPoint</h4>
-<pre class="methodSignature">public static&nbsp;java.util.Optional&lt;java.net.URI&gt;&nbsp;getCdpEndPoint&#8203;(<a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-                                                              java.net.URI&nbsp;reportedUri)</pre>
+<pre class="methodSignature">public static&nbsp;java.util.Optional&lt;java.net.URI&gt;&nbsp;getCdpEndPoint&#8203;(<a href="../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client)</pre>
 </li>
 </ul>
 <a id="getReportedUri(org.openqa.selenium.Capabilities)">

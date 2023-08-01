@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -201,11 +201,6 @@ implements <a href="../HttpClient.html" title="interface in org.openqa.selenium.
           <a href="../WebSocket.Listener.html" title="interface in org.openqa.selenium.remote.http">WebSocket.Listener</a>&nbsp;listener)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#with(org.openqa.selenium.remote.http.Filter)">with</a></span>&#8203;(<a href="../Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filter)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -213,6 +208,13 @@ implements <a href="../HttpClient.html" title="interface in org.openqa.selenium.
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.http.HttpHandler">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.<a href="../HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></h3>
+<code><a href="../HttpHandler.html#with(org.openqa.selenium.remote.http.Filter)">with</a></code></li>
 </ul>
 </li>
 </ul>
@@ -254,19 +256,6 @@ implements <a href="../HttpClient.html" title="interface in org.openqa.selenium.
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../HttpClient.html#openSocket(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.http.WebSocket.Listener)">openSocket</a></code>&nbsp;in interface&nbsp;<code><a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="with(org.openqa.selenium.remote.http.Filter)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>with</h4>
-<pre class="methodSignature">public&nbsp;<a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;with&#8203;(<a href="../Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filter)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../HttpHandler.html#with(org.openqa.selenium.remote.http.Filter)">with</a></code>&nbsp;in interface&nbsp;<code><a href="../HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code></dd>
 </dl>
 </li>
 </ul>

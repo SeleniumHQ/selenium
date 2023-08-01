@@ -118,6 +118,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.selector">org.openqa.selenium.grid.distributor.selector</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.node.config">org.openqa.selenium.grid.node.config</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.sessionqueue.local">org.openqa.selenium.grid.sessionqueue.local</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -149,6 +161,34 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 </tbody>
 </table>
+<table class="useSummary">
+<caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium.grid.data</a> with parameters of type <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NodeStatus.</span><code><span class="memberNameLink"><a href="../NodeStatus.html#hasCapability(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.data.SlotMatcher)">hasCapability</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps,
+             <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NodeStatus.</span><code><span class="memberNameLink"><a href="../NodeStatus.html#hasCapacity(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.data.SlotMatcher)">hasCapacity</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps,
+           <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Slot.</span><code><span class="memberNameLink"><a href="../Slot.html#isSupporting(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.data.SlotMatcher)">isSupporting</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps,
+            <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
 </section>
 </li>
 <li class="blockList">
@@ -167,6 +207,90 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <td class="colFirst"><code><a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DistributorOptions.</span><code><span class="memberNameLink"><a href="../../distributor/config/DistributorOptions.html#getSlotMatcher()">getSlotMatcher</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.distributor.local">
+<!--   -->
+</a>
+<h3>Uses of <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a> in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h3>
+<table class="useSummary">
+<caption><span>Constructors in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../distributor/local/LocalDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueue,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.security.Secret,java.time.Duration,boolean,java.time.Duration,int,org.openqa.selenium.grid.data.SlotMatcher)">LocalDistributor</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+                <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+                <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                <a href="../../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
+                <a href="../../sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;sessionQueue,
+                <a href="../../distributor/selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
+                <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+                java.time.Duration&nbsp;healthcheckInterval,
+                boolean&nbsp;rejectUnsupportedCaps,
+                java.time.Duration&nbsp;sessionRequestRetryInterval,
+                int&nbsp;newSessionThreadPoolSize,
+                <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.distributor.selector">
+<!--   -->
+</a>
+<h3>Uses of <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a> in <a href="../../distributor/selector/package-summary.html">org.openqa.selenium.grid.distributor.selector</a></h3>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../distributor/selector/package-summary.html">org.openqa.selenium.grid.distributor.selector</a> with parameters of type <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>java.util.Set&lt;<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DefaultSlotSelector.</span><code><span class="memberNameLink"><a href="../../distributor/selector/DefaultSlotSelector.html#selectSlot(org.openqa.selenium.Capabilities,java.util.Set,org.openqa.selenium.grid.data.SlotMatcher)">selectSlot</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+          java.util.Set&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes,
+          <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.util.Set&lt;<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">SlotSelector.</span><code><span class="memberNameLink"><a href="../../distributor/selector/SlotSelector.html#selectSlot(org.openqa.selenium.Capabilities,java.util.Set,org.openqa.selenium.grid.data.SlotMatcher)">selectSlot</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+          java.util.Set&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;nodes,
+          <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.node.config">
+<!--   -->
+</a>
+<h3>Uses of <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a> in <a href="../../node/config/package-summary.html">org.openqa.selenium.grid.node.config</a></h3>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../node/config/package-summary.html">org.openqa.selenium.grid.node.config</a> that return <a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NodeOptions.</span><code><span class="memberNameLink"><a href="../../node/config/NodeOptions.html#getSlotMatcher()">getSlotMatcher</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

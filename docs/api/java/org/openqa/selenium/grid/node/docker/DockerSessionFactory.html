@@ -162,7 +162,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean)">DockerSessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate)">DockerSessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                     <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                     java.time.Duration&nbsp;sessionTimeout,
                     <a href="../../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
@@ -173,7 +173,8 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
                     <a href="../../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
                     <a href="DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
                     java.lang.String&nbsp;networkName,
-                    boolean&nbsp;runningInDocker)</code></th>
+                    boolean&nbsp;runningInDocker,
+                    java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -247,7 +248,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean,java.util.function.Predicate)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -264,7 +265,8 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
                             <a href="../../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
                             <a href="DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
                             java.lang.String&nbsp;networkName,
-                            boolean&nbsp;runningInDocker)</pre>
+                            boolean&nbsp;runningInDocker,
+                            java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate)</pre>
 </li>
 </ul>
 </li>

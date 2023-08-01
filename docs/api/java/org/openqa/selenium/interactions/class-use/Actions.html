@@ -262,31 +262,39 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#moveToLocation(int,int)">moveToLocation</a></span>&#8203;(int&nbsp;xCoordinate,
+              int&nbsp;yCoordinate)</code></th>
+<td class="colLast">
+<div class="block">Moves the mouse to provided coordinates on screen regardless of starting position of the mouse.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#pause(long)">pause</a></span>&#8203;(long&nbsp;pause)</code></th>
 <td class="colLast">
 <div class="block">Performs a pause.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#pause(java.time.Duration)">pause</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#release()">release</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Releases the depressed left mouse button at the current mouse location.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#release(org.openqa.selenium.WebElement)">release</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code></th>
 <td class="colLast">
 <div class="block">Releases the depressed left mouse button, in the middle of the given element.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#scrollByAmount(int,int)">scrollByAmount</a></span>&#8203;(int&nbsp;deltaX,
               int&nbsp;deltaY)</code></th>
@@ -294,7 +302,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Scrolls by provided amounts with the origin in the top left corner of the viewport.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#scrollFromOrigin(org.openqa.selenium.interactions.WheelInput.ScrollOrigin,int,int)">scrollFromOrigin</a></span>&#8203;(<a href="../WheelInput.ScrollOrigin.html" title="class in org.openqa.selenium.interactions">WheelInput.ScrollOrigin</a>&nbsp;scrollOrigin,
                 int&nbsp;deltaX,
@@ -303,7 +311,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Scrolls by provided amount based on a provided origin.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#scrollToElement(org.openqa.selenium.WebElement)">scrollToElement</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
 <td class="colLast">
@@ -311,14 +319,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  viewport.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></span>&#8203;(java.lang.CharSequence...&nbsp;keys)</code></th>
 <td class="colLast">
 <div class="block">Sends keys to the active element.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#sendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)">sendKeys</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
         java.lang.CharSequence...&nbsp;keys)</code></th>
@@ -327,23 +335,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  different from <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see <a href="../Actions.html#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#setActiveKeyboard(java.lang.String)">setActiveKeyboard</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#setActivePointer(org.openqa.selenium.interactions.PointerInput.Kind,java.lang.String)">setActivePointer</a></span>&#8203;(<a href="../PointerInput.Kind.html" title="enum in org.openqa.selenium.interactions">PointerInput.Kind</a>&nbsp;kind,
                 java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#setActiveWheel(java.lang.String)">setActiveWheel</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Actions.</span><code><span class="memberNameLink"><a href="../Actions.html#tick(org.openqa.selenium.interactions.Interaction...)">tick</a></span>&#8203;(<a href="../Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>...&nbsp;actions)</code></th>
 <td class="colLast">&nbsp;</td>

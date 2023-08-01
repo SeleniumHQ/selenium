@@ -23,6 +23,7 @@ org.openqa.selenium.edge
 org.openqa.selenium.events
 org.openqa.selenium.events.local
 org.openqa.selenium.events.zeromq
+org.openqa.selenium.federatedcredentialmanagement
 org.openqa.selenium.firefox
 org.openqa.selenium.grid
 org.openqa.selenium.grid.commands
