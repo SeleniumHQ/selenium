@@ -118,11 +118,11 @@ function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
   let targets = [
-    [getPath(chrome.Options).driverPath, Browser.CHROME],
-    [getPath(edge.Options).driverPath, Browser.EDGE],
-    [getPath(firefox.Options).driverPath, Browser.FIREFOX],
-    [getPath(ie.Options).driverPath, Browser.INTERNET_EXPLORER],
-    [getPath(safari.Options).driverPath, Browser.SAFARI],
+    [getPath(new chrome.Options()).driverPath, Browser.CHROME],
+    [getPath(new edge.Options()).driverPath, Browser.EDGE],
+    [getPath(new firefox.Options()).driverPath, Browser.FIREFOX],
+    [getPath(new ie.Options()).driverPath, Browser.INTERNET_EXPLORER],
+    [getPath(new safari.Options()).driverPath, Browser.SAFARI],
   ]
 
   let availableBrowsers = []
