@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::DriverFinder
   
-    &mdash; Documentation by YARD 0.9.28
+    &mdash; Documentation by YARD 0.9.34
   
 </title>
 
@@ -179,9 +179,7 @@
 39
 40
 41
-42
-43
-44</pre>
+42</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_finder.rb', line 23</span>
@@ -189,7 +187,6 @@
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span> <span class='kw'>if</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Proc</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find_binary'><span class='object_link'><a href="Platform.html#find_binary-class_method" title="Selenium::WebDriver::Platform.find_binary (method)">find_binary</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_klass'>klass</span><span class='op'>::</span><span class='const'>EXECUTABLE</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='kw'>begin</span>
     <span class='const'><span class='object_link'><a href="SeleniumManager.html" title="Selenium::WebDriver::SeleniumManager (class)">SeleniumManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="SeleniumManager.html#driver_path-class_method" title="Selenium::WebDriver::SeleniumManager.driver_path (method)">driver_path</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Remote/Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='rparen'>)</span>
@@ -198,7 +195,6 @@
   <span class='kw'>end</span>
 
   <span class='kw'>begin</span>
-    <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_assert_file'><span class='object_link'><a href="Platform.html#assert_file-class_method" title="Selenium::WebDriver::Platform.assert_file (method)">assert_file</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
     <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'><span class='object_link'><a href="Platform.html#assert_executable-class_method" title="Selenium::WebDriver::Platform.assert_executable (method)">assert_executable</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='kw'>rescue</span> <span class='const'>TypeError</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchDriverError.html" title="Selenium::WebDriver::Error::NoSuchDriverError (class)">NoSuchDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unable to locate or obtain </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass'>klass</span><span class='op'>::</span><span class='const'>EXECUTABLE</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -218,9 +214,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Jun  7 18:35:40 2023 by
+  Generated on Tue Aug  1 10:25:17 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.0.6).
+  0.9.34 (ruby-3.0.6).
 </div>
 
     </div>

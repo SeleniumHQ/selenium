@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Options
   
-    &mdash; Documentation by YARD 0.9.28
+    &mdash; Documentation by YARD 0.9.34
   
 </title>
 
@@ -298,30 +298,6 @@
   
     <span class="summary_desc"><div class='inline'>
 <p>Enables mobile browser use on Android.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#headless!-instance_method" title="#headless! (instance method)">#<strong>headless!</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Run Firefox in headless mode.</p>
 </div></span>
   
 </li>
@@ -964,81 +940,21 @@
       <pre class="lines">
 
 
-156
-157
-158
-159
-160
-161</pre>
+141
+142
+143
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 156</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enable_android'>enable_android</span><span class='lparen'>(</span><span class='label'>package:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>org.mozilla.firefox</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>serial_number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>activity:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>intent_arguments:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_package</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_package'>package</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_activity</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_activity'>activity</span> <span class='kw'>unless</span> <span class='id identifier rubyid_activity'>activity</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_device_serial</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_serial_number'>serial_number</span> <span class='kw'>unless</span> <span class='id identifier rubyid_serial_number'>serial_number</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:android_intent_arguments</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_intent_arguments'>intent_arguments</span> <span class='kw'>unless</span> <span class='id identifier rubyid_intent_arguments'>intent_arguments</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="headless!-instance_method">
-  
-    #<strong>headless!</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Run Firefox in headless mode.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Enable headless mode</p>
-</div></p>
-      
-      <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Firefox::Options#initialize (method)">new</a></span></span>
-<span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_headless!'>headless!</span></code></pre>
-    
-  </div>
-
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-110
-111
-112
-113
-114
-115</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 110</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_headless!'>headless!</span>
-  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>`Options#headless!`</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-                             <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>`Options#add_argument(&#39;-headless&#39;)`</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                             <span class='label'>id:</span> <span class='symbol'>:headless</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_add_argument'>add_argument</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-headless</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1060,12 +976,12 @@
       <pre class="lines">
 
 
-136
-137
-138</pre>
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level'>log_level</span>
   <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='symbol'>:log</span><span class='comma'>,</span> <span class='symbol'>:level</span><span class='rparen'>)</span>
@@ -1090,12 +1006,12 @@
       <pre class="lines">
 
 
-140
-141
-142</pre>
+125
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/options.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_level='>log_level=</span><span class='lparen'>(</span><span class='id identifier rubyid_level'>level</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='id identifier rubyid_level'>level</span><span class='rbrace'>}</span>
@@ -1110,9 +1026,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Jun  7 18:35:40 2023 by
+  Generated on Tue Aug  1 10:25:16 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.0.6).
+  0.9.34 (ruby-3.0.6).
 </div>
 
     </div>

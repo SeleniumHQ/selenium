@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::IE::Options
   
-    &mdash; Documentation by YARD 0.9.28
+    &mdash; Documentation by YARD 0.9.34
   
 </title>
 
@@ -145,7 +145,8 @@
   <span class='label'>use_per_process_proxy:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.usePerProcessProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>use_legacy_file_upload_dialog_handling:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.useLegacyFileUploadDialogHandling</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>attach_to_edge_chrome:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.edgechromium</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>edge_executable_path:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.edgepath</span><span class='tstring_end'>&#39;</span></span>
+  <span class='label'>edge_executable_path:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.edgepath</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>ignore_process_match:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.ignoreprocessmatch</span><span class='tstring_end'>&#39;</span></span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="BROWSER-constant" class="">BROWSER =
@@ -499,15 +500,15 @@
       <pre class="lines">
 
 
-81
 82
 83
 84
 85
-86</pre>
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span>
@@ -553,12 +554,12 @@
       <pre class="lines">
 
 
-48
 49
-50</pre>
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_args'>args</span>
   <span class='ivar'>@args</span>
@@ -621,12 +622,12 @@
       <pre class="lines">
 
 
-94
 95
-96</pre>
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -641,9 +642,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Jun  7 18:35:39 2023 by
+  Generated on Tue Aug  1 10:25:15 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.0.6).
+  0.9.34 (ruby-3.0.6).
 </div>
 
     </div>
