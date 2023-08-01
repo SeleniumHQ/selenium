@@ -150,7 +150,7 @@ public class DriverService implements Closeable {
     return null;
   }
 
-  protected String getDriverProperty() {
+  public String getDriverProperty() {
     return null;
   }
 

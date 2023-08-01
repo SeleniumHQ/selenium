@@ -66,7 +66,7 @@ class RemoteSupplier implements Supplier<WebDriver> {
     if (started) {
       return;
     }
-    server.start("standalone", "--selenium-manager", "true");
+    server.start("standalone");
     started = true;
   }
 }

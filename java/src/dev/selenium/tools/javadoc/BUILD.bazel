@@ -13,7 +13,7 @@ java_binary(
         "//visibility:public",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/io",
+        "//java/src/org/openqa/selenium/os",
         "@rules_jvm_external//private/tools/java/com/github/bazelbuild/rules_jvm_external/zip",
     ],
 )
