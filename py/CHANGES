@@ -1,3 +1,6 @@
+Selenium 4.11.1
+* Delete unusable Safari Options parameters to fix bug preventing Safari execution (#12454)
+
 Selenium 4.11.0
 * Add CDP files for v115 and remove v112
 * removed redundant attributes `capabilities` and `set_capability` in wpewebkit/options.py (#12169)
