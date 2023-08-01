@@ -1,5 +1,31 @@
 [
   {
+    "tag_name": "selenium-4.11.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/IEDriverServer_Win32_4.11.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/IEDriverServer_x64_4.11.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/selenium-dotnet-4.11.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/selenium-dotnet-strongnamed-4.11.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/selenium-java-4.11.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/selenium-server-4.11.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.11.0/selenium-server-4.11.0.zip"
+      }
+    ]
+  },
+  {
     "tag_name": "nightly",
     "assets": [
       {
@@ -849,35 +875,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.5/selenium-server-standalone-3.141.5.jar"
-      }
-    ]
-  },
-  {
-    "tag_name": "selenium-3.141.0",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/IEDriverServer_Win32_3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/IEDriverServer_x64_3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-dotnet-3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-dotnet-strongnamed-3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-html-runner-3.141.0.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-java-3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-server-3.141.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-3.141.0/selenium-server-standalone-3.141.0.jar"
       }
     ]
   }

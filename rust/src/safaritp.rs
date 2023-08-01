@@ -34,6 +34,9 @@ pub const SAFARITP_NAMES: &[&str] = &[
     "safaritechnologypreview",
 ];
 pub const SAFARITPDRIVER_NAME: &str = "safaridriver";
+const SAFARITP_PATH: &str = r#"/Applications/Safari Technology Preview.app"#;
+const SAFARITP_FULL_PATH: &str =
+    r#"/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview"#;
 
 pub struct SafariTPManager {
     pub browser_name: &'static str,
@@ -74,10 +77,7 @@ impl SeleniumManager for SafariTPManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::from([(
-            BrowserPath::new(MACOS, STABLE),
-            r#"/Applications/Safari\ Technology\ Preview.app"#,
-        )])
+        HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARITP_PATH)])
     }
 
     fn discover_browser_version(&mut self) -> Option<String> {
@@ -95,6 +95,7 @@ impl SeleniumManager for SafariTPManager {
         } else {
             return None;
         };
+        self.set_browser_path(SAFARITP_FULL_PATH.to_string());
         self.detect_browser_version(command)
     }
 

@@ -93,11 +93,9 @@ class SeleniumManager:
         driver_path = output["driver_path"]
         logger.debug(f"Using driver at: {driver_path}")
 
-        try:
+        if hasattr(options.__class__, "binary_location"):
             options.binary_location = browser_path
-            options.browser_version = None  # geckodriver complains if this dev / nightly, etc
-        except AttributeError:
-            pass  # do not set on options classes that do not support it
+            options.browser_version = None  # if we have the binary location we no longer need the version
 
         return driver_path
 
@@ -117,7 +115,12 @@ class SeleniumManager:
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
         try:
-            completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            if sys.platform == "win32":
+                completed_proc = subprocess.run(
+                    args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+            else:
+                completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
             output = json.loads(stdout)

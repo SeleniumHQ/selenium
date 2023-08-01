@@ -65,7 +65,7 @@ public class SeleniumManager {
   private static final String WARN = "WARN";
   private static final String DEBUG = "DEBUG";
 
-  private static SeleniumManager manager;
+  private static volatile SeleniumManager manager;
 
   private File binary;
 
@@ -90,7 +90,11 @@ public class SeleniumManager {
 
   public static SeleniumManager getInstance() {
     if (manager == null) {
-      manager = new SeleniumManager();
+      synchronized (SeleniumManager.class) {
+        if (manager == null) {
+          manager = new SeleniumManager();
+        }
+      }
     }
     return manager;
   }
