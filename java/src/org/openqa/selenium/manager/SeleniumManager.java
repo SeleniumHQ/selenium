@@ -16,15 +16,9 @@
 // under the License.
 package org.openqa.selenium.manager;
 
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
-import org.openqa.selenium.os.CommandLine;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,10 +33,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.Platform.WINDOWS;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
+import org.openqa.selenium.os.CommandLine;
 
 /**
  * This implementation is still in beta, and may change.
@@ -112,10 +111,11 @@ public class SeleniumManager {
     String output;
     int code;
     try {
-      CommandLine command = new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
+      CommandLine command =
+          new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
       command.copyOutputTo(System.err);
       command.executeAsync();
-      command.waitFor(10000);  // A generous timeout
+      command.waitFor(10000); // A generous timeout
       if (command.isRunning()) {
         LOG.warning("Selenium Manager did not exit");
       }
@@ -146,17 +146,11 @@ public class SeleniumManager {
     }
     if (code != 0) {
       throw new WebDriverException(
-          "Command failed with code: "
-              + code
-              + ", executed: "
-              + arguments
-              + "\n"
-              + dump,
+          "Command failed with code: " + code + ", executed: " + arguments + "\n" + dump,
           failedToParse);
     } else if (failedToParse != null || jsonOutput == null) {
       throw new WebDriverException(
-          "Failed to parse json output, executed: " + arguments + "\n" + dump,
-          failedToParse);
+          "Failed to parse json output, executed: " + arguments + "\n" + dump, failedToParse);
     }
     return jsonOutput.result;
   }
@@ -198,27 +192,32 @@ public class SeleniumManager {
   }
 
   private void deleteOnExit(Path tmpPath) {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      try {
-        Files.walkFileTree(
-          tmpPath,
-          new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-              Files.delete(dir);
-              return FileVisitResult.CONTINUE;
-            }
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  try {
+                    Files.walkFileTree(
+                        tmpPath,
+                        new SimpleFileVisitor<Path>() {
+                          @Override
+                          public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                              throws IOException {
+                            Files.delete(dir);
+                            return FileVisitResult.CONTINUE;
+                          }
 
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-              Files.delete(file);
-              return FileVisitResult.CONTINUE;
-            }
-          });
-      } catch (IOException e) {
-        // Do nothing. We're just tidying up.
-      }
-    }));
+                          @Override
+                          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                              throws IOException {
+                            Files.delete(file);
+                            return FileVisitResult.CONTINUE;
+                          }
+                        });
+                  } catch (IOException e) {
+                    // Do nothing. We're just tidying up.
+                  }
+                }));
   }
 
   /**

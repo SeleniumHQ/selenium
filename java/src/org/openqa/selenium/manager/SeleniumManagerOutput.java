@@ -18,7 +18,6 @@ package org.openqa.selenium.manager;
 
 import java.util.List;
 import java.util.Objects;
-
 import org.openqa.selenium.json.JsonInput;
 
 public class SeleniumManagerOutput {
@@ -123,12 +122,19 @@ public class SeleniumManagerOutput {
 
     @Override
     public String toString() {
-      return "Result{" +
-        "code=" + code +
-        ", message='" + message + '\'' +
-        ", driverPath='" + driverPath + '\'' +
-        ", browserPath='" + browserPath + '\'' +
-        '}';
+      return "Result{"
+          + "code="
+          + code
+          + ", message='"
+          + message
+          + '\''
+          + ", driverPath='"
+          + driverPath
+          + '\''
+          + ", browserPath='"
+          + browserPath
+          + '\''
+          + '}';
     }
 
     @Override
@@ -137,7 +143,10 @@ public class SeleniumManagerOutput {
         return false;
       }
       Result that = (Result) o;
-      return code == that.code && Objects.equals(message, that.message) && Objects.equals(driverPath, that.driverPath) && Objects.equals(browserPath, that.browserPath);
+      return code == that.code
+          && Objects.equals(message, that.message)
+          && Objects.equals(driverPath, that.driverPath)
+          && Objects.equals(browserPath, that.browserPath);
     }
 
     @Override

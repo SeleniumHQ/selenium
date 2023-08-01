@@ -26,12 +26,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
@@ -87,14 +84,15 @@ class OutOfProcessSeleniumServer {
             .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
 
     // Only use Selenium Manager if we're not running with pinned browsers.
-    boolean driverProvided = Stream.of(
-        GeckoDriverService.createDefaultService(),
-        EdgeDriverService.createDefaultService(),
-        ChromeDriverService.createDefaultService())
-      .map(DriverService::getDriverProperty)
-      .filter(Objects::nonNull)
-      .map(System::getProperty)
-      .anyMatch(Objects::nonNull);
+    boolean driverProvided =
+        Stream.of(
+                GeckoDriverService.createDefaultService(),
+                EdgeDriverService.createDefaultService(),
+                ChromeDriverService.createDefaultService())
+            .map(DriverService::getDriverProperty)
+            .filter(Objects::nonNull)
+            .map(System::getProperty)
+            .anyMatch(Objects::nonNull);
 
     List<String> startupArgs = new ArrayList<>();
     startupArgs.add(mode);
@@ -111,9 +109,8 @@ class OutOfProcessSeleniumServer {
             Stream.concat(
                     javaFlags,
                     Stream.concat(
-                      // If the driver is provided, we _don't_ want to use Selenium Manager
-                        startupArgs.stream(),
-                        Stream.of(extraFlags)))
+                        // If the driver is provided, we _don't_ want to use Selenium Manager
+                        startupArgs.stream(), Stream.of(extraFlags)))
                 .toArray(String[]::new));
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
@@ -165,13 +162,10 @@ class OutOfProcessSeleniumServer {
   private String buildServerAndClasspath() {
     if (DevMode.isInDevMode()) {
       Path serverJar =
-          InProject.locate(
-              "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
+          InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       if (serverJar == null) {
         new BazelBuild().build("grid");
-        serverJar =
-            InProject.locate(
-                "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
+        serverJar = InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       }
       if (serverJar != null) {
         return serverJar.toAbsolutePath().toString();
