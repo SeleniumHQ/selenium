@@ -42,7 +42,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "ie", "skip-remote"],
     },
     "safari": {
         "deps": ["//java/src/org/openqa/selenium/safari"],
@@ -52,7 +52,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari", "skip-remote"],
     },
 }
 
