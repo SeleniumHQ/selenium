@@ -1,3 +1,9 @@
+## 4.11.1
+
+#### :bug: Bug fix
+
+* Update testing/index.js code snippet to fix function call (#12456)
+
 ## v4.11.0
 
 #### :nail_care: Polish
