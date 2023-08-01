@@ -283,6 +283,7 @@ pub trait SeleniumManager {
                                     self.get_browser_name(),
                                     major_online_browser_version,
                                 ));
+                                self.set_browser_version(version);
                             }
                         }
                     } else if !major_browser_version.is_empty()
@@ -433,9 +434,12 @@ pub trait SeleniumManager {
             || browser_version.eq_ignore_ascii_case(CANARY)
     }
 
+    fn is_browser_version_empty(&self) -> bool {
+        self.get_browser_version().is_empty()
+    }
+
     fn is_browser_version_stable(&self) -> bool {
-        let browser_version = self.get_browser_version();
-        browser_version.is_empty() || browser_version.eq_ignore_ascii_case(STABLE)
+        self.get_browser_version().eq_ignore_ascii_case(STABLE)
     }
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {

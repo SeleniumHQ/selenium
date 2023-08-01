@@ -21,6 +21,7 @@ import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_STATIC_PHASE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 import static net.bytebuddy.jar.asm.Opcodes.ASM9;
 
@@ -491,7 +492,14 @@ public class ModuleGenerator {
         // name. Therefore, the 'processed.' prefix added by bazel must be removed to get the name.
         name = name.substring(10);
       }
-      byteBuddyVisitor.visitRequire(name, getByteBuddyModifier(n.getModifiers()), null);
+      int modifiers = getByteBuddyModifier(n.getModifiers());
+      if (!name.startsWith("org.seleniumhq.selenium.") && !name.startsWith("java.")) {
+        // Some people like to exclude jars from the classpath. To allow this we need to make these
+        // modules static,
+        // otherwise a 'module not found' error while compiling their code would be the consequence.
+        modifiers |= ACC_STATIC_PHASE;
+      }
+      byteBuddyVisitor.visitRequire(name, modifiers, null);
     }
 
     @Override
@@ -530,8 +538,11 @@ public class ModuleGenerator {
       return modifiers.stream()
           .mapToInt(
               mod -> {
-                if (mod.getKeyword() == Modifier.Keyword.TRANSITIVE) {
-                  return ACC_TRANSITIVE;
+                switch (mod.getKeyword()) {
+                  case STATIC:
+                    return ACC_STATIC_PHASE;
+                  case TRANSITIVE:
+                    return ACC_TRANSITIVE;
                 }
                 throw new RuntimeException("Unknown modifier: " + mod);
               })

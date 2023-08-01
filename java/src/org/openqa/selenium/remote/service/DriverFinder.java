@@ -21,7 +21,8 @@ public class DriverFinder {
       try {
         result = SeleniumManager.getInstance().getDriverPath(options, offline);
       } catch (Exception e) {
-        throw new NoSuchDriverException(String.format("Unable to obtain: %s", options), e);
+        throw new NoSuchDriverException(
+            String.format("Unable to obtain: %s, error %s", options, e.getMessage()), e);
       }
     }
 
