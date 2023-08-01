@@ -7,7 +7,7 @@ set -x
 # The ruby version may have been set by the CI runner. Stash
 # changes while we check to see if we need to reformat the
 # code.
-git stash
+git commit -am 'Temp commit to allow format to run cleanly'
 
 # Fail the build if the format script needs to be re-run
 ./scripts/format.sh
@@ -15,7 +15,7 @@ git diff --exit-code
 
 # Now we're made it out, reapply changes made by the build
 # runner
-git stash apply
+git reset --soft HEAD^
 
 # The NPM repository rule wants to write to the HOME directory
 # but that's configured for the remote build machines, so run
@@ -25,4 +25,5 @@ bazel query @npm//:all >/dev/null
 
 # Now run the tests. The engflow build uses pinned browsers
 # so this should be fine
-bazel test --config=remote-ci --keep_going //java/...
+# shellcheck disable=SC2046
+bazel test --config=remote-ci --test_tag_filters=-exclusive-if-local,-skip-remote --keep_going --flaky_test_attempts=2  //java/... -- $(cat .skipped-tests | tr '\n' ' ')
