@@ -71,7 +71,6 @@ public interface Config {
         entry -> {
           return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
         })
-      .sorted()
       .collect(Collectors.toList());
     // add record separator
     entryList.add(DELIMITER);
