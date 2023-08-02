@@ -254,36 +254,37 @@ pub trait SeleniumManager {
         // First, we try to discover the browser version
         if !download_browser {
             match self.discover_browser_version() {
-                Some(version) => {
+                Some(discovered_version) => {
                     if !self.is_safari() {
                         self.get_logger().debug(format!(
                             "Detected browser: {} {}",
                             self.get_browser_name(),
-                            version
+                            discovered_version
                         ));
                     }
-                    let discovered_major_browser_version =
-                        self.get_major_version(&version).unwrap_or_default();
+                    let discovered_major_browser_version = self
+                        .get_major_version(&discovered_version)
+                        .unwrap_or_default();
 
                     if self.is_browser_version_stable() {
                         let online_browser_version = self.request_browser_version()?;
                         if online_browser_version.is_some() {
                             let major_online_browser_version =
                                 self.get_major_version(&online_browser_version.unwrap())?;
-                            if major_browser_version.eq(&major_online_browser_version) {
-                                self.get_logger().debug(format!(
-                                    "Online stable browser version ({}) different to specified browser version ({})",
-                                    major_online_browser_version,
-                                    major_browser_version,
-                                ));
-                                download_browser = true;
-                            } else {
+                            if discovered_major_browser_version.eq(&major_online_browser_version) {
                                 self.get_logger().debug(format!(
                                     "Online stable {} version ({}) is the same as the one installed in the system",
                                     self.get_browser_name(),
-                                    major_online_browser_version,
+                                    discovered_major_browser_version,
                                 ));
-                                self.set_browser_version(version);
+                                self.set_browser_version(discovered_version);
+                            } else {
+                                self.get_logger().debug(format!(
+                                    "Online stable browser version ({}) different to detected browser version ({})",
+                                    major_online_browser_version,
+                                    discovered_major_browser_version,
+                                ));
+                                download_browser = true;
                             }
                         }
                     } else if !major_browser_version.is_empty()
@@ -297,7 +298,7 @@ pub trait SeleniumManager {
                         ));
                         download_browser = true;
                     } else {
-                        self.set_browser_version(version);
+                        self.set_browser_version(discovered_version);
                     }
                 }
                 None => {
