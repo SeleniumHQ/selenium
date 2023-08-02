@@ -47,5 +47,6 @@ class LocalFileDetector(FileDetector):
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         file_path = "".join(keys_to_typing(keys))
         with suppress(OSError):
-            return Path(file_path).is_file()
+            _ = Path(file_path).is_file()
+            return file_path
             
