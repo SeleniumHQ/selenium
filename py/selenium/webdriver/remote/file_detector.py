@@ -49,4 +49,3 @@ class LocalFileDetector(FileDetector):
         with suppress(OSError):
             _ = Path(file_path).is_file()
             return file_path
-            
