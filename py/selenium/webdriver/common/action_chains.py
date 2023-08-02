@@ -18,28 +18,18 @@
 """The ActionChains implementation."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from selenium.webdriver.remote.webelement import WebElement
 
 from .actions.action_builder import ActionBuilder
 from .actions.key_input import KeyInput
 from .actions.pointer_input import PointerInput
-from .actions.wheel_input import ScrollOrigin
-from .actions.wheel_input import WheelInput
+from .actions.wheel_input import ScrollOrigin, WheelInput
 from .utils import keys_to_typing
 
 if TYPE_CHECKING:
-    from selenium.webdriver import Chrome
-    from selenium.webdriver import Edge
-    from selenium.webdriver import Firefox
-    from selenium.webdriver import Ie
-    from selenium.webdriver import Safari
-
-    AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
@@ -77,7 +67,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver: AnyDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
+    def __init__(self, driver: WebDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
