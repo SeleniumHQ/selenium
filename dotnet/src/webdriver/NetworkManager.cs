@@ -190,7 +190,7 @@ namespace OpenQA.Selenium
             this.responseHandlers.Clear();
         }
 
-        private async void OnAuthRequired(object sender, AuthRequiredEventArgs e)
+        private async Task OnAuthRequired(object sender, AuthRequiredEventArgs e)
         {
             string requestId = e.RequestId;
             Uri uri = new Uri(e.Uri);
@@ -212,7 +212,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        private async void OnRequestPaused(object sender, RequestPausedEventArgs e)
+        private async Task OnRequestPaused(object sender, RequestPausedEventArgs e)
         {
             if (this.NetworkRequestSent != null)
             {
@@ -240,7 +240,7 @@ namespace OpenQA.Selenium
             await this.session.Value.Domains.Network.ContinueRequestWithoutModification(e.RequestData);
         }
 
-        private async void OnResponsePaused(object sender, ResponsePausedEventArgs e)
+        private async Task OnResponsePaused(object sender, ResponsePausedEventArgs e)
         {
             if (e.ResponseData.Headers.Count > 0)
             {
