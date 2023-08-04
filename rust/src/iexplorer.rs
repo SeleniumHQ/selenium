@@ -149,7 +149,7 @@ impl SeleniumManager for IExplorerManager {
                     )?;
 
                     let driver_ttl = self.get_driver_ttl();
-                    if driver_ttl > 0 && !major_browser_version.is_empty() {
+                    if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,
                             self.driver_name,
