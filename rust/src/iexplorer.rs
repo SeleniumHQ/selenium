@@ -21,11 +21,12 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, path_buf_to_string, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
 use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+    create_http_client, format_one_arg, parse_version, Logger, SeleniumManager,
+    OFFLINE_REQUEST_ERR_MSG, REG_QUERY, STABLE, WINDOWS, WMIC_COMMAND,
 };
 
 use crate::metadata::{
@@ -87,11 +88,37 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::new()
+        HashMap::from([(
+            BrowserPath::new(WINDOWS, STABLE),
+            r#"Internet Explorer\iexplore.exe"#,
+        )])
     }
 
     fn discover_browser_version(&mut self) -> Option<String> {
-        None
+        let commands;
+        let mut browser_path = self.get_browser_path().to_string();
+        let escaped_browser_path;
+        if browser_path.is_empty() {
+            match self.detect_browser_path() {
+                Some(path) => {
+                    browser_path = path_buf_to_string(path);
+                    escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+                    commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
+                }
+                None => {
+                    commands = vec![
+                        (format_one_arg(
+                            REG_QUERY,
+                            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+                        )),
+                    ];
+                }
+            }
+        } else {
+            escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+            commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
+        }
+        self.detect_browser_version(commands)
     }
 
     fn get_driver_name(&self) -> &str {
