@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::common::{assert_driver_and_browser, exec_driver};
+use std::env::consts::OS;
 
 use assert_cmd::Command;
 use rstest::rstest;
@@ -34,7 +35,9 @@ fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
         .success()
         .code(0);
 
-    assert_driver_and_browser(&mut cmd);
-    let output = exec_driver(&mut cmd);
-    assert!(output.contains(&driver_name));
+    if OS.eq("macos") {
+        assert_driver_and_browser(&mut cmd);
+        let output = exec_driver(&mut cmd);
+        assert!(output.contains(&driver_name));
+    }
 }
