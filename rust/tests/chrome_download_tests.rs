@@ -17,7 +17,7 @@
 
 use assert_cmd::Command;
 
-use crate::common::assert_driver_and_browser;
+use crate::common::{assert_browser, assert_driver};
 use rstest::rstest;
 
 mod common;
@@ -36,7 +36,8 @@ fn chrome_latest_download_test() {
     .success()
     .code(0);
 
-    assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }
 
 #[rstest]
@@ -56,5 +57,6 @@ fn chrome_version_download_test(#[case] browser_version: String) {
     .success()
     .code(0);
 
-    assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }

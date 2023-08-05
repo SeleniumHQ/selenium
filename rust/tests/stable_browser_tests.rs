@@ -17,7 +17,7 @@
 
 use assert_cmd::Command;
 
-use crate::common::assert_driver_and_browser;
+use crate::common::{assert_browser, assert_driver};
 use rstest::rstest;
 
 mod common;
@@ -40,5 +40,6 @@ fn stable_browser_test(#[case] browser_name: String) {
     .success()
     .code(0);
 
-    assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }

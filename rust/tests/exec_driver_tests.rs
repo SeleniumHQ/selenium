@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_driver_and_browser, exec_driver};
+use crate::common::{assert_browser, assert_driver, exec_driver};
 use std::env::consts::OS;
 
 use assert_cmd::Command;
@@ -35,8 +35,12 @@ fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
         .success()
         .code(0);
 
-    if OS.eq("macos") {
-        assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+
+    if (browser_name.eq("iexplorer") && OS.eq("windows"))
+        || (!browser_name.eq("iexplorer") && !OS.eq("windows"))
+    {
+        assert_browser(&mut cmd);
         let output = exec_driver(&mut cmd);
         assert!(output.contains(&driver_name));
     }

@@ -23,7 +23,7 @@ use is_executable::is_executable;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell::run_shell_command_by_os;
 
-pub fn assert_driver_and_browser(cmd: &mut Command) {
+pub fn assert_driver(cmd: &mut Command) {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     println!("{}", output);
@@ -32,7 +32,12 @@ pub fn assert_driver_and_browser(cmd: &mut Command) {
     let driver_path = Path::new(&json.result.driver_path);
     assert!(driver_path.exists());
     assert!(is_executable(driver_path));
+}
 
+pub fn assert_browser(cmd: &mut Command) {
+    let stdout = &cmd.unwrap().stdout;
+    let output = std::str::from_utf8(stdout).unwrap();
+    let json: JsonOutput = serde_json::from_str(output).unwrap();
     let browser_path = Path::new(&json.result.browser_path);
     assert!(browser_path.exists());
     assert!(is_executable(browser_path));
@@ -45,8 +50,8 @@ pub fn exec_driver(cmd: &mut Command) -> String {
     let json: JsonOutput = serde_json::from_str(output).unwrap();
     let driver_path = Path::new(&json.result.driver_path);
 
-    let output =
-        run_shell_command_by_os(OS, vec![driver_path.to_str().unwrap(), "--version"]).unwrap();
+    let driver_version_command = format!("{} --version", driver_path.to_str().unwrap());
+    let output = run_shell_command_by_os(OS, vec![&driver_version_command]).unwrap();
     println!("**** EXEC DRIVER: {}", output);
     output
 }
