@@ -30,7 +30,6 @@ use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 use std::time::Duration;
 
 use crate::downloads::download_to_tmp_folder;
@@ -39,6 +38,7 @@ use crate::grid::GRID_NAME;
 use crate::logger::Logger;
 use crate::metadata::{create_browser_metadata, get_browser_version_from_metadata};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
+use crate::shell::{run_shell_command, run_shell_command_with_log, split_lines};
 
 pub mod chrome;
 pub mod config;
@@ -53,6 +53,7 @@ pub mod metadata;
 pub mod mirror;
 pub mod safari;
 pub mod safaritp;
+pub mod shell;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -84,8 +85,6 @@ pub const TTL_BROWSERS_SEC: u64 = 3600;
 pub const TTL_DRIVERS_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
-pub const CRLF: &str = "\r\n";
-pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -227,10 +226,11 @@ pub trait SeleniumManager {
         ));
         let mut browser_version: Option<String> = None;
         for command in commands.iter() {
-            let output = match self.run_shell_command_with_log(command.to_string()) {
-                Ok(out) => out,
-                Err(_e) => continue,
-            };
+            let output =
+                match run_shell_command_with_log(self.get_logger(), self.get_os(), vec![command]) {
+                    Ok(out) => out,
+                    Err(_e) => continue,
+                };
             let full_browser_version = parse_version(output, self.get_logger()).unwrap_or_default();
             if full_browser_version.is_empty() {
                 continue;
@@ -357,12 +357,16 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        match self.run_shell_command_with_log(format_three_args(
-            DASH_DASH_VERSION,
-            self.get_driver_name(),
-            "",
-            "",
-        )) {
+        match run_shell_command_with_log(
+            self.get_logger(),
+            self.get_os(),
+            vec![&format_three_args(
+                DASH_DASH_VERSION,
+                self.get_driver_name(),
+                "",
+                "",
+            )],
+        ) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -381,7 +385,11 @@ pub trait SeleniumManager {
         } else {
             WHICH_COMMAND
         };
-        let path = match self.run_shell_command_with_log(format_one_arg(which_command, command)) {
+        let path = match run_shell_command_with_log(
+            self.get_logger(),
+            self.get_os(),
+            vec![&format_one_arg(which_command, command)],
+        ) {
             Ok(path) => {
                 let path_vector = split_lines(path.as_str());
                 if path_vector.len() == 1 {
@@ -527,14 +535,6 @@ pub trait SeleniumManager {
             self.download_driver()?;
         }
         Ok(driver_path)
-    }
-
-    fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
-        self.get_logger()
-            .debug(format!("Running command: {}", command));
-        let output = run_shell_command_by_os(self.get_os(), command)?;
-        self.get_logger().debug(format!("Output: {:?}", output));
-        Ok(output)
     }
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
@@ -683,7 +683,7 @@ pub trait SeleniumManager {
                 escaped_path = run_shell_command(
                     "bash",
                     "-c",
-                    format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()),
+                    vec![format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()).as_str()],
                 )
                 .unwrap_or_default();
                 if escaped_path.is_empty() {
@@ -844,29 +844,6 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn E
     Ok(client_builder.build().unwrap_or_default())
 }
 
-pub fn run_shell_command(
-    shell: &str,
-    flag: &str,
-    command: String,
-) -> Result<String, Box<dyn Error>> {
-    let output = Command::new(shell)
-        .args([flag, command.as_str()])
-        .output()?;
-    Ok(
-        strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
-            .to_string(),
-    )
-}
-
-pub fn run_shell_command_by_os(os: &str, command: String) -> Result<String, Box<dyn Error>> {
-    let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/c")
-    } else {
-        ("sh", "-c")
-    };
-    run_shell_command(shell, flag, command)
-}
-
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
     string.replacen("{}", arg1, 1)
 }
@@ -892,19 +869,4 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
         .get(index)
         .ok_or(format!("Wrong version: {}", full_version))?
         .to_string())
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix(CRLF)
-        .or_else(|| input.strip_suffix(LF))
-        .unwrap_or(input)
-}
-
-fn split_lines(string: &str) -> Vec<&str> {
-    if string.contains(CRLF) {
-        string.split(CRLF).collect()
-    } else {
-        string.split(LF).collect()
-    }
 }
