@@ -38,7 +38,9 @@ use crate::grid::GRID_NAME;
 use crate::logger::Logger;
 use crate::metadata::{create_browser_metadata, get_browser_version_from_metadata};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
-use crate::shell::{run_shell_command, run_shell_command_with_log, split_lines};
+use crate::shell::{
+    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines,
+};
 
 pub mod chrome;
 pub mod config;
@@ -201,7 +203,7 @@ pub trait SeleniumManager {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
             self.get_logger()
-                .debug(format!("Checking {} in PATH", browser_name));
+                .trace(format!("Checking {} in PATH", browser_name));
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
                 self.get_logger().debug(format!(
@@ -220,7 +222,7 @@ pub trait SeleniumManager {
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
         let browser_name = &self.get_browser_name();
 
-        self.get_logger().debug(format!(
+        self.get_logger().trace(format!(
             "Using shell command to find out {} version",
             browser_name
         ));
@@ -357,8 +359,7 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        match run_shell_command_with_log(
-            self.get_logger(),
+        match run_shell_command_by_os(
             self.get_os(),
             vec![&format_three_args(
                 DASH_DASH_VERSION,
@@ -458,7 +459,7 @@ pub trait SeleniumManager {
         // Try to find driver in PATH
         if !self.is_safari() && !self.is_grid() {
             self.get_logger()
-                .debug(format!("Checking {} in PATH", self.get_driver_name()));
+                .trace(format!("Checking {} in PATH", self.get_driver_name()));
             (driver_in_path_version, driver_in_path) = self.find_driver_in_path();
             if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
                 self.get_logger().debug(format!(
