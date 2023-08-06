@@ -18,7 +18,7 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::files::get_cache_folder;
 use crate::shell::run_shell_command_by_os;
-use crate::{format_one_arg, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
+use crate::{format_one_arg, Command, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
 use std::env;
 use std::env::consts::OS;
@@ -50,8 +50,8 @@ impl ManagerConfig {
     pub fn default(browser_name: &str, driver_name: &str) -> ManagerConfig {
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            let wmic_output =
-                run_shell_command_by_os(self_os, vec![WMIC_COMMAND_OS]).unwrap_or_default();
+            let wmic_command = Command::new_single(WMIC_COMMAND_OS.to_string());
+            let wmic_output = run_shell_command_by_os(self_os, wmic_command).unwrap_or_default();
             if wmic_output.contains("32") {
                 ARCH_X86.to_string()
             } else if wmic_output.contains("ARM") {
@@ -60,16 +60,16 @@ impl ManagerConfig {
                 ARCH_AMD64.to_string()
             }
         } else {
-            let uname_a = format_one_arg(UNAME_COMMAND, "a");
-            if run_shell_command_by_os(self_os, vec![&uname_a])
+            let uname_a_command = Command::new_single(format_one_arg(UNAME_COMMAND, "a"));
+            if run_shell_command_by_os(self_os, uname_a_command)
                 .unwrap_or_default()
                 .to_ascii_lowercase()
                 .contains(ARCH_ARM64)
             {
                 ARCH_ARM64.to_string()
             } else {
-                let uname_m = format_one_arg(UNAME_COMMAND, "m");
-                run_shell_command_by_os(self_os, vec![&uname_m]).unwrap_or_default()
+                let uname_m_command = Command::new_single(format_one_arg(UNAME_COMMAND, "m"));
+                run_shell_command_by_os(self_os, uname_m_command).unwrap_or_default()
             }
         };
 

@@ -21,6 +21,7 @@ use std::path::Path;
 
 use is_executable::is_executable;
 use selenium_manager::logger::JsonOutput;
+use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
 
 pub fn assert_driver(cmd: &mut Command) {
@@ -50,8 +51,9 @@ pub fn exec_driver(cmd: &mut Command) -> String {
     let json: JsonOutput = serde_json::from_str(output).unwrap();
     let driver_path = Path::new(&json.result.driver_path);
 
-    let driver_version_command = format!("{} --version", driver_path.to_str().unwrap());
-    let output = run_shell_command_by_os(OS, vec![&driver_version_command]).unwrap();
+    let driver_version_command =
+        shell::Command::new_single(format!("{} --version", driver_path.to_str().unwrap()));
+    let output = run_shell_command_by_os(OS, driver_version_command).unwrap();
     println!("**** EXEC DRIVER: {}", output);
     output
 }
