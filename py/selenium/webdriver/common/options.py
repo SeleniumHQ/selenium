@@ -94,7 +94,7 @@ class _TimeoutsDescriptor:
         self.name = name
 
     def __get__(self, obj, cls):
-        return self._caps.get(self.name)
+        return obj._caps.get(self.name)
 
     def __set__(self, obj, value):
         if all(x in ("implicit", "pageLoad", "script") for x in value.keys()):
