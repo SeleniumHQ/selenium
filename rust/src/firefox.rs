@@ -117,7 +117,7 @@ impl SeleniumManager for FirefoxManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
         self.discover_general_browser_version(
             r#"HKCU\Software\Mozilla\Mozilla Firefox"#,
             REG_CURRENT_VERSION_ARG,

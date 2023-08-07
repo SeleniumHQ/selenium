@@ -387,7 +387,7 @@ impl SeleniumManager for ChromeManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
         self.discover_general_browser_version(
             r#"HKCU\Software\Google\Chrome\BLBeacon"#,
             REG_VERSION_ARG,

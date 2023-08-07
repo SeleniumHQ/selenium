@@ -94,7 +94,7 @@ impl SeleniumManager for IExplorerManager {
         )])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
         self.discover_general_browser_version(
             r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
             REG_VERSION_ARG,
