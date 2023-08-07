@@ -18,8 +18,8 @@
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
-    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
-    path_buf_to_string,
+    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
+    get_binary_extension, path_buf_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -853,6 +853,19 @@ pub trait SeleniumManager {
             self.get_config_mut().force_browser_download = true;
         }
     }
+
+    fn get_cache_path(&self) -> PathBuf {
+        let path = Path::new(&self.get_config().cache_path);
+        create_path_if_not_exists(path);
+        let canon_path = self.canonicalize_path(path.to_path_buf());
+        Path::new(&canon_path).to_path_buf()
+    }
+
+    fn set_cache_path(&mut self, cache_path: String) {
+        if !cache_path.is_empty() {
+            self.get_config_mut().cache_path = cache_path;
+        }
+    }
 }
 
 // ----------------------------------------------------------
@@ -904,8 +917,7 @@ pub fn get_manager_by_driver(
     }
 }
 
-pub fn clear_cache(log: &Logger) {
-    let cache_path = compose_cache_folder();
+pub fn clear_cache(log: &Logger, cache_path: PathBuf) {
     if cache_path.exists() {
         log.debug(format!("Clearing cache at: {}", cache_path.display()));
         fs::remove_dir_all(&cache_path).unwrap_or_else(|err| {

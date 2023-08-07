@@ -16,22 +16,30 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::files::get_cache_folder;
 use crate::shell::run_shell_command_by_os;
-use crate::{format_one_arg, Command, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
+use crate::{
+    default_cache_folder, format_one_arg, path_buf_to_string, Command, REQUEST_TIMEOUT_SEC,
+    UNAME_COMMAND,
+};
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
+use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
 use std::error::Error;
 use std::fs::read_to_string;
+use std::path::Path;
 use toml::Table;
+
+thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_buf_to_string(default_cache_folder())));
 
 pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
+pub const CACHE_PATH_KEY: &str = "cache-path";
 
 pub struct ManagerConfig {
+    pub cache_path: String,
     pub browser_version: String,
     pub driver_version: String,
     pub browser_path: String,
@@ -47,6 +55,8 @@ pub struct ManagerConfig {
 
 impl ManagerConfig {
     pub fn default(browser_name: &str, driver_name: &str) -> ManagerConfig {
+        let cache_path = StringKey(vec![CACHE_PATH_KEY], &read_cache_path()).get_value();
+
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
             let wmic_command = Command::new_single(WMIC_COMMAND_OS.to_string());
@@ -77,12 +87,12 @@ impl ManagerConfig {
         let browser_path_label = concat(browser_name, PATH_PREFIX);
 
         ManagerConfig {
-            browser_version: StringKey(vec!["browser-version", browser_version_label.as_str()], "")
+            cache_path,
+            browser_version: StringKey(vec!["browser-version", &browser_version_label], "")
                 .get_value(),
-            driver_version: StringKey(vec!["driver-version", driver_version_label.as_str()], "")
+            driver_version: StringKey(vec!["driver-version", &driver_version_label], "")
                 .get_value(),
-            browser_path: StringKey(vec!["browser-path", browser_path_label.as_str()], "")
-                .get_value(),
+            browser_path: StringKey(vec!["browser-path", &browser_path_label], "").get_value(),
             os: StringKey(vec!["os"], self_os).get_value(),
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),
@@ -168,6 +178,9 @@ impl StringKey<'_> {
                 result = env::var(get_env_name(key)).unwrap_or_default()
             }
             if !result.is_empty() {
+                if key.eq(CACHE_PATH_KEY) {
+                    write_cache_path(result.clone());
+                }
                 return result;
             }
         }
@@ -215,7 +228,8 @@ fn get_env_name(suffix: &str) -> String {
 }
 
 fn get_config() -> Result<Table, Box<dyn Error>> {
-    let config_path = get_cache_folder().join(CONFIG_FILE);
+    let cache_path = read_cache_path();
+    let config_path = Path::new(&cache_path).to_path_buf().join(CONFIG_FILE);
     Ok(read_to_string(config_path)?.parse()?)
 }
 
@@ -223,4 +237,21 @@ fn concat(prefix: &str, suffix: &str) -> String {
     let mut version_label: String = prefix.to_owned();
     version_label.push_str(suffix);
     version_label
+}
+
+fn write_cache_path(cache_path: String) {
+    CACHE_PATH.with(|value| {
+        *value.borrow_mut() = cache_path;
+    });
+}
+
+fn read_cache_path() -> String {
+    let mut cache_path: String = path_buf_to_string(default_cache_folder());
+    CACHE_PATH.with(|value| {
+        let path: String = (&*value.borrow().to_string()).into();
+        if !path.is_empty() {
+            cache_path = path;
+        }
+    });
+    cache_path
 }

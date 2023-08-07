@@ -186,7 +186,7 @@ pub fn get_raw_file_name(file_name: &str) -> &str {
     raw_file_name
 }
 
-pub fn compose_cache_folder() -> PathBuf {
+pub fn default_cache_folder() -> PathBuf {
     if let Some(base_dirs) = BaseDirs::new() {
         return Path::new(base_dirs.home_dir())
             .join(String::from(CACHE_FOLDER).replace('/', std::path::MAIN_SEPARATOR_STR));
@@ -194,19 +194,14 @@ pub fn compose_cache_folder() -> PathBuf {
     PathBuf::new()
 }
 
-pub fn get_cache_folder() -> PathBuf {
-    let cache_path = compose_cache_folder();
-    create_path_if_not_exists(&cache_path);
-    cache_path
-}
-
 pub fn compose_driver_path_in_cache(
+    driver_path: PathBuf,
     driver_name: &str,
     os: &str,
     arch_folder: &str,
     driver_version: &str,
 ) -> PathBuf {
-    get_cache_folder()
+    driver_path
         .join(driver_name)
         .join(arch_folder)
         .join(driver_version)
