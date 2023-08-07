@@ -20,7 +20,6 @@
 require 'timeout'
 require 'socket'
 require 'rexml/document'
-require 'net/http'
 
 module Selenium
   module WebDriver
