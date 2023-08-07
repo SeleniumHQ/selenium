@@ -26,7 +26,6 @@ use std::error::Error;
 use std::fs::read_to_string;
 use toml::Table;
 
-pub const ARM64_ARCH: &str = "arm64";
 pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
