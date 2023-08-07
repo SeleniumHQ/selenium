@@ -26,7 +26,6 @@ use std::error::Error;
 use std::fs::read_to_string;
 use toml::Table;
 
-pub const ARM64_ARCH: &str = "arm64";
 pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
@@ -91,7 +90,7 @@ impl ManagerConfig {
             browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
-            force_browser_download: BooleanKey("force_browser_download", false).get_value(),
+            force_browser_download: BooleanKey("force-browser-download", false).get_value(),
         }
     }
 }
