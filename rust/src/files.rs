@@ -162,8 +162,7 @@ pub fn unzip(
                 if single_file.is_some() {
                     fs::set_permissions(&out_path, fs::Permissions::from_mode(0o755))?;
                 } else if let Some(mode) = file.unix_mode() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))
-                        .unwrap_or_default();
+                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))?;
                 }
             }
         }
