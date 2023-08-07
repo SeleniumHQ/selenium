@@ -176,17 +176,7 @@ class BrowsingContext {
     }
 
     const response = await this.bidi.send(params)
-
-    if ('error' in response) {
-      const error = response['error']
-      const msg = response['message']
-      if (error == 'invalid argument') {
-        throw new InvalidArgumentError(msg)
-      } else if (error == 'no such frame') {
-        throw new NoSuchFrameError(msg)
-      }
-    }
-
+    this.checkErrorInScreenshot(response)
     return response['result']['data']
   }
 
@@ -216,7 +206,36 @@ class BrowsingContext {
     }
 
     const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
 
+  async captureElementScreenshot(
+    shareId,
+    handle = undefined,
+    scrollIntoView = undefined
+  ) {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'element',
+          element: {
+            shareId: shareId,
+            handle: handle,
+          },
+          scrollIntoView: scrollIntoView,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  checkErrorInScreenshot(response) {
     if ('error' in response) {
       const error = response['error']
       const msg = response['message']
@@ -226,8 +245,6 @@ class BrowsingContext {
         throw new NoSuchFrameError(msg)
       }
     }
-
-    return response['result']['data']
   }
 }
 

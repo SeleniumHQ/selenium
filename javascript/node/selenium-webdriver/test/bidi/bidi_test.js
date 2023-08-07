@@ -467,10 +467,25 @@ suite(
           10
         )
 
-        console.log("response = ", response)
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
-        assert(false)
+      })
+
+      it('can take element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.switchTo().newWindow('window')
+        await driver.get(Pages.logEntryAdded)
+        const windowHandle = await driver.getWindowHandle()
+        const response = await browsingContext.captureElementScreenshot(
+          windowHandle
+        )
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
       })
     })
 
