@@ -72,6 +72,14 @@ struct Cli {
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
+    /// Operating system (i.e., windows, linux, or macos)
+    #[clap(long, value_parser)]
+    os: Option<String>,
+
+    /// System architecture (i.e., x32, x64, or arm64)
+    #[clap(long, value_parser)]
+    arch: Option<String>,
+
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
     #[clap(long, value_parser)]
     proxy: Option<String>,
@@ -155,6 +163,8 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_os(cli.os.unwrap_or_default());
+    selenium_manager.set_arch(cli.arch.unwrap_or_default());
     selenium_manager.set_driver_ttl(cli.driver_ttl);
     selenium_manager.set_browser_ttl(cli.browser_ttl);
     selenium_manager.set_offline(cli.offline);

@@ -80,7 +80,7 @@ impl SeleniumManager for SafariTPManager {
         HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARITP_PATH)])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
         self.discover_safari_version(SAFARITP_FULL_PATH.to_string())
     }
 

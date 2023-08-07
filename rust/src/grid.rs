@@ -86,8 +86,8 @@ impl SeleniumManager for GridManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
-        None
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
     fn get_driver_name(&self) -> &str {

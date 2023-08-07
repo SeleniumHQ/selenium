@@ -62,7 +62,7 @@ impl IExplorerManager {
         let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
-        config.os = WINDOWS.to_str().to_string();
+        config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
@@ -94,7 +94,7 @@ impl SeleniumManager for IExplorerManager {
         )])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
         self.discover_general_browser_version(
             r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
             REG_VERSION_ARG,
