@@ -15,31 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+use crate::common::{assert_browser, assert_driver, exec_driver};
+use std::env::consts::OS;
 
-use crate::common::{assert_browser, assert_driver};
+use assert_cmd::Command;
 use rstest::rstest;
 
 mod common;
 
 #[rstest]
-#[case("chrome")]
-#[case("firefox")]
-#[case("edge")]
-fn stable_browser_test(#[case] browser_name: String) {
+#[case("chrome", "ChromeDriver")]
+#[case("edge", "Microsoft Edge WebDriver")]
+#[case("firefox", "geckodriver")]
+#[case("iexplorer", "IEDriverServer")]
+fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        &browser_name,
-        "--browser-version",
-        "stable",
-        "--output",
-        "json",
-    ])
-    .assert()
-    .success()
-    .code(0);
+    cmd.args(["--browser", &browser_name, "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
 
     assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
+
+    if (browser_name.eq("iexplorer") && OS.eq("windows"))
+        || (!browser_name.eq("iexplorer") && !OS.eq("windows"))
+    {
+        assert_browser(&mut cmd);
+        let output = exec_driver(&mut cmd);
+        assert!(output.contains(&driver_name));
+    }
 }

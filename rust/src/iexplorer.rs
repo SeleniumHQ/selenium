@@ -25,7 +25,8 @@ use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
 use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
+    REG_VERSION_ARG, STABLE, WINDOWS,
 };
 
 use crate::metadata::{
@@ -87,11 +88,18 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::new()
+        HashMap::from([(
+            BrowserPath::new(WINDOWS, STABLE),
+            r#"Internet Explorer\iexplore.exe"#,
+        )])
     }
 
     fn discover_browser_version(&mut self) -> Option<String> {
-        None
+        self.discover_general_browser_version(
+            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            REG_VERSION_ARG,
+            "",
+        )
     }
 
     fn get_driver_name(&self) -> &str {
@@ -149,7 +157,7 @@ impl SeleniumManager for IExplorerManager {
                     )?;
 
                     let driver_ttl = self.get_driver_ttl();
-                    if driver_ttl > 0 && !major_browser_version.is_empty() {
+                    if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,
                             self.driver_name,

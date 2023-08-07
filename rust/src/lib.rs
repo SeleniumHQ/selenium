@@ -17,20 +17,22 @@
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
-use crate::files::{compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension};
+use crate::files::{
+    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
+    path_buf_to_string,
+};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use std::{env, fs};
 
-use crate::config::OS::WINDOWS;
+use crate::config::OS::{MACOS, WINDOWS};
 use crate::config::{str_to_os, ManagerConfig};
 use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 use std::time::Duration;
 
 use crate::downloads::download_to_tmp_folder;
@@ -39,6 +41,9 @@ use crate::grid::GRID_NAME;
 use crate::logger::Logger;
 use crate::metadata::{create_browser_metadata, get_browser_version_from_metadata};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
+use crate::shell::{
+    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
+};
 
 pub mod chrome;
 pub mod config;
@@ -53,6 +58,7 @@ pub mod metadata;
 pub mod mirror;
 pub mod safari;
 pub mod safaritp;
+pub mod shell;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -62,8 +68,8 @@ pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
-pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
-pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
+pub const REG_VERSION_ARG: &str = "version";
+pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const DASH_VERSION: &str = "{}{}{} -v";
@@ -84,8 +90,6 @@ pub const TTL_BROWSERS_SEC: u64 = 3600;
 pub const TTL_DRIVERS_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
-pub const CRLF: &str = "\r\n";
-pub const LF: &str = "\n";
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
@@ -202,7 +206,7 @@ pub trait SeleniumManager {
             // Check browser in PATH
             let browser_name = self.get_browser_name();
             self.get_logger()
-                .debug(format!("Checking {} in PATH", browser_name));
+                .trace(format!("Checking {} in PATH", browser_name));
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
                 self.get_logger().debug(format!(
@@ -218,16 +222,20 @@ pub trait SeleniumManager {
         }
     }
 
-    fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
+    fn detect_browser_version(&self, commands: Vec<Command>) -> Option<String> {
         let browser_name = &self.get_browser_name();
 
-        self.get_logger().debug(format!(
+        self.get_logger().trace(format!(
             "Using shell command to find out {} version",
             browser_name
         ));
         let mut browser_version: Option<String> = None;
-        for command in commands.iter() {
-            let output = match self.run_shell_command_with_log(command.to_string()) {
+        for driver_version_command in commands.into_iter() {
+            let output = match run_shell_command_with_log(
+                self.get_logger(),
+                self.get_os(),
+                driver_version_command,
+            ) {
                 Ok(out) => out,
                 Err(_e) => continue,
             };
@@ -254,36 +262,37 @@ pub trait SeleniumManager {
         // First, we try to discover the browser version
         if !download_browser {
             match self.discover_browser_version() {
-                Some(version) => {
+                Some(discovered_version) => {
                     if !self.is_safari() {
                         self.get_logger().debug(format!(
                             "Detected browser: {} {}",
                             self.get_browser_name(),
-                            version
+                            discovered_version
                         ));
                     }
-                    let discovered_major_browser_version =
-                        self.get_major_version(&version).unwrap_or_default();
+                    let discovered_major_browser_version = self
+                        .get_major_version(&discovered_version)
+                        .unwrap_or_default();
 
                     if self.is_browser_version_stable() {
                         let online_browser_version = self.request_browser_version()?;
                         if online_browser_version.is_some() {
                             let major_online_browser_version =
                                 self.get_major_version(&online_browser_version.unwrap())?;
-                            if major_browser_version.eq(&major_online_browser_version) {
-                                self.get_logger().debug(format!(
-                                    "Online stable browser version ({}) different to specified browser version ({})",
-                                    major_online_browser_version,
-                                    major_browser_version,
-                                ));
-                                download_browser = true;
-                            } else {
+                            if discovered_major_browser_version.eq(&major_online_browser_version) {
                                 self.get_logger().debug(format!(
                                     "Online stable {} version ({}) is the same as the one installed in the system",
                                     self.get_browser_name(),
-                                    major_online_browser_version,
+                                    discovered_major_browser_version,
                                 ));
-                                self.set_browser_version(version);
+                                self.set_browser_version(discovered_version);
+                            } else {
+                                self.get_logger().debug(format!(
+                                    "Online stable browser version ({}) different to detected browser version ({})",
+                                    major_online_browser_version,
+                                    discovered_major_browser_version,
+                                ));
+                                download_browser = true;
                             }
                         }
                     } else if !major_browser_version.is_empty()
@@ -297,7 +306,7 @@ pub trait SeleniumManager {
                         ));
                         download_browser = true;
                     } else {
-                        self.set_browser_version(version);
+                        self.set_browser_version(discovered_version);
                     }
                 }
                 None => {
@@ -356,12 +365,13 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        match self.run_shell_command_with_log(format_three_args(
+        let driver_version_command = Command::new_single(format_three_args(
             DASH_DASH_VERSION,
             self.get_driver_name(),
             "",
             "",
-        )) {
+        ));
+        match run_shell_command_by_os(self.get_os(), driver_version_command) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -374,13 +384,14 @@ pub trait SeleniumManager {
         }
     }
 
-    fn execute_which_in_shell(&self, command: &str) -> Option<String> {
-        let which_command = if WINDOWS.is(self.get_os()) {
+    fn execute_which_in_shell(&self, arg: &str) -> Option<String> {
+        let which_or_where = if WINDOWS.is(self.get_os()) {
             WHERE_COMMAND
         } else {
             WHICH_COMMAND
         };
-        let path = match self.run_shell_command_with_log(format_one_arg(which_command, command)) {
+        let which_command = Command::new_single(format_one_arg(which_or_where, arg));
+        let path = match run_shell_command_by_os(self.get_os(), which_command) {
             Ok(path) => {
                 let path_vector = split_lines(path.as_str());
                 if path_vector.len() == 1 {
@@ -449,7 +460,7 @@ pub trait SeleniumManager {
         // Try to find driver in PATH
         if !self.is_safari() && !self.is_grid() {
             self.get_logger()
-                .debug(format!("Checking {} in PATH", self.get_driver_name()));
+                .trace(format!("Checking {} in PATH", self.get_driver_name()));
             (driver_in_path_version, driver_in_path) = self.find_driver_in_path();
             if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
                 self.get_logger().debug(format!(
@@ -528,14 +539,6 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
-    fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
-        self.get_logger()
-            .debug(format!("Running command: {}", command));
-        let output = run_shell_command_by_os(self.get_os(), command)?;
-        self.get_logger().debug(format!("Output: {:?}", output));
-        Ok(output)
-    }
-
     fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
         get_index_version(full_version, 0)
     }
@@ -586,6 +589,82 @@ pub trait SeleniumManager {
             self.get_browser_name(),
             get_binary_extension(self.get_os())
         )
+    }
+
+    fn discover_general_browser_version(
+        &mut self,
+        reg_key: &'static str,
+        reg_version_arg: &'static str,
+        cmd_version_arg: &str,
+    ) -> Option<String> {
+        let mut browser_path = self.get_browser_path().to_string();
+        let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+        if browser_path.is_empty() {
+            if let Some(path) = self.detect_browser_path() {
+                browser_path = path_buf_to_string(path);
+                escaped_browser_path = self.get_escaped_path(browser_path.to_string());
+            }
+        }
+
+        let mut commands = Vec::new();
+        if WINDOWS.is(self.get_os()) {
+            let wmic_command =
+                Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
+            commands.push(wmic_command);
+            if !self.is_browser_version_unstable() {
+                let reg_command =
+                    Command::new_multiple(vec!["REG", "QUERY", reg_key, "/v", reg_version_arg]);
+                commands.push(reg_command);
+            }
+        } else {
+            commands.push(Command::new_single(format_three_args(
+                cmd_version_arg,
+                "",
+                &escaped_browser_path,
+                "",
+            )));
+            commands.push(Command::new_single(format_three_args(
+                cmd_version_arg,
+                DOUBLE_QUOTE,
+                &browser_path,
+                DOUBLE_QUOTE,
+            )));
+            commands.push(Command::new_single(format_three_args(
+                cmd_version_arg,
+                SINGLE_QUOTE,
+                &browser_path,
+                SINGLE_QUOTE,
+            )));
+            commands.push(Command::new_single(format_three_args(
+                cmd_version_arg,
+                "",
+                &browser_path,
+                "",
+            )));
+        }
+
+        self.detect_browser_version(commands)
+    }
+
+    fn discover_safari_version(&mut self, safari_path: String) -> Option<String> {
+        let mut browser_path = self.get_browser_path().to_string();
+        let mut commands = Vec::new();
+        if browser_path.is_empty() {
+            match self.detect_browser_path() {
+                Some(path) => {
+                    browser_path = self.get_escaped_path(path_buf_to_string(path));
+                }
+                _ => return None,
+            }
+        }
+        if MACOS.is(self.get_os()) {
+            let plist_command = Command::new_single(format_one_arg(PLIST_COMMAND, &browser_path));
+            commands.push(plist_command);
+        } else {
+            return None;
+        }
+        self.set_browser_path(safari_path);
+        self.detect_browser_version(commands)
     }
 
     // ----------------------------------------------------------
@@ -679,12 +758,9 @@ pub trait SeleniumManager {
             if WINDOWS.is(self.get_os()) {
                 escaped_path = escaped_path.replace('\\', "\\\\");
             } else {
-                escaped_path = run_shell_command(
-                    "bash",
-                    "-c",
-                    format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()),
-                )
-                .unwrap_or_default();
+                let escape_command =
+                    Command::new_single(format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()));
+                escaped_path = run_shell_command("bash", "-c", escape_command).unwrap_or_default();
                 if escaped_path.is_empty() {
                     escaped_path = original_path.clone();
                 }
@@ -843,29 +919,6 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn E
     Ok(client_builder.build().unwrap_or_default())
 }
 
-pub fn run_shell_command(
-    shell: &str,
-    flag: &str,
-    command: String,
-) -> Result<String, Box<dyn Error>> {
-    let output = Command::new(shell)
-        .args([flag, command.as_str()])
-        .output()?;
-    Ok(
-        strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
-            .to_string(),
-    )
-}
-
-pub fn run_shell_command_by_os(os: &str, command: String) -> Result<String, Box<dyn Error>> {
-    let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/c")
-    } else {
-        ("sh", "-c")
-    };
-    run_shell_command(shell, flag, command)
-}
-
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
     string.replacen("{}", arg1, 1)
 }
@@ -891,19 +944,4 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
         .get(index)
         .ok_or(format!("Wrong version: {}", full_version))?
         .to_string())
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix(CRLF)
-        .or_else(|| input.strip_suffix(LF))
-        .unwrap_or(input)
-}
-
-fn split_lines(string: &str) -> Vec<&str> {
-    if string.contains(CRLF) {
-        string.split(CRLF).collect()
-    } else {
-        string.split(LF).collect()
-    }
 }

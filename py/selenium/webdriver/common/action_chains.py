@@ -33,13 +33,7 @@ from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
 
 if TYPE_CHECKING:
-    from selenium.webdriver import Chrome
-    from selenium.webdriver import Edge
-    from selenium.webdriver import Firefox
-    from selenium.webdriver import Ie
-    from selenium.webdriver import Safari
-
-    AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
@@ -77,7 +71,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver: AnyDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
+    def __init__(self, driver: WebDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
