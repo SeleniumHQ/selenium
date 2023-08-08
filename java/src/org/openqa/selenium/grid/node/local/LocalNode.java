@@ -95,6 +95,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -665,6 +666,13 @@ public class LocalNode extends Node {
       ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
       ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
       return new HttpResponse().setContent(asJson(result));
+    }
+    if (req.getMethod().equals(HttpMethod.DELETE)) {
+      File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+      for (File file : files) {
+        FileHandler.delete(file);
+      }
+      return new HttpResponse();
     }
     String raw = string(req);
     if (raw.isEmpty()) {
