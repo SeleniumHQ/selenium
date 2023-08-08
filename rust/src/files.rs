@@ -54,16 +54,18 @@ impl BrowserPath {
     }
 }
 
-pub fn create_parent_path_if_not_exists(path: &Path) {
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if let Some(p) = path.parent() {
-        create_path_if_not_exists(p);
+        create_path_if_not_exists(p)?;
     }
+    Ok(())
 }
 
-pub fn create_path_if_not_exists(path: &Path) {
+pub fn create_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if !path.exists() {
-        fs::create_dir_all(path).unwrap();
+        fs::create_dir_all(path)?;
     }
+    Ok(())
 }
 
 pub fn uncompress(
@@ -132,7 +134,7 @@ pub fn unzip(
             None => continue,
         };
         if single_file.is_none() {
-            create_path_if_not_exists(target);
+            create_path_if_not_exists(target)?;
             out_path = target.join(path);
         }
 
@@ -148,7 +150,7 @@ pub fn unzip(
                 out_path.display(),
                 file.size()
             ));
-            create_parent_path_if_not_exists(out_path.as_path());
+            create_parent_path_if_not_exists(out_path.as_path())?;
 
             let mut outfile = File::create(&out_path)?;
             io::copy(&mut file, &mut outfile)?;
@@ -162,7 +164,7 @@ pub fn unzip(
                 if single_file.is_some() {
                     fs::set_permissions(&out_path, fs::Permissions::from_mode(0o755))?;
                 } else if let Some(mode) = file.unix_mode() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode)).unwrap();
+                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))?;
                 }
             }
         }
@@ -186,7 +188,7 @@ pub fn get_raw_file_name(file_name: &str) -> &str {
     raw_file_name
 }
 
-pub fn compose_cache_folder() -> PathBuf {
+pub fn default_cache_folder() -> PathBuf {
     if let Some(base_dirs) = BaseDirs::new() {
         return Path::new(base_dirs.home_dir())
             .join(String::from(CACHE_FOLDER).replace('/', std::path::MAIN_SEPARATOR_STR));
@@ -194,19 +196,14 @@ pub fn compose_cache_folder() -> PathBuf {
     PathBuf::new()
 }
 
-pub fn get_cache_folder() -> PathBuf {
-    let cache_path = compose_cache_folder();
-    create_path_if_not_exists(&cache_path);
-    cache_path
-}
-
 pub fn compose_driver_path_in_cache(
+    driver_path: PathBuf,
     driver_name: &str,
     os: &str,
     arch_folder: &str,
     driver_version: &str,
 ) -> PathBuf {
-    get_cache_folder()
+    driver_path
         .join(driver_name)
         .join(arch_folder)
         .join(driver_version)

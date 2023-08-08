@@ -16,13 +16,17 @@
 // under the License.
 
 use assert_cmd::Command;
+use std::borrow::BorrowMut;
 use std::env::consts::OS;
 use std::path::Path;
 
 use is_executable::is_executable;
+use selenium_manager::files::path_buf_to_string;
 use selenium_manager::logger::JsonOutput;
+use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
 
+#[allow(dead_code)]
 pub fn assert_driver(cmd: &mut Command) {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
@@ -34,6 +38,7 @@ pub fn assert_driver(cmd: &mut Command) {
     assert!(is_executable(driver_path));
 }
 
+#[allow(dead_code)]
 pub fn assert_browser(cmd: &mut Command) {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
@@ -44,14 +49,19 @@ pub fn assert_browser(cmd: &mut Command) {
 }
 
 #[allow(dead_code)]
-pub fn exec_driver(cmd: &mut Command) -> String {
+pub fn get_driver_path(cmd: &mut Command) -> String {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    let driver_path = Path::new(&json.result.driver_path);
+    path_buf_to_string(Path::new(&json.result.driver_path).to_path_buf())
+}
 
-    let driver_version_command = format!("{} --version", driver_path.to_str().unwrap());
-    let output = run_shell_command_by_os(OS, vec![&driver_version_command]).unwrap();
+#[allow(dead_code)]
+pub fn exec_driver(cmd: &mut Command) -> String {
+    let mut cmd_mut = cmd.borrow_mut();
+    let driver_path = get_driver_path(&mut cmd_mut);
+    let driver_version_command = shell::Command::new_single(format!("{} --version", &driver_path));
+    let output = run_shell_command_by_os(OS, driver_version_command).unwrap();
     println!("**** EXEC DRIVER: {}", output);
     output
 }

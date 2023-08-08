@@ -35,6 +35,10 @@ Options:
           Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "C:\Program Files\Google\Chrome\Application\chrome.exe")
       --output <OUTPUT>
           Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like) [default: LOGGER]
+      --os <OS>
+          Operating system (i.e., windows, linux, or macos)
+      --arch <ARCH>
+          System architecture (i.e., x32, x64, or arm64)
       --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
@@ -43,6 +47,8 @@ Options:
           Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
           Browser TTL (time-to-live) [default: 3600]
+      --cache-path <CACHE_PATH>
+          Local folder used to store downloaded assets (drivers and browsers), local metadata, and configuration file [default: ~/.cache/selenium]
       --clear-cache
           Clear cache folder (~/.cache/selenium)
       --clear-metadata

@@ -18,12 +18,11 @@
 use std::fs;
 use std::fs::File;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Serialize};
 
-use crate::files::get_cache_folder;
 use crate::Logger;
 
 const METADATA_FILE: &str = "selenium-manager.json";
@@ -50,8 +49,8 @@ pub struct Metadata {
     pub drivers: Vec<Driver>,
 }
 
-fn get_metadata_path() -> PathBuf {
-    get_cache_folder().join(METADATA_FILE)
+fn get_metadata_path(cache_path: PathBuf) -> PathBuf {
+    cache_path.join(METADATA_FILE)
 }
 
 pub fn now_unix_timestamp() -> u64 {
@@ -69,8 +68,8 @@ fn new_metadata(log: &Logger) -> Metadata {
     }
 }
 
-pub fn get_metadata(log: &Logger) -> Metadata {
-    let metadata_path = get_metadata_path();
+pub fn get_metadata(log: &Logger, cache_path: PathBuf) -> Metadata {
+    let metadata_path = get_metadata_path(cache_path);
     log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
@@ -154,8 +153,8 @@ pub fn create_driver_metadata(
     }
 }
 
-pub fn write_metadata(metadata: &Metadata, log: &Logger) {
-    let metadata_path = get_metadata_path();
+pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
+    let metadata_path = get_metadata_path(cache_path);
     log.trace(format!("Writing metadata to {}", metadata_path.display()));
     fs::write(
         metadata_path,
@@ -164,8 +163,9 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
     .unwrap();
 }
 
-pub fn clear_metadata(log: &Logger) {
-    let metadata_path = get_metadata_path();
+pub fn clear_metadata(log: &Logger, path: &str) {
+    let cache_path = Path::new(path).to_path_buf();
+    let metadata_path = get_metadata_path(cache_path);
     log.debug(format!(
         "Deleting metadata file {}",
         metadata_path.display()
