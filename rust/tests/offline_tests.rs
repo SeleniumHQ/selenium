@@ -22,7 +22,6 @@ use std::str;
 fn offline_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
-        "--clear-cache",
         "--debug",
         "--browser",
         "chrome",
@@ -35,5 +34,5 @@ fn offline_test() {
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
     println!("{output}");
-    assert!(output.contains("WARN"));
+    assert!(output.contains("offline mode"));
 }
