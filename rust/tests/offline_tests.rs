@@ -21,15 +21,10 @@ use std::str;
 #[test]
 fn offline_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--debug",
-        "--browser",
-        "chrome",
-        "--offline",
-    ])
-    .assert()
-    .success()
-    .code(0);
+    cmd.args(["--debug", "--browser", "chrome", "--offline"])
+        .assert()
+        .success()
+        .code(0);
 
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();

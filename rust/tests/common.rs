@@ -58,8 +58,8 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
 
 #[allow(dead_code)]
 pub fn exec_driver(cmd: &mut Command) -> String {
-    let mut cmd_mut = cmd.borrow_mut();
-    let driver_path = get_driver_path(&mut cmd_mut);
+    let cmd_mut = cmd.borrow_mut();
+    let driver_path = get_driver_path(cmd_mut);
     let driver_version_command = shell::Command::new_single(format!("{} --version", &driver_path));
     let output = run_shell_command_by_os(OS, driver_version_command).unwrap();
     println!("**** EXEC DRIVER: {}", output);

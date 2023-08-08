@@ -136,6 +136,9 @@ pub fn unzip(
         if single_file.is_none() {
             create_path_if_not_exists(target)?;
             out_path = target.join(path);
+        } else if out_path.exists() {
+            unzipped_files = 1;
+            break;
         }
 
         if single_file.is_none() && file.name().ends_with('/') {
@@ -151,11 +154,11 @@ pub fn unzip(
                 file.size()
             ));
             create_parent_path_if_not_exists(out_path.as_path())?;
+            unzipped_files += 1;
 
             if !out_path.exists() {
                 let mut outfile = File::create(&out_path)?;
                 io::copy(&mut file, &mut outfile)?;
-                unzipped_files += 1;
 
                 // Set permissions in Unix-like systems
                 #[cfg(unix)]

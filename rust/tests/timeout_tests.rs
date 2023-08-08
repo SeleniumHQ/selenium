@@ -20,13 +20,7 @@ use assert_cmd::Command;
 #[test]
 fn timeout_error_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--debug",
-        "--browser",
-        "edge",
-        "--timeout",
-        "-1",
-    ])
-    .assert()
-    .failure();
+    cmd.args(["--debug", "--browser", "edge", "--timeout", "-1"])
+        .assert()
+        .failure();
 }

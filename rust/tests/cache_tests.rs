@@ -43,6 +43,6 @@ fn cache_path_test() {
     assert!(!driver_path.contains(r#"cache\selenium"#));
 
     let tmp_cache_path = Path::new(tmp_cache_folder_name);
-    fs::remove_dir_all(&tmp_cache_path).unwrap();
+    fs::remove_dir_all(tmp_cache_path).unwrap();
     assert!(!tmp_cache_path.exists());
 }

@@ -840,7 +840,8 @@ pub trait SeleniumManager {
 
     fn set_offline(&mut self, offline: bool) {
         if offline {
-            self.get_logger().debug("Using Selenium Manager in offline mode");
+            self.get_logger()
+                .debug("Using Selenium Manager in offline mode");
             self.get_config_mut().offline = true;
         }
     }
