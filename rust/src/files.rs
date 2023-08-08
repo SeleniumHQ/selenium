@@ -152,19 +152,21 @@ pub fn unzip(
             ));
             create_parent_path_if_not_exists(out_path.as_path())?;
 
-            let mut outfile = File::create(&out_path)?;
-            io::copy(&mut file, &mut outfile)?;
-            unzipped_files += 1;
+            if !out_path.exists() {
+                let mut outfile = File::create(&out_path)?;
+                io::copy(&mut file, &mut outfile)?;
+                unzipped_files += 1;
 
-            // Set permissions in Unix-like systems
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::PermissionsExt;
+                // Set permissions in Unix-like systems
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
 
-                if single_file.is_some() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(0o755))?;
-                } else if let Some(mode) = file.unix_mode() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))?;
+                    if single_file.is_some() {
+                        fs::set_permissions(&out_path, fs::Permissions::from_mode(0o755))?;
+                    } else if let Some(mode) = file.unix_mode() {
+                        fs::set_permissions(&out_path, fs::Permissions::from_mode(mode))?;
+                    }
                 }
             }
         }
