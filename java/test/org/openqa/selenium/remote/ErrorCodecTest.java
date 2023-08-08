@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.remote;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.text.ParseException;
+import java.util.Map;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -45,12 +50,6 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.text.ParseException;
-import java.util.Map;
-import java.util.UUID;
 
 @Tag("UnitTests")
 public class ErrorCodecTest {

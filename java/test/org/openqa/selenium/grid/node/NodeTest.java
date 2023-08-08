@@ -645,7 +645,7 @@ class NodeTest {
   void canDeleteFileDownloads() throws IOException {
 
     Either<WebDriverException, CreateSessionResponse> response =
-      node.newSession(createSessionRequest(caps));
+        node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
     String zip = simulateFileDownload(session.getId(), "Hello, world!");
@@ -653,7 +653,8 @@ class NodeTest {
     try {
       assertThat(listFileDownloads(session.getId())).contains(zip);
 
-      HttpRequest deleteRequest = new HttpRequest(DELETE, String.format("/session/%s/se/files", session.getId()));
+      HttpRequest deleteRequest =
+          new HttpRequest(DELETE, String.format("/session/%s/se/files", session.getId()));
       HttpResponse deleteResponse = node.execute(deleteRequest);
       assertThat(deleteResponse.isSuccessful()).isTrue();
 
@@ -935,9 +936,9 @@ class NodeTest {
     Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
     assertThat(raw).isNotNull();
     Map<String, Object> map =
-      Optional.ofNullable(raw.get("value"))
-        .map(data -> (Map<String, Object>) data)
-        .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+        Optional.ofNullable(raw.get("value"))
+            .map(data -> (Map<String, Object>) data)
+            .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
     return (List<String>) map.get("names");
   }
 

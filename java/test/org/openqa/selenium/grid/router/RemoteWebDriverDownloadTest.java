@@ -171,9 +171,8 @@ class RemoteWebDriverDownloadTest {
       List<String> names = getDownloadedFilesList(client, sessionId);
       assertThat(names).contains("file_1.txt");
 
-      HttpRequest
-        deleteRequest =
-        new HttpRequest(DELETE, String.format("/session/%s/se/files", sessionId));
+      HttpRequest deleteRequest =
+          new HttpRequest(DELETE, String.format("/session/%s/se/files", sessionId));
       HttpResponse deleteResponse = client.execute(deleteRequest);
       assertThat(deleteResponse.isSuccessful()).isTrue();
 
