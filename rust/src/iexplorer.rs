@@ -21,12 +21,12 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
-use crate::files::{compose_driver_path_in_cache, path_buf_to_string, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
 use crate::{
-    create_http_client, format_one_arg, parse_version, Logger, SeleniumManager,
-    OFFLINE_REQUEST_ERR_MSG, REG_QUERY, STABLE, WINDOWS, WMIC_COMMAND,
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
+    REG_VERSION_ARG, STABLE, WINDOWS,
 };
 
 use crate::metadata::{
@@ -62,7 +62,7 @@ impl IExplorerManager {
         let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
-        config.os = WINDOWS.to_str().to_string();
+        config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
@@ -94,31 +94,12 @@ impl SeleniumManager for IExplorerManager {
         )])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
-        let commands;
-        let mut browser_path = self.get_browser_path().to_string();
-        let escaped_browser_path;
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = path_buf_to_string(path);
-                    escaped_browser_path = self.get_escaped_path(browser_path.to_string());
-                    commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
-                }
-                None => {
-                    commands = vec![
-                        (format_one_arg(
-                            REG_QUERY,
-                            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
-                        )),
-                    ];
-                }
-            }
-        } else {
-            escaped_browser_path = self.get_escaped_path(browser_path.to_string());
-            commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
-        }
-        self.detect_browser_version(commands)
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_general_browser_version(
+            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            REG_VERSION_ARG,
+            "",
+        )
     }
 
     fn get_driver_name(&self) -> &str {
@@ -128,7 +109,7 @@ impl SeleniumManager for IExplorerManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -183,7 +164,7 @@ impl SeleniumManager for IExplorerManager {
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger());
+                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                     }
 
                     Ok(driver_version)
@@ -213,14 +194,20 @@ impl SeleniumManager for IExplorerManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let _minor_driver_version = self
             .get_minor_version(driver_version)
             .unwrap_or_default()
             .parse::<i32>()
             .unwrap_or_default();
-        compose_driver_path_in_cache(self.driver_name, "Windows", "win32", driver_version)
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            "Windows",
+            "win32",
+            driver_version,
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
