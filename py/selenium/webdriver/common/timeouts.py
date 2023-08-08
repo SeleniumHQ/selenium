@@ -60,8 +60,8 @@ class _TimeoutsDescriptor:
 
 class Timeouts:
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
-        """Create a new Timeout object.
-        Implements https://w3c.github.io/webdriver/#timeouts.
+        """Create a new Timeout object. Implements
+        https://w3c.github.io/webdriver/#timeouts.
 
         :Args:
          - implicit_wait - Either an int or a float. Sets the amount of
