@@ -312,19 +312,20 @@ impl ChromeManager {
         }
     }
 
-    fn get_browser_path_in_cache(&self) -> PathBuf {
-        self.get_cache_path()
+    fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(self
+            .get_cache_path()?
             .join(self.get_browser_name())
             .join(self.get_platform_label())
-            .join(self.get_browser_version())
+            .join(self.get_browser_version()))
     }
 
-    fn get_browser_binary_path_in_cache(&self) -> PathBuf {
-        let browser_in_cache = self.get_browser_path_in_cache();
+    fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
-            browser_in_cache.join(CFT_MACOS_APP_NAME)
+            Ok(browser_in_cache.join(CFT_MACOS_APP_NAME))
         } else {
-            browser_in_cache.join(self.get_browser_name_with_extension())
+            Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
         }
     }
 }
@@ -400,7 +401,7 @@ impl SeleniumManager for ChromeManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -445,7 +446,7 @@ impl SeleniumManager for ChromeManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
                 Ok(driver_version)
             }
@@ -456,7 +457,7 @@ impl SeleniumManager for ChromeManager {
         let browser_name = self.browser_name;
         let browser_version;
         let major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         // First, browser version is checked in the local metadata
         match get_browser_version_from_metadata(
@@ -484,7 +485,7 @@ impl SeleniumManager for ChromeManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
             }
         }
@@ -534,17 +535,17 @@ impl SeleniumManager for ChromeManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch_folder = self.get_platform_label();
-        compose_driver_path_in_cache(
-            self.get_cache_path(),
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
             self.driver_name,
             os,
             arch_folder,
             driver_version,
-        )
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -570,7 +571,7 @@ impl SeleniumManager for ChromeManager {
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         let browser_version;
         let browser_name = self.browser_name;
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
         let major_browser_version = self.get_major_browser_version();
         let major_browser_version_int = major_browser_version.parse::<i32>().unwrap_or_default();
 
@@ -622,7 +623,7 @@ impl SeleniumManager for ChromeManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
             }
         }
@@ -632,7 +633,7 @@ impl SeleniumManager for ChromeManager {
         ));
 
         // Checking if browser version is in the cache
-        let browser_binary_path = self.get_browser_binary_path_in_cache();
+        let browser_binary_path = self.get_browser_binary_path_in_cache()?;
         if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} already in the cache",
@@ -661,7 +662,7 @@ impl SeleniumManager for ChromeManager {
 
             uncompress(
                 &driver_zip_file,
-                &self.get_browser_path_in_cache(),
+                &self.get_browser_path_in_cache()?,
                 self.get_logger(),
                 None,
             )?;

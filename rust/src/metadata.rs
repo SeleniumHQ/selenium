@@ -18,7 +18,7 @@
 use std::fs;
 use std::fs::File;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Serialize};
@@ -163,7 +163,8 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
     .unwrap();
 }
 
-pub fn clear_metadata(log: &Logger, cache_path: PathBuf) {
+pub fn clear_metadata(log: &Logger, path: &str) {
+    let cache_path = Path::new(path).to_path_buf();
     let metadata_path = get_metadata_path(cache_path);
     log.debug(format!(
         "Deleting metadata file {}",

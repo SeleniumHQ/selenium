@@ -100,8 +100,10 @@ impl SeleniumManager for SafariTPManager {
         Err(format!("{} not available for download", self.get_driver_name()).into())
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
-        PathBuf::from("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver")
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(PathBuf::from(
+            "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver",
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {

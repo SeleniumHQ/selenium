@@ -23,6 +23,7 @@ use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
+use selenium_manager::files::{default_cache_folder, path_buf_to_string};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
@@ -128,8 +129,13 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
-    let cache_path =
-        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
+
+    let default_cache_path = path_buf_to_string(default_cache_folder());
+    let cache_path = StringKey(
+        vec![CACHE_PATH_KEY],
+        &cli.cache_path.unwrap_or(default_cache_path),
+    )
+    .get_value();
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
@@ -170,16 +176,10 @@ fn main() {
     selenium_manager.set_cache_path(cache_path.clone());
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
-        clear_cache(
-            selenium_manager.get_logger(),
-            selenium_manager.get_cache_path(),
-        );
+        clear_cache(selenium_manager.get_logger(), &cache_path);
     }
     if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
-        clear_metadata(
-            selenium_manager.get_logger(),
-            selenium_manager.get_cache_path(),
-        );
+        clear_metadata(selenium_manager.get_logger(), &cache_path);
     }
 
     selenium_manager

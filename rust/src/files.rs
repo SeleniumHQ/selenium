@@ -54,16 +54,18 @@ impl BrowserPath {
     }
 }
 
-pub fn create_parent_path_if_not_exists(path: &Path) {
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if let Some(p) = path.parent() {
-        create_path_if_not_exists(p);
+        create_path_if_not_exists(p)?;
     }
+    Ok(())
 }
 
-pub fn create_path_if_not_exists(path: &Path) {
+pub fn create_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if !path.exists() {
-        fs::create_dir_all(path).unwrap();
+        fs::create_dir_all(path)?;
     }
+    Ok(())
 }
 
 pub fn uncompress(
@@ -132,7 +134,7 @@ pub fn unzip(
             None => continue,
         };
         if single_file.is_none() {
-            create_path_if_not_exists(target);
+            create_path_if_not_exists(target)?;
             out_path = target.join(path);
         }
 
@@ -148,7 +150,7 @@ pub fn unzip(
                 out_path.display(),
                 file.size()
             ));
-            create_parent_path_if_not_exists(out_path.as_path());
+            create_parent_path_if_not_exists(out_path.as_path())?;
 
             let mut outfile = File::create(&out_path)?;
             io::copy(&mut file, &mut outfile)?;

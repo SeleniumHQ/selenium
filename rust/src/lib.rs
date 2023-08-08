@@ -118,7 +118,7 @@ pub trait SeleniumManager {
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>>;
 
-    fn get_driver_path_in_cache(&self) -> PathBuf;
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>>;
 
     fn get_config(&self) -> &ManagerConfig;
 
@@ -144,18 +144,18 @@ pub trait SeleniumManager {
             download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
 
         if self.is_grid() {
-            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-            create_parent_path_if_not_exists(&driver_path_in_cache);
+            let driver_path_in_cache = self.get_driver_path_in_cache()?;
+            create_parent_path_if_not_exists(&driver_path_in_cache)?;
             Ok(fs::rename(driver_zip_file, driver_path_in_cache)?)
         } else {
-            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
+            let driver_path_in_cache = self.get_driver_path_in_cache()?;
             let driver_name_with_extension = self.get_driver_name_with_extension();
-            uncompress(
+            Ok(uncompress(
                 &driver_zip_file,
                 &driver_path_in_cache,
                 self.get_logger(),
                 Some(driver_name_with_extension),
-            )
+            )?)
         }
     }
 
@@ -525,7 +525,7 @@ pub trait SeleniumManager {
         }
 
         // If driver was not in the PATH, try to find it in the cache
-        let driver_path = self.get_driver_path_in_cache();
+        let driver_path = self.get_driver_path_in_cache()?;
         if driver_path.exists() {
             if !self.is_safari() {
                 self.get_logger().debug(format!(
@@ -854,11 +854,11 @@ pub trait SeleniumManager {
         }
     }
 
-    fn get_cache_path(&self) -> PathBuf {
+    fn get_cache_path(&self) -> Result<PathBuf, Box<dyn Error>> {
         let path = Path::new(&self.get_config().cache_path);
-        create_path_if_not_exists(path);
+        create_path_if_not_exists(path)?;
         let canon_path = self.canonicalize_path(path.to_path_buf());
-        Path::new(&canon_path).to_path_buf()
+        Ok(Path::new(&canon_path).to_path_buf())
     }
 
     fn set_cache_path(&mut self, cache_path: String) {
@@ -917,7 +917,8 @@ pub fn get_manager_by_driver(
     }
 }
 
-pub fn clear_cache(log: &Logger, cache_path: PathBuf) {
+pub fn clear_cache(log: &Logger, path: &str) {
+    let cache_path = Path::new(path).to_path_buf();
     if cache_path.exists() {
         log.debug(format!("Clearing cache at: {}", cache_path.display()));
         fs::remove_dir_all(&cache_path).unwrap_or_else(|err| {
