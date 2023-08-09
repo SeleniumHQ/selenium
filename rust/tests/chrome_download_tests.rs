@@ -31,7 +31,7 @@ fn chrome_latest_download_test() {
         "--force-browser-download",
         "--output",
         "json",
-        "--trace",
+        "--debug",
     ])
     .assert()
     .success()
@@ -53,7 +53,7 @@ fn chrome_version_download_test(#[case] browser_version: String) {
         &browser_version,
         "--output",
         "json",
-        "--trace",
+        "--debug",
     ])
     .assert()
     .success()

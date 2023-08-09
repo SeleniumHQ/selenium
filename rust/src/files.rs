@@ -198,7 +198,13 @@ pub fn unzip(
     }
 
     remove_file(compressed_path)?;
-    copy_folder_content(tmp_path, final_path, single_file)?;
+    copy_folder_content(
+        tmp_path,
+        final_path,
+        single_file,
+        &compressed_path.to_path_buf(),
+        &log,
+    )?;
 
     Ok(())
 }
@@ -207,12 +213,18 @@ pub fn copy_folder_content(
     source: impl AsRef<Path>,
     destination: impl AsRef<Path>,
     single_file: Option<String>,
+    avoid_path: &PathBuf,
+    log: &Logger,
 ) -> io::Result<()> {
     fs::create_dir_all(&destination)?;
     for dir_entry in fs::read_dir(source)? {
         let entry = dir_entry?;
         let file_type = entry.file_type()?;
+        let destination_path = destination.as_ref().join(entry.file_name());
         if file_type.is_file() {
+            if entry.path().eq(avoid_path) {
+                continue;
+            }
             let target_file_name = entry
                 .file_name()
                 .to_os_string()
@@ -221,7 +233,11 @@ pub fn copy_folder_content(
             if single_file.is_none()
                 || (single_file.is_some() && single_file.clone().unwrap().eq(&target_file_name))
             {
-                let destination_path = destination.as_ref().join(entry.file_name());
+                log.trace(format!(
+                    "Copying {} to {}",
+                    entry.path().display(),
+                    destination_path.display()
+                ));
                 if !destination_path.exists() {
                     fs::copy(entry.path(), destination_path)?;
                 }
@@ -229,8 +245,10 @@ pub fn copy_folder_content(
         } else if single_file.is_none() {
             copy_folder_content(
                 entry.path(),
-                destination.as_ref().join(entry.file_name()),
+                destination_path,
                 single_file.clone(),
+                avoid_path,
+                &log,
             )?;
         }
     }
