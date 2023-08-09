@@ -212,11 +212,12 @@ pub trait SeleniumManager {
                 .trace(format!("Checking {} in PATH", browser_name));
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
+                let canon_browser_path = self.canonicalize_path(path.clone());
                 self.get_logger().debug(format!(
                     "Found {} in PATH: {}",
-                    browser_name,
-                    path.display()
+                    browser_name, &canon_browser_path
                 ));
+                self.set_browser_path(canon_browser_path);
             } else {
                 self.get_logger()
                     .debug(format!("{} not found in PATH", browser_name));
