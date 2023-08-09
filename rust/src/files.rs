@@ -170,13 +170,6 @@ pub fn unzip(
             let target_path = tmp_path.join(path.clone());
             create_parent_path_if_not_exists(target_path.as_path())?;
             let mut outfile = File::create(&target_path)?;
-            io::copy(&mut file, &mut outfile)?;
-            unzipped_files += 1;
-            log.trace(format!(
-                "File extracted to {} ({} bytes)",
-                target_path.display(),
-                file.size()
-            ));
 
             // Set permissions in Unix-like systems
             #[cfg(unix)]
@@ -187,6 +180,14 @@ pub fn unzip(
                     fs::set_permissions(&target_path, fs::Permissions::from_mode(mode))?;
                 }
             }
+
+            io::copy(&mut file, &mut outfile)?;
+            unzipped_files += 1;
+            log.trace(format!(
+                "File extracted to {} ({} bytes)",
+                target_path.display(),
+                file.size()
+            ));
         }
     }
     if unzipped_files == 0 {
