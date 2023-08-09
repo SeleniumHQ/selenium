@@ -176,7 +176,9 @@ pub fn unzip(
             {
                 use std::os::unix::fs::PermissionsExt;
 
-                if let Some(mode) = file.unix_mode() {
+                if single_file.is_some() {
+                    fs::set_permissions(&target_path, fs::Permissions::from_mode(0o755))?;
+                } else if let Some(mode) = file.unix_mode() {
                     fs::set_permissions(&target_path, fs::Permissions::from_mode(mode))?;
                 }
             }
