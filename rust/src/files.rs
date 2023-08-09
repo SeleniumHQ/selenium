@@ -206,7 +206,7 @@ pub fn unzip(
         final_path,
         single_file,
         &compressed_path.to_path_buf(),
-        &log,
+        log,
     )?;
 
     Ok(())
@@ -251,7 +251,7 @@ pub fn copy_folder_content(
                 destination_path,
                 single_file.clone(),
                 avoid_path,
-                &log,
+                log,
             )?;
         }
     }

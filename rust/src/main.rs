@@ -23,7 +23,6 @@ use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
-use selenium_manager::files::{default_cache_folder, path_buf_to_string};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
@@ -129,13 +128,9 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
+    let cache_path =
+        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
-    let default_cache_path = path_buf_to_string(default_cache_folder());
-    let cache_path = StringKey(
-        vec![CACHE_PATH_KEY],
-        &cli.cache_path.unwrap_or(default_cache_path),
-    )
-    .get_value();
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
