@@ -21,7 +21,7 @@ use crate::{
     default_cache_folder, format_one_arg, path_buf_to_string, Command, REQUEST_TIMEOUT_SEC,
     UNAME_COMMAND,
 };
-use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
+use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
@@ -47,8 +47,7 @@ pub struct ManagerConfig {
     pub arch: String,
     pub proxy: String,
     pub timeout: u64,
-    pub browser_ttl: u64,
-    pub driver_ttl: u64,
+    pub ttl: u64,
     pub offline: bool,
     pub force_browser_download: bool,
 }
@@ -97,8 +96,7 @@ impl ManagerConfig {
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
-            browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
-            driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
+            ttl: IntegerKey("ttl", TTL_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
             force_browser_download: BooleanKey("force-browser-download", false).get_value(),
         }

@@ -436,7 +436,7 @@ impl SeleniumManager for ChromeManager {
                         self.request_good_driver_version_from_cft()?
                     };
 
-                let driver_ttl = self.get_driver_ttl();
+                let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
                 {
                     metadata.drivers.push(create_driver_metadata(
@@ -476,7 +476,7 @@ impl SeleniumManager for ChromeManager {
                 // If not in metadata, discover version using Chrome for Testing (CfT) endpoints
                 browser_version = self.request_latest_browser_version_from_cft()?;
 
-                let browser_ttl = self.get_browser_ttl();
+                let browser_ttl = self.get_ttl();
                 if browser_ttl > 0 {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
@@ -611,7 +611,7 @@ impl SeleniumManager for ChromeManager {
                 }
                 self.set_browser_version(browser_version.clone());
 
-                let browser_ttl = self.get_browser_ttl();
+                let browser_ttl = self.get_ttl();
                 if browser_ttl > 0
                     && !self.is_browser_version_empty()
                     && !self.is_browser_version_stable()
