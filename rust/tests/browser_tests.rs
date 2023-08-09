@@ -69,7 +69,7 @@ fn wrong_parameters_test(
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let assert_result = cmd
         .args([
-            "--debug",
+            "--trace",
             "--browser",
             &browser,
             "--browser-version",
