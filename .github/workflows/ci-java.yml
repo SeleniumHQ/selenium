@@ -11,6 +11,7 @@ jobs:
     with:
       name: Build
       cache-key: java
+      java-version: 11
       run: bazel build grid
 
   docs:
@@ -20,6 +21,7 @@ jobs:
     with:
       name: Documentation
       cache-key: java-doc
+      java-version: 11
       run: ./go --verbose javadocs
 
   lint:
@@ -29,6 +31,7 @@ jobs:
     with:
       name: Lint
       cache-key: java-lint
+      java-version: 11
       run: bazel test --test_tag_filters "lint,-no-lint" //java/...
 
   small-tests:
@@ -38,6 +41,7 @@ jobs:
     with:
       name: Small Tests
       cache-key: java-small-tests
+      java-version: 11
       run: bazel test --test_size_filters "small" --test_tag_filters "-lint" //java/...
 
   medium-tests:
@@ -47,6 +51,7 @@ jobs:
     with:
       name: Medium Tests
       cache-key: java-medium-tests
+      java-version: 11
       run: bazel test --test_size_filters "medium" --test_tag_filters "-lint" --flaky_test_attempts 3 //java/...
 
   browser-tests:
@@ -70,6 +75,7 @@ jobs:
       browser: ${{ matrix.browser }}
       browser-version: ${{ matrix.browser-version }}
       cache-key: java-${{ matrix.browser }}-tests
+      java-version: 11
       run: >
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))" |
         xargs bazel test --flaky_test_attempts 3
@@ -95,6 +101,7 @@ jobs:
       browser: ${{ matrix.browser }}
       browser-version: ${{ matrix.browser-version }}
       cache-key: java-${{ matrix.browser }}-remote-tests
+      java-version: 11
       run: >
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
         xargs bazel test --flaky_test_attempts 3
