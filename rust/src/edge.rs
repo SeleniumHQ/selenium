@@ -134,7 +134,7 @@ impl SeleniumManager for EdgeManager {
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let mut major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -191,7 +191,7 @@ impl SeleniumManager for EdgeManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
 
                 Ok(driver_version)
@@ -230,7 +230,7 @@ impl SeleniumManager for EdgeManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -251,7 +251,13 @@ impl SeleniumManager for EdgeManager {
         } else {
             "linux64"
         };
-        compose_driver_path_in_cache(self.driver_name, os, arch_folder, driver_version)
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            os,
+            arch_folder,
+            driver_version,
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {

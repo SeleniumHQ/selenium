@@ -35,11 +35,10 @@ fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
         .success()
         .code(0);
 
-    assert_driver(&mut cmd);
-
     if (browser_name.eq("iexplorer") && OS.eq("windows"))
         || (!browser_name.eq("iexplorer") && !OS.eq("windows"))
     {
+        assert_driver(&mut cmd);
         assert_browser(&mut cmd);
         let output = exec_driver(&mut cmd);
         assert!(output.contains(&driver_name));

@@ -18,8 +18,8 @@
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
-    compose_cache_folder, create_parent_path_if_not_exists, get_binary_extension,
-    path_buf_to_string,
+    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
+    get_binary_extension, path_buf_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -118,7 +118,7 @@ pub trait SeleniumManager {
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>>;
 
-    fn get_driver_path_in_cache(&self) -> PathBuf;
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>>;
 
     fn get_config(&self) -> &ManagerConfig;
 
@@ -144,18 +144,18 @@ pub trait SeleniumManager {
             download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
 
         if self.is_grid() {
-            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-            create_parent_path_if_not_exists(&driver_path_in_cache);
+            let driver_path_in_cache = self.get_driver_path_in_cache()?;
+            create_parent_path_if_not_exists(&driver_path_in_cache)?;
             Ok(fs::rename(driver_zip_file, driver_path_in_cache)?)
         } else {
-            let driver_path_in_cache = Self::get_driver_path_in_cache(self);
+            let driver_path_in_cache = self.get_driver_path_in_cache()?;
             let driver_name_with_extension = self.get_driver_name_with_extension();
-            uncompress(
+            Ok(uncompress(
                 &driver_zip_file,
                 &driver_path_in_cache,
                 self.get_logger(),
                 Some(driver_name_with_extension),
-            )
+            )?)
         }
     }
 
@@ -212,11 +212,12 @@ pub trait SeleniumManager {
                 .trace(format!("Checking {} in PATH", browser_name));
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
+                let canon_browser_path = self.canonicalize_path(path.clone());
                 self.get_logger().debug(format!(
                     "Found {} in PATH: {}",
-                    browser_name,
-                    path.display()
+                    browser_name, &canon_browser_path
                 ));
+                self.set_browser_path(canon_browser_path);
             } else {
                 self.get_logger()
                     .debug(format!("{} not found in PATH", browser_name));
@@ -525,7 +526,7 @@ pub trait SeleniumManager {
         }
 
         // If driver was not in the PATH, try to find it in the cache
-        let driver_path = self.get_driver_path_in_cache();
+        let driver_path = self.get_driver_path_in_cache()?;
         if driver_path.exists() {
             if !self.is_safari() {
                 self.get_logger().debug(format!(
@@ -840,6 +841,8 @@ pub trait SeleniumManager {
 
     fn set_offline(&mut self, offline: bool) {
         if offline {
+            self.get_logger()
+                .debug("Using Selenium Manager in offline mode");
             self.get_config_mut().offline = true;
         }
     }
@@ -851,6 +854,19 @@ pub trait SeleniumManager {
     fn set_force_browser_download(&mut self, force_browser_download: bool) {
         if force_browser_download {
             self.get_config_mut().force_browser_download = true;
+        }
+    }
+
+    fn get_cache_path(&self) -> Result<PathBuf, Box<dyn Error>> {
+        let path = Path::new(&self.get_config().cache_path);
+        create_path_if_not_exists(path)?;
+        let canon_path = self.canonicalize_path(path.to_path_buf());
+        Ok(Path::new(&canon_path).to_path_buf())
+    }
+
+    fn set_cache_path(&mut self, cache_path: String) {
+        if !cache_path.is_empty() {
+            self.get_config_mut().cache_path = cache_path;
         }
     }
 }
@@ -904,8 +920,8 @@ pub fn get_manager_by_driver(
     }
 }
 
-pub fn clear_cache(log: &Logger) {
-    let cache_path = compose_cache_folder();
+pub fn clear_cache(log: &Logger, path: &str) {
+    let cache_path = Path::new(path).to_path_buf();
     if cache_path.exists() {
         log.debug(format!("Clearing cache at: {}", cache_path.display()));
         fs::remove_dir_all(&cache_path).unwrap_or_else(|err| {

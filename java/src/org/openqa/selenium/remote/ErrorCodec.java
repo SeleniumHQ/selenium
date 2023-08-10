@@ -56,8 +56,10 @@ public class ErrorCodec {
   private static final W3CError DEFAULT_ERROR =
       new W3CError("unknown error", WebDriverException.class, 500);
 
-  // note: this is a set from a logical point of view, but the implementation does rely on the order of the elements.
-  // there is no guarantee a Set will keep the order (and we have no .equals / .hashCode implementation too).
+  // note: this is a set from a logical point of view, but the implementation does rely on the order
+  // of the elements.
+  // there is no guarantee a Set will keep the order (and we have no .equals / .hashCode
+  // implementation too).
   private static final List<W3CError> ERRORS =
       ImmutableList.<W3CError>builder()
           .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))

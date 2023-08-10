@@ -47,6 +47,8 @@ Options:
           Driver TTL (time-to-live) [default: 3600]
       --browser-ttl <BROWSER_TTL>
           Browser TTL (time-to-live) [default: 3600]
+      --cache-path <CACHE_PATH>
+          Local folder used to store downloaded assets (drivers and browsers), local metadata, and configuration file [default: ~/.cache/selenium]
       --clear-cache
           Clear cache folder (~/.cache/selenium)
       --clear-metadata

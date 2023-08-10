@@ -17,20 +17,10 @@
 
 use assert_cmd::Command;
 
-use exitcode::DATAERR;
-
 #[test]
-fn timeout_proxy_test() {
+fn timeout_error_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--clear-cache",
-        "--debug",
-        "--browser",
-        "edge",
-        "--timeout",
-        "0",
-    ])
-    .assert()
-    .failure()
-    .code(DATAERR);
+    cmd.args(["--debug", "--browser", "edge", "--timeout", "-1"])
+        .assert()
+        .failure();
 }

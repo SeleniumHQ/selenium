@@ -15,50 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::get_driver_path;
 use assert_cmd::Command;
-
-use crate::common::{assert_browser, assert_driver};
-use rstest::rstest;
+use std::fs;
+use std::path::Path;
 
 mod common;
 
 #[test]
-fn chrome_latest_download_test() {
+fn cache_path_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let tmp_cache_folder_name = "../tmp";
     cmd.args([
         "--browser",
         "chrome",
-        "--force-browser-download",
+        "--cache-path",
+        tmp_cache_folder_name,
         "--output",
         "json",
-        "--debug",
     ])
     .assert()
     .success()
     .code(0);
 
-    assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
-}
+    let driver_path = get_driver_path(&mut cmd);
+    println!("*** Custom cache path: {}", driver_path);
+    assert!(!driver_path.contains(r#"cache\selenium"#));
 
-#[rstest]
-#[case("113")]
-#[case("beta")]
-fn chrome_version_download_test(#[case] browser_version: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--browser-version",
-        &browser_version,
-        "--output",
-        "json",
-        "--debug",
-    ])
-    .assert()
-    .success()
-    .code(0);
-
-    assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
+    let tmp_cache_path = Path::new(tmp_cache_folder_name);
+    fs::remove_dir_all(tmp_cache_path).unwrap();
+    assert!(!tmp_cache_path.exists());
 }

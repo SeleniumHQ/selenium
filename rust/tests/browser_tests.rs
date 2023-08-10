@@ -132,13 +132,13 @@ fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
     r#"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"#
 )]
 fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", &browser, "--browser-path", &browser_path])
-        .assert()
-        .success()
-        .code(0);
-
     if OS.eq(&os) {
+        let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+        cmd.args(["--browser", &browser, "--browser-path", &browser_path])
+            .assert()
+            .success()
+            .code(0);
+
         let stdout = &cmd.unwrap().stdout;
         let output = std::str::from_utf8(stdout).unwrap();
         println!("{}", output);

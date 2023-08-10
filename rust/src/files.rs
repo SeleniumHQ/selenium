@@ -17,7 +17,7 @@
 
 use std::error::Error;
 use std::fs;
-use std::fs::File;
+use std::fs::{remove_file, File};
 use std::io;
 
 use std::path::{Path, PathBuf};
@@ -54,16 +54,18 @@ impl BrowserPath {
     }
 }
 
-pub fn create_parent_path_if_not_exists(path: &Path) {
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if let Some(p) = path.parent() {
-        create_path_if_not_exists(p);
+        create_path_if_not_exists(p)?;
     }
+    Ok(())
 }
 
-pub fn create_path_if_not_exists(path: &Path) {
+pub fn create_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if !path.exists() {
-        fs::create_dir_all(path).unwrap();
+        fs::create_dir_all(path)?;
     }
+    Ok(())
 }
 
 pub fn uncompress(
@@ -72,9 +74,10 @@ pub fn uncompress(
     log: &Logger,
     single_file: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
-    let file = File::open(compressed_file)?;
-    let kind = infer::get_from_path(compressed_file)?
-        .ok_or(format!("Format for file {:?} cannot be inferred", file))?;
+    let kind = infer::get_from_path(compressed_file)?.ok_or(format!(
+        "Format for file {} cannot be inferred",
+        compressed_file
+    ))?;
     let extension = kind.extension();
     log.trace(format!(
         "The detected extension of the compressed file is {}",
@@ -82,9 +85,9 @@ pub fn uncompress(
     ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
-        unzip(file, target, log, single_file)?
+        unzip(compressed_file, target, log, single_file)?
     } else if extension.eq_ignore_ascii_case(GZ) {
-        untargz(file, target, log)?
+        untargz(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -101,8 +104,13 @@ pub fn uncompress(
     Ok(())
 }
 
-pub fn untargz(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
-    log.trace(format!("Untargz file to {}", target.display()));
+pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
+    log.trace(format!(
+        "Untargz {} to {}",
+        compressed_file,
+        target.display()
+    ));
+    let file = File::open(compressed_file)?;
     let tar = GzDecoder::new(&file);
     let mut archive = Archive::new(tar);
     let parent_path = target
@@ -115,44 +123,53 @@ pub fn untargz(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Er
 }
 
 pub fn unzip(
-    file: File,
+    compressed_file: &str,
     target: &Path,
     log: &Logger,
     single_file: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
-    log.trace(format!("Unzipping file to {}", target.display()));
-    let mut out_path = target.to_path_buf();
-    let mut archive = ZipArchive::new(file)?;
+    let file = File::open(compressed_file)?;
+    let compressed_path = Path::new(compressed_file);
+    let tmp_path = compressed_path
+        .parent()
+        .unwrap_or(compressed_path)
+        .to_path_buf();
+    let final_path = if single_file.is_some() {
+        target.parent().unwrap_or(target).to_path_buf()
+    } else {
+        target.to_path_buf()
+    };
+    log.trace(format!(
+        "Unzipping {} to {}",
+        compressed_file,
+        final_path.display()
+    ));
+    let mut zip_archive = ZipArchive::new(file)?;
     let mut unzipped_files = 0;
 
-    for i in 0..archive.len() {
-        let mut file = archive.by_index(i)?;
+    for i in 0..zip_archive.len() {
+        let mut file = zip_archive.by_index(i)?;
         let path: PathBuf = match file.enclosed_name() {
-            Some(p) => p.to_owned().iter().skip(1).collect(),
+            // This logic is required since some zip files (e.g. chromedriver 115+)
+            // are zipped with a parent folder, while others (e.g. chromedriver 114-)
+            // are zipped without a parent folder
+            Some(p) => {
+                let iter = p.clone().iter();
+                if iter.to_owned().count() > 1 {
+                    iter.skip(1).collect()
+                } else {
+                    iter.collect()
+                }
+            }
             None => continue,
         };
-        if single_file.is_none() {
-            create_path_if_not_exists(target);
-            out_path = target.join(path);
-        }
-
-        if single_file.is_none() && file.name().ends_with('/') {
-            log.trace(format!("File {} extracted to {}", i, out_path.display()));
-            fs::create_dir_all(&out_path)?;
-        } else if single_file.is_none()
-            || (single_file.is_some()
-                && get_raw_file_name(file.name()).eq(&single_file.clone().unwrap()))
-        {
-            log.trace(format!(
-                "File extracted to {} ({} bytes)",
-                out_path.display(),
-                file.size()
-            ));
-            create_parent_path_if_not_exists(out_path.as_path());
-
-            let mut outfile = File::create(&out_path)?;
-            io::copy(&mut file, &mut outfile)?;
-            unzipped_files += 1;
+        if file.name().ends_with('/') {
+            log.trace(format!("File extracted to {}", tmp_path.display()));
+            fs::create_dir_all(&tmp_path)?;
+        } else {
+            let target_path = tmp_path.join(path.clone());
+            create_parent_path_if_not_exists(target_path.as_path())?;
+            let mut outfile = File::create(&target_path)?;
 
             // Set permissions in Unix-like systems
             #[cfg(unix)]
@@ -160,33 +177,88 @@ pub fn unzip(
                 use std::os::unix::fs::PermissionsExt;
 
                 if single_file.is_some() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(0o755))?;
+                    fs::set_permissions(&target_path, fs::Permissions::from_mode(0o755))?;
                 } else if let Some(mode) = file.unix_mode() {
-                    fs::set_permissions(&out_path, fs::Permissions::from_mode(mode)).unwrap();
+                    fs::set_permissions(&target_path, fs::Permissions::from_mode(mode))?;
                 }
             }
+
+            io::copy(&mut file, &mut outfile)?;
+            unzipped_files += 1;
+            log.trace(format!(
+                "File extracted to {} ({} bytes)",
+                target_path.display(),
+                file.size()
+            ));
         }
     }
-    if unzipped_files == 0 || (single_file.is_some() && unzipped_files != 1) {
+    if unzipped_files == 0 {
         return Err(format!(
             "Problem uncompressing zip ({} files extracted)",
             unzipped_files
         )
         .into());
     }
+
+    remove_file(compressed_path)?;
+    copy_folder_content(
+        tmp_path,
+        final_path,
+        single_file,
+        &compressed_path.to_path_buf(),
+        log,
+    )?;
+
     Ok(())
 }
 
-pub fn get_raw_file_name(file_name: &str) -> &str {
-    let mut raw_file_name = file_name;
-    let separator_index = file_name.rfind('/').unwrap_or_default();
-    if separator_index != 0 {
-        raw_file_name = &file_name[separator_index + 1..]
+pub fn copy_folder_content(
+    source: impl AsRef<Path>,
+    destination: impl AsRef<Path>,
+    single_file: Option<String>,
+    avoid_path: &PathBuf,
+    log: &Logger,
+) -> io::Result<()> {
+    fs::create_dir_all(&destination)?;
+    for dir_entry in fs::read_dir(source)? {
+        let entry = dir_entry?;
+        let file_type = entry.file_type()?;
+        let destination_path = destination.as_ref().join(entry.file_name());
+        if file_type.is_file() {
+            if entry.path().eq(avoid_path) {
+                continue;
+            }
+            let target_file_name = entry
+                .file_name()
+                .to_os_string()
+                .into_string()
+                .unwrap_or_default();
+            if single_file.is_none()
+                || (single_file.is_some() && single_file.clone().unwrap().eq(&target_file_name))
+            {
+                log.trace(format!(
+                    "Copying {} to {}",
+                    entry.path().display(),
+                    destination_path.display()
+                ));
+                if !destination_path.exists() {
+                    fs::copy(entry.path(), destination_path)?;
+                }
+            }
+        } else if single_file.is_none() {
+            copy_folder_content(
+                entry.path(),
+                destination_path,
+                single_file.clone(),
+                avoid_path,
+                log,
+            )?;
+        }
     }
-    raw_file_name
+    Ok(())
 }
 
-pub fn compose_cache_folder() -> PathBuf {
+pub fn default_cache_folder() -> PathBuf {
     if let Some(base_dirs) = BaseDirs::new() {
         return Path::new(base_dirs.home_dir())
             .join(String::from(CACHE_FOLDER).replace('/', std::path::MAIN_SEPARATOR_STR));
@@ -194,19 +266,14 @@ pub fn compose_cache_folder() -> PathBuf {
     PathBuf::new()
 }
 
-pub fn get_cache_folder() -> PathBuf {
-    let cache_path = compose_cache_folder();
-    create_path_if_not_exists(&cache_path);
-    cache_path
-}
-
 pub fn compose_driver_path_in_cache(
+    driver_path: PathBuf,
     driver_name: &str,
     os: &str,
     arch_folder: &str,
     driver_version: &str,
 ) -> PathBuf {
-    get_cache_folder()
+    driver_path
         .join(driver_name)
         .join(arch_folder)
         .join(driver_version)
