@@ -225,7 +225,6 @@ impl ChromeManager {
         let stable_channel = versions_with_downloads.channels.stable;
         let chromedriver = stable_channel.downloads.chromedriver;
         if chromedriver.is_none() {
-            // This should be temporal, since currently the stable channel has no chromedriver download
             self.log.warn(format!(
                 "Latest stable version of {} not found using CfT endpoints. Trying with {}",
                 &self.driver_name, LATEST_RELEASE
