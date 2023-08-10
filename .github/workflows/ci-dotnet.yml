@@ -36,7 +36,7 @@ jobs:
       name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
       browser: ${{ matrix.browser }}
       cache-key: dotnet-${{ matrix.browser }}-${{ matrix.framework }}
-      java-version: 11
+      java-version: 17
       os: windows
       run: |
         bazel build //dotnet/test/common:${{ matrix.browser }}
