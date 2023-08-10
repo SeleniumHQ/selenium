@@ -6,6 +6,7 @@ using OpenQA.Selenium.Safari;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -40,16 +41,17 @@ namespace OpenQA.Selenium.Environment
 
         public event EventHandler<DriverStartingEventArgs> DriverStarting;
 
-        public IWebDriver CreateDriver(Type driverType)
+        public IWebDriver CreateDriver(Type driverType, bool logging = false)
         {
-            return CreateDriverWithOptions(driverType, null);
+            return CreateDriverWithOptions(driverType, null, logging);
         }
 
-        public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions)
+        public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions, bool logging = false)
         {
             Browser browser = Browser.All;
             DriverService service = null;
             DriverOptions options = null;
+            bool enableLogging = logging;
 
             List<Type> constructorArgTypeList = new List<Type>();
             IWebDriver driver = null;
@@ -58,24 +60,40 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
                 service = CreateService<ChromeDriverService>();
+                if (enableLogging)
+                {
+                    ((ChromiumDriverService)service).EnableVerboseLogging = true;
+                }
             }
             else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.Edge;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
                 service = CreateService<EdgeDriverService>();
+                if (enableLogging)
+                {
+                    ((ChromiumDriverService)service).EnableVerboseLogging = true;
+                }
             }
             else if (typeof(InternetExplorerDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.IE;
                 options = GetDriverOptions<InternetExplorerOptions>(driverType, driverOptions);
                 service = CreateService<InternetExplorerDriverService>();
+                if (enableLogging)
+                {
+                    ((InternetExplorerDriverService)service).LoggingLevel = InternetExplorerDriverLogLevel.Trace;
+                }
             }
             else if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.Firefox;
                 options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
                 service = CreateService<FirefoxDriverService>();
+                if (enableLogging)
+                {
+                    ((FirefoxDriverService)service).LogLevel = FirefoxDriverLogLevel.Trace;
+                }
             }
             else if (typeof(SafariDriver).IsAssignableFrom(driverType))
             {

@@ -17,6 +17,7 @@ namespace OpenQA.Selenium.Environment
         private DriverFactory driverFactory;
         private RemoteSeleniumServer remoteServer;
         private string remoteCapabilities;
+        private bool logging;
 
         private EnvironmentManager()
         {
@@ -52,6 +53,7 @@ namespace OpenQA.Selenium.Environment
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
+            logging = driverConfig.Logging;
 
             urlBuilder = new UrlBuilder(websiteConfig);
 
@@ -190,6 +192,11 @@ namespace OpenQA.Selenium.Environment
             get { return remoteCapabilities; }
         }
 
+        public bool Logging
+        {
+            get { return logging; }
+        }
+
         public UrlBuilder UrlBuilder
         {
             get
@@ -210,12 +217,12 @@ namespace OpenQA.Selenium.Environment
 
         public IWebDriver CreateDriverInstance()
         {
-            return driverFactory.CreateDriver(driverType);
+            return driverFactory.CreateDriver(driverType, Logging);
         }
 
         public IWebDriver CreateDriverInstance(DriverOptions options)
         {
-            return driverFactory.CreateDriverWithOptions(driverType, options);
+            return driverFactory.CreateDriverWithOptions(driverType, options, Logging);
         }
 
         public IWebDriver CreateFreshDriver()

@@ -20,7 +20,7 @@ namespace OpenQA.Selenium.Edge
         }
         public static EdgeOptions DefaultOptions
         {
-            get { return new EdgeOptions() { AcceptInsecureCertificates = true }; }
+            get { return new EdgeOptions(); }
         }
     }
 }
