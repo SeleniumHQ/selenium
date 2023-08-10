@@ -25,7 +25,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::Logger;
 
-const METADATA_FILE: &str = "selenium-manager.json";
+const METADATA_FILE_OLD: &str = "selenium-manager.json";
+const METADATA_FILE: &str = "selenium-manager-metadata.json";
 
 #[derive(Serialize, Deserialize)]
 pub struct Browser {
@@ -50,6 +51,10 @@ pub struct Metadata {
 }
 
 fn get_metadata_path(cache_path: PathBuf) -> PathBuf {
+    let old_metadata = cache_path.join(METADATA_FILE_OLD);
+    if old_metadata.exists() {
+        fs::remove_file(old_metadata).unwrap_or_default();
+    }
     cache_path.join(METADATA_FILE)
 }
 
