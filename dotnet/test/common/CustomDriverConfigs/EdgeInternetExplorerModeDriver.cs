@@ -16,6 +16,11 @@ namespace OpenQA.Selenium.IE
         {
         }
 
+        public EdgeInternetExplorerModeDriver(InternetExplorerDriverService service, InternetExplorerOptions options)
+            : base(service, options)
+        {
+        }
+
         public static InternetExplorerOptions DefaultOptions
         {
             get { return new InternetExplorerOptions() { RequireWindowFocus = true, UsePerProcessProxy = true, AttachToEdgeChrome = true }; }

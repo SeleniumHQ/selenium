@@ -16,6 +16,11 @@ namespace OpenQA.Selenium.Firefox
         {
         }
 
+        public NightlyChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
+            : base(service, options)
+        {
+        }
+
         public static FirefoxOptions DefaultOptions
         {
             get { return new FirefoxOptions() { BrowserVersion = "nightly" }; }

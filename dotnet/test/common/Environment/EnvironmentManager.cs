@@ -204,10 +204,8 @@ namespace OpenQA.Selenium.Environment
             {
                 return driver;
             }
-            else
-            {
-                return CreateFreshDriver();
-            }
+
+            return CreateFreshDriver();
         }
 
         public IWebDriver CreateDriverInstance()
@@ -231,9 +229,15 @@ namespace OpenQA.Selenium.Environment
         {
             if (driver != null)
             {
-                driver.Quit();
+                try
+                {
+                    driver.Quit();
+                }
+                finally
+                {
+                    driver = null;
+                }
             }
-            driver = null;
         }
 
         protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
