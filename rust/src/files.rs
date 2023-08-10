@@ -17,7 +17,7 @@
 
 use std::error::Error;
 use std::fs;
-use std::fs::{remove_file, File};
+use std::fs::File;
 use std::io;
 
 use std::path::{Path, PathBuf};
@@ -200,7 +200,7 @@ pub fn unzip(
         .into());
     }
 
-    remove_file(compressed_path)?;
+    fs::remove_file(compressed_path)?;
     copy_folder_content(
         tmp_path,
         final_path,
