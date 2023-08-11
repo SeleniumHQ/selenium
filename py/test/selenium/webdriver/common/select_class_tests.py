@@ -48,7 +48,7 @@ def test_select_by_index_single(driver, pages):
             assert sel.first_selected_option.text == select["values"][x]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_index_single_disabled(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSingleSelect["name"]))
@@ -65,7 +65,7 @@ def test_select_by_value_single(driver, pages):
             assert sel.first_selected_option.text == select["values"][x]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_value_single_disabled(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSingleSelect["name"]))
@@ -84,7 +84,7 @@ def test_select_by_visible_text_single(driver, pages):
             assert sel.first_selected_option.text == select["values"][x]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_text_single_disabled(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSingleSelect["name"]))
@@ -106,7 +106,7 @@ def test_select_by_index_multiple(driver, pages):
                 assert selected[j].text == select["values"][j]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_index_multiple_disabled(driver, pages):
     pages.load("formPage.html")
 
@@ -129,7 +129,7 @@ def test_select_by_value_multiple(driver, pages):
                 assert selected[j].text == select["values"][j]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_value_multiple_disabled(driver, pages):
     pages.load("formPage.html")
 
@@ -152,7 +152,7 @@ def test_select_by_visible_text_multiple(driver, pages):
                 assert selected[j].text == select["values"][j]
 
 
-@pytest.mark.xfail_safari(reason="Unlike chrome, safari does not raise NotImplemented error")
+@pytest.mark.xfail_safari(reason="options incorrectly reported as enabled")
 def test_raises_exception_select_by_text_multiple_disabled(driver, pages):
     pages.load("formPage.html")
 
