@@ -16,10 +16,10 @@
 # under the License.
 import json
 import logging
+import shutil
 import subprocess
 import sys
 from pathlib import Path
-import shutil
 from typing import List
 
 from selenium.common import WebDriverException
