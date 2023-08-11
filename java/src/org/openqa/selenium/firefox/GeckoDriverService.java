@@ -162,6 +162,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /** Builder used to configure new {@link GeckoDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends FirefoxDriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> {

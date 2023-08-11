@@ -128,6 +128,7 @@ public class SafariDriverService extends DriverService {
   }
 
   /** Builder used to configure new {@link SafariDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<SafariDriverService, SafariDriverService.Builder> {
