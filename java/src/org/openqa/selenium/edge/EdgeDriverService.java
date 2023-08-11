@@ -134,6 +134,7 @@ public class EdgeDriverService extends DriverService {
   }
 
   /** Builder used to configure new {@link EdgeDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
@@ -185,19 +186,6 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withBuildCheckDisabled(boolean noBuildCheck) {
       this.disableBuildCheck = noBuildCheck;
-      return this;
-    }
-
-    /**
-     * Configures the driver server log level.
-     *
-     * @deprecated Use {@link #withLoglevel(ChromiumDriverLogLevel)} instead.
-     */
-    @Deprecated
-    public Builder withLoglevel(String logLevel) {
-      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel);
-      this.silent = false;
-      this.verbose = false;
       return this;
     }
 
