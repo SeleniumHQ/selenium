@@ -19,6 +19,7 @@ import logging
 import subprocess
 import sys
 from pathlib import Path
+import shutil
 from typing import List
 
 from selenium.common import WebDriverException
@@ -53,6 +54,9 @@ class SeleniumManager:
 
         path = Path(__file__).parent.joinpath(directory, file)
 
+        if not path.is_file():
+            # conda has a separate package selenium-manager, installs in bin folder
+            path = Path(shutil.which(file))
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
