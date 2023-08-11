@@ -27,15 +27,15 @@ public class Color {
   private double alpha;
 
   private static final Converter[] CONVERTERS = {
-      new RgbConverter(),
-      new RgbPctConverter(),
-      new RgbaConverter(),
-      new RgbaPctConverter(),
-      new HexConverter(),
-      new Hex3Converter(),
-      new HslConverter(),
-      new HslaConverter(),
-      new NamedColorConverter(),
+    new RgbConverter(),
+    new RgbPctConverter(),
+    new RgbaConverter(),
+    new RgbaPctConverter(),
+    new HexConverter(),
+    new Hex3Converter(),
+    new HslConverter(),
+    new HslaConverter(),
+    new NamedColorConverter(),
   };
 
   /*
@@ -49,8 +49,7 @@ public class Color {
       }
     }
     throw new IllegalArgumentException(
-        String.format("Did not know how to convert %s into color", value)
-    );
+        String.format("Did not know how to convert %s into color", value));
   }
 
   public Color(int red, int green, int blue, double alpha) {
@@ -88,7 +87,7 @@ public class Color {
    * @return a java.awt.Color class instance
    */
   public java.awt.Color getColor() {
-    return new java.awt.Color(red, green, blue, (int)(alpha*255));
+    return new java.awt.Color(red, green, blue, (int) (alpha * 255));
   }
 
   @Override
@@ -136,10 +135,7 @@ public class Color {
 
     protected Color createColor(Matcher matcher, double a) {
       return new Color(
-          fromMatchGroup(matcher, 1),
-          fromMatchGroup(matcher, 2),
-          fromMatchGroup(matcher, 3),
-          a);
+          fromMatchGroup(matcher, 1), fromMatchGroup(matcher, 2), fromMatchGroup(matcher, 3), a);
     }
 
     protected short fromMatchGroup(Matcher matcher, int index) {
@@ -150,10 +146,12 @@ public class Color {
   }
 
   private static class RgbConverter extends Converter {
-    private static final Pattern RGB_PATTERN = Pattern.compile("^\\s*rgb\\(\\s*" +
-        "(\\d{1,3})\\s*,\\s*" +
-        "(\\d{1,3})\\s*,\\s*" +
-        "(\\d{1,3})\\s*\\)\\s*$");
+    private static final Pattern RGB_PATTERN =
+        Pattern.compile(
+            "^\\s*rgb\\(\\s*"
+                + "(\\d{1,3})\\s*,\\s*"
+                + "(\\d{1,3})\\s*,\\s*"
+                + "(\\d{1,3})\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
@@ -162,10 +160,12 @@ public class Color {
   }
 
   private static class RgbPctConverter extends Converter {
-    private static final Pattern RGBPCT_PATTERN = Pattern.compile("^\\s*rgb\\(\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*\\)\\s*$");
+    private static final Pattern RGBPCT_PATTERN =
+        Pattern.compile(
+            "^\\s*rgb\\(\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
@@ -180,9 +180,11 @@ public class Color {
   }
 
   private static class RgbaConverter extends RgbConverter {
-    private static final Pattern RGBA_PATTERN = Pattern.compile("^\\s*rgba\\(\\s*" +
-        "(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*" +
-        "(\\d{1,3})\\s*,\\s*(0|1|0\\.\\d+)\\s*\\)\\s*$");
+    private static final Pattern RGBA_PATTERN =
+        Pattern.compile(
+            "^\\s*rgba\\(\\s*"
+                + "(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*"
+                + "(\\d{1,3})\\s*,\\s*(0|1|0\\.\\d+)\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
@@ -191,11 +193,13 @@ public class Color {
   }
 
   private static class RgbaPctConverter extends RgbPctConverter {
-    private static final Pattern RGBAPCT_PATTERN = Pattern.compile("^\\s*rgba\\(\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
-        "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
-        "(0|1|0\\.\\d+)\\s*\\)\\s*$");
+    private static final Pattern RGBAPCT_PATTERN =
+        Pattern.compile(
+            "^\\s*rgba\\(\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*"
+                + "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*"
+                + "(0|1|0\\.\\d+)\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
@@ -204,9 +208,8 @@ public class Color {
   }
 
   private static class HexConverter extends Converter {
-    private static final Pattern HEX_PATTERN = Pattern.compile(
-        "#(\\p{XDigit}{2})(\\p{XDigit}{2})(\\p{XDigit}{2})"
-    );
+    private static final Pattern HEX_PATTERN =
+        Pattern.compile("#(\\p{XDigit}{2})(\\p{XDigit}{2})(\\p{XDigit}{2})");
 
     @Override
     protected Pattern getPattern() {
@@ -220,9 +223,8 @@ public class Color {
   }
 
   private static class Hex3Converter extends Converter {
-    private static final Pattern HEX3_PATTERN = Pattern.compile(
-        "#(\\p{XDigit}{1})(\\p{XDigit}{1})(\\p{XDigit}{1})"
-    );
+    private static final Pattern HEX3_PATTERN =
+        Pattern.compile("#(\\p{XDigit}{1})(\\p{XDigit}{1})(\\p{XDigit}{1})");
 
     @Override
     protected Pattern getPattern() {
@@ -233,14 +235,15 @@ public class Color {
     protected short fromMatchGroup(Matcher matcher, int index) {
       return Short.parseShort(matcher.group(index) + matcher.group(index), 16);
     }
-
   }
 
   private static class HslConverter extends Converter {
-    private static final Pattern HSL_PATTERN = Pattern.compile("^\\s*hsl\\(\\s*" +
-        "(\\d{1,3})\\s*,\\s*" +
-        "(\\d{1,3})\\%\\s*,\\s*" +
-        "(\\d{1,3})\\%\\s*\\)\\s*$");
+    private static final Pattern HSL_PATTERN =
+        Pattern.compile(
+            "^\\s*hsl\\(\\s*"
+                + "(\\d{1,3})\\s*,\\s*"
+                + "(\\d{1,3})\\%\\s*,\\s*"
+                + "(\\d{1,3})\\%\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
@@ -266,10 +269,8 @@ public class Color {
         b = hueToRgb(luminocity1, luminocity2, h - 1.0 / 3.0);
       }
 
-      return new Color((short) Math.round(r * 255),
-          (short) Math.round(g * 255),
-          (short) Math.round(b * 255),
-          a);
+      return new Color(
+          (short) Math.round(r * 255), (short) Math.round(g * 255), (short) Math.round(b * 255), a);
     }
 
     private double hueToRgb(double luminocity1, double luminocity2, double hue) {
@@ -277,24 +278,25 @@ public class Color {
       if (hue > 1.0) hue -= 1;
       if (hue < 1.0 / 6.0) return (luminocity1 + (luminocity2 - luminocity1) * 6.0 * hue);
       if (hue < 1.0 / 2.0) return luminocity2;
-      if (hue < 2.0 / 3.0) return (luminocity1 + (luminocity2 - luminocity1) * ((2.0 / 3.0) - hue) * 6.0);
+      if (hue < 2.0 / 3.0)
+        return (luminocity1 + (luminocity2 - luminocity1) * ((2.0 / 3.0) - hue) * 6.0);
       return luminocity1;
     }
-
   }
 
   private static class HslaConverter extends HslConverter {
-    private static final Pattern HSLA_PATTERN = Pattern.compile("^\\s*hsla\\(\\s*" +
-        "(\\d{1,3})\\s*,\\s*" +
-        "(\\d{1,3})\\%\\s*,\\s*" +
-        "(\\d{1,3})\\%\\s*,\\s*" +
-        "(0|1|0\\.\\d+)\\s*\\)\\s*$");
+    private static final Pattern HSLA_PATTERN =
+        Pattern.compile(
+            "^\\s*hsla\\(\\s*"
+                + "(\\d{1,3})\\s*,\\s*"
+                + "(\\d{1,3})\\%\\s*,\\s*"
+                + "(\\d{1,3})\\%\\s*,\\s*"
+                + "(0|1|0\\.\\d+)\\s*\\)\\s*$");
 
     @Override
     protected Pattern getPattern() {
       return HSLA_PATTERN;
     }
-
   }
 
   private static class NamedColorConverter extends Converter {
@@ -308,5 +310,4 @@ public class Color {
       throw new UnsupportedOperationException("getPattern is unsupported");
     }
   }
-
 }

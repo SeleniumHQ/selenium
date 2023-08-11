@@ -21,19 +21,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.util.Base64;
-import java.util.zip.ZipOutputStream;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonOutput;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +31,13 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.function.Supplier;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
 
 public class Contents {
 
@@ -78,7 +74,7 @@ public class Contents {
     Require.nonNull("Supplier of input", supplier);
 
     try (InputStream is = supplier.get();
-         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
       ByteStreams.copy(is, bos);
       return bos.toByteArray();
     } catch (IOException e) {
@@ -140,12 +136,15 @@ public class Contents {
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
+    if (delegate instanceof MemoizedSupplier) {
+      return delegate;
+    }
     return new MemoizedSupplier(delegate);
   }
 
   public static String string(File input) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      InputStream isr = Files.newInputStream(input.toPath())) {
+        InputStream isr = Files.newInputStream(input.toPath())) {
       int len;
       byte[] buffer = new byte[4096];
       while ((len = isr.read(buffer)) != -1) {

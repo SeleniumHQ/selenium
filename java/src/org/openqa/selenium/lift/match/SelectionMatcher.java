@@ -22,9 +22,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
-/**
- * Matcher to match a selected element (e.g. a radio button).
- */
+/** Matcher to match a selected element (e.g. a radio button). */
+@Deprecated
 public class SelectionMatcher extends TypeSafeMatcher<WebElement> {
 
   @Override

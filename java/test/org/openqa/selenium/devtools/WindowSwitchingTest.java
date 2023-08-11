@@ -20,6 +20,7 @@ package org.openqa.selenium.devtools;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -28,8 +29,6 @@ import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.testing.Ignore;
 
-import java.util.List;
-
 class WindowSwitchingTest extends DevToolsTestBase {
 
   @Test
@@ -37,7 +36,7 @@ class WindowSwitchingTest extends DevToolsTestBase {
   public void shouldBeAbleToSwitchWindowsAndCloseTheOriginal() {
     WebDriver driver = new Augmenter().augment(this.driver);
 
-    driver.get("https://www.selenium.dev");
+    driver.get(pages.xhtmlTestPage);
 
     String originalWindow = driver.getWindowHandle();
     driver.switchTo().newWindow(WindowType.TAB);
@@ -45,12 +44,14 @@ class WindowSwitchingTest extends DevToolsTestBase {
     String newWindowHandle = driver.getWindowHandle();
     List<TargetInfo> originalTargets = devTools.send(devTools.getDomains().target().getTargets());
 
-    // this .close() kills the dev tools session, no chance to ever retrieve a new one for the other tab
+    // this .close() kills the dev tools session, no chance to ever retrieve a new one for the other
+    // tab
     driver.switchTo().window(originalWindow).close();
     driver.switchTo().window(newWindowHandle);
-    driver.get("https://www.selenium.dev/documentation/webdriver/browser_manipulation/");
+    driver.get(pages.echoPage);
 
-    List<TargetInfo> updatedTargets = this.devTools.send(this.devTools.getDomains().target().getTargets());
+    List<TargetInfo> updatedTargets =
+        this.devTools.send(this.devTools.getDomains().target().getTargets());
 
     assertThat(updatedTargets).isNotEqualTo(originalTargets);
   }
@@ -60,11 +61,11 @@ class WindowSwitchingTest extends DevToolsTestBase {
   public void shouldBeAbleToCreateSessionForANewTab() {
     WebDriver driver = new Augmenter().augment(this.driver);
 
-    DevTools devTools = ((HasDevTools)driver).getDevTools();
+    DevTools devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSession();
     addConsoleLogListener(devTools);
 
-    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.get(appServer.whereIs("logEntryAdded.html"));
 
     List<TargetInfo> originalTargets = devTools.send(devTools.getDomains().target().getTargets());
     driver.findElement(By.id("consoleLog")).click();
@@ -76,24 +77,30 @@ class WindowSwitchingTest extends DevToolsTestBase {
     devTools.createSession(windowHandle);
     addConsoleLogListener(devTools);
 
-    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.get(appServer.whereIs("logEntryAdded.html"));
     driver.findElement(By.id("consoleLog")).click();
 
-    List<TargetInfo> updatedTargets = this.devTools.send(this.devTools.getDomains().target().getTargets());
+    List<TargetInfo> updatedTargets =
+        this.devTools.send(this.devTools.getDomains().target().getTargets());
 
     assertThat(updatedTargets).isNotEqualTo(originalTargets);
     driver.close();
 
     List<TargetInfo> leftoverTargets = devTools.send(devTools.getDomains().target().getTargets());
 
-    assertThat(leftoverTargets.get(0).getTargetId().toString()).isEqualTo(originalTargets.get(0).getTargetId().toString());
+    assertThat(leftoverTargets.get(0).getTargetId().toString())
+        .isEqualTo(originalTargets.get(0).getTargetId().toString());
 
     driver.switchTo().window(originalWindowHandle);
   }
 
   public static void addConsoleLogListener(DevTools devTools) {
-    devTools.getDomains().events().addConsoleListener(consoleEvent -> {
-      assertThat(consoleEvent.getMessages()).contains("Hello, world!");
-    });
+    devTools
+        .getDomains()
+        .events()
+        .addConsoleListener(
+            consoleEvent -> {
+              assertThat(consoleEvent.getMessages()).contains("Hello, world!");
+            });
   }
 }

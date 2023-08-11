@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.ImageId;
@@ -25,46 +33,37 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Map;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 class ListImagesTest {
 
   @Test
   void shouldReturnImageIfTagIsPresent() {
 
-    HttpHandler handler = req -> {
-      String filters = req.getQueryParameter("filters");
-      try {
-        String decoded = URLDecoder.decode(filters, "UTF-8");
-        Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
+    HttpHandler handler =
+        req -> {
+          String filters = req.getQueryParameter("filters");
+          try {
+            String decoded = URLDecoder.decode(filters, "UTF-8");
+            Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
 
-        Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
-        assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
+            Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
+            assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
 
-        return new HttpResponse()
-            .addHeader("Content-Type", "application/json")
-            .setContent(utf8String(
-                "[{\"Containers\":-1,\"Created\":1581716253," +
-                "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
-                +
-                "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\"," +
-                "\"RepoDigests\":null," +
-                "\"RepoTags\":[\"selenium/standalone-firefox:latest\"]," +
-                "\"SharedSize\":-1,\"Size\":765131593,\"VirtualSize\":765131593}]"));
-      } catch (UnsupportedEncodingException ignore) {
-        return null;
-      }
-    };
+            return new HttpResponse()
+                .addHeader("Content-Type", "application/json")
+                .setContent(
+                    utf8String(
+                        "[{\"Containers\":-1,\"Created\":1581716253,"
+                            + "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
+                            + "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\","
+                            + "\"RepoDigests\":null,"
+                            + "\"RepoTags\":[\"selenium/standalone-firefox:latest\"],"
+                            + "\"SharedSize\":-1,\"Size\":765131593,\"VirtualSize\":765131593}]"));
+          } catch (UnsupportedEncodingException ignore) {
+            return null;
+          }
+        };
 
-    Reference reference = Reference.parse(
-      "selenium/standalone-firefox:latest");
+    Reference reference = Reference.parse("selenium/standalone-firefox:latest");
 
     Set<Image> images = new ListImages(handler).apply(reference);
 
@@ -72,6 +71,7 @@ class ListImagesTest {
     Image image = images.iterator().next();
 
     assertThat(image.getId())
-      .isEqualTo(new ImageId("sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e"));
+        .isEqualTo(
+            new ImageId("sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e"));
   }
 }

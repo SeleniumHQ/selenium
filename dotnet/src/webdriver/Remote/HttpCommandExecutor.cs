@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Remote
                 addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
             }
 
-            this.userAgent = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
+            this.userAgent = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.ProductVersion, ResourceUtilities.PlatformFamily);
             this.remoteServerUri = addressOfRemoteServer;
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;

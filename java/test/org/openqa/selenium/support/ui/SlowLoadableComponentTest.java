@@ -20,11 +20,10 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.time.Clock;
 import java.time.Duration;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class SlowLoadableComponentTest {
@@ -37,8 +36,8 @@ class SlowLoadableComponentTest {
   @Test
   void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
     int numberOfTimesThroughLoop = 1;
-    SlowLoading slowLoading = new SlowLoading(
-        Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
+    SlowLoading slowLoading =
+        new SlowLoading(Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
 
     assertThat(slowLoading.getLoopCount()).isEqualTo(numberOfTimesThroughLoop);
   }
@@ -59,7 +58,6 @@ class SlowLoadableComponentTest {
     HasError error = new HasError();
     assertThatExceptionOfType(CustomError.class).isThrownBy(error::get);
   }
-
 
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
@@ -169,7 +167,5 @@ class SlowLoadableComponentTest {
     }
   }
 
-  private static class CustomError extends Error {
-
-  }
+  private static class CustomError extends Error {}
 }

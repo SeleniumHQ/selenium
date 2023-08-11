@@ -25,20 +25,22 @@ public class Response {
 
   private volatile Object value;
   private volatile String sessionId;
+  @Deprecated // (forRemoval = true)
   private volatile Integer status;
   private volatile String state;
 
-  public Response() {
-  }
+  public Response() {}
 
   public Response(SessionId sessionId) {
     this.sessionId = String.valueOf(sessionId);
   }
 
+  @Deprecated // (forRemoval = true)
   public Integer getStatus() {
     return status;
   }
 
+  @Deprecated // (forRemoval = true)
   public void setStatus(Integer status) {
     this.status = status;
   }
@@ -69,7 +71,8 @@ public class Response {
 
   @Override
   public String toString() {
-    return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(), getStatus(), getValue());
+    return String.format(
+        "(Response: SessionID: %s, State: %s, Value: %s)", getSessionId(), getState(), getValue());
   }
 
   @Override
@@ -79,10 +82,10 @@ public class Response {
     }
 
     Response that = (Response) o;
-    return Objects.equals(value, that.value) &&
-           Objects.equals(sessionId, that.sessionId) &&
-           Objects.equals(status, that.status) &&
-           Objects.equals(state, that.state);
+    return Objects.equals(value, that.value)
+        && Objects.equals(sessionId, that.sessionId)
+        && Objects.equals(status, that.status)
+        && Objects.equals(state, that.state);
   }
 
   @Override

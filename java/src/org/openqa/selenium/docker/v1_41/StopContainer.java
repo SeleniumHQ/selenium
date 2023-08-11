@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import java.time.Duration;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.time.Duration;
-
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class StopContainer {
   private final HttpHandler client;
@@ -42,9 +41,10 @@ class StopContainer {
     String seconds = String.valueOf(timeout.toMillis() / 1000);
 
     String requestUrl = String.format("/v%s/containers/%s/stop", DOCKER_API_VERSION, id);
-    HttpRequest request = new HttpRequest(POST, requestUrl)
-      .addHeader("Content-Type", "text/plain")
-      .addQueryParameter("t", seconds);
+    HttpRequest request =
+        new HttpRequest(POST, requestUrl)
+            .addHeader("Content-Type", "text/plain")
+            .addQueryParameter("t", seconds);
 
     throwIfNecessary(client.execute(request), "Unable to stop container: %s", id);
   }

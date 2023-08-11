@@ -250,14 +250,6 @@ module Selenium
         @devices << device
         device
       end
-
-      def deprecate_method(device = nil, duration = nil, number = nil, method: :pause)
-        return unless device || number || duration
-
-        WebDriver.logger.deprecate "ActionBuilder##{method} with ordered parameters",
-                                   ':device, :duration, :number keywords',
-                                   id: method
-      end
     end # ActionBuilder
   end # WebDriver
 end # Selenium

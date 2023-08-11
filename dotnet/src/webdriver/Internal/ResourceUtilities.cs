@@ -29,26 +29,26 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encapsulates methods for finding and extracting WebDriver resources.
     /// </summary>
-    public static class ResourceUtilities
+    internal static class ResourceUtilities
     {
         private static string assemblyVersion;
+        private static string productVersion;
         private static string platformFamily;
 
         /// <summary>
-        /// Gets a string representing the version of the Selenium assembly.
+        /// Gets a string representing the informational version of the Selenium product.
         /// </summary>
-        public static string AssemblyVersion
+        public static string ProductVersion
         {
             get
             {
-                if (string.IsNullOrEmpty(assemblyVersion))
+                if (productVersion == null)
                 {
-                    Assembly executingAssembly = Assembly.GetCallingAssembly();
-                    Version versionResource = executingAssembly.GetName().Version;
-                    assemblyVersion = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", versionResource.Major, versionResource.Minor, versionResource.Revision);
+                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                    productVersion = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
                 }
 
-                return assemblyVersion;
+                return productVersion;
             }
         }
 
@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Internal
                     throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
                 }
 
-                Assembly executingAssembly = Assembly.GetCallingAssembly();
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
                 resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
             }
 
@@ -116,18 +116,6 @@ namespace OpenQA.Selenium.Internal
             }
 
             return resourceStream;
-        }
-
-        /// <summary>
-        /// Returns a value indicating whether a resource exists with the specified ID.
-        /// </summary>
-        /// <param name="resourceId">ID of the embedded resource to check for.</param>
-        /// <returns><see langword="true"/> if the resource exists in the calling assembly; otherwise <see langword="false"/>.</returns>
-        public static bool IsValidResourceName(string resourceId)
-        {
-            Assembly executingAssembly = Assembly.GetCallingAssembly();
-            List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
-            return resourceNames.Contains(resourceId);
         }
 
         private static string GetPlatformString()

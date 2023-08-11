@@ -19,7 +19,12 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
@@ -31,20 +36,13 @@ import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @Beta
 public class RemoteLogs implements Logs {
   private static final String LEVEL = "level";
-  private static final String TIMESTAMP= "timestamp";
+  private static final String TIMESTAMP = "timestamp";
   private static final String MESSAGE = "message";
 
-  private static final Logger logger = Logger.getLogger(RemoteLogs.class.getName());
+  private static final Logger LOG = Logger.getLogger(RemoteLogs.class.getName());
 
   protected ExecuteMethod executeMethod;
 
@@ -65,8 +63,7 @@ public class RemoteLogs implements Logs {
       } catch (WebDriverException e) {
         // An exception may be thrown if the WebDriver server does not recognize profiler logs.
         // In this case, the user should be able to see the local profiler logs.
-        logger.log(Level.WARNING,
-            "Remote profiler logs are not available and have been omitted.", e);
+        LOG.log(Level.WARNING, "Remote profiler logs are not available and have been omitted.", e);
       }
 
       return LogCombiner.combine(remoteEntries, getLocalEntries(logType));
@@ -87,9 +84,11 @@ public class RemoteLogs implements Logs {
     List<LogEntry> remoteEntries = new ArrayList<>(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
-      remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
-          (Long) obj.get(TIMESTAMP),
-          (String) obj.get(MESSAGE)));
+      remoteEntries.add(
+          new LogEntry(
+              LogLevelMapping.toLevel((String) obj.get(LEVEL)),
+              (Long) obj.get(TIMESTAMP),
+              (String) obj.get(MESSAGE)));
     }
     return new LogEntries(remoteEntries);
   }

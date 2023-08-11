@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.net;
 
-public class OlderWindowsVersionEphemeralPortDetector implements EphemeralPortRangeDetector
-{
+public class OlderWindowsVersionEphemeralPortDetector implements EphemeralPortRangeDetector {
   @Override
   public int getLowestEphemeralPort() {
     // This could read the registry to get effective values

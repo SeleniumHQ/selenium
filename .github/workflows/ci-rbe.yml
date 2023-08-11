@@ -1,0 +1,15 @@
+name: CI - RBE
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: All RBE tests
+      cache-key: rbe
+      ruby-version: jruby-9.4.2.0
+      run: ./scripts/github-actions/ci-build.sh

@@ -19,5 +19,5 @@ package org.openqa.selenium.status;
 
 @FunctionalInterface
 public interface HasReadyState {
-    boolean isReady();
+  boolean isReady();
 }

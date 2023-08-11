@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.data;
 
+import java.util.function.Consumer;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
-
-import java.util.function.Consumer;
 
 public class NodeDrainStarted extends Event {
 

@@ -16,11 +16,13 @@ java_test_suite(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium/netty/server:test-server",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
+        artifact("io.netty:netty-codec-http"),
         artifact("io.opentelemetry:opentelemetry-api"),
     ] + JUNIT5_DEPS,
 )

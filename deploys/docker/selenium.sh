@@ -4,15 +4,14 @@ export PATH=$PATH:/opt/selenium/bin
 
 mkdir -p ${HOME}/.vnc && x11vnc -storepasswd secret ${HOME}/.vnc/passwd
 
-
 # Start the underlying X Server
 echo "Starting xvfb"
 
-export GEOMETRY="${SCREEN_WIDTH}""x""${SCREEN_HEIGHT}""x""${SCREEN_DEPTH}"
+export GEOMETRY="${SCREEN_WIDTH:-1920}""x""${SCREEN_HEIGHT:-1080}""x""${SCREEN_DEPTH:-24}"
 
 rm -f /tmp/.X*lock
 
-/usr/bin/Xvfb ${DISPLAY} -screen 0 ${GEOMETRY} -dpi ${SCREEN_DPI} -ac +extension RANDR &
+/usr/bin/Xvfb ${DISPLAY} -screen 0 ${GEOMETRY} -dpi ${SCREEN_DPI:-300} -ac +extension RANDR &
 
 # Start the VNC server
 X11VNC_OPTS=-usepw

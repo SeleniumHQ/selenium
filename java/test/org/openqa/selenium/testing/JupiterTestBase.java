@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.testing;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,14 +35,9 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 public abstract class JupiterTestBase {
 
-  @RegisterExtension
-  static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension protected static SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;
@@ -79,6 +79,16 @@ public abstract class JupiterTestBase {
 
   public void removeDriver() {
     seleniumExtension.removeDriver();
+  }
+
+  public String toLocalUrl(String url) {
+    try {
+      URL original = new URL(url);
+      return new URL(original.getProtocol(), "localhost", original.getPort(), original.getFile())
+          .toString();
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   protected WebDriverWait wait(WebDriver driver) {

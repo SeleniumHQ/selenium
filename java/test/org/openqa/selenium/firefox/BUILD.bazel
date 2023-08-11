@@ -3,7 +3,11 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
+    "ExtensionsTest.java",
     "FirefoxDriverTest.java",
+    "FirefoxDriverBuilderTest.java",
+    "FirefoxDriverPreferenceTest.java",
+    "FirefoxDriverConcurrentTest.java",
     "TakesFullPageScreenshotTest.java",
 ]
 
@@ -38,6 +42,14 @@ java_test_suite(
     ] + JUNIT5_DEPS,
 )
 
+java_library(
+    name = "assumptions",
+    srcs = ["FirefoxAssumptions.java"],
+    deps = [
+        artifact("org.assertj:assertj-core"),
+    ],
+)
+
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
@@ -52,6 +64,7 @@ java_selenium_test_suite(
         "//common/extensions",
     ],
     deps = [
+        ":assumptions",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
@@ -84,6 +97,7 @@ java_selenium_test_suite(
         "selenium-remote",
     ],
     deps = [
+        ":assumptions",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/build",

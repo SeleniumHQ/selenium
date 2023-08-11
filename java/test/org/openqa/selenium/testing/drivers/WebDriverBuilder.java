@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -31,11 +27,15 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Stream;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private static final LinkedList<Runnable> shutdownActions = new LinkedList<>();
   private static final Set<WebDriver> managedDrivers = new HashSet<>();
+
   static {
     shutdownActions.add(() -> managedDrivers.forEach(WebDriver::quit));
     Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
@@ -62,18 +62,23 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get(Capabilities desiredCapabilities) {
     Objects.requireNonNull(desiredCapabilities, "Capabilities to use must be set");
-    Capabilities desiredCaps = Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
+    Capabilities desiredCaps =
+        Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
 
     WebDriver driver =
-      Stream.of(new ExternalDriverSupplier(desiredCaps),
+        Stream.of(
+                new ExternalDriverSupplier(desiredCaps),
                 new GridSupplier(desiredCaps),
                 new RemoteSupplier(desiredCaps),
                 new TestInternetExplorerSupplier(desiredCaps),
                 new DefaultDriverSupplier(desiredCaps))
-        .map(Supplier::get)
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
+            .map(Supplier::get)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "Cannot instantiate driver instance: " + desiredCapabilities));
 
     modifyLogLevel(driver);
     managedDrivers.add(driver);
@@ -104,6 +109,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
     @SuppressWarnings("unused")
     private final String value;
+
     private final Level level;
 
     LogLevel(String value, Level level) {

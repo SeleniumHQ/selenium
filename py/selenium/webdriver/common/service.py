@@ -19,6 +19,7 @@ import logging
 import os
 import subprocess
 import typing
+import warnings
 from abc import ABC
 from abc import abstractmethod
 from platform import system
@@ -31,12 +32,8 @@ from urllib.error import URLError
 from selenium.common.exceptions import WebDriverException
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
-from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 logger = logging.getLogger(__name__)
-
-
-_HAS_NATIVE_DEVNULL = True
 
 
 class Service(ABC):
@@ -53,18 +50,31 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str,
+        executable: str = None,
         port: int = 0,
-        log_file: SubprocessStdAlias = DEVNULL,
+        log_file: SubprocessStdAlias = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
-        start_error_message: typing.Optional[str] = None,
+        **kwargs,
     ) -> None:
-        self.path = executable
+        if isinstance(log_output, str):
+            self.log_output = open(log_output, "a+", encoding="utf-8")
+        elif log_output is subprocess.STDOUT:
+            self.log_output = None
+        elif log_output is None or log_output is subprocess.DEVNULL:
+            self.log_output = open(os.devnull, "wb")
+        else:
+            self.log_output = log_output
+
+        if log_file is not None:
+            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            self.log_output = open(log_file, "a+", encoding="utf-8")
+
+        self._path = executable
         self.port = port or utils.free_port()
-        self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
-        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
-        self.creation_flags = 0
+        self.popen_kw = kwargs.pop("popen_kw", {})
+        self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
 
     @property
@@ -77,6 +87,14 @@ class Service(ABC):
         """A List of program arguments (excluding the executable)."""
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
+    @property
+    def path(self) -> str:
+        return self._path
+
+    @path.setter
+    def path(self, value: str) -> None:
+        self._path = str(value)
+
     def start(self) -> None:
         """Starts the Service.
 
@@ -84,20 +102,7 @@ class Service(ABC):
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
-        try:
-            self._start_process(self.path)
-        except WebDriverException as err:
-            if "executable needs to be in PATH" in err.msg:
-                logger.debug("driver not found in PATH, trying Selenium Manager")
-                browser = self.__class__.__module__.split(".")[-2]
-
-                try:
-                    path = SeleniumManager().driver_location(browser)
-                except WebDriverException as new_err:
-                    logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
-                    raise err
-
-                self._start_process(path)
+        self._start_process(self._path)
 
         count = 0
         while True:
@@ -108,13 +113,13 @@ class Service(ABC):
             count += 1
             sleep(0.5)
             if count == 60:
-                raise WebDriverException(f"Can not connect to the Service {self.path}")
+                raise WebDriverException(f"Can not connect to the Service {self._path}")
 
     def assert_process_still_running(self) -> None:
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
         if return_code:
-            raise WebDriverException(f"Service {self.path} unexpectedly exited. Status code was: {return_code}")
+            raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
         """Establishes a socket connection to determine if the service running
@@ -136,10 +141,10 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
+        if self.log_output != PIPE and not (self.log_output == DEVNULL):
             try:
                 # Todo: Be explicit in what we are catching here.
-                if hasattr(self.log_file, "close"):
+                if hasattr(self.log_output, "close"):
                     self.log_file.close()  # type: ignore
             except Exception:
                 pass
@@ -167,9 +172,14 @@ class Service(ABC):
                 except AttributeError:
                     pass
             self.process.terminate()
-            self.process.wait(60)
-            # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.
-            self.process.kill()
+            try:
+                self.process.wait(60)
+            except subprocess.TimeoutExpired:
+                logger.error(
+                    "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
+                    exc_info=True,
+                )
+                self.process.kill()
         except OSError:
             logger.error("Error terminating service process.", exc_info=True)
 
@@ -191,30 +201,24 @@ class Service(ABC):
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
+        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
         try:
             self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
-                close_fds=system() != "Windows",
-                stdout=self.log_file,
-                stderr=self.log_file,
+                close_fds=close_file_descriptors,
+                stdout=self.log_output,
+                stderr=self.log_output,
                 stdin=PIPE,
                 creationflags=self.creation_flags,
+                **self.popen_kw,
             )
-            logger.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
+            logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
         except TypeError:
             raise
         except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    f"'{os.path.basename(self.path)}' executable needs to be in PATH. {self.start_error_message}"
-                )
             if err.errno == errno.EACCES:
                 raise WebDriverException(
-                    f"'{os.path.basename(self.path)}' executable may have wrong permissions. {self.start_error_message}"
-                )
+                    f"'{os.path.basename(self._path)}' executable may have wrong permissions."
+                ) from err
             raise
-        except Exception as e:
-            raise WebDriverException(
-                f"The executable {os.path.basename(self.path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"
-            )

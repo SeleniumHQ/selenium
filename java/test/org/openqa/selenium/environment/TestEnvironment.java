@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.environment;
 
-import org.openqa.selenium.environment.webserver.AppServer;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.openqa.selenium.environment.webserver.AppServer;
 
 public interface TestEnvironment {
 

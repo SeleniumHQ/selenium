@@ -1,3 +1,64 @@
+v4.11.0
+======
+* Add CDP files for v115 and remove v112
+* Improving .NET API docs
+* Implementation of event wrapped shadow root element (#12073)
+* Include generation of support project (#12193)
+* Make WebDriver.csproj file more friendly with native pack command (#12235)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* netcoreapp3.1 is deprecated
+* Allow setting a different pointer, keyboard, or wheel on input device (#11513)
+* Add move to location method to Actions (#11509)
+* Add support for Safari Technology Preview (#12342)
+* Use Selenium Manager to locate drivers on PATH (#12344)
+* Allow running tests with Edge
+* Add browser output from selenium manager to options (#12405)
+* Fix error when we send non-base64 data for fetch command (#12431)
+* Fix continueResponse method in CDP (#12445)
+
+
+v4.10.0
+======
+* Add CDP files for v114 and remove v111
+* Remove Selenium RC and WebDriverBackedSelenium code (#12024)
+* Improve compilation and publishing of Selenium Manager (#12045)
+* Fix version reported by HTTP user agent (#12061)
+* Support proxies for Selenium Manager (#12100)
+* Deprecate UseLegacyProtocol in SafariDriverService
+* Add links to documentation in error messages (#12157)
+* Add custom error class for driver location and improve error logic (#12157)
+
+v4.9.1
+======
+* Add CDP files for v113 and remove v110
+* Fallback result parsing of script execution to expected type (#11930)
+* Using Selenium Manager in default service creation (#11994)
+* Encoding process output (#11947)
+* Generate API documentation (#11968)
+
+v4.9.0
+======
+* Add CDP files for v112 and remove v109
+* Don't listen to error output stream from selenium manager to avoid messing up output (#11863)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Throw a descriptive exception if the current dev tools version is not supported (#11876)
+* Use ChangeType method to convert any object to boolean in WebElement properties (#11913)
+* Use selenium manager in tests (#11871)
+
+v4.8.2
+======
+* Add CDP files for v111 and remove v108
+* InvalidSelectorException now extends WebDriverException
+* Using json output with Selenium Manager
+* Include targets for projects building transitively (#11812)
+
+v4.8.1
+======
+* Add CDP files for v110 and remove v107
+* IJavascriptEngine implements IDisposable where available (#11594)
+* Updating Selenium Manager binaries for 4.8.1 release
+
 v4.8.0
 ======
 * Add CDP files for v109 and remove v106

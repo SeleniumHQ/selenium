@@ -22,9 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Indicates that a class can be processed by {@link org.openqa.selenium.remote.Augmenter}.
- */
+/** Indicates that a class can be processed by {@link org.openqa.selenium.remote.Augmenter}. */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Augmentable { }
+public @interface Augmentable {}

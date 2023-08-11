@@ -436,7 +436,7 @@ namespace OpenQA.Selenium.Firefox
 
         private static FirefoxDriverService CreateService(FirefoxOptions options)
         {
-            return FirefoxDriverService.CreateDefaultService();
+            return FirefoxDriverService.CreateDefaultService(options);
         }
 
         private void AddCustomFirefoxCommands()

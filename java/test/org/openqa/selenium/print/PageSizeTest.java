@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.print;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.print.PageSize;
-
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PageSizeTest {

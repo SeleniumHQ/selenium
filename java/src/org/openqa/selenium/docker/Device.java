@@ -61,9 +61,9 @@ public class Device {
       return false;
     }
     Device device = (Device) o;
-    return Objects.equals(pathOnHost, device.pathOnHost) && Objects.equals(
-      pathInContainer, device.pathInContainer) && Objects.equals(cgroupPermissions,
-      device.cgroupPermissions);
+    return Objects.equals(pathOnHost, device.pathOnHost)
+        && Objects.equals(pathInContainer, device.pathInContainer)
+        && Objects.equals(cgroupPermissions, device.cgroupPermissions);
   }
 
   @Override
@@ -73,10 +73,16 @@ public class Device {
 
   @Override
   public String toString() {
-    return "Device{" +
-      "pathOnHost='" + pathOnHost + '\'' +
-      ", pathInContainer='" + pathInContainer + '\'' +
-      ", cgroupPermissions='" + cgroupPermissions + '\'' +
-      '}';
+    return "Device{"
+        + "pathOnHost='"
+        + pathOnHost
+        + '\''
+        + ", pathInContainer='"
+        + pathInContainer
+        + '\''
+        + ", cgroupPermissions='"
+        + cgroupPermissions
+        + '\''
+        + '}';
   }
 }

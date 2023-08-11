@@ -19,17 +19,13 @@ package org.openqa.selenium.support.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-import java.util.List;
-
-
-/**
- * Test for issue r759.
- */
+/** Test for issue r759. */
 class SelectLargeTest extends JupiterTestBase {
   @Test
   void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
@@ -42,7 +38,8 @@ class SelectLargeTest extends JupiterTestBase {
     selection.selectByIndex(2);
 
     List<WebElement> picked = selection.getAllSelectedOptions();
-    assertThat(picked).extracting(element -> element.getAttribute("id"))
+    assertThat(picked)
+        .extracting(element -> element.getAttribute("id"))
         .containsExactly("multi_2", "multi_3");
 
     selection.deselectAll();

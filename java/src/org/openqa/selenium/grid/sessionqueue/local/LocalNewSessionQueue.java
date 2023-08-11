@@ -17,12 +17,34 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.Closeable;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -49,52 +71,27 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-
 /**
  * An in-memory implementation of the list of new session requests.
- * <p>
- * The lifecycle of a request can be described as:
+ *
+ * <p>The lifecycle of a request can be described as:
+ *
  * <ol>
- *   <li>User adds an item on to the queue using {@link #addToQueue(SessionRequest)}. This
- *       will block until the request completes in some way.
- *   <li>If the session request is completed, then {@link #complete(RequestId, Either)} must
- *       be called. This will ensure that {@link #addToQueue(SessionRequest)}
- *       returns.
- *   <li>If the request cannot be handled right now, call
- *       {@link #retryAddToQueue(SessionRequest)} to return the session request to the front
- *       of the queue.
+ *   <li>User adds an item on to the queue using {@link #addToQueue(SessionRequest)}. This will
+ *       block until the request completes in some way.
+ *   <li>If the session request is completed, then {@link #complete(RequestId, Either)} must be
+ *       called. This will ensure that {@link #addToQueue(SessionRequest)} returns.
+ *   <li>If the request cannot be handled right now, call {@link #retryAddToQueue(SessionRequest)}
+ *       to return the session request to the front of the queue.
  * </ol>
- * <p>
- * There is a background thread that will reap {@link SessionRequest}s that have timed out.
- * This means that a request can either complete by a listener calling
- * {@link #complete(RequestId, Either)} directly, or by being reaped by the thread.
+ *
+ * <p>There is a background thread that will reap {@link SessionRequest}s that have timed out. This
+ * means that a request can either complete by a listener calling {@link #complete(RequestId,
+ * Either)} directly, or by being reaped by the thread.
  */
-@ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
-  description = "New session queue")
+@ManagedService(
+    objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
+    description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   private static final String NAME = "Local New Session Queue";
@@ -105,20 +102,22 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private final Map<RequestId, TraceContext> contexts;
   private final Deque<SessionRequest> queue;
   private final ReadWriteLock lock = new ReentrantReadWriteLock();
-  private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(r -> {
-    Thread thread = new Thread(r);
-    thread.setDaemon(true);
-    thread.setName(NAME);
-    return thread;
-  });
+  private final ScheduledExecutorService service =
+      Executors.newSingleThreadScheduledExecutor(
+          r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            thread.setName(NAME);
+            return thread;
+          });
 
   public LocalNewSessionQueue(
-    Tracer tracer,
-    SlotMatcher slotMatcher,
-    Duration requestTimeoutCheck,
-    Duration requestTimeout,
-    Secret registrationSecret,
-    int batchSize) {
+      Tracer tracer,
+      SlotMatcher slotMatcher,
+      Duration requestTimeoutCheck,
+      Duration requestTimeout,
+      Secret registrationSecret,
+      int batchSize) {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
@@ -133,10 +132,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     this.batchSize = Require.positive("Batch size", batchSize);
 
     service.scheduleAtFixedRate(
-      GuardedRunnable.guard(this::timeoutSessions),
-      requestTimeoutCheck.toMillis(),
-      requestTimeoutCheck.toMillis(),
-      MILLISECONDS);
+        GuardedRunnable.guard(this::timeoutSessions),
+        requestTimeoutCheck.toMillis(),
+        requestTimeoutCheck.toMillis(),
+        MILLISECONDS);
 
     new JMXHelper().register(this);
   }
@@ -150,12 +149,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     SlotMatcher slotMatcher = new DistributorOptions(config).getSlotMatcher();
 
     return new LocalNewSessionQueue(
-      tracer,
-      slotMatcher,
-      newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
-      newSessionQueueOptions.getSessionRequestTimeout(),
-      secretOptions.getRegistrationSecret(),
-      newSessionQueueOptions.getBatchSize());
+        tracer,
+        slotMatcher,
+        newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
+        newSessionQueueOptions.getSessionRequestTimeout(),
+        secretOptions.getRegistrationSecret(),
+        newSessionQueueOptions.getBatchSize());
   }
 
   private void timeoutSessions() {
@@ -165,10 +164,17 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     readLock.lock();
     Set<RequestId> ids;
     try {
-      ids = requests.entrySet().stream()
-        .filter(entry -> isTimedOut(now, entry.getValue()))
-        .map(Map.Entry::getKey)
-        .collect(ImmutableSet.toImmutableSet());
+      ids =
+          requests.entrySet().stream()
+              .filter(
+                  entry ->
+                      queue.stream()
+                          .anyMatch(
+                              sessionRequest ->
+                                  sessionRequest.getRequestId().equals(entry.getKey())))
+              .filter(entry -> isTimedOut(now, entry.getValue()))
+              .map(Map.Entry::getKey)
+              .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
     }
@@ -180,6 +186,17 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
+  public boolean peekEmpty() {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      return requests.isEmpty() && queue.isEmpty();
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  @Override
   public HttpResponse addToQueue(SessionRequest request) {
     Require.nonNull("New session request", request);
     Require.nonNull("Request id", request.getRequestId());
@@ -187,7 +204,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     TraceContext context = TraceSessionRequest.extract(tracer, request);
     try (Span ignored = context.createSpan("sessionqueue.add_to_queue")) {
       contexts.put(request.getRequestId(), context);
-
       Data data = injectIntoQueue(request);
 
       if (isTimedOut(Instant.now(), data)) {
@@ -196,16 +212,25 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
       Either<SessionNotCreatedException, CreateSessionResponse> result;
       try {
-        if (data.latch.await(requestTimeout.toMillis(), MILLISECONDS)) {
+
+        boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
+        if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
+          sessionCreated = data.latch.await(5000, MILLISECONDS);
+        }
+
+        if (sessionCreated) {
           result = data.result;
         } else {
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
         }
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        result = Either.left(new SessionNotCreatedException("Interrupted when creating the session", e));
+        result =
+            Either.left(new SessionNotCreatedException("Interrupted when creating the session", e));
       } catch (RuntimeException e) {
-        result = Either.left(new SessionNotCreatedException("An error occurred creating the session", e));
+        result =
+            Either.left(
+                new SessionNotCreatedException("An error occurred creating the session", e));
       }
 
       Lock writeLock = this.lock.writeLock();
@@ -222,10 +247,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));
       } else {
         res.setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "value", ImmutableMap.of("error", "session not created",
-                                     "message", result.left().getMessage(),
-                                     "stacktrace", result.left().getStackTrace()))));
+            .setContent(
+                Contents.asJson(
+                    ImmutableMap.of(
+                        "value",
+                        ImmutableMap.of(
+                            "error", "session not created",
+                            "message", result.left().getMessage(),
+                            "stacktrace", result.left().getStackTrace()))));
       }
 
       return res;
@@ -255,7 +284,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("New session request", request);
 
     boolean added;
-    TraceContext context = contexts.getOrDefault(request.getRequestId(), tracer.getCurrentContext());
+    TraceContext context =
+        contexts.getOrDefault(request.getRequestId(), tracer.getCurrentContext());
     try (Span ignored = context.createSpan("sessionqueue.retry")) {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
@@ -300,30 +330,45 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
+  private boolean isRequestInQueue(RequestId requestId) {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+
+    try {
+      Optional<SessionRequest> result =
+          queue.stream().filter(req -> req.getRequestId().equals(requestId)).findAny();
+      return result.isPresent();
+    } finally {
+      readLock.unlock();
+    }
+  }
+
   @Override
   public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
     Predicate<Capabilities> matchesStereotype =
-      caps -> stereotypes.entrySet()
-        .stream()
-        .filter(entry -> entry.getValue() > 0)
-        .anyMatch(entry -> {
-          boolean matches = slotMatcher.matches(entry.getKey(), caps);
-          if (matches) {
-            Long value = entry.getValue();
-            entry.setValue(value - 1);
-          }
-          return matches;
-        });
+        caps ->
+            stereotypes.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .anyMatch(
+                    entry -> {
+                      boolean matches = slotMatcher.matches(entry.getKey(), caps);
+                      if (matches) {
+                        Long value = entry.getValue();
+                        entry.setValue(value - 1);
+                      }
+                      return matches;
+                    });
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      List<SessionRequest> availableRequests = queue.stream()
-        .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-        .limit(batchSize)
-        .collect(Collectors.toList());
+      List<SessionRequest> availableRequests =
+          queue.stream()
+              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+              .limit(batchSize)
+              .collect(Collectors.toList());
 
       availableRequests.forEach(req -> this.remove(req.getRequestId()));
 
@@ -334,7 +379,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
+  public void complete(
+      RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
     TraceContext context = contexts.getOrDefault(reqId, tracer.getCurrentContext());
@@ -375,8 +421,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       int size = queue.size();
       queue.clear();
       requests.forEach(
-        (reqId, data) ->
-          data.setResult(Either.left(new SessionNotCreatedException("Request queue was cleared"))));
+          (reqId, data) ->
+              data.setResult(
+                  Either.left(new SessionNotCreatedException("Request queue was cleared"))));
       requests.clear();
       return size;
     } finally {
@@ -391,9 +438,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     try {
       return queue.stream()
-        .map(req ->
-          new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
-        .collect(Collectors.toList());
+          .map(
+              req -> new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
+          .collect(Collectors.toList());
     } finally {
       readLock.unlock();
     }
@@ -430,7 +477,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       this.result = Either.left(new SessionNotCreatedException("Session not created"));
     }
 
-    public synchronized void setResult(Either<SessionNotCreatedException, CreateSessionResponse> result) {
+    public synchronized void setResult(
+        Either<SessionNotCreatedException, CreateSessionResponse> result) {
       if (complete) {
         return;
       }

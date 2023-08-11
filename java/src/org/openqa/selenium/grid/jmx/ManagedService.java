@@ -26,5 +26,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagedService {
   String objectName() default "";
+
   String description() default "";
 }

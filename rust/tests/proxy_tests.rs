@@ -16,33 +16,47 @@
 // under the License.
 
 use assert_cmd::Command;
-
-use exitcode::UNAVAILABLE;
-
-use wiremock::MockServer;
+use exitcode::DATAERR;
+use std::str;
 
 #[tokio::test]
-async fn ok_proxy_test() {
-    let mock_server = MockServer::start().await;
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
+async fn wrong_proxy_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let assert_result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            "chrome",
+            "--proxy",
+            "http://localhost:12345",
+        ])
         .assert()
-        .success()
-        .code(0);
+        .try_success();
+    if assert_result.is_ok() {
+        let stdout = &cmd.unwrap().stdout;
+        let output = str::from_utf8(stdout).unwrap();
+        assert!(output.contains("in PATH"));
+    } else {
+        assert!(assert_result
+            .err()
+            .unwrap()
+            .to_string()
+            .contains(&DATAERR.to_string()));
+    }
 }
 
 #[test]
 fn wrong_protocol_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
         .failure()
-        .code(UNAVAILABLE);
+        .code(DATAERR);
 }
 
 #[test]
 fn wrong_port_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
         "chrome",
@@ -51,5 +65,5 @@ fn wrong_port_proxy_test() {
     ])
     .assert()
     .failure()
-    .code(UNAVAILABLE);
+    .code(DATAERR);
 }

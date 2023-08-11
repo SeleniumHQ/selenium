@@ -27,30 +27,55 @@ module Selenium
     # @api private
     #
     class SeleniumManager
-      BIN_PATH = '../../../../../bin'
-
       class << self
-        # @param [String] driver_name which driver to use.
+        attr_writer :bin_path
+
+        def bin_path
+          @bin_path ||= '../../../../../bin'
+        end
+
+        # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
-        def driver_path(driver_name)
-          unless %w[chromedriver geckodriver msedgedriver IEDriverServer].include?(driver_name)
-            msg = "Unable to locate driver with name: #{driver_name}"
-            raise Error::WebDriverError, msg
+        def driver_path(options)
+          command = generate_command(binary, options)
+
+          output = run(*command)
+
+          browser_path = output['browser_path']
+          driver_path = output['driver_path']
+          Platform.assert_executable driver_path
+
+          if options.respond_to? :binary
+            options.binary = browser_path
+            options.browser_version = nil
           end
 
-          location = run("#{binary} --driver #{driver_name}")
-          WebDriver.logger.debug("Driver found at #{location}")
-          Platform.assert_executable location
-
-          location
+          driver_path
         end
 
         private
 
+        def generate_command(binary, options)
+          command = [binary, '--browser', options.browser_name]
+          if options.browser_version
+            command << '--browser-version'
+            command << options.browser_version
+          end
+          if options.respond_to?(:binary) && !options.binary.nil?
+            command << '--browser-path'
+            command << options.binary.gsub('\\', '\\\\\\')
+          end
+          if options.proxy
+            command << '--proxy'
+            (command << options.proxy.ssl) || options.proxy.http
+          end
+          command
+        end
+
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            path = File.expand_path(BIN_PATH, __FILE__)
+            path = File.expand_path(bin_path, __FILE__)
             path << if Platform.windows?
                       '/windows/selenium-manager.exe'
                     elsif Platform.mac?
@@ -59,29 +84,44 @@ module Selenium
                       '/linux/selenium-manager'
                     end
             location = File.expand_path(path, __FILE__)
-            unless location.is_a?(String) && File.exist?(location) && File.executable?(location)
-              raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
+
+            begin
+              Platform.assert_file(location)
+              Platform.assert_executable(location)
+            rescue TypeError
+              raise Error::WebDriverError,
+                    "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
+            rescue Error::WebDriverError => e
+              raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
             end
 
-            WebDriver.logger.debug("Selenium Manager found at #{location}")
+            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
             location
           end
         end
 
-        def run(command)
-          WebDriver.logger.debug("Executing Process #{command}")
+        def run(*command)
+          command += %w[--output json]
+          command << '--debug' if WebDriver.logger.debug?
+
+          WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
           begin
-            stdout, stderr, status = Open3.capture3(command)
+            stdout, stderr, status = Open3.capture3(*command)
           rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
-          if status.exitstatus.positive?
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
+          json_output = stdout.empty? ? {} : JSON.parse(stdout)
+          (json_output['logs'] || []).each do |log|
+            level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
+            WebDriver.logger.send(level, log['message'], id: :selenium_manager)
           end
 
-          stdout.gsub("INFO\t", '').strip
+          result = json_output['result']
+          return result unless status.exitstatus.positive?
+
+          raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
         end
       end
     end # SeleniumManager

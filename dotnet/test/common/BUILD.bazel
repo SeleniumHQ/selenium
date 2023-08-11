@@ -66,20 +66,20 @@ config_setting(
     deps = select({
         ":netframework": [
             "//dotnet/src/webdriver:net47",
-            "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
+            "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",
         ],
         ":netcore": [
             "//dotnet/src/webdriver:netstandard2.1",
-            "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
+            "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",
         ],
         "//conditions:default": [
             "//dotnet/src/webdriver:netstandard2.1",
-            "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
+            "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",
         ],
     }),

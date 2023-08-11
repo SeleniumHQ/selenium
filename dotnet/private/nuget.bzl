@@ -72,9 +72,10 @@ def _stage_files_for_packaging(ctx, staging_dir):
         relative_dest_file = _get_relative_destination_file(src_file)
         src_list.append((src_file, relative_dest_file))
         if (ctx.attr.create_symbol_package):
-            symbol_file = dep.default_runfiles.files.to_list()[0]
-            relative_dest_symbol_file = _get_relative_destination_file(symbol_file)
-            src_list.append((symbol_file, relative_dest_symbol_file))
+            if (len(dep[DefaultInfo].default_runfiles.files.to_list()) > 0):
+                symbol_file = dep[DefaultInfo].default_runfiles.files.to_list()[0]
+                relative_dest_symbol_file = _get_relative_destination_file(symbol_file)
+                src_list.append((symbol_file, relative_dest_symbol_file))
 
     return copy_files(ctx, src_list, staging_dir, ctx.attr.is_windows)
 

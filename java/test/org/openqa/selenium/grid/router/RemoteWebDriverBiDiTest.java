@@ -19,6 +19,12 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -41,35 +47,34 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.StringReader;
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 class RemoteWebDriverBiDiTest {
 
   @Test
   void ensureBiDiSessionCreation() {
     Browser browser = Browser.FIREFOX;
 
-    Deployment deployment = DeploymentTypes.STANDALONE.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = true\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
+    options.merge(Browser.FIREFOX.getCapabilities());
 
     WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
     driver = new Augmenter().augment(driver);
 
     try (BiDi biDi = ((HasBiDi) driver).getBiDi()) {
       BiDiSessionStatus status =
-        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+          biDi.send(
+              new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
       assertThat(status).isNotNull();
       assertThat(status.getMessage()).isEqualTo("Session already started");
     }
@@ -79,13 +84,17 @@ class RemoteWebDriverBiDiTest {
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
     Browser browser = Browser.FIREFOX;
 
-    Deployment deployment = DeploymentTypes.STANDALONE.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = true\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -116,16 +125,20 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
-  void canNavigateToUrl() throws ExecutionException, InterruptedException, TimeoutException {
+  void canNavigateToUrl() {
     Browser browser = Browser.FIREFOX;
 
-    Deployment deployment = DeploymentTypes.STANDALONE.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.STANDALONE.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = true\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
 
-    FirefoxOptions options = new FirefoxOptions();
+    FirefoxOptions options = createFirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -143,5 +156,9 @@ class RemoteWebDriverBiDiTest {
     assertThat(browsingContext.getId()).isNotEmpty();
     assertThat(info.getNavigationId()).isNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
+  private FirefoxOptions createFirefoxOptions() {
+    return (FirefoxOptions) Browser.FIREFOX.getCapabilities();
   }
 }

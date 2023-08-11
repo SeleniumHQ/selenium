@@ -16,11 +16,11 @@
 // under the License.
 package org.openqa.selenium;
 
-
 /**
- * Indicates a driver or an HTML element that can capture a screenshot and store it in different ways.
- * <p>
- * Example usage:
+ * Indicates a driver or an HTML element that can capture a screenshot and store it in different
+ * ways.
+ *
+ * <p>Example usage:
  *
  * <pre>
  * File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -32,23 +32,26 @@ package org.openqa.selenium;
 public interface TakesScreenshot {
   /**
    * Capture the screenshot and store it in the specified location.
-   * <p>
-   * For a W3C-conformant WebDriver or WebElement, this behaves as stated in
-   * <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
-   * <p>
-   * For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to return
-   * the following in order of preference:
+   *
+   * <p>For a W3C-conformant WebDriver or WebElement, this behaves as stated in <a
+   * href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
+   *
+   * <p>For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to
+   * return the following in order of preference:
+   *
    * <ul>
-   *   <li>Entire page</li>
-   *   <li>Current window</li>
-   *   <li>Visible portion of the current frame</li>
-   *   <li>The screenshot of the entire display containing the browser</li>
+   *   <li>Entire page
+   *   <li>Current window
+   *   <li>Visible portion of the current frame
+   *   <li>The screenshot of the entire display containing the browser
    * </ul>
+   *
    * For a non-W3C-conformant WebElement extending TakesScreenshot, this makes a best effort
    * depending on the browser to return the following in order of preference:
+   *
    * <ul>
-   *   <li>The entire content of the HTML element</li>
-   *   <li>The visible portion of the HTML element</li>
+   *   <li>The entire content of the HTML element
+   *   <li>The visible portion of the HTML element
    * </ul>
    *
    * @param <X> Return type for getScreenshotAs.
@@ -56,7 +59,7 @@ public interface TakesScreenshot {
    * @return Object in which is stored information about the screenshot.
    * @throws WebDriverException on failure.
    * @throws UnsupportedOperationException if the underlying implementation does not support
-   * screenshot capturing.
+   *     screenshot capturing.
    */
   <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 }

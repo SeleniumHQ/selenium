@@ -17,14 +17,10 @@
 
 package org.openqa.selenium;
 
+import java.util.function.Supplier;
 import org.openqa.selenium.internal.Require;
 
-import java.util.function.Supplier;
-
-/**
- * A combination of username and password to use when authenticating a
- * browser with a website.
- */
+/** A combination of username and password to use when authenticating a browser with a website. */
 public class UsernameAndPassword implements Credentials {
 
   private final String username;

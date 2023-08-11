@@ -17,26 +17,6 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
-
-import org.openqa.selenium.InvalidSelectorException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.PointerInput;
-import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
@@ -92,6 +72,25 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Resources;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -100,7 +99,9 @@ import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
  */
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
-  private final PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "mouse");
+  private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
+  private static final Pattern CSS_ESCAPE =
+      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
 
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
@@ -202,20 +203,20 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case GET_ELEMENT_ATTRIBUTE:
         // Read the atom, wrap it, execute it.
         return executeAtom(
-          "getAttribute.js",
-          asElement(parameters.get("id")),
-          parameters.get("name"));
+            "getAttribute.js", asElement(parameters.get("id")), parameters.get("name"));
 
       case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
         return toScript(
-          "var e = arguments[0]; e.scrollIntoView({behavior: 'instant', block: 'end', inline: 'nearest'}); var rect = e.getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};",
-          asElement(parameters.get("id")));
+            "var e = arguments[0]; e.scrollIntoView({behavior: 'instant', block: 'end', inline:"
+                + " 'nearest'}); var rect = e.getBoundingClientRect(); return {'x': rect.left, 'y':"
+                + " rect.top};",
+            asElement(parameters.get("id")));
 
       case GET_PAGE_SOURCE:
         return toScript(
-          "var source = document.documentElement.outerHTML; \n" +
-          "if (!source) { source = new XMLSerializer().serializeToString(document); }\n" +
-          "return source;");
+            "var source = document.documentElement.outerHTML; \n"
+                + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
+                + "return source;");
 
       case CLEAR_LOCAL_STORAGE:
         return toScript("localStorage.clear()");
@@ -224,12 +225,16 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         return toScript("return Object.keys(localStorage)");
 
       case SET_LOCAL_STORAGE_ITEM:
-        return toScript("localStorage.setItem(arguments[0], arguments[1])",
-                        parameters.get("key"), parameters.get("value"));
+        return toScript(
+            "localStorage.setItem(arguments[0], arguments[1])",
+            parameters.get("key"),
+            parameters.get("value"));
 
       case REMOVE_LOCAL_STORAGE_ITEM:
-        return toScript("var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]); return item",
-                        parameters.get("key"));
+        return toScript(
+            "var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]);"
+                + " return item",
+            parameters.get("key"));
 
       case GET_LOCAL_STORAGE_ITEM:
         return toScript("return localStorage.getItem(arguments[0])", parameters.get("key"));
@@ -244,12 +249,16 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         return toScript("return Object.keys(sessionStorage)");
 
       case SET_SESSION_STORAGE_ITEM:
-        return toScript("sessionStorage.setItem(arguments[0], arguments[1])",
-                        parameters.get("key"), parameters.get("value"));
+        return toScript(
+            "sessionStorage.setItem(arguments[0], arguments[1])",
+            parameters.get("key"),
+            parameters.get("value"));
 
       case REMOVE_SESSION_STORAGE_ITEM:
-        return toScript("var item = sessionStorage.getItem(arguments[0]); sessionStorage.removeItem(arguments[0]); return item",
-                        parameters.get("key"));
+        return toScript(
+            "var item = sessionStorage.getItem(arguments[0]);"
+                + " sessionStorage.removeItem(arguments[0]); return item",
+            parameters.get("key"));
 
       case GET_SESSION_STORAGE_ITEM:
         return toScript("return sessionStorage.getItem(arguments[0])", parameters.get("key"));
@@ -271,8 +280,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           source = Stream.of((CharSequence[]) rawValue);
         }
 
-        String text = source
-            .collect(Collectors.joining());
+        String text = source.collect(Collectors.joining());
         return ImmutableMap.<String, Object>builder()
             .putAll(
                 parameters.entrySet().stream()
@@ -285,9 +293,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case SET_ALERT_VALUE:
         return ImmutableMap.<String, Object>builder()
-          .put("text", parameters.get("text"))
-          .put("value", stringToUtf8Array((String) parameters.get("text")))
-          .build();
+            .put("text", parameters.get("text"))
+            .put("value", stringToUtf8Array((String) parameters.get("text")))
+            .build();
 
       case SET_TIMEOUT:
         String timeoutType = (String) parameters.get("type");
@@ -299,25 +307,25 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         }
 
         return ImmutableMap.<String, Object>builder()
-          .putAll(
-            parameters.entrySet().stream()
-              .filter(e -> !timeoutType.equals(e.getKey()))
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .put(timeoutType, duration)
-          .build();
+            .putAll(
+                parameters.entrySet().stream()
+                    .filter(e -> !timeoutType.equals(e.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+            .put(timeoutType, duration)
+            .build();
 
       case SUBMIT_ELEMENT:
         return toScript(
-          "/* submitForm */var form = arguments[0];\n" +
-          "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
-          "  form = form.parentNode;\n" +
-          "}\n" +
-          "if (!form) { throw Error('Unable to find containing form element'); }\n" +
-          "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
-          "var e = form.ownerDocument.createEvent('Event');\n" +
-          "e.initEvent('submit', true, true);\n" +
-          "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n",
-          asElement(parameters.get("id")));
+            "/* submitForm */var form = arguments[0];\n"
+                + "while (form.nodeName != \"FORM\" && form.parentNode) {\n"
+                + "  form = form.parentNode;\n"
+                + "}\n"
+                + "if (!form) { throw Error('Unable to find containing form element'); }\n"
+                + "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n"
+                + "var e = form.ownerDocument.createEvent('Event');\n"
+                + "e.initEvent('submit', true, true);\n"
+                + "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n",
+            asElement(parameters.get("id")));
 
       default:
         return parameters;
@@ -337,26 +345,37 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private Map<String, ?> executeAtom(String atomFileName, Object... args) {
     try {
-      String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
-      URL url = getClass().getResource(scriptName);
-
-      String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-      String atomName = atomFileName.replace(".js", "");
-      String script = String.format(
-        "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
+      String script =
+          ATOM_SCRIPTS.computeIfAbsent(
+              atomFileName,
+              (fileName) -> {
+                String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
+                URL url = getClass().getResource(scriptName);
+                String rawFunction;
+                try {
+                  rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                  throw new UncheckedIOException(e);
+                }
+                String atomName = fileName.replace(".js", "");
+                return String.format(
+                    "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
+              });
       return toScript(script, args);
-    } catch (IOException | NullPointerException e) {
+    } catch (UncheckedIOException e) {
+      throw new WebDriverException(e.getCause());
+    } catch (NullPointerException e) {
       throw new WebDriverException(e);
     }
   }
 
   private Map<String, ?> toScript(String script, Object... args) {
-    List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
-        Collectors.toList());
+    List<Object> convertedArgs =
+        Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
     return ImmutableMap.of(
-      "script", script,
-      "args", convertedArgs);
+        "script", script,
+        "args", convertedArgs);
   }
 
   private Map<String, String> asElement(Object id) {
@@ -364,9 +383,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   }
 
   private String cssEscape(String using) {
-    using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+    using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-      using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }
     return using;
   }

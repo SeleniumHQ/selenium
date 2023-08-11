@@ -24,15 +24,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedSwitchToTest {
@@ -68,8 +67,8 @@ class DecoratedSwitchToTest {
     verifyNoMoreInteractions(fixture.originalDriver);
   }
 
-  private <R> void verifyDecoratingFunction(Function<WebDriver.TargetLocator, R> f, R result,
-                                            Consumer<R> p) {
+  private <R> void verifyDecoratingFunction(
+      Function<WebDriver.TargetLocator, R> f, R result, Consumer<R> p) {
     Fixture fixture = new Fixture();
     when(f.apply(fixture.original)).thenReturn(result);
 

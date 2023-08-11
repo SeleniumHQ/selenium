@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 class DefaultDriverSupplier implements Supplier<WebDriver> {
 
@@ -46,25 +45,33 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
       }
 
       return ServiceLoader.load(WebDriverInfo.class).stream()
-        .map(ServiceLoader.Provider::get)
-        .filter(WebDriverInfo::isAvailable)
-        .filter(info -> info.isSupporting(capabilities))
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("No driver can be provided for capabilities " + capabilities))
-        .createDriver(capabilities)
-        .orElseThrow(() -> new RuntimeException("Unable to create driver"));
+          .map(ServiceLoader.Provider::get)
+          .filter(WebDriverInfo::isAvailable)
+          .filter(info -> info.isSupporting(capabilities))
+          .findFirst()
+          .orElseThrow(
+              () ->
+                  new RuntimeException(
+                      "No driver can be provided for capabilities " + capabilities))
+          .createDriver(capabilities)
+          .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {
       String className = System.getProperty("selenium.browser.class_name");
       try {
-        Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
-        Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
-        driverConstructor = caps -> {
-          try {
-            return constructor.newInstance(caps);
-          } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-          }
-        };
+        Class<? extends WebDriver> driverClass =
+            Class.forName(className).asSubclass(WebDriver.class);
+        Constructor<? extends WebDriver> constructor =
+            driverClass.getConstructor(Capabilities.class);
+        driverConstructor =
+            caps -> {
+              try {
+                return constructor.newInstance(caps);
+              } catch (InstantiationException
+                  | IllegalAccessException
+                  | InvocationTargetException e) {
+                throw new RuntimeException(e);
+              }
+            };
       } catch (ClassNotFoundException | NoSuchMethodException e) {
         throw new RuntimeException(e);
       }

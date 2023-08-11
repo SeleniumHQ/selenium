@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
 
 /**
- * Mechanism used to locate elements within a document using a series of other lookups.  This class
+ * Mechanism used to locate elements within a document using a series of other lookups. This class
  * will find all DOM elements that matches each of the locators in sequence, e.g.
  *
  * <pre>
@@ -69,10 +68,11 @@ public class ByChained extends By implements Serializable {
         break; // if any one of the bys finds no elements, then return no elements
       }
       final By by = bys[i];
-      elems = elems.stream()
-        .map(elem -> elem.findElements(by))
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+      elems =
+          elems.stream()
+              .map(elem -> elem.findElements(by))
+              .flatMap(List::stream)
+              .collect(Collectors.toList());
     }
 
     return elems;
@@ -81,8 +81,6 @@ public class ByChained extends By implements Serializable {
   @Override
   public String toString() {
     return String.format(
-      "By.chained({%s})",
-      Stream.of(bys).map(By::toString).collect(Collectors.joining(",")));
+        "By.chained({%s})", Stream.of(bys).map(By::toString).collect(Collectors.joining(",")));
   }
-
 }

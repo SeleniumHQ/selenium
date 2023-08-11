@@ -12,6 +12,7 @@ rb_library(
 [
     rb_test(
         name = file[:-8],
+        size = "small",
         srcs = [file],
         args = ["rb/spec/"],
         main = "@bundle//:bin/rspec",

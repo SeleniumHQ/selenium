@@ -20,11 +20,10 @@ package org.openqa.selenium.html5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
-
-import java.util.Set;
 
 class SessionStorageTest extends JupiterTestBase {
   @BeforeEach

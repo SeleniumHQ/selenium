@@ -1,17 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
     <AssemblyName>WebDriver.Common.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,5 +54,11 @@
   <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
     <Exec Command="$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.sh $(ProjectDir)" />
   </Target>
+
+  <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
+  <PropertyGroup>
+    <Selenium_Manager_BinariesRootPath>..\..\..\common\manager</Selenium_Manager_BinariesRootPath>
+  </PropertyGroup>
+  <Import Project="..\..\src\webdriver\build\Selenium.WebDriver.targets" />
 
 </Project>

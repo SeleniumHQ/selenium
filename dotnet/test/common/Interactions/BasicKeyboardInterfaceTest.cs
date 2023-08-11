@@ -32,6 +32,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldSetActiveKeyboard()
+        {
+            Actions actionProvider = new Actions(driver);
+            actionProvider.setActiveKeyboard("test keyboard");
+
+            KeyInputDevice device = actionProvider.getActiveKeyboard();
+
+            Assert.AreEqual("test keyboard", device.DeviceName);
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowBasicKeyboardInput()
         {

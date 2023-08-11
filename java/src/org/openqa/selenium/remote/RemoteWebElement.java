@@ -17,7 +17,16 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+
 import com.google.common.collect.ImmutableMap;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -36,17 +45,7 @@ import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.io.Zip;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
-
-public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver  {
+public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver {
 
   private String foundBy;
   protected String id;
@@ -101,16 +100,15 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
     String allKeysToSend = String.join("", keysToSend);
 
-    List<File> files = Arrays.stream(allKeysToSend.split("\n"))
-      .map(fileDetector::getLocalFile)
-      .collect(Collectors.toList());
+    List<File> files =
+        Arrays.stream(allKeysToSend.split("\n"))
+            .map(fileDetector::getLocalFile)
+            .collect(Collectors.toList());
     if (!files.isEmpty() && !files.contains(null)) {
-      allKeysToSend = files.stream()
-        .map(this::upload)
-        .collect(Collectors.joining("\n"));
+      allKeysToSend = files.stream().map(this::upload).collect(Collectors.joining("\n"));
     }
 
-    execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, new CharSequence[]{allKeysToSend}));
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, new CharSequence[] {allKeysToSend}));
   }
 
   private String upload(File localFile) {
@@ -134,43 +132,32 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public String getTagName() {
-    return (String) execute(DriverCommand.GET_ELEMENT_TAG_NAME(id))
-      .getValue();
+    return (String) execute(DriverCommand.GET_ELEMENT_TAG_NAME(id)).getValue();
   }
 
   @Override
   public String getDomProperty(String name) {
-    return stringValueOf(
-      execute(DriverCommand.GET_ELEMENT_DOM_PROPERTY(id, name))
-        .getValue());
+    return stringValueOf(execute(DriverCommand.GET_ELEMENT_DOM_PROPERTY(id, name)).getValue());
   }
 
   @Override
   public String getDomAttribute(String name) {
-    return stringValueOf(
-      execute(DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE(id, name))
-        .getValue());
+    return stringValueOf(execute(DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE(id, name)).getValue());
   }
 
   @Override
   public String getAttribute(String name) {
-    return stringValueOf(
-      execute(DriverCommand.GET_ELEMENT_ATTRIBUTE(id, name))
-        .getValue());
+    return stringValueOf(execute(DriverCommand.GET_ELEMENT_ATTRIBUTE(id, name)).getValue());
   }
 
   @Override
   public String getAriaRole() {
-    return stringValueOf(
-      execute(DriverCommand.GET_ELEMENT_ARIA_ROLE(id))
-        .getValue());
+    return stringValueOf(execute(DriverCommand.GET_ELEMENT_ARIA_ROLE(id)).getValue());
   }
 
   @Override
   public String getAccessibleName() {
-    return stringValueOf(
-      execute(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME(id))
-        .getValue());
+    return stringValueOf(execute(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME(id)).getValue());
   }
 
   private static String stringValueOf(Object o) {
@@ -182,8 +169,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public boolean isSelected() {
-    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id))
-      .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id)).getValue();
     try {
       return (Boolean) value;
     } catch (ClassCastException ex) {
@@ -193,8 +179,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public boolean isEnabled() {
-    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED(id))
-      .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED(id)).getValue();
     try {
       return (Boolean) value;
     } catch (ClassCastException ex) {
@@ -217,33 +202,15 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   @Override
   public List<WebElement> findElements(By locator) {
     return parent.findElements(
-      this,
-      (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
-      locator);
+        this,
+        (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
+        locator);
   }
 
   @Override
   public WebElement findElement(By locator) {
     return parent.findElement(
-      this,
-      (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)),
-      locator);
-  }
-
-  /**
-   * @deprecated Rely on using {@link By.Remotable} instead
-   */
-  @Deprecated
-  protected WebElement findElement(String using, String value) {
-    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
-  }
-
-  /**
-   * @deprecated Rely on using {@link By.Remotable} instead
-   */
-  @Deprecated
-  protected List<WebElement> findElements(String using, String value) {
-    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+        this, (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)), locator);
   }
 
   @Override
@@ -310,8 +277,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public boolean isDisplayed() {
-    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
-      .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id)).getValue();
     try {
       // See https://github.com/SeleniumHQ/selenium/issues/9266
       if (value == null) {
@@ -366,7 +332,8 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
       @Override
       public Point inViewPort() {
-        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(getId()));
+        Response response =
+            execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(getId()));
 
         @SuppressWarnings("unchecked")
         Map<String, Number> mapped = (Map<String, Number>) response.getValue();
@@ -396,10 +363,11 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     } else if (result instanceof byte[]) {
       return outputType.convertFromPngBytes((byte[]) result);
     } else {
-      throw new RuntimeException(String.format(
-        "Unexpected result for %s command: %s",
-        DriverCommand.ELEMENT_SCREENSHOT,
-        result == null ? "null" : result.getClass().getName() + " instance"));
+      throw new RuntimeException(
+          String.format(
+              "Unexpected result for %s command: %s",
+              DriverCommand.ELEMENT_SCREENSHOT,
+              result == null ? "null" : result.getClass().getName() + " instance"));
     }
   }
 
@@ -411,8 +379,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   public Map<String, Object> toJson() {
-    return ImmutableMap.of(
-      Dialect.OSS.getEncodedElementKey(), getId(),
-      Dialect.W3C.getEncodedElementKey(), getId());
+    return ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), getId());
   }
 }

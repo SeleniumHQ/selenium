@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.util.stream.Collectors.joining;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -27,10 +30,6 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,9 +49,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.util.stream.Collectors.joining;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 
 public class CdpClientGenerator {
 
@@ -65,45 +64,50 @@ public class CdpClientGenerator {
     String devtoolsDir = "org/openqa/selenium/devtools/" + version + "/";
 
     Model model = new Model("org.openqa.selenium.devtools." + version);
-    Stream.of(browserProtocol, jsProtocol).forEach(protoFile -> {
-      try {
-        String text = String.join("\n", Files.readAllLines(protoFile));
-        Map<String, Object> json = new Json().toType(text, Json.MAP_TYPE);
-        model.parse(json);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    });
+    Stream.of(browserProtocol, jsProtocol)
+        .forEach(
+            protoFile -> {
+              try {
+                String text = String.join("\n", Files.readAllLines(protoFile));
+                Map<String, Object> json = new Json().toType(text, Json.MAP_TYPE);
+                model.parse(json);
+              } catch (IOException e) {
+                throw new UncheckedIOException(e);
+              }
+            });
     model.dumpTo(target);
 
     Path outputJar = Paths.get(args[3]).toAbsolutePath();
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);
-         JarOutputStream jos = new JarOutputStream(os)) {
-      Files.walkFileTree(target, new SimpleFileVisitor<Path>() {
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-          String relative = target.relativize(dir).toString().replace('\\', '/');
-          JarEntry entry = new JarEntry(devtoolsDir + relative + "/");
-          jos.putNextEntry(entry);
-          jos.closeEntry();
-          return CONTINUE;
-        }
+        JarOutputStream jos = new JarOutputStream(os)) {
+      Files.walkFileTree(
+          target,
+          new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                throws IOException {
+              String relative = target.relativize(dir).toString().replace('\\', '/');
+              JarEntry entry = new JarEntry(devtoolsDir + relative + "/");
+              jos.putNextEntry(entry);
+              jos.closeEntry();
+              return CONTINUE;
+            }
 
-
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          String relative = target.relativize(file).toString().replace('\\', '/');
-          JarEntry entry = new JarEntry(devtoolsDir + relative);
-          jos.putNextEntry(entry);
-          try (InputStream is = Files.newInputStream(file)) {
-            ByteStreams.copy(is, jos);
-          }
-          jos.closeEntry();
-          return CONTINUE;
-        }
-      });
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                throws IOException {
+              String relative = target.relativize(file).toString().replace('\\', '/');
+              JarEntry entry = new JarEntry(devtoolsDir + relative);
+              jos.putNextEntry(entry);
+              try (InputStream is = Files.newInputStream(file)) {
+                ByteStreams.copy(is, jos);
+              }
+              jos.closeEntry();
+              return CONTINUE;
+            }
+          });
     }
   }
 
@@ -117,22 +121,25 @@ public class CdpClientGenerator {
 
     @SuppressWarnings("unchecked")
     public void parse(Map<String, Object> json) {
-      json.forEach((key, value) -> {
-        switch (key) {
-          case "version":
-            //parseVersion((Map<String, Object>) value);
-            break;
-          case "domains":
-            ((List<Map<String, Object>>) value).forEach(item -> {
-              Domain domain = new Domain(this);
-              domain.parse(item);
-              domains.add(domain);
-            });
-            break;
-          default:
-            throw new RuntimeException("Unexpected top level key " + key);
-        }
-      });
+      json.forEach(
+          (key, value) -> {
+            switch (key) {
+              case "version":
+                // parseVersion((Map<String, Object>) value);
+                break;
+              case "domains":
+                ((List<Map<String, Object>>) value)
+                    .forEach(
+                        item -> {
+                          Domain domain = new Domain(this);
+                          domain.parse(item);
+                          domains.add(domain);
+                        });
+                break;
+              default:
+                throw new RuntimeException("Unexpected top level key " + key);
+            }
+          });
     }
 
     public void dumpTo(Path target) {
@@ -149,9 +156,15 @@ public class CdpClientGenerator {
     }
 
     public void parse(T target, Map<String, Object> json) {
-      json.forEach((key, value) -> processors
-          .getOrDefault(key, (x, y) -> { throw new RuntimeException("Parsing domain: unexpected key " + key); })
-          .accept(target, value));
+      json.forEach(
+          (key, value) ->
+              processors
+                  .getOrDefault(
+                      key,
+                      (x, y) -> {
+                        throw new RuntimeException("Parsing domain: unexpected key " + key);
+                      })
+                  .accept(target, value));
     }
   }
 
@@ -164,13 +177,14 @@ public class CdpClientGenerator {
 
   private static class BaseSpecParser<T extends BaseSpec> extends Parser<T> {
     public BaseSpecParser(Map<String, BiConsumer<T, Object>> extraProcessors) {
-      super(new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
-                .put("name", (x, value) -> x.name = (String) value)
-                .put("description", (x, value) -> x.description = (String) value)
-                .put("experimental", (x, value) -> x.experimental = (Boolean) value)
-                .put("deprecated", (x, value) -> x.deprecated = (Boolean) value)
-                .putAll(extraProcessors)
-                .build());
+      super(
+          new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
+              .put("name", (x, value) -> x.name = (String) value)
+              .put("description", (x, value) -> x.description = (String) value)
+              .put("experimental", (x, value) -> x.experimental = (Boolean) value)
+              .put("deprecated", (x, value) -> x.deprecated = (Boolean) value)
+              .putAll(extraProcessors)
+              .build());
     }
   }
 
@@ -189,8 +203,8 @@ public class CdpClientGenerator {
     public TypeDeclaration<?> toTypeDeclaration() {
       TypeDeclaration<?> typeDeclaration =
           type instanceof VoidType
-          ? new ClassOrInterfaceDeclaration().setName(capitalize(name)).setPublic(true)
-          : type.toTypeDeclaration().setPublic(true);
+              ? new ClassOrInterfaceDeclaration().setName(capitalize(name)).setPublic(true)
+              : type.toTypeDeclaration().setPublic(true);
 
       if (description != null) {
         typeDeclaration.setJavadocComment(description);
@@ -209,19 +223,26 @@ public class CdpClientGenerator {
   private static class TypedSpecParser<T extends TypedSpec> extends BaseSpecParser<T> {
     @SuppressWarnings("unchecked")
     public TypedSpecParser(boolean inline, Map<String, BiConsumer<T, Object>> extraProcessors) {
-      super(new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
-                .put("type", (x, value) -> x.type = new SimpleType(x.name, (String) value))
-                .put("$ref", (x, value) -> x.type = new RefType(x.name, x.domain, (String) value))
-                .put("enum", (x, value) -> x.type =
-                    inline ? new InlineEnumType(x, x.name, (List<String>) value)
-                           : new EnumType(x, x.name, (List<String>) value))
-                .put("items", (x, value) -> {
-                  ArrayType array = new ArrayType(x.name);
-                  array.parse(x.domain, (Map<String, Object>) value);
-                  x.type = array;
-                })
-                .putAll(extraProcessors)
-                .build());
+      super(
+          new ImmutableMap.Builder<String, BiConsumer<T, Object>>()
+              .put("type", (x, value) -> x.type = new SimpleType(x.name, (String) value))
+              .put("$ref", (x, value) -> x.type = new RefType(x.name, x.domain, (String) value))
+              .put(
+                  "enum",
+                  (x, value) ->
+                      x.type =
+                          inline
+                              ? new InlineEnumType(x, x.name, (List<String>) value)
+                              : new EnumType(x, x.name, (List<String>) value))
+              .put(
+                  "items",
+                  (x, value) -> {
+                    ArrayType array = new ArrayType(x.name);
+                    array.parse(x.domain, (Map<String, Object>) value);
+                    x.type = array;
+                  })
+              .putAll(extraProcessors)
+              .build());
     }
   }
 
@@ -281,27 +302,29 @@ public class CdpClientGenerator {
         classDecl.addAnnotation(Deprecated.class);
       }
 
-      commands.forEach(command -> {
-        if (command.type instanceof ObjectType || command.type instanceof EnumType) {
-          classDecl.addMember(command.type.toTypeDeclaration().setPublic(true).setStatic(true));
-        }
-        command.parameters.forEach(parameter -> {
-          if (parameter.type instanceof EnumType) {
-            EnumType parameterType = ((EnumType) parameter.type);
-            parameterType.name = capitalize(command.name) + parameterType.name;
-            classDecl.addMember(parameter.type.toTypeDeclaration().setPublic(true));
-          }
+      commands.forEach(
+          command -> {
+            if (command.type instanceof ObjectType || command.type instanceof EnumType) {
+              classDecl.addMember(command.type.toTypeDeclaration().setPublic(true).setStatic(true));
+            }
+            command.parameters.forEach(
+                parameter -> {
+                  if (parameter.type instanceof EnumType) {
+                    EnumType parameterType = ((EnumType) parameter.type);
+                    parameterType.name = capitalize(command.name) + parameterType.name;
+                    classDecl.addMember(parameter.type.toTypeDeclaration().setPublic(true));
+                  }
+                });
+            classDecl.addMember(command.toMethodDeclaration());
+          });
 
-        });
-        classDecl.addMember(command.toMethodDeclaration());
-      });
-
-      events.forEach(event -> {
-        if (event.type instanceof EnumType) {
-          classDecl.addMember(event.type.toTypeDeclaration().setPublic(true));
-        }
-        classDecl.addMember(event.toMethodDeclaration());
-      });
+      events.forEach(
+          event -> {
+            if (event.type instanceof EnumType) {
+              classDecl.addMember(event.type.toTypeDeclaration().setPublic(true));
+            }
+            classDecl.addMember(event.toMethodDeclaration());
+          });
 
       Path commandFile = target.resolve(name + ".java");
       ensureFileDoesNotExists(commandFile);
@@ -317,27 +340,45 @@ public class CdpClientGenerator {
   private static class DomainParser extends BaseSpecParser<Domain> {
     @SuppressWarnings("unchecked")
     public DomainParser(String basePackage) {
-      super(new ImmutableMap.Builder<String, BiConsumer<Domain, Object>>()
-                .put("domain", (domain, value) -> domain.name = (String) value)
-                .put("dependencies", (domain, value) -> {
-                  // TODO: what to do with dependencies?
-                })
-                .put("types", (domain, value) -> ((List<Map<String, Object>>) value).forEach(item -> {
-                  TypeSpec type = new TypeSpec(basePackage, domain);
-                  type.parse(item);
-                  domain.types.add(type);
-                }))
-                .put("commands", (domain, value) -> ((List<Map<String, Object>>) value).forEach(item -> {
-                  CommandSpec command = new CommandSpec(domain);
-                  command.parse(item);
-                  domain.commands.add(command);
-                }))
-                .put("events", (domain, value) -> ((List<Map<String, Object>>) value).forEach(item -> {
-                  EventSpec event = new EventSpec(domain);
-                  event.parse(item);
-                  domain.events.add(event);
-                }))
-                .build());
+      super(
+          new ImmutableMap.Builder<String, BiConsumer<Domain, Object>>()
+              .put("domain", (domain, value) -> domain.name = (String) value)
+              .put(
+                  "dependencies",
+                  (domain, value) -> {
+                    // TODO: what to do with dependencies?
+                  })
+              .put(
+                  "types",
+                  (domain, value) ->
+                      ((List<Map<String, Object>>) value)
+                          .forEach(
+                              item -> {
+                                TypeSpec type = new TypeSpec(basePackage, domain);
+                                type.parse(item);
+                                domain.types.add(type);
+                              }))
+              .put(
+                  "commands",
+                  (domain, value) ->
+                      ((List<Map<String, Object>>) value)
+                          .forEach(
+                              item -> {
+                                CommandSpec command = new CommandSpec(domain);
+                                command.parse(item);
+                                domain.commands.add(command);
+                              }))
+              .put(
+                  "events",
+                  (domain, value) ->
+                      ((List<Map<String, Object>>) value)
+                          .forEach(
+                              item -> {
+                                EventSpec event = new EventSpec(domain);
+                                event.parse(item);
+                                domain.events.add(event);
+                              }))
+              .build());
     }
   }
 
@@ -379,23 +420,39 @@ public class CdpClientGenerator {
     }
 
     public BodyDeclaration<?> toMethodDeclaration() {
-      MethodDeclaration methodDecl = new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
+      MethodDeclaration methodDecl =
+          new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
       if (type == null) {
-        methodDecl.setType("Event<Void>").getBody().get().addStatement(
-            String.format("return new Event<>(\"%s.%s\");", domain.name, name));
+        methodDecl
+            .setType("Event<Void>")
+            .getBody()
+            .get()
+            .addStatement(String.format("return new Event<>(\"%s.%s\");", domain.name, name));
       } else {
         methodDecl.setType(String.format("Event<%s>", getFullJavaType()));
         if (type instanceof VoidType) {
-          methodDecl.getBody().get().addStatement(
-              String.format("return new Event<>(\"%s.%s\", input -> null);", domain.name, name));
+          methodDecl
+              .getBody()
+              .get()
+              .addStatement(
+                  String.format(
+                      "return new Event<>(\"%s.%s\", input -> null);", domain.name, name));
         } else if (type instanceof ObjectType) {
-          methodDecl.getBody().get().addStatement(String.format(
-              "return new Event<>(\"%s.%s\", input -> %s);",
-              domain.name, name, type.getMapper()));
+          methodDecl
+              .getBody()
+              .get()
+              .addStatement(
+                  String.format(
+                      "return new Event<>(\"%s.%s\", input -> %s);",
+                      domain.name, name, type.getMapper()));
         } else {
-          methodDecl.getBody().get().addStatement(String.format(
-              "return new Event<>(\"%s.%s\", ConverterFunctions.map(\"%s\", %s));",
-              domain.name, name, type.getName(), type.getTypeToken()));
+          methodDecl
+              .getBody()
+              .get()
+              .addStatement(
+                  String.format(
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.map(\"%s\", %s));",
+                      domain.name, name, type.getName(), type.getTypeToken()));
         }
       }
       return methodDecl;
@@ -405,23 +462,29 @@ public class CdpClientGenerator {
   private static class EventParser extends TypedSpecParser<EventSpec> {
     @SuppressWarnings("unchecked")
     public EventParser() {
-      super(true, new ImmutableMap.Builder<String, BiConsumer<EventSpec, Object>>()
-                .put("parameters", (event, value) -> {
-                  List<VariableSpec> parameters = new ArrayList<>();
-                  ((List<Map<String, Object>>) value).forEach(item -> {
-                    VariableSpec parameter = new VariableSpec(event.domain);
-                    parameter.parse(item);
-                    parameters.add(parameter);
-                  });
-                  if (parameters.size() == 0) {
-                    event.type = new VoidType();
-                  } else if (parameters.size() == 1) {
-                    event.type = parameters.get(0).type;
-                  } else {
-                    event.type = new ObjectType(event, event.name, parameters);
-                  }
-                })
-                .build());
+      super(
+          true,
+          new ImmutableMap.Builder<String, BiConsumer<EventSpec, Object>>()
+              .put(
+                  "parameters",
+                  (event, value) -> {
+                    List<VariableSpec> parameters = new ArrayList<>();
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              VariableSpec parameter = new VariableSpec(event.domain);
+                              parameter.parse(item);
+                              parameters.add(parameter);
+                            });
+                    if (parameters.size() == 0) {
+                      event.type = new VoidType();
+                    } else if (parameters.size() == 1) {
+                      event.type = parameters.get(0).type;
+                    } else {
+                      event.type = new ObjectType(event, event.name, parameters);
+                    }
+                  })
+              .build());
     }
   }
 
@@ -463,18 +526,24 @@ public class CdpClientGenerator {
   private static class TypeSpecParser extends TypedSpecParser<TypeSpec> {
     @SuppressWarnings("unchecked")
     public TypeSpecParser() {
-      super(false, new ImmutableMap.Builder<String, BiConsumer<TypeSpec, Object>>()
-                .put("id", (type, value) -> type.name = capitalize((String) value))
-                .put("properties", (type, value) -> {
-                  List<VariableSpec> properties = new ArrayList<>();
-                  ((List<Map<String, Object>>) value).forEach(item -> {
-                    VariableSpec property = new VariableSpec(type.domain);
-                    property.parse(item);
-                    properties.add(property);
-                  });
-                  type.type = new ObjectType(type, type.name, properties);
-                })
-                .build());
+      super(
+          false,
+          new ImmutableMap.Builder<String, BiConsumer<TypeSpec, Object>>()
+              .put("id", (type, value) -> type.name = capitalize((String) value))
+              .put(
+                  "properties",
+                  (type, value) -> {
+                    List<VariableSpec> properties = new ArrayList<>();
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              VariableSpec property = new VariableSpec(type.domain);
+                              property.parse(item);
+                              properties.add(property);
+                            });
+                    type.type = new ObjectType(type, type.name, properties);
+                  })
+              .build());
     }
   }
 
@@ -512,9 +581,11 @@ public class CdpClientGenerator {
 
   private static class VariableSpecParser extends TypedSpecParser<VariableSpec> {
     public VariableSpecParser() {
-      super(true, new ImmutableMap.Builder<String, BiConsumer<VariableSpec, Object>>()
-                .put("optional", (field, value) -> field.optional = (Boolean) value)
-                .build());
+      super(
+          true,
+          new ImmutableMap.Builder<String, BiConsumer<VariableSpec, Object>>()
+              .put("optional", (field, value) -> field.optional = (Boolean) value)
+              .build());
     }
   }
 
@@ -535,7 +606,8 @@ public class CdpClientGenerator {
     }
 
     public MethodDeclaration toMethodDeclaration() {
-      MethodDeclaration methodDecl = new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
+      MethodDeclaration methodDecl =
+          new MethodDeclaration().setName(name).setPublic(true).setStatic(true);
       if (description != null) {
         methodDecl.setJavadocComment(description);
       }
@@ -548,40 +620,54 @@ public class CdpClientGenerator {
 
       methodDecl.setType(String.format("Command<%s>", type.getJavaType()));
 
-      parameters.forEach(param -> {
-        if (param.optional) {
-          methodDecl.addParameter(String.format("java.util.Optional<%s>", param.type.getJavaType()), param.name);
-        } else {
-          methodDecl.addParameter(param.type.getJavaType(), param.name);
-        }
-      });
+      parameters.forEach(
+          param -> {
+            if (param.optional) {
+              methodDecl.addParameter(
+                  String.format("java.util.Optional<%s>", param.type.getJavaType()), param.name);
+            } else {
+              methodDecl.addParameter(param.type.getJavaType(), param.name);
+            }
+          });
 
       BlockStmt body = methodDecl.getBody().get();
 
-      parameters.stream().filter(parameter -> !parameter.optional)
+      parameters.stream()
+          .filter(parameter -> !parameter.optional)
           .map(parameter -> parameter.name)
-          .forEach(name -> body.addStatement(
-              String.format("java.util.Objects.requireNonNull(%s, \"%s is required\");", name, name)));
+          .forEach(
+              name ->
+                  body.addStatement(
+                      String.format(
+                          "java.util.Objects.requireNonNull(%s, \"%s is required\");",
+                          name, name)));
       body.addStatement("ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();");
-      parameters.forEach(parameter -> {
-        if (parameter.optional) {
-          body.addStatement(String.format("%s.ifPresent(p -> params.put(\"%s\", p));", parameter.name, parameter.name));
-        } else {
-          body.addStatement(String.format("params.put(\"%s\", %s);", parameter.name, parameter.name));
-        }
-      });
+      parameters.forEach(
+          parameter -> {
+            if (parameter.optional) {
+              body.addStatement(
+                  String.format(
+                      "%s.ifPresent(p -> params.put(\"%s\", p));", parameter.name, parameter.name));
+            } else {
+              body.addStatement(
+                  String.format("params.put(\"%s\", %s);", parameter.name, parameter.name));
+            }
+          });
 
       if (type instanceof VoidType) {
-        body.addStatement(String.format(
-            "return new Command<>(\"%s.%s\", params.build());", domain.name, name));
+        body.addStatement(
+            String.format("return new Command<>(\"%s.%s\", params.build());", domain.name, name));
       } else if (type instanceof ObjectType) {
-        body.addStatement(String.format(
-            "return new Command<>(\"%s.%s\", params.build(), input -> %s);",
-            domain.name, name, type.getMapper()));
+        body.addStatement(
+            String.format(
+                "return new Command<>(\"%s.%s\", params.build(), input -> %s);",
+                domain.name, name, type.getMapper()));
       } else {
-        body.addStatement(String.format(
-            "return new Command<>(\"%s.%s\", params.build(), ConverterFunctions.map(\"%s\", %s));",
-            domain.name, name, type.getName(), type.getTypeToken()));
+        body.addStatement(
+            String.format(
+                "return new Command<>(\"%s.%s\", params.build(), ConverterFunctions.map(\"%s\","
+                    + " %s));",
+                domain.name, name, type.getName(), type.getTypeToken()));
       }
 
       return methodDecl;
@@ -591,51 +677,69 @@ public class CdpClientGenerator {
   private static class CommandSpecParser extends BaseSpecParser<CommandSpec> {
     @SuppressWarnings("unchecked")
     public CommandSpecParser() {
-      super(new ImmutableMap.Builder<String, BiConsumer<CommandSpec, Object>>()
-                .put("redirect", (command, value) -> command.redirect = (String) value)
-                .put("parameters", (command, value) -> {
-                  List<VariableSpec> parameters = new ArrayList<>();
-                  ((List<Map<String, Object>>) value).forEach(item -> {
-                    VariableSpec parameter = new VariableSpec(command.domain);
-                    parameter.parse(item);
-                    parameters.add(parameter);
-                  });
-                  command.parameters = parameters;
-                })
-                .put("returns", (command, value) -> {
-                  List<VariableSpec> returns = new ArrayList<>();
-                  ((List<Map<String, Object>>) value).forEach(item -> {
-                    VariableSpec res = new VariableSpec(command.domain);
-                    res.parse(item);
-                    returns.add(res);
-                  });
-                  if (returns.size() == 0) {
-                    command.type = new VoidType();
-                  } else if (returns.size() == 1) {
-                    command.type = returns.get(0).type;
-                  } else {
-                    String name = capitalize(command.name) + "Response";
-                    List<VariableSpec> properties = returns.stream().map(item -> {
-                      VariableSpec field = new VariableSpec(command.domain);
-                      field.name = item.name;
-                      field.description = item.description;
-                      field.optional = item.optional;
-                      field.type = item.type;
-                      return field;
-                    }).collect(Collectors.toList());
-                    command.type = new ObjectType(command, name, properties);
-                  }
-                })
-                .build());
+      super(
+          new ImmutableMap.Builder<String, BiConsumer<CommandSpec, Object>>()
+              .put("redirect", (command, value) -> command.redirect = (String) value)
+              .put(
+                  "parameters",
+                  (command, value) -> {
+                    List<VariableSpec> parameters = new ArrayList<>();
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              VariableSpec parameter = new VariableSpec(command.domain);
+                              parameter.parse(item);
+                              parameters.add(parameter);
+                            });
+                    command.parameters = parameters;
+                  })
+              .put(
+                  "returns",
+                  (command, value) -> {
+                    List<VariableSpec> returns = new ArrayList<>();
+                    ((List<Map<String, Object>>) value)
+                        .forEach(
+                            item -> {
+                              VariableSpec res = new VariableSpec(command.domain);
+                              res.parse(item);
+                              returns.add(res);
+                            });
+                    if (returns.size() == 0) {
+                      command.type = new VoidType();
+                    } else if (returns.size() == 1) {
+                      command.type = returns.get(0).type;
+                    } else {
+                      String name = capitalize(command.name) + "Response";
+                      List<VariableSpec> properties =
+                          returns.stream()
+                              .map(
+                                  item -> {
+                                    VariableSpec field = new VariableSpec(command.domain);
+                                    field.name = item.name;
+                                    field.description = item.description;
+                                    field.optional = item.optional;
+                                    field.type = item.type;
+                                    return field;
+                                  })
+                              .collect(Collectors.toList());
+                      command.type = new ObjectType(command, name, properties);
+                    }
+                  })
+              .build());
     }
   }
 
   private interface IType {
     String getName();
+
     String getTypeToken();
+
     String getJavaType();
+
     String getJavaDefaultValue();
+
     TypeDeclaration<?> toTypeDeclaration();
+
     String getMapper();
   }
 
@@ -689,7 +793,8 @@ public class CdpClientGenerator {
     @Override
     public String getTypeToken() {
       if (type.equals("object")) {
-        return "new com.google.common.reflect.TypeToken<java.util.Map<String, Object>>() {}.getType()";
+        return "new com.google.common.reflect.TypeToken<java.util.Map<String, Object>>()"
+            + " {}.getType()";
       } else {
         return getJavaType() + ".class";
       }
@@ -748,10 +853,12 @@ public class CdpClientGenerator {
 
       ConstructorDeclaration constructor = classDecl.addConstructor().setPublic(true);
       constructor.addParameter(getJavaType(), propertyName);
-      constructor.getBody().addStatement(String.format(
-          "this.%s = java.util.Objects.requireNonNull(%s, \"Missing value for %s\");",
-          propertyName, propertyName, name
-      ));
+      constructor
+          .getBody()
+          .addStatement(
+              String.format(
+                  "this.%s = java.util.Objects.requireNonNull(%s, \"Missing value for %s\");",
+                  propertyName, propertyName, name));
 
       if (type.equals("object")) {
         MethodDeclaration delegate = classDecl.addMethod("delegate").setProtected(true);
@@ -762,8 +869,7 @@ public class CdpClientGenerator {
       MethodDeclaration fromJson = classDecl.addMethod("fromJson").setPrivate(true).setStatic(true);
       fromJson.setType(name);
       fromJson.addParameter(JsonInput.class, "input");
-      fromJson.getBody().get().addStatement(
-          String.format("return new %s(%s);", name, getMapper()));
+      fromJson.getBody().get().addStatement(String.format("return new %s(%s);", name, getMapper()));
 
       MethodDeclaration toJson = classDecl.addMethod("toJson").setPublic(true);
       if (type.equals("object")) {
@@ -801,7 +907,8 @@ public class CdpClientGenerator {
         case "any":
           return "input.read(Object.class)";
         case "object":
-          return "input.read(new com.google.common.reflect.TypeToken<java.util.Map<String, Object>>() {}.getType())";
+          return "input.read(new com.google.common.reflect.TypeToken<java.util.Map<String,"
+              + " Object>>() {}.getType())";
         case "array":
           return "input.nextString()";
         default:
@@ -845,41 +952,61 @@ public class CdpClientGenerator {
     public TypeDeclaration<?> toTypeDeclaration() {
       EnumDeclaration enumDecl = new EnumDeclaration().setName(capitalize(name)).setPublic(true);
 
-      values.forEach(val ->
-        enumDecl.addEnumConstant(toJavaConstant(val)).addArgument(String.format("\"%s\"", val))
-      );
+      values.forEach(
+          val ->
+              enumDecl
+                  .addEnumConstant(toJavaConstant(val))
+                  .addArgument(String.format("\"%s\"", val)));
 
       enumDecl.addField(String.class, "value").setPrivate(true);
 
-      enumDecl.addConstructor()
+      enumDecl
+          .addConstructor()
           .addParameter(String.class, "value")
-          .getBody().addStatement("this.value = value;");
+          .getBody()
+          .addStatement("this.value = value;");
 
-      enumDecl.addMethod("fromString").setPublic(true).setStatic(true)
+      enumDecl
+          .addMethod("fromString")
+          .setPublic(true)
+          .setStatic(true)
           .addParameter(String.class, "s")
           .setType(name)
-          .getBody().get()
-          .addStatement(String.format("return java.util.Arrays.stream(%s.values())\n"
-                                      + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
-                                      + ".findFirst()\n"
-                                      + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
-                                      + "\"Given value \" + s + \" is not found within %s \"));",
-                                      name, name));
+          .getBody()
+          .get()
+          .addStatement(
+              String.format(
+                  "return java.util.Arrays.stream(%s.values())\n"
+                      + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
+                      + ".findFirst()\n"
+                      + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
+                      + "\"Given value \" + s + \" is not found within %s \"));",
+                  name, name));
 
-      enumDecl.addMethod("toString").setPublic(true)
-        .setType(String.class)
-        .getBody().get()
-          .addStatement("return value;");
-
-      enumDecl.addMethod("toJson").setPublic(true)
+      enumDecl
+          .addMethod("toString")
+          .setPublic(true)
           .setType(String.class)
-          .getBody().get()
+          .getBody()
+          .get()
           .addStatement("return value;");
 
-      enumDecl.addMethod("fromJson").setPrivate(true).setStatic(true)
+      enumDecl
+          .addMethod("toJson")
+          .setPublic(true)
+          .setType(String.class)
+          .getBody()
+          .get()
+          .addStatement("return value;");
+
+      enumDecl
+          .addMethod("fromJson")
+          .setPrivate(true)
+          .setStatic(true)
           .setType(name)
           .addParameter(JsonInput.class, "input")
-          .getBody().get()
+          .getBody()
+          .get()
           .addStatement("return fromString(input.nextString());");
 
       return enumDecl;
@@ -939,81 +1066,110 @@ public class CdpClientGenerator {
     }
 
     public TypeDeclaration<?> toTypeDeclaration() {
-      ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration().setName(capitalize(name));
+      ClassOrInterfaceDeclaration classDecl =
+          new ClassOrInterfaceDeclaration().setName(capitalize(name));
 
-      properties.stream().filter(property -> property.type instanceof EnumType).forEach(
-          property -> classDecl.addMember(property.type.toTypeDeclaration()));
+      properties.stream()
+          .filter(property -> property.type instanceof EnumType)
+          .forEach(property -> classDecl.addMember(property.type.toTypeDeclaration()));
 
-      properties.forEach(property -> classDecl.addField(
-          property.getJavaType(), property.getFieldName()).setPrivate(true).setFinal(true));
+      properties.forEach(
+          property ->
+              classDecl
+                  .addField(property.getJavaType(), property.getFieldName())
+                  .setPrivate(true)
+                  .setFinal(true));
 
       ConstructorDeclaration constructor = classDecl.addConstructor().setPublic(true);
       properties.forEach(
           property -> constructor.addParameter(property.getJavaType(), property.getFieldName()));
-      properties.forEach(property -> {
-        if (property.optional) {
-          constructor.getBody().addStatement(String.format(
-              "this.%s = %s;", property.getFieldName(), property.getFieldName()));
-        } else {
-          constructor.getBody().addStatement(String.format(
-              "this.%s = java.util.Objects.requireNonNull(%s, \"%s is required\");",
-              property.getFieldName(), property.getFieldName(), property.name));
-        }
-      });
+      properties.forEach(
+          property -> {
+            if (property.optional) {
+              constructor
+                  .getBody()
+                  .addStatement(
+                      String.format(
+                          "this.%s = %s;", property.getFieldName(), property.getFieldName()));
+            } else {
+              constructor
+                  .getBody()
+                  .addStatement(
+                      String.format(
+                          "this.%s = java.util.Objects.requireNonNull(%s, \"%s is required\");",
+                          property.getFieldName(), property.getFieldName(), property.name));
+            }
+          });
 
-      properties.forEach(property -> {
-        MethodDeclaration getter = classDecl.addMethod("get" + capitalize(property.name)).setPublic(true);
-        getter.setType(property.getJavaType());
-        if (property.description != null) {
-          getter.setJavadocComment(property.description);
-        }
-        if (property.experimental) {
-          getter.addAnnotation(Beta.class);
-        }
-        if (property.deprecated) {
-          getter.addAnnotation(Deprecated.class);
-        }
-        getter.getBody().get().addStatement(String.format("return %s;", property.getFieldName()));
-      });
+      properties.forEach(
+          property -> {
+            MethodDeclaration getter =
+                classDecl.addMethod("get" + capitalize(property.name)).setPublic(true);
+            getter.setType(property.getJavaType());
+            if (property.description != null) {
+              getter.setJavadocComment(property.description);
+            }
+            if (property.experimental) {
+              getter.addAnnotation(Beta.class);
+            }
+            if (property.deprecated) {
+              getter.addAnnotation(Deprecated.class);
+            }
+            getter
+                .getBody()
+                .get()
+                .addStatement(String.format("return %s;", property.getFieldName()));
+          });
 
       MethodDeclaration fromJson = classDecl.addMethod("fromJson").setPrivate(true).setStatic(true);
       fromJson.setType(capitalize(name));
       fromJson.addParameter(JsonInput.class, "input");
       BlockStmt body = fromJson.getBody().get();
       if (properties.size() > 0) {
-        properties.forEach(property -> {
-          if (property.optional) {
-            body.addStatement(String.format("%s %s = java.util.Optional.empty();", property.getJavaType(), property.getFieldName()));
-          } else {
-            body.addStatement(String.format("%s %s = %s;", property.getJavaType(), property.getFieldName(), property.getDefaultValue()));
-          }
-        });
+        properties.forEach(
+            property -> {
+              if (property.optional) {
+                body.addStatement(
+                    String.format(
+                        "%s %s = java.util.Optional.empty();",
+                        property.getJavaType(), property.getFieldName()));
+              } else {
+                body.addStatement(
+                    String.format(
+                        "%s %s = %s;",
+                        property.getJavaType(),
+                        property.getFieldName(),
+                        property.getDefaultValue()));
+              }
+            });
 
         body.addStatement("input.beginObject();");
         body.addStatement(
             "while (input.hasNext()) {"
-            + "switch (input.nextName()) {"
-            + properties.stream().map(property -> {
-              String mapper = String.format(
-                property.optional ? "java.util.Optional.ofNullable(%s)" : "%s",
-                property.type.getMapper());
+                + "switch (input.nextName()) {"
+                + properties.stream()
+                    .map(
+                        property -> {
+                          String mapper =
+                              String.format(
+                                  property.optional ? "java.util.Optional.ofNullable(%s)" : "%s",
+                                  property.type.getMapper());
 
-              return String.format(
-                "case \"%s\":"
-                  + "  %s = %s;"
-                  + "  break;",
-                property.name, property.getFieldName(), mapper);
-            })
-                .collect(joining("\n"))
-            + "  default:\n"
-            + "    input.skipValue();\n"
-            + "    break;"
-            + "}}");
+                          return String.format(
+                              "case \"%s\":" + "  %s = %s;" + "  break;",
+                              property.name, property.getFieldName(), mapper);
+                        })
+                    .collect(joining("\n"))
+                + "  default:\n"
+                + "    input.skipValue();\n"
+                + "    break;"
+                + "}}");
         body.addStatement("input.endObject();");
-        body.addStatement(String.format(
-            "return new %s(%s);", capitalize(name),
-            properties.stream().map(VariableSpec::getFieldName)
-                .collect(joining(", "))));
+        body.addStatement(
+            String.format(
+                "return new %s(%s);",
+                capitalize(name),
+                properties.stream().map(VariableSpec::getFieldName).collect(joining(", "))));
       } else {
         body.addStatement(String.format("return new %s();", capitalize(name)));
       }
@@ -1037,7 +1193,8 @@ public class CdpClientGenerator {
 
     @Override
     public String getTypeToken() {
-      return String.format("new com.google.common.reflect.TypeToken<%s>() {}.getType()", getJavaType());
+      return String.format(
+          "new com.google.common.reflect.TypeToken<%s>() {}.getType()", getJavaType());
     }
 
     @Override
@@ -1063,10 +1220,12 @@ public class CdpClientGenerator {
 
       ConstructorDeclaration constructor = classDecl.addConstructor().setPublic(true);
       constructor.addParameter(getJavaType(), propertyName);
-      constructor.getBody().addStatement(String.format(
-          "this.%s = java.util.Objects.requireNonNull(%s, \"Missing value for %s\");",
-          propertyName, propertyName, name
-      ));
+      constructor
+          .getBody()
+          .addStatement(
+              String.format(
+                  "this.%s = java.util.Objects.requireNonNull(%s, \"Missing value for %s\");",
+                  propertyName, propertyName, name));
 
       MethodDeclaration fromJson = classDecl.addMethod("fromJson").setPrivate(true).setStatic(true);
       fromJson.setType(name);
@@ -1088,18 +1247,19 @@ public class CdpClientGenerator {
     }
 
     public void parse(Domain domain, Map<String, Object> json) {
-      json.forEach((key, value) -> {
-        switch (key) {
-          case "type":
-            itemType = new SimpleType("", (String) value);
-            break;
-          case "$ref":
-            itemType = new RefType("", domain, (String) value);
-            break;
-          default:
-            throw new RuntimeException("Parsing event: unexpected key " + key);
-        }
-      });
+      json.forEach(
+          (key, value) -> {
+            switch (key) {
+              case "type":
+                itemType = new SimpleType("", (String) value);
+                break;
+              case "$ref":
+                itemType = new RefType("", domain, (String) value);
+                break;
+              default:
+                throw new RuntimeException("Parsing event: unexpected key " + key);
+            }
+          });
     }
   }
 
@@ -1131,10 +1291,12 @@ public class CdpClientGenerator {
         // external domain
         String extDomain = type.substring(0, dotPoint);
         String typeName = type.substring(dotPoint + 1);
-        return String.format("%s.%s.model.%s", domain.model.basePackage, extDomain.toLowerCase(), typeName);
+        return String.format(
+            "%s.%s.model.%s", domain.model.basePackage, extDomain.toLowerCase(), typeName);
 
       } else {
-        return String.format("%s.%s.model.%s", domain.model.basePackage, domain.name.toLowerCase(), type);
+        return String.format(
+            "%s.%s.model.%s", domain.model.basePackage, domain.name.toLowerCase(), type);
       }
     }
 

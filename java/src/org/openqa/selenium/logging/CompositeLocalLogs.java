@@ -21,13 +21,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * LocalLogs implementation that holds two other local logs.
- * NOTE: The two local logs are not equal.
- * The first LocalLogs instance is assumed to pre-define which log types
- * it supports, so addEntry will not be called on the first instance unless it pre-declares
- * what it supports.
- * If the first LocalLogs instance does not support this log type, addEntry will be called
- * on the second LocalLogs instance.
+ * LocalLogs implementation that holds two other local logs. NOTE: The two local logs are not equal.
+ * The first LocalLogs instance is assumed to pre-define which log types it supports, so addEntry
+ * will not be called on the first instance unless it pre-declares what it supports. If the first
+ * LocalLogs instance does not support this log type, addEntry will be called on the second
+ * LocalLogs instance.
  */
 class CompositeLocalLogs extends LocalLogs {
   private LocalLogs predefinedTypeLogger;

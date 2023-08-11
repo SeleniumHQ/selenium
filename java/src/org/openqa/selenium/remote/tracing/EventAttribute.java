@@ -19,8 +19,7 @@ package org.openqa.selenium.remote.tracing;
 
 public class EventAttribute {
 
-  private EventAttribute() {
-  }
+  private EventAttribute() {}
 
   public static EventAttributeValue setValue(String value) {
     return new EventAttributeValue(value);
@@ -54,4 +53,3 @@ public class EventAttribute {
     return new EventAttributeValue(value);
   }
 }
-

@@ -24,13 +24,9 @@
 const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const spawnSync = require('child_process').spawnSync
 
-/**
- * currently supported browsers for selenium-manager
- * @type {string[]}
- */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+let debugMessagePrinted = false;
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -47,10 +43,17 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  const filePath = path.join(__dirname, '..', '/bin', directory, file)
+  let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+
+  const filePath = path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager`)
+  }
+
+  if (!debugMessagePrinted) {
+    console.debug(`Selenium Manager binary found at ${filePath}`)
+    debugMessagePrinted = true; // Set the flag to true after printing the debug message
   }
 
   return filePath
@@ -58,33 +61,87 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Browser|string} browser name to fetch the driver
- * @returns {string} path of the driver location
+ * @param {Capabilities} options browser options to fetch the driver
+ * @returns {{browserPath: string, driverPath: string}} path of the driver and
+ * browser location
  */
 
-function driverLocation(browser) {
-  if (!Browser.includes(browser.toLocaleString())) {
-    throw new Error(
-      `Unable to locate driver associated with browser name: ${browser}`
-    )
+function driverLocation(options) {
+  let args = ['--browser', options.getBrowserName(), '--output', 'json']
+
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
+    args.push('--browser-version', options.getBrowserVersion())
   }
 
-  let args = [getBinary(), '--browser', browser]
-  let result
+  const vendorOptions =
+    options.get('goog:chromeOptions') ||
+    options.get('ms:edgeOptions') ||
+    options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
+    args.push('--browser-path', '"' + vendorOptions.binary + '"')
+  }
 
+  const proxyOptions = options.getProxy();
+
+  // Check if proxyOptions exists and has properties
+  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
+    const httpProxy = proxyOptions['httpProxy'];
+    const sslProxy = proxyOptions['sslProxy'];
+
+    if (httpProxy !== undefined) {
+      args.push('--proxy', httpProxy);
+    }
+
+    else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy);
+    }
+  }
+
+  const smBinary = getBinary()
+  const spawnResult = spawnSync(smBinary, args)
+  let output
+  if (spawnResult.status) {
+    let errorMessage
+    if (spawnResult.stderr.toString()) {
+      errorMessage = spawnResult.stderr.toString()
+    }
+    if (spawnResult.stdout.toString()) {
+      try {
+        output = JSON.parse(spawnResult.stdout.toString())
+        logOutput(output)
+        errorMessage = output.result.message
+      } catch (e) {
+        errorMessage = e.toString()
+      }
+    }
+    throw new Error(
+      `Error executing command for ${smBinary} with ${args}: ${errorMessage}`
+    )
+  }
   try {
-    result = execSync(args.join(' ')).toString()
+    output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
     throw new Error(
-      `Error executing command with ${args}\n${e.stdout.toString()}${e.stderr.toString()}`
+      `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
     )
   }
 
-  if (!result.startsWith('INFO\t')) {
-    throw new Error(`Unsuccessful command executed: ${args}\n${result}`)
+  logOutput(output)
+  return {
+    driverPath: output.result.driver_path,
+    browserPath: output.result.browser_path,
   }
+}
 
-  return result.replace('INFO\t', '').trim()
+function logOutput (output) {
+  for (const key in output.logs) {
+    if (output.logs[key].level === 'WARN') {
+      console.warn(`${output.logs[key].message}`)
+    }
+    if (['DEBUG', 'INFO'].includes(output.logs[key].level)) {
+      console.debug(`${output.logs[key].message}`)
+    }
+  }
 }
 
 // PUBLIC API

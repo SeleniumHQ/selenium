@@ -20,4 +20,3 @@ package org.openqa.selenium.remote;
 public interface HasMagicNumbers {
   int getMagicNumber();
 }
-

@@ -34,12 +34,12 @@ from .exceptions import MoveTargetOutOfBoundsException
 from .exceptions import NoAlertPresentException
 from .exceptions import NoSuchAttributeException
 from .exceptions import NoSuchCookieException
+from .exceptions import NoSuchDriverException
 from .exceptions import NoSuchElementException
 from .exceptions import NoSuchFrameException
 from .exceptions import NoSuchShadowRootException
 from .exceptions import NoSuchWindowException
 from .exceptions import ScreenshotException
-from .exceptions import SeleniumManagerException
 from .exceptions import SessionNotCreatedException
 from .exceptions import StaleElementReferenceException
 from .exceptions import TimeoutException
@@ -56,6 +56,7 @@ __all__ = [
     "NoSuchWindowException",
     "NoSuchElementException",
     "NoSuchAttributeException",
+    "NoSuchDriverException",
     "NoSuchShadowRootException",
     "StaleElementReferenceException",
     "InvalidElementStateException",
@@ -82,5 +83,4 @@ __all__ = [
     "InvalidSessionIdException",
     "SessionNotCreatedException",
     "UnknownMethodException",
-    "SeleniumManagerException",
 ]

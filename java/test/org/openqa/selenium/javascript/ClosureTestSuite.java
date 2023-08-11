@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.javascript;
 
-import org.junit.jupiter.api.BeforeAll;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.io.IOException;
-
-import static org.assertj.core.api.Assumptions.assumeThat;
+import org.junit.jupiter.api.BeforeAll;
 
 class ClosureTestSuite extends JavaScriptTestSuite {
 
@@ -33,5 +32,4 @@ class ClosureTestSuite extends JavaScriptTestSuite {
   public static void checkShouldRun() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
-
 }

@@ -17,8 +17,20 @@
 
 package org.openqa.selenium.devtools.v85;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -37,19 +49,6 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.AbstractMap;
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-
 public class V85Network extends Network<AuthRequired, RequestPaused> {
 
   private static final Logger LOG = Logger.getLogger(V85Network.class.getName());
@@ -61,7 +60,7 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
     return org.openqa.selenium.devtools.v85.network.Network.setUserAgentOverride(
-      userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
+        userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
@@ -77,10 +76,13 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected Command<Void> enableFetchForAllPatterns() {
     return Fetch.enable(
-      Optional.of(ImmutableList.of(
-        new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
-        new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.RESPONSE)))),
-      Optional.of(true));
+        Optional.of(
+            ImmutableList.of(
+                new RequestPattern(
+                    Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
+                new RequestPattern(
+                    Optional.of("*"), Optional.empty(), Optional.of(RequestStage.RESPONSE)))),
+        Optional.of(true));
   }
 
   @Override
@@ -99,20 +101,22 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
-  protected Command<Void> continueWithAuth(AuthRequired authRequired, UsernameAndPassword credentials) {
+  protected Command<Void> continueWithAuth(
+      AuthRequired authRequired, UsernameAndPassword credentials) {
     return Fetch.continueWithAuth(
-      authRequired.getRequestId(),
-      new AuthChallengeResponse(
-        AuthChallengeResponse.Response.PROVIDECREDENTIALS,
-        Optional.of(credentials.username()),
-        Optional.ofNullable(credentials.password())));
+        authRequired.getRequestId(),
+        new AuthChallengeResponse(
+            AuthChallengeResponse.Response.PROVIDECREDENTIALS,
+            Optional.of(credentials.username()),
+            Optional.ofNullable(credentials.password())));
   }
 
   @Override
   protected Command<Void> cancelAuth(AuthRequired authRequired) {
     return Fetch.continueWithAuth(
-      authRequired.getRequestId(),
-      new AuthChallengeResponse(AuthChallengeResponse.Response.CANCELAUTH, Optional.empty(), Optional.empty()));
+        authRequired.getRequestId(),
+        new AuthChallengeResponse(
+            AuthChallengeResponse.Response.CANCELAUTH, Optional.empty(), Optional.empty()));
   }
 
   @Override
@@ -122,14 +126,17 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
 
   @Override
   public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
-    if (pausedReq.getResponseStatusCode().isPresent() || pausedReq.getResponseErrorReason().isPresent()) {
+    if (pausedReq.getResponseStatusCode().isPresent()
+        || pausedReq.getResponseErrorReason().isPresent()) {
       String body;
       boolean bodyIsBase64Encoded;
 
       try {
-        Fetch.GetResponseBodyResponse base64Body = devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
+        Fetch.GetResponseBodyResponse base64Body =
+            devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
         body = base64Body.getBody();
-        bodyIsBase64Encoded = base64Body.getBase64Encoded() != null && base64Body.getBase64Encoded();
+        bodyIsBase64Encoded =
+            base64Body.getBase64Encoded() != null && base64Body.getBase64Encoded();
       } catch (DevToolsException e) {
         // Redirects don't seem to have bodies
         int code = pausedReq.getResponseStatusCode().orElse(HTTP_OK);
@@ -142,28 +149,30 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
       }
 
       List<Map.Entry<String, String>> headers = new LinkedList<>();
-      pausedReq.getResponseHeaders().ifPresent(resHeaders ->
-        resHeaders.forEach(header -> headers.add(new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
+      pausedReq
+          .getResponseHeaders()
+          .ifPresent(
+              resHeaders ->
+                  resHeaders.forEach(
+                      header ->
+                          headers.add(
+                              new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
 
-      HttpResponse res = createHttpResponse(
-        pausedReq.getResponseStatusCode(),
-        body,
-        bodyIsBase64Encoded,
-        headers);
+      HttpResponse res =
+          createHttpResponse(pausedReq.getResponseStatusCode(), body, bodyIsBase64Encoded, headers);
 
       return Either.right(res);
     }
 
     Request cdpReq = pausedReq.getRequest();
 
-    HttpRequest req = createHttpRequest(
-      cdpReq.getMethod(),
-      cdpReq.getUrl(),
-      cdpReq.getHeaders(),
-      cdpReq.getPostData());
+    HttpRequest req =
+        createHttpRequest(
+            cdpReq.getMethod(), cdpReq.getUrl(), cdpReq.getHeaders(), cdpReq.getPostData());
 
     return Either.left(req);
   }
+
   @Override
   protected String getRequestId(RequestPaused pausedReq) {
     return pausedReq.getRequestId().toString();
@@ -172,11 +181,11 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected Command<Void> continueWithoutModification(RequestPaused pausedRequest) {
     return Fetch.continueRequest(
-      pausedRequest.getRequestId(),
-      Optional.empty(),
-      Optional.empty(),
-      Optional.empty(),
-      Optional.empty());
+        pausedRequest.getRequestId(),
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty());
   }
 
   @Override
@@ -189,20 +198,26 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
     }
 
     List<HeaderEntry> headers = new LinkedList<>();
-    req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+    req.getHeaderNames()
+        .forEach(
+            name ->
+                req.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
 
     return Fetch.continueRequest(
-      pausedReq.getRequestId(),
-      Optional.empty(),
-      Optional.of(req.getMethod().toString()),
-      Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
-      Optional.of(headers));
+        pausedReq.getRequestId(),
+        Optional.empty(),
+        Optional.of(req.getMethod().toString()),
+        Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
+        Optional.of(headers));
   }
 
   @Override
   protected Command<Void> fulfillRequest(RequestPaused pausedReq, HttpResponse res) {
     List<HeaderEntry> headers = new LinkedList<>();
-    res.getHeaderNames().forEach(name -> res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+    res.getHeaderNames()
+        .forEach(
+            name ->
+                res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = res.getContent().get()) {
@@ -212,11 +227,11 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
     }
 
     return Fetch.fulfillRequest(
-      pausedReq.getRequestId(),
-      res.getStatus(),
-      Optional.of(headers),
-      Optional.empty(),
-      Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
-      Optional.empty());
+        pausedReq.getRequestId(),
+        res.getStatus(),
+        Optional.of(headers),
+        Optional.empty(),
+        Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
+        Optional.empty());
   }
 }

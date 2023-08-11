@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.javascript;
 
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,22 +41,7 @@ import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
-
-/**
- * JUnit5 test base for Closure-based JavaScript tests.
- */
+/** JUnit5 test base for Closure-based JavaScript tests. */
 class JavaScriptTestSuite {
 
   private final Supplier<WebDriver> driverSupplier;
@@ -80,30 +77,32 @@ class JavaScriptTestSuite {
   @TestFactory
   public Collection<DynamicTest> dynamicTests() throws IOException {
     final Path baseDir = InProject.findProjectRoot();
-    final Function<String, URL> pathToUrlFn = s -> {
-      AppServer appServer = GlobalTestEnvironment.get().getAppServer();
-      try {
-        String url = "/" + s;
-        if (isBazel() && !url.startsWith("/common/generated/")) {
-          url = "/filez/selenium" + url;
-        }
-        return new URL(appServer.whereIs(url));
-      } catch (MalformedURLException e) {
-        throw new RuntimeException(e);
-      }
-    };
+    final Function<String, URL> pathToUrlFn =
+        s -> {
+          AppServer appServer = GlobalTestEnvironment.get().getAppServer();
+          try {
+            String url = "/" + s;
+            if (isBazel() && !url.startsWith("/common/generated/")) {
+              url = "/filez/selenium" + url;
+            }
+            return new URL(appServer.whereIs(url));
+          } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+          }
+        };
 
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()
-      .map(file -> {
-        final String path = TestFileLocator.getTestFilePath(baseDir, file);
-        String title = path.replaceAll(".html$", "");
-        ClosureTestStatement testStatement = new ClosureTestStatement(
-          driverSupplier, path, pathToUrlFn, timeout);
+        .map(
+            file -> {
+              final String path = TestFileLocator.getTestFilePath(baseDir, file);
+              String title = path.replaceAll(".html$", "");
+              ClosureTestStatement testStatement =
+                  new ClosureTestStatement(driverSupplier, path, pathToUrlFn, timeout);
 
-        return dynamicTest(title, testStatement::evaluate);
-      })
-      .collect(toList());
+              return dynamicTest(title, testStatement::evaluate);
+            })
+        .collect(toList());
   }
 
   private static class DriverSupplier implements Supplier<WebDriver>, Closeable {

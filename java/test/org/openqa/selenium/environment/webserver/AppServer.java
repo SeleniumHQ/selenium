@@ -58,5 +58,4 @@ public interface AppServer {
       return networkUtils.getPrivateLocalAddress();
     }
   }
-
 }

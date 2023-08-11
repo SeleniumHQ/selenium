@@ -27,12 +27,11 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.List;
 
 class ElementDomAttributeTest extends JupiterTestBase {
 
@@ -249,10 +248,12 @@ class ElementDomAttributeTest extends JupiterTestBase {
 
     String onClickValue = mouseclickDiv.getDomAttribute("onclick");
     String expectedOnClickValue = "displayMessage('mouse click');";
-    assertThat(onClickValue).as("Javascript code").isIn(
-      "javascript:" + expectedOnClickValue, // Non-IE
-      "function anonymous()\n{\n" + expectedOnClickValue + "\n}", // IE
-      "function onclick()\n{\n" + expectedOnClickValue + "\n}"); // IE
+    assertThat(onClickValue)
+        .as("Javascript code")
+        .isIn(
+            "javascript:" + expectedOnClickValue, // Non-IE
+            "function anonymous()\n{\n" + expectedOnClickValue + "\n}", // IE
+            "function onclick()\n{\n" + expectedOnClickValue + "\n}"); // IE
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertThat(mousedownDiv.getDomAttribute("onclick")).isNull();
@@ -357,11 +358,15 @@ class ElementDomAttributeTest extends JupiterTestBase {
   }
 
   private void checkEnumeratedAttribute(String name, String... values) {
-    asList(values).forEach(value -> {
-      driver.get(appServer.create(new Page().withBody(
-        String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
-      assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEqualTo(value);
-    });
+    asList(values)
+        .forEach(
+            value -> {
+              driver.get(
+                  appServer.create(
+                      new Page()
+                          .withBody(String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
+              assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEqualTo(value);
+            });
 
     driver.get(appServer.create(new Page().withBody(String.format("<div id=\"attr\" %s>", name))));
     assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEmpty();

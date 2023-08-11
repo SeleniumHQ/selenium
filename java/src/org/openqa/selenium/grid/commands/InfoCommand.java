@@ -22,11 +22,6 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
 import com.google.auto.service.AutoService;
 import com.google.common.io.Resources;
-import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.WrappedPrintWriter;
-import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.server.HelpFlags;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,6 +31,10 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.server.HelpFlags;
 
 @AutoService(CliCommand.class)
 public class InfoCommand implements CliCommand {
@@ -62,11 +61,8 @@ public class InfoCommand implements CliCommand {
     HelpFlags help = new HelpFlags();
     InfoFlags topic = new InfoFlags();
 
-    JCommander commander = JCommander.newBuilder()
-      .programName("selenium")
-      .addObject(help)
-      .addObject(topic)
-      .build();
+    JCommander commander =
+        JCommander.newBuilder().programName("selenium").addObject(help).addObject(topic).build();
     commander.setConsole(new DefaultConsole(out));
 
     return () -> {
@@ -122,7 +118,8 @@ public class InfoCommand implements CliCommand {
       }
 
       try (PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0)) {
-        outWriter.printf("%n%s%n%s%n%n", title, String.join("", Collections.nCopies(title.length(), "=")));
+        outWriter.printf(
+            "%n%s%n%s%n%n", title, String.join("", Collections.nCopies(title.length(), "=")));
         outWriter.print(content);
         outWriter.println("\n\n");
       }
@@ -130,7 +127,8 @@ public class InfoCommand implements CliCommand {
   }
 
   private String readContent(String path) throws IOException {
-    String unformattedText = Resources.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+    String unformattedText =
+        Resources.toString(Resources.getResource(path), StandardCharsets.UTF_8);
     StringBuilder formattedText = new StringBuilder();
     try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText))) {
       boolean inCode = false;
@@ -149,9 +147,7 @@ public class InfoCommand implements CliCommand {
             formattedText.append("\n");
           }
           formattedText.append(line);
-          if (inCode ||
-            line.matches("^\\s*\\*.*") ||
-            line.matches("^\\s*\\d+\\..*")) {
+          if (inCode || line.matches("^\\s*\\*.*") || line.matches("^\\s*\\d+\\..*")) {
             formattedText.append("\n");
           } else {
             formattedText.append(" ");

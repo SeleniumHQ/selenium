@@ -17,19 +17,19 @@
 
 package org.openqa.selenium.remote.http;
 
+import java.util.Locale;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 
-import java.util.Locale;
-
 public class AddSeleniumUserAgent implements Filter {
 
-  public static final String USER_AGENT = String.format(
-      "selenium/%s (java %s)",
-      new BuildInfo().getReleaseLabel(),
-      (Platform.getCurrent().family() == null ?
-       Platform.getCurrent().toString().toLowerCase(Locale.US) :
-       Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
+  public static final String USER_AGENT =
+      String.format(
+          "selenium/%s (java %s)",
+          new BuildInfo().getReleaseLabel(),
+          (Platform.getCurrent().family() == null
+              ? Platform.getCurrent().toString().toLowerCase(Locale.US)
+              : Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
 
   @Override
   public HttpHandler apply(HttpHandler next) {

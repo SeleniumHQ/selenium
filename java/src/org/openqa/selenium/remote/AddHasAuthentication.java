@@ -21,6 +21,8 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
+import java.util.function.Predicate;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.WebDriver;
@@ -28,17 +30,11 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.internal.Require;
 
-import java.util.function.Predicate;
-import java.util.logging.Logger;
+public class AddHasAuthentication implements AugmenterProvider<HasAuthentication> {
 
-public class AddHasAuthentication
-  implements AugmenterProvider<HasAuthentication> {
-
-  private static final Logger logger = Logger.getLogger(AddHasAuthentication.class.getName());
-  private static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
-    CHROME.is(name) ||
-    EDGE.is(name) ||
-    OPERA.is(name);
+  private static final Logger LOG = Logger.getLogger(AddHasAuthentication.class.getName());
+  private static final Predicate<String> IS_CHROMIUM_BROWSER =
+      name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
 
   @Override
   public Predicate<Capabilities> isApplicable() {
@@ -51,7 +47,8 @@ public class AddHasAuthentication
   }
 
   @Override
-  public HasAuthentication getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  public HasAuthentication getImplementation(
+      Capabilities capabilities, ExecuteMethod executeMethod) {
     return (whenThisMatches, useTheseCredentials) -> {
       Require.nonNull("Check to use to see how we should authenticate", whenThisMatches);
       Require.nonNull("Credentials to use when authenticating", useTheseCredentials);

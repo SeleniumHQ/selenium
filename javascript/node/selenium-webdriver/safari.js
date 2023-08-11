@@ -22,37 +22,10 @@
 'use strict'
 
 const http = require('./http')
-const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
-
-/**
- * _Synchronously_ attempts to locate the IE driver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return process.platform === 'darwin'
-    ? io.findInPath('safaridriver', true)
-    : null
-}
-
-/**
- * @return {string} .
- * @throws {Error}
- */
-function findSafariDriver() {
-  let exe = locateSynchronously()
-  if (!exe) {
-    throw Error(
-      `The safaridriver executable could not be found on the current PATH.
-      Please ensure you are using Safari 10.0 or above.`
-    )
-  }
-  return exe
-}
+const { getPath } = require('./common/driverFinder')
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -66,12 +39,12 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the safaridriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findSafariDriver())
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 }
 
-const OPTIONS_CAPABILITY_KEY = 'safari.options'
+const OPTIONS_CAPABILITY_KEY = 'safari:options'
 const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview'
 
 /**
@@ -150,6 +123,9 @@ class Driver extends webdriver.WebDriver {
     }
 
     let service = new ServiceBuilder(exe).build()
+    if (!service.getExecutable()) {
+      service.setExecutable(getPath(caps).driverPath)
+    }
     let executor = new http.Executor(
       service.start().then((url) => new http.HttpClient(url))
     )
@@ -165,4 +141,3 @@ class Driver extends webdriver.WebDriver {
 exports.Driver = Driver
 exports.Options = Options
 exports.ServiceBuilder = ServiceBuilder
-exports.locateSynchronously = locateSynchronously

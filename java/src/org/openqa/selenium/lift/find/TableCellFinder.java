@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.lift.find;
 
-/**
- * A {@link Finder} for HTML table cell "td" tags.
- */
+/** A {@link Finder} for HTML table cell "td" tags. */
+@Deprecated
 public class TableCellFinder extends HtmlTagFinder {
 
-  private TableCellFinder() {
-  }
+  private TableCellFinder() {}
 
   @Override
   protected String tagName() {

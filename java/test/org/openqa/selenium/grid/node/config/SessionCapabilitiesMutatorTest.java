@@ -22,16 +22,15 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 public class SessionCapabilitiesMutatorTest {
 
@@ -41,29 +40,34 @@ public class SessionCapabilitiesMutatorTest {
 
   @Test
   void shouldMergeStereotypeWithoutOptionsWithCapsWithOptions() {
-    stereotype = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "unhandledPromptBehavior", "accept");
+    stereotype =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "unhandledPromptBehavior", "accept");
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> chromeOptions = new HashMap<>();
     chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "goog:chromeOptions", chromeOptions,
-      "pageLoadStrategy", "normal");
+    capabilities =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "goog:chromeOptions", chromeOptions,
+            "pageLoadStrategy", "normal");
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities.get("browserName")).isEqualTo("chrome");
     assertThat(modifiedCapabilities.get("unhandledPromptBehavior")).isEqualTo("accept");
     assertThat(modifiedCapabilities.get("pageLoadStrategy")).isEqualTo("normal");
     assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .contains("incognito", "window-size=500,500");
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .contains("incognito", "window-size=500,500");
   }
 
   @Test
@@ -71,26 +75,31 @@ public class SessionCapabilitiesMutatorTest {
     Map<String, Object> chromeOptions = new HashMap<>();
     chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
 
-    stereotype = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "goog:chromeOptions", chromeOptions,
-      "unhandledPromptBehavior", "accept");
+    stereotype =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "goog:chromeOptions", chromeOptions,
+            "unhandledPromptBehavior", "accept");
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "pageLoadStrategy", "normal");
+    capabilities =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "pageLoadStrategy", "normal");
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities.get("browserName")).isEqualTo("chrome");
     assertThat(modifiedCapabilities.get("unhandledPromptBehavior")).isEqualTo("accept");
     assertThat(modifiedCapabilities.get("pageLoadStrategy")).isEqualTo("normal");
     assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .contains("incognito", "window-size=500,500");
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .contains("incognito", "window-size=500,500");
   }
 
   @Test
@@ -99,15 +108,15 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put("args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
+    stereotypeOptions.put(
+        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
     stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
     stereotypeOptions.put("binary", "/path/to/binary");
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
-    stereotype = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "goog:chromeOptions", stereotypeOptions);
+    stereotype =
+        new ImmutableCapabilities("browserName", "chrome", "goog:chromeOptions", stereotypeOptions);
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
@@ -118,32 +127,39 @@ public class SessionCapabilitiesMutatorTest {
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "goog:chromeOptions", capabilityOptions);
+    capabilities =
+        new ImmutableCapabilities("browserName", "chrome", "goog:chromeOptions", capabilityOptions);
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
-
-    assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("incognito", "window-size=500,500", "--headless");
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .containsEntry("opt1", "val1")
-      .containsEntry("opt2", "val2")
-      .containsEntry("opt3", "val3");
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("incognito", "window-size=500,500", "--headless");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1, ext2);
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .containsEntry("opt1", "val1")
+        .containsEntry("opt2", "val2")
+        .containsEntry("opt3", "val3");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("goog:chromeOptions").asInstanceOf(MAP)
-      .extractingByKey("binary").asInstanceOf(STRING)
-      .isEqualTo("/path/to/binary");
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1, ext2);
+
+    assertThat(modifiedCapabilities)
+        .extractingByKey("goog:chromeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("binary")
+        .asInstanceOf(STRING)
+        .isEqualTo("/path/to/binary");
   }
 
   @Test
@@ -152,14 +168,15 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put("args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
+    stereotypeOptions.put(
+        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
     stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
-    stereotype = new ImmutableCapabilities(
-      "browserName", "microsoftedge",
-      "ms:edgeOptions", stereotypeOptions);
+    stereotype =
+        new ImmutableCapabilities(
+            "browserName", "microsoftedge", "ms:edgeOptions", stereotypeOptions);
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
@@ -170,31 +187,39 @@ public class SessionCapabilitiesMutatorTest {
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "microsoftedge",
-      "ms:edgeOptions", capabilityOptions);
+    capabilities =
+        new ImmutableCapabilities(
+            "browserName", "microsoftedge", "ms:edgeOptions", capabilityOptions);
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
-
-    assertThat(modifiedCapabilities)
-      .extractingByKey("ms:edgeOptions").asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("incognito", "window-size=500,500", "--headless");
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("ms:edgeOptions").asInstanceOf(MAP)
-      .containsEntry("opt1", "val1")
-      .containsEntry("opt2", "val2")
-      .containsEntry("opt3", "val3");
+        .extractingByKey("ms:edgeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("incognito", "window-size=500,500", "--headless");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("ms:edgeOptions").asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1, ext2);
+        .extractingByKey("ms:edgeOptions")
+        .asInstanceOf(MAP)
+        .containsEntry("opt1", "val1")
+        .containsEntry("opt2", "val2")
+        .containsEntry("opt3", "val3");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("ms:edgeOptions").asInstanceOf(MAP)
-      .extractingByKey("binary").isNull();
+        .extractingByKey("ms:edgeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1, ext2);
+
+    assertThat(modifiedCapabilities)
+        .extractingByKey("ms:edgeOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("binary")
+        .isEqualTo("/path/to/binary");
   }
 
   @Test
@@ -214,9 +239,9 @@ public class SessionCapabilitiesMutatorTest {
 
     stereotypeOptions.put("profile", "profile-string");
 
-    stereotype = new ImmutableCapabilities(
-      "browserName", "firefox",
-      "moz:firefoxOptions", stereotypeOptions);
+    stereotype =
+        new ImmutableCapabilities(
+            "browserName", "firefox", "moz:firefoxOptions", stereotypeOptions);
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
@@ -236,57 +261,85 @@ public class SessionCapabilitiesMutatorTest {
 
     capabilityOptions.put("binary", "/path/to/caps/binary");
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "firefox",
-      "moz:firefoxOptions", capabilityOptions);
+    capabilities =
+        new ImmutableCapabilities(
+            "browserName", "firefox", "moz:firefoxOptions", capabilityOptions);
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
-
-    assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions").asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent", "-headless");
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions").asInstanceOf(MAP)
-      .extractingByKey("prefs").asInstanceOf(MAP)
-      .containsEntry("opt1", "val1")
-      .containsEntry("opt2", "val2")
-      .containsEntry("opt3", "val3");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("verbose", "silent", "-headless");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions").asInstanceOf(MAP)
-      .extractingByKey("log").asInstanceOf(MAP)
-      .containsEntry("level", "info");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("prefs")
+        .asInstanceOf(MAP)
+        .containsEntry("opt1", "val1")
+        .containsEntry("opt2", "val2")
+        .containsEntry("opt3", "val3");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions").asInstanceOf(MAP)
-      .extractingByKey("binary").asInstanceOf(STRING)
-      .isEqualTo("/path/to/binary");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("log")
+        .asInstanceOf(MAP)
+        .containsEntry("level", "info");
 
     assertThat(modifiedCapabilities)
-      .extractingByKey("moz:firefoxOptions").asInstanceOf(MAP)
-      .extractingByKey("profile").asInstanceOf(STRING)
-      .isEqualTo("different-profile-string");
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("binary")
+        .asInstanceOf(STRING)
+        .isEqualTo("/path/to/binary");
+
+    assertThat(modifiedCapabilities)
+        .extractingByKey("moz:firefoxOptions")
+        .asInstanceOf(MAP)
+        .extractingByKey("profile")
+        .asInstanceOf(STRING)
+        .isEqualTo("different-profile-string");
   }
 
   @Test
   void shouldMergeTopLevelStereotypeAndCaps() {
-    stereotype = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "unhandledPromptBehavior", "accept",
-      "pageLoadStrategy", "eager");
+    stereotype =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "unhandledPromptBehavior", "accept",
+            "pageLoadStrategy", "eager");
 
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
-    capabilities = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "pageLoadStrategy", "normal");
+    capabilities =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "pageLoadStrategy", "normal");
 
-    Map<String, Object> modifiedCapabilities = sessionCapabilitiesMutator.apply(capabilities).asMap();
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
 
     assertThat(modifiedCapabilities.get("browserName")).isEqualTo("chrome");
     assertThat(modifiedCapabilities.get("unhandledPromptBehavior")).isEqualTo("accept");
     assertThat(modifiedCapabilities.get("pageLoadStrategy")).isEqualTo("normal");
+  }
+
+  @Test
+  void shouldAllowUnknownBrowserNames() {
+    stereotype = new ImmutableCapabilities("browserName", "safari");
+
+    sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
+
+    capabilities = new ImmutableCapabilities("browserName", "safari");
+
+    Map<String, Object> modifiedCapabilities =
+        sessionCapabilitiesMutator.apply(capabilities).asMap();
+
+    assertThat(modifiedCapabilities.get("browserName")).isEqualTo("safari");
   }
 }

@@ -140,7 +140,7 @@ namespace OpenQA.Selenium.DevTools
         public abstract Task AddResponseBody(HttpResponseData responseData);
 
         /// <summary>
-        /// Asynchronously contines an intercepted network response without modification.
+        /// Asynchronously continues an intercepted network response without modification.
         /// </summary>
         /// <param name="responseData">The <see cref="HttpResponseData"/> of the network response.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>

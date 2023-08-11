@@ -15,11 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.logging;
 
 public interface HasLogEvents {
 
   <X> void onLogEvent(EventType<X> kind);
-
 }

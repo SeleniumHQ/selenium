@@ -17,19 +17,17 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import java.util.function.BiFunction;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
-import java.util.function.BiFunction;
-
 public class NullPropagator implements Propagator {
   @Override
-  public <C> void inject(TraceContext toInject, C carrier, Setter<C> setter) {
-
-  }
+  public <C> void inject(TraceContext toInject, C carrier, Setter<C> setter) {}
 
   @Override
-  public <C> TraceContext extractContext(TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
+  public <C> TraceContext extractContext(
+      TraceContext existing, C carrier, BiFunction<C, String, String> getter) {
     return existing;
   }
 }

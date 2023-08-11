@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class StatusHandler implements HttpHandler {
 
@@ -38,11 +38,16 @@ class StatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     DistributorStatus status = distributor.getStatus();
 
-    ImmutableMap<String, Object> report = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            "ready", status.hasCapacity(),
-            "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "grid", status));
+    ImmutableMap<String, Object> report =
+        ImmutableMap.of(
+            "value",
+            ImmutableMap.of(
+                "ready",
+                status.hasCapacity(),
+                "message",
+                status.hasCapacity() ? "Ready" : "No free slots available",
+                "grid",
+                status));
 
     return new HttpResponse().setContent(asJson(report));
   }

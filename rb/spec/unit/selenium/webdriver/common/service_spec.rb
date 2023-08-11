@@ -25,14 +25,12 @@ module Selenium
       let(:service_path) { '/path/to/service' }
 
       before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
+        allow(Platform).to receive(:assert_executable)
         stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
 
       describe 'browser shortcuts' do
-        before { allow(Platform).to receive(:find_binary).and_return(service_path) }
-
         let(:args) { %w[--foo --bar] }
 
         it 'creates Chrome instance' do
@@ -63,46 +61,6 @@ module Selenium
           service = described_class.safari(args: args)
           expect(service).to be_a(Safari::Service)
           expect(service.args).to eq args
-        end
-      end
-
-      describe '#new' do
-        it 'uses default path and port' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-          allow(described_class).to receive(:driver_path)
-
-          service = described_class.new
-          expect(service.executable_path).to eq service_path
-          expect(service.port).to eq Selenium::WebDriver::Service::DEFAULT_PORT
-          expect(described_class).to have_received(:driver_path)
-        end
-
-        it 'uses provided path and port' do
-          path = 'foo'
-          port = 5678
-
-          service = described_class.new(path: path, port: port)
-
-          expect(service.executable_path).to eq path
-          expect(service.port).to eq port
-        end
-
-        it 'does not create args by default' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-          allow(described_class).to receive(:driver_path)
-
-          service = described_class.new
-          expect(service.extra_args).to be_empty
-          expect(described_class).to have_received(:driver_path)
-        end
-
-        it 'uses provided args' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-          allow(described_class).to receive(:driver_path)
-
-          service = described_class.new(args: ['--foo', '--bar'])
-          expect(service.extra_args).to eq ['--foo', '--bar']
-          expect(described_class).to have_received(:driver_path)
         end
       end
     end

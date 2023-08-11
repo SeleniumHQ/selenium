@@ -16,13 +16,14 @@
 # under the License.
 import pytest
 
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.log import Log
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
 @pytest.mark.xfail_safari
 async def test_check_console_messages(driver, pages):
     async with driver.bidi_connection() as session:
@@ -35,6 +36,8 @@ async def test_check_console_messages(driver, pages):
         assert messages["message"] == "I love cheese"
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
 @pytest.mark.xfail_safari
 async def test_check_error_console_messages(driver, pages):
     async with driver.bidi_connection() as session:
@@ -70,9 +73,7 @@ async def test_collect_log_mutations(driver, pages):
         async with log.mutation_events() as event:
             pages.load("dynamic.html")
             driver.find_element(By.ID, "reveal").click()
-            WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException).until(
-                EC.visibility_of(driver.find_element(By.ID, "revealed"))
-            )
+            WebDriverWait(driver, 5).until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
 
     assert event["attribute_name"] == "style"
     assert event["current_value"] == ""

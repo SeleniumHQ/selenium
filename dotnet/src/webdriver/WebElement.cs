@@ -107,7 +107,7 @@ namespace OpenQA.Selenium
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.elementId);
                 Response commandResponse = this.Execute(DriverCommand.IsElementEnabled, parameters);
-                return (bool)commandResponse.Value;
+                return (bool)Convert.ChangeType(commandResponse.Value, typeof(bool));
             }
         }
 
@@ -124,7 +124,7 @@ namespace OpenQA.Selenium
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.elementId);
                 Response commandResponse = this.Execute(DriverCommand.IsElementSelected, parameters);
-                return (bool)commandResponse.Value;
+                return (bool)Convert.ChangeType(commandResponse.Value, typeof(bool));
             }
         }
 
@@ -185,7 +185,7 @@ namespace OpenQA.Selenium
                 parameters.Add("args", new object[] { this.ToElementReference().ToDictionary() });
                 commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
 
-                return (bool)commandResponse.Value;
+                return (bool)Convert.ChangeType(commandResponse.Value, typeof(bool));
             }
         }
 

@@ -19,14 +19,11 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can launch a Chromium app.
- */
+/** Used by classes to indicate that they can launch a Chromium app. */
 @Beta
 public interface HasLaunchApp {
 
   /**
-   *
    * @param id which Chromium app to launch.
    */
   void launchApp(String id);

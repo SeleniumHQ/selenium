@@ -26,17 +26,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
-
-import java.util.ArrayList;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedVirtualAuthenticatorTest {
@@ -50,13 +49,14 @@ class DecoratedVirtualAuthenticatorTest {
 
     public Fixture() {
       original = mock(VirtualAuthenticator.class);
-      originalDriver = mock(
-        WebDriver.class, withSettings().extraInterfaces(HasVirtualAuthenticator.class));
+      originalDriver =
+          mock(WebDriver.class, withSettings().extraInterfaces(HasVirtualAuthenticator.class));
       when(((HasVirtualAuthenticator) originalDriver).addVirtualAuthenticator(any()))
-        .thenReturn(original);
+          .thenReturn(original);
       decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
-      decorated = ((HasVirtualAuthenticator) decoratedDriver)
-        .addVirtualAuthenticator(new VirtualAuthenticatorOptions());
+      decorated =
+          ((HasVirtualAuthenticator) decoratedDriver)
+              .addVirtualAuthenticator(new VirtualAuthenticatorOptions());
     }
   }
 

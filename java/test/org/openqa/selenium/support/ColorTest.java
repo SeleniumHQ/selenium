@@ -19,8 +19,8 @@ package org.openqa.selenium.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class ColorTest {
@@ -197,5 +197,4 @@ class ColorTest {
     String rgba = "rgba(0, 255, 0, 0)";
     assertThat(transGreen).isEqualTo(Color.fromString(rgba).getColor());
   }
-
 }

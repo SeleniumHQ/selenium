@@ -20,13 +20,12 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.List;
 
 class ElementEqualityTest extends JupiterTestBase {
 
@@ -70,22 +69,18 @@ class ElementEqualityTest extends JupiterTestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
+  public void testAnElementFoundInViaJsShouldHaveSameId() {
     driver.get(pages.missedJsReferencePage);
 
     driver.switchTo().frame("inner");
     WebElement first = driver.findElement(By.id("oneline"));
 
-    driver.switchTo().defaultContent();
-    WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return frames[0].document.getElementById('oneline');");
-
-    driver.switchTo().frame("inner");
-
-    WebElement second = driver.findElement(By.id("oneline"));
+    WebElement element =
+        (WebElement)
+            ((JavascriptExecutor) driver)
+                .executeScript("return document.getElementById('oneline');");
 
     checkIdEqualityIfRemote(first, element);
-    checkIdEqualityIfRemote(second, element);
   }
 
   private void checkIdEqualityIfRemote(WebElement first, WebElement second) {

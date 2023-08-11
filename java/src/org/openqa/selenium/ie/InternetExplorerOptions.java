@@ -17,22 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.AbstractDriverOptions;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
@@ -49,12 +33,28 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS
 import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
+
 /**
  * Options for configuring the use of IE. Can be used like so:
+ *
  * <pre>InternetExplorerOptions options = new InternetExplorerOptions()
  *   .requireWindowFocus();
  *
- *new InternetExplorerDriver(options);</pre>
+ * new InternetExplorerDriver(options);</pre>
  */
 public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
@@ -63,30 +63,33 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
-  private static final String LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling";
+  private static final String LEGACY_FILE_UPLOAD_DIALOG_HANDLING =
+      "ie.useLegacyFileUploadDialogHandling";
   private static final String ATTACH_TO_EDGE_CHROME = "ie.edgechromium";
   private static final String EDGE_EXECUTABLE_PATH = "ie.edgepath";
+  private static final String IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch";
 
-  private static final List<String> CAPABILITY_NAMES = Arrays.asList(
-    BROWSER_ATTACH_TIMEOUT,
-    ELEMENT_SCROLL_BEHAVIOR,
-    ENABLE_PERSISTENT_HOVERING,
-    FULL_PAGE_SCREENSHOT,
-    FORCE_CREATE_PROCESS,
-    FORCE_WINDOW_SHELL_API,
-    IE_ENSURE_CLEAN_SESSION,
-    IE_SWITCHES,
-    IE_USE_PER_PROCESS_PROXY,
-    IGNORE_ZOOM_SETTING,
-    INITIAL_BROWSER_URL,
-    INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
-    REQUIRE_WINDOW_FOCUS,
-    UPLOAD_DIALOG_TIMEOUT,
-    NATIVE_EVENTS,
-    LEGACY_FILE_UPLOAD_DIALOG_HANDLING,
-    ATTACH_TO_EDGE_CHROME,
-    EDGE_EXECUTABLE_PATH);
-
+  private static final List<String> CAPABILITY_NAMES =
+      Arrays.asList(
+          BROWSER_ATTACH_TIMEOUT,
+          ELEMENT_SCROLL_BEHAVIOR,
+          ENABLE_PERSISTENT_HOVERING,
+          FULL_PAGE_SCREENSHOT,
+          FORCE_CREATE_PROCESS,
+          FORCE_WINDOW_SHELL_API,
+          IE_ENSURE_CLEAN_SESSION,
+          IE_SWITCHES,
+          IE_USE_PER_PROCESS_PROXY,
+          IGNORE_ZOOM_SETTING,
+          INITIAL_BROWSER_URL,
+          INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
+          REQUIRE_WINDOW_FOCUS,
+          UPLOAD_DIALOG_TIMEOUT,
+          NATIVE_EVENTS,
+          LEGACY_FILE_UPLOAD_DIALOG_HANDLING,
+          ATTACH_TO_EDGE_CHROME,
+          EDGE_EXECUTABLE_PATH,
+          IGNORE_PROCESS_MATCH);
 
   private final Map<String, Object> ieOptions = new HashMap<>();
 
@@ -128,16 +131,12 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return amend(ENABLE_PERSISTENT_HOVERING, true);
   }
 
-  /**
-   * Force the use of the Windows CreateProcess API when launching Internet Explorer.
-   */
+  /** Force the use of the Windows CreateProcess API when launching Internet Explorer. */
   public InternetExplorerOptions useCreateProcessApiToLaunchIe() {
     return amend(FORCE_CREATE_PROCESS, true);
   }
 
-  /**
-   * Use the Windows ShellWindows API when attaching to Internet Explorer.
-   */
+  /** Use the Windows ShellWindows API when attaching to Internet Explorer. */
   public InternetExplorerOptions useShellWindowsApiToAttachToIe() {
     return amend(FORCE_WINDOW_SHELL_API, true);
   }
@@ -160,22 +159,23 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     }
 
     return amend(
-      IE_SWITCHES,
-      Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
-        .filter(i -> i instanceof String)
-        .map(String.class::cast)
-        .collect(toList()));
+        IE_SWITCHES,
+        Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
+            .filter(i -> i instanceof String)
+            .map(String.class::cast)
+            .collect(toList()));
   }
 
   /**
-   *  Use the {@link org.openqa.selenium.Proxy} defined in other {@link Capabilities} on a
-   *  per-process basis, not updating the system installed proxy setting. This is only valid when
-   *  setting a {@link org.openqa.selenium.Proxy} where the
-   *  {@link org.openqa.selenium.Proxy.ProxyType} is one of
-   *  <ul>
-   *    <li>{@link org.openqa.selenium.Proxy.ProxyType#DIRECT}
-   *    <li>{@link org.openqa.selenium.Proxy.ProxyType#MANUAL}
-   *    <li>{@link org.openqa.selenium.Proxy.ProxyType#SYSTEM}
+   * Use the {@link org.openqa.selenium.Proxy} defined in other {@link Capabilities} on a
+   * per-process basis, not updating the system installed proxy setting. This is only valid when
+   * setting a {@link org.openqa.selenium.Proxy} where the {@link
+   * org.openqa.selenium.Proxy.ProxyType} is one of
+   *
+   * <ul>
+   *   <li>{@link org.openqa.selenium.Proxy.ProxyType#DIRECT}
+   *   <li>{@link org.openqa.selenium.Proxy.ProxyType#MANUAL}
+   *   <li>{@link org.openqa.selenium.Proxy.ProxyType#SYSTEM}
    * </ul>
    */
   public InternetExplorerOptions usePerProcessProxy() {
@@ -202,8 +202,14 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
+  /**
+   * Method that defines to use whether to use native or javascript events during operations.
+   *
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   public InternetExplorerOptions disableNativeEvents() {
-    return  amend(NATIVE_EVENTS, false);
+    return amend(NATIVE_EVENTS, false);
   }
 
   public InternetExplorerOptions ignoreZoomSettings() {
@@ -220,6 +226,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   public InternetExplorerOptions attachToEdgeChrome() {
     return amend(ATTACH_TO_EDGE_CHROME, true);
+  }
+
+  public InternetExplorerOptions ignoreProcessMatch() {
+    return amend(IGNORE_PROCESS_MATCH, true);
   }
 
   public InternetExplorerOptions withEdgeExecutablePath(String path) {
@@ -255,18 +265,20 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
         streamFrom = ((Capabilities) value).asMap();
       } else {
         throw new IllegalArgumentException(
-          "Value for " + key + " must be of type Map or Capabilities");
+            "Value for " + key + " must be of type Map or Capabilities");
       }
       streamFrom.entrySet().stream()
-        .filter(entry -> CAPABILITY_NAMES.contains(entry.getKey()))
-        .filter(entry -> entry.getValue() != null)
-        .forEach(entry -> {
-          if (IE_SWITCHES.equals(entry.getKey())) {
-            setCapability(entry.getKey(), Arrays.asList((entry.getValue().toString()).split(" ")));
-          } else {
-            setCapability(entry.getKey(), entry.getValue());
-          }
-        });
+          .filter(entry -> CAPABILITY_NAMES.contains(entry.getKey()))
+          .filter(entry -> entry.getValue() != null)
+          .forEach(
+              entry -> {
+                if (IE_SWITCHES.equals(entry.getKey())) {
+                  setCapability(
+                      entry.getKey(), Arrays.asList((entry.getValue().toString()).split(" ")));
+                } else {
+                  setCapability(entry.getKey(), entry.getValue());
+                }
+              });
     }
   }
 

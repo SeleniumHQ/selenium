@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.internal.Require;
-
 import java.io.UncheckedIOException;
 import java.util.function.Function;
+import org.openqa.selenium.internal.Require;
 
 /**
- * Can be wrapped around an {@link HttpHandler} in order to either modify incoming
- * {@link HttpRequest}s or outgoing {@link HttpResponse}s using the well-known "Filter" pattern.
- * This is very similar to the Servlet spec's {@link javax.servlet.Filter}, but takes advantage of
- * lambdas:
+ * Can be wrapped around an {@link HttpHandler} in order to either modify incoming {@link
+ * HttpRequest}s or outgoing {@link HttpResponse}s using the well-known "Filter" pattern. This is
+ * very similar to the Servlet spec's {@code javax.servlet.Filter}, but takes advantage of lambdas:
+ *
  * <pre><code>
  * Filter filter = next -&gt; {
  *   return req -&gt; {
@@ -38,8 +37,8 @@ import java.util.function.Function;
  * }
  * </code></pre>
  *
- *<p>Because each filter returns an {@link HttpHandler}, it's easy to do processing before, or after
- * each request, as well as short-circuit things if necessary.
+ * <p>Because each filter returns an {@link HttpHandler}, it's easy to do processing before, or
+ * after each request, as well as short-circuit things if necessary.
  */
 @FunctionalInterface
 public interface Filter extends Function<HttpHandler, HttpHandler> {

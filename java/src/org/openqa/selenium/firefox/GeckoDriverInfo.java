@@ -21,15 +21,14 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;
-
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-
-import java.util.Optional;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class GeckoDriverInfo implements WebDriverInfo {
@@ -51,9 +50,9 @@ public class GeckoDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().stream()
-      .map(key -> key.startsWith("moz:"))
-      .reduce(Boolean::logicalOr)
-      .orElse(false);
+        .map(key -> key.startsWith("moz:"))
+        .reduce(Boolean::logicalOr)
+        .orElse(false);
   }
 
   @Override
@@ -69,7 +68,18 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      GeckoDriverService.createDefaultService();
+      DriverFinder.getPath(GeckoDriverService.createDefaultService(), getCanonicalCapabilities());
+      return true;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean isPresent() {
+    try {
+      DriverFinder.getPath(
+          GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

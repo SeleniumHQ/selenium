@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Mechanism used to locate elements within a document using a series of  lookups. This class will
+ * Mechanism used to locate elements within a document using a series of lookups. This class will
  * find all DOM elements that matches any of the locators in sequence, e.g.
  *
  * <pre>
@@ -81,5 +80,4 @@ public class ByAll extends By implements Serializable {
     stringBuilder.append("})");
     return stringBuilder.toString();
   }
-
 }

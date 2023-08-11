@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
+import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.internal.Require;
@@ -28,17 +38,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class GetNextMatchingRequest implements HttpHandler {
   private static final Type MAP_OF_CAPABILITIES = new TypeToken<Map<String, Long>>() {}.getType();
@@ -60,14 +59,16 @@ class GetNextMatchingRequest implements HttpHandler {
 
       Map<Capabilities, Long> stereotypes = new HashMap<>();
 
-      stereotypesJson.forEach((k,v) -> {
-        Capabilities  caps = JSON.toType(k, Capabilities.class);
-        stereotypes.put(caps, v);
-      });
+      stereotypesJson.forEach(
+          (k, v) -> {
+            Capabilities caps = JSON.toType(k, Capabilities.class);
+            stereotypes.put(caps, v);
+          });
 
       List<SessionRequest> sessionRequestList = queue.getNextAvailable(stereotypes);
 
-      HttpResponse response =  new HttpResponse().setContent(Contents.asJson(singletonMap("value", sessionRequestList)));
+      HttpResponse response =
+          new HttpResponse().setContent(Contents.asJson(singletonMap("value", sessionRequestList)));
 
       HTTP_RESPONSE.accept(span, response);
 

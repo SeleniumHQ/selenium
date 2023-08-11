@@ -18,11 +18,9 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-
-import org.openqa.selenium.internal.Require;
-
 import java.util.Optional;
 import java.util.Set;
+import org.openqa.selenium.internal.Require;
 
 public class MergedResource implements Resource {
 

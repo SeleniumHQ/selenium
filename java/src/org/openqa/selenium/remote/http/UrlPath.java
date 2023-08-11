@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.openqa.selenium.internal.Require;
 
 public class UrlPath {
 

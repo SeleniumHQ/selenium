@@ -42,7 +42,6 @@ class Options(ArgOptions):
         self._binary: typing.Optional[FirefoxBinary] = None
         self._preferences: dict = {}
         self._profile = None
-        self._proxy = None
         self.log = Log()
 
     @property
@@ -68,6 +67,8 @@ class Options(ArgOptions):
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self.binary = value
 
     @property
@@ -123,6 +124,8 @@ class Options(ArgOptions):
         warnings.warn(
             "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
         )
+        if not isinstance(value, bool):
+            raise TypeError("value must be a boolean")
         if value:
             self._arguments.append("-headless")
         elif "-headless" in self._arguments:
@@ -144,8 +147,6 @@ class Options(ArgOptions):
             opts["binary"] = self._binary._start_cmd
         if self._preferences:
             opts["prefs"] = self._preferences
-        if self._proxy:
-            self._proxy.add_to_capabilities(caps)
         if self._profile:
             opts["profile"] = self._profile.encoded
         if self._arguments:

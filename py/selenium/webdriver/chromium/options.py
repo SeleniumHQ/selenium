@@ -51,6 +51,8 @@ class ChromiumOptions(ArgOptions):
         :Args:
          - value: path to the Chromium binary
         """
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self._binary_location = value
 
     @property
@@ -69,6 +71,8 @@ class ChromiumOptions(ArgOptions):
         :Args:
          - value: address of remote devtools instance if any (hostname[:port])
         """
+        if not isinstance(value, str):
+            raise TypeError("Debugger Address must be a string")
         self._debugger_address = value
 
     @property
@@ -132,8 +136,6 @@ class ChromiumOptions(ArgOptions):
           name: The experimental option name.
           value: The option value.
         """
-        if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
         self._experimental_options[name] = value
 
     @property
@@ -164,7 +166,11 @@ class ChromiumOptions(ArgOptions):
             stacklevel=2,
         )
         args = {"--headless"}
-        if value is True:
+
+        if not isinstance(value, bool):
+            raise TypeError("value must be a boolean")
+
+        if value:
             self._arguments.extend(args)
         else:
             self._arguments = list(set(self._arguments) - args)
@@ -176,17 +182,6 @@ class ChromiumOptions(ArgOptions):
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
-        if "w3c" in chrome_options:
-            if chrome_options["w3c"]:
-                warnings.warn(
-                    "Setting 'w3c: True' is redundant and will no longer be allowed", DeprecationWarning, stacklevel=2
-                )
-            else:
-                raise AttributeError(
-                    "setting w3c to False is not allowed, "
-                    "Please update to W3C Syntax: "
-                    "https://www.selenium.dev/blog/2022/legacy-protocol-support/"
-                )
         if self.mobile_options:
             chrome_options.update(self.mobile_options)
         chrome_options["extensions"] = self.extensions

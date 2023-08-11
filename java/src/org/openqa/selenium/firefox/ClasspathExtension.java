@@ -18,15 +18,13 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.io.Resources;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
 
 public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;
@@ -56,7 +54,7 @@ public class ClasspathExtension implements Extension {
 
     URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
 
-    try (OutputStream stream = new FileOutputStream(extractedXpi)){
+    try (OutputStream stream = new FileOutputStream(extractedXpi)) {
       Resources.copy(resourceUrl, stream);
     }
     new FileExtension(extractedXpi).writeTo(extensionsDir);

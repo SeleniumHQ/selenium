@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -39,6 +27,20 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
+import com.google.common.collect.ImmutableMap;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
+
 @Tag("UnitTests")
 class RemoteWebElementTest {
 
@@ -47,7 +49,7 @@ class RemoteWebElementTest {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> fixture.element.findElement(By.id("id")));
+        .isThrownBy(() -> fixture.element.findElement(By.id("id")));
   }
 
   @Test
@@ -57,114 +59,129 @@ class RemoteWebElementTest {
     fixture.element.click();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleWebDriverExceptionThrownByCommandExecutor() {
-    WebElementFixture fixture = new WebElementFixture(
-      new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
-      echoCapabilities, webDriverExceptionResponder);
+    WebElementFixture fixture =
+        new WebElementFixture(
+            new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
+            echoCapabilities,
+            webDriverExceptionResponder);
 
     assertThatExceptionOfType(WebDriverException.class)
-      .isThrownBy(fixture.element::click)
-      .withMessageStartingWith("BOOM!!!")
-      .withMessageContaining("Build info: ")
-      .withMessageContaining(
-        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining(String.format(
-        "Session ID: %s", fixture.driver.getSessionId()))
-      .withMessageContaining(String.format(
-        "%s", fixture.driver.getCapabilities()))
-      .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
-      .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()));
+        .isThrownBy(fixture.element::click)
+        .withMessageStartingWith("BOOM!!!")
+        .withMessageContaining("Build info: ")
+        .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+        .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+        .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+        .withMessageContaining(
+            String.format(
+                "Command: [%s, clickElement {id=%s}]",
+                fixture.driver.getSessionId(), fixture.element.getId()))
+        .withMessageContaining(
+            String.format(
+                "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]",
+                fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGeneralExceptionThrownByCommandExecutor() {
-    WebElementFixture fixture = new WebElementFixture(
-      new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
-      echoCapabilities, exceptionResponder);
+    try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
+      debugMock.when(Debug::isDebugging).thenReturn(true);
+      WebElementFixture fixture =
+          new WebElementFixture(
+              new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
+              echoCapabilities,
+              exceptionResponder);
 
-    assertThatExceptionOfType(WebDriverException.class)
-      .isThrownBy(fixture.element::click)
-      .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
-      .withMessageContaining("Build info: ")
-      .withMessageContaining(
-        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining(String.format(
-        "Session ID: %s", fixture.driver.getSessionId()))
-      .withMessageContaining(String.format(
-        "%s", fixture.driver.getCapabilities()))
-      .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
-      .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()))
-      .havingCause()
-      .withMessage("BOOM!!!");
+      assertThatExceptionOfType(WebDriverException.class)
+          .isThrownBy(fixture.element::click)
+          .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
+          .withMessageContaining("Build info: ")
+          .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+          .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+          .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+          .withMessageContaining(
+              String.format(
+                  "Command: [%s, clickElement {id=%s}]",
+                  fixture.driver.getSessionId(), fixture.element.getId()))
+          .withMessageContaining(
+              String.format(
+                  "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]",
+                  fixture.driver.getSessionId()))
+          .havingCause()
+          .withMessage("BOOM!!!");
 
-    fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+      fixture.verifyCommands(
+          new CommandPayload(
+              DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+    }
   }
 
   @Test
   void canHandleWebDriverExceptionReturnedByCommandExecutor() {
-    WebElementFixture fixture = new WebElementFixture(
-      new ImmutableCapabilities("browserName", "cheese"),
-      echoCapabilities, errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
+    WebElementFixture fixture =
+        new WebElementFixture(
+            new ImmutableCapabilities("browserName", "cheese"),
+            echoCapabilities,
+            errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
 
     assertThatExceptionOfType(WebDriverException.class)
-      .isThrownBy(fixture.element::click)
-      .withMessageStartingWith("BOOM!!!")
-      .withMessageContaining("Build info: ")
-      .withMessageContaining(
-        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining(String.format(
-        "Session ID: %s", fixture.driver.getSessionId()))
-      .withMessageContaining(String.format(
-        "%s", fixture.driver.getCapabilities()))
-      .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
-      .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        .isThrownBy(fixture.element::click)
+        .withMessageStartingWith("BOOM!!!")
+        .withMessageContaining("Build info: ")
+        .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+        .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+        .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+        .withMessageContaining(
+            String.format(
+                "Command: [%s, clickElement {id=%s}]",
+                fixture.driver.getSessionId(), fixture.element.getId()))
+        .withMessageContaining(
+            String.format(
+                "Element: [[RemoteWebDriver: cheese on any (%s)] -> id: test]",
+                fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
-    WebElementFixture fixture = new WebElementFixture(
-      new ImmutableCapabilities("browserName", "cheese"),
-      echoCapabilities, errorResponder("element click intercepted", "BOOM!!!"));
+    WebElementFixture fixture =
+        new WebElementFixture(
+            new ImmutableCapabilities("browserName", "cheese"),
+            echoCapabilities,
+            errorResponder("element click intercepted", "BOOM!!!"));
 
     assertThatExceptionOfType(WebDriverException.class)
-      .isThrownBy(fixture.element::click)
-      .withMessageStartingWith("BOOM!!!")
-      .withMessageContaining("Build info: ")
-      .withMessageContaining(
-        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining(String.format(
-        "Session ID: %s", fixture.driver.getSessionId()))
-      .withMessageContaining(String.format(
-        "%s", fixture.driver.getCapabilities()))
-      .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
-      .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        .isThrownBy(fixture.element::click)
+        .withMessageStartingWith("BOOM!!!")
+        .withMessageContaining("Build info: ")
+        .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+        .withMessageContaining(String.format("Session ID: %s", fixture.driver.getSessionId()))
+        .withMessageContaining(String.format("%s", fixture.driver.getCapabilities()))
+        .withMessageContaining(
+            String.format(
+                "Command: [%s, clickElement {id=%s}]",
+                fixture.driver.getSessionId(), fixture.element.getId()))
+        .withMessageContaining(
+            String.format(
+                "Element: [[RemoteWebDriver: cheese on any (%s)] -> id: test]",
+                fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -174,8 +191,8 @@ class RemoteWebElementTest {
     fixture.element.clear();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -185,8 +202,8 @@ class RemoteWebElementTest {
     fixture.element.submit();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -197,8 +214,9 @@ class RemoteWebElementTest {
     fixture.element.sendKeys("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of(
-        "id", fixture.element.getId(), "value", new CharSequence[]{"test"})));
+        new CommandPayload(
+            DriverCommand.SEND_KEYS_TO_ELEMENT,
+            ImmutableMap.of("id", fixture.element.getId(), "value", new CharSequence[] {"test"})));
   }
 
   @Test
@@ -208,8 +226,9 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getAttribute("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of(
-        "id", fixture.element.getId(), "name", "id")));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_ATTRIBUTE,
+            ImmutableMap.of("id", fixture.element.getId(), "name", "id")));
   }
 
   @Test
@@ -219,8 +238,9 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getDomAttribute("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE, ImmutableMap.of(
-        "id", fixture.element.getId(), "name", "id")));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE,
+            ImmutableMap.of("id", fixture.element.getId(), "name", "id")));
   }
 
   @Test
@@ -230,8 +250,9 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getDomProperty("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_PROPERTY, ImmutableMap.of(
-        "id", fixture.element.getId(), "name", "id")));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_DOM_PROPERTY,
+            ImmutableMap.of("id", fixture.element.getId(), "name", "id")));
   }
 
   @Test
@@ -241,8 +262,8 @@ class RemoteWebElementTest {
     assertThat(fixture.element.isSelected()).isTrue();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -252,8 +273,8 @@ class RemoteWebElementTest {
     assertThat(fixture.element.isEnabled()).isTrue();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -263,8 +284,8 @@ class RemoteWebElementTest {
     assertThat(fixture.element.isDisplayed()).isTrue();
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -274,8 +295,8 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getText()).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -285,47 +306,48 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getTagName()).isEqualTo("div");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_TAG_NAME,
-                         ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_TAG_NAME, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetLocationCommand() {
-    WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
+    WebElementFixture fixture =
+        new WebElementFixture(echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
 
     assertThat(fixture.element.getLocation()).isEqualTo(new Point(10, 20));
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
-                         ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetSizeCommand() {
-    WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
+    WebElementFixture fixture =
+        new WebElementFixture(
+            echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
 
     assertThat(fixture.element.getSize()).isEqualTo(new Dimension(100, 200));
 
     fixture.verifyCommands(
-      new CommandPayload(
-        DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetRectCommand() {
-    WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities,
-      valueResponder(ImmutableMap.of(
-        "x", 10, "y", 20, "width", 100, "height", 200)));
+    WebElementFixture fixture =
+        new WebElementFixture(
+            echoCapabilities,
+            valueResponder(ImmutableMap.of("x", 10, "y", 20, "width", 100, "height", 200)));
 
-    assertThat(fixture.element.getRect()).isEqualTo(
-      new Rectangle(new Point(10, 20), new Dimension(100, 200)));
+    assertThat(fixture.element.getRect())
+        .isEqualTo(new Rectangle(new Point(10, 20), new Dimension(100, 200)));
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
-                         ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -335,8 +357,9 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getCssValue("color")).isEqualTo("red");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                         ImmutableMap.of("id", fixture.element.getId(), "propertyName", "color")));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+            ImmutableMap.of("id", fixture.element.getId(), "propertyName", "color")));
   }
 
   @Test
@@ -346,19 +369,20 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getAriaRole()).isEqualTo("section");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_ARIA_ROLE,
-                         ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_ARIA_ROLE, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetAccessibleNameCommand() {
-    WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities, valueResponder("element name"));
+    WebElementFixture fixture =
+        new WebElementFixture(echoCapabilities, valueResponder("element name"));
 
     assertThat(fixture.element.getAccessibleName()).isEqualTo("element name");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME,
-                         ImmutableMap.of("id", fixture.element.getId())));
+        new CommandPayload(
+            DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME,
+            ImmutableMap.of("id", fixture.element.getId())));
   }
 }

@@ -23,5 +23,6 @@ package org.openqa.selenium.interactions;
  */
 public interface InputSource {
   SourceType getInputType();
+
   String getName();
 }

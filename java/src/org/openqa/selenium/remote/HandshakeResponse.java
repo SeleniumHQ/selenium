@@ -27,6 +27,7 @@ interface HandshakeResponse {
   Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler();
 
   default Function<InitialHandshakeResponse, ProtocolHandshake.Result> getResponseFunction() {
-    return resp -> Optional.ofNullable(errorHandler().apply(resp)).orElse(successHandler().apply(resp));
+    return resp ->
+        Optional.ofNullable(errorHandler().apply(resp)).orElse(successHandler().apply(resp));
   }
 }

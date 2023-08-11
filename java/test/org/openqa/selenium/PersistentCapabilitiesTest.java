@@ -17,10 +17,10 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PersistentCapabilitiesTest {
@@ -52,7 +52,8 @@ class PersistentCapabilitiesTest {
 
   @Test
   void shouldActuallyBePersistent() {
-    PersistentCapabilities original = new PersistentCapabilities(new ImmutableCapabilities("cheese", "cheddar"));
+    PersistentCapabilities original =
+        new PersistentCapabilities(new ImmutableCapabilities("cheese", "cheddar"));
     Capabilities seen = original.setCapability("cheese", "orgu peynir");
 
     assertThat(original).isEqualTo(new ImmutableCapabilities("cheese", "cheddar"));
@@ -61,11 +62,11 @@ class PersistentCapabilitiesTest {
 
   @Test
   void shouldAllowChainedCallsToSetCapabilities() {
-    PersistentCapabilities caps = new PersistentCapabilities(new ImmutableCapabilities())
-      .setCapability("one", 1)
-      .setCapability("two", 2);
+    PersistentCapabilities caps =
+        new PersistentCapabilities(new ImmutableCapabilities())
+            .setCapability("one", 1)
+            .setCapability("two", 2);
 
     assertThat(caps).isEqualTo(new ImmutableCapabilities("one", 1, "two", 2));
-
   }
 }

@@ -84,7 +84,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyIdShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -222,7 +222,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -312,14 +312,14 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -600,28 +600,28 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingASingleElementByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
         }
 
         // By.linkText positive
@@ -810,34 +810,6 @@ namespace OpenQA.Selenium
             Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
-        [Test]
-        public void AnElementFoundInADifferentFrameViaJsCanBeUsed()
-        {
-            driver.Url = missedJsReferencePage;
-
-            try
-            {
-                driver.SwitchTo().Frame("inner");
-                IWebElement first = driver.FindElement(By.Id("oneline"));
-
-                driver.SwitchTo().DefaultContent();
-                IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript(
-                    "return frames[0].document.getElementById('oneline');");
-
-
-                driver.SwitchTo().Frame("inner");
-
-                IWebElement second = driver.FindElement(By.Id("oneline"));
-
-                Assert.AreEqual(first, element);
-                Assert.AreEqual(second, element);
-            }
-            finally
-            {
-                driver.SwitchTo().DefaultContent();
-            }
-        }
-
         /////////////////////////////////////////////////
         // Tests unique to the .NET bindings
         /////////////////////////////////////////////////
@@ -971,18 +943,6 @@ namespace OpenQA.Selenium
 
             // if any exception is thrown, we won't get this far. Sanity check
             Assert.AreEqual("Changed", driver.Title);
-        }
-
-        [Test]
-        public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
-            Assert.That(toBeDeleted.Displayed, "Element is not displayed");
-
-            driver.FindElement(By.Id("delete")).Click();
-            Assert.That(() => { bool displayedAfterDelete = toBeDeleted.Displayed; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]

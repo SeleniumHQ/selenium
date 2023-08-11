@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-
 import java.util.UUID;
 import java.util.function.Function;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 class WebElementFixture extends WebDriverFixture {
 
@@ -40,5 +39,4 @@ class WebElementFixture extends WebDriverFixture {
     element.setFoundBy(driver, "id", "test");
     element.setId(UUID.randomUUID().toString());
   }
-
 }

@@ -20,9 +20,7 @@ package org.openqa.selenium.io;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-/**
- * Captures the last N bytes of output.
- */
+/** Captures the last N bytes of output. */
 public class CircularOutputStream extends OutputStream {
   private static final int DEFAULT_SIZE = 4096;
   private int start;

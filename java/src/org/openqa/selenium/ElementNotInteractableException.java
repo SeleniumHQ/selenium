@@ -18,8 +18,8 @@
 package org.openqa.selenium;
 
 /**
- * Thrown to indicate that although a {@link WebElement} is present on the DOM, it is not in a state that can
- * be interacted with. This includes an element that is not displayed or whose center point
+ * Thrown to indicate that although a {@link WebElement} is present on the DOM, it is not in a state
+ * that can be interacted with. This includes an element that is not displayed or whose center point
  * can not be scrolled into the viewport.
  */
 public class ElementNotInteractableException extends InvalidElementStateException {

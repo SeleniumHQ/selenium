@@ -17,21 +17,20 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class CreateSessionRequest {
 
@@ -40,11 +39,9 @@ public class CreateSessionRequest {
   private final Map<String, Object> metadata;
 
   public CreateSessionRequest(
-      Set<Dialect> downstreamDialects,
-      Capabilities capabilities,
-      Map<String, Object> metadata) {
-    this.downstreamDialects = unmodifiableSet(new HashSet<>(
-        Require.nonNull("Downstream dialects", downstreamDialects)));
+      Set<Dialect> downstreamDialects, Capabilities capabilities, Map<String, Object> metadata) {
+    this.downstreamDialects =
+        unmodifiableSet(new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
     this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
     this.metadata = unmodifiableMap(new HashMap<>(Require.nonNull("Metadata", metadata)));
   }
@@ -74,7 +71,7 @@ public class CreateSessionRequest {
           break;
 
         case "downstreamDialects":
-          downstreamDialects = input.read(new TypeToken<Set<Dialect>>(){}.getType());
+          downstreamDialects = input.read(new TypeToken<Set<Dialect>>() {}.getType());
           break;
 
         case "metadata":

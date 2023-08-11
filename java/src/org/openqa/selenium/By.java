@@ -17,19 +17,19 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
  * mechanisms, it is possible to subclass this class and override the protected methods as required,
- * though it is expected that all subclasses rely on the basic finding mechanisms provided
- * through static methods of this class:
+ * though it is expected that all subclasses rely on the basic finding mechanisms provided through
+ * static methods of this class:
  *
  * <pre><code>
  * public WebElement findElement(WebDriver driver) {
@@ -90,8 +90,8 @@ public abstract class By {
   }
 
   /**
-   * Find elements based on the value of the "class" attribute. Only one class name should be
-   * used. If an element has multiple classes, please use {@link By#cssSelector(String)}.
+   * Find elements based on the value of the "class" attribute. Only one class name should be used.
+   * If an element has multiple classes, please use {@link By#cssSelector(String)}.
    *
    * @param className The value of the "class" attribute to search for.
    * @return A By which locates elements by the value of the "class" attribute.
@@ -102,7 +102,7 @@ public abstract class By {
 
   /**
    * Find elements via the driver's underlying W3C Selector engine. If the browser does not
-   * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
+   * implement the Selector API, the best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
    * @param cssSelector CSS expression.
@@ -150,7 +150,8 @@ public abstract class By {
     WebDriver driver = getWebDriver(context);
 
     if (!(context instanceof JavascriptExecutor)) {
-      throw new IllegalArgumentException("Context does not provide a mechanism to execute JS: " + context);
+      throw new IllegalArgumentException(
+          "Context does not provide a mechanism to execute JS: " + context);
     }
 
     return (JavascriptExecutor) driver;
@@ -184,9 +185,7 @@ public abstract class By {
 
     public ById(String id) {
       super(
-        "id",
-        Require.argument("Id", id).nonNull("Cannot find elements when id is null."),
-        "#%s");
+          "id", Require.argument("Id", id).nonNull("Cannot find elements when id is null."), "#%s");
 
       this.id = id;
     }
@@ -203,9 +202,9 @@ public abstract class By {
 
     public ByLinkText(String linkText) {
       super(
-        "link text",
-        Require.argument("Link text", linkText)
-          .nonNull("Cannot find elements when the link text is null."));
+          "link text",
+          Require.argument("Link text", linkText)
+              .nonNull("Cannot find elements when the link text is null."));
 
       this.linkText = linkText;
     }
@@ -222,9 +221,9 @@ public abstract class By {
 
     public ByPartialLinkText(String partialLinkText) {
       super(
-        "partial link text",
-        Require.argument("Partial link text", partialLinkText)
-          .nonNull("Cannot find elements when the link text is null."));
+          "partial link text",
+          Require.argument("Partial link text", partialLinkText)
+              .nonNull("Cannot find elements when the link text is null."));
 
       this.partialLinkText = partialLinkText;
     }
@@ -240,9 +239,9 @@ public abstract class By {
 
     public ByName(String name) {
       super(
-        "name",
-        Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-        String.format("*[name='%s']", name.replace("'", "\\'")));
+          "name",
+          Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
+          String.format("*[name='%s']", name.replace("'", "\\'")));
 
       this.name = name;
     }
@@ -259,9 +258,9 @@ public abstract class By {
 
     public ByTagName(String tagName) {
       super(
-        "tag name",
-        Require.argument("Tag name", tagName)
-          .nonNull("Cannot find elements when the tag name is null."));
+          "tag name",
+          Require.argument("Tag name", tagName)
+              .nonNull("Cannot find elements when the tag name is null."));
 
       if (tagName.isEmpty()) {
         throw new InvalidSelectorException("Tag name must not be blank");
@@ -282,9 +281,9 @@ public abstract class By {
 
     public ByXPath(String xpathExpression) {
       super(
-        "xpath",
-        Require.argument("XPath", xpathExpression)
-          .nonNull("Cannot find elements when the XPath is null."));
+          "xpath",
+          Require.argument("XPath", xpathExpression)
+              .nonNull("Cannot find elements when the XPath is null."));
 
       this.xpathExpression = xpathExpression;
     }
@@ -301,10 +300,10 @@ public abstract class By {
 
     public ByClassName(String className) {
       super(
-        "class name",
-        Require.argument("Class name", className)
-          .nonNull("Cannot find elements when the class name expression is null."),
-      ".%s");
+          "class name",
+          Require.argument("Class name", className)
+              .nonNull("Cannot find elements when the class name expression is null."),
+          ".%s");
 
       if (className.matches(".*\\s.*")) {
         throw new InvalidSelectorException("Compound class names not permitted");
@@ -324,9 +323,9 @@ public abstract class By {
 
     public ByCssSelector(String cssSelector) {
       super(
-        "css selector",
-        Require.argument("CSS selector", cssSelector)
-          .nonNull("Cannot find elements when the selector is null"));
+          "css selector",
+          Require.argument("CSS selector", cssSelector)
+              .nonNull("Cannot find elements when the selector is null"));
 
       this.cssSelector = cssSelector;
     }
@@ -416,6 +415,8 @@ public abstract class By {
   }
 
   private abstract static class PreW3CLocator extends By implements Remotable {
+    private static final Pattern CSS_ESCAPE =
+        Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
@@ -444,9 +445,9 @@ public abstract class By {
     }
 
     private String cssEscape(String using) {
-      using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+      using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
       if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-        using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+        using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
       }
       return using;
     }

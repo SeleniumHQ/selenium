@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
+import static java.util.Collections.unmodifiableSet;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -27,8 +25,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static java.util.Collections.unmodifiableSet;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class DistributorStatus {
 

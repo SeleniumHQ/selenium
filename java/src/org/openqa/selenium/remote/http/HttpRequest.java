@@ -19,10 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
-import org.openqa.selenium.internal.Require;
-
 import java.util.Iterator;
+import org.openqa.selenium.internal.Require;
 
 public class HttpRequest extends HttpMessage<HttpRequest> {
 
@@ -60,9 +58,7 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
    * that the name and value are properly encoded.
    */
   public HttpRequest addQueryParameter(String name, String value) {
-    queryParameters.put(
-        Require.nonNull("Name", name),
-        Require.nonNull("Value", value));
+    queryParameters.put(Require.nonNull("Name", name), Require.nonNull("Value", value));
     return this;
   }
 

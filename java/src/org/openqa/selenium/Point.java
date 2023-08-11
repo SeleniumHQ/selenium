@@ -19,9 +19,7 @@ package org.openqa.selenium;
 
 import java.util.Objects;
 
-/**
- * A copy of java.awt.Point, to remove dependency on awt.
- */
+/** A copy of java.awt.Point, to remove dependency on awt. */
 public class Point {
   public int x;
   public int y;

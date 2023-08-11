@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.chromium;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.devtools.events.CdpEventTypes.consoleEvent;
+import static org.openqa.selenium.devtools.events.CdpEventTypes.domMutation;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -26,15 +34,6 @@ import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.events.DomMutationEvent;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.testing.JupiterTestBase;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.openqa.selenium.devtools.events.CdpEventTypes.consoleEvent;
-import static org.openqa.selenium.devtools.events.CdpEventTypes.domMutation;
 
 class LoggingTest extends JupiterTestBase {
 
@@ -49,10 +48,12 @@ class LoggingTest extends JupiterTestBase {
 
     AtomicReference<ConsoleEvent> seen = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
-    logger.onLogEvent(consoleEvent(entry -> {
-        seen.set(entry);
-        latch.countDown();
-    }));
+    logger.onLogEvent(
+        consoleEvent(
+            entry -> {
+              seen.set(entry);
+              latch.countDown();
+            }));
 
     driver.get(pages.javascriptPage);
     ((JavascriptExecutor) driver).executeScript("console.log('I like cheese');");
@@ -67,15 +68,18 @@ class LoggingTest extends JupiterTestBase {
 
     AtomicReference<DomMutationEvent> seen = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
-    logger.onLogEvent(domMutation(mutation -> {
-      seen.set(mutation);
-      latch.countDown();
-    }));
+    logger.onLogEvent(
+        domMutation(
+            mutation -> {
+              seen.set(mutation);
+              latch.countDown();
+            }));
 
     driver.get(pages.simpleTestPage);
     WebElement span = driver.findElement(By.id("span"));
 
-    ((JavascriptExecutor) driver).executeScript("arguments[0].setAttribute('cheese', 'gouda');", span);
+    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].setAttribute('cheese', 'gouda');", span);
 
     assertThat(latch.await(10, SECONDS)).isTrue();
     assertThat(seen.get().getAttributeName()).isEqualTo("cheese");

@@ -17,30 +17,37 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.build.BazelBuild;
-import org.openqa.selenium.build.DevMode;
-import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
+import org.openqa.selenium.build.DevMode;
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.remote.service.DriverService;
 
 class OutOfProcessSeleniumServer {
 
-  private static final Logger log = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 
   private String baseUrl;
   private CommandLine command;
+
   @SuppressWarnings("unused")
   private boolean captureLogs = false;
 
@@ -54,47 +61,75 @@ class OutOfProcessSeleniumServer {
    * @return The new server.
    */
   public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
-    log.info("Got a request to start a new selenium server");
+    LOG.info("Got a request to start a new selenium server");
     if (command != null) {
-      log.info("Server already started");
+      LOG.info("Server already started");
       throw new RuntimeException("Server already started");
     }
 
-    String serverJar = buildServerAndClasspath();
+    String serverBinary = buildServerAndClasspath();
 
     int port = PortProber.findFreePort();
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
     // Make sure we inherit system properties.
-    Stream<String> javaFlags = System.getProperties().entrySet().stream()
-      .filter(entry -> {
-        String key = String.valueOf(entry.getKey());
-        return key.startsWith("selenium") || key.startsWith("webdriver");
-      })
-      .map(entry -> "-D" + entry.getKey() + "=" + entry.getValue());
+    Stream<String> javaFlags =
+        System.getProperties().entrySet().stream()
+            .filter(
+                entry -> {
+                  String key = String.valueOf(entry.getKey());
+                  return key.startsWith("selenium") || key.startsWith("webdriver");
+                })
+            .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
 
-    command = new CommandLine("java", Stream.concat(javaFlags, Stream.concat(
-      Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
-      Stream.of(extraFlags))).toArray(String[]::new));
+    // Only use Selenium Manager if we're not running with pinned browsers.
+    boolean driverProvided =
+        Stream.of(
+                GeckoDriverService.createDefaultService(),
+                EdgeDriverService.createDefaultService(),
+                ChromeDriverService.createDefaultService())
+            .map(DriverService::getDriverProperty)
+            .filter(Objects::nonNull)
+            .map(System::getProperty)
+            .anyMatch(Objects::nonNull);
+
+    List<String> startupArgs = new ArrayList<>();
+    startupArgs.add(mode);
+    startupArgs.add("--port");
+    startupArgs.add(String.valueOf(port));
+    if (!driverProvided) {
+      startupArgs.add("--selenium-manager");
+      startupArgs.add("true");
+    }
+
+    command =
+        new CommandLine(
+            serverBinary,
+            Stream.concat(
+                    javaFlags,
+                    Stream.concat(
+                        // If the driver is provided, we _don't_ want to use Selenium Manager
+                        startupArgs.stream(), Stream.of(extraFlags)))
+                .toArray(String[]::new));
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
       command.setWorkingDirectory(workingDir.getAbsolutePath());
     }
 
     command.copyOutputTo(System.err);
-    log.info("Starting selenium server: " + command.toString());
+    LOG.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 
     try {
       URL url = new URL(baseUrl + "/status");
-      log.info("Waiting for server status on URL " + url);
+      LOG.info("Waiting for server status on URL " + url);
       new UrlChecker().waitUntilAvailable(10, SECONDS, url);
-      log.info("Server is ready");
+      LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
-      log.severe("Server failed to start: " + e.getMessage());
+      LOG.severe("Server failed to start: " + e.getMessage());
       command.destroy();
-      log.severe(command.getStdOut());
+      LOG.severe(command.getStdOut());
       command = null;
       throw new RuntimeException(e);
     } catch (MalformedURLException e) {
@@ -118,20 +153,19 @@ class OutOfProcessSeleniumServer {
     if (command == null) {
       return;
     }
-    log.info("Stopping selenium server");
+    LOG.info("Stopping selenium server");
     command.destroy();
-    log.info("Selenium server stopped");
+    LOG.info("Selenium server stopped");
     command = null;
   }
 
   private String buildServerAndClasspath() {
     if (DevMode.isInDevMode()) {
-      Path serverJar = InProject.locate(
-        "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+      Path serverJar =
+          InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       if (serverJar == null) {
         new BazelBuild().build("grid");
-        serverJar = InProject.locate(
-          "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+        serverJar = InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       }
       if (serverJar != null) {
         return serverJar.toAbsolutePath().toString();
@@ -142,7 +176,8 @@ class OutOfProcessSeleniumServer {
       return System.getProperty("selenium.browser.remote.path");
     }
     throw new AssertionError(
-      "Please set the sys property selenium.browser.remote.path to point to the out-of-process selenium server");
+        "Please set the sys property selenium.browser.remote.path to point to the out-of-process"
+            + " selenium server");
   }
 
   public URL getWebDriverUrl() {

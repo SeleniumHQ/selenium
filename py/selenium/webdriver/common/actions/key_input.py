@@ -21,7 +21,7 @@ from .interaction import Pause
 
 
 class KeyInput(InputDevice):
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         super().__init__()
         self.name = name
         self.type = interaction.KEY
@@ -35,7 +35,7 @@ class KeyInput(InputDevice):
     def create_key_up(self, key) -> None:
         self.add_action(TypingInteraction(self, "keyUp", key))
 
-    def create_pause(self, pause_duration=0) -> None:
+    def create_pause(self, pause_duration: float = 0) -> None:
         self.add_action(Pause(self, pause_duration))
 
 

@@ -37,6 +37,27 @@ else:
     JSONTimeouts = Dict[str, int]
 
 
+class _TimeoutsDescriptor:
+    """TimeoutsDescriptor which gets and sets value of below attributes:
+
+    _implicit _timeout
+    _page_load
+    _script
+
+    This does not set the value on the remote end
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls) -> float:
+        return getattr(obj, self.name) / 1000
+
+    def __set__(self, obj, value) -> None:
+        converted_value = getattr(obj, "_convert")(value)
+        setattr(obj, self.name, converted_value)
+
+
 class Timeouts:
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
         """Create a new Timeout object.
@@ -49,57 +70,61 @@ class Timeouts:
          - script - Either an int or a float. The number passed in needs to how many
             seconds the driver will wait.
         """
-        self._implicit_wait = self._convert(implicit_wait)
-        self._page_load = self._convert(page_load)
-        self._script = self._convert(script)
+        self.implicit_wait = implicit_wait
+        self.page_load = page_load
+        self.script = script
 
-    @property
-    def implicit_wait(self) -> float:
-        """Return the value for the implicit wait.
+    # Creating descriptor objects
+    implicit_wait = _TimeoutsDescriptor("_implicit_wait")
+    """Sets and Gets the value of the implicit_timeout:
 
-        This does not return the value on the remote end
-        """
-        return self._implicit_wait / 1000
+    This does not set the value on the remote end.
 
-    @implicit_wait.setter
-    def implicit_wait(self, _implicit_wait: float) -> None:
-        """Sets the value for the implicit wait.
+    Usage
+    -----
+    - Get
+        - `self.implicit_timeout`
+    - Set
+        - `self.implicit_timeout` = `value`
 
-        This does not set the value on the remote end
-        """
-        self._implicit_wait = self._convert(_implicit_wait)
+    Parameters
+    ----------
+    `value`: `float`
+    """
 
-    @property
-    def page_load(self) -> float:
-        """Return the value for the page load wait.
+    page_load = _TimeoutsDescriptor("_page_load")
+    """Sets and Gets the value of page load wait:
 
-        This does not return the value on the remote end
-        """
-        return self._page_load / 1000
+    This does not set the value on the remote end.
 
-    @page_load.setter
-    def page_load(self, _page_load: float) -> None:
-        """Sets the value for the page load wait.
+    Usage
+    -----
+    - Get
+        - `self.page_load`
+    - Set
+        - `self.page_load` = `value`
 
-        This does not set the value on the remote end
-        """
-        self._page_load = self._convert(_page_load)
+    Parameters
+    ----------
+    `value`: `float`
+    """
 
-    @property
-    def script(self) -> float:
-        """Return the value for the script wait.
+    script = _TimeoutsDescriptor("_script")
+    """Sets and Gets the value of script wait:
 
-        This does not return the value on the remote end
-        """
-        return self._script / 1000
+    This does not set the value on the remote end.
 
-    @script.setter
-    def script(self, _script: float) -> None:
-        """Sets the value for the script wait.
+    Usage
+    ------
+    - Get
+        - `self.script`
+    - Set
+        - `self.script` = `value`
 
-        This does not set the value on the remote end
-        """
-        self._script = self._convert(_script)
+    Parameters
+    -----------
+    `value`: `float`
+    """
 
     def _convert(self, timeout: float) -> int:
         if isinstance(timeout, (int, float)):

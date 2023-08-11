@@ -27,7 +27,7 @@ merge_jars = rule(
         "_merge_jars": attr.label(
             executable = True,
             cfg = "exec",
-            default = "@rules_jvm_external//private/tools/java/rules/jvm/external/jar:MergeJars",
+            default = "@rules_jvm_external//private/tools/java/com/github/bazelbuild/rules_jvm_external/jar:MergeJars",
         ),
         "_java_toolchain": attr.label(
             default = "@bazel_tools//tools/jdk:current_java_toolchain",

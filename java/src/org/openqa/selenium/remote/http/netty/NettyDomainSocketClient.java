@@ -26,16 +26,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.RemoteCall;
-import org.openqa.selenium.remote.http.WebSocket;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
@@ -62,7 +52,6 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +64,14 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.RemoteCall;
+import org.openqa.selenium.remote.http.WebSocket;
 
 class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
@@ -110,16 +107,22 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
     StringBuilder uri = new StringBuilder(req.getUri());
     List<String> queryPairs = new ArrayList<>();
-    req.getQueryParameterNames().forEach(
-      name -> req.getQueryParameters(name).forEach(
-        value -> {
-          try {
-            queryPairs.add(URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
-          } catch (UnsupportedEncodingException e) {
-            Thread.currentThread().interrupt();
-            throw new UncheckedIOException(e);
-          }
-        }));
+    req.getQueryParameterNames()
+        .forEach(
+            name ->
+                req.getQueryParameters(name)
+                    .forEach(
+                        value -> {
+                          try {
+                            queryPairs.add(
+                                URLEncoder.encode(name, UTF_8.toString())
+                                    + "="
+                                    + URLEncoder.encode(value, UTF_8.toString()));
+                          } catch (UnsupportedEncodingException e) {
+                            Thread.currentThread().interrupt();
+                            throw new UncheckedIOException(e);
+                          }
+                        }));
     if (!queryPairs.isEmpty()) {
       uri.append("?");
       Joiner.on('&').appendTo(uri, queryPairs);
@@ -127,12 +130,15 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
     byte[] bytes = bytes(req.getContent());
 
-    DefaultFullHttpRequest fullRequest = new DefaultFullHttpRequest(
-      HttpVersion.HTTP_1_1,
-      HttpMethod.valueOf(req.getMethod().toString()),
-      uri.toString(),
-      Unpooled.wrappedBuffer(bytes));
-    req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
+    DefaultFullHttpRequest fullRequest =
+        new DefaultFullHttpRequest(
+            HttpVersion.HTTP_1_1,
+            HttpMethod.valueOf(req.getMethod().toString()),
+            uri.toString(),
+            Unpooled.wrappedBuffer(bytes));
+    req.getHeaderNames()
+        .forEach(
+            name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
     if (req.getHeader("User-Agent") == null) {
       fullRequest.headers().set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
     }
@@ -168,47 +174,58 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
   }
 
   private Channel createChannel(AtomicReference<HttpResponse> outRef, CountDownLatch latch) {
-    Bootstrap bootstrap = new Bootstrap()
-      .group(eventLoopGroup)
-      .channel(channelClazz)
-      .handler(new ChannelInitializer<UnixChannel>() {
-        @Override
-        public void initChannel(UnixChannel ch) {
-          ch
-            .pipeline()
-            .addLast(new HttpClientCodec())
-            .addLast(new HttpContentDecompressor())
-            .addLast(new HttpObjectAggregator(Integer.MAX_VALUE))
-            .addLast(new SimpleChannelInboundHandler<FullHttpResponse>() {
-              @Override
-              public void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) {
-                HttpResponse res = new HttpResponse().setStatus(msg.status().code());
-                msg.headers().forEach(entry -> res.addHeader(entry.getKey(), entry.getValue()));
+    Bootstrap bootstrap =
+        new Bootstrap()
+            .group(eventLoopGroup)
+            .channel(channelClazz)
+            .handler(
+                new ChannelInitializer<UnixChannel>() {
+                  @Override
+                  public void initChannel(UnixChannel ch) {
+                    ch.pipeline()
+                        .addLast(new HttpClientCodec())
+                        .addLast(new HttpContentDecompressor())
+                        .addLast(new HttpObjectAggregator(Integer.MAX_VALUE))
+                        .addLast(
+                            new SimpleChannelInboundHandler<FullHttpResponse>() {
+                              @Override
+                              public void channelRead0(
+                                  ChannelHandlerContext ctx, FullHttpResponse msg) {
+                                HttpResponse res =
+                                    new HttpResponse().setStatus(msg.status().code());
+                                msg.headers()
+                                    .forEach(
+                                        entry -> res.addHeader(entry.getKey(), entry.getValue()));
 
-                try (InputStream is = new ByteBufInputStream(msg.content());
-                     ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-                  ByteStreams.copy(is, bos);
-                  res.setContent(bytes(bos.toByteArray()));
-                  outRef.set(res);
-                  latch.countDown();
-                } catch (IOException e) {
-                  outRef.set(new HttpResponse()
-                    .setStatus(HTTP_INTERNAL_ERROR)
-                    .setContent(utf8String(Throwables.getStackTraceAsString(e))));
-                  latch.countDown();
-                }
-              }
+                                try (InputStream is = new ByteBufInputStream(msg.content());
+                                    ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+                                  ByteStreams.copy(is, bos);
+                                  res.setContent(bytes(bos.toByteArray()));
+                                  outRef.set(res);
+                                  latch.countDown();
+                                } catch (IOException e) {
+                                  outRef.set(
+                                      new HttpResponse()
+                                          .setStatus(HTTP_INTERNAL_ERROR)
+                                          .setContent(
+                                              utf8String(Throwables.getStackTraceAsString(e))));
+                                  latch.countDown();
+                                }
+                              }
 
-              @Override
-              public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                outRef.set(new HttpResponse()
-                  .setStatus(HTTP_INTERNAL_ERROR)
-                  .setContent(utf8String(Throwables.getStackTraceAsString(cause))));
-                latch.countDown();
-              }
-            });
-        }
-      });
+                              @Override
+                              public void exceptionCaught(
+                                  ChannelHandlerContext ctx, Throwable cause) {
+                                outRef.set(
+                                    new HttpResponse()
+                                        .setStatus(HTTP_INTERNAL_ERROR)
+                                        .setContent(
+                                            utf8String(Throwables.getStackTraceAsString(cause))));
+                                latch.countDown();
+                              }
+                            });
+                  }
+                });
     try {
       return bootstrap.connect(new DomainSocketAddress(path)).sync().channel();
     } catch (InterruptedException e) {

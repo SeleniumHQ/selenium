@@ -19,14 +19,13 @@ package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class FileHandlerTest {

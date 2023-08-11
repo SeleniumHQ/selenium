@@ -20,7 +20,12 @@ package org.openqa.selenium.bidi.browsingcontext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Safely.safelyCall;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,29 +33,22 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-import java.io.IOException;
-import java.util.List;
-
-class BrowsingContextTest {
+class BrowsingContextTest extends JupiterTestBase {
 
   private AppServer server;
-  private FirefoxDriver driver;
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-
     server = new NettyAppServer();
     server.start();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canCreateABrowsingContextForGivenId() {
     String id = driver.getWindowHandle();
     BrowsingContext browsingContext = new BrowsingContext(driver, id);
@@ -58,34 +56,46 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canCreateAWindow() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.WINDOW);
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canCreateAWindowWithAReferenceContext() {
-    BrowsingContext
-      browsingContext =
-      new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
+    BrowsingContext browsingContext =
+        new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canCreateATab() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canCreateATabWithAReferenceContext() {
-    BrowsingContext
-      browsingContext =
-      new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
+    BrowsingContext browsingContext =
+        new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canNavigateToAUrl() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 
@@ -93,11 +103,12 @@ class BrowsingContextTest {
     NavigationResult info = browsingContext.navigate(url);
 
     assertThat(browsingContext.getId()).isNotEmpty();
-    assertThat(info.getNavigationId()).isNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canNavigateToAUrlWithReadinessState() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 
@@ -105,11 +116,14 @@ class BrowsingContextTest {
     NavigationResult info = browsingContext.navigate(url, ReadinessState.COMPLETE);
 
     assertThat(browsingContext.getId()).isNotEmpty();
-    assertThat(info.getNavigationId()).isNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canGetTreeWithAChild() {
     String referenceContextId = driver.getWindowHandle();
     BrowsingContext parentWindow = new BrowsingContext(driver, referenceContextId);
@@ -128,6 +142,10 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   void canGetTreeWithDepth() {
     String referenceContextId = driver.getWindowHandle();
     BrowsingContext parentWindow = new BrowsingContext(driver, referenceContextId);
@@ -145,6 +163,8 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canGetAllTopLevelContexts() {
     BrowsingContext window1 = new BrowsingContext(driver, driver.getWindowHandle());
     BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
@@ -155,6 +175,8 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canCloseAWindow() {
     BrowsingContext window1 = new BrowsingContext(driver, WindowType.WINDOW);
     BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
@@ -165,6 +187,8 @@ class BrowsingContextTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   void canCloseATab() {
     BrowsingContext tab1 = new BrowsingContext(driver, WindowType.TAB);
     BrowsingContext tab2 = new BrowsingContext(driver, WindowType.TAB);

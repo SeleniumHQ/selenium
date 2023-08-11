@@ -20,27 +20,24 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.By;
 
 /**
- * Abstract class to work with fields in Page Objects.
- * Provides methods to process {@link org.openqa.selenium.support.FindBy},
- * {@link org.openqa.selenium.support.FindBys} and
- * {@link org.openqa.selenium.support.FindAll} annotations.
+ * Abstract class to work with fields in Page Objects. Provides methods to process {@link
+ * org.openqa.selenium.support.FindBy}, {@link org.openqa.selenium.support.FindBys} and {@link
+ * org.openqa.selenium.support.FindAll} annotations.
  */
 public abstract class AbstractAnnotations {
 
   /**
-   * Defines how to transform given object (field, class, etc)
-   * into {@link org.openqa.selenium.By} class used by webdriver to locate elements.
+   * Defines how to transform given object (field, class, etc.) into {@link org.openqa.selenium.By}
+   * class used by webdriver to locate elements.
    *
    * @return By object
    */
   public abstract By buildBy();
 
   /**
-   * Defines whether or not given element
-   * should be returned from cache on further calls.
+   * Defines whether given element should be returned from cache on further calls.
    *
    * @return boolean if lookup cached
    */
   public abstract boolean isLookupCached();
-
 }

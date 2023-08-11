@@ -18,6 +18,9 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -25,11 +28,8 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
-public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, AdditionalHttpCommands {
+public abstract class AddHasCasting
+    implements AugmenterProvider<HasCasting>, AdditionalHttpCommands {
 
   public static final String GET_CAST_SINKS = "getCastSinks";
   public static final String SET_CAST_SINK_TO_USE = "selectCastSink";
@@ -69,7 +69,8 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
       public void startDesktopMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(START_CAST_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(
+            START_CAST_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
       }
 
       @Override

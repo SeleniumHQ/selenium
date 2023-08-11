@@ -30,5 +30,4 @@ class Echo {
     String message = Arrays.stream(args).collect(Collectors.joining(" "));
     System.out.println(message);
   }
-
 }

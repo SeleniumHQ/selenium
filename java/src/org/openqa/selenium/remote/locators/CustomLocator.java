@@ -20,16 +20,14 @@ package org.openqa.selenium.remote.locators;
 import org.openqa.selenium.By;
 
 /**
- * Allows servers to add additional locator strategies to the Selenium
- * Server. This takes the JSON payload of the Find Element command
- * (essentially {@code {"using": "locator-name", "value": "arguments"}})
- * and calls it in the context of the server.
+ * Allows servers to add additional locator strategies to the Selenium Server. This takes the JSON
+ * payload of the Find Element command (essentially {@code {"using": "locator-name", "value":
+ * "arguments"}}) and calls it in the context of the server.
  */
 public interface CustomLocator {
 
   /**
-   * @return The locator name, which is the value of the {@code using}
-   *   property of the JSON payload.
+   * @return The locator name, which is the value of the {@code using} property of the JSON payload.
    */
   String getLocatorName();
 

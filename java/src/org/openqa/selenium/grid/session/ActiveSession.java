@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.session;
 
+import java.util.Map;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
-
-import java.util.Map;
 
 public interface ActiveSession extends HttpHandler, WrapsDriver {
 
@@ -33,9 +32,7 @@ public interface ActiveSession extends HttpHandler, WrapsDriver {
 
   Dialect getDownstreamDialect();
 
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
+  /** Describe the current webdriver session's capabilities. */
   Map<String, Object> getCapabilities();
 
   TemporaryFilesystem getFileSystem();

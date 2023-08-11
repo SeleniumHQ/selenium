@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import graphql.ExecutionInput;
@@ -28,6 +39,13 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
@@ -43,28 +61,10 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-
 public class GraphqlHandler implements HttpHandler {
 
-  public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
+  public static final String GRID_SCHEMA =
+      "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
   private final Tracer tracer;
   private final Distributor distributor;
@@ -73,36 +73,42 @@ public class GraphqlHandler implements HttpHandler {
   private final String version;
   private final GraphQL graphQl;
 
-
-  public GraphqlHandler(Tracer tracer, Distributor distributor, NewSessionQueue newSessionQueue,
-                        URI publicUri, String version) {
+  public GraphqlHandler(
+      Tracer tracer,
+      Distributor distributor,
+      NewSessionQueue newSessionQueue,
+      URI publicUri,
+      String version) {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.newSessionQueue = Require.nonNull("New session queue", newSessionQueue);
     this.publicUri = Require.nonNull("Uri", publicUri);
     this.version = Require.nonNull("GridVersion", version);
     this.tracer = Require.nonNull("Tracer", tracer);
 
-    GraphQLSchema schema = new SchemaGenerator()
-      .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
+    GraphQLSchema schema =
+        new SchemaGenerator()
+            .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
 
-    Cache<String, PreparsedDocumentEntry> cache = CacheBuilder.newBuilder()
-      .maximumSize(1024)
-      .build();
+    Cache<String, PreparsedDocumentEntry> cache =
+        CacheBuilder.newBuilder().maximumSize(1024).build();
 
-    graphQl = GraphQL.newGraphQL(schema)
-      .preparsedDocumentProvider((executionInput, computeFunction) -> {
-        try {
-          return cache.get(executionInput.getQuery(), () -> computeFunction.apply(executionInput));
-        } catch (ExecutionException e) {
-          if (e.getCause() instanceof RuntimeException) {
-            throw (RuntimeException) e.getCause();
-          } else if (e.getCause() != null) {
-            throw new RuntimeException(e.getCause());
-          }
-          throw new RuntimeException(e);
-        }
-      })
-      .build();
+    graphQl =
+        GraphQL.newGraphQL(schema)
+            .preparsedDocumentProvider(
+                (executionInput, computeFunction) -> {
+                  try {
+                    return cache.get(
+                        executionInput.getQuery(), () -> computeFunction.apply(executionInput));
+                  } catch (ExecutionException e) {
+                    if (e.getCause() instanceof RuntimeException) {
+                      throw (RuntimeException) e.getCause();
+                    } else if (e.getCause() != null) {
+                      throw new RuntimeException(e.getCause());
+                    }
+                    throw new RuntimeException(e);
+                  }
+                })
+            .build();
   }
 
   @Override
@@ -115,22 +121,24 @@ public class GraphqlHandler implements HttpHandler {
       Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
 
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-        EventAttribute.setValue(getClass().getName()));
+      attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
 
       if (!(inputs.get("query") instanceof String)) {
-        response = new HttpResponse()
-          .setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(Contents.utf8String("Unable to find query"));
+        response =
+            new HttpResponse()
+                .setStatus(HTTP_INTERNAL_ERROR)
+                .setContent(Contents.utf8String("Unable to find query"));
 
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to find query"));
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            EventAttribute.setValue("Unable to find query"));
 
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.NOT_FOUND);
@@ -140,20 +148,21 @@ public class GraphqlHandler implements HttpHandler {
 
       String query = (String) inputs.get("query");
       @SuppressWarnings("unchecked")
-      Map<String, Object> variables = inputs.get("variables") instanceof Map ?
-        (Map<String, Object>) inputs.get("variables") :
-        new HashMap<>();
+      Map<String, Object> variables =
+          inputs.get("variables") instanceof Map
+              ? (Map<String, Object>) inputs.get("variables")
+              : new HashMap<>();
 
-      ExecutionInput executionInput = ExecutionInput.newExecutionInput(query)
-        .variables(variables)
-        .build();
+      ExecutionInput executionInput =
+          ExecutionInput.newExecutionInput(query).variables(variables).build();
 
       ExecutionResult result = graphQl.execute(executionInput);
 
       if (result.isDataPresent()) {
-        response = new HttpResponse()
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(utf8String(JSON.toJson(result.toSpecification())));
+        response =
+            new HttpResponse()
+                .addHeader("Content-Type", JSON_UTF_8)
+                .setContent(utf8String(JSON.toJson(result.toSpecification())));
 
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
@@ -162,14 +171,16 @@ public class GraphqlHandler implements HttpHandler {
         return response;
       }
 
-      response = new HttpResponse()
-        .setStatus(HTTP_INTERNAL_ERROR)
-        .setContent(utf8String(JSON.toJson(result.getErrors())));
+      response =
+          new HttpResponse()
+              .setStatus(HTTP_INTERNAL_ERROR)
+              .setContent(utf8String(JSON.toJson(result.getErrors())));
       HTTP_RESPONSE.accept(span, response);
       HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Error while executing the query"));
+      attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Error while executing the query"));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
@@ -182,14 +193,17 @@ public class GraphqlHandler implements HttpHandler {
   private RuntimeWiring buildRuntimeWiring() {
     GridData gridData = new GridData(distributor, newSessionQueue, publicUri, version);
     return RuntimeWiring.newRuntimeWiring()
-      .scalar(Types.Uri)
-      .scalar(Types.Url)
-      .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", gridData)
-        .dataFetcher("sessionsInfo", gridData)
-        .dataFetcher("nodesInfo", gridData)
-        .dataFetcher("session", new SessionData(distributor)))
-      .build();
+        .scalar(Types.Uri)
+        .scalar(Types.Url)
+        .type(
+            "GridQuery",
+            typeWiring ->
+                typeWiring
+                    .dataFetcher("grid", gridData)
+                    .dataFetcher("sessionsInfo", gridData)
+                    .dataFetcher("nodesInfo", gridData)
+                    .dataFetcher("session", new SessionData(distributor)))
+        .build();
   }
 
   private TypeDefinitionRegistry buildTypeDefinitionRegistry() {

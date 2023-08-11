@@ -19,7 +19,7 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::path::MAIN_SEPARATOR;
+
 use std::path::{Path, PathBuf};
 
 use crate::config::OS;
@@ -37,6 +37,7 @@ const CACHE_FOLDER: &str = ".cache/selenium";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
 const XML: &str = "xml";
+const HTML: &str = "html";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -53,20 +54,30 @@ impl BrowserPath {
     }
 }
 
-pub fn create_path_if_not_exists(path: &Path) {
-    if !path.exists() {
-        fs::create_dir_all(path).unwrap();
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+    if let Some(p) = path.parent() {
+        create_path_if_not_exists(p)?;
     }
+    Ok(())
+}
+
+pub fn create_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+    if !path.exists() {
+        fs::create_dir_all(path)?;
+    }
+    Ok(())
 }
 
 pub fn uncompress(
-    compressed_file: &String,
-    target: PathBuf,
+    compressed_file: &str,
+    target: &Path,
     log: &Logger,
+    single_file: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
-    let file = File::open(compressed_file)?;
-    let kind = infer::get_from_path(compressed_file)?
-        .ok_or(format!("Format for file {:?} cannot be inferred", file))?;
+    let kind = infer::get_from_path(compressed_file)?.ok_or(format!(
+        "Format for file {} cannot be inferred",
+        compressed_file
+    ))?;
     let extension = kind.extension();
     log.trace(format!(
         "The detected extension of the compressed file is {}",
@@ -74,11 +85,15 @@ pub fn uncompress(
     ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
-        unzip(file, target, log)?
+        unzip(compressed_file, target, log, single_file)?
     } else if extension.eq_ignore_ascii_case(GZ) {
-        untargz(file, target, log)?
-    } else if extension.eq_ignore_ascii_case(XML) {
-        return Err("Wrong browser/driver version".into());
+        untargz(compressed_file, target, log)?
+    } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
+        log.debug(format!(
+            "Wrong downloaded driver: {}",
+            fs::read_to_string(compressed_file).unwrap_or_default()
+        ));
+        return Err(PARSE_ERROR.into());
     } else {
         return Err(format!(
             "Downloaded file cannot be uncompressed ({} extension)",
@@ -89,8 +104,13 @@ pub fn uncompress(
     Ok(())
 }
 
-pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
-    log.trace(format!("Untargz file to {}", target.display()));
+pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
+    log.trace(format!(
+        "Untargz {} to {}",
+        compressed_file,
+        target.display()
+    ));
+    let file = File::open(compressed_file)?;
     let tar = GzDecoder::new(&file);
     let mut archive = Archive::new(tar);
     let parent_path = target
@@ -102,65 +122,158 @@ pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn 
     Ok(())
 }
 
-pub fn unzip(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
-    log.trace(format!("Unzipping file to {}", target.display()));
-    let mut archive = ZipArchive::new(file)?;
+pub fn unzip(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    single_file: Option<String>,
+) -> Result<(), Box<dyn Error>> {
+    let file = File::open(compressed_file)?;
+    let compressed_path = Path::new(compressed_file);
+    let tmp_path = compressed_path
+        .parent()
+        .unwrap_or(compressed_path)
+        .to_path_buf();
+    let final_path = if single_file.is_some() {
+        target.parent().unwrap_or(target).to_path_buf()
+    } else {
+        target.to_path_buf()
+    };
+    log.trace(format!(
+        "Unzipping {} to {}",
+        compressed_file,
+        final_path.display()
+    ));
+    let mut zip_archive = ZipArchive::new(file)?;
+    let mut unzipped_files = 0;
 
-    for i in 0..archive.len() {
-        let mut file = archive.by_index(i)?;
-        if target.exists() {
-            continue;
-        }
-        let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if target_file_name.eq_ignore_ascii_case(file.name()) {
-            log.debug(format!(
+    for i in 0..zip_archive.len() {
+        let mut file = zip_archive.by_index(i)?;
+        let path: PathBuf = match file.enclosed_name() {
+            // This logic is required since some zip files (e.g. chromedriver 115+)
+            // are zipped with a parent folder, while others (e.g. chromedriver 114-)
+            // are zipped without a parent folder
+            Some(p) => {
+                let iter = p.clone().iter();
+                if iter.to_owned().count() > 1 {
+                    iter.skip(1).collect()
+                } else {
+                    iter.collect()
+                }
+            }
+            None => continue,
+        };
+        if file.name().ends_with('/') {
+            log.trace(format!("File extracted to {}", tmp_path.display()));
+            fs::create_dir_all(&tmp_path)?;
+        } else {
+            let target_path = tmp_path.join(path.clone());
+            create_parent_path_if_not_exists(target_path.as_path())?;
+            let mut outfile = File::create(&target_path)?;
+
+            // Set permissions in Unix-like systems
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+
+                if single_file.is_some() {
+                    fs::set_permissions(&target_path, fs::Permissions::from_mode(0o755))?;
+                } else if let Some(mode) = file.unix_mode() {
+                    fs::set_permissions(&target_path, fs::Permissions::from_mode(mode))?;
+                }
+            }
+
+            io::copy(&mut file, &mut outfile)?;
+            unzipped_files += 1;
+            log.trace(format!(
                 "File extracted to {} ({} bytes)",
-                target.display(),
+                target_path.display(),
                 file.size()
             ));
-            if let Some(p) = target.parent() {
-                create_path_if_not_exists(p);
+        }
+    }
+    if unzipped_files == 0 {
+        return Err(format!(
+            "Problem uncompressing zip ({} files extracted)",
+            unzipped_files
+        )
+        .into());
+    }
+
+    fs::remove_file(compressed_path)?;
+    copy_folder_content(
+        tmp_path,
+        final_path,
+        single_file,
+        &compressed_path.to_path_buf(),
+        log,
+    )?;
+
+    Ok(())
+}
+
+pub fn copy_folder_content(
+    source: impl AsRef<Path>,
+    destination: impl AsRef<Path>,
+    single_file: Option<String>,
+    avoid_path: &PathBuf,
+    log: &Logger,
+) -> io::Result<()> {
+    fs::create_dir_all(&destination)?;
+    for dir_entry in fs::read_dir(source)? {
+        let entry = dir_entry?;
+        let file_type = entry.file_type()?;
+        let destination_path = destination.as_ref().join(entry.file_name());
+        if file_type.is_file() {
+            if entry.path().eq(avoid_path) {
+                continue;
             }
-            if !target.exists() {
-                let mut outfile = File::create(&target)?;
-
-                // Set permissions in Unix-like systems
-                #[cfg(unix)]
-                {
-                    use std::os::unix::fs::PermissionsExt;
-
-                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+            let target_file_name = entry
+                .file_name()
+                .to_os_string()
+                .into_string()
+                .unwrap_or_default();
+            if single_file.is_none()
+                || (single_file.is_some() && single_file.clone().unwrap().eq(&target_file_name))
+            {
+                log.trace(format!(
+                    "Copying {} to {}",
+                    entry.path().display(),
+                    destination_path.display()
+                ));
+                if !destination_path.exists() {
+                    fs::copy(entry.path(), destination_path)?;
                 }
-
-                io::copy(&mut file, &mut outfile)?;
             }
-            break;
+        } else if single_file.is_none() {
+            copy_folder_content(
+                entry.path(),
+                destination_path,
+                single_file.clone(),
+                avoid_path,
+                log,
+            )?;
         }
     }
     Ok(())
 }
 
-pub fn compose_cache_folder() -> PathBuf {
+pub fn default_cache_folder() -> PathBuf {
     if let Some(base_dirs) = BaseDirs::new() {
         return Path::new(base_dirs.home_dir())
-            .join(String::from(CACHE_FOLDER).replace('/', &MAIN_SEPARATOR.to_string()));
+            .join(String::from(CACHE_FOLDER).replace('/', std::path::MAIN_SEPARATOR_STR));
     }
     PathBuf::new()
 }
 
-pub fn get_cache_folder() -> PathBuf {
-    let cache_path = compose_cache_folder();
-    create_path_if_not_exists(&cache_path);
-    cache_path
-}
-
 pub fn compose_driver_path_in_cache(
+    driver_path: PathBuf,
     driver_name: &str,
     os: &str,
     arch_folder: &str,
     driver_version: &str,
 ) -> PathBuf {
-    get_cache_folder()
+    driver_path
         .join(driver_name)
         .join(arch_folder)
         .join(driver_version)
@@ -179,8 +292,9 @@ pub fn get_binary_extension(os: &str) -> &str {
     }
 }
 
-pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
+pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<dyn Error>> {
     if version_text.to_ascii_lowercase().contains("error") {
+        log.debug(format!("Error parsing version: {}", version_text));
         return Err(PARSE_ERROR.into());
     }
     let mut parsed_version = "".to_string();
@@ -192,5 +306,12 @@ pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
             break;
         }
     }
+    if parsed_version.ends_with('.') {
+        parsed_version = parsed_version[0..parsed_version.len() - 1].to_string();
+    }
     Ok(parsed_version)
+}
+
+pub fn path_buf_to_string(path_buf: PathBuf) -> String {
+    path_buf.into_os_string().into_string().unwrap_or_default()
 }

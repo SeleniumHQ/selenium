@@ -21,18 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.io.File;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.io.File;
-import java.io.IOException;
 
 class FormHandlingTest extends JupiterTestBase {
 
@@ -98,8 +97,7 @@ class FormHandlingTest extends JupiterTestBase {
   @Test
   void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
-    WebElement textarea = driver.findElement(By
-                                                 .id("keyUpArea"));
+    WebElement textarea = driver.findElement(By.id("keyUpArea"));
     String cheesey = "BrIe And CheDdar";
     textarea.sendKeys(cheesey);
     assertThat(textarea.getAttribute("value")).isEqualTo(cheesey);
@@ -130,7 +128,8 @@ class FormHandlingTest extends JupiterTestBase {
   @Test
   void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
-    WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
+    WebElement element =
+        driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String originalValue = element.getAttribute("value");
     assertThat(originalValue).isEqualTo("change");
 
@@ -158,8 +157,7 @@ class FormHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
-      throws IOException {
+  void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument() throws IOException {
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
     assertThat(uploadElement.getAttribute("value")).isEmpty();
@@ -185,6 +183,10 @@ class FormHandlingTest extends JupiterTestBase {
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
+
+    // Apparently on chrome we need to wait for the element to be gone if we're loading the same
+    // page again
+    wait.until(d -> d.findElements(By.id("upload")).isEmpty());
 
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
@@ -291,10 +293,13 @@ class FormHandlingTest extends JupiterTestBase {
   @Test
   void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
-    driver.get(appServer.create(new Page().withBody(
-        String.format("<form action='%s'>", blank),
-        "  <input type='submit' name='submit' value='Submit'>",
-        "</form>")));
+    driver.get(
+        appServer.create(
+            new Page()
+                .withBody(
+                    String.format("<form action='%s'>", blank),
+                    "  <input type='submit' name='submit' value='Submit'>",
+                    "</form>")));
 
     driver.findElement(By.name("submit")).submit();
     wait.until(titleIs("Submitted Successfully!"));
@@ -309,6 +314,6 @@ class FormHandlingTest extends JupiterTestBase {
 
     wait.until(titleIs("Submitted Successfully!"));
 
-    assertThat(driver.getCurrentUrl()).contains("name="+name);
+    assertThat(driver.getCurrentUrl()).contains("name=" + name);
   }
 }

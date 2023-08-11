@@ -21,26 +21,23 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
-/**
- * Hamcrest matcher for displayed status of {@link WebElement}s.
- *
- */
+/** Hamcrest matcher for displayed status of {@link WebElement}s. */
+@Deprecated
 public class DisplayedMatcher extends TypeSafeMatcher<WebElement> {
 
-	private DisplayedMatcher() {
-	}
+  private DisplayedMatcher() {}
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("displayed");
-	}
+  @Override
+  public void describeTo(Description description) {
+    description.appendText("displayed");
+  }
 
-	@Override
-	public boolean matchesSafely(WebElement item) {
-		return item.isDisplayed();
-	}
+  @Override
+  public boolean matchesSafely(WebElement item) {
+    return item.isDisplayed();
+  }
 
-	public static Matcher<WebElement> displayed() {
-		return new DisplayedMatcher();
-	}
+  public static Matcher<WebElement> displayed() {
+    return new DisplayedMatcher();
+  }
 }

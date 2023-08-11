@@ -27,7 +27,9 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          WebDriver.logger.ignore(:logger_info)
+          $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
+          WebDriver.logger.ignore(%i[logger_info selenium_manager])
+          SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
@@ -67,6 +69,8 @@ module Selenium
 
         def quit_driver
           @driver_instance&.quit
+        rescue StandardError
+          # good riddance
         ensure
           @driver_instance = nil
         end
@@ -86,7 +90,8 @@ module Selenium
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
-            timeout: 60
+            timeout: 60,
+            args: %w[--selenium-manager true]
           )
         end
 

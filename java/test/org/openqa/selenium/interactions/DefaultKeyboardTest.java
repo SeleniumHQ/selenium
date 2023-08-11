@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -30,18 +39,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-/**
- * Tests interaction through the advanced gestures API of keyboard handling.
- */
+/** Tests interaction through the advanced gestures API of keyboard handling. */
 class DefaultKeyboardTest extends JupiterTestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
@@ -93,14 +91,18 @@ class DefaultKeyboardTest extends JupiterTestBase {
     WebElement keyLoggingElement = driver.findElement(By.id("result"));
 
     String eventsText = keyLoggingElement.getText();
-    assertThat(eventsText).describedAs("Key down should be isolated for this test to be meaningful").endsWith("keydown");
+    assertThat(eventsText)
+        .describedAs("Key down should be isolated for this test to be meaningful")
+        .endsWith("keydown");
 
     Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
 
     releaseShift.perform();
 
     eventsText = keyLoggingElement.getText();
-    assertThat(eventsText).describedAs("Key up should be isolated for this test to be meaningful").endsWith("keyup");
+    assertThat(eventsText)
+        .describedAs("Key up should be isolated for this test to be meaningful")
+        .endsWith("keyup");
   }
 
   @Test
@@ -162,7 +164,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   public void testThrowsIllegalArgumentExceptionWithNoParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys());
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys());
   }
 
   @Test
@@ -170,7 +172,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   public void testThrowsIllegalArgumentExceptionWithNullParameter() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys((CharSequence) null));
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys((CharSequence) null));
   }
 
   @Test
@@ -178,23 +180,24 @@ class DefaultKeyboardTest extends JupiterTestBase {
   public void testThrowsIllegalArgumentExceptionWithNullInParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
   @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
     driver.get(pages.javascriptPage);
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-      () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
   @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNullOnly() {
     driver.get(pages.javascriptPage);
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-      () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{null}));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(
+            () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[] {null}));
   }
 
   @Test
@@ -211,15 +214,19 @@ class DefaultKeyboardTest extends JupiterTestBase {
     assertBackgroundColor(body, Colors.LIGHTBLUE);
 
     new Actions(driver)
-      .keyDown(Keys.SHIFT).keyDown(Keys.ALT)
-      .sendKeys("1")
-      .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
-      .perform();
+        .keyDown(Keys.SHIFT)
+        .keyDown(Keys.ALT)
+        .sendKeys("1")
+        .keyUp(Keys.SHIFT)
+        .keyUp(Keys.ALT)
+        .perform();
     assertBackgroundColor(body, Colors.SILVER);
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(
+      value = FIREFOX,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -229,23 +236,25 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
     shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
-    getBuilder(driver).click(input)
-      .keyDown(Keys.SHIFT)
-      .sendKeys(Keys.LEFT)
-      .sendKeys(Keys.LEFT)
-      .keyUp(Keys.SHIFT)
-      .sendKeys(Keys.DELETE)
-      .perform();
+    getBuilder(driver)
+        .click(input)
+        .keyDown(Keys.SHIFT)
+        .sendKeys(Keys.LEFT)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
 
     assertThat(input.getAttribute("value")).isEqualTo("abc d");
   }
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(
+      value = FIREFOX,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectByWord() {
-    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
-      "MacOS has alternative keyboard");
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -254,22 +263,22 @@ class DefaultKeyboardTest extends JupiterTestBase {
     getBuilder(driver).click(input).sendKeys("abc def").perform();
     wait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
-    getBuilder(driver).click(input)
-      .keyDown(Keys.SHIFT)
-      .keyDown(Keys.CONTROL)
-      .sendKeys(Keys.LEFT)
-      .keyUp(Keys.CONTROL)
-      .keyUp(Keys.SHIFT)
-      .sendKeys(Keys.DELETE)
-      .perform();
+    getBuilder(driver)
+        .click(input)
+        .keyDown(Keys.SHIFT)
+        .keyDown(Keys.CONTROL)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.CONTROL)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
 
     wait.until(ExpectedConditions.attributeToBe(input, "value", "abc "));
   }
 
   @Test
   void testSelectionSelectAll() {
-    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
-      "MacOS has alternative keyboard");
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -279,12 +288,13 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
     shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
-    getBuilder(driver).click(input)
-      .keyDown(Keys.CONTROL)
-      .sendKeys("a")
-      .keyUp(Keys.CONTROL)
-      .sendKeys(Keys.DELETE)
-      .perform();
+    getBuilder(driver)
+        .click(input)
+        .keyDown(Keys.CONTROL)
+        .sendKeys("a")
+        .keyUp(Keys.CONTROL)
+        .sendKeys(Keys.DELETE)
+        .perform();
 
     assertThat(input.getAttribute("value")).isEmpty();
   }
@@ -302,10 +312,10 @@ class DefaultKeyboardTest extends JupiterTestBase {
     assertThat(textInput.getAttribute("value")).isEqualTo(leftArrowSpaceTestStringExpected);
   }
 
-  private void sendLeftArrowSpaceTestKeys(final WebElement inputElement, final String leftArrowSpaceTestString) {
+  private void sendLeftArrowSpaceTestKeys(
+      final WebElement inputElement, final String leftArrowSpaceTestString) {
     inputElement.sendKeys(leftArrowSpaceTestString);
-    for (byte j = 0; j < 3; j++)
-      inputElement.sendKeys(Keys.LEFT);
+    for (byte j = 0; j < 3; j++) inputElement.sendKeys(Keys.LEFT);
     inputElement.sendKeys(Keys.SPACE);
   }
 
@@ -327,6 +337,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   private void assertThatBodyEventsFiredAreExactly(String expected) {
-    assertThat(driver.findElement(By.id("body_result")).getText().trim()).isEqualTo(expected.trim());
+    assertThat(driver.findElement(By.id("body_result")).getText().trim())
+        .isEqualTo(expected.trim());
   }
 }

@@ -20,9 +20,8 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 
 /**
- * Used to allow a {@link CommandExecutor} using HTTP to find additional
- * commands that should be supported. Implementations of this interface
- * are found using the {@link java.util.ServiceLoader}
+ * Used to allow a {@link CommandExecutor} using HTTP to find additional commands that should be
+ * supported. Implementations of this interface are found using the {@link java.util.ServiceLoader}
  */
 @FunctionalInterface
 public interface AdditionalHttpCommands {

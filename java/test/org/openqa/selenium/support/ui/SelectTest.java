@@ -26,16 +26,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Tag("UnitTests")
 class SelectTest {
@@ -166,8 +165,8 @@ class SelectTest {
 
     Select select = new Select(element);
     assertThatThrownBy(() -> select.selectByVisibleText("fish"))
-      .isInstanceOf(UnsupportedOperationException.class)
-      .hasMessage("You may not select a disabled option");
+        .isInstanceOf(UnsupportedOperationException.class)
+        .hasMessage("You may not select a disabled option");
 
     verify(firstOption, never()).click();
   }
@@ -189,8 +188,8 @@ class SelectTest {
     final WebElement firstOption = mockOption("first", false);
 
     final WebElement element = mockSelectWebElement("multiple");
-    when(element.findElements(By.xpath(".//option[@value = \"b\"]"))).thenReturn(
-        Collections.singletonList(firstOption));
+    when(element.findElements(By.xpath(".//option[@value = \"b\"]")))
+        .thenReturn(Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     select.selectByValue("b");
@@ -213,8 +212,7 @@ class SelectTest {
   @Test
   void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     Select select = selectElementWithMultipleEqualTo(null);
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(select::deselectAll);
+    assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(select::deselectAll);
   }
 
   @Test

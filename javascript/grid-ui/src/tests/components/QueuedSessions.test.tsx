@@ -25,6 +25,7 @@ const sessionQueueRequests: string[] = [
 
 it('renders basic session information', () => {
   render(<QueuedSessions sessionQueueRequests={sessionQueueRequests} />)
-  const request = sessionQueueRequests[0]
-  expect(screen.getByText(request)).toBeInTheDocument()
+  const browserLogo = screen.getByAltText('Browser Logo')
+  expect(browserLogo).toBeInTheDocument()
+  expect(browserLogo).toHaveAttribute('src', 'chrome.svg')
 })

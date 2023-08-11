@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.internal.Require;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -32,18 +29,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.internal.Require;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
  * Keyboard or Mouse directly.
- * <p>
- * Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
- * method calls.
- * <p>
- * Call {@link #perform()} at the end of the method chain to actually perform the actions.
+ *
+ * <p>Implements the builder pattern: Builds a CompositeAction containing all actions specified by
+ * the method calls.
+ *
+ * <p>Call {@link #perform()} at the end of the method chain to actually perform the actions.
  */
 public class Actions {
 
@@ -61,13 +60,14 @@ public class Actions {
   }
 
   /**
-   * Performs a modifier key press. Does not release the modifier key - subsequent interactions
-   * may assume it's kept pressed.
-   * Note that the modifier key is <b>never</b> released implicitly - either
-   * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
-   * must be called to release the modifier.
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * Performs a modifier key press. Does not release the modifier key - subsequent interactions may
+   * assume it's kept pressed. Note that the modifier key is <b>never</b> released implicitly -
+   * either <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i> must be called to release the
+   * modifier.
+   *
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
+   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
+   *     IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(CharSequence key) {
@@ -77,10 +77,11 @@ public class Actions {
   /**
    * Performs a modifier key press after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyDown(CharSequence)
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @see #keyDown(CharSequence)
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
+   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
+   *     IllegalArgumentException} is thrown.
    * @param target WebElement to perform the action
    * @return A self reference.
    */
@@ -93,7 +94,8 @@ public class Actions {
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
+   *     or {@link Keys#CONTROL}.
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
@@ -103,9 +105,10 @@ public class Actions {
   /**
    * Performs a modifier key release after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
+   *     or {@link Keys#CONTROL}.
    * @param target WebElement to perform the action on
    * @return A self reference.
    */
@@ -115,19 +118,18 @@ public class Actions {
   }
 
   /**
-   * Sends keys to the active element. This differs from calling
-   * {@link WebElement#sendKeys(CharSequence...)} on the active element in two ways:
+   * Sends keys to the active element. This differs from calling {@link
+   * WebElement#sendKeys(CharSequence...)} on the active element in two ways:
+   *
    * <ul>
-   * <li>The modifier keys included in this call are not released.</li>
-   * <li>There is no attempt to re-focus the element - so sendKeys(Keys.TAB) for switching
-   * elements should work. </li>
+   *   <li>The modifier keys included in this call are not released.
+   *   <li>There is no attempt to re-focus the element - so sendKeys(Keys.TAB) for switching
+   *       elements should work.
    * </ul>
    *
    * @see WebElement#sendKeys(CharSequence...)
-   *
    * @param keys The keys.
    * @return A self reference.
-   *
    * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(CharSequence... keys) {
@@ -135,17 +137,14 @@ public class Actions {
   }
 
   /**
-   * Equivalent to calling:
-   * <i>Actions.click(element).sendKeys(keysToSend).</i>
-   * This method is different from {@link WebElement#sendKeys(CharSequence...)} - see
-   * {@link #sendKeys(CharSequence...)} for details how.
+   * Equivalent to calling: <i>Actions.click(element).sendKeys(keysToSend).</i> This method is
+   * different from {@link WebElement#sendKeys(CharSequence...)} - see {@link
+   * #sendKeys(CharSequence...)} for details how.
    *
    * @see #sendKeys(java.lang.CharSequence[])
-   *
    * @param target element to focus on.
    * @param keys The keys.
    * @return A self reference.
-   *
    * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(WebElement target, CharSequence... keys) {
@@ -157,10 +156,12 @@ public class Actions {
       throw new IllegalArgumentException("Keys should be a not null CharSequence");
     }
     for (CharSequence key : keys) {
-      key.codePoints().forEach(codePoint -> {
-        tick(getActiveKeyboard().createKeyDown(codePoint));
-        tick(getActiveKeyboard().createKeyUp(codePoint));
-      });
+      key.codePoints()
+          .forEach(
+              codePoint -> {
+                tick(getActiveKeyboard().createKeyDown(codePoint));
+                tick(getActiveKeyboard().createKeyUp(codePoint));
+              });
     }
     return this;
   }
@@ -168,8 +169,8 @@ public class Actions {
   private Actions addKeyAction(CharSequence key, IntConsumer consumer) {
     // Verify that we only have a single character to type.
     if (key.codePoints().count() != 1) {
-      throw new IllegalStateException(String.format(
-        "Only one code point is allowed at a time: %s", key));
+      throw new IllegalStateException(
+          String.format("Only one code point is allowed at a time: %s", key));
     }
 
     key.codePoints().forEach(consumer);
@@ -185,12 +186,12 @@ public class Actions {
    * @return A self reference.
    */
   public Actions clickAndHold(WebElement target) {
-    return moveInTicks(target, 0, 0)
-        .tick(getActivePointer().createPointerDown(LEFT.asArg()));
+    return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
 
   /**
    * Clicks (without releasing) at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions clickAndHold() {
@@ -198,12 +199,11 @@ public class Actions {
   }
 
   /**
-   * Releases the depressed left mouse button, in the middle of the given element.
-   * This is equivalent to:
-   * <i>Actions.moveToElement(onElement).release()</i>
+   * Releases the depressed left mouse button, in the middle of the given element. This is
+   * equivalent to: <i>Actions.moveToElement(onElement).release()</i>
    *
-   * Invoking this action without invoking {@link #clickAndHold()} first will result in
-   * undefined behaviour.
+   * <p>Invoking this action without invoking {@link #clickAndHold()} first will result in undefined
+   * behaviour.
    *
    * @param target Element to release the mouse button above.
    * @return A self reference.
@@ -213,7 +213,8 @@ public class Actions {
   }
 
   /**
-   * If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+   * If the element is outside the viewport, scrolls the bottom of the element to the bottom of the
+   * viewport.
    *
    * @param element Which element to scroll into the viewport.
    * @return A self reference.
@@ -226,22 +227,26 @@ public class Actions {
   /**
    * Scrolls by provided amounts with the origin in the top left corner of the viewport.
    *
-   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls
+   *     left.
    * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
    * @return A self reference.
    */
   public Actions scrollByAmount(int deltaX, int deltaY) {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
-    return tick(getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+    return tick(
+        getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
   /**
-   * Scrolls by provided amount based on a provided origin.
-   * The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
-   * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-   *   be scrolled to the bottom of the viewport.
+   * Scrolls by provided amount based on a provided origin. The scroll origin is either the center
+   * of an element or the upper left of the viewport plus any offsets. If the origin is an element,
+   * and the element is not in the viewport, the bottom of the element will first be scrolled to the
+   * bottom of the viewport.
+   *
    * @param scrollOrigin Where scroll originates (viewport or element center) plus provided offsets.
-   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls
+   *     left.
    * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException If the origin with offset is outside the viewport.
@@ -249,11 +254,13 @@ public class Actions {
   public Actions scrollFromOrigin(WheelInput.ScrollOrigin scrollOrigin, int deltaX, int deltaY) {
     int x = scrollOrigin.getxOffset();
     int y = scrollOrigin.getyOffset();
-    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+    return tick(
+        getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
   /**
    * Releases the depressed left mouse button at the current mouse location.
+   *
    * @see #release(org.openqa.selenium.WebElement)
    * @return A self reference.
    */
@@ -273,9 +280,9 @@ public class Actions {
   }
 
   /**
-   * Clicks at the current mouse location. Useful when combined with
-   * {@link #moveToElement(org.openqa.selenium.WebElement, int, int)} or
-   * {@link #moveByOffset(int, int)}.
+   * Clicks at the current mouse location. Useful when combined with {@link
+   * #moveToElement(org.openqa.selenium.WebElement, int, int)} or {@link #moveByOffset(int, int)}.
+   *
    * @return A self reference.
    */
   public Actions click() {
@@ -300,13 +307,12 @@ public class Actions {
    * @return A self reference.
    */
   public Actions doubleClick(WebElement target) {
-    return moveInTicks(target, 0, 0)
-        .clickInTicks(LEFT)
-        .clickInTicks(LEFT);
+    return moveInTicks(target, 0, 0).clickInTicks(LEFT).clickInTicks(LEFT);
   }
 
   /**
    * Performs a double-click at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions doubleClick() {
@@ -316,6 +322,7 @@ public class Actions {
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
    * location is calculated using getClientRects.
+   *
    * @param target element to move to.
    * @return A self reference.
    */
@@ -325,11 +332,12 @@ public class Actions {
 
   /**
    * Moves the mouse to an offset from the element's in-view center point.
+   *
    * @param target element to move to.
-   * @param xOffset Offset from the element's in-view center point. A negative value means
-   * an offset left of the point.
-   * @param yOffset Offset from the element's in-view center point. A negative value means
-   * an offset above the point.
+   * @param xOffset Offset from the element's in-view center point. A negative value means an offset
+   *     left of the point.
+   * @param yOffset Offset from the element's in-view center point. A negative value means an offset
+   *     above the point.
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
@@ -337,31 +345,52 @@ public class Actions {
   }
 
   private Actions moveInTicks(WebElement target, int xOffset, int yOffset) {
-    return tick(getActivePointer().createPointerMove(
-        Duration.ofMillis(100),
-        Origin.fromElement(target),
-        xOffset,
-        yOffset));
+    return tick(
+        getActivePointer()
+            .createPointerMove(
+                Duration.ofMillis(100), Origin.fromElement(target), xOffset, yOffset));
   }
 
   /**
-   * Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
-   * provided are outside the viewport (the mouse will end up outside the browser window) then
-   * the viewport is scrolled to match.
+   * Moves the mouse from its current position (or 0,0) by the given offset. If the final
+   * coordinates of the move are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
+   *
    * @param xOffset horizontal offset. A negative value means moving the mouse left.
    * @param yOffset vertical offset. A negative value means moving the mouse up.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
-   * boundaries.
+   *     boundaries.
    */
   public Actions moveByOffset(int xOffset, int yOffset) {
     return tick(
-        getActivePointer().createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
+        getActivePointer()
+            .createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
   }
 
   /**
-   * Performs a context-click at middle of the given element. First performs a mouseMove
-   * to the location of the element.
+   * Moves the mouse to provided coordinates on screen regardless of starting position of the mouse.
+   * If the coordinates provided are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
+   *
+   * @param xCoordinate positive pixel value along horizontal axis in viewport. Numbers increase
+   *     going right.
+   * @param yCoordinate positive pixel value along vertical axis in viewport. Numbers increase going
+   *     down.
+   * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
+   *     boundaries.
+   */
+  public Actions moveToLocation(int xCoordinate, int yCoordinate) {
+    return tick(
+        getActivePointer()
+            .createPointerMove(
+                Duration.ofMillis(250), Origin.viewport(), xCoordinate, yCoordinate));
+  }
+
+  /**
+   * Performs a context-click at middle of the given element. First performs a mouseMove to the
+   * location of the element.
    *
    * @param target Element to move to.
    * @return A self reference.
@@ -372,6 +401,7 @@ public class Actions {
 
   /**
    * Performs a context-click at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions contextClick() {
@@ -379,8 +409,8 @@ public class Actions {
   }
 
   /**
-   * A convenience method that performs click-and-hold at the location of the source element,
-   * moves to the location of the target element, then releases the mouse.
+   * A convenience method that performs click-and-hold at the location of the source element, moves
+   * to the location of the target element, then releases the mouse.
    *
    * @param source element to emulate button down at.
    * @param target element to move to and release the mouse at.
@@ -394,8 +424,8 @@ public class Actions {
   }
 
   /**
-   * A convenience method that performs click-and-hold at the location of the source element,
-   * moves by a given offset, then releases the mouse.
+   * A convenience method that performs click-and-hold at the location of the source element, moves
+   * by a given offset, then releases the mouse.
    *
    * @param source element to emulate button down at.
    * @param xOffset horizontal move offset.
@@ -405,7 +435,9 @@ public class Actions {
   public Actions dragAndDropBy(WebElement source, int xOffset, int yOffset) {
     return moveInTicks(source, 0, 0)
         .tick(getActivePointer().createPointerDown(LEFT.asArg()))
-        .tick(getActivePointer().createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
+        .tick(
+            getActivePointer()
+                .createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
         .tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
@@ -430,9 +462,10 @@ public class Actions {
     for (Interaction action : actions) {
       boolean freshlyAdded = seenSources.add(action.getSource());
       if (!freshlyAdded) {
-        throw new IllegalStateException(String.format(
-            "You may only add one action per input source per tick: %s",
-            Arrays.asList(actions)));
+        throw new IllegalStateException(
+            String.format(
+                "You may only add one action per input source per tick: %s",
+                Arrays.asList(actions)));
       }
     }
 
@@ -453,7 +486,11 @@ public class Actions {
   }
 
   public Actions setActiveKeyboard(String name) {
-    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
+    InputSource inputSource =
+        sequences.keySet().stream()
+            .filter(input -> Objects.equals(input.getName(), name))
+            .findFirst()
+            .orElse(null);
 
     if (inputSource == null) {
       this.activeKeyboard = new KeyInput(name);
@@ -465,7 +502,11 @@ public class Actions {
   }
 
   public Actions setActivePointer(PointerInput.Kind kind, String name) {
-    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
+    InputSource inputSource =
+        sequences.keySet().stream()
+            .filter(input -> Objects.equals(input.getName(), name))
+            .findFirst()
+            .orElse(null);
 
     if (inputSource == null) {
       this.activePointer = new PointerInput(kind, name);
@@ -477,11 +518,11 @@ public class Actions {
   }
 
   public Actions setActiveWheel(String name) {
-    InputSource inputSource = sequences.keySet()
-      .stream()
-      .filter(input -> Objects.equals(input.getName(), name))
-      .findFirst()
-      .orElse(null);
+    InputSource inputSource =
+        sequences.keySet().stream()
+            .filter(input -> Objects.equals(input.getName(), name))
+            .findFirst()
+            .orElse(null);
 
     if (inputSource == null) {
       this.activeWheel = new WheelInput(name);
@@ -514,12 +555,11 @@ public class Actions {
   }
 
   /**
-   * Generates a composite action containing all actions so far, ready to be performed (and
-   * resets the internal builder state, so subsequent calls to this method will contain fresh
-   * sequences).
-   * <p>
-   * <b>Warning</b>: you may want to call {@link #perform()} instead to actually perform
-   * the actions.
+   * Generates a composite action containing all actions so far, ready to be performed (and resets
+   * the internal builder state, so subsequent calls to this method will contain fresh sequences).
+   *
+   * <p><b>Warning</b>: you may want to call {@link #perform()} instead to actually perform the
+   * actions.
    *
    * @return the composite action
    */
@@ -529,9 +569,7 @@ public class Actions {
     return toReturn;
   }
 
-  /**
-   * A convenience method for performing the actions without calling build() first.
-   */
+  /** A convenience method for performing the actions without calling build() first. */
   public void perform() {
     build().perform();
   }

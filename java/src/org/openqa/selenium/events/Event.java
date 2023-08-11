@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.events;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 public class Event {
 
@@ -79,9 +78,9 @@ public class Event {
     }
 
     Event that = (Event) o;
-    return Objects.equals(this.getId(), that.getId()) &&
-           Objects.equals(this.getType(), that.getType()) &&
-           Objects.equals(this.getRawData(), that.getRawData());
+    return Objects.equals(this.getId(), that.getId())
+        && Objects.equals(this.getType(), that.getType())
+        && Objects.equals(this.getRawData(), that.getRawData());
   }
 
   @Override

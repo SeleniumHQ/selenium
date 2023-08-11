@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import java.time.Duration;
+import java.util.Set;
+import java.util.logging.Logger;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerId;
@@ -28,10 +31,6 @@ import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
-
-import java.time.Duration;
-import java.util.Set;
-import java.util.logging.Logger;
 
 public class V141Docker implements DockerProtocol {
 
@@ -85,7 +84,8 @@ public class V141Docker implements DockerProtocol {
       return allImages.iterator().next();
     }
 
-    throw new DockerException("Pull appears to have succeeded, but image not present locally: " + imageName);
+    throw new DockerException(
+        "Pull appears to have succeeded, but image not present locally: " + imageName);
   }
 
   @Override

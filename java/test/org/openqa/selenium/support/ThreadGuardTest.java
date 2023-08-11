@@ -16,15 +16,14 @@
 // under the License.
 package org.openqa.selenium.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 @Tag("UnitTests")
 class ThreadGuardTest {
@@ -34,10 +33,12 @@ class ThreadGuardTest {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     final AtomicInteger successes = new AtomicInteger();
-    Thread foo = new Thread(() -> {
-      protect.findElement(By.id("foo"));
-      successes.incrementAndGet();
-    });
+    Thread foo =
+        new Thread(
+            () -> {
+              protect.findElement(By.id("foo"));
+              successes.incrementAndGet();
+            });
     foo.start();
     foo.join();
     assertThat(successes.get()).isZero();

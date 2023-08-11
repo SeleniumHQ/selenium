@@ -45,14 +45,20 @@ module Selenium
         end
 
         def devtools_version
-          capabilities['se:cdpVersion']&.split('.')&.first ||
-            raise(Error::WebDriverError, 'DevTools is not supported by the Remote Server')
+          cdp_version = capabilities['se:cdpVersion']&.split('.')&.first
+          raise Error::WebDriverError, 'DevTools is not supported by the Remote Server' unless cdp_version
+
+          Integer(cdp_version)
         end
 
         def process_options(options, capabilities)
-          raise ArgumentError, "#{self.class} needs :options to be set" if options.nil? && capabilities.nil?
-
-          super(options, capabilities)
+          if options && capabilities
+            msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
+            raise ArgumentError, msg
+          elsif options.nil? && capabilities.nil?
+            raise ArgumentError, "#{self.class} needs :options to be set"
+          end
+          options ? options.as_json : generate_capabilities(capabilities)
         end
       end # Driver
     end # Remote

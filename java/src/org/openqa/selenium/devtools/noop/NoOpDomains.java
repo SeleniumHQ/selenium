@@ -30,14 +30,15 @@ public class NoOpDomains implements Domains {
 
   private static BuildInfo INFO = new BuildInfo();
 
-  private final static String WARNING = String.format(
-    "You are using a no-op implementation of the CDP. The most likely reason" +
-    " for this is that Selenium was unable to find an implementation of the " +
-    "CDP protocol that matches your browser. Please be sure to include an " +
-    "implementation on the classpath, possibly by adding a new (maven) " +
-    "dependency of `org.seleniumhq.selenium:selenium-devtools-vNN:%s` where " +
-    "`NN` matches the major version of the browser you're using.",
-    INFO.getReleaseLabel());
+  private static final String WARNING =
+      String.format(
+          "You are using a no-op implementation of the CDP. The most likely reason"
+              + " for this is that Selenium was unable to find an implementation of the "
+              + "CDP protocol that matches your browser. Please be sure to include an "
+              + "implementation on the classpath, possibly by adding a new (maven) "
+              + "dependency of `org.seleniumhq.selenium:selenium-devtools-vNN:%s` where "
+              + "`NN` matches the major version of the browser you're using.",
+          INFO.getReleaseLabel());
 
   @Override
   public Events<?, ?> events() {

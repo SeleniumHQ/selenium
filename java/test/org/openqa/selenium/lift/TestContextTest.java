@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.lift;
 
-import org.hamcrest.Description;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.lift.find.Finder;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +26,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.Finders.first;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import org.hamcrest.Description;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.lift.find.Finder;
 
 /**
  * Unit test for {@link WebDriverTestContext}.

@@ -1,3 +1,97 @@
+Selenium 4.11.2
+* better bug fix for #12454
+
+Selenium 4.11.1
+* Delete unusable Safari Options parameters to fix bug preventing Safari execution (#12454)
+
+Selenium 4.11.0
+* Add CDP files for v115 and remove v112
+* removed redundant attributes `capabilities` and `set_capability` in wpewebkit/options.py (#12169)
+* mapped all error codes in `errorhandler.py` to corresponding exception object. (#12190)
+* improve driver logging (#12103) - implement log_output() for flexibility and consistency of driver logging
+* fix property name in Selenium Manager (#12237)
+* used truthy check instead of checking for length in `to_capabilities` method in `ie/options.py` (#12262)
+* remote commands dict is moved outside `RemoteConnection` class in `remote/remote_connection.py` (#12261)
+* moved `ConnectionType` class outside `Mobile` class to avoid nesting of classes (#12256)
+* used `pathlib` module to check if the file exist in `remote/file_detector.py` (#12253)
+* added truthy check in chromium options instead of identity operator (#12274)
+* added pythonic approach of type checking in `firefox/firefox_profile.py` (#12271)
+* let users pass service args to IE driver (#12272)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* moved all ie options to custom descriptors. (#12283)
+* minor ie-options fix to PR 12283 (#12309), fixes #12283
+* added type hints to `SwitchTo` class (#12296)
+* Refactored Proxy object in common/proxy.py using custom descriptor. (#12286)
+* optimized Timeouts class by moving timeouts to descriptor class (#12287)
+* added type hinting support to ActionChains and Alert class (#12290)
+* Moved all `PrintOptions` class attributes to custom descriptor class. (#12297)
+* Use Selenium Manager to locate drivers on PATH (#12356
+* Enable cdp to work for edge
+* Update docstring of wait.py so it can also cover the case of WebElement as 1st arg of WebDriverWait. (#12376)
+* Added type hinting support to `common/actions` libraries. (#12325)
+* Fix type of `ignore_proxy` in `ChromiumRemoteconnection`
+* set exception direct cause when switching frame focus when NSE is raised
+* Raise a more generic `ValueError` when proxy type is not acceptable
+* Add browser output from selenium manager to options (#12404)
+* Add check=False explicitly to subprocess calls; simplify `keys_to_typing`
+* Expose `WPEWebKitService` and `WebKitGTKService` in the public API
+* Remove deprecated `ActionChains.scroll(...)`
+* Removed unused variable `DEFAULT_SAFARI_CAPS` in `safari/webdriver.py` (#12416)
+* Added type checks in `setter` methods of different browser options (#12328)
+* Add creation flag for windows in selenium_manager (#12435)
+* Fix checking window handles for current
+
+
+
+
+Selenium 4.10.0
+* Add CDP files for v114 and remove v111
+* Fix bug preventing proxy from working in Options classes (#12029)
+* Add proxy support for Selenium Manager (#12032)
+* Additional updates to typing (#12067, #12106)
+* Add support for changing pointers in Actions class (#11521)
+* Remove browser filters for shadow root element searches (#12112)
+* Remove significant amounts of deprecated code (#12030)
+* Improve near relative locator behavior (#11290)
+* Change Selenium Manager logging to debug (#12145)
+* Add links to documentation in error messages (#12156)
+* Add custom error class for driver location and improve error logic
+* Fix bug in BiDi mutation events
+
+Selenium 4.9.1
+* Add CDP files for v113 and remove v110
+* Minor fixes for docstring and dictionary declarations (#11975)
+* Update logging to match other bindings (#11990)
+* Support newer versions of urllib3 (#11993)
+
+Selenium 4.9.0
+* Remove "shadow_root" assertion in Python bindings for Firefox (#11821)
+* Simplify driver binary and driver location selecting (#11864)
+* Do not pass desired caps in Safari (#11854)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Adding v112 and removing v109
+
+Selenium 4.8.3
+* Add fine grained control for arguments provided to service subprocesses by passing a `popen_kw` mapping for all services.
+* `Options` classes now allow `timeout` to be set partially and no longer raise an exception when all values are not provided. (#11623)
+* No longer sending `SIGKILL` to subprocesses in instances where `SIGTERM` was successful within 60 seconds.
+* Add CDP files for v111 and remove v108
+* Pass default to `pop` when parsing service popen_kw
+* Using json output with Selenium Manager
+* Sphinx config update to keep invoked methods and shorter aliases in documentation (#11802)
+
+Selenium 4.8.2
+* Update tox.ini for a valid "isort" version (#11667)
+* Undo a bug fix that caused a worse bug. (#11666)
+
+Selenium 4.8.1
+* Add CDP files for v110 and remove v107
+* pylint fixes including tidy of f strings, simplifications of conditional statements and isinstances (#11205)
+* Replace devtools genrule with proper generate_devtools rule. (#11392)
+* Add docstring for `alert_is_present`
+* Updating Selenium Manager binaries for 4.8.1 release
+
 Selenium 4.8.0
 * Add CDP files for v109 and remove v106
 * Add logging to Selenium Manager for both stdout and stderr

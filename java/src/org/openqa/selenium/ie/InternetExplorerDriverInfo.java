@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.ie;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import com.google.auto.service.AutoService;
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -26,11 +29,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-
-import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.IE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 @AutoService(WebDriverInfo.class)
 public class InternetExplorerDriverInfo implements WebDriverInfo {
@@ -47,8 +46,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return IE.is(capabilities) ||
-           capabilities.getCapability("se:ieOptions") != null;
+    return IE.is(capabilities) || capabilities.getCapability("se:ieOptions") != null;
   }
 
   @Override
@@ -65,7 +63,22 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   public boolean isAvailable() {
     try {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        InternetExplorerDriverService.createDefaultService();
+        DriverFinder.getPath(
+            InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities());
+        return true;
+      }
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean isPresent() {
+    try {
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        DriverFinder.getPath(
+            InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities(), true);
         return true;
       }
       return false;
@@ -86,6 +99,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new InternetExplorerDriver(new InternetExplorerOptions().merge(capabilities)));
+    return Optional.of(
+        new InternetExplorerDriver(new InternetExplorerOptions().merge(capabilities)));
   }
 }

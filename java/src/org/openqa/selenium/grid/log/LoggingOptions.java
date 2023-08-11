@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.grid.log;
 
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.remote.tracing.empty.NullTracer;
-import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -36,6 +29,12 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.empty.NullTracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 public class LoggingOptions {
 
@@ -82,8 +81,8 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing")
-      .orElse(DEFAULT_TRACING_ENABLED);
+    boolean tracingEnabled =
+        config.getBool(LOGGING_SECTION, "tracing").orElse(DEFAULT_TRACING_ENABLED);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
@@ -144,25 +143,27 @@ public class LoggingOptions {
       }
     } catch (UnsupportedEncodingException e) {
       message =
-        String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
     }
     logger.addHandler(handler);
     logger.log(Level.INFO, message);
   }
 
   private OutputStream getOutputStream() {
-    return config.get(LOGGING_SECTION, "log-file")
-      .map(fileName -> {
-        try {
-          return (OutputStream) new FileOutputStream(fileName);
-        } catch (FileNotFoundException e) {
-          throw new UncheckedIOException(e);
-        }
-      })
-      .orElse(System.out);
+    return config
+        .get(LOGGING_SECTION, "log-file")
+        .map(
+            fileName -> {
+              try {
+                return (OutputStream) new FileOutputStream(fileName);
+              } catch (FileNotFoundException e) {
+                throw new UncheckedIOException(e);
+              }
+            })
+        .orElse(System.out);
   }
 
   public String getLogTimestampFormat() {
-      return config.get(LOGGING_SECTION, "log-timestamp-format").orElse(DEFAULT_LOG_TIMESTAMP_FORMAT);
+    return config.get(LOGGING_SECTION, "log-timestamp-format").orElse(DEFAULT_LOG_TIMESTAMP_FORMAT);
   }
 }

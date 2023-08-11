@@ -20,26 +20,24 @@ package org.openqa.selenium.logging;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Stores and retrieves logs in-process (i.e. without any RPCs).
- */
+/** Stores and retrieves logs in-process (i.e. without any RPCs). */
 public abstract class LocalLogs implements Logs {
 
-  private static final LocalLogs NULL_LOGGER = new LocalLogs() {
-    @Override
-    public LogEntries get(String logType) {
-      return new LogEntries(Collections.emptyList());
-    }
+  private static final LocalLogs NULL_LOGGER =
+      new LocalLogs() {
+        @Override
+        public LogEntries get(String logType) {
+          return new LogEntries(Collections.emptyList());
+        }
 
-    @Override
-    public Set<String> getAvailableLogTypes() {
-      return Collections.emptySet();
-    }
+        @Override
+        public Set<String> getAvailableLogTypes() {
+          return Collections.emptySet();
+        }
 
-    @Override
-    public void addEntry(String logType, LogEntry entry) {
-    }
-  };
+        @Override
+        public void addEntry(String logType, LogEntry entry) {}
+      };
 
   /**
    * Logger which doesn't do anything.
@@ -54,25 +52,25 @@ public abstract class LocalLogs implements Logs {
     return new StoringLocalLogs(logTypesToIgnore);
   }
 
-  public static LocalLogs getHandlerBasedLoggerInstance(LoggingHandler loggingHandler,
-      Set<String> logTypesToInclude) {
+  public static LocalLogs getHandlerBasedLoggerInstance(
+      LoggingHandler loggingHandler, Set<String> logTypesToInclude) {
     return new HandlerBasedLocalLogs(loggingHandler, logTypesToInclude);
   }
 
   /**
-   * See documentation of CompositeLocalLogs about the difference between the first
-   * LocalLogs instance and the second one.
+   * See documentation of CompositeLocalLogs about the difference between the first LocalLogs
+   * instance and the second one.
+   *
    * @param predefinedTypeLogger LocalLogs which pre-defines the log types it stores.
    * @param allTypesLogger LocalLogs which can store log entries for all log types.
    * @return A LocalLogs instance.
    */
-  public static LocalLogs getCombinedLogsHolder(LocalLogs predefinedTypeLogger,
-                                                LocalLogs allTypesLogger) {
+  public static LocalLogs getCombinedLogsHolder(
+      LocalLogs predefinedTypeLogger, LocalLogs allTypesLogger) {
     return new CompositeLocalLogs(predefinedTypeLogger, allTypesLogger);
   }
 
-  protected LocalLogs() {
-  }
+  protected LocalLogs() {}
 
   @Override
   public abstract LogEntries get(String logType);

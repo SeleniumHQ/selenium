@@ -407,7 +407,8 @@ module Selenium
 
         def upload(local_file)
           unless File.file?(local_file)
-            WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
+            WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!",
+                                   id: :file_detector)
             raise Error::WebDriverError, "You are trying to work with something that isn't a file."
           end
 
@@ -443,7 +444,7 @@ module Selenium
         end
 
         def element_attribute(element, name)
-          WebDriver.logger.info "Using script for :getAttribute of #{name}"
+          WebDriver.logger.debug "Using script for :getAttribute of #{name}", id: :script
           execute_atom :getAttribute, element, name
         end
 
@@ -503,7 +504,7 @@ module Selenium
         end
 
         def element_displayed?(element)
-          WebDriver.logger.info 'Using script for :isDisplayed'
+          WebDriver.logger.debug 'Using script for :isDisplayed', id: :script
           execute_atom :isDisplayed, element
         end
 
@@ -615,7 +616,7 @@ module Selenium
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
-          WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
+          WebDriver.logger.debug("-> #{verb.to_s.upcase} #{path}", id: :command)
           http.call(verb, path, command_hash)['value']
         end
 
@@ -682,7 +683,7 @@ module Selenium
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.

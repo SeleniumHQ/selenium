@@ -25,14 +25,12 @@ import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketSe
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.AttributeKey;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.Message;
-
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Message;
 
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -43,10 +41,10 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
   private final boolean allowCors;
 
   SeleniumHttpInitializer(
-    SslContext sslCtx,
-    HttpHandler seleniumHandler,
-    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
-    boolean allowCors) {
+      SslContext sslCtx,
+      HttpHandler seleniumHandler,
+      BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
+      boolean allowCors) {
     this.sslCtx = sslCtx;
     this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
     this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import org.openqa.selenium.internal.Require;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -30,6 +28,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.function.Function;
+import org.openqa.selenium.internal.Require;
 
 public class JsonInput implements Closeable {
 
@@ -51,6 +50,7 @@ public class JsonInput implements Closeable {
 
   /**
    * Change how property setting is done. It's polite to set the value back once done processing.
+   *
    * @param setter The new {@link PropertySetting} to use.
    * @return The previous {@link PropertySetting} that has just been replaced.
    */
@@ -89,18 +89,25 @@ public class JsonInput implements Closeable {
     skipWhitespace(input);
 
     switch (input.peek()) {
-      case 'f': case 't':
+      case 'f':
+      case 't':
         return JsonType.BOOLEAN;
 
       case 'n':
         return JsonType.NULL;
 
-      case '-': case '+':
-      case '0': case '1':
-      case '2': case '3':
-      case '4': case '5':
-      case '6': case '7':
-      case '8': case '9':
+      case '-':
+      case '+':
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
         return JsonType.NUMBER;
 
       case '"':
@@ -157,10 +164,12 @@ public class JsonInput implements Closeable {
     boolean fractionalPart = false;
     do {
       char read = input.peek();
-      if (Character.isDigit(read) ||
-          read == '+' || read == '-' ||
-          read == 'e' || read == 'E' ||
-          read == '.') {
+      if (Character.isDigit(read)
+          || read == '+'
+          || read == '-'
+          || read == 'e'
+          || read == 'E'
+          || read == '.') {
         builder.append(input.read());
       } else {
         break;
@@ -296,7 +305,6 @@ public class JsonInput implements Closeable {
     return coercer.coerce(this, type, setter);
   }
 
-
   private boolean isReadingName() {
     return stack.peekFirst() == Container.MAP_NAME;
   }
@@ -319,7 +327,7 @@ public class JsonInput implements Closeable {
         throw new JsonException("Unexpected attempt to read name. " + input);
       }
 
-      return;  // End of Name handling
+      return; // End of Name handling
     }
 
     // Handle the case where we're reading a value
@@ -335,12 +343,9 @@ public class JsonInput implements Closeable {
     for (int i = 0; i < toCompare.length(); i++) {
       char read = input.read();
       if (read != toCompare.charAt(i)) {
-        throw new JsonException(String.format(
-            "Unable to read %s. Saw %s at position %d. %s",
-            toCompare,
-            read,
-            i,
-            input));
+        throw new JsonException(
+            String.format(
+                "Unable to read %s. Saw %s at position %d. %s", toCompare, read, i, input));
       }
     }
 
@@ -348,7 +353,7 @@ public class JsonInput implements Closeable {
   }
 
   private String readString() {
-    input.read();  // Skip leading quote
+    input.read(); // Skip leading quote
 
     StringBuilder builder = new StringBuilder();
     char c;
@@ -393,7 +398,7 @@ public class JsonInput implements Closeable {
         builder.append("\t");
         break;
 
-      case 'u':  // Unicode digit. The next four characters count.
+      case 'u': // Unicode digit. The next four characters count.
         int result = 0;
         int multiplier = 4096; // (16 * 16 * 16) as we start from the thousands and work to units.
         for (int i = 0; i < 4; i++) {

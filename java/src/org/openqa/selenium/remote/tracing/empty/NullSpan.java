@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import java.util.Map;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
-
-import java.util.Map;
 
 public class NullSpan extends NullContext implements Span {
 

@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.docker;
 
-import org.openqa.selenium.internal.Require;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
 
 public class Container {
 

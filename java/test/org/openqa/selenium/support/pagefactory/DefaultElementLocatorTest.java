@@ -24,8 +24,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -34,10 +37,6 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 
 @Tag("UnitTests")
 class DefaultElementLocatorTest {
@@ -184,25 +183,25 @@ class DefaultElementLocatorTest {
 
     ElementLocator locator = newLocator(driver, f);
 
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(locator::findElement);
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(locator::findElement);
   }
 
   @Test
   void shouldWorkWithCustomAnnotations() {
     final WebDriver driver = mock(WebDriver.class);
 
-    AbstractAnnotations npeAnnotations = new AbstractAnnotations() {
-      @Override
-      public boolean isLookupCached() {
-        return false;
-      }
+    AbstractAnnotations npeAnnotations =
+        new AbstractAnnotations() {
+          @Override
+          public boolean isLookupCached() {
+            return false;
+          }
 
-      @Override
-      public By buildBy() {
-        throw new NullPointerException();
-      }
-    };
+          @Override
+          public By buildBy() {
+            throw new NullPointerException();
+          }
+        };
 
     assertThatExceptionOfType(NullPointerException.class)
         .isThrownBy(() -> new DefaultElementLocator(driver, npeAnnotations));

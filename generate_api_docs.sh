@@ -13,6 +13,12 @@ rb)
   bazel run //rb:docs || exit
   docs="$(bazel cquery --output=files //rb:docs 2> /dev/null).runfiles/selenium/docs/api/rb"
   ;;
+dotnet)
+  # dotnet sdk should be installed
+  # bazel should be installed
+  dotnet tool update -g docfx
+  docfx dotnet/docs/docfx.json
+  ;;
 *)
   echo "Selenium API docs generation"
   echo "ERROR: unknown parameter \"$API_DOCS_LANGUAGE\""
@@ -43,6 +49,10 @@ py)
 rb)
   rm -rf docs/api/rb
   mv $docs docs/api/rb
+  ;;
+dotnet)
+  rm -rf docs/api/dotnet
+  mv build/docs/api/dotnet docs/api/dotnet
   ;;
 *)
   echo "ERROR: unknown parameter \"$API_DOCS_LANGUAGE\""

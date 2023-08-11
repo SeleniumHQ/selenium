@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableSet;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
+import com.google.common.collect.ImmutableSet;
+import java.io.UncheckedIOException;
+import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -27,28 +32,22 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.UncheckedIOException;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
 public class ReverseProxyHandler implements HttpHandler {
 
   private static final Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
-  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
-      .add("connection")
-      .add("keep-alive")
-      .add("proxy-authorization")
-      .add("proxy-authenticate")
-      .add("proxy-connection")
-      .add("te")
-      .add("trailer")
-      .add("transfer-encoding")
-      .add("upgrade")
-      .build();
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS =
+      ImmutableSet.<String>builder()
+          .add("connection")
+          .add("keep-alive")
+          .add("proxy-authorization")
+          .add("proxy-authenticate")
+          .add("proxy-connection")
+          .add("te")
+          .add("trailer")
+          .add("transfer-encoding")
+          .add("upgrade")
+          .build();
 
   private final Tracer tracer;
   private final HttpClient upstream;
@@ -66,7 +65,7 @@ public class ReverseProxyHandler implements HttpHandler {
 
       HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
-      for(String attributeName: req.getAttributeNames()) {
+      for (String attributeName : req.getAttributeNames()) {
         toUpstream.setAttribute(attributeName, req.getAttribute(attributeName));
       }
 
@@ -91,7 +90,7 @@ public class ReverseProxyHandler implements HttpHandler {
       toUpstream.setContent(req.getContent());
       HttpResponse resp = upstream.execute(toUpstream);
 
-      HTTP_RESPONSE.accept(span,resp);
+      HTTP_RESPONSE.accept(span, resp);
 
       // clear response defaults.
       resp.removeHeader("Date");

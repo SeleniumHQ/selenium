@@ -25,7 +25,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Defines an interface allowing the user to manage settings in the browser's JavaScript engine.
     /// </summary>
-    public interface IJavaScriptEngine
+    public interface IJavaScriptEngine : IDisposable
     {
         /// <summary>
         /// Occurs when a JavaScript callback with a named binding is executed.

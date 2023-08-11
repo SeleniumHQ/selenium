@@ -20,13 +20,11 @@ package org.openqa.selenium.lift.find;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.TextMatcher.text;
 
-/**
- * A {@link Finder} for HTML title tags.
- */
+/** A {@link Finder} for HTML title tags. */
+@Deprecated
 public class PageTitleFinder extends HtmlTagFinder {
 
-  private PageTitleFinder() {
-  }
+  private PageTitleFinder() {}
 
   @Override
   protected String tagName() {

@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 
@@ -40,7 +41,7 @@ AUTODETECT_PROXY = {
 }
 
 
-def test_can_add_manual_proxy_to_desired_capabilities():
+def test_can_add_manual_proxy_to_options():
     proxy = Proxy()
     proxy.http_proxy = MANUAL_PROXY["httpProxy"]
     proxy.ftp_proxy = MANUAL_PROXY["ftpProxy"]
@@ -51,39 +52,36 @@ def test_can_add_manual_proxy_to_desired_capabilities():
     proxy.socksPassword = MANUAL_PROXY["socksPassword"]
     proxy.socksVersion = MANUAL_PROXY["socksVersion"]
 
-    desired_capabilities = {}
-    proxy.add_to_capabilities(desired_capabilities)
+    options = ArgOptions()
+    options.proxy = proxy
 
     proxy_capabilities = MANUAL_PROXY.copy()
-    proxy_capabilities["proxyType"] = "MANUAL"
-    expected_capabilities = {"proxy": proxy_capabilities}
-    assert expected_capabilities == desired_capabilities
+    proxy_capabilities["proxyType"] = "manual"
+    assert proxy_capabilities == options.to_capabilities().get("proxy")
 
 
-def test_can_add_autodetect_proxy_to_desired_capabilities():
+def test_can_add_autodetect_proxy_to_options():
     proxy = Proxy()
     proxy.auto_detect = AUTODETECT_PROXY["autodetect"]
 
-    desired_capabilities = {}
-    proxy.add_to_capabilities(desired_capabilities)
+    options = ArgOptions()
+    options.proxy = proxy
 
     proxy_capabilities = AUTODETECT_PROXY.copy()
-    proxy_capabilities["proxyType"] = "AUTODETECT"
-    expected_capabilities = {"proxy": proxy_capabilities}
-    assert expected_capabilities == desired_capabilities
+    proxy_capabilities["proxyType"] = "autodetect"
+    assert proxy_capabilities == options.to_capabilities().get("proxy")
 
 
-def test_can_add_pacproxy_to_desired_capabilities():
+def test_can_add_pacproxy_to_options():
     proxy = Proxy()
     proxy.proxy_autoconfig_url = PAC_PROXY["proxyAutoconfigUrl"]
 
-    desired_capabilities = {}
-    proxy.add_to_capabilities(desired_capabilities)
+    options = ArgOptions()
+    options.proxy = proxy
 
     proxy_capabilities = PAC_PROXY.copy()
-    proxy_capabilities["proxyType"] = "PAC"
-    expected_capabilities = {"proxy": proxy_capabilities}
-    assert expected_capabilities == desired_capabilities
+    proxy_capabilities["proxyType"] = "pac"
+    assert proxy_capabilities == options.to_capabilities().get("proxy")
 
 
 def test_can_not_change_initialized_proxy_type():
@@ -136,10 +134,9 @@ def test_can_init_empty_proxy():
     assert "" == proxy.proxy_autoconfig_url
     assert proxy.socks_version is None
 
-    desired_capabilities = {}
-    proxy.add_to_capabilities(desired_capabilities)
+    options = ArgOptions()
+    options.proxy = proxy
 
     proxy_capabilities = {}
-    proxy_capabilities["proxyType"] = "UNSPECIFIED"
-    expected_capabilities = {"proxy": proxy_capabilities}
-    assert expected_capabilities == desired_capabilities
+    proxy_capabilities["proxyType"] = "unspecified"
+    assert proxy_capabilities == options.to_capabilities().get("proxy")

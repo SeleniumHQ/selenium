@@ -17,8 +17,25 @@
 
 package org.openqa.selenium.grid.node.k8s;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.UUID;
+import java.util.logging.Logger;
+import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -62,32 +79,14 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.UUID;
-import java.util.logging.Logger;
-import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 /**
- * An implementation of {@link Node} that marks itself as draining immediately
- * after starting, and which then shuts down after usage. This will allow an
- * appropriately configured Kubernetes cluster to start a new node once the
- * session is finished.
+ * An implementation of {@link Node} that marks itself as draining immediately after starting, and
+ * which then shuts down after usage. This will allow an appropriately configured Kubernetes cluster
+ * to start a new node once the session is finished.
  */
-@ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=OneShotNode",
-  description = "Node for running a single webdriver session.")
+@ManagedService(
+    objectName = "org.seleniumhq.grid:type=Node,name=OneShotNode",
+    description = "Node for running a single webdriver session.")
 public class OneShotNode extends Node {
 
   private static final Logger LOG = Logger.getLogger(OneShotNode.class.getName());
@@ -106,15 +105,15 @@ public class OneShotNode extends Node {
   private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
-    Tracer tracer,
-    EventBus events,
-    Secret registrationSecret,
-    Duration heartbeatPeriod,
-    NodeId id,
-    URI uri,
-    URI gridUri,
-    Capabilities stereotype,
-    WebDriverInfo driverInfo) {
+      Tracer tracer,
+      EventBus events,
+      Secret registrationSecret,
+      Duration heartbeatPeriod,
+      NodeId id,
+      URI uri,
+      URI gridUri,
+      Capabilities stereotype,
+      WebDriverInfo driverInfo) {
     super(tracer, id, uri, registrationSecret);
 
     this.heartbeatPeriod = heartbeatPeriod;
@@ -133,40 +132,55 @@ public class OneShotNode extends Node {
     SecretOptions secretOptions = new SecretOptions(config);
     NodeOptions nodeOptions = new NodeOptions(config);
 
-    Map<String, Object> raw = new Json().toType(
-      config.get("k8s", "stereotype")
-        .orElseThrow(() -> new ConfigException("Unable to find node stereotype")),
-      MAP_TYPE);
+    Map<String, Object> raw =
+        new Json()
+            .toType(
+                config
+                    .get("k8s", "stereotype")
+                    .orElseThrow(() -> new ConfigException("Unable to find node stereotype")),
+                MAP_TYPE);
 
     Capabilities stereotype = new ImmutableCapabilities(raw);
 
     Optional<String> driverName = config.get("k8s", "driver_name").map(String::toLowerCase);
 
     // Find the webdriver info corresponding to the driver name
-    WebDriverInfo driverInfo = StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-      .filter(info -> info.isSupporting(stereotype))
-      .filter(info -> driverName.map(name -> name.equals(info.getDisplayName().toLowerCase())).orElse(true))
-      .findFirst()
-      .orElseThrow(() -> new ConfigException(
-        "Unable to find matching driver for %s and %s", stereotype, driverName.orElse("any driver")));
+    WebDriverInfo driverInfo =
+        StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+            .filter(info -> info.isSupporting(stereotype))
+            .filter(
+                info ->
+                    driverName
+                        .map(name -> name.equals(info.getDisplayName().toLowerCase()))
+                        .orElse(true))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new ConfigException(
+                        "Unable to find matching driver for %s and %s",
+                        stereotype, driverName.orElse("any driver")));
 
-    LOG.info(String.format("Creating one-shot node for %s with stereotype %s", driverInfo, stereotype));
+    LOG.info(
+        String.format("Creating one-shot node for %s with stereotype %s", driverInfo, stereotype));
     LOG.info("Grid URI is: " + nodeOptions.getPublicGridUri());
 
     return new OneShotNode(
-      loggingOptions.getTracer(),
-      eventOptions.getEventBus(),
-      secretOptions.getRegistrationSecret(),
-      nodeOptions.getHeartbeatPeriod(),
-      new NodeId(UUID.randomUUID()),
-      serverOptions.getExternalUri(),
-      nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
-      stereotype,
-      driverInfo);
+        loggingOptions.getTracer(),
+        eventOptions.getEventBus(),
+        secretOptions.getRegistrationSecret(),
+        nodeOptions.getHeartbeatPeriod(),
+        new NodeId(UUID.randomUUID()),
+        serverOptions.getExternalUri(),
+        nodeOptions
+            .getPublicGridUri()
+            .orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
+        stereotype,
+        driverInfo);
   }
 
   @Override
-  public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(
+      CreateSessionRequest sessionRequest) {
     if (driver != null) {
       throw new IllegalStateException("Only expected one session at a time");
     }
@@ -187,20 +201,27 @@ public class OneShotNode extends Node {
     this.capabilities = rewriteCapabilities(this.driver);
     this.sessionStart = Instant.now();
 
-    LOG.info("Encoded response: " + JSON.toJson(ImmutableMap.of(
-      "value", ImmutableMap.of(
-        "sessionId", sessionId,
-        "capabilities", capabilities))));
+    LOG.info(
+        "Encoded response: "
+            + JSON.toJson(
+                ImmutableMap.of(
+                    "value",
+                    ImmutableMap.of(
+                        "sessionId", sessionId,
+                        "capabilities", capabilities))));
 
     events.fire(new NodeDrainStarted(getId()));
 
     return Either.right(
-      new CreateSessionResponse(
-        getSession(sessionId),
-        JSON.toJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "sessionId", sessionId,
-            "capabilities", capabilities))).getBytes(UTF_8)));
+        new CreateSessionResponse(
+            getSession(sessionId),
+            JSON.toJson(
+                    ImmutableMap.of(
+                        "value",
+                        ImmutableMap.of(
+                            "sessionId", sessionId,
+                            "capabilities", capabilities)))
+                .getBytes(UTF_8)));
   }
 
   private HttpClient extractHttpClient(RemoteWebDriver driver) {
@@ -240,7 +261,8 @@ public class OneShotNode extends Node {
     // Rewrite the se:options if necessary to add cdp url
     if (driverInfo.isSupportingCdp()) {
       String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
-      return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:cdp", rewrite(cdpPath));
+      return new PersistentCapabilities(driver.getCapabilities())
+          .setCapability("se:cdp", rewrite(cdpPath));
     }
 
     return ImmutableCapabilities.copyOf(driver.getCapabilities());
@@ -249,13 +271,13 @@ public class OneShotNode extends Node {
   private URI rewrite(String path) {
     try {
       return new URI(
-        gridUri.getScheme(),
-        gridUri.getUserInfo(),
-        gridUri.getHost(),
-        gridUri.getPort(),
-        path,
-        null,
-        null);
+          gridUri.getScheme(),
+          gridUri.getUserInfo(),
+          gridUri.getHost(),
+          gridUri.getPort(),
+          path,
+          null,
+          null);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -271,18 +293,18 @@ public class OneShotNode extends Node {
       // Ensure the response is sent before we viciously kill the node
 
       new Thread(
-        () -> {
-          try {
-            Thread.sleep(500);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-          }
-          LOG.info("Stopping session: " + sessionId);
-          stop(sessionId);
-        },
-        "Node clean up: " + getId())
-        .start();
+              () -> {
+                try {
+                  Thread.sleep(500);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  throw new RuntimeException(e);
+                }
+                LOG.info("Stopping session: " + sessionId);
+                stop(sessionId);
+              },
+              "Node clean up: " + getId())
+          .start();
     }
 
     return res;
@@ -294,12 +316,7 @@ public class OneShotNode extends Node {
       throw new NoSuchSessionException("Unable to find session with id: " + id);
     }
 
-    return new Session(
-      sessionId,
-      getUri(),
-      stereotype,
-      capabilities,
-      sessionStart);
+    return new Session(sessionId, getUri(), stereotype, capabilities, sessionStart);
   }
 
   @Override
@@ -346,21 +363,21 @@ public class OneShotNode extends Node {
   @Override
   public NodeStatus getStatus() {
     return new NodeStatus(
-      getId(),
-      getUri(),
-      1,
-      ImmutableSet.of(
-        new Slot(
-          new SlotId(getId(), slotId),
-          stereotype,
-          Instant.EPOCH,
-          driver == null ?
-            null :
-            new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
-      isDraining() ? DRAINING : UP,
-      heartbeatPeriod,
-      getNodeVersion(),
-      getOsInfo());
+        getId(),
+        getUri(),
+        1,
+        ImmutableSet.of(
+            new Slot(
+                new SlotId(getId(), slotId),
+                stereotype,
+                Instant.EPOCH,
+                driver == null
+                    ? null
+                    : new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
+        isDraining() ? DRAINING : UP,
+        heartbeatPeriod,
+        getNodeVersion(),
+        getOsInfo());
   }
 
   @Override

@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-/**
- * Indicates that a Node health check failed.
- */
+/** Indicates that a Node health check failed. */
 public class HealthCheckFailedException extends WebDriverException {
 
   public HealthCheckFailedException(String msg, Throwable cause) {

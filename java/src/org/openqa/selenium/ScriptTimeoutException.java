@@ -17,13 +17,10 @@
 
 package org.openqa.selenium;
 
-/**
- * Thrown when an async execute script command does not complete in enough time.
- */
+/** Thrown when an async execute script command does not complete in enough time. */
 public class ScriptTimeoutException extends WebDriverException {
 
-  public ScriptTimeoutException() {
-  }
+  public ScriptTimeoutException() {}
 
   public ScriptTimeoutException(String message) {
     super(message);

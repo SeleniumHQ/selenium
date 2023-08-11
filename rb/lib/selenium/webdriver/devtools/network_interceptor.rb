@@ -134,7 +134,7 @@ module Selenium
             request_id: request.id,
             url: request.url,
             method: request.method,
-            post_data: request.post_data,
+            post_data: (Base64.strict_encode64(request.post_data) if request.post_data),
             headers: request.headers.map do |k, v|
               {name: k, value: v}
             end

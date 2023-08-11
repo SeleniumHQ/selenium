@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.testing.drivers.Browser;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.openqa.selenium.testing.drivers.Browser;
 
 /**
  * Annotation that indicates the shared WebDriver instance should be destroyed before a test. This

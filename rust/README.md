@@ -16,35 +16,55 @@ Selenium Manager can be executed using Cargo as follows:
 
 ```
 $ cargo run -- --help
-selenium-manager 1.0.0-M3
+selenium-manager 1.0.0-M4
 Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
 
 Usage: selenium-manager [OPTIONS]
 Options:
-  -b, --browser <BROWSER>
-          Browser name (chrome, firefox, edge, or iexplorer)
-  -d, --driver <DRIVER>
-          Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
-  -v, --driver-version <DRIVER_VERSION>
+      --browser <BROWSER>
+          Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
+      --driver <DRIVER>
+          Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
+      --grid [<GRID_VERSION>]
+          Selenium Grid. If version is not provided, the latest version is downloaded
+      --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
-  -B, --browser-version <BROWSER_VERSION>
+      --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
-  -P, --browser-path <BROWSER_PATH>
-          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-  -p, --proxy <PROXY>
+      --browser-path <BROWSER_PATH>
+          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "C:\Program Files\Google\Chrome\Application\chrome.exe")
+      --output <OUTPUT>
+          Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like) [default: LOGGER]
+      --os <OS>
+          Operating system (i.e., windows, linux, or macos)
+      --arch <ARCH>
+          System architecture (i.e., x32, x64, or arm64)
+      --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
-  -t, --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 120]
-  -D, --debug
+      --timeout <TIMEOUT>
+          Timeout for network requests (in seconds) [default: 300]
+      --driver-ttl <DRIVER_TTL>
+          Driver TTL (time-to-live) [default: 3600]
+      --browser-ttl <BROWSER_TTL>
+          Browser TTL (time-to-live) [default: 3600]
+      --cache-path <CACHE_PATH>
+          Local folder used to store downloaded assets (drivers and browsers), local metadata, and configuration file [default: ~/.cache/selenium]
+      --clear-cache
+          Clear cache folder (~/.cache/selenium)
+      --clear-metadata
+          Clear metadata file (~/.cache/selenium/selenium-manager.json)
+      --debug
           Display DEBUG messages
-  -T, --trace
+      --trace
           Display TRACE messages
-  -c, --clear-cache
-          Clear driver cache
+      --offline
+          Offline mode (i.e., disabling network requests and downloads)
+      --force-browser-download
+          Force to download browser. Currently Chrome for Testing (CfT) is supported
   -h, --help
-          Print help information
+          Print help
   -V, --version
-          Print version information
+          Print version
 ```
 
 For instance, the command required to manage chromedriver is the following:
@@ -72,6 +92,10 @@ INFO	/home/boni/.cache/selenium/chromedriver/linux64/106.0.5249.61/chromedriver
 ```
 
 Alternatively, you can replace `cargo run` with `bazel run //rust:selenium-manager`, for example `bazel run //rust:selenium-manager -- --browser chrome --debug`
+
+### Windows ARM
+
+There are issues when building on Windows ARM64. To workaround, use `cargo` with `--config Cargo.aarch64-pc-windows-msvc.toml` flag.
 
 ## Roadmap
 The implementation of Selenium Manager has been planned to be incremental. In the beginning, it should be a component that each Selenium language binding can optionally use to manage the local browser infrastructure. In the mid-term, and as long as it becomes more stable and complete, it could be used as the default tool for automated browser and driver management. All in all, the milestone we propose are the following:

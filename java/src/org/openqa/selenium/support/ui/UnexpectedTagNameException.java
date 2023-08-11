@@ -21,7 +21,8 @@ import org.openqa.selenium.WebDriverException;
 
 public class UnexpectedTagNameException extends WebDriverException {
   public UnexpectedTagNameException(String expectedTagName, String actualTagName) {
-    super(String.format(
-        "Element should have been \"%s\" but was \"%s\"", expectedTagName, actualTagName));
+    super(
+        String.format(
+            "Element should have been \"%s\" but was \"%s\"", expectedTagName, actualTagName));
   }
 }

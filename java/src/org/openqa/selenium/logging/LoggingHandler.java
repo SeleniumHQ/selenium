@@ -26,10 +26,9 @@ import java.util.logging.LogRecord;
 /**
  * A custom handler used to record log entries.
  *
- * This handler queues up log records as they come, up to MAX_RECORDS
- * (currently 1000) records.
- * If it reaches this capacity it will remove the older records
- * from the queue before adding the next one.
+ * <p>This handler queues up log records as they come, up to MAX_RECORDS (currently 1000) records.
+ * If it reaches this capacity it will remove the older records from the queue before adding the
+ * next one.
  */
 public class LoggingHandler extends Handler {
 
@@ -51,16 +50,22 @@ public class LoggingHandler extends Handler {
   }
 
   @Override
-  public synchronized  void publish(LogRecord logRecord) {
+  public synchronized void publish(LogRecord logRecord) {
     if (isLoggable(logRecord)) {
       if (records.size() > MAX_RECORDS) {
         records.remove();
       }
-      records.add(new LogEntry(logRecord.getLevel(),
-          logRecord.getMillis(),
-          logRecord.getLoggerName() + " "
-              + logRecord.getSourceClassName() + "." + logRecord.getSourceMethodName()
-              + " " + logRecord.getMessage()));
+      records.add(
+          new LogEntry(
+              logRecord.getLevel(),
+              logRecord.getMillis(),
+              logRecord.getLoggerName()
+                  + " "
+                  + logRecord.getSourceClassName()
+                  + "."
+                  + logRecord.getSourceMethodName()
+                  + " "
+                  + logRecord.getMessage()));
     }
   }
 

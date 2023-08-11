@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.lift;
 
-import org.hamcrest.Description;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.lift.find.Finder;
-import org.openqa.selenium.support.ui.TickingClock;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,11 +27,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import org.hamcrest.Description;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.lift.find.Finder;
+import org.openqa.selenium.support.ui.TickingClock;
+
 /**
  * Unit test for {@link WebDriverTestContext}.
  *
  * @author rchatley (Robert Chatley)
- *
  */
 class WebDriverTestContextTest {
 
@@ -165,8 +163,8 @@ class WebDriverTestContextTest {
       fail("should have failed as element not displayed before timeout");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage()).
-          contains(String.format("Element was not rendered within %dms", TIMEOUT));
+      assertThat(error.getMessage())
+          .contains(String.format("Element was not rendered within %dms", TIMEOUT));
     }
 
     verify(finder, atLeastOnce()).findFrom(webdriver);

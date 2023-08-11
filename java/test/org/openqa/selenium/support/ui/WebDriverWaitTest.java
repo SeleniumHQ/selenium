@@ -17,9 +17,18 @@
 
 package org.openqa.selenium.support.ui;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+import java.io.IOException;
+import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
@@ -37,16 +46,6 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-
-import java.io.IOException;
-import java.time.Duration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 @Tag("UnitTests")
 class WebDriverWaitTest {
@@ -76,8 +75,8 @@ class WebDriverWaitTest {
         new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-      .isThrownBy(() -> wait.until(d -> false))
-      .withMessageContaining("Capabilities {platformName: ANY}")
+        .isThrownBy(() -> wait.until(d -> false))
+        .withMessageContaining("Capabilities {platformName: any}")
         .withMessageContaining("Session ID: foo");
   }
 
@@ -87,16 +86,19 @@ class WebDriverWaitTest {
     WebDriverWait wait =
         new WebDriverWait(mockDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
-    assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(d -> false));
+    assertThatExceptionOfType(TimeoutException.class).isThrownBy(() -> wait.until(d -> false));
   }
 
   @Test
   void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
     WebDriverWait wait = new WebDriverWait(mockDriver, Duration.ofSeconds(1));
     assertThatExceptionOfType(TimeoutException.class)
-      .isThrownBy(() -> wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".doesntexist"))))
-      .withStackTraceContaining(this.getClass().getName());
+        .isThrownBy(
+            () ->
+                wait.until(
+                    ExpectedConditions.presenceOfAllElementsLocatedBy(
+                        By.cssSelector(".doesntexist"))))
+        .withStackTraceContaining(this.getClass().getName());
   }
 
   @SuppressWarnings("unchecked")

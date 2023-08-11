@@ -232,7 +232,7 @@ java_module = rule(
             default = "@bazel_tools//tools/jdk:current_java_toolchain",
         ),
         "_merge_jars": attr.label(
-            default = "@rules_jvm_external//private/tools/java/rules/jvm/external/jar:MergeJars",
+            default = "@rules_jvm_external//private/tools/java/com/github/bazelbuild/rules_jvm_external/jar:MergeJars",
             executable = True,
             cfg = "exec",
         ),

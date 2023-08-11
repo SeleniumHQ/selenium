@@ -22,9 +22,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
-/**
- * {@link Matcher} for matching text content within {@link WebElement}s.
- */
+/** {@link Matcher} for matching text content within {@link WebElement}s. */
+@Deprecated
 public class TextMatcher extends TypeSafeMatcher<WebElement> {
 
   private final Matcher<String> matcher;

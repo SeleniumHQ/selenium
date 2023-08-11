@@ -19,10 +19,12 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +34,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.time.Duration;
-import java.util.List;
 
 class ImplicitWaitTest extends JupiterTestBase {
 
@@ -152,7 +151,7 @@ class ImplicitWaitTest extends JupiterTestBase {
 
     Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1));
     wait.until(ExpectedConditions.numberOfWindowsToBe(2));
-    String handle = (String)driver.getWindowHandles().toArray()[1];
+    String handle = (String) driver.getWindowHandles().toArray()[1];
 
     WebDriver newWindow = driver.switchTo().window(handle);
 

@@ -17,9 +17,21 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,20 +57,6 @@ import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.net.URISyntaxException;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class ProxyWebsocketTest {
 
@@ -102,7 +100,7 @@ class ProxyWebsocketTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldForwardTextMessageToServer(Supplier<String> values)
-    throws URISyntaxException, InterruptedException {
+      throws URISyntaxException, InterruptedException {
     setFields(values);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
@@ -114,11 +112,21 @@ class ProxyWebsocketTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(
+        new Session(
+            id,
+            backend.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
-    try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener(){})) {
+    try (WebSocket socket =
+        clientFactory
+            .createClient(proxyServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, String.format("/session/%s/" + protocol, id)),
+                new WebSocket.Listener() {})) {
 
       socket.sendText("Cheese!");
 
@@ -130,27 +138,38 @@ class ProxyWebsocketTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldForwardTextMessageFromServerToLocalEnd(Supplier<String> values)
-    throws URISyntaxException, InterruptedException {
+      throws URISyntaxException, InterruptedException {
     setFields(values);
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
+    Server<?> backend =
+        createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(
+        new Session(
+            id,
+            backend.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    try(WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener() {
-        @Override
-        public void onText(CharSequence data) {
-          text.set(data.toString());
-          latch.countDown();
-        }
-      })) {
+    try (WebSocket socket =
+        clientFactory
+            .createClient(proxyServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, String.format("/session/%s/" + protocol, id)),
+                new WebSocket.Listener() {
+                  @Override
+                  public void onText(CharSequence data) {
+                    text.set(data.toString());
+                    latch.countDown();
+                  }
+                })) {
 
       socket.sendText("Cheese!");
 
@@ -164,33 +183,44 @@ class ProxyWebsocketTest {
   void shouldBeAbleToSendMessagesOverSecureWebSocket(Supplier<String> values)
       throws URISyntaxException, InterruptedException {
     setFields(values);
-    Config secureConfig = new MapConfig(ImmutableMap.of(
-      "server", ImmutableMap.of(
-        "https-self-signed", true)));
+    Config secureConfig =
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("https-self-signed", true)));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
+    Server<?> backend =
+        createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
 
-    Server<?> secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
+    Server<?> secureProxyServer =
+        new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
 
     secureProxyServer.start();
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
 
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(
+        new Session(
+            id,
+            backend.getUrl().toURI(),
+            new ImmutableCapabilities(),
+            new ImmutableCapabilities(),
+            Instant.now()));
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    try (WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener() {
-        @Override
-        public void onText(CharSequence data) {
-          text.set(data.toString());
-          latch.countDown();
-        }
-      })) {
+    try (WebSocket socket =
+        clientFactory
+            .createClient(secureProxyServer.getUrl())
+            .openSocket(
+                new HttpRequest(GET, String.format("/session/%s/" + protocol, id)),
+                new WebSocket.Listener() {
+                  @Override
+                  public void onText(CharSequence data) {
+                    text.set(data.toString());
+                    latch.countDown();
+                  }
+                })) {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
@@ -200,17 +230,20 @@ class ProxyWebsocketTest {
     secureProxyServer.stop();
   }
 
-  private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
+  private Server<?> createBackendServer(
+      CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
     return new NettyServer(
-      new BaseServerOptions(config),
-      nullHandler,
-      (uri, sink) -> Optional.of(msg -> {
-        if (msg instanceof TextMessage) {
-          incomingRef.set(((TextMessage) msg).text());
-          sink.accept(new TextMessage(response));
-          latch.countDown();
-        }
-      }))
-      .start();
+            new BaseServerOptions(config),
+            nullHandler,
+            (uri, sink) ->
+                Optional.of(
+                    msg -> {
+                      if (msg instanceof TextMessage) {
+                        incomingRef.set(((TextMessage) msg).text());
+                        sink.accept(new TextMessage(response));
+                        latch.countDown();
+                      }
+                    }))
+        .start();
   }
 }

@@ -22,9 +22,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
-/**
- * hamcrest matcher for attributes of {@link WebElement}s.
- */
+/** hamcrest matcher for attributes of {@link WebElement}s. */
+@Deprecated
 public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 
   private final Matcher<String> matcher;
@@ -46,8 +45,8 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
     matcher.describeTo(description);
   }
 
-  public static Matcher<WebElement> attribute(final String name, final Matcher<String> valueMatcher) {
+  public static Matcher<WebElement> attribute(
+      final String name, final Matcher<String> valueMatcher) {
     return new AttributeMatcher(name, valueMatcher);
   }
-
 }

@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import com.google.common.base.Strings;
+import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
 
+import com.google.common.base.Strings;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Realm;
 import org.asynchttpclient.Request;
@@ -32,14 +38,6 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.net.InetSocketAddress;
-import java.net.URI;
-
-import static org.asynchttpclient.Dsl.request;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
 
 class NettyMessages {
 
@@ -55,9 +53,10 @@ class NettyMessages {
 
     String rawUrl = getRawUrl(baseUrl, request.getUri());
 
-    RequestBuilder builder = request(request.getMethod().toString(), rawUrl)
-      .setReadTimeout(timeout)
-      .setRequestTimeout(timeout);
+    RequestBuilder builder =
+        request(request.getMethod().toString(), rawUrl)
+            .setReadTimeout(timeout)
+            .setRequestTimeout(timeout);
 
     for (String name : request.getQueryParameterNames()) {
       for (String value : request.getQueryParameters(name)) {
@@ -98,8 +97,8 @@ class NettyMessages {
 
     if (config.proxy() != null) {
       InetSocketAddress address = (InetSocketAddress) config.proxy().address();
-      ProxyServer.Builder proxyBuilder = new ProxyServer.Builder(
-        address.getHostName(), address.getPort());
+      ProxyServer.Builder proxyBuilder =
+          new ProxyServer.Builder(address.getHostName(), address.getPort());
       if (realmBuilder != null) {
         proxyBuilder.setRealm(realmBuilder);
       }
@@ -118,12 +117,14 @@ class NettyMessages {
 
     toReturn.setStatus(response.getStatusCode());
 
-    toReturn.setContent(!response.hasResponseBody()
-                        ? empty()
-                        : memoize(response::getResponseBodyAsStream));
+    toReturn.setContent(
+        !response.hasResponseBody() ? empty() : memoize(response::getResponseBodyAsStream));
 
-    response.getHeaders().names().forEach(
-      name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
+    response
+        .getHeaders()
+        .names()
+        .forEach(
+            name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
 
     return toReturn;
   }
@@ -137,7 +138,12 @@ class NettyMessages {
     } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
       rawUrl = uri;
     } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
+      String base = baseUrl.toString();
+      if (base.endsWith("/")) {
+        rawUrl = base.substring(0, base.length() - 1) + uri;
+      } else {
+        rawUrl = base + uri;
+      }
     }
     return rawUrl;
   }

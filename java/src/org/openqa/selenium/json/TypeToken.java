@@ -20,7 +20,6 @@ package org.openqa.selenium.json;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-
 public abstract class TypeToken<T> {
 
   private final Type type;

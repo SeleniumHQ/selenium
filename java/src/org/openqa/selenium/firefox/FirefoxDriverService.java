@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.remote.service.DriverService;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.remote.service.DriverService;
 
 public abstract class FirefoxDriverService extends DriverService {
 
@@ -40,11 +39,12 @@ public abstract class FirefoxDriverService extends DriverService {
       int port,
       Duration timeout,
       List<String> args,
-      Map<String, String> environment) throws IOException {
+      Map<String, String> environment)
+      throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
-  public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>
-      extends DriverService.Builder<DS, B> {
-  }
+  public abstract static class Builder<
+          DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>
+      extends DriverService.Builder<DS, B> {}
 }
