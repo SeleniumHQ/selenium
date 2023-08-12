@@ -121,9 +121,13 @@ function getAvailableBrowsers() {
     [getPath(new chrome.Options()), Browser.CHROME],
     [getPath(new edge.Options()), Browser.EDGE],
     [getPath(new firefox.Options()), Browser.FIREFOX],
-    [getPath(new ie.Options()), Browser.INTERNET_EXPLORER],
-    [getPath(new safari.Options()), Browser.SAFARI],
   ]
+  if (process.platform === 'win32') {
+    targets.push([getPath(new ie.Options()), Browser.INTERNET_EXPLORER])
+  }
+  if (process.platform === 'darwin') {
+    targets.push([getPath(new safari.Options()), Browser.SAFARI])
+  }
 
   let availableBrowsers = []
   for (let pair of targets) {
