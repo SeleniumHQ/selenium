@@ -15,62 +15,53 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v113;
-
-import static java.net.HttpURLConnection.HTTP_OK;
+package org.openqa.selenium.devtools.v116;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.AbstractMap;
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Logger;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.v113.fetch.Fetch;
-import org.openqa.selenium.devtools.v113.fetch.model.AuthChallengeResponse;
-import org.openqa.selenium.devtools.v113.fetch.model.AuthRequired;
-import org.openqa.selenium.devtools.v113.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.v113.fetch.model.RequestPattern;
-import org.openqa.selenium.devtools.v113.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.v113.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.v113.network.model.Request;
+import org.openqa.selenium.devtools.v116.fetch.Fetch;
+import org.openqa.selenium.devtools.v116.fetch.model.*;
+import org.openqa.selenium.devtools.v116.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class v113Network extends Network<AuthRequired, RequestPaused> {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.logging.Logger;
 
-  private static final Logger LOG = Logger.getLogger(v113Network.class.getName());
+import static java.net.HttpURLConnection.HTTP_OK;
 
-  public v113Network(DevTools devTools) {
+public class v116Network extends Network<AuthRequired, RequestPaused> {
+
+  private static final Logger LOG = Logger.getLogger(v116Network.class.getName());
+
+  public v116Network(DevTools devTools) {
     super(devTools);
   }
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v113.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v116.network.Network.setUserAgentOverride(
         userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
   protected Command<Void> enableNetworkCaching() {
-    return org.openqa.selenium.devtools.v113.network.Network.setCacheDisabled(false);
+    return org.openqa.selenium.devtools.v116.network.Network.setCacheDisabled(false);
   }
 
   @Override
   protected Command<Void> disableNetworkCaching() {
-    return org.openqa.selenium.devtools.v113.network.Network.setCacheDisabled(true);
+    return org.openqa.selenium.devtools.v116.network.Network.setCacheDisabled(true);
   }
 
   @Override
