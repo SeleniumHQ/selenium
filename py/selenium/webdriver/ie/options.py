@@ -105,7 +105,7 @@ class Options(ArgOptions):
     `value`: `int` (Timeout) in milliseconds
     """
 
-    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, int)
+    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, Enum)
     """Gets and Sets `element_scroll_behavior`
 
     Usage
