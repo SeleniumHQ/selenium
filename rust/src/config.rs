@@ -32,7 +32,7 @@ use toml::Table;
 
 thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_buf_to_string(default_cache_folder())));
 
-pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
+pub const CONFIG_FILE: &str = "se-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
