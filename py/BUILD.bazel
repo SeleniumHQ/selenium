@@ -355,6 +355,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -380,6 +381,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -402,6 +404,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -425,6 +428,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -449,6 +453,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -471,6 +476,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -494,6 +500,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -518,6 +525,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -542,6 +550,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
