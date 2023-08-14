@@ -171,24 +171,19 @@ impl StringKey<'_> {
         let config = get_config().unwrap_or_default();
         let keys = self.0.to_owned();
         let default_value = self.1.to_owned();
-
         let mut result;
-        let mut first_key = "";
         for key in keys {
-            if first_key.is_empty() {
-                first_key = key;
-            }
             if config.contains_key(key) {
                 result = config[key].as_str().unwrap().to_string()
             } else {
                 result = env::var(get_env_name(key)).unwrap_or_default()
             }
-            if !result.is_empty() {
+            if key.eq(CACHE_PATH_KEY) {
                 // The configuration key for the cache path ("cache-path") is special because
                 // the rest of the configuration values depend on this value (since the
                 // configuration file is stored in the cache path). Therefore, this value needs
                 // to be discovered in the first place and stored globally (on CACHE_PATH)
-                return check_cache_path(key, result, default_value);
+                return check_cache_path(result, default_value);
             }
         }
         default_value
@@ -246,19 +241,15 @@ fn concat(prefix: &str, suffix: &str) -> String {
     version_label
 }
 
-fn check_cache_path(key: &str, value_in_config_or_env: String, default_value: String) -> String {
-    let return_value = if key.eq(CACHE_PATH_KEY) {
-        if default_value.is_empty() {
-            value_in_config_or_env
-        } else {
-            default_value
-        }
-    } else {
+fn check_cache_path(value_in_config_or_env: String, default_value: String) -> String {
+    let return_value = if !value_in_config_or_env.is_empty() {
         value_in_config_or_env
+    } else if !default_value.is_empty() {
+        default_value
+    } else {
+        read_cache_path()
     };
-    if key.eq(CACHE_PATH_KEY) {
-        write_cache_path(return_value.clone());
-    }
+    write_cache_path(return_value.clone());
     return_value
 }
 

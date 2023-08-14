@@ -68,7 +68,7 @@ impl IExplorerManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
             driver_url: None,
         }))
     }

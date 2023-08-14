@@ -154,7 +154,7 @@ pub fn unzip(
             // are zipped with a parent folder, while others (e.g. chromedriver 114-)
             // are zipped without a parent folder
             Some(p) => {
-                let iter = p.clone().iter();
+                let iter = p.iter();
                 if iter.to_owned().count() > 1 {
                     iter.skip(1).collect()
                 } else {

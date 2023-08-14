@@ -315,7 +315,7 @@ pub trait SeleniumManager {
                 }
                 None => {
                     self.get_logger().debug(format!(
-                        "{} has not been discovered in the system",
+                        "{} not discovered in the system",
                         self.get_browser_name()
                     ));
                     download_browser = true;
@@ -611,10 +611,13 @@ pub trait SeleniumManager {
         }
 
         let mut commands = Vec::new();
+
         if WINDOWS.is(self.get_os()) {
-            let wmic_command =
-                Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
-            commands.push(wmic_command);
+            if !escaped_browser_path.is_empty() {
+                let wmic_command =
+                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
+                commands.push(wmic_command);
+            }
             if !self.is_browser_version_unstable() {
                 let reg_command =
                     Command::new_multiple(vec!["REG", "QUERY", reg_key, "/v", reg_version_arg]);
