@@ -26,7 +26,7 @@ use serde::{Deserialize, Serialize};
 use crate::Logger;
 
 const METADATA_FILE_OLD: &str = "selenium-manager.json";
-const METADATA_FILE: &str = "selenium-manager-metadata.json";
+const METADATA_FILE: &str = "se-metadata.json";
 
 #[derive(Serialize, Deserialize)]
 pub struct Browser {
