@@ -49,9 +49,7 @@ public class PathResource implements Resource {
         base,
         path ->
             Arrays.stream(subpaths)
-                .map(subpath -> Files.exists(base.resolve(subpath)))
-                .reduce(Boolean::logicalOr)
-                .orElse(false));
+                .anyMatch(subpath -> Files.exists(base.resolve(subpath))));
   }
 
   @Override

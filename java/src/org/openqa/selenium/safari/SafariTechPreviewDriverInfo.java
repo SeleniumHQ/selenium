@@ -50,10 +50,8 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().parallelStream()
-        .map(key -> key.startsWith("safari:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+    return capabilities.asMap().keySet().stream()
+        .anyMatch(key -> key.startsWith("safari:"));
   }
 
   @Override

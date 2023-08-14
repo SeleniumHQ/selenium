@@ -28,9 +28,7 @@ public class Debug {
   static {
     boolean debugFlag =
         ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .map(str -> str.contains("-agentlib:jdwp"))
-            .reduce(Boolean::logicalOr)
-            .orElse(false);
+            .anyMatch(str -> str.contains("-agentlib:jdwp"));
     boolean simpleProperty = Boolean.getBoolean("selenium.debug");
     boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
 
