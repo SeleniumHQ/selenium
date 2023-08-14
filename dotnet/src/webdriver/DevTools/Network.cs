@@ -16,7 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
@@ -29,17 +29,17 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Occurs when a network request requires authorization.
         /// </summary>
-        public event EventHandler<AuthRequiredEventArgs> AuthRequired;
+        public event AsyncEventHandler<AuthRequiredEventArgs> AuthRequired;
 
         /// <summary>
         /// Occurs when a network request is intercepted.
         /// </summary>
-        public event EventHandler<RequestPausedEventArgs> RequestPaused;
+        public event AsyncEventHandler<RequestPausedEventArgs> RequestPaused;
 
         /// <summary>
         /// Occurs when a network response is received.
         /// </summary>
-        public event EventHandler<ResponsePausedEventArgs> ResponsePaused;
+        public event AsyncEventHandler<ResponsePausedEventArgs> ResponsePaused;
 
         /// <summary>
         /// Asynchronously disables network caching.
@@ -152,9 +152,14 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="e">An <see cref="AuthRequiredEventArgs"/> that contains the event data.</param>
         protected virtual void OnAuthRequired(AuthRequiredEventArgs e)
         {
-            if (this.AuthRequired != null)
+            var delegates = AuthRequired?.GetInvocationList();
+
+            if (delegates != null)
             {
-                this.AuthRequired(this, e);
+                foreach (var d in delegates.Cast<AsyncEventHandler<AuthRequiredEventArgs>>())
+                {
+                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                }
             }
         }
 
@@ -164,9 +169,14 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="e">An <see cref="RequestPausedEventArgs"/> that contains the event data.</param>
         protected virtual void OnRequestPaused(RequestPausedEventArgs e)
         {
-            if (this.RequestPaused != null)
+            var delegates = RequestPaused?.GetInvocationList();
+
+            if (delegates != null)
             {
-                this.RequestPaused(this, e);
+                foreach (var d in delegates.Cast<AsyncEventHandler<RequestPausedEventArgs>>())
+                {
+                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                }
             }
         }
 
@@ -176,10 +186,17 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="e">An <see cref="ResponsePausedEventArgs"/> that contains the event data.</param>
         protected virtual void OnResponsePaused(ResponsePausedEventArgs e)
         {
-            if (this.ResponsePaused != null)
+            var delegates = ResponsePaused?.GetInvocationList();
+
+            if (delegates != null)
             {
-                this.ResponsePaused(this, e);
+                foreach (var d in delegates.Cast<AsyncEventHandler<ResponsePausedEventArgs>>())
+                {
+                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                }
             }
         }
+
+        public delegate Task AsyncEventHandler<TEventArgs>(object sender, TEventArgs e);
     }
 }
