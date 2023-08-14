@@ -1,7 +1,10 @@
 name: CI - RBE
 
 on:
-  workflow_call:
+  pull_request:
+  push:
+    branches:
+      - trunk
   workflow_dispatch:
 
 jobs:
