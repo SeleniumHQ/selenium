@@ -19,8 +19,10 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,8 +30,7 @@ import java.util.regex.Pattern;
 public class UrlTemplate {
 
   private static final Pattern GROUP_NAME = Pattern.compile("(\\{\\p{Alnum}+\\})");
-  private final Pattern pattern;
-  private final List<String> groups;
+  private final Function<String, UrlTemplate.Match> compiled;
 
   public UrlTemplate(String template) {
     if (template == null || template.isEmpty()) {
@@ -41,6 +42,7 @@ public class UrlTemplate {
     Matcher groupNameMatcher = GROUP_NAME.matcher(template);
 
     ImmutableList.Builder<String> groups = ImmutableList.builder();
+    int lastStart = 0;
     int lastGroup = 0;
 
     while (groupNameMatcher.find()) {
@@ -53,6 +55,7 @@ public class UrlTemplate {
       regex.append("([^/]+)");
       // register the group name, to resolve into parameters
       groups.add(template.substring(start + 1, end - 1));
+      lastStart = start;
       lastGroup = end;
     }
 
@@ -64,8 +67,65 @@ public class UrlTemplate {
     // $ end of string
     regex.append('$');
 
-    this.pattern = Pattern.compile(regex.toString());
-    this.groups = groups.build();
+    List<String> allGroups = groups.build();
+    // do we hit a fast path?
+    switch (allGroups.size()) {
+      case 0: // no groups, just .equals
+        this.compiled =
+            (matchAgainst) -> {
+              if (!template.equals(matchAgainst)) {
+                return null;
+              }
+
+              return new Match(matchAgainst, Collections.emptyMap());
+            };
+        break;
+      case 1: // one group, the common case
+        String groupName = template.substring(lastStart + 1, lastGroup - 1);
+        String prefix = template.substring(0, lastStart);
+        String suffix = template.substring(lastGroup);
+
+        this.compiled =
+            (matchAgainst) -> {
+              if (matchAgainst.length() <= prefix.length() + suffix.length()) {
+                // the url is too short to match
+                return null;
+              } else if (!matchAgainst.startsWith(prefix)) {
+                // the url does not have the prefix
+                return null;
+              } else if (!matchAgainst.endsWith(suffix)) {
+                // the url does not have the suffix
+                return null;
+              } else {
+                String groupValue =
+                    matchAgainst.substring(
+                        prefix.length(), matchAgainst.length() - suffix.length());
+                // ensure we act like the regex way
+                if (groupValue.indexOf('/') != -1) {
+                  return null;
+                }
+                return new Match(matchAgainst, Collections.singletonMap(groupName, groupValue));
+              }
+            };
+        break;
+      default: // more than one group, not common
+        Pattern pattern = Pattern.compile(regex.toString());
+
+        this.compiled =
+            (matchAgainst) -> {
+              Matcher matcher = pattern.matcher(matchAgainst);
+              if (!matcher.matches()) {
+                return null;
+              }
+
+              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              for (int i = 0; i < allGroups.size(); i++) {
+                params.put(allGroups.get(i), matcher.group(i + 1));
+              }
+
+              return new Match(matchAgainst, params.build());
+            };
+    }
   }
 
   /**
@@ -76,17 +136,7 @@ public class UrlTemplate {
       return null;
     }
 
-    Matcher matcher = pattern.matcher(matchAgainst);
-    if (!matcher.matches()) {
-      return null;
-    }
-
-    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
-    for (int i = 0; i < groups.size(); i++) {
-      params.put(groups.get(i), matcher.group(i + 1));
-    }
-
-    return new Match(matchAgainst, params.build());
+    return compiled.apply(matchAgainst);
   }
 
   @SuppressWarnings("InnerClassMayBeStatic")
