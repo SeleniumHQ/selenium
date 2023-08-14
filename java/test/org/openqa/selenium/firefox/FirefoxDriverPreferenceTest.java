@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;

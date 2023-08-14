@@ -78,7 +78,8 @@ public class UnpinnedScriptKey extends ScriptKey {
   }
 
   public String creationScript() {
-    return String.format("function __webdriver_%s(arguments) { %s }", this.scriptHandle, this.script);
+    return String.format(
+        "function __webdriver_%s(arguments) { %s }", this.scriptHandle, this.script);
   }
 
   public String executionScript() {
