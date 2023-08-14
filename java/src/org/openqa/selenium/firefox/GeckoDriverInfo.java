@@ -49,8 +49,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().stream()
-        .anyMatch(key -> key.startsWith("moz:"));
+    return capabilities.asMap().keySet().stream().anyMatch(key -> key.startsWith("moz:"));
   }
 
   @Override

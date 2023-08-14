@@ -42,8 +42,7 @@ public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHa
 
   @Override
   public boolean matches(HttpRequest req) {
-    return handlers.keySet().stream()
-        .anyMatch(p -> p.matches(req));
+    return handlers.keySet().stream().anyMatch(p -> p.matches(req));
   }
 
   @Override
