@@ -16,7 +16,7 @@
 # under the License.
 import json
 import logging
-import shutil
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -54,9 +54,10 @@ class SeleniumManager:
 
         path = Path(__file__).parent.joinpath(directory, file)
 
-        if not path.is_file():
-            # conda has a separate package selenium-manager, installs in bin folder
-            path = Path(shutil.which(file))
+        if not path.is_file() and os.environ['CONDA_PREFIX']:
+            # conda has a separate package selenium-manager, installs in bin
+            path = Path(os.path.join(os.environ['CONDA_PREFIX'], 'bin', file))
+            logger.debug(f"Conda environment detected, using `{path}`")
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
