@@ -75,28 +75,23 @@ module Selenium
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            path = File.expand_path(bin_path, __FILE__)
-            path << if Platform.windows?
-                      '/windows/selenium-manager.exe'
-                    elsif Platform.mac?
-                      '/macos/selenium-manager'
-                    elsif Platform.linux?
-                      '/linux/selenium-manager'
-                    end
-            location = File.expand_path(path, __FILE__)
+            target = "#{Dir.home}/.cache/selenium/manager/#{current_version}"
+            WebDriver.logger.debug("Caching Selenium Manager binary to #{target}", id: :selenium_manager)
+            FileUtils.mkdir_p(target)
+            FileUtils.cp(source, target) if Dir.empty?(target)
+            cached_path = Dir["#{target}/*"].first
 
-            begin
-              Platform.assert_file(location)
-              Platform.assert_executable(location)
-            rescue TypeError
-              raise Error::WebDriverError,
-                    "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
-            rescue Error::WebDriverError => e
-              raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
+            if cached_path.nil?
+              raise Error::WebDriverError, "Unable to copy Selenium Manager binary from #{source} to #{target}"
             end
 
-            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
-            location
+            Platform.assert_executable(cached_path)
+            cached_path
+          rescue TypeError => e
+            raise Error::WebDriverError,
+                  "Unable to locate or obtain Selenium Manager binary; #{cached_path} is not a invalid; #{e.message}"
+          rescue Error::WebDriverError => e
+            raise Error::WebDriverError, "Selenium Manager binary located at #{cached_path}, but #{e.message}"
           end
         end
 
@@ -122,6 +117,27 @@ module Selenium
           return result unless status.exitstatus.positive?
 
           raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
+        end
+
+        def source
+          @source ||= begin
+            location = File.expand_path(bin_path, __FILE__)
+            location << if Platform.windows?
+                          '/windows/selenium-manager.exe'
+                        elsif Platform.mac?
+                          '/macos/selenium-manager'
+                        elsif Platform.linux?
+                          '/linux/selenium-manager'
+                        end
+            WebDriver.logger.debug("Getting Selenium Manager binary from #{location}",
+                                   id: :selenium_manager)
+            location
+          end
+        end
+
+        def current_version
+          gem_version = Gem::Version.new Selenium::WebDriver::VERSION
+          "0.#{gem_version.segments[0..1].join('.')}"
         end
       end
     end # SeleniumManager

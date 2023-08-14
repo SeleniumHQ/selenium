@@ -23,48 +23,44 @@ module Selenium
   module WebDriver
     describe SeleniumManager do
       describe '.binary' do
-        def stub_binary(binary)
-          allow(File).to receive(:exist?).with(a_string_ending_with(binary)).and_return(true)
-          allow(File).to receive(:executable?).with(a_string_ending_with(binary)).and_return(true)
-        end
-
         before do
-          described_class.instance_variable_set(:@binary, nil)
+          root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
+          described_class.bin_path = root.join('bazel-bin/rb/bin').to_s
+          described_class.instance_eval('@binary = nil', __FILE__, __LINE__)
+          described_class.instance_eval('@source = nil', __FILE__, __LINE__)
+          FileUtils.remove_dir("#{Dir.home}/.cache/selenium/manager/", true)
         end
 
         it 'detects Windows' do
-          stub_binary('/windows/selenium-manager.exe')
           allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(true)
 
-          expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
+          expect(described_class.send(:binary)).to match(%r{/selenium/manager/0\.4\.\d+/selenium-manager\.exe$})
         end
 
         it 'detects Mac' do
-          stub_binary('/macos/selenium-manager')
           allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
-          expect(described_class.send(:binary)).to match(%r{/macos/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{/selenium/manager/0\.4\.\d+/selenium-manager$})
         end
 
         it 'detects Linux' do
-          stub_binary('/linux/selenium-manager')
           allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
 
-          expect(described_class.send(:binary)).to match(%r{/linux/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{/selenium/manager/0\.4\.\d+/selenium-manager$})
         end
 
         it 'errors if cannot find' do
-          allow(File).to receive(:exist?).with(a_string_including('selenium-manager')).and_return(false)
+          allow(File).to receive(:file?).with(a_string_including('selenium-manager')).and_return(false)
 
           expect {
             described_class.send(:binary)
-          }.to raise_error(Error::WebDriverError, /Selenium Manager binary located, but not a file/)
+          }.to raise_error(Error::WebDriverError, /Selenium Manager binary located .* but not a file/)
         end
       end
 
