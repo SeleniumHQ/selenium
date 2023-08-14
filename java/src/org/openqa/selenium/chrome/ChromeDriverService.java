@@ -157,6 +157,7 @@ public class ChromeDriverService extends DriverService {
   }
 
   /** Builder used to configure new {@link ChromeDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> {

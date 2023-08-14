@@ -22,7 +22,7 @@ use clap::Parser;
 use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
-use selenium_manager::config::BooleanKey;
+use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
@@ -72,6 +72,14 @@ struct Cli {
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
+    /// Operating system (i.e., windows, linux, or macos)
+    #[clap(long, value_parser)]
+    os: Option<String>,
+
+    /// System architecture (i.e., x32, x64, or arm64)
+    #[clap(long, value_parser)]
+    arch: Option<String>,
+
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
     #[clap(long, value_parser)]
     proxy: Option<String>,
@@ -87,6 +95,11 @@ struct Cli {
     /// Browser TTL (time-to-live)
     #[clap(long, value_parser, default_value_t = TTL_BROWSERS_SEC)]
     browser_ttl: u64,
+
+    /// Local folder used to store downloaded assets (drivers and browsers), local metadata,
+    /// and configuration file [default: ~/.cache/selenium]
+    #[clap(long, value_parser)]
+    cache_path: Option<String>,
 
     /// Clear cache folder (~/.cache/selenium)
     #[clap(long)]
@@ -115,19 +128,13 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
+    let cache_path =
+        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
+
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
-
-    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
-        clear_cache(&log);
-    }
-
-    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
-        clear_metadata(&log);
-    }
-
     let browser_name: String = cli.browser.unwrap_or_default();
     let driver_name: String = cli.driver.unwrap_or_default();
 
@@ -155,10 +162,20 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_os(cli.os.unwrap_or_default());
+    selenium_manager.set_arch(cli.arch.unwrap_or_default());
     selenium_manager.set_driver_ttl(cli.driver_ttl);
     selenium_manager.set_browser_ttl(cli.browser_ttl);
     selenium_manager.set_offline(cli.offline);
     selenium_manager.set_force_browser_download(cli.force_browser_download);
+    selenium_manager.set_cache_path(cache_path.clone());
+
+    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
+        clear_cache(selenium_manager.get_logger(), &cache_path);
+    }
+    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
+        clear_metadata(selenium_manager.get_logger(), &cache_path);
+    }
 
     selenium_manager
         .set_timeout(cli.timeout)

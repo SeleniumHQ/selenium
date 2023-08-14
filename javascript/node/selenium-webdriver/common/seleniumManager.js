@@ -78,7 +78,7 @@ function driverLocation(options) {
     options.get('ms:edgeOptions') ||
     options.get('moz:firefoxOptions')
   if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
-    args.push('--browser-path', '"' + vendorOptions.binary + '"')
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
   }
 
   const proxyOptions = options.getProxy();

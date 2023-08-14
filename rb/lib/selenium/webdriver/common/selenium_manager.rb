@@ -108,22 +108,20 @@ module Selenium
 
           begin
             stdout, stderr, status = Open3.capture3(*command)
-            json_output = stdout.empty? ? nil : JSON.parse(stdout)
-            result = json_output['result']
           rescue StandardError => e
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
           end
 
-          (json_output&.fetch('logs') || []).each do |log|
+          json_output = stdout.empty? ? {} : JSON.parse(stdout)
+          (json_output['logs'] || []).each do |log|
             level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
             WebDriver.logger.send(level, log['message'], id: :selenium_manager)
           end
 
-          if status.exitstatus.positive?
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
-          end
+          result = json_output['result']
+          return result unless status.exitstatus.positive?
 
-          result
+          raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
         end
       end
     end # SeleniumManager

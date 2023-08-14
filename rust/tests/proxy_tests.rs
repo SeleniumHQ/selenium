@@ -29,7 +29,6 @@ async fn wrong_proxy_test() {
             "chrome",
             "--proxy",
             "http://localhost:12345",
-            "--clear-cache",
         ])
         .assert()
         .try_success();

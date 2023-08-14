@@ -21,7 +21,6 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -46,13 +45,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /** Capability that defines how elements are scrolled into view in the InternetExplorerDriver. */
   public static final String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
-
-  /**
-   * Capability that defines which behaviour will be used if an unexpected Alert is found.
-   *
-   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
-   */
-  public static final String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
 
   /** Capability that defines to use or not cleanup of element cache on document loading. */
   public static final String ENABLE_ELEMENT_CACHE_CLEANUP = "enableElementCacheCleanup";

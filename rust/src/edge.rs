@@ -24,14 +24,13 @@ use std::path::PathBuf;
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::read_version_from_link;
-use crate::files::{compose_driver_path_in_cache, path_buf_to_string, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, DOUBLE_QUOTE, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_QUERY,
-    SINGLE_QUOTE, STABLE, WMIC_COMMAND,
+    create_http_client, Logger, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
+    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -121,38 +120,12 @@ impl SeleniumManager for EdgeManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
-        let mut commands;
-        let mut browser_path = self.get_browser_path().to_string();
-        let escaped_browser_path;
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = path_buf_to_string(path);
-                    escaped_browser_path = self.get_escaped_path(browser_path.to_string());
-                    commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
-                    if !self.is_browser_version_unstable() {
-                        commands.push(format_one_arg(
-                            REG_QUERY,
-                            r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
-                        ));
-                    }
-                }
-                _ => return None,
-            }
-        } else {
-            escaped_browser_path = self.get_escaped_path(browser_path.to_string());
-            commands = vec![format_one_arg(WMIC_COMMAND, &escaped_browser_path)];
-        }
-        if !WINDOWS.is(self.get_os()) {
-            commands = vec![
-                format_three_args(DASH_DASH_VERSION, "", &escaped_browser_path, ""),
-                format_three_args(DASH_DASH_VERSION, DOUBLE_QUOTE, &browser_path, DOUBLE_QUOTE),
-                format_three_args(DASH_DASH_VERSION, SINGLE_QUOTE, &browser_path, SINGLE_QUOTE),
-                format_three_args(DASH_DASH_VERSION, "", &browser_path, ""),
-            ]
-        }
-        self.detect_browser_version(commands)
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_general_browser_version(
+            r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+            REG_VERSION_ARG,
+            DASH_DASH_VERSION,
+        )
     }
 
     fn get_driver_name(&self) -> &str {
@@ -161,7 +134,7 @@ impl SeleniumManager for EdgeManager {
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let mut major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -218,7 +191,7 @@ impl SeleniumManager for EdgeManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
 
                 Ok(driver_version)
@@ -257,7 +230,7 @@ impl SeleniumManager for EdgeManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -278,7 +251,13 @@ impl SeleniumManager for EdgeManager {
         } else {
             "linux64"
         };
-        compose_driver_path_in_cache(self.driver_name, os, arch_folder, driver_version)
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            os,
+            arch_folder,
+            driver_version,
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {

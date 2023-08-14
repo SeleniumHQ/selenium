@@ -60,7 +60,7 @@ pub async fn download_to_tmp_folder(
         target_path = String::from(target_name.to_str().unwrap());
 
         log.trace(format!(
-            "Temporal folder for driver package: {}",
+            "File downloaded to temporal folder: {}",
             target_path
         ));
         File::create(target_name)?

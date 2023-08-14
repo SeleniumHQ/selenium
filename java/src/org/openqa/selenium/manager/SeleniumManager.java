@@ -113,7 +113,6 @@ public class SeleniumManager {
     try {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
-      command.copyOutputTo(System.err);
       command.executeAsync();
       command.waitFor(10000); // A generous timeout
       if (command.isRunning()) {
@@ -130,16 +129,8 @@ public class SeleniumManager {
     if (!output.isEmpty()) {
       try {
         jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
-        jsonOutput.logs.forEach(
-            logged -> {
-              if (logged.level.equalsIgnoreCase(WARN)) {
-                LOG.warning(logged.message);
-              }
-              if (logged.level.equalsIgnoreCase(DEBUG) || logged.level.equalsIgnoreCase(INFO)) {
-                LOG.fine(logged.message);
-              }
-            });
-        dump = jsonOutput.result.message;
+        jsonOutput.getLogs().forEach(logged -> LOG.log(logged.getLevel(), logged.getMessage()));
+        dump = jsonOutput.getResult().getMessage();
       } catch (JsonException e) {
         failedToParse = e;
       }
@@ -152,7 +143,7 @@ public class SeleniumManager {
       throw new WebDriverException(
           "Failed to parse json output, executed: " + arguments + "\n" + dump, failedToParse);
     }
-    return jsonOutput.result;
+    return jsonOutput.getResult();
   }
 
   /**

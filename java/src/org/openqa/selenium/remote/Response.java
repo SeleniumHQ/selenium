@@ -25,6 +25,7 @@ public class Response {
 
   private volatile Object value;
   private volatile String sessionId;
+  @Deprecated // (forRemoval = true)
   private volatile Integer status;
   private volatile String state;
 
@@ -34,10 +35,12 @@ public class Response {
     this.sessionId = String.valueOf(sessionId);
   }
 
+  @Deprecated // (forRemoval = true)
   public Integer getStatus() {
     return status;
   }
 
+  @Deprecated // (forRemoval = true)
   public void setStatus(Integer status) {
     this.status = status;
   }
@@ -69,8 +72,7 @@ public class Response {
   @Override
   public String toString() {
     return String.format(
-        "(Response: SessionID: %s, Status: %s, Value: %s)",
-        getSessionId(), getStatus(), getValue());
+        "(Response: SessionID: %s, State: %s, Value: %s)", getSessionId(), getState(), getValue());
   }
 
   @Override
