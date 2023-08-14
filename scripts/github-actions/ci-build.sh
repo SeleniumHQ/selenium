@@ -30,4 +30,4 @@ bazel query @npm//:all >/dev/null
 # shellcheck disable=SC2046
 bazel test --config=remote-ci --build_tests_only --test_tag_filters=-exclusive-if-local,-skip-remote --keep_going --flaky_test_attempts=2  //java/... //py/... -- $(cat .skipped-tests | tr '\n' ' ')
 # Build the entire java tree
-bazel build --config=remote java/src/...
+bazel build --config=remote-ci java/src/... //py:selenium-wheel
