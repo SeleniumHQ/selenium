@@ -10981,7 +10981,7 @@ experimental domain Preload
       # Identifies a document which the rule set is associated with.
       Network.LoaderId loaderId
       # Source text of JSON representing the rule set. If it comes from
-      # <script> tag, it is the textContent of the node. Note that it is
+      # `script` tag, it is the textContent of the node. Note that it is
       # a JSON for valid case.
       #
       # See also:
@@ -10989,9 +10989,9 @@ experimental domain Preload
       # - https://github.com/WICG/nav-speculation/blob/main/triggers.md
       string sourceText
       # A speculation rule set is either added through an inline
-      # <script> tag or through an external resource via the
+      # `script` tag or through an external resource via the
       # 'Speculation-Rules' HTTP header. For the first case, we include
-      # the BackendNodeId of the relevant <script> tag. For the second
+      # the BackendNodeId of the relevant `script` tag. For the second
       # case, we include the external URL where the rule set was loaded
       # from, and also RequestId if Network domain is enabled.
       #
