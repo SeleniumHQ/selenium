@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -59,15 +60,12 @@ public class SeleniumManager {
   private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
 
 
-  // IMPORTANT: This version needs to be synchronized before each release.
-  // Alternatively, we can try to use Bazel to automate this task
-  private static final String SELENIUM_MANAGER_VERSION = "0.4.12";
-
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String DEFAULT_CACHE_PATH = "~/.cache/selenium";
   private static final String BINARY_PATH_FORMAT = "/manager/%s/%s";
   private static final String HOME = "~";
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
+  private static final String BETA_PREFIX = "0.";
 
   private static final String EXE = ".exe";
   private static final String INFO = "INFO";
@@ -75,12 +73,16 @@ public class SeleniumManager {
   private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
-
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
   private Path binary = managerPath == null ? null : Paths.get(managerPath);
+  private String seleniumManagerVersion;
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
+    BuildInfo info = new BuildInfo();
+    String releaseLabel = info.getReleaseLabel();
+    int lastDot = releaseLabel.lastIndexOf(".");
+    seleniumManagerVersion = BETA_PREFIX + releaseLabel.substring(0, lastDot);
   }
 
   public static SeleniumManager getInstance() {
@@ -297,6 +299,6 @@ public class SeleniumManager {
       cachePath = cachePathEnv;
     }
 
-    return Paths.get(cachePath + String.format(BINARY_PATH_FORMAT, SELENIUM_MANAGER_VERSION, binaryName));
+    return Paths.get(cachePath + String.format(BINARY_PATH_FORMAT, seleniumManagerVersion, binaryName));
   }
 }
