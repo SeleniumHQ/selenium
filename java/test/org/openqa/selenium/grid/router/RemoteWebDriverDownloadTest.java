@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -115,14 +116,8 @@ class RemoteWebDriverDownloadTest {
     // Waiting for the file to be remotely downloaded
     TimeUnit.SECONDS.sleep(3);
 
-    HttpRequest request = new HttpRequest(GET, String.format("/session/%s/se/files", sessionId));
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(gridUrl)) {
-      HttpResponse response = client.execute(request);
-      Map<String, Object> jsonResponse = new Json().toType(string(response), Json.MAP_TYPE);
-      @SuppressWarnings("unchecked")
-      Map<String, Object> value = (Map<String, Object>) jsonResponse.get("value");
-      @SuppressWarnings("unchecked")
-      List<String> names = (List<String>) value.get("names");
+      List<String> names = getDownloadedFilesList(client, sessionId);
       assertThat(names).contains("file_1.txt", "file_2.jpg");
     } finally {
       driver.quit();
@@ -157,5 +152,45 @@ class RemoteWebDriverDownloadTest {
     } finally {
       driver.quit();
     }
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  void testCanDeleteFiles() throws InterruptedException {
+    URL gridUrl = server.getUrl();
+    RemoteWebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
+    driver.get(appServer.whereIs("downloads/download.html"));
+    driver.findElement(By.id("file-1")).click();
+    SessionId sessionId = driver.getSessionId();
+
+    // Waiting for the file to be remotely downloaded
+    TimeUnit.SECONDS.sleep(3);
+
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(gridUrl)) {
+      List<String> names = getDownloadedFilesList(client, sessionId);
+      assertThat(names).contains("file_1.txt");
+
+      HttpRequest deleteRequest =
+          new HttpRequest(DELETE, String.format("/session/%s/se/files", sessionId));
+      HttpResponse deleteResponse = client.execute(deleteRequest);
+      assertThat(deleteResponse.isSuccessful()).isTrue();
+
+      List<String> afterDeleteNames = getDownloadedFilesList(client, sessionId);
+      assertThat(afterDeleteNames.isEmpty()).isTrue();
+    } finally {
+      driver.quit();
+    }
+  }
+
+  private static List<String> getDownloadedFilesList(HttpClient client, SessionId sessionId) {
+    HttpRequest request = new HttpRequest(GET, String.format("/session/%s/se/files", sessionId));
+    HttpResponse response = client.execute(request);
+    Map<String, Object> jsonResponse = new Json().toType(string(response), Json.MAP_TYPE);
+    @SuppressWarnings("unchecked")
+    Map<String, Object> value = (Map<String, Object>) jsonResponse.get("value");
+    @SuppressWarnings("unchecked")
+    List<String> names = (List<String>) value.get("names");
+    return names;
   }
 }

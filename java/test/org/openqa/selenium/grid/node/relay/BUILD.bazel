@@ -6,6 +6,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     deps = [
+        "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/relay",
         "//java/src/org/openqa/selenium/grid/server",

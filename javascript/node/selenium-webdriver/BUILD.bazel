@@ -4,9 +4,9 @@ load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v112",
     "v113",
     "v114",
+    "v115",
 ]
 
 SRC_FILES = [
@@ -57,16 +57,16 @@ nodejs_binary(
     name = "fileserver",
     data = TEST_DATA + [
         "//common/src/web",
-        "@npm//express",
-        "@npm//multer",
-        "@npm//serve-index",
-        "@npm//tmp",
-        "@npm//jszip",
-        "@npm//rimraf",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
+        "@npm//express",
+        "@npm//jszip",
+        "@npm//multer",
+        "@npm//rimraf",
+        "@npm//serve-index",
+        "@npm//tmp",
     ],
     entry_point = "lib/test/fileserver.js",
 )
@@ -76,15 +76,15 @@ jasmine_node_test(
     srcs = TEST_FILES,
     data = TEST_DATA + [
         "tools/init_jasmine.js",
-        "//common/src/web",
         "//common/extensions",
+        "//common/src/web",
         "@npm//express",
-        "@npm//multer",
-        "@npm//serve-index",
         "@npm//jszip",
+        "@npm//multer",
         "@npm//rimraf",
-        "@npm//tmp",
+        "@npm//serve-index",
         "@npm//sinon",
+        "@npm//tmp",
         "@npm//ws",
     ],
     local = True,
@@ -152,18 +152,18 @@ genrule(
 
 copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "bin/linux/selenium-manager",
 )
 
 copy_file(
-    name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
-    out = "bin/windows/selenium-manager.exe",
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "bin/macos/selenium-manager",
 )
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "bin/macos/selenium-manager",
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "bin/windows/selenium-manager.exe",
 )

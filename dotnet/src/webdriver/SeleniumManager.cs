@@ -72,12 +72,17 @@ namespace OpenQA.Selenium
 #endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
+
+            if (!File.Exists(binaryFullPath))
+            {
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {binaryFullPath}");
+            }
         }
 
         /// <summary>
         /// Determines the location of the correct driver.
         /// </summary>
-        /// <param name="driverName">Which driver the service needs.</param>
+        /// <param name="options">The correct path depends on which options are being used.</param>
         /// <returns>
         /// The location of the driver.
         /// </returns>
@@ -92,7 +97,7 @@ namespace OpenQA.Selenium
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
             }
 
-            string browserBinary = BrowserBinary(options);
+            string browserBinary = options.BinaryLocation;
             if (!string.IsNullOrEmpty(browserBinary))
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
@@ -107,30 +112,22 @@ namespace OpenQA.Selenium
                 }
             }
 
-            return RunCommand(binaryFullPath, argsBuilder.ToString());
-        }
+            Dictionary<string, object> output = RunCommand(binaryFullPath, argsBuilder.ToString());
+            string browserPath = (string)output["browser_path"];
+            string driverPath = (string)output["driver_path"];
 
-
-        /// <summary>
-        /// Extracts the browser binary location from the vendor options when present. Only Chrome, Firefox, and Edge.
-        /// </summary>
-        private static string BrowserBinary(DriverOptions options)
-        {
-            ICapabilities capabilities = options.ToCapabilities();
-            string[] vendorOptionsCapabilities = { "moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions" };
-            foreach (string vendorOptionsCapability in vendorOptionsCapabilities)
+            try
             {
-                IDictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as IDictionary<string, object>;
-
-                if (vendorOptions != null && vendorOptions.TryGetValue("binary", out object browserBinaryPath))
-                {
-                    return browserBinaryPath as string;
-                }
+                options.BinaryLocation = browserPath;
+                options.BrowserVersion = null;
+            }
+            catch (NotImplementedException e)
+            {
+                // Cannot set Browser Location for this driver and that is ok
             }
 
-            return null;
+            return driverPath;
         }
-
 
         /// <summary>
         /// Executes a process with the given arguments.
@@ -140,7 +137,7 @@ namespace OpenQA.Selenium
         /// <returns>
         /// the standard output of the execution.
         /// </returns>
-        private static string RunCommand(string fileName, string arguments)
+        private static Dictionary<string, object> RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
             process.StartInfo.FileName = binaryFullPath;
@@ -182,12 +179,11 @@ namespace OpenQA.Selenium
             }
 
             string output = outputBuilder.ToString().Trim();
-            string result;
+            Dictionary<string, object> result;
             try
             {
                 Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());
-                Dictionary<string, object> deserializedResult = deserializedOutput["result"] as Dictionary<string, object>;
-                result = deserializedResult["message"] as string;
+                result = deserializedOutput["result"] as Dictionary<string, object>;
             }
             catch (Exception ex)
             {

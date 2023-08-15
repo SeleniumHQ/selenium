@@ -420,6 +420,16 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
                                                            false);
     factory_settings.attach_to_edge_ie = attach_to_edgechrome.asBool();
 
+    // Ignore window handle process id match when launching Edge on IE Mode
+    // Useful when the process is launched with admin/privilege rights. This
+    // assumes only one Edge browser is running on the host.
+    factory_settings.ignore_process_match = false;
+    Json::Value ignore_process_match_ie_mode = this->GetCapability(capabilities,
+                                                           IGNORE_PROCESS_MATCH,
+                                                           Json::booleanValue,
+                                                           false);
+    factory_settings.ignore_process_match = ignore_process_match_ie_mode.asBool();
+
     Json::Value edge_executable_path = this->GetCapability(capabilities,
                                                            EDGE_EXECUTABLE_PATH,
                                                            Json::stringValue,
@@ -564,6 +574,7 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY] = executor.browser_factory()->browser_command_line_switches();
   ie_options[FORCE_CREATE_PROCESS_API_CAPABILITY] = executor.browser_factory()->force_createprocess_api();
   ie_options[ENSURE_CLEAN_SESSION_CAPABILITY] = executor.browser_factory()->clear_cache();
+  ie_options[IGNORE_PROCESS_MATCH] = executor.browser_factory()->ignore_process_match();
   ie_options[NATIVE_EVENTS_CAPABILITY] = executor.input_manager()->enable_native_events();
   ie_options[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.input_manager()->use_persistent_hover();
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();

@@ -1,16 +1,34 @@
-filegroup(
-    name = "manager",
-    srcs = glob([
-        "*",
-        "**/*",
-    ]),
-    visibility = [
-        "//java/test/org/openqa/selenium/chrome:__pkg__",
-        "//java/test/org/openqa/selenium/edge:__pkg__",
-        "//java/test/org/openqa/selenium/firefox:__pkg__",
+package(
+    default_visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/manager:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",
     ],
+)
+
+alias(
+    name = "selenium-manager-linux",
+    actual = select({
+        "//common:stamp": "linux/selenium-manager",
+        "//conditions:default": "//rust:selenium-manager-linux",
+    }),
+)
+
+alias(
+    name = "selenium-manager-macos",
+    actual = select({
+        "//common:stamp": "macos/selenium-manager",
+        "//conditions:default": "//rust:selenium-manager-macos",
+    }),
+)
+
+# TODO: When Rust compiles nicely on Windows, use the same stamping
+#       logic as the other rules
+alias(
+    name = "selenium-manager-windows",
+    actual = "windows/selenium-manager.exe",
 )
 
 exports_files(
@@ -20,13 +38,6 @@ exports_files(
         "windows/selenium-manager.exe",
     ],
     visibility = [
-        "//dotnet/src/webdriver:__pkg__",
-        "//java/src/org/openqa/selenium/manager:__pkg__",
-        "//java/test/org/openqa/selenium/chrome:__pkg__",
-        "//java/test/org/openqa/selenium/edge:__pkg__",
-        "//java/test/org/openqa/selenium/firefox:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__",
-        "//py:__pkg__",
-        "//rb:__pkg__",
+        "//rust:__pkg__",
     ],
 )

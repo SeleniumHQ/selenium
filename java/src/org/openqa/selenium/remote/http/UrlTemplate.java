@@ -19,42 +19,113 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** An incredibly bad implementation of URL Templates, but enough for our needs. */
+/** A bad implementation of URL Templates, but enough for our needs. */
 public class UrlTemplate {
 
-  private static final Pattern GROUP_NAME = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
-  private final List<Matches> template;
+  private static final Pattern GROUP_NAME = Pattern.compile("(\\{\\p{Alnum}+\\})");
+  private final Function<String, UrlTemplate.Match> compiled;
 
   public UrlTemplate(String template) {
     if (template == null || template.isEmpty()) {
       throw new IllegalArgumentException("Template must not be 0 length");
     }
 
-    ImmutableList.Builder<Matches> fragments = ImmutableList.builder();
-    for (String fragment : template.split("/")) {
-      // Convert the fragment to a pattern by replacing "{...}" with a capturing group. We capture
-      // from the opening '{' and do a non-greedy match of letters until the closing '}'.
-      Matcher matcher = Pattern.compile("\\{(\\p{Alnum}+?)\\}").matcher(fragment);
-      String toCompile = matcher.replaceAll("(?<$1>[^/]+)");
+    // ^ start of string
+    StringBuilder regex = new StringBuilder("^");
+    Matcher groupNameMatcher = GROUP_NAME.matcher(template);
 
-      // There's no API for getting the names of capturing groups from a pattern in java. So we're
-      // going to use a regex to find them. ffs.
-      Matcher groupNameMatcher = GROUP_NAME.matcher(toCompile);
+    ImmutableList.Builder<String> groups = ImmutableList.builder();
+    int lastStart = 0;
+    int lastGroup = 0;
 
-      ImmutableList.Builder<String> names = ImmutableList.builder();
-      while (groupNameMatcher.find()) {
-        names.add(groupNameMatcher.group(1));
-      }
+    while (groupNameMatcher.find()) {
+      int start = groupNameMatcher.start(1);
+      int end = groupNameMatcher.end(1);
 
-      fragments.add(
-          new Matches(Pattern.compile(Matcher.quoteReplacement(toCompile)), names.build()));
+      // everything before the current group
+      regex.append(Pattern.quote(template.substring(lastGroup, start)));
+      // replace the group name with a capturing group
+      regex.append("([^/]+)");
+      // register the group name, to resolve into parameters
+      groups.add(template.substring(start + 1, end - 1));
+      lastStart = start;
+      lastGroup = end;
     }
-    this.template = fragments.build();
+
+    if (template.length() > lastGroup) {
+      // everything behind the last group
+      regex.append(Pattern.quote(template.substring(lastGroup)));
+    }
+
+    // $ end of string
+    regex.append('$');
+
+    List<String> allGroups = groups.build();
+    // do we hit a fast path?
+    switch (allGroups.size()) {
+      case 0: // no groups, just .equals
+        this.compiled =
+            (matchAgainst) -> {
+              if (!template.equals(matchAgainst)) {
+                return null;
+              }
+
+              return new Match(matchAgainst, Collections.emptyMap());
+            };
+        break;
+      case 1: // one group, the common case
+        String groupName = template.substring(lastStart + 1, lastGroup - 1);
+        String prefix = template.substring(0, lastStart);
+        String suffix = template.substring(lastGroup);
+
+        this.compiled =
+            (matchAgainst) -> {
+              if (matchAgainst.length() <= prefix.length() + suffix.length()) {
+                // the url is too short to match
+                return null;
+              } else if (!matchAgainst.startsWith(prefix)) {
+                // the url does not have the prefix
+                return null;
+              } else if (!matchAgainst.endsWith(suffix)) {
+                // the url does not have the suffix
+                return null;
+              } else {
+                String groupValue =
+                    matchAgainst.substring(
+                        prefix.length(), matchAgainst.length() - suffix.length());
+                // ensure we act like the regex way
+                if (groupValue.indexOf('/') != -1) {
+                  return null;
+                }
+                return new Match(matchAgainst, Collections.singletonMap(groupName, groupValue));
+              }
+            };
+        break;
+      default: // more than one group, not common
+        Pattern pattern = Pattern.compile(regex.toString());
+
+        this.compiled =
+            (matchAgainst) -> {
+              Matcher matcher = pattern.matcher(matchAgainst);
+              if (!matcher.matches()) {
+                return null;
+              }
+
+              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              for (int i = 0; i < allGroups.size(); i++) {
+                params.put(allGroups.get(i), matcher.group(i + 1));
+              }
+
+              return new Match(matchAgainst, params.build());
+            };
+    }
   }
 
   /**
@@ -65,24 +136,7 @@ public class UrlTemplate {
       return null;
     }
 
-    String[] fragments = matchAgainst.split("/");
-    if (fragments.length != template.size()) {
-      return null;
-    }
-
-    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
-    for (int i = 0; i < fragments.length; i++) {
-      Matcher matcher = template.get(i).matcher(fragments[i]);
-      if (!matcher.find()) {
-        return null;
-      }
-
-      for (String name : template.get(i).groupNames) {
-        params.put(name, matcher.group(name));
-      }
-    }
-
-    return new Match(matchAgainst, params.build());
+    return compiled.apply(matchAgainst);
   }
 
   @SuppressWarnings("InnerClassMayBeStatic")
@@ -101,21 +155,6 @@ public class UrlTemplate {
 
     public Map<String, String> getParameters() {
       return parameters;
-    }
-  }
-
-  private static class Matches {
-
-    private final Pattern pattern;
-    private final List<String> groupNames;
-
-    private Matches(Pattern pattern, List<String> groupNames) {
-      this.pattern = pattern;
-      this.groupNames = groupNames;
-    }
-
-    public Matcher matcher(String fragment) {
-      return pattern.matcher(fragment);
     }
   }
 }

@@ -34,6 +34,7 @@ module Selenium
 
         it 'detects Windows' do
           stub_binary('/windows/selenium-manager.exe')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(true)
 
           expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
@@ -41,6 +42,7 @@ module Selenium
 
         it 'detects Mac' do
           stub_binary('/macos/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
@@ -49,6 +51,7 @@ module Selenium
 
         it 'detects Linux' do
           stub_binary('/linux/selenium-manager')
+          allow(Platform).to receive(:assert_file)
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
@@ -61,7 +64,7 @@ module Selenium
 
           expect {
             described_class.send(:binary)
-          }.to raise_error(Error::WebDriverError, /Unable to obtain Selenium Manager/)
+          }.to raise_error(Error::WebDriverError, /Selenium Manager binary located, but not a file/)
         end
       end
 
@@ -74,25 +77,19 @@ module Selenium
       end
 
       describe 'self.driver_path' do
-        it 'errors if not an option' do
-          expect {
-            described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
-          }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
-        end
-
         it 'determines browser name by default' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
 
           described_class.driver_path(Options.chrome)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
+            .with('selenium-manager', '--browser', 'chrome')
         end
 
         it 'uses browser version if specified' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(browser_version: 1)
@@ -102,13 +99,12 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--browser-version', 1)
         end
 
         it 'uses proxy if specified' do
           proxy = Selenium::WebDriver::Proxy.new(ssl: 'proxy')
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(proxy: proxy)
@@ -118,12 +114,11 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--proxy', 'proxy')
         end
 
         it 'uses browser location if specified' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path/to/browser')
@@ -131,11 +126,11 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
+            .with('selenium-manager', '--browser', 'chrome', '--browser-path', '/path/to/browser')
         end
 
         it 'properly escapes plain spaces in browser location' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => 'a', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path to/the/browser')
@@ -143,8 +138,18 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json',
+            .with('selenium-manager', '--browser', 'chrome',
                   '--browser-path', '/path to/the/browser')
+        end
+
+        it 'sets binary location on options' do
+          allow(described_class).to receive(:run).and_return('browser_path' => 'foo', 'driver_path' => '')
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome
+
+          described_class.driver_path(options)
+          expect(options.binary).to eq 'foo'
         end
       end
     end

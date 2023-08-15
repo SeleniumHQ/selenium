@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-
 module Selenium
   module WebDriver
     module Edge

@@ -128,6 +128,7 @@ const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { getPath } = require('./common/driverFinder')
+const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
  * Thrown when there an add-on is malformed.
@@ -263,10 +264,10 @@ class Options extends Capabilities {
    * @private
    */
   firefoxOptions_() {
-    let options = this.get('moz:firefoxOptions')
+    let options = this.get(FIREFOX_CAPABILITY_KEY)
     if (!options) {
       options = {}
-      this.set('moz:firefoxOptions', options)
+      this.set(FIREFOX_CAPABILITY_KEY, options)
     }
     return options
   }
@@ -453,27 +454,6 @@ const Context = {
   CHROME: 'chrome',
 }
 
-const GECKO_DRIVER_EXE =
-  process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver'
-
-/**
- * _Synchronously_ attempts to locate the geckodriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(GECKO_DRIVER_EXE, true)
-}
-
-/**
- * @return {string} .
- * @throws {Error}
- */
-function findGeckoDriver() {
-  return locateSynchronously()
-}
-
 /**
  * @param {string} file Path to the file to find, relative to the program files
  *     root.
@@ -555,7 +535,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findGeckoDriver())
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 
@@ -601,6 +581,8 @@ class Driver extends webdriver.WebDriver {
     let caps =
       opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
 
+    let firefoxBrowserPath = null
+
     let executor
     let onQuit
 
@@ -609,17 +591,31 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        opt_executor.setExecutable(getPath(opt_executor, opt_config))
+        const {driverPath, browserPath} = getPath(caps)
+        opt_executor.setExecutable(driverPath)
+        firefoxBrowserPath = browserPath
       }
       executor = createExecutor(opt_executor.start())
       onQuit = () => opt_executor.kill()
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        service.setExecutable(getPath(service, opt_config))
+        const {driverPath, browserPath} = getPath(caps)
+        service.setExecutable(driverPath)
+        firefoxBrowserPath = browserPath
       }
       executor = createExecutor(service.start())
       onQuit = () => service.kill()
+    }
+
+    if (firefoxBrowserPath) {
+      const vendorOptions = caps.get(FIREFOX_CAPABILITY_KEY)
+      if (vendorOptions) {
+        vendorOptions['binary'] = firefoxBrowserPath
+        caps.set(FIREFOX_CAPABILITY_KEY, vendorOptions)
+      } else {
+        caps.set(FIREFOX_CAPABILITY_KEY, {binary: firefoxBrowserPath})
+      }
     }
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
@@ -832,5 +828,4 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }

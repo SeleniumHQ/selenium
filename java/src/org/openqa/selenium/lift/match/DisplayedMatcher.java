@@ -22,6 +22,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
 
 /** Hamcrest matcher for displayed status of {@link WebElement}s. */
+@Deprecated
 public class DisplayedMatcher extends TypeSafeMatcher<WebElement> {
 
   private DisplayedMatcher() {}

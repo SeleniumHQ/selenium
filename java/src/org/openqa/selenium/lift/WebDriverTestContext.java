@@ -34,6 +34,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /** Gives the context for a test, holds page state, and interacts with the {@link WebDriver}. */
+@Deprecated
 public class WebDriverTestContext implements TestContext {
 
   private WebDriver driver;

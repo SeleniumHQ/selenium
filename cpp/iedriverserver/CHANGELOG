@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.11.0.0
+========
+* Ignore process id match when finding the window handle - IE Mode on Edge. (#12246)
+
 v4.8.1.0
 ========
 * Update atoms (Use .textContent instead of .innerHTML in clear() action (#11504))

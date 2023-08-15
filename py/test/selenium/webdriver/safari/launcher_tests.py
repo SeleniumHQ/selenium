@@ -19,6 +19,9 @@ import os
 
 import pytest
 
+from selenium.common.exceptions import NoSuchDriverException
+from selenium.webdriver.safari.service import Service
+
 
 def test_launch(driver):
     assert driver.capabilities["browserName"] == "Safari"
@@ -27,9 +30,9 @@ def test_launch(driver):
 def test_launch_with_invalid_executable_path_raises_exception(driver_class):
     path = "/this/path/should/never/exist"
     assert not os.path.exists(path)
-    with pytest.raises(Exception) as e:
-        driver_class(executable_path=path)
-    assert "are you running Safari 10 or later?" in str(e)
+    service = Service(executable_path=path)
+    with pytest.raises(NoSuchDriverException):
+        driver_class(service=service)
 
 
 @pytest.mark.skipif(

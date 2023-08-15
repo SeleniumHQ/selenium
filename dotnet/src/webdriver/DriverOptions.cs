@@ -209,6 +209,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Set or Get the location of the browser
+        /// Override in subclass
+        /// </summary>
+        public virtual string BinaryLocation
+        {
+            get { return null; }
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the specific browser driver.
         /// </summary>

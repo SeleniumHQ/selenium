@@ -91,6 +91,7 @@ def test_should_be_able_to_return_web_elements_from_async_scripts(driver, pages)
 
 
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_chrome(reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=4525")
 def test_should_be_able_to_return_arrays_of_web_elements_from_async_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 

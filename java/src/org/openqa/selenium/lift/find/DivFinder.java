@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
 
 /** {@link Finder} for HTML div tags. */
+@Deprecated
 public class DivFinder extends HtmlTagFinder {
 
   @Override

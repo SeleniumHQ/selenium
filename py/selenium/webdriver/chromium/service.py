@@ -15,7 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+import warnings
 
+from selenium.common import InvalidArgumentException
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
@@ -28,29 +31,37 @@ class ChromiumService(service.Service):
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param start_error_message: (Optional) Error message that forms part of the error when problems occur
-    launching the subprocess.
     """
 
     def __init__(
         self,
-        executable_path: str,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        if log_path:
-            self.service_args.append(f"--log-path={log_path}")
+        self.log_output = log_output
+        if log_path is not None:
+            warnings.warn("log_path has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            self.log_output = log_path
+
+        if "--append-log" in self.service_args or "--readable-timestamp" in self.service_args:
+            if isinstance(self.log_output, str):
+                self.service_args.append(f"--log-path={self.log_output}")
+                self.log_output = None
+            else:
+                msg = "Appending logs and readable timestamps require log output to be a string representing file path"
+                raise InvalidArgumentException(msg)
 
         super().__init__(
             executable=executable_path,
             port=port,
             env=env,
-            start_error_message=start_error_message,
+            log_output=self.log_output,
             **kwargs,
         )
 

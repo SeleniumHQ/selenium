@@ -182,7 +182,7 @@ class ScriptManager {
 
   async addPreloadScript(
     functionDeclaration,
-    argumentValueList = null,
+    argumentValueList = [],
     sandbox = null
   ) {
     const params = {
@@ -285,18 +285,18 @@ class ScriptManager {
   }
 
   createEvaluateResult(response) {
-    var type = response.result.type
-    var realmId = response.result.realm
-    var evaluateResult
+    const type = response.result.type
+    const realmId = response.result.realm
+    let evaluateResult
 
     if (type === EvaluateResultType.SUCCESS) {
-      var result = response.result.result
+      const result = response.result.result
       evaluateResult = new EvaluateResultSuccess(
         realmId,
         new RemoteValue(result)
       )
     } else {
-      var exceptionDetails = response.result.exceptionDetails
+      const exceptionDetails = response.result.exceptionDetails
       evaluateResult = new EvaluateResultException(
         realmId,
         new ExceptionDetails(exceptionDetails)
@@ -306,7 +306,7 @@ class ScriptManager {
   }
 
   realmInfoMapper(realms) {
-    var realmsList = []
+    const realmsList = []
     realms.forEach((realm) => {
       realmsList.push(RealmInfo.fromJson(realm))
     })

@@ -1,5 +1,5 @@
-load("//java:version.bzl", "SE_VERSION")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
+load("//java:version.bzl", "SE_VERSION")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 filegroup(
@@ -12,6 +12,7 @@ java_export(
     name = "core",
     srcs = glob([
         "*.java",
+        "federatedcredentialmanagement/*.java",
         "html5/*.java",
         "internal/*.java",
         "interactions/**/*.java",

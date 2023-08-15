@@ -16,22 +16,33 @@
 // under the License.
 
 use assert_cmd::Command;
-
 use exitcode::DATAERR;
+use std::str;
 
 #[tokio::test]
 async fn wrong_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--proxy",
-        "http://localhost:12345",
-        "--clear-cache",
-    ])
-    .assert()
-    .failure()
-    .code(DATAERR);
+    let assert_result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            "chrome",
+            "--proxy",
+            "http://localhost:12345",
+        ])
+        .assert()
+        .try_success();
+    if assert_result.is_ok() {
+        let stdout = &cmd.unwrap().stdout;
+        let output = str::from_utf8(stdout).unwrap();
+        assert!(output.contains("in PATH"));
+    } else {
+        assert!(assert_result
+            .err()
+            .unwrap()
+            .to_string()
+            .contains(&DATAERR.to_string()));
+    }
 }
 
 #[test]

@@ -946,18 +946,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
-            Assert.That(toBeDeleted.Displayed, "Element is not displayed");
-
-            driver.FindElement(By.Id("delete")).Click();
-            Assert.That(() => { bool displayedAfterDelete = toBeDeleted.Displayed; }, Throws.InstanceOf<StaleElementReferenceException>());
-        }
-
-        [Test]
         public void FindingByTagNameShouldNotIncludeParentElementIfSameTagType()
         {
             driver.Url = xhtmlTestPage;

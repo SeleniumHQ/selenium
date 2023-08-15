@@ -50,6 +50,7 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.html5.AddWebStorage;
+import org.openqa.selenium.support.decorators.Decorated;
 
 /**
  * Enhance the interfaces implemented by an instance of the {@link org.openqa.selenium.WebDriver}
@@ -134,7 +135,7 @@ public class Augmenter {
   }
 
   /**
-   * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a {@link
+   * Enhance the interfaces implemented by this instance of WebDriver if that instance is a {@link
    * org.openqa.selenium.remote.RemoteWebDriver}. The WebDriver that is returned may well be a
    * dynamic proxy. You cannot rely on the concrete implementing class to remain constant.
    *
@@ -249,6 +250,10 @@ public class Augmenter {
 
     if (driver instanceof RemoteWebDriver) {
       return (RemoteWebDriver) driver;
+    }
+
+    if (driver instanceof Decorated) {
+      return extractRemoteWebDriver((WebDriver) ((Decorated<?>) driver).getOriginal());
     }
 
     if (driver instanceof WrapsDriver) {

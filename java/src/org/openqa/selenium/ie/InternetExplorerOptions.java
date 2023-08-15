@@ -67,6 +67,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       "ie.useLegacyFileUploadDialogHandling";
   private static final String ATTACH_TO_EDGE_CHROME = "ie.edgechromium";
   private static final String EDGE_EXECUTABLE_PATH = "ie.edgepath";
+  private static final String IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch";
 
   private static final List<String> CAPABILITY_NAMES =
       Arrays.asList(
@@ -87,7 +88,8 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           NATIVE_EVENTS,
           LEGACY_FILE_UPLOAD_DIALOG_HANDLING,
           ATTACH_TO_EDGE_CHROME,
-          EDGE_EXECUTABLE_PATH);
+          EDGE_EXECUTABLE_PATH,
+          IGNORE_PROCESS_MATCH);
 
   private final Map<String, Object> ieOptions = new HashMap<>();
 
@@ -200,6 +202,12 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
+  /**
+   * Method that defines to use whether to use native or javascript events during operations.
+   *
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   public InternetExplorerOptions disableNativeEvents() {
     return amend(NATIVE_EVENTS, false);
   }
@@ -218,6 +226,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   public InternetExplorerOptions attachToEdgeChrome() {
     return amend(ATTACH_TO_EDGE_CHROME, true);
+  }
+
+  public InternetExplorerOptions ignoreProcessMatch() {
+    return amend(IGNORE_PROCESS_MATCH, true);
   }
 
   public InternetExplorerOptions withEdgeExecutablePath(String path) {

@@ -1,3 +1,30 @@
+4.11.0 (2023-07-31)
+=========================
+Ruby:
+  * Made network interception threads fail silently (#12226)
+  * Have Selenium Manager binary locate drivers on PATH (#12345)
+  * Add browser output from selenium manager to options (#12398)
+  * Remove deprecated code (#12417)
+BiDi:
+  * Released selenium-devtools 0.115.0 (supports CDP v85, v113, v114, v115)
+Edge:
+  * Adding ignore process match for IE Mode across bindings (#12279)
+
+4.10.0 (2023-06-07)
+=========================
+Ruby:
+  * Implement proxy support for Selenium Manager
+  * Prevent setting driver log level in Safari
+  * Change all Selenium Manager logging to :debug (#12145)
+  * Error messages include links to documentation
+  * Add custom error class for driver location and improve error logic
+
+BiDi:
+  * Released selenium-devtools 0.114.0 (supports CDP v85, v112, v113, v114)
+
+Edge:
+  * Add support for webview2
+
 4.9.1 (2023-05-08)
 =========================
 Ruby:

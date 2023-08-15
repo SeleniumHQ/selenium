@@ -69,6 +69,8 @@ module Selenium
 
         def quit_driver
           @driver_instance&.quit
+        rescue StandardError
+          # good riddance
         ensure
           @driver_instance = nil
         end

@@ -50,6 +50,16 @@ class UrlTemplateTest {
   }
 
   @Test
+  void shouldExpandTwoParameters() {
+    UrlTemplate.Match match =
+        new UrlTemplate("/i/like/{flavor}/{veggie}").match("/i/like/sweet/cake");
+
+    assertThat(match.getUrl()).isEqualTo("/i/like/sweet/cake");
+    assertThat(match.getParameters())
+        .isEqualTo(ImmutableMap.of("flavor", "sweet", "veggie", "cake"));
+  }
+
+  @Test
   void itIsFineForTheFirstCharacterToBeAPattern() {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
@@ -60,5 +70,12 @@ class UrlTemplateTest {
   @Test
   void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
     assertThat(new UrlTemplate("/").match(null)).isNull();
+  }
+
+  @Test
+  void noPartialMatches() {
+    assertThat(new UrlTemplate("/session").match("/no-session")).isNull();
+    assertThat(new UrlTemplate("/session").match("/session-no")).isNull();
+    assertThat(new UrlTemplate("/session").match("/no-session-no")).isNull();
   }
 }

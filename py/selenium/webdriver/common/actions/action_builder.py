@@ -16,6 +16,7 @@
 # under the License.
 
 from typing import List
+from typing import Optional
 from typing import Union
 
 from selenium.webdriver.remote.command import Command
@@ -30,20 +31,24 @@ from .wheel_input import WheelInput
 
 
 class ActionBuilder:
-    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
-        if not mouse:
-            mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
-        if not keyboard:
-            keyboard = KeyInput(interaction.KEY)
-        if not wheel:
-            wheel = WheelInput(interaction.WHEEL)
+    def __init__(
+        self,
+        driver,
+        mouse: Optional[PointerInput] = None,
+        wheel: Optional[WheelInput] = None,
+        keyboard: Optional[KeyInput] = None,
+        duration: int = 250,
+    ) -> None:
+        mouse = mouse or PointerInput(interaction.POINTER_MOUSE, "mouse")
+        keyboard = keyboard or KeyInput(interaction.KEY)
+        wheel = wheel or WheelInput(interaction.WHEEL)
         self.devices = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name) -> Union["WheelInput", "PointerInput", "KeyInput"]:
+    def get_device_with(self, name: str) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
@@ -66,17 +71,17 @@ class ActionBuilder:
     def wheel_action(self) -> WheelActions:
         return self._wheel_action
 
-    def add_key_input(self, name) -> KeyInput:
+    def add_key_input(self, name: str) -> KeyInput:
         new_input = KeyInput(name)
         self._add_input(new_input)
         return new_input
 
-    def add_pointer_input(self, kind, name) -> PointerInput:
+    def add_pointer_input(self, kind: str, name: str) -> PointerInput:
         new_input = PointerInput(kind, name)
         self._add_input(new_input)
         return new_input
 
-    def add_wheel_input(self, name) -> WheelInput:
+    def add_wheel_input(self, name: str) -> WheelInput:
         new_input = WheelInput(name)
         self._add_input(new_input)
         return new_input
@@ -94,5 +99,5 @@ class ActionBuilder:
         """Clears actions that are already stored on the remote end."""
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 
-    def _add_input(self, new_input) -> None:
+    def _add_input(self, new_input: Union[KeyInput, PointerInput, WheelInput]) -> None:
         self.devices.append(new_input)

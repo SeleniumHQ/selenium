@@ -719,7 +719,7 @@ class JsonOutputTest {
   }
 
   @Test
-  void shouldRespectMaxDepth() {
+  void shouldRespectDefaultMaxDepth() {
     StringBuilder builder = new StringBuilder();
 
     JsonOutput jsonOutput = new Json().newOutput(builder);
@@ -736,6 +736,36 @@ class JsonOutputTest {
     Object finalValue = value;
 
     assertThatExceptionOfType(JsonException.class).isThrownBy(() -> jsonOutput.write(finalValue));
+  }
+
+  @Test
+  void shouldRespectCustomHigherMaxDepth() {
+    shouldRespectMaxDepth(16);
+  }
+
+  @Test
+  void shouldRespectCustomLowerMaxDepth() {
+    shouldRespectMaxDepth(8);
+  }
+
+  void shouldRespectMaxDepth(int maxDepth) {
+    StringBuilder builder = new StringBuilder();
+
+    JsonOutput jsonOutput = new Json().newOutput(builder);
+    jsonOutput.beginArray();
+
+    Object value = emptyList();
+
+    for (int i = 0; i < maxDepth; i++) {
+      jsonOutput.write(value, maxDepth);
+
+      value = singletonList(value);
+    }
+
+    Object finalValue = value;
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> jsonOutput.write(finalValue, maxDepth));
   }
 
   private String convert(Object toConvert) {

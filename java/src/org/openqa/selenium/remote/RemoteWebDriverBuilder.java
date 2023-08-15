@@ -24,7 +24,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -101,31 +100,7 @@ public class RemoteWebDriverBuilder {
       config -> {
         HttpClient.Factory factory = HttpClient.Factory.createDefault();
         HttpClient client = factory.createClient(config);
-        return client.with(
-            next ->
-                req -> {
-                  try {
-                    return client.execute(req);
-                  } finally {
-                    if (req.getMethod() == DELETE) {
-                      HttpSessionId.getSessionId(req.getUri())
-                          .ifPresent(
-                              id -> {
-                                if (("/session/" + id).equals(req.getUri())) {
-                                  try {
-                                    client.close();
-                                  } catch (UncheckedIOException e) {
-                                    LOG.log(
-                                        WARNING,
-                                        "Swallowing exception while closing http client",
-                                        e);
-                                  }
-                                  factory.cleanupIdleClients();
-                                }
-                              });
-                    }
-                  }
-                });
+        return client.with(new CloseHttpClientFilter(factory, client));
       };
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
@@ -412,8 +387,7 @@ public class RemoteWebDriverBuilder {
     HttpHandler handler =
         Require.nonNull("Http handler", client)
             .with(
-                new CloseHttpClientFilter(client)
-                    .andThen(new AddWebDriverSpecHeaders())
+                new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
                     .andThen(new DumpHttpExchangeFilter()));
 
@@ -531,9 +505,11 @@ public class RemoteWebDriverBuilder {
 
   private static class CloseHttpClientFilter implements Filter {
 
-    private final HttpHandler client;
+    private final HttpClient.Factory factory;
+    private final HttpClient client;
 
-    CloseHttpClientFilter(HttpHandler client) {
+    CloseHttpClientFilter(HttpClient.Factory factory, HttpClient client) {
+      this.factory = Require.nonNull("Http client factory", factory);
       this.client = Require.nonNull("Http client", client);
     }
 
@@ -543,16 +519,17 @@ public class RemoteWebDriverBuilder {
         try {
           return next.execute(req);
         } finally {
-          if (req.getMethod() == DELETE && client instanceof Closeable) {
+          if (req.getMethod() == DELETE) {
             HttpSessionId.getSessionId(req.getUri())
                 .ifPresent(
                     id -> {
                       if (("/session/" + id).equals(req.getUri())) {
                         try {
-                          ((Closeable) client).close();
-                        } catch (IOException e) {
+                          client.close();
+                        } catch (Exception e) {
                           LOG.log(WARNING, "Exception swallowed while closing http client", e);
                         }
+                        factory.cleanupIdleClients();
                       }
                     });
           }

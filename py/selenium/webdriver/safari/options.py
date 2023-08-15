@@ -20,66 +20,12 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
-class Log:
-    def __init__(self) -> None:
-        self.level = None
-
-    def to_capabilities(self) -> dict:
-        if self.level:
-            return {"log": {"level": self.level}}
-        return {}
-
-
 class Options(ArgOptions):
-    KEY = "safari.options"
-
     # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
     AUTOMATIC_INSPECTION = "safari:automaticInspection"
     AUTOMATIC_PROFILING = "safari:automaticProfiling"
 
     SAFARI_TECH_PREVIEW = "Safari Technology Preview"
-
-    def __init__(self) -> None:
-        super().__init__()
-        self._binary_location = None
-        self._preferences: dict = {}
-        self.log = Log()
-
-    @property
-    def binary_location(self) -> str:
-        """
-        :Returns: The location of the browser binary otherwise an empty string
-        """
-        return self._binary_location
-
-    @binary_location.setter
-    def binary_location(self, value: str) -> None:
-        """Allows you to set the browser binary to launch.
-
-        :Args:
-         - value : path to the browser binary
-        """
-        self._binary_location = value
-
-    def to_capabilities(self) -> dict:
-        """Marshals the  options to an desired capabilities object."""
-        # This intentionally looks at the internal properties
-        # so if a binary or profile has _not_ been set,
-        # it will defer to geckodriver to find the system Firefox
-        # and generate a fresh profile.
-        caps = self._caps
-        opts = {}
-
-        if self._arguments:
-            opts["args"] = self._arguments
-        if self._binary_location:
-            opts["binary"] = self._binary_location
-        opts.update(self.log.to_capabilities())
-
-        if opts:
-            caps[Options.KEY] = opts
-
-        return caps
 
     @property
     def default_capabilities(self) -> typing.Dict[str, str]:
@@ -97,6 +43,8 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Automatic Inspection must be a boolean")
         self.set_capability(self.AUTOMATIC_INSPECTION, value)
 
     @property
@@ -111,6 +59,8 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Automatic Profiling must be a boolean")
         self.set_capability(self.AUTOMATIC_PROFILING, value)
 
     @property
@@ -126,4 +76,6 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
+        if not isinstance(value, bool):
+            raise TypeError("Use Technology Preview must be a boolean")
         self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")

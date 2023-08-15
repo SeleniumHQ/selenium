@@ -41,14 +41,20 @@ on:
         required: false
         type: string
         default: ''
+      nightly-release-files:
+        description: Files to upload to the Nightly release tah
+        required: false
+        type: string
+        default: ''
 
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    # Use windows-latest once https://github.com/actions/runner-images/issues/7662 is fixed.
-    runs-on: ${{ inputs.os == 'windows' && 'windows-2019' || format('{0}-latest', inputs.os) }}
+    runs-on: ${{ inputs.os }}-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -123,3 +129,12 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: false
+      - name: Release Nightly
+        if: inputs.nightly-release-files != ''
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "nightly"
+          title: "Nightly"
+          prerelease: true
+          files: ${{ inputs.nightly-release-files }}

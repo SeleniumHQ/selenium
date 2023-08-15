@@ -23,4 +23,4 @@ AnyKey = typing.Union[str, int, float]
 WaitExcTypes = typing.Iterable[typing.Type[Exception]]
 
 # Service Types
-SubprocessStdAlias = typing.Union[int, typing.IO[typing.Any]]
+SubprocessStdAlias = typing.Union[int, str, typing.IO[typing.Any]]

@@ -1,9 +1,5 @@
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -15,9 +11,6 @@ namespace OpenQA.Selenium.Environment
 
         [JsonProperty]
         public bool HideWebServerCommandPrompt { get; set; }
-
-        [JsonProperty]
-        public string DriverServiceLocation { get; set; }
 
         [JsonProperty]
         public string ActiveDriverConfig { get; set; }

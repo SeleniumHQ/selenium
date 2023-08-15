@@ -28,26 +28,20 @@ class Options(ArgOptions):
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property
-    def capabilities(self):
-        return self._caps
-
-    def set_capability(self, name, value) -> None:
-        """Sets a capability."""
-        self._caps[name] = value
-
-    @property
     def binary_location(self) -> str:
         """Returns the location of the browser binary otherwise an empty
         string."""
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value) -> None:
+    def binary_location(self, value: str) -> None:
         """Allows you to set the browser binary to launch.
 
         :Args:
          - value : path to the browser binary
         """
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self._binary_location = value
 
     def to_capabilities(self):
