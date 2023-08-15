@@ -19,9 +19,7 @@ package org.openqa.selenium.manager;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,9 +41,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.os.ExternalProcess;
-
-import io.ous.jtoml.JToml;
-import io.ous.jtoml.Toml;
 
 /**
  * This implementation is still in beta, and may change.
@@ -72,8 +67,6 @@ public class SeleniumManager {
   private static final String DEFAULT_CACHE_PATH = "~/.cache/selenium";
   private static final String BINARY_PATH_FORMAT = "/manager/%s/%s";
   private static final String HOME = "~";
-  private static final String SE_CONFIG_FILE = "/se-config.toml";
-  private static final String CACHE_PATH_KEY = "cache-path";
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
 
   private static final String EXE = ".exe";
@@ -298,25 +291,10 @@ public class SeleniumManager {
   private Path getBinaryInCache(String binaryName) {
     String cachePath = DEFAULT_CACHE_PATH.replace(HOME, System.getProperty("user.home"));
 
-    // 1. Look for cache path in config file
-    Path configFile = Paths.get(cachePath + SE_CONFIG_FILE);
-    if (configFile.toFile().exists()) {
-      try (Reader reader = Files.newBufferedReader(configFile)) {
-        Toml toml = JToml.parse(reader);
-        Object cachePathToml = toml.get(CACHE_PATH_KEY);
-        if (cachePathToml != null) {
-          cachePath = cachePathToml.toString();
-        }
-      } catch (IOException e) {
-        // Nothing
-      }
-    }
-    else {
-      // 2. Look for cache path as env
-      String cachePathEnv = System.getenv(CACHE_PATH_ENV);
-      if (cachePathEnv != null) {
-        cachePath = cachePathEnv;
-      }
+    // Look for cache path as env
+    String cachePathEnv = System.getenv(CACHE_PATH_ENV);
+    if (cachePathEnv != null) {
+      cachePath = cachePathEnv;
     }
 
     return Paths.get(cachePath + String.format(BINARY_PATH_FORMAT, SELENIUM_MANAGER_VERSION, binaryName));

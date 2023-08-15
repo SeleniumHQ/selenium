@@ -21,7 +21,6 @@ java_export(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/os",
         artifact("com.google.guava:guava"),
-        artifact("io.ous:jtoml"),
     ],
 )
 
