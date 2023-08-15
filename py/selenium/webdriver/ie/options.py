@@ -49,7 +49,7 @@ class _IeOptionsDescriptor:
     - `attach_to_edge_chrome`
     - `edge_executable_path`
 
-    : when any assignment of lookup happens to the above mentioned attributes in `Options` class,
+    : when any assignment or lookup happens to the above mentioned attributes in `Options` class,
     Example:
         `self. browser_attach_timeout`
         `__get__` method does a dictionary look up in the dictionary `_options` in `Options` class
