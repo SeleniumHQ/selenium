@@ -86,8 +86,7 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
-pub const TTL_BROWSERS_SEC: u64 = 3600;
-pub const TTL_DRIVERS_SEC: u64 = 3600;
+pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
 pub const SNAPSHOT: &str = "SNAPSHOT";
@@ -822,20 +821,12 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn get_driver_ttl(&self) -> u64 {
-        self.get_config().driver_ttl
+    fn get_ttl(&self) -> u64 {
+        self.get_config().ttl
     }
 
-    fn set_driver_ttl(&mut self, driver_ttl: u64) {
-        self.get_config_mut().driver_ttl = driver_ttl;
-    }
-
-    fn get_browser_ttl(&self) -> u64 {
-        self.get_config().browser_ttl
-    }
-
-    fn set_browser_ttl(&mut self, browser_ttl: u64) {
-        self.get_config_mut().browser_ttl = browser_ttl;
+    fn set_ttl(&mut self, ttl: u64) {
+        self.get_config_mut().ttl = ttl;
     }
 
     fn is_offline(&self) -> bool {

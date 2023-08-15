@@ -153,7 +153,7 @@ impl SeleniumManager for FirefoxManager {
                 let driver_version =
                     read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
 
-                let driver_ttl = self.get_driver_ttl();
+                let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
