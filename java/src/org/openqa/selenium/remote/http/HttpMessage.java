@@ -26,8 +26,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.net.MediaType;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -66,7 +66,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   }
 
   public Iterable<String> getHeaderNames() {
-    return headers.keySet();
+    return Collections.unmodifiableCollection(headers.keySet());
   }
 
   public Iterable<String> getHeaders(String name) {
@@ -78,16 +78,12 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   }
 
   public String getHeader(String name) {
-    Iterable<String> initialHeaders = getHeaders(name);
-    if (initialHeaders == null) {
-      return null;
-    }
-
-    Iterator<String> headers = initialHeaders.iterator();
-    if (headers.hasNext()) {
-      return headers.next();
-    }
-    return null;
+    return headers.entries().stream()
+        .filter(e -> Objects.nonNull(e.getKey()))
+        .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
+        .map(Map.Entry::getValue)
+        .findFirst()
+        .orElse(null);
   }
 
   public M setHeader(String name, String value) {
@@ -100,12 +96,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   }
 
   public M removeHeader(String name) {
-    String toRemove =
-        headers.keySet().stream()
-            .filter(header -> header.equalsIgnoreCase(name))
-            .findFirst()
-            .orElse(name);
-    headers.removeAll(toRemove);
+    headers.keySet().removeIf(header -> header.equalsIgnoreCase(name));
     return self();
   }
 
