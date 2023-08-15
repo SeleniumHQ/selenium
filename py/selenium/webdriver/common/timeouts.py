@@ -59,18 +59,18 @@ class _TimeoutsDescriptor:
 
 class Timeouts:
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
-        """Create a new Timeout object.
+        """Create a new Timeouts object.
 
         This implements https://w3c.github.io/webdriver/#timeouts.
 
         :Args:
-         - implicit_wait - Either an int or a float. Sets how long
-            to wait when searching for elements
-            before throwing an error.
-         - page_load - Either an int or a float. Sets how long
-            to wait for a page load to complete
-            before throwing an error.
-         - script - Either an int or a float. Sets how long to
+         - implicit_wait - Either an int or a float. Set how many
+            seconds to wait when searching for elements before
+            throwing an error.
+         - page_load - Either an int or a float. Set how many seconds
+            to wait for a page load to complete before throwing
+            an error.
+         - script - Either an int or a float. Set how many seconds to
             wait for an asynchronous script to finish execution
             before throwing an error.
         """
@@ -81,7 +81,7 @@ class Timeouts:
 
     # Creating descriptor objects
     implicit_wait = _TimeoutsDescriptor("_implicit_wait")
-    """Get or set how long to wait when searching for elements.
+    """Get or set how many seconds to wait when searching for elements.
 
     This does not set the value on the remote end.
 
@@ -98,7 +98,7 @@ class Timeouts:
     """
 
     page_load = _TimeoutsDescriptor("_page_load")
-    """Get or set how long to wait for the page to load.
+    """Get or set how many seconds to wait for the page to load.
 
     This does not set the value on the remote end.
 
@@ -115,7 +115,7 @@ class Timeouts:
     """
 
     script = _TimeoutsDescriptor("_script")
-    """Get or set how long to wait for an asynchronous script to finish execution.
+    """Get or set how many seconds to wait for an asynchronous script to finish execution.
 
     This does not set the value on the remote end.
 
