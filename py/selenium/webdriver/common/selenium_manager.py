@@ -21,8 +21,10 @@ import sys
 from pathlib import Path
 from typing import List
 
+from selenium.common import NoSuchDriverException
 from selenium.common import WebDriverException
 from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.service import Service
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +100,22 @@ class SeleniumManager:
             options.browser_version = None  # if we have the binary location we no longer need the version
 
         return driver_path
+
+    @staticmethod
+    def get_path(service: Service, options: BaseOptions) -> str:
+        """Returns the path of the driver if it is present and executable."""
+
+        path = service.path
+        try:
+            path = SeleniumManager().driver_location(options) if path is None else path
+        except Exception as err:
+            msg = f"Unable to obtain driver for {options.capabilities['browserName']} using Selenium Manager."
+            raise NoSuchDriverException(msg) from err
+
+        if path is None or not Path(path).is_file():
+            raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")
+
+        return path
 
     @staticmethod
     def run(args: List[str]) -> dict:

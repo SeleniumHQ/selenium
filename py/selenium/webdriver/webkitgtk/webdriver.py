@@ -17,7 +17,7 @@
 
 import http.client as http_client
 
-from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
@@ -60,7 +60,7 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities = capabilities
 
         self.service = Service(executable_path, port=port, log_path=service_log_path)
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = SeleniumManager.get_path(self.service, options)
         self.service.start()
 
         super().__init__(

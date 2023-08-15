@@ -22,7 +22,6 @@ import pytest
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
@@ -110,4 +109,4 @@ def test_driver_finder_error(mocker):
     options = Options()
     msg = r"Unable to locate or obtain driver for chrome.*errors\/driver_location"
     with pytest.raises(WebDriverException, match=msg):
-        DriverFinder.get_path(service, options)
+        SeleniumManager.get_path(service, options)

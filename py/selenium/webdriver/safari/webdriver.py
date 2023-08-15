@@ -21,7 +21,7 @@ import warnings
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from ..common.driver_finder import DriverFinder
+from ..common.selenium_manager import SeleniumManager
 from .options import Options
 from .remote_connection import SafariRemoteConnection
 from .service import Service
@@ -57,7 +57,7 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = SeleniumManager.get_path(self.service, options)
 
         self._reuse_service = reuse_service and self.service.reuse_service
         if not self._reuse_service:

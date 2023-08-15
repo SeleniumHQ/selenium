@@ -22,7 +22,7 @@ import zipfile
 from contextlib import contextmanager
 from io import BytesIO
 
-from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
@@ -56,7 +56,7 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = SeleniumManager.get_path(self.service, options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(

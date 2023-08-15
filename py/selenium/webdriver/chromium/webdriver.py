@@ -16,8 +16,8 @@
 # under the License.
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -48,7 +48,7 @@ class ChromiumDriver(RemoteWebDriver):
 
         self.service = service
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = SeleniumManager.get_path(self.service, options)
 
         self.service.start()
 

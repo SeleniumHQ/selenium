@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -46,7 +46,7 @@ class WebDriver(RemoteWebDriver):
         self.service = service if service else Service()
         options = options if options else Options()
 
-        self.service.path = DriverFinder.get_path(self.service, options)
+        self.service.path = SeleniumManager.get_path(self.service, options)
         self.service.start()
 
         executor = RemoteConnection(
