@@ -115,7 +115,8 @@ class Timeouts:
     """
 
     script = _TimeoutsDescriptor("_script")
-    """Get or set how many seconds to wait for an asynchronous script to finish execution.
+    """Get or set how many seconds to wait for an asynchronous script to finish
+    execution.
 
     This does not set the value on the remote end.
 
