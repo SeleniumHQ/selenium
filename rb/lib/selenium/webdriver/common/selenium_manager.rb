@@ -56,6 +56,7 @@ module Selenium
         private
 
         def generate_command(binary, options)
+          options = options.detect { |option| option < Selenium::WebDriver::Options } unless options < Selenium::WebDriver::Options
           command = [binary, '--browser', options.browser_name]
           if options.browser_version
             command << '--browser-version'
