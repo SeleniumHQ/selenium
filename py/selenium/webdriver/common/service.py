@@ -50,12 +50,11 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str,
+        executable: str = None,
         port: int = 0,
         log_file: SubprocessStdAlias = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         if isinstance(log_output, str):
@@ -73,7 +72,6 @@ class Service(ABC):
 
         self._path = executable
         self.port = port or utils.free_port()
-        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
@@ -176,7 +174,7 @@ class Service(ABC):
             self.process.terminate()
             try:
                 self.process.wait(60)
-            except subprocess.TimeoutError:
+            except subprocess.TimeoutExpired:
                 logger.error(
                     "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
                     exc_info=True,
@@ -219,16 +217,8 @@ class Service(ABC):
         except TypeError:
             raise
         except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    f"'{os.path.basename(self._path)}' executable needs to be in PATH. {self.start_error_message}"
-                )
             if err.errno == errno.EACCES:
                 raise WebDriverException(
-                    f"'{os.path.basename(self._path)}' executable may have wrong permissions. {self.start_error_message}"
-                )
+                    f"'{os.path.basename(self._path)}' executable may have wrong permissions."
+                ) from err
             raise
-        except Exception as e:
-            raise WebDriverException(
-                f"The executable {os.path.basename(self._path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"
-            )

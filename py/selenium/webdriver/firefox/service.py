@@ -22,8 +22,6 @@ from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
 
-DEFAULT_EXECUTABLE_PATH = "geckodriver"
-
 
 class Service(service.Service):
     """A Service class that is responsible for the starting and stopping of
@@ -39,7 +37,7 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
@@ -65,7 +63,6 @@ class Service(service.Service):
             port=port,
             log_output=log_output,
             env=env,
-            start_error_message="Please download the binary from https://github.com/mozilla/geckodriver/releases",
             **kwargs,
         )
 

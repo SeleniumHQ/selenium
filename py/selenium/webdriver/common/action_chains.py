@@ -18,7 +18,6 @@
 """The ActionChains implementation."""
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
@@ -34,13 +33,7 @@ from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
 
 if TYPE_CHECKING:
-    from selenium.webdriver import Chrome
-    from selenium.webdriver import Edge
-    from selenium.webdriver import Firefox
-    from selenium.webdriver import Ie
-    from selenium.webdriver import Safari
-
-    AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
@@ -78,7 +71,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver: AnyDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
+    def __init__(self, driver: WebDriver, duration: int = 250, devices: Optional[List[AnyDevice]] = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
@@ -378,28 +371,6 @@ class ActionChains:
             y=scroll_origin.y_offset,
             delta_x=delta_x,
             delta_y=delta_y,
-        )
-        return self
-
-    def scroll(
-        self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"
-    ) -> "ActionChains":
-        """Sends wheel scroll information to the browser to be processed.
-
-        :Args:
-         - x: starting X coordinate
-         - y: starting Y coordinate
-         - delta_x: the distance the mouse will scroll on the x axis
-         - delta_y: the distance the mouse will scroll on the y axis
-        """
-        warnings.warn(
-            "scroll() has been deprecated, please use scroll_to_element(), scroll_by_amount() or scroll_from_origin().",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        self.w3c_actions.wheel_action.scroll(
-            x=x, y=y, delta_x=delta_x, delta_y=delta_y, duration=duration, origin=origin
         )
         return self
 

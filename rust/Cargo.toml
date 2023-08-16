@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "1.0.0-M3"
+version = "0.4.12"
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -12,26 +12,26 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.3.9", features = ["derive"] }
+clap = { version = "4.3.19", features = ["derive"] }
 log = "0.4.19"
 env_logger = "0.10.0"
-regex = "1.8.4"
-tokio = { version = "1.29.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+regex = "1.9.1"
+tokio = { version = "1.29.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.6.0"
 reqwest = { version = "0.11.18", default-features = false, features = [ "rustls-tls" ] }
 zip = "0.6.6"
 directories = "5.0.1"
-serde = { version = "1.0.164", features = ["derive"] }
-serde_json = "1.0.99"
+serde = { version = "1.0.171", features = ["derive"] }
+serde_json = "1.0.103"
 flate2 = "1.0.26"
-tar = "0.4.38"
+tar = "0.4.39"
 infer = "0.14.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
-toml = "0.7.5"
+toml = "0.7.6"
 
 [dev-dependencies]
-assert_cmd = "2.0.11"
+assert_cmd = "2.0.12"
 rstest = "0.17.0"
 
 [profile.release]

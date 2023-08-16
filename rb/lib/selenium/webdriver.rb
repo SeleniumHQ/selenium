@@ -23,6 +23,7 @@ require 'date'
 require 'json'
 require 'set'
 require 'uri'
+require 'net/http'
 
 require 'selenium/webdriver/atoms'
 require 'selenium/webdriver/common'

@@ -33,12 +33,15 @@ def test_browser_version_is_used_for_sm(mocker):
     mock_run = mocker.patch("subprocess.run")
     mocked_result = Mock()
     mocked_result.configure_mock(
-        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+        **{
+            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
+            "returncode": 0,
+        }
     )
     mock_run.return_value = mocked_result
     options = Options()
     options.capabilities["browserName"] = "chrome"
-    options.browser_version = 110
+    options.browser_version = "110"
 
     _ = SeleniumManager().driver_location(options)
     args, kwargs = subprocess.run.call_args
@@ -52,7 +55,10 @@ def test_browser_path_is_used_for_sm(mocker):
     mock_run = mocker.patch("subprocess.run")
     mocked_result = Mock()
     mocked_result.configure_mock(
-        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+        **{
+            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
+            "returncode": 0,
+        }
     )
     mock_run.return_value = mocked_result
     options = Options()
@@ -71,7 +77,10 @@ def test_proxy_is_used_for_sm(mocker):
     mock_run = mocker.patch("subprocess.run")
     mocked_result = Mock()
     mocked_result.configure_mock(
-        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+        **{
+            "stdout.decode.return_value": '{"result": {"driver_path": "driver", "browser_path": "browser"}, "logs": []}',
+            "returncode": 0,
+        }
     )
     mock_run.return_value = mocked_result
     options = Options()
@@ -87,11 +96,11 @@ def test_proxy_is_used_for_sm(mocker):
 
 
 def test_stderr_is_propagated_to_exception_messages():
-    msg = r"Unsuccessful command executed:.* --browser foo --output json\.\nInvalid browser name: foo\n"
+    msg = r"Unsuccessful command executed:.*\n.* 'Invalid browser name: foo'.*"
     with pytest.raises(WebDriverException, match=msg):
         manager = SeleniumManager()
         binary = manager.get_binary()
-        _ = manager.run([str(binary), "--browser", "foo", "--output", "json"])
+        _ = manager.run([str(binary), "--browser", "foo"])
 
 
 def test_driver_finder_error(mocker):
@@ -99,6 +108,6 @@ def test_driver_finder_error(mocker):
 
     service = Service()
     options = Options()
-    msg = r"Unable to locate or obtain chromedriver.*errors\/driver_location"
+    msg = r"Unable to locate or obtain driver for chrome.*errors\/driver_location"
     with pytest.raises(WebDriverException, match=msg):
         DriverFinder.get_path(service, options)

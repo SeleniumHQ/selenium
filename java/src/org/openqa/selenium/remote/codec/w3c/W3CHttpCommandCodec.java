@@ -84,6 +84,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.InvalidSelectorException;
@@ -99,6 +100,8 @@ import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
+  private static final Pattern CSS_ESCAPE =
+      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
 
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
@@ -342,18 +345,22 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private Map<String, ?> executeAtom(String atomFileName, Object... args) {
     try {
-      String script = ATOM_SCRIPTS.computeIfAbsent(atomFileName, (fileName) -> {
-        String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
-        URL url = getClass().getResource(scriptName);
-        String rawFunction;
-        try {
-          rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-          throw new UncheckedIOException(e);
-        }
-        String atomName = fileName.replace(".js", "");
-        return String.format("/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
-      });
+      String script =
+          ATOM_SCRIPTS.computeIfAbsent(
+              atomFileName,
+              (fileName) -> {
+                String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
+                URL url = getClass().getResource(scriptName);
+                String rawFunction;
+                try {
+                  rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                  throw new UncheckedIOException(e);
+                }
+                String atomName = fileName.replace(".js", "");
+                return String.format(
+                    "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
+              });
       return toScript(script, args);
     } catch (UncheckedIOException e) {
       throw new WebDriverException(e.getCause());
@@ -376,7 +383,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   }
 
   private String cssEscape(String using) {
-    using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+    using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
       using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }

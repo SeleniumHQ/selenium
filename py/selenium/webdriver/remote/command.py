@@ -23,7 +23,7 @@ class Command:
     used to marshal commands through a service that implements WebDriver's
     remote wire protocol:
 
-        https://www.selenium.dev/documentation/legacy/json_wire_protocol/
+        https://w3c.github.io/webdriver/
     """
 
     # Keep in sync with org.openqa.selenium.remote.DriverCommand

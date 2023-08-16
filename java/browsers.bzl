@@ -10,10 +10,10 @@ chromedriver_jvm_flags = select({
 
 chrome_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
-        "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux/chrome)",
+        "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux64/chrome)",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
-        "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+        "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
     "@selenium//common:use_local_chromedriver": [],
     "//conditions:default": [

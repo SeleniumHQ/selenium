@@ -21,10 +21,12 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
-use crate::files::{get_cache_folder, BrowserPath};
+use crate::files::BrowserPath;
 
 use crate::downloads::parse_json_from_url;
-use crate::{create_http_client, parse_version, Logger, SeleniumManager, SNAPSHOT};
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT,
+};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -61,7 +63,7 @@ impl GridManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
             driver_url: None,
         }))
     }
@@ -84,8 +86,8 @@ impl SeleniumManager for GridManager {
         HashMap::new()
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        None
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
     fn get_driver_name(&self) -> &str {
@@ -93,12 +95,15 @@ impl SeleniumManager for GridManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_version_binding = self.get_major_browser_version();
-        let browser_version = browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger());
+        let major_browser_version_binding = self.get_major_browser_version();
+        let major_browser_version = major_browser_version_binding.as_str();
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            major_browser_version,
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -107,6 +112,8 @@ impl SeleniumManager for GridManager {
                 Ok(driver_version)
             }
             _ => {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
                     MIRROR_URL.to_string(),
@@ -141,15 +148,15 @@ impl SeleniumManager for GridManager {
                         self.get_logger(),
                     )?;
 
-                    let driver_ttl = self.get_driver_ttl();
+                    let driver_ttl = self.get_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
-                            browser_version,
+                            major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger());
+                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                     }
 
                     Ok(driver_version)
@@ -158,6 +165,10 @@ impl SeleniumManager for GridManager {
                 }
             }
         }
+    }
+
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
@@ -176,14 +187,15 @@ impl SeleniumManager for GridManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let browser_name = self.get_browser_name();
         let driver_name = self.get_driver_name();
         let driver_version = self.get_driver_version();
-        get_cache_folder()
+        Ok(self
+            .get_cache_path()?
             .join(browser_name)
             .join(driver_version)
-            .join(format!("{driver_name}-{driver_version}.{GRID_EXTENSION}"))
+            .join(format!("{driver_name}-{driver_version}.{GRID_EXTENSION}")))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -204,5 +216,9 @@ impl SeleniumManager for GridManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

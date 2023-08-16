@@ -82,16 +82,6 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.chrome.withAllowedIps";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
-   * connect to ChromeDriver.
-   *
-   * @deprecated use {@link #CHROME_DRIVER_ALLOWED_IPS_PROPERTY}
-   */
-  @Deprecated
-  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
-      "webdriver.chrome.whitelistedIps";
-
-  /**
    * System property that defines whether the ChromeDriver executable should check for build version
    * compatibility between ChromeDriver and the browser.
    */
@@ -166,34 +156,8 @@ public class ChromeDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
-   * this configuration, the service will use the ChromeDriver executable identified by {@link
-   * org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}. Each
-   * service created by this method will be configured to use a free port on the current system.
-   *
-   * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
-   * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)} }
-   */
-  @Deprecated
-  public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
-    ChromeDriverLogLevel oldLevel = options.getLogLevel();
-    ChromiumDriverLogLevel level =
-        (oldLevel == null) ? null : ChromiumDriverLogLevel.fromString(oldLevel.toString());
-    return new Builder().withLogLevel(level).build();
-  }
-
-  /**
-   * Checks if the ChromeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(CHROME_DRIVER_NAME, CHROME_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link ChromeDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> {
@@ -240,21 +204,6 @@ public class ChromeDriverService extends DriverService {
      */
     public Builder withBuildCheckDisabled(boolean noBuildCheck) {
       this.disableBuildCheck = noBuildCheck;
-      return this;
-    }
-
-    /**
-     * Configures the driver server verbosity.
-     *
-     * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
-     * @return A self reference.
-     * @deprecated use {@link #withLogLevel(ChromiumDriverLogLevel)} instead.
-     */
-    @Deprecated
-    public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
-      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
-      this.silent = false;
-      this.verbose = false;
       return this;
     }
 
@@ -360,10 +309,7 @@ public class ChromeDriverService extends DriverService {
         withSilent(Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY));
       }
       if (allowedListIps == null) {
-        this.allowedListIps =
-            System.getProperty(
-                CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
-                System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
+        this.allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY);
       }
       if (logLevel == null && System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null) {
         String level = System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY);

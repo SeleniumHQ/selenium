@@ -128,7 +128,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -164,7 +165,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     distributor.add(localNode);
 
     // Check the size
@@ -201,7 +203,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -261,7 +264,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -325,7 +329,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -369,7 +374,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     distributor.add(localNode);
 
     localNode.drain();
@@ -399,7 +405,8 @@ class LocalDistributorTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
 

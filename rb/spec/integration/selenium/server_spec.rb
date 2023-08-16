@@ -34,11 +34,11 @@ module Selenium
     end
 
     it 'downloads specified version' do
-        @location = described_class.download('4.9.0')
+      @location = described_class.download('4.9.0')
 
-        expect(File.exist?(@location)).to be true
-        expect(@location).to eq('selenium-server-4.9.0.jar')
-      end
+      expect(File.exist?(@location)).to be true
+      expect(@location).to eq('selenium-server-4.9.0.jar')
+    end
 
     it 'starts and stops server' do
       @location = described_class.download

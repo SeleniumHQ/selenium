@@ -26,13 +26,7 @@ const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
 
-/**
- * currently supported browsers for selenium-manager
- * @type {string[]}
- */
-const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
-
-let debugMessagePrinted = {};
+let debugMessagePrinted = false;
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -57,31 +51,22 @@ function getBinary() {
     throw new Error(`Unable to obtain Selenium Manager`)
   }
 
+  if (!debugMessagePrinted) {
+    console.debug(`Selenium Manager binary found at ${filePath}`)
+    debugMessagePrinted = true; // Set the flag to true after printing the debug message
+  }
+
   return filePath
 }
 
 /**
  * Determines the path of the correct driver
  * @param {Capabilities} options browser options to fetch the driver
- * @returns {string} path of the driver location
+ * @returns {{browserPath: string, driverPath: string}} path of the driver and
+ * browser location
  */
 
 function driverLocation(options) {
-  if (!Browser.includes(options.getBrowserName().toLocaleString())) {
-    throw new Error(
-      `Unable to locate driver associated with browser name: ${options.getBrowserName()}`
-    )
-  }
-
-  const browserName = options.getBrowserName().toLocaleLowerCase();
-
-  if (!debugMessagePrinted[browserName]) {
-    console.debug(
-      `Applicable driver not found for ${browserName}; attempting to install with Selenium Manager (Beta)`
-    )
-    debugMessagePrinted[browserName] = true; // Set the flag to true after printing the debug message
-  }
-
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
@@ -93,7 +78,7 @@ function driverLocation(options) {
     options.get('ms:edgeOptions') ||
     options.get('moz:firefoxOptions')
   if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
-    args.push('--browser-path', '"' + vendorOptions.binary + '"')
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
   }
 
   const proxyOptions = options.getProxy();
@@ -123,6 +108,7 @@ function driverLocation(options) {
     if (spawnResult.stdout.toString()) {
       try {
         output = JSON.parse(spawnResult.stdout.toString())
+        logOutput(output)
         errorMessage = output.result.message
       } catch (e) {
         errorMessage = e.toString()
@@ -140,13 +126,22 @@ function driverLocation(options) {
     )
   }
 
+  logOutput(output)
+  return {
+    driverPath: output.result.driver_path,
+    browserPath: output.result.browser_path,
+  }
+}
+
+function logOutput (output) {
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       console.warn(`${output.logs[key].message}`)
     }
+    if (['DEBUG', 'INFO'].includes(output.logs[key].level)) {
+      console.debug(`${output.logs[key].message}`)
+    }
   }
-
-  return output.result.message
 }
 
 // PUBLIC API

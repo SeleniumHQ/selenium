@@ -26,6 +26,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_CREDENTIAL;
 import static org.openqa.selenium.remote.DriverCommand.ADD_VIRTUAL_AUTHENTICATOR;
+import static org.openqa.selenium.remote.DriverCommand.CANCEL_DIALOG;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
@@ -39,6 +40,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACCOUNTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
@@ -55,6 +57,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_DIALOG_TYPE;
+import static org.openqa.selenium.remote.DriverCommand.GET_FEDCM_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
 import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
@@ -75,10 +79,13 @@ import static org.openqa.selenium.remote.DriverCommand.REFRESH;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_ALL_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_CREDENTIAL;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR;
+import static org.openqa.selenium.remote.DriverCommand.RESET_COOLDOWN;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.SELECT_ACCOUNT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
+import static org.openqa.selenium.remote.DriverCommand.SET_DELAY_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
@@ -220,6 +227,16 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(REMOVE_CREDENTIAL, delete(webauthnId + "/credentials/:credentialId"));
     defineCommand(REMOVE_ALL_CREDENTIALS, delete(webauthnId + "/credentials"));
     defineCommand(SET_USER_VERIFIED, post(webauthnId + "/uv"));
+
+    // Federated Credential Management API
+    String fedcm = sessionId + "/fedcm";
+    defineCommand(CANCEL_DIALOG, post(fedcm + "/canceldialog"));
+    defineCommand(SELECT_ACCOUNT, post(fedcm + "/selectaccount"));
+    defineCommand(GET_ACCOUNTS, get(fedcm + "/accountlist"));
+    defineCommand(GET_FEDCM_TITLE, get(fedcm + "/gettitle"));
+    defineCommand(GET_FEDCM_DIALOG_TYPE, get(fedcm + "/getdialogtype"));
+    defineCommand(SET_DELAY_ENABLED, post(fedcm + "/setdelayenabled"));
+    defineCommand(RESET_COOLDOWN, post(fedcm + "/resetCooldown"));
   }
 
   protected static CommandSpec delete(String path) {

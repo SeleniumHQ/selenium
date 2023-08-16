@@ -212,7 +212,7 @@ test.suite(function (env) {
         await driver.switchTo().frame(frame)
         assert.strictEqual(
           await driver.findElement(By.css('body')).getText(),
-          LOREM_IPSUM_TEXT
+          fp.split('/').pop()
         )
 
         if (driver) {

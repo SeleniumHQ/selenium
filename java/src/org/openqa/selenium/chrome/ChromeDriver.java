@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -68,7 +69,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeOptions options) {
-    this(ChromeDriverService.createServiceWithConfig(options), options);
+    this(ChromeDriverService.createDefaultService(), options);
   }
 
   /**
@@ -95,8 +96,11 @@ public class ChromeDriver extends ChromiumDriver {
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(service, options);
-      service.setExecutable(path);
+      Result result = DriverFinder.getPath(service, options);
+      service.setExecutable(result.getDriverPath());
+      if (result.getBrowserPath() != null) {
+        options.setBinary(result.getBrowserPath());
+      }
     }
     return new ChromeDriverCommandExecutor(service, clientConfig);
   }

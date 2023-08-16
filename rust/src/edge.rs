@@ -29,9 +29,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_http_client, Logger, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
+    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -60,7 +59,7 @@ impl EdgeManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
         }))
     }
 }
@@ -82,80 +81,51 @@ impl SeleniumManager for EdgeManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"\\Microsoft\\Edge\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"\\Microsoft\\Edge Beta\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge Beta\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"\\Microsoft\\Edge Dev\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge Dev\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"\\Microsoft\\Edge SxS\\Application\\msedge.exe"#,
+                r#"Microsoft\Edge SxS\Application\msedge.exe"#,
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge"#,
+                r#"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"#,
             ),
             (
                 BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Microsoft\ Edge\ Beta.app/Contents/MacOS/Microsoft\ Edge\ Beta"#,
+                r#"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta"#,
             ),
             (
                 BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Microsoft\ Edge\ Dev.app/Contents/MacOS/Microsoft\ Edge\ Dev"#,
+                r#"/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev"#,
             ),
             (
                 BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Microsoft\ Edge\ Canary.app/Contents/MacOS/Microsoft\ Edge\ Canary"#,
+                r#"/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary"#,
             ),
-            (BrowserPath::new(LINUX, STABLE), "microsoft-edge"),
-            (BrowserPath::new(LINUX, BETA), "microsoft-edge-beta"),
-            (BrowserPath::new(LINUX, DEV), "microsoft-edge-dev"),
+            (BrowserPath::new(LINUX, STABLE), "/usr/bin/microsoft-edge"),
+            (
+                BrowserPath::new(LINUX, BETA),
+                "/usr/bin/microsoft-edge-beta",
+            ),
+            (BrowserPath::new(LINUX, DEV), "/usr/bin/microsoft-edge-dev"),
         ])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        let mut commands;
-        let mut browser_path = self.get_browser_path();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = path;
-                    commands = vec![
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES_X86,
-                            "",
-                            browser_path,
-                        ),
-                        format_three_args(
-                            WMIC_COMMAND_ENV,
-                            ENV_PROGRAM_FILES,
-                            REMOVE_X86,
-                            browser_path,
-                        ),
-                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
-                    ];
-                    if !self.is_browser_version_unstable() {
-                        commands.push(format_one_arg(
-                            REG_QUERY,
-                            r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
-                        ));
-                    }
-                }
-                _ => return None,
-            }
-        } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
-        }
-        if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_DASH_VERSION, browser_path)]
-        }
-        self.detect_browser_version(commands)
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_general_browser_version(
+            r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+            REG_VERSION_ARG,
+            DASH_DASH_VERSION,
+        )
     }
 
     fn get_driver_name(&self) -> &str {
@@ -163,13 +133,13 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
-        let mut browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger());
+        let mut major_browser_version = self.get_major_browser_version();
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
             self.driver_name,
-            browser_version.as_str(),
+            major_browser_version.as_str(),
         ) {
             Some(driver_version) => {
                 self.log.trace(format!(
@@ -179,7 +149,9 @@ impl SeleniumManager for EdgeManager {
                 Ok(driver_version)
             }
             _ => {
-                if browser_version.is_empty() {
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
+                if self.is_browser_version_stable() || major_browser_version.is_empty() {
                     let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
@@ -190,17 +162,18 @@ impl SeleniumManager for EdgeManager {
                         latest_stable_url,
                         self.get_logger(),
                     )?;
-                    browser_version = self.get_major_version(latest_driver_version.as_str())?;
+                    major_browser_version =
+                        self.get_major_version(latest_driver_version.as_str())?;
                     self.log.debug(format!(
                         "Latest {} major version is {}",
-                        &self.driver_name, browser_version
+                        &self.driver_name, major_browser_version
                     ));
                 }
                 let driver_url = format!(
                     "{}{}_{}_{}",
                     DRIVER_URL,
                     LATEST_RELEASE,
-                    browser_version,
+                    major_browser_version,
                     self.get_os().to_uppercase()
                 );
                 self.log.debug(format!(
@@ -210,20 +183,24 @@ impl SeleniumManager for EdgeManager {
                 let driver_version =
                     read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
-                let driver_ttl = self.get_driver_ttl();
-                if driver_ttl > 0 && !browser_version.is_empty() {
+                let driver_ttl = self.get_ttl();
+                if driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
-                        browser_version.as_str(),
+                        major_browser_version.as_str(),
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger());
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                 }
 
                 Ok(driver_version)
             }
         }
+    }
+
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
@@ -253,7 +230,7 @@ impl SeleniumManager for EdgeManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -274,7 +251,13 @@ impl SeleniumManager for EdgeManager {
         } else {
             "linux64"
         };
-        compose_driver_path_in_cache(self.driver_name, os, arch_folder, driver_version)
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            os,
+            arch_folder,
+            driver_version,
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -295,5 +278,9 @@ impl SeleniumManager for EdgeManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

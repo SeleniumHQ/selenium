@@ -100,21 +100,6 @@ module Selenium
         end
 
         #
-        # Run Firefox in headless mode.
-        #
-        # @example Enable headless mode
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.headless!
-        #
-
-        def headless!
-          WebDriver.logger.deprecate('`Options#headless!`',
-                                     "`Options#add_argument('-headless')`",
-                                     id: :headless)
-          add_argument '-headless'
-        end
-
-        #
         # Sets Firefox profile.
         #
         # @example Set the custom profile

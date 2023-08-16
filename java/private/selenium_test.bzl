@@ -26,7 +26,7 @@ BROWSERS = {
         "deps": ["//java/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
         "data": edge_data,
-        "tags": COMMON_TAGS + ["edge"],
+        "tags": COMMON_TAGS + ["edge", "skip-remote"],
     },
     "firefox": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
@@ -42,7 +42,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "ie", "skip-remote"],
     },
     "safari": {
         "deps": ["//java/src/org/openqa/selenium/safari"],
@@ -52,7 +52,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari", "skip-remote"],
     },
 }
 
@@ -114,12 +114,12 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
                 size = size,
                 jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags + [
                     "-Dselenium.browser.remote=true",
-                    "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+                    "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server)",
                 ],
                 # No need to lint remote tests as the code for non-remote is the same and they get linted
-                tags = BROWSERS[browser]["tags"] + tags + ["remote", "no-lint"],
+                tags = BROWSERS[browser]["tags"] + tags + ["remote-browser", "no-lint"],
                 data = BROWSERS[browser]["data"] + data + [
-                    "@selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                    "@selenium//java/src/org/openqa/selenium/grid:selenium_server",
                 ],
                 **stripped_args
             )

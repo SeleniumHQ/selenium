@@ -18,11 +18,11 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.openqa.selenium.DetachedShadowRootException;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -56,8 +56,12 @@ public class ErrorCodec {
   private static final W3CError DEFAULT_ERROR =
       new W3CError("unknown error", WebDriverException.class, 500);
 
-  private static final Set<W3CError> ERRORS =
-      ImmutableSet.<W3CError>builder()
+  // note: this is a set from a logical point of view, but the implementation does rely on the order
+  // of the elements.
+  // there is no guarantee a Set will keep the order (and we have no .equals / .hashCode
+  // implementation too).
+  private static final List<W3CError> ERRORS =
+      ImmutableList.<W3CError>builder()
           .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
           .add(new W3CError("detached shadow root", DetachedShadowRootException.class, 404))
           .add(
@@ -84,10 +88,10 @@ public class ErrorCodec {
           .add(new W3CError("unable to capture screen", ScreenshotException.class, 500))
           .add(new W3CError("unable to set cookie", UnableToSetCookieException.class, 500))
           .add(new W3CError("unexpected alert open", UnhandledAlertException.class, 500))
-          .add(new W3CError("unknown error", WebDriverException.class, 500))
+          .add(new W3CError("unsupported operation", UnsupportedCommandException.class, 404))
           .add(new W3CError("unknown command", UnsupportedCommandException.class, 404))
           .add(new W3CError("unknown method", UnsupportedCommandException.class, 405))
-          .add(new W3CError("unsupported operation", UnsupportedCommandException.class, 404))
+          .add(new W3CError("unknown error", WebDriverException.class, 500))
           .build();
 
   private ErrorCodec() {
@@ -155,7 +159,7 @@ public class ErrorCodec {
 
   private W3CError fromThrowable(Throwable throwable) {
     return ERRORS.stream()
-        .filter(err -> throwable.getClass().isAssignableFrom(err.exception))
+        .filter(err -> err.exception.isAssignableFrom(throwable.getClass()))
         .findFirst()
         .orElse(DEFAULT_ERROR);
   }

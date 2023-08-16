@@ -52,7 +52,7 @@ public abstract class TemplateGridCommand implements CliCommand {
     allFlags.add(helpFlags);
     allFlags.add(configFlags);
 
-    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), true)
+    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
         .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
         .forEach(allFlags::add);
 

@@ -25,10 +25,12 @@ use std::string::ToString;
 use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
-use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
+use crate::{create_http_client, Logger, SeleniumManager, STABLE};
 
 pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
+const SAFARI_PATH: &str = r#"/Applications/Safari.app"#;
+const SAFARI_FULL_PATH: &str = r#"/Applications/Safari.app/Contents/MacOS/Safari"#;
 
 pub struct SafariManager {
     pub browser_name: &'static str,
@@ -50,7 +52,7 @@ impl SafariManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
         }))
     }
 }
@@ -69,28 +71,11 @@ impl SeleniumManager for SafariManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::from([(
-            BrowserPath::new(MACOS, STABLE),
-            r#"/Applications/Safari.app"#,
-        )])
+        HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARI_PATH)])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        let mut browser_path = self.get_browser_path();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = path;
-                }
-                _ => return None,
-            }
-        }
-        let command = if MACOS.is(self.get_os()) {
-            vec![format_one_arg(PLIST_COMMAND, browser_path)]
-        } else {
-            return None;
-        };
-        self.detect_browser_version(command)
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_safari_version(SAFARI_FULL_PATH.to_string())
     }
 
     fn get_driver_name(&self) -> &str {
@@ -101,12 +86,16 @@ impl SeleniumManager for SafariManager {
         Ok("(local)".to_string())
     }
 
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
+    }
+
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
         Err(format!("{} not available for download", self.get_driver_name()).into())
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
-        PathBuf::from("/usr/bin/safaridriver")
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(PathBuf::from("/usr/bin/safaridriver"))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -127,5 +116,9 @@ impl SeleniumManager for SafariManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

@@ -40,7 +40,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private static final int CHUNK_SIZE = 1024 * 1024;
-  private static final ThreadLocal<byte[]> CHUNK_CACHE = ThreadLocal.withInitial(() -> new byte[CHUNK_SIZE]);
+  private static final ThreadLocal<byte[]> CHUNK_CACHE =
+      ThreadLocal.withInitial(() -> new byte[CHUNK_SIZE]);
   private final boolean allowCors;
 
   public ResponseConverter(boolean allowCors) {

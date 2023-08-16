@@ -21,15 +21,13 @@ from typing import List
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
-
 
 class Service(service.Service):
     """Object that manages the starting and stopping of the IEDriver."""
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         host: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
@@ -62,7 +60,6 @@ class Service(service.Service):
             executable_path,
             port=port,
             log_output=log_output,
-            start_error_message="Please download the binary from https://www.selenium.dev/downloads/ and read up at https://www.selenium.dev/documentation/ie_driver_server/",
             **kwargs,
         )
 

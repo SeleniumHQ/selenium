@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,7 +66,34 @@ public class MapConfig implements Config {
     }
 
     Object value = rawSection.get(option);
-    return value == null ? Optional.empty() : Optional.of(ImmutableList.of(String.valueOf(value)));
+    if (value == null) {
+      return Optional.empty();
+    }
+
+    if (value instanceof Collection) {
+      Collection<?> collection = (Collection<?>) value;
+      // Case when an array of map is used as config
+      if (collection.stream().anyMatch(item -> item instanceof Map)) {
+        return Optional.of(
+            collection.stream()
+                .map(item -> (Map<String, Object>) item)
+                .map(this::toEntryList)
+                .flatMap(Collection::stream)
+                .collect(ImmutableList.toImmutableList()));
+      }
+
+      return Optional.of(
+          collection.stream()
+              .filter(item -> (!(item instanceof Collection)))
+              .map(String::valueOf)
+              .collect(ImmutableList.toImmutableList()));
+    }
+
+    if (value instanceof Map) {
+      return Optional.of(toEntryList((Map<String, Object>) value));
+    }
+
+    return Optional.of(ImmutableList.of(String.valueOf(value)));
   }
 
   @Override

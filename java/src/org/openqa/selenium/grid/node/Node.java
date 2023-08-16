@@ -162,6 +162,9 @@ public abstract class Node implements HasReadyState, Routable {
             post("/session/{sessionId}/se/files")
                 .to(params -> new DownloadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.download_file")),
+            delete("/session/{sessionId}/se/files")
+                .to(params -> new DownloadFile(this, sessionIdFrom(params)))
+                .with(spanDecorator("node.download_file")),
             get("/se/grid/node/owner/{sessionId}")
                 .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.is_session_owner").andThen(requiresSecret)),

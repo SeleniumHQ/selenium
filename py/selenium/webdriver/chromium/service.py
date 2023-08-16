@@ -31,19 +31,16 @@ class ChromiumService(service.Service):
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param start_error_message: (Optional) Error message that forms part of the error when problems occur
-    launching the subprocess.
     """
 
     def __init__(
         self,
-        executable_path: str,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
@@ -65,7 +62,6 @@ class ChromiumService(service.Service):
             port=port,
             env=env,
             log_output=self.log_output,
-            start_error_message=start_error_message,
             **kwargs,
         )
 

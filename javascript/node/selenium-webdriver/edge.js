@@ -78,16 +78,8 @@
 'use strict'
 
 const { Browser } = require('./lib/capabilities')
-const io = require('./io')
 const chromium = require('./chromium')
-
-/**
- * Name of the EdgeDriver executable.
- * @type {string}
- * @const
- */
-const EDGEDRIVER_CHROMIUM_EXE =
-  process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver'
+const EDGE_CAPABILITY_KEY = 'ms:edgeOptions'
 
 /** @type {remote.DriverService} */
 
@@ -105,8 +97,7 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously()
-    super(exe)
+    super(opt_exe)
     this.setLoopback(true)
   }
 }
@@ -157,7 +148,7 @@ class Driver extends chromium.Driver {
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
     return /** @type {!Driver} */ (
-      super.createSession(caps, opt_serviceExecutor)
+      super.createSession(caps, opt_serviceExecutor, 'ms', EDGE_CAPABILITY_KEY)
     )
   }
 
@@ -177,19 +168,8 @@ class Driver extends chromium.Driver {
   setFileDetector() {}
 }
 
-/**
- * _Synchronously_ attempts to locate the chromedriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true)
-}
-
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
-Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
-Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
+Options.prototype.CAPABILITY_KEY = EDGE_CAPABILITY_KEY
 
 // PUBLIC API
 
@@ -197,5 +177,4 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }

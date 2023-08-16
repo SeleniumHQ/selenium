@@ -17,7 +17,6 @@
 
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.driver_finder import DriverFinder
 
 from .options import Options
 from .service import Service
@@ -40,16 +39,13 @@ class WebDriver(ChromiumDriver):
          - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
-        self.service = service if service else Service()
-        self.options = options if options else Options()
-        self.keep_alive = keep_alive
-
-        self.service.path = DriverFinder.get_path(self.service, self.options)
+        service = service if service else Service()
+        options = options if options else Options()
 
         super().__init__(
             DesiredCapabilities.CHROME["browserName"],
             "goog",
-            self.options,
-            self.service,
-            self.keep_alive,
+            options,
+            service,
+            keep_alive,
         )
