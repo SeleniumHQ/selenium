@@ -18,6 +18,9 @@
 package org.openqa.selenium.devtools.v116;
 
 import com.google.common.collect.ImmutableList;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -30,10 +33,6 @@ import org.openqa.selenium.devtools.v116.runtime.model.ConsoleAPICalled;
 import org.openqa.selenium.devtools.v116.runtime.model.ExceptionDetails;
 import org.openqa.selenium.devtools.v116.runtime.model.ExceptionThrown;
 import org.openqa.selenium.devtools.v116.runtime.model.StackTrace;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 public class v116Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
