@@ -40,7 +40,7 @@ module Selenium
           raise ArgumentError, ":options must be an instance of #{default_options.class}"
         elsif capabilities
           WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
-                                     ":options argument with an instance of #{self.class}",
+                                     "an :options parameter instead to create a local #{self.class}",
                                      id: :capabilities)
           service.executable_path ||= WebDriver::DriverFinder.path(capabilities, service.class)
           generate_capabilities(capabilities)
