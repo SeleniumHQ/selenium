@@ -20,6 +20,7 @@ use std::fs;
 use std::fs::File;
 use std::io;
 
+use bzip2_rs::DecoderReader;
 use std::path::{Path, PathBuf};
 
 use crate::config::OS;
@@ -38,6 +39,7 @@ const ZIP: &str = "zip";
 const GZ: &str = "gz";
 const XML: &str = "xml";
 const HTML: &str = "html";
+const BZ2: &str = "bz2";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -88,6 +90,8 @@ pub fn uncompress(
         unzip(compressed_file, target, log, single_file)?
     } else if extension.eq_ignore_ascii_case(GZ) {
         untargz(compressed_file, target, log)?
+    } else if extension.eq_ignore_ascii_case(BZ2) {
+        uncompress_bz2(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -118,6 +122,31 @@ pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(),
         .ok_or(format!("Error getting parent of {:?}", file))?;
     if !target.exists() {
         archive.unpack(parent_path)?;
+    }
+    Ok(())
+}
+
+pub fn uncompress_bz2(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+) -> Result<(), Box<dyn Error>> {
+    log.trace(format!(
+        "Uncompress {} to {}",
+        compressed_file,
+        target.display()
+    ));
+    let file = File::open(compressed_file)?;
+    let tar = DecoderReader::new(file);
+    let mut archive = Archive::new(tar);
+    if !target.exists() {
+        for entry in archive.entries()? {
+            let mut entry_decoder = entry?;
+            let entry_path: PathBuf = entry_decoder.path()?.iter().skip(1).collect();
+            let entry_target = target.join(entry_path);
+            fs::create_dir_all(entry_target.parent().unwrap())?;
+            entry_decoder.unpack(entry_target)?;
+        }
     }
     Ok(())
 }

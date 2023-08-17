@@ -195,18 +195,13 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let _minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
+        // TODO check Windows
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
             "Windows",
-            "win32",
-            driver_version,
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -232,5 +227,9 @@ impl SeleniumManager for IExplorerManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        "win32"
     }
 }

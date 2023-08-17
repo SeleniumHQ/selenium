@@ -291,34 +291,6 @@ impl ChromeManager {
         Ok(driver_version.version.to_string())
     }
 
-    fn get_platform_label(&self) -> &str {
-        let os = self.get_os();
-        let arch = self.get_arch();
-        if WINDOWS.is(os) {
-            if X32.is(arch) {
-                "win32"
-            } else {
-                "win64"
-            }
-        } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac-x64"
-            }
-        } else {
-            "linux64"
-        }
-    }
-
-    fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        Ok(self
-            .get_cache_path()?
-            .join(self.get_browser_name())
-            .join(self.get_platform_label())
-            .join(self.get_browser_version()))
-    }
-
     fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
@@ -535,15 +507,12 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let os = self.get_os();
-        let arch_folder = self.get_platform_label();
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
-            os,
-            arch_folder,
-            driver_version,
+            self.get_os(),
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -574,6 +543,7 @@ impl SeleniumManager for ChromeManager {
         let major_browser_version = self.get_major_browser_version();
         let major_browser_version_int = major_browser_version.parse::<i32>().unwrap_or_default();
 
+        // Browser version should be available in the CfT endpoints (>= 113)
         if !self.is_browser_version_unstable()
             && !self.is_browser_version_stable()
             && !self.is_browser_version_empty()
@@ -588,7 +558,7 @@ impl SeleniumManager for ChromeManager {
             .into());
         }
 
-        // First, browser version is checked in the local metadata
+        // Browser version is checked in the local metadata
         match get_browser_version_from_metadata(
             &metadata.browsers,
             browser_name,
@@ -671,6 +641,26 @@ impl SeleniumManager for ChromeManager {
             Ok(Some(browser_binary_path))
         } else {
             Ok(None)
+        }
+    }
+
+    fn get_platform_label(&self) -> &str {
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if WINDOWS.is(os) {
+            if X32.is(arch) {
+                "win32"
+            } else {
+                "win64"
+            }
+        } else if MACOS.is(os) {
+            if ARM64.is(arch) {
+                "mac-arm64"
+            } else {
+                "mac-x64"
+            }
+        } else {
+            "linux64"
         }
     }
 }

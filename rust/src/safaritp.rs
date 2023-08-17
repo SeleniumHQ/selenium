@@ -129,4 +129,8 @@ impl SeleniumManager for SafariTPManager {
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
     }
+
+    fn get_platform_label(&self) -> &str {
+        ""
+    }
 }

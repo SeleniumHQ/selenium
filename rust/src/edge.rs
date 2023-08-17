@@ -231,32 +231,12 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let os = self.get_os();
-        let arch = self.get_arch();
-        let arch_folder = if WINDOWS.is(os) {
-            if ARM64.is(arch) {
-                "win-arm64"
-            } else if X32.is(arch) {
-                "win32"
-            } else {
-                "win64"
-            }
-        } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac64"
-            }
-        } else {
-            "linux64"
-        };
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
-            os,
-            arch_folder,
-            driver_version,
+            self.get_os(),
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -282,5 +262,27 @@ impl SeleniumManager for EdgeManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if WINDOWS.is(os) {
+            if ARM64.is(arch) {
+                "win-arm64"
+            } else if X32.is(arch) {
+                "win32"
+            } else {
+                "win64"
+            }
+        } else if MACOS.is(os) {
+            if ARM64.is(arch) {
+                "mac-arm64"
+            } else {
+                "mac64"
+            }
+        } else {
+            "linux64"
+        }
     }
 }

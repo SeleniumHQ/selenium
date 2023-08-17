@@ -1,5 +1,5 @@
 {
-  "checksum": "411f529aca096bd6f3ebbe47fcbd44f95dc26ac344ae92e24cd2a1dba11c37e0",
+  "checksum": "914b0f717c99d5b8faa2ffe41cdb0d58641d07272c5bb4b4faac79e27c9c1fd1",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -975,6 +975,55 @@
         },
         "edition": "2015",
         "version": "0.4.4"
+      },
+      "license": "MIT/Apache-2.0"
+    },
+    "bzip2-rs 0.1.2": {
+      "name": "bzip2-rs",
+      "version": "0.1.2",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/bzip2-rs/0.1.2/download",
+          "sha256": "beeb59e7e4c811ab37cc73680c798c7a5da77fc9989c62b09138e31ee740f735"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "bzip2_rs",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "bzip2_rs",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "default"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "crc32fast 1.3.2",
+              "target": "crc32fast"
+            },
+            {
+              "id": "tinyvec 1.6.0",
+              "target": "tinyvec"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "0.1.2"
       },
       "license": "MIT/Apache-2.0"
     },
@@ -7093,6 +7142,10 @@
         ],
         "deps": {
           "common": [
+            {
+              "id": "bzip2-rs 0.1.2",
+              "target": "bzip2_rs"
+            },
             {
               "id": "clap 4.3.19",
               "target": "clap"

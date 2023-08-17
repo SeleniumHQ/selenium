@@ -23,20 +23,27 @@ use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::read_redirect_from_link;
+use crate::downloads::{parse_generic_json_from_url, read_redirect_from_link};
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, Logger, SeleniumManager, BETA, DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
+    create_browser_metadata, create_http_client, download_to_tmp_folder,
+    get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger, SeleniumManager,
+    BETA, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";
 const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
 const LATEST_RELEASE: &str = "latest";
+const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
+const FIREFOX_DEFAULT_LANG: &str = "en-US";
+const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/Firefox";
+const FIREFOX_DETAILS_URL: &str = "https://product-details.mozilla.org/1.0/";
+const LATEST_FIREFOX_VERSION: &str = "LATEST_FIREFOX_VERSION";
+const FIREFOX_VERSIONS_ENDPOINT: &str = "firefox_versions.json";
 
 pub struct FirefoxManager {
     pub browser_name: &'static str,
@@ -60,6 +67,89 @@ impl FirefoxManager {
             config,
             log: Logger::new(),
         }))
+    }
+
+    fn create_firefox_details_url(&self, endpoint: &str) -> String {
+        format!("{}{}", FIREFOX_DETAILS_URL, endpoint)
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+        self.get_logger().trace(format!(
+            "Using Firefox endpoints to find out latest stable {} version",
+            browser_name
+        ));
+
+        let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
+        let firefox_versions =
+            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+        let browser_version = firefox_versions
+            .get(LATEST_FIREFOX_VERSION)
+            .unwrap()
+            .as_str()
+            .unwrap();
+        self.set_browser_version(browser_version.to_string());
+        Ok(browser_version.to_string())
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        todo!()
+    }
+
+    fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_version = self.get_browser_version();
+        let os = self.get_os();
+        let arch = self.get_arch();
+
+        let artifact_name;
+        let artifact_extension;
+        let platform_label;
+        if WINDOWS.is(os) {
+            artifact_name = "Firefox%20Setup%20";
+            artifact_extension = "exe";
+            if X32.is(arch) {
+                platform_label = "win32";
+            } else if ARM64.is(arch) {
+                platform_label = "win-aarch64";
+            } else {
+                platform_label = "win64";
+            }
+        } else if MACOS.is(os) {
+            artifact_name = "Firefox%%20";
+            artifact_extension = "dmg";
+            platform_label = "mac";
+        } else {
+            // Linux
+            artifact_name = "firefox-";
+            artifact_extension = "tar.bz2";
+            if X32.is(arch) {
+                platform_label = "linux-i686";
+            } else {
+                platform_label = "linux-x86_64";
+            }
+        }
+        // A possible future improvement is to allow downloading language-specific releases
+        let language = FIREFOX_DEFAULT_LANG;
+
+        Ok(format!(
+            "{}{}/{}/{}/{}{}.{}",
+            BROWSER_URL,
+            browser_version,
+            platform_label,
+            language,
+            artifact_name,
+            browser_version,
+            artifact_extension
+        ))
+    }
+
+    fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        let browser_in_cache = self.get_browser_path_in_cache()?;
+        if MACOS.is(self.get_os()) {
+            Ok(browser_in_cache.join(FIREFOX_MACOS_APP_NAME))
+        } else {
+            Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
+        }
     }
 }
 
@@ -212,41 +302,12 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let os = self.get_os();
-        let arch = self.get_arch();
-        let minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
-        let arch_folder = if WINDOWS.is(os) {
-            if X32.is(arch) {
-                "win32"
-            } else if ARM64.is(arch) && minor_driver_version > 31 {
-                "win-arm64"
-            } else {
-                "win64"
-            }
-        } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac64"
-            }
-        } else if X32.is(arch) {
-            "linux32"
-        } else if ARM64.is(arch) && minor_driver_version > 31 {
-            "linux-arm64"
-        } else {
-            "linux64"
-        };
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
-            os,
-            arch_folder,
-            driver_version,
+            self.get_os(),
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -271,7 +332,118 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        Ok(None)
+        let browser_version;
+        let browser_name = self.browser_name;
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let major_browser_version = self.get_major_browser_version();
+
+        // Browser version is checked in the local metadata
+        match get_browser_version_from_metadata(
+            &metadata.browsers,
+            browser_name,
+            &major_browser_version,
+        ) {
+            Some(version) => {
+                self.get_logger().trace(format!(
+                    "Browser with valid TTL. Getting {} version from metadata",
+                    browser_name
+                ));
+                browser_version = version;
+                self.set_browser_version(browser_version.clone());
+            }
+            _ => {
+                // If not in metadata, discover version using Mozilla online metadata
+                if self.is_browser_version_stable() || self.is_browser_version_empty() {
+                    browser_version = self.request_latest_browser_version_from_online()?;
+                } else {
+                    browser_version = self.request_fixed_browser_version_from_online()?;
+                }
+                self.set_browser_version(browser_version.clone());
+
+                let browser_ttl = self.get_ttl();
+                if browser_ttl > 0
+                    && !self.is_browser_version_empty()
+                    && !self.is_browser_version_stable()
+                {
+                    metadata.browsers.push(create_browser_metadata(
+                        browser_name,
+                        &major_browser_version,
+                        &browser_version,
+                        browser_ttl,
+                    ));
+                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                }
+            }
+        }
+        self.get_logger().debug(format!(
+            "Required browser: {} {}",
+            browser_name, browser_version
+        ));
+
+        // Checking if browser version is in the cache
+        let browser_binary_path = self.get_browser_binary_path_in_cache()?;
+        if browser_binary_path.exists() {
+            self.get_logger().debug(format!(
+                "{} {} already in the cache",
+                browser_name, browser_version
+            ));
+        } else {
+            // If browser is not in the cache, download it
+            let browser_url = self.get_browser_url()?;
+            self.get_logger().debug(format!(
+                "Downloading {} {} from {}",
+                self.get_browser_name(),
+                self.get_browser_version(),
+                browser_url
+            ));
+            let (_tmp_folder, driver_zip_file) =
+                download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+
+            uncompress(
+                &driver_zip_file,
+                &self.get_browser_path_in_cache()?,
+                self.get_logger(),
+                None,
+            )?;
+        }
+        if browser_binary_path.exists() {
+            self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
+            Ok(Some(browser_binary_path))
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn get_platform_label(&self) -> &str {
+        let driver_version = self.get_driver_version();
+        let os = self.get_os();
+        let arch = self.get_arch();
+        let minor_driver_version = self
+            .get_minor_version(driver_version)
+            .unwrap_or_default()
+            .parse::<i32>()
+            .unwrap_or_default();
+        if WINDOWS.is(os) {
+            if X32.is(arch) {
+                "win32"
+            } else if ARM64.is(arch) && minor_driver_version > 31 {
+                "win-arm64"
+            } else {
+                "win64"
+            }
+        } else if MACOS.is(os) {
+            if ARM64.is(arch) {
+                "mac-arm64"
+            } else {
+                "mac64"
+            }
+        } else if X32.is(arch) {
+            "linux32"
+        } else if ARM64.is(arch) && minor_driver_version > 31 {
+            "linux-arm64"
+        } else {
+            "linux64"
+        }
     }
 }
 

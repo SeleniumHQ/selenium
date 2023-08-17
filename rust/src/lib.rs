@@ -131,6 +131,8 @@ pub trait SeleniumManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>>;
 
+    fn get_platform_label(&self) -> &str;
+
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
@@ -674,6 +676,14 @@ pub trait SeleniumManager {
         }
         self.set_browser_path(safari_path);
         Ok(self.detect_browser_version(commands))
+    }
+
+    fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(self
+            .get_cache_path()?
+            .join(self.get_browser_name())
+            .join(self.get_platform_label())
+            .join(self.get_browser_version()))
     }
 
     // ----------------------------------------------------------
