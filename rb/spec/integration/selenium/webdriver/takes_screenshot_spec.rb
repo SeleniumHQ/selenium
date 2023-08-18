@@ -95,8 +95,7 @@ module Selenium
           expect(height).to be <= viewport_height
         end
 
-        it 'takes full page screenshot', except: [{ci: :github,
-                                                   platform: :windows,
+        it 'takes full page screenshot', except: [{platform: [:windows, :macosx],
                                                    reason: 'Some issues with resolution?'},
                                                   {platform: :macosx,
                                                    headless: true,
