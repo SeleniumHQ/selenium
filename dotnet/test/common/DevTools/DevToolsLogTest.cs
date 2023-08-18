@@ -6,7 +6,7 @@ using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V115;
+    using CurrentCdpVersion = V116;
 
     [TestFixture]
     public class DevToolsLogTest : DevToolsTestFixture
