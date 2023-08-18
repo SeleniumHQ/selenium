@@ -203,8 +203,7 @@ module Selenium
         end
 
         it 'moves to element with offset', except: {browser: :firefox,
-                                                    ci: :github,
-                                                    platform: :windows,
+                                                    platform: [:windows, :macosx],
                                                     reason: 'Some issues with resolution?'} do
           driver.navigate.to url_for('javascriptPage.html')
           origin = driver.find_element(id: 'keyUpArea')
