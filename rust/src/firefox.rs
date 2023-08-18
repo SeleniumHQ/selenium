@@ -40,7 +40,7 @@ const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
 const LATEST_RELEASE: &str = "latest";
 const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";
-const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/Firefox";
+const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/firefox";
 const FIREFOX_DETAILS_URL: &str = "https://product-details.mozilla.org/1.0/";
 const LATEST_FIREFOX_VERSION: &str = "LATEST_FIREFOX_VERSION";
 const FIREFOX_VERSIONS_ENDPOINT: &str = "firefox_versions.json";
@@ -115,8 +115,8 @@ impl FirefoxManager {
                 platform_label = "win64";
             }
         } else if MACOS.is(os) {
-            artifact_name = "Firefox%%20";
-            artifact_extension = "dmg";
+            artifact_name = "Firefox%20";
+            artifact_extension = "pkg";
             platform_label = "mac";
         } else {
             // Linux
@@ -403,6 +403,7 @@ impl SeleniumManager for FirefoxManager {
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
                 self.get_logger(),
+                self.get_os(),
                 None,
             )?;
         }

@@ -28,10 +28,14 @@ use directories::BaseDirs;
 use flate2::read::GzDecoder;
 use regex::Regex;
 use tar::Archive;
+use tempfile::Builder;
 use zip::ZipArchive;
 
 use crate::config::OS::WINDOWS;
-use crate::Logger;
+use crate::{
+    format_three_args, format_two_args, run_shell_command_by_os, Command, Logger, MACOS,
+    MV_PAYLOAD_COMMAND, PKGUTIL_COMMAND,
+};
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
 const CACHE_FOLDER: &str = ".cache/selenium";
@@ -40,6 +44,7 @@ const GZ: &str = "gz";
 const XML: &str = "xml";
 const HTML: &str = "html";
 const BZ2: &str = "bz2";
+const PKG: &str = "pkg";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -74,13 +79,25 @@ pub fn uncompress(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
+    os: &str,
     single_file: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
-    let kind = infer::get_from_path(compressed_file)?.ok_or(format!(
-        "Format for file {} cannot be inferred",
-        compressed_file
-    ))?;
-    let extension = kind.extension();
+    let extension = match infer::get_from_path(compressed_file)? {
+        Some(kind) => kind.extension(),
+        _ => {
+            if compressed_file.ends_with(PKG) {
+                if MACOS.is(os) {
+                    PKG
+                } else {
+                    return Err(format!("PKG files are only supported in macOS").into());
+                }
+            } else {
+                return Err(
+                    format!("Format for file {} cannot be inferred", compressed_file).into(),
+                );
+            }
+        }
+    };
     log.trace(format!(
         "The detected extension of the compressed file is {}",
         extension
@@ -92,6 +109,8 @@ pub fn uncompress(
         untargz(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(BZ2) {
         uncompress_bz2(compressed_file, target, log)?
+    } else if extension.eq_ignore_ascii_case(PKG) {
+        uncompress_pkg(compressed_file, target, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -105,6 +124,40 @@ pub fn uncompress(
         )
         .into());
     }
+    Ok(())
+}
+
+pub fn uncompress_pkg(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    os: &str,
+) -> Result<(), Box<dyn Error>> {
+    let tmp_dir = Builder::new().prefix(PKG).tempdir()?;
+    let out_folder = format!(
+        "{}/{}",
+        path_buf_to_string(tmp_dir.path().to_path_buf()),
+        PKG
+    );
+    let mut command = Command::new_single(format_two_args(
+        PKGUTIL_COMMAND,
+        compressed_file,
+        &out_folder,
+    ));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    fs::create_dir_all(target)?;
+    let target_folder = path_buf_to_string(target.to_path_buf());
+    command = Command::new_single(format_three_args(
+        MV_PAYLOAD_COMMAND,
+        &out_folder,
+        PKG,
+        &target_folder,
+    ));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
     Ok(())
 }
 

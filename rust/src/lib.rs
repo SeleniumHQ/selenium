@@ -72,6 +72,8 @@ pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
+pub const PKGUTIL_COMMAND: &str = "pkgutil --expand-full {} {}";
+pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
 pub const DASH_VERSION: &str = "{}{}{} -v";
 pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
 pub const DOUBLE_QUOTE: &str = "\"";
@@ -155,6 +157,7 @@ pub trait SeleniumManager {
                 &driver_zip_file,
                 &driver_path_in_cache,
                 self.get_logger(),
+                self.get_os(),
                 Some(driver_name_with_extension),
             )?)
         }

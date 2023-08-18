@@ -195,7 +195,6 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        // TODO check Windows
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,

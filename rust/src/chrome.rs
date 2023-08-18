@@ -633,6 +633,7 @@ impl SeleniumManager for ChromeManager {
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
                 self.get_logger(),
+                self.get_os(),
                 None,
             )?;
         }
