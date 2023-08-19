@@ -1314,7 +1314,7 @@ dependencies = [
 
 [[package]]
 name = "selenium-manager"
-version = "1.0.0-M4"
+version = "0.4.12"
 dependencies = [
  "assert_cmd",
  "clap",

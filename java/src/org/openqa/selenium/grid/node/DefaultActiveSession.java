@@ -5,8 +5,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.time.Instant;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
@@ -43,12 +41,7 @@ public class DefaultActiveSession extends BaseActiveSession {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    String host = "host";
-    StreamSupport.stream(req.getHeaderNames().spliterator(), true)
-        .filter(host::equalsIgnoreCase)
-        .collect(Collectors.toList())
-        .forEach(req::removeHeader);
-    req.addHeader(host, String.format("%s:%s", getUri().getHost(), getUri().getPort()));
+    req.setHeader("host", String.format("%s:%s", getUri().getHost(), getUri().getPort()));
     HttpResponse res = handler.execute(req);
     if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
       stop();

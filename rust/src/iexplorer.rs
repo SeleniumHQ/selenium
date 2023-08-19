@@ -68,7 +68,7 @@ impl IExplorerManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
             driver_url: None,
         }))
     }
@@ -156,7 +156,7 @@ impl SeleniumManager for IExplorerManager {
                         self.get_logger(),
                     )?;
 
-                    let driver_ttl = self.get_driver_ttl();
+                    let driver_ttl = self.get_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,

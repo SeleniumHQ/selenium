@@ -50,8 +50,7 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    # Use windows-latest once https://github.com/actions/runner-images/issues/7662 is fixed.
-    runs-on: ${{ inputs.os == 'windows' && 'windows-2019' || format('{0}-latest', inputs.os) }}
+    runs-on: ${{ inputs.os }}-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}

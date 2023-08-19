@@ -24,8 +24,8 @@ import org.openqa.selenium.internal.Require;
 
 /**
  * Similar to a {@link Reader} but with the ability to peek a single character ahead.
- *
- * <p>For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
+ * <p>
+ * For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
  * read characters in the input buffer.
  */
 class Input {
@@ -43,6 +43,10 @@ class Input {
   // the last position read in the buffer
   private int position;
 
+  /**
+   *
+   * @param source
+   */
   public Input(Reader source) {
     this.source = Require.nonNull("Source", source);
     this.buffer = new char[BUFFER_SIZE + MEMORY_SIZE];
@@ -50,10 +54,18 @@ class Input {
     this.position = -1;
   }
 
+  /**
+   *
+   * @return
+   */
   public char peek() {
     return fill() ? buffer[position + 1] : EOF;
   }
 
+  /**
+   *
+   * @return
+   */
   public char read() {
     return fill() ? buffer[++position] : EOF;
   }
@@ -74,6 +86,10 @@ class Input {
     return "Last " + length + " characters read: " + new String(buffer, offset, length);
   }
 
+  /**
+   *
+   * @return
+   */
   private boolean fill() {
     // do we need to fill the buffer?
     while (filled == position + 1) {

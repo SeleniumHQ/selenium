@@ -26,8 +26,7 @@ use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
-use selenium_manager::TTL_BROWSERS_SEC;
-use selenium_manager::TTL_DRIVERS_SEC;
+use selenium_manager::TTL_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -88,13 +87,9 @@ struct Cli {
     #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
     timeout: u64,
 
-    /// Driver TTL (time-to-live)
-    #[clap(long, value_parser, default_value_t = TTL_DRIVERS_SEC)]
-    driver_ttl: u64,
-
-    /// Browser TTL (time-to-live)
-    #[clap(long, value_parser, default_value_t = TTL_BROWSERS_SEC)]
-    browser_ttl: u64,
+    /// TTL (time-to-live) for discovered versions (online) of drivers and browsers
+    #[clap(long, value_parser, default_value_t = TTL_SEC)]
+    ttl: u64,
 
     /// Local folder used to store downloaded assets (drivers and browsers), local metadata,
     /// and configuration file [default: ~/.cache/selenium]
@@ -164,8 +159,7 @@ fn main() {
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
     selenium_manager.set_os(cli.os.unwrap_or_default());
     selenium_manager.set_arch(cli.arch.unwrap_or_default());
-    selenium_manager.set_driver_ttl(cli.driver_ttl);
-    selenium_manager.set_browser_ttl(cli.browser_ttl);
+    selenium_manager.set_ttl(cli.ttl);
     selenium_manager.set_offline(cli.offline);
     selenium_manager.set_force_browser_download(cli.force_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());

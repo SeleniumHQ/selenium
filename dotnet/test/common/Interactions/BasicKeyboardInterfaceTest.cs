@@ -35,9 +35,9 @@ namespace OpenQA.Selenium.Interactions
         public void ShouldSetActiveKeyboard()
         {
             Actions actionProvider = new Actions(driver);
-            actionProvider.setActiveKeyboard("test keyboard");
+            actionProvider.SetActiveKeyboard("test keyboard");
 
-            KeyInputDevice device = actionProvider.getActiveKeyboard();
+            KeyInputDevice device = actionProvider.GetActiveKeyboard();
 
             Assert.AreEqual("test keyboard", device.DeviceName);
         }

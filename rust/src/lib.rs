@@ -86,8 +86,7 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
-pub const TTL_BROWSERS_SEC: u64 = 3600;
-pub const TTL_DRIVERS_SEC: u64 = 3600;
+pub const TTL_SEC: u64 = 3600;
 pub const UNAME_COMMAND: &str = "uname -{}";
 pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
 pub const SNAPSHOT: &str = "SNAPSHOT";
@@ -315,7 +314,7 @@ pub trait SeleniumManager {
                 }
                 None => {
                     self.get_logger().debug(format!(
-                        "{} has not been discovered in the system",
+                        "{} not discovered in the system",
                         self.get_browser_name()
                     ));
                     download_browser = true;
@@ -611,10 +610,13 @@ pub trait SeleniumManager {
         }
 
         let mut commands = Vec::new();
+
         if WINDOWS.is(self.get_os()) {
-            let wmic_command =
-                Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
-            commands.push(wmic_command);
+            if !escaped_browser_path.is_empty() {
+                let wmic_command =
+                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
+                commands.push(wmic_command);
+            }
             if !self.is_browser_version_unstable() {
                 let reg_command =
                     Command::new_multiple(vec!["REG", "QUERY", reg_key, "/v", reg_version_arg]);
@@ -819,20 +821,12 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn get_driver_ttl(&self) -> u64 {
-        self.get_config().driver_ttl
+    fn get_ttl(&self) -> u64 {
+        self.get_config().ttl
     }
 
-    fn set_driver_ttl(&mut self, driver_ttl: u64) {
-        self.get_config_mut().driver_ttl = driver_ttl;
-    }
-
-    fn get_browser_ttl(&self) -> u64 {
-        self.get_config().browser_ttl
-    }
-
-    fn set_browser_ttl(&mut self, browser_ttl: u64) {
-        self.get_config_mut().browser_ttl = browser_ttl;
+    fn set_ttl(&mut self, ttl: u64) {
+        self.get_config_mut().ttl = ttl;
     }
 
     fn is_offline(&self) -> bool {

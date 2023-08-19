@@ -521,7 +521,7 @@ class NodeTest {
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
 
-    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/file", session.getId()));
     String hello = "Hello, world!";
     String zip = Zip.zip(createTmpFile(hello));
     String payload = new Json().toJson(Collections.singletonMap("file", zip));

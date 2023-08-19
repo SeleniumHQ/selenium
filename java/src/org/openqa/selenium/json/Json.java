@@ -117,6 +117,7 @@ public class Json {
    * @param toConvert the object to be serialized
    * @param maxDepth maximum depth of nested object traversal
    * @return JSON string representing the specified object
+   * @throws JsonException if an I/O exception is encountered
    */
   public String toJson(Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
@@ -137,6 +138,7 @@ public class Json {
    * @param typeOfT data type for deserialization (class or {@link TypeToken})
    * @return object of the specified type deserialized from [source]
    * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(String source, Type typeOfT) {
     return toType(source, typeOfT, PropertySetting.BY_NAME);
@@ -150,6 +152,7 @@ public class Json {
    * @param setter strategy used to assign values during deserialization
    * @return object of the specified type deserialized from [source]
    * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
     try (StringReader reader = new StringReader(source)) {
@@ -168,6 +171,7 @@ public class Json {
    * @param typeOfT data type for deserialization (class or {@link TypeToken})
    * @return object of the specified type deserialized from [source]
    * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(Reader source, Type typeOfT) {
     return toType(source, typeOfT, PropertySetting.BY_NAME);
@@ -181,6 +185,7 @@ public class Json {
    * @param setter strategy used to assign values during deserialization
    * @return object of the specified type deserialized from [source]
    * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(Reader source, Type typeOfT, PropertySetting setter) {
     if (setter == null) {

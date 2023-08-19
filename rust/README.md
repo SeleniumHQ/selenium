@@ -43,10 +43,8 @@ Options:
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
       --timeout <TIMEOUT>
           Timeout for network requests (in seconds) [default: 300]
-      --driver-ttl <DRIVER_TTL>
-          Driver TTL (time-to-live) [default: 3600]
-      --browser-ttl <BROWSER_TTL>
-          Browser TTL (time-to-live) [default: 3600]
+      --ttl <TTL>
+          TTL (time-to-live) for discovered versions (online) of drivers and browsers [default: 3600]
       --cache-path <CACHE_PATH>
           Local folder used to store downloaded assets (drivers and browsers), local metadata, and configuration file [default: ~/.cache/selenium]
       --clear-cache
