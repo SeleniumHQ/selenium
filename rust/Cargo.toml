@@ -30,6 +30,7 @@ exitcode = "1.1.2"
 is_executable = "1.0.1"
 toml = "0.7.6"
 bzip2-rs = "0.1.2"
+sevenz-rust = "0.5.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

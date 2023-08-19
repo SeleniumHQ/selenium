@@ -19,6 +19,7 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::io;
+use std::io::{BufReader, Cursor, Read};
 
 use bzip2_rs::DecoderReader;
 use std::path::{Path, PathBuf};
@@ -34,7 +35,7 @@ use zip::ZipArchive;
 use crate::config::OS::WINDOWS;
 use crate::{
     format_three_args, format_two_args, run_shell_command_by_os, Command, Logger, MACOS,
-    MV_PAYLOAD_COMMAND, PKGUTIL_COMMAND,
+    MV_PAYLOAD_COMMAND, MV_SFX_COMMAND, PKGUTIL_COMMAND,
 };
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -45,6 +46,8 @@ const XML: &str = "xml";
 const HTML: &str = "html";
 const BZ2: &str = "bz2";
 const PKG: &str = "pkg";
+const EXE: &str = "exe";
+const SEVEN_ZIP_HEADER: &[u8; 6] = b"7z\xBC\xAF\x27\x1C";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -111,6 +114,8 @@ pub fn uncompress(
         uncompress_bz2(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(PKG) {
         uncompress_pkg(compressed_file, target, log, os)?
+    } else if extension.eq_ignore_ascii_case(EXE) {
+        uncompress_sfx(compressed_file, target, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -124,6 +129,34 @@ pub fn uncompress(
         )
         .into());
     }
+    Ok(())
+}
+
+pub fn uncompress_sfx(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    os: &str,
+) -> Result<(), Box<dyn Error>> {
+    log.trace(format!(
+        "Uncompress {} to {}",
+        compressed_file,
+        target.display()
+    ));
+    let file_bytes = read_bytes_from_file(compressed_file)?;
+    let header = find_bytes(&file_bytes, SEVEN_ZIP_HEADER);
+    let index_7z = header.ok_or("Incorrect SFX (self extracting exe) file")?;
+    let file_reader = Cursor::new(&file_bytes[index_7z..]);
+    sevenz_rust::decompress(file_reader, target).unwrap();
+
+    let target_str = path_buf_to_string(target.to_path_buf());
+    let command = Command::new_single(format_two_args(MV_SFX_COMMAND, &target_str, &target_str));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    let setup_file = target.join("setup.exe");
+    fs::remove_file(setup_file.as_path())?;
+
     Ok(())
 }
 
@@ -396,4 +429,18 @@ pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<d
 
 pub fn path_buf_to_string(path_buf: PathBuf) -> String {
     path_buf.into_os_string().into_string().unwrap_or_default()
+}
+
+pub fn read_bytes_from_file(file_path: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    let file = File::open(file_path)?;
+    let mut reader = BufReader::new(file);
+    let mut buffer = Vec::new();
+    reader.read_to_end(&mut buffer)?;
+    Ok(buffer)
+}
+
+pub fn find_bytes(buffer: &Vec<u8>, bytes: &[u8]) -> Option<usize> {
+    buffer
+        .windows(bytes.len())
+        .position(|window| window == bytes)
 }
