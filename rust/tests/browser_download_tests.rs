@@ -46,6 +46,8 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[rstest]
 #[case("chrome", "113")]
 #[case("chrome", "beta")]
+#[case("firefox", "116")]
+#[case("firefox", "beta")]
 fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([

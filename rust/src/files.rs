@@ -92,7 +92,7 @@ pub fn uncompress(
                 if MACOS.is(os) {
                     PKG
                 } else {
-                    return Err(format!("PKG files are only supported in macOS").into());
+                    return Err("PKG files are only supported in macOS".into());
                 }
             } else {
                 return Err(
@@ -439,7 +439,7 @@ pub fn read_bytes_from_file(file_path: &str) -> Result<Vec<u8>, Box<dyn Error>> 
     Ok(buffer)
 }
 
-pub fn find_bytes(buffer: &Vec<u8>, bytes: &[u8]) -> Option<usize> {
+pub fn find_bytes(buffer: &[u8], bytes: &[u8]) -> Option<usize> {
     buffer
         .windows(bytes.len())
         .position(|window| window == bytes)

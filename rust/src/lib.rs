@@ -21,7 +21,9 @@ use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     get_binary_extension, path_buf_to_string,
 };
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
+use crate::firefox::{
+    request_firefox_beta_version, FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME,
+};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use std::{env, fs};
@@ -318,6 +320,20 @@ pub trait SeleniumManager {
                             major_browser_version,
                         ));
                         download_browser = true;
+                    } else if self.is_firefox() && self.is_browser_version_beta() {
+                        // This is a special case motivated by the fact that Firefox stable and beta
+                        // share the same installation path
+                        let firefox_beta_version =
+                            request_firefox_beta_version(self.get_http_client())?;
+                        if !discovered_version.starts_with(&firefox_beta_version) {
+                            self.get_logger().debug(format!(
+                                "Detected {} version ({}) is not beta ({})",
+                                self.get_browser_name(),
+                                discovered_version,
+                                firefox_beta_version
+                            ));
+                            download_browser = true;
+                        }
                     } else {
                         self.set_browser_version(discovered_version);
                     }
@@ -448,6 +464,21 @@ pub trait SeleniumManager {
 
     fn is_grid(&self) -> bool {
         self.get_browser_name().eq(GRID_NAME)
+    }
+
+    fn is_firefox(&self) -> bool {
+        self.get_browser_name().contains(FIREFOX_NAME)
+    }
+
+    fn is_browser_version_beta(&self) -> bool {
+        self.get_browser_version().eq_ignore_ascii_case(BETA)
+    }
+
+    fn is_browser_version_nightly(&self) -> bool {
+        let browser_version = self.get_browser_version();
+        browser_version.eq_ignore_ascii_case(NIGHTLY)
+            || browser_version.eq_ignore_ascii_case(CANARY)
+            || browser_version.contains('a') // This happens in Firefox versions
     }
 
     fn is_browser_version_unstable(&self) -> bool {

@@ -1,4 +1,5 @@
 // Licensed to the Software Freedom Conservancy (SFC) under one
+// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The SFC licenses this file
@@ -23,15 +24,18 @@ use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::{parse_generic_json_from_url, read_redirect_from_link};
+use crate::downloads::{
+    parse_generic_json_from_url, read_content_from_link, read_redirect_from_link,
+};
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_browser_metadata, create_http_client, download_to_tmp_folder,
-    get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger, SeleniumManager,
-    BETA, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
+    create_browser_metadata, create_http_client, download_to_tmp_folder, format_three_args,
+    format_two_args, get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger,
+    SeleniumManager, BETA, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_CURRENT_VERSION_ARG, STABLE,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -42,8 +46,21 @@ const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";
 const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/firefox";
 const FIREFOX_DETAILS_URL: &str = "https://product-details.mozilla.org/1.0/";
-const LATEST_FIREFOX_VERSION: &str = "LATEST_FIREFOX_VERSION";
+const FIREFOX_STABLE_LABEL: &str = "LATEST_FIREFOX_VERSION";
+const FIREFOX_BETA_LABEL: &str = "LATEST_FIREFOX_RELEASED_DEVEL_VERSION";
+const FIREFOX_DEV_LABEL: &str = "FIREFOX_DEVEDITION";
+const FIREFOX_CANARY_LABEL: &str = "FIREFOX_NIGHTLY";
 const FIREFOX_VERSIONS_ENDPOINT: &str = "firefox_versions.json";
+const FIREFOX_HISTORY_ENDPOINT: &str = "firefox_history_stability_releases.json";
+const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases.json";
+const FIREFOX_NIGHTLY_URL: &str =
+    "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 68;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
+const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {} {} in online repository";
+const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
+    "{} {} not available for downloading (minimum version: {})";
 
 pub struct FirefoxManager {
     pub browser_name: &'static str,
@@ -84,7 +101,7 @@ impl FirefoxManager {
         let firefox_versions =
             parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
         let browser_version = firefox_versions
-            .get(LATEST_FIREFOX_VERSION)
+            .get(FIREFOX_STABLE_LABEL)
             .unwrap()
             .as_str()
             .unwrap();
@@ -93,21 +110,122 @@ impl FirefoxManager {
     }
 
     fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        todo!()
+        let browser_name = self.browser_name;
+        let browser_version = self.get_browser_version().to_string();
+        self.get_logger().trace(format!(
+            "Using Firefox endpoints to find out {} {}",
+            browser_name, browser_version
+        ));
+
+        if self.is_browser_version_unstable() {
+            let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
+            let firefox_versions =
+                parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+            let version_label = if browser_version.eq_ignore_ascii_case(BETA) {
+                FIREFOX_BETA_LABEL
+            } else if browser_version.eq_ignore_ascii_case(DEV) {
+                FIREFOX_DEV_LABEL
+            } else {
+                FIREFOX_CANARY_LABEL
+            };
+            let browser_version = firefox_versions
+                .get(version_label)
+                .unwrap()
+                .as_str()
+                .unwrap();
+            Ok(browser_version.to_string())
+        } else {
+            let os = self.get_os();
+            let major_browser_version = self
+                .get_major_browser_version()
+                .parse::<i32>()
+                .unwrap_or_default();
+
+            let min_downloadable_version = if WINDOWS.is(os) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            } else if MACOS.is(os) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC
+            } else {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX
+            };
+            if major_browser_version < min_downloadable_version {
+                return Err(format_three_args(
+                    UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
+                    browser_name,
+                    &browser_version,
+                    &min_downloadable_version.to_string(),
+                )
+                .into());
+            }
+
+            let mut firefox_versions =
+                self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
+            if firefox_versions.is_empty() {
+                firefox_versions =
+                    self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
+                if firefox_versions.is_empty() {
+                    return Err(format_two_args(
+                        ONLINE_DISCOVERY_ERROR_MESSAGE,
+                        browser_name,
+                        self.get_browser_version(),
+                    )
+                    .into());
+                }
+            }
+
+            for version in firefox_versions.iter().rev() {
+                let release_url = format_two_args("{}{}/", BROWSER_URL, version);
+                self.get_logger()
+                    .trace(format!("Checking release URL: {}", release_url));
+                let content = read_content_from_link(self.get_http_client(), release_url)?;
+                if !content.contains("Not Found") {
+                    return Ok(version.to_string());
+                }
+            }
+            Err(format_two_args(
+                ONLINE_DISCOVERY_ERROR_MESSAGE,
+                browser_name,
+                self.get_browser_version(),
+            )
+            .into())
+        }
+    }
+
+    fn request_versions_from_online(&self, endpoint: &str) -> Result<Vec<String>, Box<dyn Error>> {
+        let browser_version = self.get_browser_version().to_string();
+        let firefox_versions_url = self.create_firefox_details_url(endpoint);
+        let firefox_versions =
+            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+
+        let versions_map = firefox_versions.as_object().unwrap();
+        let filter_key = if browser_version.contains('.') {
+            browser_version
+        } else {
+            format!("{}.", browser_version)
+        };
+        Ok(versions_map
+            .keys()
+            .filter(|v| v.starts_with(&filter_key))
+            .map(|v| v.to_string())
+            .collect())
     }
 
     fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
-        let os = self.get_os();
         let arch = self.get_arch();
-
+        let os = self.get_os();
+        let platform_label;
         let artifact_name;
         let artifact_extension;
-        let platform_label;
+
         if WINDOWS.is(os) {
             artifact_name = "Firefox%20Setup%20";
             artifact_extension = "exe";
-            if X32.is(arch) {
+            let major_browser_version = self
+                .get_major_browser_version()
+                .parse::<i32>()
+                .unwrap_or_default();
+            // Before Firefox 42, only Windows 32 was supported
+            if X32.is(arch) || major_browser_version < 42 {
                 platform_label = "win32";
             } else if ARM64.is(arch) {
                 platform_label = "win-aarch64";
@@ -128,19 +246,28 @@ impl FirefoxManager {
                 platform_label = "linux-x86_64";
             }
         }
+
         // A possible future improvement is to allow downloading language-specific releases
         let language = FIREFOX_DEFAULT_LANG;
-
-        Ok(format!(
-            "{}{}/{}/{}/{}{}.{}",
-            BROWSER_URL,
-            browser_version,
-            platform_label,
-            language,
-            artifact_name,
-            browser_version,
-            artifact_extension
-        ))
+        if self.is_browser_version_nightly() {
+            Ok(format_two_args(
+                FIREFOX_NIGHTLY_URL,
+                platform_label,
+                language,
+            ))
+        } else {
+            let browser_version = self.get_browser_version();
+            Ok(format!(
+                "{}{}/{}/{}/{}{}.{}",
+                BROWSER_URL,
+                browser_version,
+                platform_label,
+                language,
+                artifact_name,
+                browser_version,
+                artifact_extension
+            ))
+        }
     }
 
     fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
@@ -174,6 +301,7 @@ impl SeleniumManager for FirefoxManager {
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
+                // "",
                 r#"Mozilla Firefox\firefox.exe"#,
             ),
             (
@@ -446,6 +574,20 @@ impl SeleniumManager for FirefoxManager {
             "linux64"
         }
     }
+}
+
+pub fn request_firefox_beta_version(http_client: &Client) -> Result<String, Box<dyn Error>> {
+    let firefox_versions_url = format!("{}{}", FIREFOX_DETAILS_URL, FIREFOX_VERSIONS_ENDPOINT);
+    let firefox_versions = parse_generic_json_from_url(http_client, firefox_versions_url)?;
+    let firefox_beta_version = firefox_versions
+        .get(FIREFOX_BETA_LABEL)
+        .unwrap()
+        .as_str()
+        .unwrap();
+    let index_b = firefox_beta_version.find('b');
+    let index_or_total = index_b.unwrap_or(firefox_beta_version.len());
+    let trimmed_version = &firefox_beta_version[..index_or_total];
+    Ok(trimmed_version.to_string())
 }
 
 #[cfg(test)]
