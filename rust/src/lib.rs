@@ -142,8 +142,12 @@ pub trait SeleniumManager {
 
     fn download_driver(&mut self) -> Result<(), Box<dyn Error>> {
         let driver_url = self.get_driver_url()?;
-        self.get_logger()
-            .debug(format!("Driver URL: {}", driver_url));
+        self.get_logger().debug(format!(
+            "Downloading {} {} from {}",
+            self.get_driver_name(),
+            self.get_driver_version(),
+            driver_url
+        ));
         let (_tmp_folder, driver_zip_file) =
             download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
 
