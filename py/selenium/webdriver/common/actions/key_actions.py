@@ -28,7 +28,7 @@ from .wheel_input import WheelInput
 
 
 class KeyActions(Interaction):
-    def __init__(self, source: Optional[KeyInput, PointerInput, WheelInput] = None) -> None:
+    def __init__(self, source: KeyInput, PointerInput, WheelInput | None = None) -> None:
         if not source:
             source = KeyInput(KEY)
         self.source = source
@@ -43,7 +43,7 @@ class KeyActions(Interaction):
     def pause(self, duration: int = 0) -> KeyActions:
         return self._key_action("create_pause", duration)
 
-    def send_keys(self, text: Union[str, list]) -> KeyActions:
+    def send_keys(self, text: str | list) -> KeyActions:
         if not isinstance(text, list):
             text = keys_to_typing(text)
         for letter in text:
