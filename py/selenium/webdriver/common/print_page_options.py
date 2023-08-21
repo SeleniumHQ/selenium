@@ -20,7 +20,6 @@ from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
 
-# necessary to support types for Python 3.7
 if TYPE_CHECKING:
     from typing import Literal
     from typing import TypedDict
