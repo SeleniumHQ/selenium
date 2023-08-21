@@ -97,6 +97,7 @@ pub const ESCAPE_COMMAND: &str = "printf %q \"{}\"";
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
+pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{} not available for downloading";
 pub const UNC_PREFIX: &str = r#"\\?\"#;
 
 pub trait SeleniumManager {
@@ -779,6 +780,10 @@ pub trait SeleniumManager {
         } else {
             format!(" {}", major_browser_version)
         }
+    }
+
+    fn unavailable_download(&mut self) -> Result<String, Box<dyn Error>> {
+        Err(format_one_arg(UNAVAILABLE_DOWNLOAD_ERR_MSG, self.get_browser_name()).into())
     }
 
     // ----------------------------------------------------------
