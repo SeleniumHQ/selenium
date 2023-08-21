@@ -296,22 +296,24 @@ impl SeleniumManager for ChromeManager {
 
                 let major_browser_version_int =
                     major_browser_version.parse::<i32>().unwrap_or_default();
-                let driver_version =
-                    if self.is_browser_version_stable() || major_browser_version.is_empty() {
-                        // For discovering the latest driver version, the CfT endpoints are also used
-                        self.request_latest_driver_version_from_online()?
-                    } else if !major_browser_version.is_empty() && major_browser_version_int < 115 {
-                        // For old versions (chromedriver 114-), the traditional method should work:
-                        // https://chromedriver.chromium.org/downloads
-                        self.request_driver_version_from_latest(
-                            self.create_latest_release_with_version_url(),
-                        )?
-                    } else {
-                        // As of chromedriver 115+, the metadata for version discovery are published
-                        // by the "Chrome for Testing" (CfT) JSON endpoints:
-                        // https://googlechromelabs.github.io/chrome-for-testing/
-                        self.request_good_driver_version_from_online()?
-                    };
+                let driver_version = if self.is_browser_version_stable()
+                    || major_browser_version.is_empty()
+                    || self.is_browser_version_unstable()
+                {
+                    // For discovering the latest driver version, the CfT endpoints are also used
+                    self.request_latest_driver_version_from_online()?
+                } else if !major_browser_version.is_empty() && major_browser_version_int < 115 {
+                    // For old versions (chromedriver 114-), the traditional method should work:
+                    // https://chromedriver.chromium.org/downloads
+                    self.request_driver_version_from_latest(
+                        self.create_latest_release_with_version_url(),
+                    )?
+                } else {
+                    // As of chromedriver 115+, the metadata for version discovery are published
+                    // by the "Chrome for Testing" (CfT) JSON endpoints:
+                    // https://googlechromelabs.github.io/chrome-for-testing/
+                    self.request_good_driver_version_from_online()?
+                };
 
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()

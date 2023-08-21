@@ -151,7 +151,10 @@ impl SeleniumManager for EdgeManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                if self.is_browser_version_stable() || major_browser_version.is_empty() {
+                if self.is_browser_version_stable()
+                    || major_browser_version.is_empty()
+                    || self.is_browser_version_unstable()
+                {
                     let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
                     self.log.debug(format!(
                         "Reading {} latest version from {}",

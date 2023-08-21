@@ -116,9 +116,13 @@ struct Cli {
     #[clap(long)]
     offline: bool,
 
-    /// Force to download browser. Currently Chrome for Testing (CfT) is supported
+    /// Force to download browser (even when browser is already in the system)
     #[clap(long)]
     force_browser_download: bool,
+
+    /// Avoid to download browser (even when browser-version is specified)
+    #[clap(long)]
+    avoid_browser_download: bool,
 }
 
 fn main() {
@@ -162,6 +166,7 @@ fn main() {
     selenium_manager.set_ttl(cli.ttl);
     selenium_manager.set_offline(cli.offline);
     selenium_manager.set_force_browser_download(cli.force_browser_download);
+    selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {

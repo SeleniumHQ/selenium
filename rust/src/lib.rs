@@ -300,24 +300,24 @@ pub trait SeleniumManager {
                                 self.get_major_version(&online_browser_version.unwrap())?;
                             if discovered_major_browser_version.eq(&major_online_browser_version) {
                                 self.get_logger().debug(format!(
-                                    "Online {}{} version ({}) is the same as the one installed in the system",
+                                    "Discovered online {} version ({}) is the same as the detected local {} version",
                                     self.get_browser_name(),
-                                    self.get_browser_version_label(),
                                     discovered_major_browser_version,
+                                    self.get_browser_name(),
                                 ));
                                 self.set_browser_version(discovered_version);
                             } else {
                                 self.get_logger().debug(format!(
-                                    "Online {}{} version ({}) different to detected browser version ({})",
+                                    "Discovered online {} version ({}) is different to the detected local {} version ({})",
                                     self.get_browser_name(),
-                                    self.get_browser_version_label(),
                                     major_online_browser_version,
+                                    self.get_browser_name(),
                                     discovered_major_browser_version,
                                 ));
                                 download_browser = true;
                             }
                         } else {
-                            self.set_browser_version(discovered_version.to_string());
+                            self.set_browser_version(discovered_version);
                         }
                     } else if !major_browser_version.is_empty()
                         && !self.is_browser_version_unstable()
@@ -344,7 +344,7 @@ pub trait SeleniumManager {
             }
         }
 
-        if download_browser {
+        if download_browser && !self.is_avoid_browser_download() {
             let browser_path = self.download_browser()?;
             if browser_path.is_some() {
                 self.get_logger().debug(format!(
@@ -953,6 +953,16 @@ pub trait SeleniumManager {
     fn set_force_browser_download(&mut self, force_browser_download: bool) {
         if force_browser_download {
             self.get_config_mut().force_browser_download = true;
+        }
+    }
+
+    fn is_avoid_browser_download(&self) -> bool {
+        self.get_config().avoid_browser_download
+    }
+
+    fn set_avoid_browser_download(&mut self, avoid_browser_download: bool) {
+        if avoid_browser_download {
+            self.get_config_mut().avoid_browser_download = true;
         }
     }
 

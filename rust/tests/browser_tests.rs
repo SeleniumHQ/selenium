@@ -37,6 +37,7 @@ fn browser_version_test(
         "--browser-version",
         &browser_version,
         "--debug",
+        "--avoid-browser-download",
     ])
     .assert()
     .success()
@@ -100,7 +101,14 @@ fn wrong_parameters_test(
 fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let assert = cmd
-        .args(["--browser", &browser, "--browser-version", "beta"])
+        .args([
+            "--browser",
+            &browser,
+            "--browser-version",
+            "beta",
+            "--avoid-browser-download",
+            "--debug",
+        ])
         .assert();
 
     let stdout = &assert.get_output().stdout;
