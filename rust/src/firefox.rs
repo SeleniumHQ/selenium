@@ -45,6 +45,7 @@ const LATEST_RELEASE: &str = "latest";
 const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";
 const FIREFOX_MACOS_APP_NAME: &str = "Firefox.app/Contents/MacOS/firefox";
+const FIREFOX_NIGHTLY_MACOS_APP_NAME: &str = "Firefox Nightly.app/Contents/MacOS/firefox";
 const FIREFOX_DETAILS_URL: &str = "https://product-details.mozilla.org/1.0/";
 const FIREFOX_STABLE_LABEL: &str = "LATEST_FIREFOX_VERSION";
 const FIREFOX_BETA_LABEL: &str = "LATEST_FIREFOX_RELEASED_DEVEL_VERSION";
@@ -55,6 +56,7 @@ const FIREFOX_HISTORY_ENDPOINT: &str = "firefox_history_stability_releases.json"
 const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases.json";
 const FIREFOX_NIGHTLY_URL: &str =
     "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
+const FIREFOX_NIGHTLY_VOLUME: &str = r#"Firefox\ Nightly"#;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 68;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
@@ -137,7 +139,11 @@ impl FirefoxManager {
         } else if MACOS.is(os) {
             artifact_name = "Firefox%20";
             artifact_extension = "pkg";
-            platform_label = "mac";
+            if self.is_browser_version_nightly() {
+                platform_label = "osx";
+            } else {
+                platform_label = "mac";
+            }
         } else {
             // Linux
             artifact_name = "firefox-";
@@ -177,7 +183,12 @@ impl FirefoxManager {
     fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
-            Ok(browser_in_cache.join(FIREFOX_MACOS_APP_NAME))
+            let macos_app_name = if self.is_browser_version_nightly() {
+                FIREFOX_NIGHTLY_MACOS_APP_NAME
+            } else {
+                FIREFOX_MACOS_APP_NAME
+            };
+            Ok(browser_in_cache.join(macos_app_name))
         } else {
             Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
         }
@@ -437,6 +448,7 @@ impl SeleniumManager for FirefoxManager {
                 self.get_logger(),
                 self.get_os(),
                 None,
+                Some(FIREFOX_NIGHTLY_VOLUME),
             )?;
         }
         if browser_binary_path.exists() {

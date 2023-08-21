@@ -34,8 +34,9 @@ use zip::ZipArchive;
 
 use crate::config::OS::WINDOWS;
 use crate::{
-    format_three_args, format_two_args, run_shell_command_by_os, Command, Logger, MACOS,
-    MV_PAYLOAD_COMMAND, MV_SFX_COMMAND, PKGUTIL_COMMAND,
+    format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
+    CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MV_PAYLOAD_COMMAND,
+    MV_SFX_COMMAND, PKGUTIL_COMMAND,
 };
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -46,8 +47,10 @@ const XML: &str = "xml";
 const HTML: &str = "html";
 const BZ2: &str = "bz2";
 const PKG: &str = "pkg";
+const DMG: &str = "dmg";
 const EXE: &str = "exe";
 const SEVEN_ZIP_HEADER: &[u8; 6] = b"7z\xBC\xAF\x27\x1C";
+const UNCOMPRESS_MACOS_ERR_MSG: &str = "{} files are only supported in macOS";
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BrowserPath {
@@ -84,15 +87,16 @@ pub fn uncompress(
     log: &Logger,
     os: &str,
     single_file: Option<String>,
+    volume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
-    let extension = match infer::get_from_path(compressed_file)? {
+    let mut extension = match infer::get_from_path(compressed_file)? {
         Some(kind) => kind.extension(),
         _ => {
             if compressed_file.ends_with(PKG) {
                 if MACOS.is(os) {
                     PKG
                 } else {
-                    return Err("PKG files are only supported in macOS".into());
+                    return Err(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, PKG).into());
                 }
             } else {
                 return Err(
@@ -101,6 +105,13 @@ pub fn uncompress(
             }
         }
     };
+    if compressed_file.ends_with(DMG) {
+        if MACOS.is(os) {
+            extension = DMG;
+        } else {
+            return Err(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, DMG).into());
+        }
+    }
     log.trace(format!(
         "The detected extension of the compressed file is {}",
         extension
@@ -114,6 +125,8 @@ pub fn uncompress(
         uncompress_bz2(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(PKG) {
         uncompress_pkg(compressed_file, target, log, os)?
+    } else if extension.eq_ignore_ascii_case(DMG) {
+        uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
@@ -188,6 +201,43 @@ pub fn uncompress_pkg(
         PKG,
         &target_folder,
     ));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    Ok(())
+}
+
+pub fn uncompress_dmg(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    os: &str,
+    volume: &str,
+) -> Result<(), Box<dyn Error>> {
+    let dmg_file_name = Path::new(compressed_file)
+        .file_name()
+        .unwrap_or_default()
+        .to_os_string();
+    log.debug(format!(
+        "Mounting {} and copying content to cache",
+        dmg_file_name.to_str().unwrap_or_default()
+    ));
+    let mut command = Command::new_single(format_one_arg(HDIUTIL_ATTACH_COMMAND, compressed_file));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    fs::create_dir_all(target)?;
+    let target_folder = path_buf_to_string(target.to_path_buf());
+    command = Command::new_single(format_three_args(
+        CP_VOLUME_COMMAND,
+        volume,
+        volume,
+        &target_folder,
+    ));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    command = Command::new_single(format_one_arg(HDIUTIL_DETACH_COMMAND, volume));
     log.trace(format!("Running command: {}", command.display()));
     run_shell_command_by_os(os, command)?;
 

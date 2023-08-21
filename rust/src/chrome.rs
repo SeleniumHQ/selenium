@@ -506,6 +506,7 @@ impl SeleniumManager for ChromeManager {
                 self.get_logger(),
                 self.get_os(),
                 None,
+                None,
             )?;
         }
         if browser_binary_path.exists() {

@@ -75,6 +75,9 @@ pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const PKGUTIL_COMMAND: &str = "pkgutil --expand-full {} {}";
+pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
+pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
+pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
 pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
 pub const MV_SFX_COMMAND: &str = r#"robocopy {}\core {} /e /move"#;
 pub const DASH_VERSION: &str = "{}{}{} -v";
@@ -171,6 +174,7 @@ pub trait SeleniumManager {
                 self.get_logger(),
                 self.get_os(),
                 Some(driver_name_with_extension),
+                None,
             )?)
         }
     }
@@ -325,7 +329,8 @@ pub trait SeleniumManager {
                         && !major_browser_version.eq(&discovered_major_browser_version)
                     {
                         self.get_logger().debug(format!(
-                            "Discovered browser version ({}) different to specified browser version ({})",
+                            "Discovered online {} version ({}) different to specified browser version ({})",
+                            self.get_browser_name(),
                             discovered_major_browser_version,
                             major_browser_version,
                         ));
