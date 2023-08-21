@@ -138,10 +138,7 @@ namespace OpenQA.Selenium.Environment
             {
                 webServer.Stop();
             }
-            if (driver != null)
-            {
-                driver.Quit();
-            }
+            CloseCurrentDriver();
         }
 
         public event EventHandler<DriverStartingEventArgs> DriverStarting;

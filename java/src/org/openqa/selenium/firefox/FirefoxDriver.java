@@ -50,6 +50,7 @@ import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -137,8 +138,11 @@ public class FirefoxDriver extends RemoteWebDriver
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(service, options);
-      service.setExecutable(path);
+      Result result = DriverFinder.getPath(service, options);
+      service.setExecutable(result.getDriverPath());
+      if (result.getBrowserPath() != null) {
+        options.setBinary(result.getBrowserPath());
+      }
     }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
@@ -392,14 +396,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
     /** System property that defines the location of the Firefox executable file. */
     public static final String BROWSER_BINARY = "webdriver.firefox.bin";
-
-    /**
-     * System property that defines the location of the file where Firefox log should be stored.
-     *
-     * @deprecated equivalent constant located at {@link
-     *     GeckoDriverService#GECKO_DRIVER_LOG_PROPERTY}
-     */
-    @Deprecated public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
 
     /**
      * System property that defines the profile that should be used as a template. When the driver

@@ -49,10 +49,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().stream()
-        .map(key -> key.startsWith("moz:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+    return capabilities.asMap().keySet().stream().anyMatch(key -> key.startsWith("moz:"));
   }
 
   @Override
@@ -78,7 +75,8 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      DriverFinder.getPath(
+          GeckoDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

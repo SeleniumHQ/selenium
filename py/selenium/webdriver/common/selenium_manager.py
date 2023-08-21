@@ -16,6 +16,7 @@
 # under the License.
 import json
 import logging
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -53,10 +54,14 @@ class SeleniumManager:
 
         path = Path(__file__).parent.joinpath(directory, file)
 
+        if not path.is_file() and os.environ["CONDA_PREFIX"]:
+            # conda has a separate package selenium-manager, installs in bin
+            path = Path(os.path.join(os.environ["CONDA_PREFIX"], "bin", file))
+            logger.debug(f"Conda environment detected, using `{path}`")
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
-        logger.debug("Selenium Manager binary found at: {location}")
+        logger.debug(f"Selenium Manager binary found at: {path}")
 
         return path
 
@@ -70,7 +75,7 @@ class SeleniumManager:
 
         browser = options.capabilities["browserName"]
 
-        args = [str(self.get_binary()), "--browser", browser, "--output", "json"]
+        args = [str(self.get_binary()), "--browser", browser]
 
         if options.browser_version:
             args.append("--browser-version")
@@ -87,32 +92,46 @@ class SeleniumManager:
             value = proxy.ssl_proxy if proxy.ssl_proxy else proxy.http_proxy
             args.append(value)
 
-        if logger.getEffectiveLevel() == logging.DEBUG:
-            args.append("--debug")
+        output = self.run(args)
 
-        result = self.run(args)
-        executable = result.split("\t")[-1].strip()
-        logger.debug(f"Using driver at: {executable}")
-        return executable
+        browser_path = output["browser_path"]
+        driver_path = output["driver_path"]
+        logger.debug(f"Using driver at: {driver_path}")
+
+        if hasattr(options.__class__, "binary_location"):
+            options.binary_location = browser_path
+            options.browser_version = None  # if we have the binary location we no longer need the version
+
+        return driver_path
 
     @staticmethod
-    def run(args: List[str]) -> str:
-        """Executes the Selenium Manager Binary.
-
+    def run(args: List[str]) -> dict:
+        """
+        Executes the Selenium Manager Binary.
         :Args:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
+        args.append("--output")
+        args.append("json")
+
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
         try:
-            completed_proc = subprocess.run(args, capture_output=True)
+            if sys.platform == "win32":
+                completed_proc = subprocess.run(
+                    args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+            else:
+                completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
             stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
             output = json.loads(stdout)
-            result = output["result"]["message"]
+            result = output["result"]
         except Exception as err:
-            raise WebDriverException(f"Unsuccessful command executed: {command}; {err}")
+            raise WebDriverException(f"Unsuccessful command executed: {command}") from err
 
         for item in output["logs"]:
             if item["level"] == "WARN":
@@ -122,5 +141,4 @@ class SeleniumManager:
 
         if completed_proc.returncode:
             raise WebDriverException(f"Unsuccessful command executed: {command}.\n{result}{stderr}")
-        else:
-            return result
+        return result

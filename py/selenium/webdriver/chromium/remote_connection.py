@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import typing
 
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
@@ -26,7 +25,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         vendor_prefix: str,
         browser_name: str,
         keep_alive: bool = True,
-        ignore_proxy: typing.Optional[bool] = False,
+        ignore_proxy: bool = False,
     ) -> None:
         super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name

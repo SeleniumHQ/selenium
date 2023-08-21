@@ -62,7 +62,8 @@ function getBinary() {
 /**
  * Determines the path of the correct driver
  * @param {Capabilities} options browser options to fetch the driver
- * @returns {string} path of the driver location
+ * @returns {{browserPath: string, driverPath: string}} path of the driver and
+ * browser location
  */
 
 function driverLocation(options) {
@@ -77,7 +78,7 @@ function driverLocation(options) {
     options.get('ms:edgeOptions') ||
     options.get('moz:firefoxOptions')
   if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
-    args.push('--browser-path', '"' + vendorOptions.binary + '"')
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
   }
 
   const proxyOptions = options.getProxy();
@@ -126,8 +127,10 @@ function driverLocation(options) {
   }
 
   logOutput(output)
-
-  return output.result.message
+  return {
+    driverPath: output.result.driver_path,
+    browserPath: output.result.browser_path,
+  }
 }
 
 function logOutput (output) {

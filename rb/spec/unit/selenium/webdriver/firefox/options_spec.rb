@@ -125,15 +125,6 @@ module Selenium
           end
         end
 
-        describe '#headless!' do
-          it 'adds the -headless command-line flag' do
-            expect {
-              options.headless!
-            }.to have_deprecated(:headless)
-            expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
-          end
-        end
-
         describe '#add_argument' do
           it 'adds a command-line argument' do
             options.add_argument('foo')
@@ -142,20 +133,6 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option with ordered pairs' do
-            expect {
-              options.add_option(:foo, 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
-          it 'adds an option with Hash' do
-            expect {
-              options.add_option(foo: 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
           it 'adds vendor namespaced options with ordered pairs' do
             options.add_option('foo:bar', {bar: 'foo'})
             expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
@@ -213,15 +190,12 @@ module Selenium
           end
 
           it 'returns added options' do
-            expect {
-              options.add_option(:args, %w[foo bar])
-            }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq('acceptInsecureCerts' => true,
                                           'browserName' => 'firefox',
                                           'foo:bar' => {'foo' => 'bar'},
                                           'moz:debuggerAddress' => true,
-                                          'moz:firefoxOptions' => {'args' => %w[foo bar]})
+                                          'moz:firefoxOptions' => {})
           end
 
           it 'converts to a json hash' do

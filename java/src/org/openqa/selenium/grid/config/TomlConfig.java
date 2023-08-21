@@ -23,8 +23,6 @@ import io.ous.jtoml.JToml;
 import io.ous.jtoml.ParseException;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
-import org.openqa.selenium.internal.Require;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -33,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.openqa.selenium.internal.Require;
 
 public class TomlConfig implements Config {
 
@@ -88,19 +87,19 @@ public class TomlConfig implements Config {
       // https://toml.io/en/v1.0.0-rc.3#array-of-tables
       if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
         return Optional.of(
-          collection.stream()
-            .map(item -> (TomlTable) item)
-            .map(TomlTable::toMap)
-            .map(this::toEntryList)
-            .flatMap(Collection::stream)
-            .collect(ImmutableList.toImmutableList()));
+            collection.stream()
+                .map(item -> (TomlTable) item)
+                .map(TomlTable::toMap)
+                .map(this::toEntryList)
+                .flatMap(Collection::stream)
+                .collect(ImmutableList.toImmutableList()));
       }
 
       return Optional.of(
-        collection.stream()
-          .filter(item -> (!(item instanceof Collection)))
-          .map(String::valueOf)
-          .collect(ImmutableList.toImmutableList()));
+          collection.stream()
+              .filter(item -> (!(item instanceof Collection)))
+              .map(String::valueOf)
+              .collect(ImmutableList.toImmutableList()));
     }
 
     if (value instanceof TomlTable) {

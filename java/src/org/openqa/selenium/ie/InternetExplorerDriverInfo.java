@@ -78,13 +78,14 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
     try {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
         DriverFinder.getPath(
-          InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+            InternetExplorerDriverService.createDefaultService(), getCanonicalCapabilities(), true);
         return true;
       }
       return false;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
-    }  }
+    }
+  }
 
   @Override
   public int getMaximumSimultaneousSessions() {

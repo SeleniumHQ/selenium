@@ -1,5 +1,5 @@
 {
-  "checksum": "e324d731a7a745741843d13e869e9d16f097a4e797b827d05d06dcbd0a5cb7b0",
+  "checksum": "411f529aca096bd6f3ebbe47fcbd44f95dc26ac344ae92e24cd2a1dba11c37e0",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -1215,13 +1215,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap 4.3.9": {
+    "clap 4.3.19": {
       "name": "clap",
-      "version": "4.3.9",
+      "version": "4.3.19",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap/4.3.9/download",
-          "sha256": "bba77a07e4489fb41bd90e8d4201c3eb246b3c2c9ea2ba0bddd6c1d1df87db7d"
+          "url": "https://crates.io/api/v1/crates/clap/4.3.19/download",
+          "sha256": "5fd304a20bff958a57f04c4e96a2e7594cc4490a0e809cbd48bb6437edaa452d"
         }
       },
       "targets": [
@@ -1256,7 +1256,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap_builder 4.3.9",
+              "id": "clap_builder 4.3.19",
               "target": "clap_builder"
             },
             {
@@ -1270,23 +1270,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "clap_derive 4.3.2",
+              "id": "clap_derive 4.3.12",
               "target": "clap_derive"
             }
           ],
           "selects": {}
         },
-        "version": "4.3.9"
+        "version": "4.3.19"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_builder 4.3.9": {
+    "clap_builder 4.3.19": {
       "name": "clap_builder",
-      "version": "4.3.9",
+      "version": "4.3.19",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_builder/4.3.9/download",
-          "sha256": "2c9b4a88bb4bc35d3d6f65a21b0f0bafe9c894fa00978de242c555ec28bea1c0"
+          "url": "https://crates.io/api/v1/crates/clap_builder/4.3.19/download",
+          "sha256": "01c6a3f08f1fe5662a35cfe393aec09c4df95f60ee93b7556505260f75eee9e1"
         }
       },
       "targets": [
@@ -1327,10 +1327,6 @@
               "target": "anstyle"
             },
             {
-              "id": "bitflags 1.3.2",
-              "target": "bitflags"
-            },
-            {
               "id": "clap_lex 0.5.0",
               "target": "clap_lex"
             },
@@ -1342,17 +1338,17 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.3.9"
+        "version": "4.3.19"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_derive 4.3.2": {
+    "clap_derive 4.3.12": {
       "name": "clap_derive",
-      "version": "4.3.2",
+      "version": "4.3.12",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_derive/4.3.2/download",
-          "sha256": "b8cd2b2a819ad6eec39e8f1d6b53001af1e5469f8c177579cdaeb313115b825f"
+          "url": "https://crates.io/api/v1/crates/clap_derive/4.3.12/download",
+          "sha256": "54a9bb5758fc5dfe728d1019941681eccaf0cf8a4189b692a0ee2f2ecf90a050"
         }
       },
       "targets": [
@@ -1399,7 +1395,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.3.2"
+        "version": "4.3.12"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -7075,9 +7071,9 @@
       },
       "license": "Apache-2.0/ISC/MIT"
     },
-    "selenium-manager 1.0.0-M3": {
+    "selenium-manager 0.4.12": {
       "name": "selenium-manager",
-      "version": "1.0.0-M3",
+      "version": "0.4.12",
       "repository": null,
       "targets": [
         {
@@ -7098,7 +7094,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap 4.3.9",
+              "id": "clap 4.3.19",
               "target": "clap"
             },
             {
@@ -7182,7 +7178,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "1.0.0-M3"
+        "version": "0.4.12"
       },
       "license": "Apache-2.0"
     },
@@ -11822,7 +11818,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 1.0.0-M3": "rust"
+    "selenium-manager 0.4.12": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [

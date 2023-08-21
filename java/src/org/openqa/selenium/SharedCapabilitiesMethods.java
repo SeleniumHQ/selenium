@@ -38,8 +38,10 @@ class SharedCapabilitiesMethods {
   static int hashCode(Capabilities caps) {
     String[] sortedNames = caps.getCapabilityNames().toArray(EMPTY_ARRAY);
     Arrays.sort(sortedNames, String::compareTo);
-    // we only use the names to generate a hash code, this might result in hash collisions. thanks to the
-    // moz:firefoxOptions, goog:chromeOptions and ms:edgeOptions, these hash collisions should not happen too often.
+    // we only use the names to generate a hash code, this might result in hash collisions. thanks
+    // to the
+    // moz:firefoxOptions, goog:chromeOptions and ms:edgeOptions, these hash collisions should not
+    // happen too often.
     return Arrays.hashCode(sortedNames);
   }
 
@@ -47,8 +49,10 @@ class SharedCapabilitiesMethods {
     if (left == right) {
       return true;
     }
-    // deeply compare the keys & values, usually only called when the hash codes of two objects are identical.
-    // note: there should be no arrays (directly or nested) inside the map, otherwise the equals will not work.
+    // deeply compare the keys & values, usually only called when the hash codes of two objects are
+    // identical.
+    // note: there should be no arrays (directly or nested) inside the map, otherwise the equals
+    // will not work.
     return left.asMap().equals(right.asMap());
   }
 

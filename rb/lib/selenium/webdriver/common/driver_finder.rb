@@ -31,7 +31,6 @@ module Selenium
         end
 
         begin
-          Platform.assert_file(path)
           Platform.assert_executable(path)
         rescue TypeError
           raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"

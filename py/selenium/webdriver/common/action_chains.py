@@ -17,7 +17,6 @@
 """The ActionChains implementation."""
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING
 from typing import Union
 
@@ -31,13 +30,7 @@ from .actions.wheel_input import WheelInput
 from .utils import keys_to_typing
 
 if TYPE_CHECKING:
-    from selenium.webdriver import Chrome
-    from selenium.webdriver import Edge
-    from selenium.webdriver import Firefox
-    from selenium.webdriver import Ie
-    from selenium.webdriver import Safari
-
-    AnyDriver = Union[Chrome, Firefox, Safari, Ie, Edge]
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
@@ -75,7 +68,7 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver: AnyDriver, duration: int = 250, devices: list[AnyDevice] | None = None) -> None:
+    def __init__(self, driver: WebDriver, duration: int = 250, devices: list[AnyDevice] | None = None) -> None:
         """Creates a new ActionChains.
 
         :Args:
@@ -378,6 +371,7 @@ class ActionChains:
         )
         return self
 
+<<<<<<< HEAD
     def scroll(
         self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"
     ) -> ActionChains:
@@ -400,6 +394,8 @@ class ActionChains:
         )
         return self
 
+=======
+>>>>>>> trunk
     # Context manager so ActionChains can be used in a 'with .. as' statements.
 
     def __enter__(self) -> ActionChains:

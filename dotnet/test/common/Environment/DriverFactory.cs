@@ -46,6 +46,11 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
             }
+            else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
+            {
+                browser = Browser.Edge;
+                options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
+            }
             else if (typeof(InternetExplorerDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.IE;

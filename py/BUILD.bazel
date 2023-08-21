@@ -16,13 +16,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.10.0"
+SE_VERSION = "4.11.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v112",
-    "v113",
     "v114",
+    "v115",
+    "v116",
 ]
 
 TEST_DEPS = [
@@ -354,6 +354,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -379,6 +380,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -401,6 +403,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -424,6 +427,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -448,6 +452,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -470,6 +475,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -493,6 +499,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -517,6 +524,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -541,6 +549,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",

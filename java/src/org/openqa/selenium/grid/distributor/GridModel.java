@@ -136,7 +136,7 @@ public class GridModel {
       LOG.log(
           Debug.getDebugLogLevel(),
           "Adding node with id {0} and URI {1}",
-          new Object[]{ node.getNodeId(), node.getExternalUri()});
+          new Object[] {node.getNodeId(), node.getExternalUri()});
       NodeStatus refreshed = rewrite(node, DOWN);
       nodes.add(refreshed);
       nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
@@ -178,15 +178,22 @@ public class GridModel {
     }
   }
 
-  public void touch(NodeId id) {
-    Require.nonNull("Node ID", id);
+  public void touch(NodeStatus nodeStatus) {
+    Require.nonNull("Node ID", nodeStatus);
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      NodeStatus node = getNode(id);
+      NodeStatus node = getNode(nodeStatus.getNodeId());
       if (node != null) {
         nodePurgeTimes.put(node.getNodeId(), Instant.now());
+        // Covers the case where the Node might be DOWN in the Grid model (e.g. Node lost
+        // connectivity for a while). The Node reports itself back as UP.
+        if (node.getAvailability() != nodeStatus.getAvailability()
+            && nodeStatus.getAvailability() == UP) {
+          nodes.remove(node);
+          nodes.add(nodeStatus);
+        }
       }
     } finally {
       writeLock.unlock();

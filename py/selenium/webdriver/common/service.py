@@ -218,5 +218,7 @@ class Service(ABC):
             raise
         except OSError as err:
             if err.errno == errno.EACCES:
-                raise WebDriverException(f"'{os.path.basename(self._path)}' executable may have wrong permissions.")
+                raise WebDriverException(
+                    f"'{os.path.basename(self._path)}' executable may have wrong permissions."
+                ) from err
             raise

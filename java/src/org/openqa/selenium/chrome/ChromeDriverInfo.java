@@ -85,7 +85,8 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(ChromeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      DriverFinder.getPath(
+          ChromeDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

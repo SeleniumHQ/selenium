@@ -28,7 +28,7 @@ use crate::files::parse_version;
 use crate::Logger;
 
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(
+pub async fn download_to_tmp_folder(
     http_client: &Client,
     url: String,
     log: &Logger,
@@ -60,7 +60,7 @@ pub async fn download_driver_to_tmp_folder(
         target_path = String::from(target_name.to_str().unwrap());
 
         log.trace(format!(
-            "Temporal folder for driver package: {}",
+            "File downloaded to temporal folder: {}",
             target_path
         ));
         File::create(target_name)?

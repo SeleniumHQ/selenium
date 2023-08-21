@@ -79,6 +79,7 @@
 
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
+const EDGE_CAPABILITY_KEY = 'ms:edgeOptions'
 
 /** @type {remote.DriverService} */
 
@@ -147,7 +148,7 @@ class Driver extends chromium.Driver {
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
     return /** @type {!Driver} */ (
-      super.createSession(caps, opt_serviceExecutor)
+      super.createSession(caps, opt_serviceExecutor, 'ms', EDGE_CAPABILITY_KEY)
     )
   }
 
@@ -168,8 +169,7 @@ class Driver extends chromium.Driver {
 }
 
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
-Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
-Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
+Options.prototype.CAPABILITY_KEY = EDGE_CAPABILITY_KEY
 
 // PUBLIC API
 

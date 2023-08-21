@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.Interactions
             IAction loginAction = actionProvider
             .SendKeys(username, "username")
             .SendKeys(password, "password")
-            .setActivePointer(PointerKind.Mouse, "test")
+            .SetActivePointer(PointerKind.Mouse, "test")
             .MoveToElement(login)
             .Click()
             .Build();

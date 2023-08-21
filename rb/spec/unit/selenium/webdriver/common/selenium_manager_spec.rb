@@ -78,18 +78,18 @@ module Selenium
 
       describe 'self.driver_path' do
         it 'determines browser name by default' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
 
           described_class.driver_path(Options.chrome)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
+            .with('selenium-manager', '--browser', 'chrome')
         end
 
         it 'uses browser version if specified' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(browser_version: 1)
@@ -99,13 +99,12 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--browser-version', 1)
         end
 
         it 'uses proxy if specified' do
           proxy = Selenium::WebDriver::Proxy.new(ssl: 'proxy')
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(proxy: proxy)
@@ -115,12 +114,11 @@ module Selenium
           expect(described_class).to have_received(:run)
             .with('selenium-manager',
                   '--browser', 'chrome',
-                  '--output', 'json',
                   '--proxy', 'proxy')
         end
 
         it 'uses browser location if specified' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => '', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path/to/browser')
@@ -128,11 +126,11 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
+            .with('selenium-manager', '--browser', 'chrome', '--browser-path', '/path/to/browser')
         end
 
         it 'properly escapes plain spaces in browser location' do
-          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:run).and_return('browser_path' => 'a', 'driver_path' => '')
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path to/the/browser')
@@ -140,8 +138,18 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager', '--browser', 'chrome', '--output', 'json',
+            .with('selenium-manager', '--browser', 'chrome',
                   '--browser-path', '/path to/the/browser')
+        end
+
+        it 'sets binary location on options' do
+          allow(described_class).to receive(:run).and_return('browser_path' => 'foo', 'driver_path' => '')
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome
+
+          described_class.driver_path(options)
+          expect(options.binary).to eq 'foo'
         end
       end
     end

@@ -117,21 +117,25 @@ function getBrowsersToTestFromEnv() {
 function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
-  getPath(safari.Options)
   let targets = [
-    [getPath(chrome.Options), Browser.CHROME],
-    [getPath(edge.Options), Browser.EDGE],
-    [getPath(firefox.Options), Browser.FIREFOX],
-    [getPath(ie.Options), Browser.INTERNET_EXPLORER],
-    [getPath(safari.Options), Browser.SAFARI],
+    [getPath(new chrome.Options()), Browser.CHROME],
+    [getPath(new edge.Options()), Browser.EDGE],
+    [getPath(new firefox.Options()), Browser.FIREFOX],
   ]
+  if (process.platform === 'win32') {
+    targets.push([getPath(new ie.Options()), Browser.INTERNET_EXPLORER])
+  }
+  if (process.platform === 'darwin') {
+    targets.push([getPath(new safari.Options()), Browser.SAFARI])
+  }
 
   let availableBrowsers = []
   for (let pair of targets) {
-    const driverPath = pair[0]
+    const driverPath = pair[0].driverPath
+    const browserPath = pair[0].browserPath
     const name = pair[1]
     const capabilities = pair[2]
-    if (driverPath.length > 0) {
+    if (driverPath.length > 0 && browserPath && browserPath.length > 0) {
       info(`... located ${name}`)
       availableBrowsers.push({ name, capabilities })
     }

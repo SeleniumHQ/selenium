@@ -49,10 +49,7 @@ public class SafariDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().parallelStream()
-        .map(key -> key.startsWith("safari:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+    return capabilities.asMap().keySet().stream().anyMatch(key -> key.startsWith("safari:"));
   }
 
   @Override
@@ -78,7 +75,8 @@ public class SafariDriverInfo implements WebDriverInfo {
   @Override
   public boolean isPresent() {
     try {
-      DriverFinder.getPath(SafariDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+      DriverFinder.getPath(
+          SafariDriverService.createDefaultService(), getCanonicalCapabilities(), true);
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

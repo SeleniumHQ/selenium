@@ -17,6 +17,7 @@
 
 from abc import ABCMeta
 from abc import abstractmethod
+from contextlib import suppress
 from pathlib import Path
 from typing import Optional
 
@@ -45,5 +46,7 @@ class LocalFileDetector(FileDetector):
 
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         file_path = "".join(keys_to_typing(keys))
-        path = Path(file_path)
-        return file_path if path.is_file() else None
+
+        with suppress(OSError):
+            if Path(file_path).is_file():
+                return file_path

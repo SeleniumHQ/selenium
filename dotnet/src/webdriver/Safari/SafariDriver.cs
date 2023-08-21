@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="options">The <see cref="SafariOptions"/> to use for this <see cref="SafariDriver"/> instance.</param>
         public SafariDriver(SafariOptions options)
-            : this(SafariDriverService.CreateDefaultService(), options)
+            : this(SafariDriverService.CreateDefaultService(options), options)
         {
         }
 

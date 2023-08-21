@@ -59,15 +59,6 @@ module Selenium
 
             expect(service.extra_args).to eq ['--foo', '--bar']
           end
-
-          it 'uses args when passed in as a Hash' do
-            expect {
-              service = described_class.new(args: {log: '/path/to/log',
-                                                   marionette_port: 4})
-
-              expect(service.extra_args).to eq ['--log=/path/to/log', '--marionette-port=4']
-            }.to have_deprecated(:driver_opts)
-          end
         end
 
         context 'when initializing driver' do
@@ -91,7 +82,7 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
@@ -102,7 +93,7 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)

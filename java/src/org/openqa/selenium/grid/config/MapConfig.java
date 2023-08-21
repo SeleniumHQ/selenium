@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.openqa.selenium.internal.Require;
 
 public class MapConfig implements Config {
@@ -75,18 +74,19 @@ public class MapConfig implements Config {
       Collection<?> collection = (Collection<?>) value;
       // Case when an array of map is used as config
       if (collection.stream().anyMatch(item -> item instanceof Map)) {
-        return Optional.of(collection.stream()
-          .map(item -> (Map<String, Object>) item)
-          .map(this::toEntryList)
-          .flatMap(Collection::stream)
-          .collect(ImmutableList.toImmutableList()));
+        return Optional.of(
+            collection.stream()
+                .map(item -> (Map<String, Object>) item)
+                .map(this::toEntryList)
+                .flatMap(Collection::stream)
+                .collect(ImmutableList.toImmutableList()));
       }
 
       return Optional.of(
-        collection.stream()
-          .filter(item -> (!(item instanceof Collection)))
-          .map(String::valueOf)
-          .collect(ImmutableList.toImmutableList()));
+          collection.stream()
+              .filter(item -> (!(item instanceof Collection)))
+              .map(String::valueOf)
+              .collect(ImmutableList.toImmutableList()));
     }
 
     if (value instanceof Map) {

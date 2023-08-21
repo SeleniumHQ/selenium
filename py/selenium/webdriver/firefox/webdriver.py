@@ -122,7 +122,7 @@ class WebDriver(RemoteWebDriver):
             fp = BytesIO()
             path_root = len(path) + 1  # account for trailing slash
             with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
-                for base, dirs, files in os.walk(path):
+                for base, _, files in os.walk(path):
                     for fyle in files:
                         filename = os.path.join(base, fyle)
                         zipped.write(filename, filename[path_root:])
@@ -160,7 +160,7 @@ class WebDriver(RemoteWebDriver):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.get_full_page_screenshot_as_png()

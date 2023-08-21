@@ -4,36 +4,42 @@ import java.io.File;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.manager.SeleniumManager;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.NoSuchDriverException;
 
 public class DriverFinder {
 
-  public static String getPath(DriverService service, Capabilities options) {
+  public static Result getPath(DriverService service, Capabilities options) {
     return getPath(service, options, false);
   }
 
-  public static String getPath(DriverService service, Capabilities options, boolean offline) {
+  public static Result getPath(DriverService service, Capabilities options, boolean offline) {
     Require.nonNull("Browser options", options);
-    String exePath = System.getProperty(service.getDriverProperty());
+    Result result = new Result(System.getProperty(service.getDriverProperty()));
 
-    if (exePath == null) {
+    if (result.getDriverPath() == null) {
       try {
-        exePath = SeleniumManager.getInstance().getDriverPath(options, offline);
+        result = SeleniumManager.getInstance().getDriverPath(options, offline);
       } catch (Exception e) {
-        throw new NoSuchDriverException(String.format("Unable to obtain: %s", options), e);
+        throw new NoSuchDriverException(
+            String.format("Unable to obtain: %s, error %s", options, e.getMessage()), e);
       }
     }
 
     String message;
-    if (exePath == null) {
+    if (result.getDriverPath() == null) {
       message = String.format("Unable to locate or obtain %s", service.getDriverName());
-    } else if (!new File(exePath).exists()) {
-      message = String.format("%s located at %s, but invalid", service.getDriverName(), exePath);
-    } else if (!new File(exePath).canExecute()) {
+    } else if (!new File(result.getDriverPath()).exists()) {
       message =
-          String.format("%s located at %s, cannot be executed", service.getDriverName(), exePath);
+          String.format(
+              "%s located at %s, but invalid", service.getDriverName(), result.getDriverPath());
+    } else if (!new File(result.getDriverPath()).canExecute()) {
+      message =
+          String.format(
+              "%s located at %s, cannot be executed",
+              service.getDriverName(), result.getDriverPath());
     } else {
-      return exePath;
+      return result;
     }
 
     throw new NoSuchDriverException(message);

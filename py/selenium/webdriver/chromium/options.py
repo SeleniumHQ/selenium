@@ -49,6 +49,8 @@ class ChromiumOptions(ArgOptions):
         :Args:
          - value: path to the Chromium binary
         """
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self._binary_location = value
 
     @property
@@ -64,6 +66,8 @@ class ChromiumOptions(ArgOptions):
         :Args:
          - value: address of remote devtools instance if any (hostname[:port])
         """
+        if not isinstance(value, str):
+            raise TypeError("Debugger Address must be a string")
         self._debugger_address = value
 
     @property
@@ -151,6 +155,10 @@ class ChromiumOptions(ArgOptions):
             stacklevel=2,
         )
         args = {"--headless"}
+
+        if not isinstance(value, bool):
+            raise TypeError("value must be a boolean")
+
         if value:
             self._arguments.extend(args)
         else:
