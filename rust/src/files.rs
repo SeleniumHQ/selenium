@@ -93,7 +93,7 @@ pub fn uncompress(
     let mut extension = match infer::get_from_path(compressed_file)? {
         Some(kind) => kind.extension(),
         _ => {
-            if compressed_file.ends_with(PKG) {
+            if compressed_file.ends_with(PKG) || compressed_file.ends_with(DMG) {
                 if MACOS.is(os) {
                     PKG
                 } else {

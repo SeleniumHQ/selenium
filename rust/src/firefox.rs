@@ -56,9 +56,10 @@ const FIREFOX_HISTORY_ENDPOINT: &str = "firefox_history_stability_releases.json"
 const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases.json";
 const FIREFOX_NIGHTLY_URL: &str =
     "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
+const FIREFOX_VOLUME: &str = "Firefox";
 const FIREFOX_NIGHTLY_VOLUME: &str = r#"Firefox\ Nightly"#;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
-const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 68;
+const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
 const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {} {} in online repository";
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
@@ -120,14 +121,14 @@ impl FirefoxManager {
         let platform_label;
         let artifact_name;
         let artifact_extension;
+        let major_browser_version = self
+            .get_major_browser_version()
+            .parse::<i32>()
+            .unwrap_or_default();
 
         if WINDOWS.is(os) {
             artifact_name = "Firefox%20Setup%20";
             artifact_extension = "exe";
-            let major_browser_version = self
-                .get_major_browser_version()
-                .parse::<i32>()
-                .unwrap_or_default();
             // Before Firefox 42, only Windows 32 was supported
             if X32.is(arch) || major_browser_version < 42 {
                 platform_label = "win32";
@@ -138,7 +139,12 @@ impl FirefoxManager {
             }
         } else if MACOS.is(os) {
             artifact_name = "Firefox%20";
-            artifact_extension = "pkg";
+            // Before Firefox 68, only DMG was released
+            if major_browser_version < 68 {
+                artifact_extension = "dmg";
+            } else {
+                artifact_extension = "pkg";
+            }
             if self.is_browser_version_nightly() {
                 platform_label = "osx";
             } else {
@@ -446,13 +452,18 @@ impl SeleniumManager for FirefoxManager {
                 .get_major_browser_version()
                 .parse::<i32>()
                 .unwrap_or_default();
+            let volume = if self.is_browser_version_nightly() {
+                FIREFOX_NIGHTLY_VOLUME
+            } else {
+                FIREFOX_VOLUME
+            };
             uncompress(
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
                 self.get_logger(),
                 self.get_os(),
                 None,
-                Some(FIREFOX_NIGHTLY_VOLUME),
+                Some(volume),
                 Some(major_browser_version_int),
             )?;
         }
