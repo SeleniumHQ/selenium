@@ -121,7 +121,7 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        self.discover_general_browser_version(
+        self.general_discover_browser_version(
             r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
             REG_VERSION_ARG,
             DASH_DASH_VERSION,
@@ -284,5 +284,15 @@ impl SeleniumManager for EdgeManager {
         } else {
             "linux64"
         }
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        // TODO review this
+        Ok("".to_string())
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        // TODO review this
+        Ok("".to_string())
     }
 }

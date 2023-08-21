@@ -95,7 +95,7 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        self.discover_general_browser_version(
+        self.general_discover_browser_version(
             r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
             REG_VERSION_ARG,
             "",
@@ -230,5 +230,15 @@ impl SeleniumManager for IExplorerManager {
 
     fn get_platform_label(&self) -> &str {
         "win32"
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        // TODO review this
+        Ok("".to_string())
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        // TODO review this
+        Ok("".to_string())
     }
 }

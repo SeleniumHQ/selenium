@@ -90,108 +90,10 @@ impl FirefoxManager {
         format!("{}{}", FIREFOX_DETAILS_URL, endpoint)
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_name = self.browser_name;
-        self.get_logger().trace(format!(
-            "Using Firefox endpoints to find out latest stable {} version",
-            browser_name
-        ));
-
-        let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
-        let firefox_versions =
-            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
-        let browser_version = firefox_versions
-            .get(FIREFOX_STABLE_LABEL)
-            .unwrap()
-            .as_str()
-            .unwrap();
-        self.set_browser_version(browser_version.to_string());
-        Ok(browser_version.to_string())
-    }
-
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        let browser_name = self.browser_name;
-        let browser_version = self.get_browser_version().to_string();
-        self.get_logger().trace(format!(
-            "Using Firefox endpoints to find out {} {}",
-            browser_name, browser_version
-        ));
-
-        if self.is_browser_version_unstable() {
-            let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
-            let firefox_versions =
-                parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
-            let version_label = if browser_version.eq_ignore_ascii_case(BETA) {
-                FIREFOX_BETA_LABEL
-            } else if browser_version.eq_ignore_ascii_case(DEV) {
-                FIREFOX_DEV_LABEL
-            } else {
-                FIREFOX_CANARY_LABEL
-            };
-            let browser_version = firefox_versions
-                .get(version_label)
-                .unwrap()
-                .as_str()
-                .unwrap();
-            Ok(browser_version.to_string())
-        } else {
-            let os = self.get_os();
-            let major_browser_version = self
-                .get_major_browser_version()
-                .parse::<i32>()
-                .unwrap_or_default();
-
-            let min_downloadable_version = if WINDOWS.is(os) {
-                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
-            } else if MACOS.is(os) {
-                MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC
-            } else {
-                MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX
-            };
-            if major_browser_version < min_downloadable_version {
-                return Err(format_three_args(
-                    UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
-                    browser_name,
-                    &browser_version,
-                    &min_downloadable_version.to_string(),
-                )
-                .into());
-            }
-
-            let mut firefox_versions =
-                self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
-            if firefox_versions.is_empty() {
-                firefox_versions =
-                    self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
-                if firefox_versions.is_empty() {
-                    return Err(format_two_args(
-                        ONLINE_DISCOVERY_ERROR_MESSAGE,
-                        browser_name,
-                        self.get_browser_version(),
-                    )
-                    .into());
-                }
-            }
-
-            for version in firefox_versions.iter().rev() {
-                let release_url = format_two_args("{}{}/", BROWSER_URL, version);
-                self.get_logger()
-                    .trace(format!("Checking release URL: {}", release_url));
-                let content = read_content_from_link(self.get_http_client(), release_url)?;
-                if !content.contains("Not Found") {
-                    return Ok(version.to_string());
-                }
-            }
-            Err(format_two_args(
-                ONLINE_DISCOVERY_ERROR_MESSAGE,
-                browser_name,
-                self.get_browser_version(),
-            )
-            .into())
-        }
-    }
-
-    fn request_versions_from_online(&self, endpoint: &str) -> Result<Vec<String>, Box<dyn Error>> {
+    fn request_versions_from_online(
+        &mut self,
+        endpoint: &str,
+    ) -> Result<Vec<String>, Box<dyn Error>> {
         let browser_version = self.get_browser_version().to_string();
         let firefox_versions_url = self.create_firefox_details_url(endpoint);
         let firefox_versions =
@@ -242,6 +144,8 @@ impl FirefoxManager {
             artifact_extension = "tar.bz2";
             if X32.is(arch) {
                 platform_label = "linux-i686";
+            } else if self.is_browser_version_nightly() {
+                platform_label = "linux64";
             } else {
                 platform_label = "linux-x86_64";
             }
@@ -336,7 +240,7 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        self.discover_general_browser_version(
+        self.general_discover_browser_version(
             r#"HKCU\Software\Mozilla\Mozilla Firefox"#,
             REG_CURRENT_VERSION_ARG,
             DASH_VERSION,
@@ -388,7 +292,7 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        Ok(None)
+        self.general_request_browser_version(self.browser_name)
     }
 
     fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
@@ -574,20 +478,107 @@ impl SeleniumManager for FirefoxManager {
             "linux64"
         }
     }
-}
 
-pub fn request_firefox_beta_version(http_client: &Client) -> Result<String, Box<dyn Error>> {
-    let firefox_versions_url = format!("{}{}", FIREFOX_DETAILS_URL, FIREFOX_VERSIONS_ENDPOINT);
-    let firefox_versions = parse_generic_json_from_url(http_client, firefox_versions_url)?;
-    let firefox_beta_version = firefox_versions
-        .get(FIREFOX_BETA_LABEL)
-        .unwrap()
-        .as_str()
-        .unwrap();
-    let index_b = firefox_beta_version.find('b');
-    let index_or_total = index_b.unwrap_or(firefox_beta_version.len());
-    let trimmed_version = &firefox_beta_version[..index_or_total];
-    Ok(trimmed_version.to_string())
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+        self.get_logger().trace(format!(
+            "Using Firefox endpoints to find out latest stable {} version",
+            browser_name
+        ));
+
+        let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
+        let firefox_versions =
+            parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+        let browser_version = firefox_versions
+            .get(FIREFOX_STABLE_LABEL)
+            .unwrap()
+            .as_str()
+            .unwrap();
+        self.set_browser_version(browser_version.to_string());
+        Ok(browser_version.to_string())
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+        let browser_version = self.get_browser_version().to_string();
+        self.get_logger().trace(format!(
+            "Using Firefox endpoints to find out {} {}",
+            browser_name, browser_version
+        ));
+
+        if self.is_browser_version_unstable() {
+            let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
+            let firefox_versions =
+                parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
+            let version_label = if browser_version.eq_ignore_ascii_case(BETA) {
+                FIREFOX_BETA_LABEL
+            } else if browser_version.eq_ignore_ascii_case(DEV) {
+                FIREFOX_DEV_LABEL
+            } else {
+                FIREFOX_CANARY_LABEL
+            };
+            let browser_version = firefox_versions
+                .get(version_label)
+                .unwrap()
+                .as_str()
+                .unwrap();
+            Ok(browser_version.to_string())
+        } else {
+            let os = self.get_os();
+            let major_browser_version = self
+                .get_major_browser_version()
+                .parse::<i32>()
+                .unwrap_or_default();
+
+            let min_downloadable_version = if WINDOWS.is(os) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
+            } else if MACOS.is(os) {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC
+            } else {
+                MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX
+            };
+            if major_browser_version < min_downloadable_version {
+                return Err(format_three_args(
+                    UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
+                    browser_name,
+                    &browser_version,
+                    &min_downloadable_version.to_string(),
+                )
+                .into());
+            }
+
+            let mut firefox_versions =
+                self.request_versions_from_online(FIREFOX_HISTORY_ENDPOINT)?;
+            if firefox_versions.is_empty() {
+                firefox_versions =
+                    self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
+                if firefox_versions.is_empty() {
+                    return Err(format_two_args(
+                        ONLINE_DISCOVERY_ERROR_MESSAGE,
+                        browser_name,
+                        self.get_browser_version(),
+                    )
+                    .into());
+                }
+            }
+
+            for version in firefox_versions.iter().rev() {
+                let release_url = format_two_args("{}{}/", BROWSER_URL, version);
+                self.get_logger()
+                    .trace(format!("Checking release URL: {}", release_url));
+                let content = read_content_from_link(self.get_http_client(), release_url)?;
+                if !content.contains("Not Found") {
+                    return Ok(version.to_string());
+                }
+            }
+            Err(format_two_args(
+                ONLINE_DISCOVERY_ERROR_MESSAGE,
+                browser_name,
+                self.get_browser_version(),
+            )
+            .into())
+        }
+    }
 }
 
 #[cfg(test)]
