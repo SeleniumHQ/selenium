@@ -21,7 +21,7 @@ use std::fs::File;
 use std::io;
 use std::io::{BufReader, Cursor, Read};
 
-use bzip2_rs::DecoderReader;
+use bzip2::read::BzDecoder;
 use std::path::{Path, PathBuf};
 
 use crate::config::OS;
@@ -288,9 +288,10 @@ pub fn uncompress_bz2(
         compressed_file,
         target.display()
     ));
-    let file = File::open(compressed_file)?;
-    let tar = DecoderReader::new(file);
-    let mut archive = Archive::new(tar);
+    let mut bz_decoder = BzDecoder::new(File::open(compressed_file)?);
+    let mut buffer: Vec<u8> = Vec::new();
+    bz_decoder.read_to_end(&mut buffer)?;
+    let mut archive = Archive::new(Cursor::new(buffer));
     if !target.exists() {
         for entry in archive.entries()? {
             let mut entry_decoder = entry?;
