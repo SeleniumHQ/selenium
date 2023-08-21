@@ -48,7 +48,7 @@ import org.openqa.selenium.logging.LogLevelMapping;
 
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
-  static final int MAX_DEPTH = 10;
+  static final int MAX_DEPTH = 100;
 
   private static final Predicate<Class<?>> GSON_ELEMENT;
 
