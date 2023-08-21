@@ -442,6 +442,10 @@ impl SeleniumManager for FirefoxManager {
             let (_tmp_folder, driver_zip_file) =
                 download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
 
+            let major_browser_version_int = self
+                .get_major_browser_version()
+                .parse::<i32>()
+                .unwrap_or_default();
             uncompress(
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
@@ -449,6 +453,7 @@ impl SeleniumManager for FirefoxManager {
                 self.get_os(),
                 None,
                 Some(FIREFOX_NIGHTLY_VOLUME),
+                Some(major_browser_version_int),
             )?;
         }
         if browser_binary_path.exists() {

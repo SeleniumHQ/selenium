@@ -36,7 +36,7 @@ use crate::config::OS::WINDOWS;
 use crate::{
     format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
     CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MV_PAYLOAD_COMMAND,
-    MV_SFX_COMMAND, PKGUTIL_COMMAND,
+    MV_PAYLOAD_OLD_VERSIONS_COMMAND, MV_SFX_COMMAND, PKGUTIL_COMMAND,
 };
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -88,6 +88,7 @@ pub fn uncompress(
     os: &str,
     single_file: Option<String>,
     volume: Option<&str>,
+    major_browser_version: Option<i32>,
 ) -> Result<(), Box<dyn Error>> {
     let mut extension = match infer::get_from_path(compressed_file)? {
         Some(kind) => kind.extension(),
@@ -124,7 +125,13 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(BZ2) {
         uncompress_bz2(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(PKG) {
-        uncompress_pkg(compressed_file, target, log, os)?
+        uncompress_pkg(
+            compressed_file,
+            target,
+            log,
+            os,
+            major_browser_version.unwrap_or_default(),
+        )?
     } else if extension.eq_ignore_ascii_case(DMG) {
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
@@ -178,6 +185,7 @@ pub fn uncompress_pkg(
     target: &Path,
     log: &Logger,
     os: &str,
+    major_browser_version: i32,
 ) -> Result<(), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix(PKG).tempdir()?;
     let out_folder = format!(
@@ -195,12 +203,20 @@ pub fn uncompress_pkg(
 
     fs::create_dir_all(target)?;
     let target_folder = path_buf_to_string(target.to_path_buf());
-    command = Command::new_single(format_three_args(
-        MV_PAYLOAD_COMMAND,
-        &out_folder,
-        PKG,
-        &target_folder,
-    ));
+    command = if major_browser_version == 0 || major_browser_version > 84 {
+        Command::new_single(format_three_args(
+            MV_PAYLOAD_COMMAND,
+            &out_folder,
+            PKG,
+            &target_folder,
+        ))
+    } else {
+        Command::new_single(format_two_args(
+            MV_PAYLOAD_OLD_VERSIONS_COMMAND,
+            &out_folder,
+            &target_folder,
+        ))
+    };
     log.trace(format!("Running command: {}", command.display()));
     run_shell_command_by_os(os, command)?;
 

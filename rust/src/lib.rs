@@ -79,6 +79,7 @@ pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
 pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
 pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
 pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
+pub const MV_PAYLOAD_OLD_VERSIONS_COMMAND: &str = "mv {}/Payload/*.app {}";
 pub const MV_SFX_COMMAND: &str = r#"robocopy {}\core {} /e /move"#;
 pub const DASH_VERSION: &str = "{}{}{} -v";
 pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
@@ -174,6 +175,7 @@ pub trait SeleniumManager {
                 self.get_logger(),
                 self.get_os(),
                 Some(driver_name_with_extension),
+                None,
                 None,
             )?)
         }
