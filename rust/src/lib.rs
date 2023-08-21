@@ -505,7 +505,7 @@ pub trait SeleniumManager {
         self.get_browser_version().eq_ignore_ascii_case(STABLE)
     }
 
-    fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
+    fn setup(&mut self) -> Result<PathBuf, Box<dyn Error>> {
         let mut driver_in_path = None;
         let mut driver_in_path_version = None;
 

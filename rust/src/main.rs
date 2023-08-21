@@ -179,7 +179,7 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
-        .and_then(|_| selenium_manager.resolve_driver())
+        .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
             if driver_path.exists() {
