@@ -536,8 +536,8 @@ pub trait SeleniumManager {
                 Err(err) => {
                     if driver_in_path_version.is_some() {
                         self.get_logger().warn(format!(
-                            "Exception trying to discover {} version: {}",
-                            self.get_driver_name(),
+                            "Exception managing {}: {}",
+                            self.get_browser_name(),
                             err
                         ));
                     } else {
@@ -551,9 +551,12 @@ pub trait SeleniumManager {
         if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
             // If proper driver version is not the same as the driver in path, display warning
             let major_version = self.get_major_version(version)?;
-            if !self.get_driver_version().is_empty()
-                && !major_version.eq(&self.get_major_browser_version())
-            {
+            let driver_condition = if self.is_firefox() {
+                !version.eq(self.get_driver_version())
+            } else {
+                !major_version.eq(&self.get_major_browser_version())
+            };
+            if !self.get_driver_version().is_empty() && driver_condition {
                 self.get_logger().warn(format!(
                     "The {} version ({}) detected in PATH at {} might not be compatible with \
                     the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
