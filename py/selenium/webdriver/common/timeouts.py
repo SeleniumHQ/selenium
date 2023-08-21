@@ -34,9 +34,7 @@ else:
 class _TimeoutsDescriptor:
     """Get or set the value of the attributes listed below.
 
-    _implicit_wait
-    _page_load
-    _script
+    _implicit_wait _page_load _script
 
     This does not set the value on the remote end.
     """

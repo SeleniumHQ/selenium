@@ -104,9 +104,7 @@ class _TimeoutsDescriptor:
 
 
 class _ProxyDescriptor:
-    """
-    :Returns: Proxy if set, otherwise None.
-    """
+    """:Returns: Proxy if set, otherwise None."""
 
     def __init__(self, name):
         self.name = name
@@ -235,8 +233,7 @@ class BaseOptions(metaclass=ABCMeta):
     """
     # Creating _PageLoadStrategy descriptor
     page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy")
-    """
-    :Gets and Sets page load strategy, the default is "normal".
+    """:Gets and Sets page load strategy, the default is "normal".
 
     Usage
     -----
@@ -258,8 +255,8 @@ class BaseOptions(metaclass=ABCMeta):
     """
     # Creating _UnHandledPromptBehavior descriptor
     unhandled_prompt_behavior = _UnHandledPromptBehaviorDescriptor("unhandledPromptBehavior")
-    """
-    :Gets and Sets unhandled prompt behavior, the default is "dismiss and notify"
+    """:Gets and Sets unhandled prompt behavior, the default is "dismiss and
+    notify".
 
     Usage
     -----
@@ -282,8 +279,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     # Creating _Timeouts descriptor
     timeouts = _TimeoutsDescriptor("timeouts")
-    """
-    :Gets and Sets implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    """:Gets and Sets implicit timeout, pageLoad timeout and script timeout if
+    set (in milliseconds)
 
     Usage
     -----

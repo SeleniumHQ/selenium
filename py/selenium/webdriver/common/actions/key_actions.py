@@ -16,9 +16,6 @@
 # under the License.
 from __future__ import annotations
 
-from typing import Optional
-from typing import Union
-
 from ..utils import keys_to_typing
 from .interaction import KEY
 from .interaction import Interaction
@@ -28,7 +25,7 @@ from .wheel_input import WheelInput
 
 
 class KeyActions(Interaction):
-    def __init__(self, source: KeyInput, PointerInput, WheelInput | None = None) -> None:
+    def __init__(self, source: KeyInput | PointerInput | WheelInput | None = None) -> None:
         if not source:
             source = KeyInput(KEY)
         self.source = source

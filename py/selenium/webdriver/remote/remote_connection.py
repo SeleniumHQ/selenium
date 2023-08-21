@@ -161,10 +161,11 @@ class RemoteConnection:
 
     @classmethod
     def get_certificate_bundle_path(cls):
-        """
-        :Returns:
-            Paths of the .pem encoded certificate to verify connection to command executor. Defaults
-            to certifi.where() or REQUESTS_CA_BUNDLE env variable if set.
+        """:Returns:
+
+        Paths of the .pem encoded certificate to verify connection to
+        command executor. Defaults to certifi.where() or
+        REQUESTS_CA_BUNDLE env variable if set.
         """
         return cls._ca_certs
 
