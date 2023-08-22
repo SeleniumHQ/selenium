@@ -28,7 +28,6 @@ namespace OpenQA.Selenium.Environment
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
             string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
-            string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
@@ -37,7 +36,7 @@ namespace OpenQA.Selenium.Environment
             webServerConfig.HideCommandPromptWindow = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.TestWebServerConfig.HideCommandPromptWindow);
             webServerConfig.JavaHomeDirectory = TestContext.Parameters.Get("WebServerJavaHome", env.TestWebServerConfig.JavaHomeDirectory);
 
-            this.driverFactory = new DriverFactory(driverServiceLocation);
+            this.driverFactory = new DriverFactory();
             this.driverFactory.DriverStarting += OnDriverStarting;
 
             Assembly driverAssembly = null;
@@ -139,10 +138,7 @@ namespace OpenQA.Selenium.Environment
             {
                 webServer.Stop();
             }
-            if (driver != null)
-            {
-                driver.Quit();
-            }
+            CloseCurrentDriver();
         }
 
         public event EventHandler<DriverStartingEventArgs> DriverStarting;
@@ -163,11 +159,6 @@ namespace OpenQA.Selenium.Environment
         public Browser Browser
         {
             get { return browser; }
-        }
-
-        public string DriverServiceDirectory
-        {
-            get { return this.driverFactory.DriverServicePath; }
         }
 
         public string CurrentDirectory

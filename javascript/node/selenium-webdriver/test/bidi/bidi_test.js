@@ -25,6 +25,7 @@ const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
 const BrowsingConextInspector = require('../../bidi/browsingContextInspector')
+const NetworkInspector = require('../../bidi/networkInspector')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
 
@@ -1050,7 +1051,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 285)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1191,7 +1191,6 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 251)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1568,7 +1567,7 @@ suite(
         await manager.addPreloadScript('() => { window.foo = 1; }')
         await manager.addPreloadScript(
           '() => { window.bar = 2; }',
-          null,
+          [],
           'sandbox'
         )
 
@@ -1612,7 +1611,7 @@ suite(
         await manager.addPreloadScript('() => { window.foo = 42; }')
         await manager.addPreloadScript(
           '() => { window.foo = 50; }',
-          null,
+          [],
           'sandbox_1'
         )
 
@@ -1738,7 +1737,7 @@ suite(
 
         let script_2 = await manager.addPreloadScript(
           '() => { window.bar = 2; }',
-          null,
+          [],
           'sandbox'
         )
 
@@ -1770,6 +1769,181 @@ suite(
         )
 
         assert.equal(result_in_sandbox.result.type, 'undefined')
+      })
+    })
+
+    describe('Network Inspector', function () {
+      it('can listen to event before request is sent', async function () {
+        let beforeRequestEvent = null
+        const inspector = await NetworkInspector(driver)
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent = event
+        })
+
+        await driver.get(Pages.emptyPage)
+
+        assert.equal(beforeRequestEvent.request.method, 'GET')
+        const url = beforeRequestEvent.request.url
+        assert.equal(url, await driver.getCurrentUrl())
+      })
+
+      it('can request cookies', async function () {
+        const inspector = await NetworkInspector(driver)
+        let beforeRequestEvent = null
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent = event
+        })
+
+        await driver.get(Pages.emptyText)
+        await driver.manage().addCookie({
+          name: 'north',
+          value: 'biryani',
+        })
+        await driver.navigate().refresh()
+
+        assert.equal(beforeRequestEvent.request.method, 'GET')
+        assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
+        assert.equal(beforeRequestEvent.request.cookies[0].value, 'biryani')
+        const url = beforeRequestEvent.request.url
+        assert.equal(url, await driver.getCurrentUrl())
+
+        await driver.manage().addCookie({
+          name: 'south',
+          value: 'dosa',
+        })
+        await driver.navigate().refresh()
+
+        assert.equal(beforeRequestEvent.request.cookies[1].name, 'south')
+        assert.equal(beforeRequestEvent.request.cookies[1].value, 'dosa')
+      })
+
+      it('can redirect http equiv', async function () {
+        let beforeRequestEvent = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.beforeRequestSent(function (event) {
+          beforeRequestEvent.push(event)
+        })
+
+        await driver.get(Pages.redirectedHttpEquiv)
+        await driver.wait(until.urlContains('redirected.html'), 1000)
+
+        assert.equal(beforeRequestEvent[0].request.method, 'GET')
+        assert(
+          beforeRequestEvent[0].request.url.includes(
+            'redirected_http_equiv.html'
+          )
+        )
+        assert.equal(beforeRequestEvent[2].request.method, 'GET')
+        assert(beforeRequestEvent[2].request.url.includes('redirected.html'))
+      })
+
+      it('can subscribe to response started', async function () {
+        let onResponseStarted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseStarted(function (event) {
+          onResponseStarted.push(event)
+        })
+
+        await driver.get(Pages.emptyText)
+
+        assert.equal(onResponseStarted[0].request.method, 'GET')
+        assert.equal(
+          onResponseStarted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onResponseStarted[0].response.fromCache, false)
+        assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
+        assert.equal(onResponseStarted[0].response.status, 200)
+        assert.equal(onResponseStarted[0].response.statusText, 'OK')
+      })
+
+      it('test response started mime type', async function () {
+        let onResponseStarted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseStarted(function (event) {
+          onResponseStarted.push(event)
+        })
+
+        // Checking mime type for 'html' text
+        await driver.get(Pages.emptyPage)
+        assert.equal(onResponseStarted[0].request.method, 'GET')
+        assert.equal(
+          onResponseStarted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseStarted[0].response.mimeType.includes('text/html'))
+
+        // Checking mime type for 'plain' text
+        onResponseStarted = []
+        await driver.get(Pages.emptyText)
+        assert.equal(
+          onResponseStarted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseStarted[0].response.mimeType.includes('text/plain'))
+      })
+
+      it('can subscribe to response completed', async function () {
+        let onResponseCompleted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseCompleted(function (event) {
+          onResponseCompleted.push(event)
+        })
+
+        await driver.get(Pages.emptyPage)
+
+        assert.equal(onResponseCompleted[0].request.method, 'GET')
+        assert.equal(
+          onResponseCompleted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(onResponseCompleted[0].response.fromCache, false)
+        assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
+        assert.equal(onResponseCompleted[0].response.status, 200)
+        assert.equal(onResponseCompleted[0].response.statusText, 'OK')
+        assert.equal(onResponseCompleted[0].redirectCount, 0)
+      })
+
+      it('test response completed mime type', async function () {
+        let onResponseCompleted = []
+        const inspector = await NetworkInspector(driver)
+        await inspector.responseCompleted(function (event) {
+          onResponseCompleted.push(event)
+        })
+
+        // Checking mime type for 'html' text
+        await driver.get(Pages.emptyPage)
+        assert.equal(onResponseCompleted[0].request.method, 'GET')
+        assert.equal(
+          onResponseCompleted[0].request.url,
+          await driver.getCurrentUrl()
+        )
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseCompleted[0].response.mimeType.includes('text/html'))
+
+        // Checking mime type for 'plain' text
+        onResponseCompleted = []
+        await driver.get(Pages.emptyText)
+        assert.equal(
+          onResponseCompleted[0].response.url,
+          await driver.getCurrentUrl()
+        )
+        assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })
     })
 

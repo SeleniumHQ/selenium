@@ -66,6 +66,7 @@ public class Pages {
   public String richTextPage;
   public String selectableItemsPage;
   public String selectPage;
+  public String shadowRootPage;
   public String simpleTestPage;
   public String simpleXmlDocument;
   public String sleepingPage;
@@ -132,6 +133,7 @@ public class Pages {
     selectPage = appServer.whereIs("selectPage.html");
     simpleTestPage = appServer.whereIs("simpleTest.html");
     simpleXmlDocument = appServer.whereIs("simple.xml");
+    shadowRootPage = appServer.whereIs("shadowRootPage.html");
     sleepingPage = appServer.whereIs("sleep");
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     slowLoadingAlertPage = appServer.whereIs("slowLoadingAlert.html");

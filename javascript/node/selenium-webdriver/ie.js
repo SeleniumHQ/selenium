@@ -27,9 +27,7 @@
 
 'use strict'
 
-const fs = require('fs')
 const http = require('./http')
-const io = require('./io')
 const portprober = require('./net/portprober')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
@@ -37,7 +35,6 @@ const { Browser, Capabilities } = require('./lib/capabilities')
 const error = require('./lib/error')
 const { getPath } = require('./common/driverFinder')
 
-const IEDRIVER_EXE = 'IEDriverServer.exe'
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
 const SCROLL_BEHAVIOUR = {
   BOTTOM: 1,
@@ -83,6 +80,7 @@ const Key = {
   FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
   ATTACH_TO_EDGE_CHROMIUM: 'ie.edgechromium',
   EDGE_EXECUTABLE_PATH: 'ie.edgepath',
+  IGNORE_PROCESS_MATCH: 'ie.ignoreprocessmatch',
 }
 
 /**
@@ -379,16 +377,6 @@ class Options extends Capabilities {
   }
 }
 
-/**
- * _Synchronously_ attempts to locate the IE driver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return process.platform === 'win32' ? io.findInPath(IEDRIVER_EXE, true) : null
-}
-
 function createServiceFromCapabilities(capabilities) {
   if (process.platform !== 'win32') {
     throw Error(
@@ -399,7 +387,7 @@ function createServiceFromCapabilities(capabilities) {
     )
   }
 
-  let exe = locateSynchronously()
+  let exe = null // Let Selenium Manager find it
   var args = []
   if (capabilities.has(Key.HOST)) {
     args.push('--host=' + capabilities.get(Key.HOST))
@@ -439,7 +427,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the IEDriverServer on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || IEDRIVER_EXE)
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 }
@@ -467,7 +455,7 @@ class Driver extends webdriver.WebDriver {
       service = createServiceFromCapabilities(options)
     }
     if (!service.getExecutable()) {
-      service.setExecutable(getPath(service, options))
+      service.setExecutable(getPath(options).driverPath)
     }
 
     let client = service.start().then((url) => new http.HttpClient(url))
@@ -495,4 +483,3 @@ exports.ServiceBuilder = ServiceBuilder
 exports.Key = Key
 exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY
 exports.Behavior = SCROLL_BEHAVIOUR
-exports.locateSynchronously = locateSynchronously

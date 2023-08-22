@@ -20,110 +20,96 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
-class Log:
-    def __init__(self) -> None:
-        self.level = None
+class _SafariOptionsDescriptor:
+    """_SafariOptionsDescriptor is an implementation of Descriptor protocol:
 
-    def to_capabilities(self) -> dict:
-        if self.level:
-            return {"log": {"level": self.level}}
-        return {}
+    : Any look-up or assignment to the below attributes in `Options` class will be intercepted
+    by `__get__` and `__set__` method respectively.
+
+    - `automatic_inspection`
+    - `automatic_profiling`
+    - `use_technology_preview`
+
+    : When an attribute lookup happens,
+    Example:
+        `self.automatic_inspection`
+        `__get__` method does a dictionary look up in the dictionary `_caps` of `Options` class
+        and returns the value of key `safari:automaticInspection`
+    : When an attribute assignment happens,
+    Example:
+        `self.automatic_inspection` = True
+        `__set__` method sets/updates the value of the key `safari:automaticInspection` in `_caps`
+        dictionary in `Options` class.
+    """
+
+    def __init__(self, name, expected_type):
+        self.name = name
+        self.expected_type = expected_type
+
+    def __get__(self, obj, cls):
+        if self.name == "Safari Technology Preview":
+            return obj._caps.get("browserName") == self.name
+        return obj._caps.get(self.name)
+
+    def __set__(self, obj, value):
+        if not isinstance(value, self.expected_type):
+            raise TypeError(f"{self.name} must be of type {self.expected_type}")
+        if self.name == "Safari Technology Preview":
+            obj._caps["browserName"] = self.name if value else "safari"
+        else:
+            obj._caps[self.name] = value
 
 
 class Options(ArgOptions):
-    KEY = "safari.options"
-
     # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
     AUTOMATIC_INSPECTION = "safari:automaticInspection"
     AUTOMATIC_PROFILING = "safari:automaticProfiling"
-
     SAFARI_TECH_PREVIEW = "Safari Technology Preview"
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._binary_location = None
-        self._preferences: dict = {}
-        self.log = Log()
+    # creating descriptor objects
+    automatic_inspection = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
+    """Get or Set Automatic Inspection value:
 
-    @property
-    def binary_location(self) -> str:
-        """
-        :Returns: The location of the browser binary otherwise an empty string
-        """
-        return self._binary_location
+    Usage
+    -----
+    - Get
+        - `self.automatic_inspection`
+    - Set
+        - `self.automatic_inspection` = `value`
 
-    @binary_location.setter
-    def binary_location(self, value: str) -> None:
-        """Allows you to set the browser binary to launch.
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+    automatic_profiling = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
+    """Get or Set Automatic Profiling value:
 
-        :Args:
-         - value : path to the browser binary
-        """
-        self._binary_location = value
+    Usage
+    -----
+    - Get
+        - `self.automatic_profiling`
+    - Set
+        - `self.automatic_profiling` = `value`
 
-    def to_capabilities(self) -> dict:
-        """Marshals the  options to an desired capabilities object."""
-        # This intentionally looks at the internal properties
-        # so if a binary or profile has _not_ been set,
-        # it will defer to geckodriver to find the system Firefox
-        # and generate a fresh profile.
-        caps = self._caps
-        opts = {}
+    Parameters
+    ----------
+    `value`: `bool`
+    """
+    use_technology_preview = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
+    """Get and Set Technology Preview:
 
-        if self._arguments:
-            opts["args"] = self._arguments
-        if self._binary_location:
-            opts["binary"] = self._binary_location
-        opts.update(self.log.to_capabilities())
+    Usage
+    -----
+    - Get
+        - `self.use_technology_preview`
+    - Set
+        - `self.use_technology_preview` = `value`
 
-        if opts:
-            caps[Options.KEY] = opts
-
-        return caps
+    Parameters
+    ----------
+    `value`: `bool`
+    """
 
     @property
     def default_capabilities(self) -> typing.Dict[str, str]:
         return DesiredCapabilities.SAFARI.copy()
-
-    @property
-    def automatic_inspection(self) -> bool:
-        """:Returns: The option Automatic Inspection value"""
-        return self._caps.get(self.AUTOMATIC_INSPECTION)
-
-    @automatic_inspection.setter
-    def automatic_inspection(self, value: bool) -> None:
-        """Sets the option Automatic Inspection to value.
-
-        :Args:
-         - value: boolean value
-        """
-        self.set_capability(self.AUTOMATIC_INSPECTION, value)
-
-    @property
-    def automatic_profiling(self) -> bool:
-        """:Returns: The options Automatic Profiling value"""
-        return self._caps.get(self.AUTOMATIC_PROFILING)
-
-    @automatic_profiling.setter
-    def automatic_profiling(self, value: bool) -> None:
-        """Sets the option Automatic Profiling to value.
-
-        :Args:
-         - value: boolean value
-        """
-        self.set_capability(self.AUTOMATIC_PROFILING, value)
-
-    @property
-    def use_technology_preview(self) -> bool:
-        """:Returns: whether BROWSER_NAME is equal to Safari Technology Preview"""
-        return self._caps.get("browserName") == self.SAFARI_TECH_PREVIEW
-
-    @use_technology_preview.setter
-    def use_technology_preview(self, value: bool) -> None:
-        """Sets browser name to Safari Technology Preview if value else to
-        safari.
-
-        :Args:
-         - value: boolean value
-        """
-        self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")

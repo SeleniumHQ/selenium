@@ -16,13 +16,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.9.1"
+SE_VERSION = "4.11.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v112",
-    "v113",
     "v114",
+    "v115",
+    "v116",
 ]
 
 TEST_DEPS = [
@@ -47,20 +47,20 @@ TEST_DEPS = [
 ]
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "selenium/webdriver/common/macos/selenium-manager",
-)
-
-copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "selenium/webdriver/common/linux/selenium-manager",
 )
 
 copy_file(
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "selenium/webdriver/common/macos/selenium-manager",
+)
+
+copy_file(
     name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
+    src = "//common/manager:selenium-manager-windows",
     out = "selenium/webdriver/common/windows/selenium-manager.exe",
 )
 
@@ -124,10 +124,10 @@ py_library(
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-        ":mutation-listener",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
+        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -325,6 +325,7 @@ py_library(
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env_inherit = ["DISPLAY"],
         tags = [
             "no-sandbox",
         ] + BROWSERS[browser]["tags"],
@@ -354,6 +355,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -379,6 +381,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -401,6 +404,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -424,6 +428,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -448,6 +453,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -470,6 +476,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -493,6 +500,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -517,6 +525,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",
@@ -541,6 +550,7 @@ py_test_suite(
     tags = [
         "exclusive-if-local",
         "no-sandbox",
+        "skip-remote",
     ],
     deps = [
         ":init-tree",

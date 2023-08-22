@@ -5,6 +5,9 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_su
 LARGE_TESTS = [
     "ExtensionsTest.java",
     "FirefoxDriverTest.java",
+    "FirefoxDriverBuilderTest.java",
+    "FirefoxDriverPreferenceTest.java",
+    "FirefoxDriverConcurrentTest.java",
     "TakesFullPageScreenshotTest.java",
 ]
 

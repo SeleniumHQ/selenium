@@ -16,6 +16,7 @@
 # under the License.
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -46,7 +47,8 @@ class ChromiumDriver(RemoteWebDriver):
         self.vendor_prefix = vendor_prefix
 
         self.service = service
-        self.options = options
+
+        self.service.path = DriverFinder.get_path(self.service, options)
 
         self.service.start()
 
@@ -57,9 +59,9 @@ class ChromiumDriver(RemoteWebDriver):
                     browser_name=browser_name,
                     vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive,
-                    ignore_proxy=self.options._ignore_local_proxy,
+                    ignore_proxy=options._ignore_local_proxy,
                 ),
-                options=self.options,
+                options=options,
             )
         except Exception:
             self.quit()

@@ -28,7 +28,7 @@ module Selenium
           @create_driver_error_count = 0
 
           $LOAD_PATH.insert(0, root.join('bazel-bin/rb/lib').to_s) if File.exist?(root.join('bazel-bin/rb/lib'))
-          WebDriver.logger.ignore(%i[logger_info selenium_manager])
+          WebDriver.logger.ignore(%i[logger_info])
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
@@ -69,6 +69,8 @@ module Selenium
 
         def quit_driver
           @driver_instance&.quit
+        rescue StandardError
+          # good riddance
         ensure
           @driver_instance = nil
         end
@@ -164,12 +166,12 @@ module Selenium
 
         private
 
-        def build_options(args: [], **opts)
+        def build_options(**opts)
           options_method = "#{browser}_options".to_sym
           if private_methods.include?(options_method)
-            send(options_method, args: args, **opts)
+            send(options_method, **opts)
           else
-            WebDriver::Options.send(browser, args: args, **opts)
+            WebDriver::Options.send(browser, **opts)
           end
         end
 
@@ -224,37 +226,33 @@ module Selenium
         end
 
         def safari_driver(**opts)
-          service_opts = {}
-          service_opts[:args] = []
-          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
           service = WebDriver::Service.safari(**service_opts)
           WebDriver::Driver.for(:safari, service: service, **opts)
         end
 
         def safari_preview_driver(**opts)
-          service_opts = {}
-          service_opts[:args] = []
-          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service_opts = WebDriver.logger.debug? ? {args: '--diagnose'} : {}
           service = WebDriver::Service.safari(**service_opts)
           WebDriver::Driver.for(:safari, service: service, **opts)
         end
 
-        def chrome_options(**opts)
+        def chrome_options(args: [], **opts)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.chrome(**opts)
+          args << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.chrome(args: args, **opts)
         end
 
-        def edge_options(**opts)
+        def edge_options(args: [], **opts)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.edge(**opts)
+          args << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.edge(args: args, **opts)
         end
 
-        def firefox_options(**opts)
+        def firefox_options(args: [], **opts)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
-          opts[:args] << '--headless' if ENV['HEADLESS']
-          WebDriver::Options.firefox(**opts)
+          args << '--headless' if ENV['HEADLESS']
+          WebDriver::Options.firefox(args: args, **opts)
         end
 
         def ie_options(**opts)

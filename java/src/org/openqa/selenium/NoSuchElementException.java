@@ -23,7 +23,7 @@ package org.openqa.selenium;
  */
 public class NoSuchElementException extends NotFoundException {
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#no_such_element";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#no-such-element-exception";
 
   public NoSuchElementException(String reason) {
     super(reason);

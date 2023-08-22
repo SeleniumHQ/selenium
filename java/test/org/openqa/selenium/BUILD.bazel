@@ -1,5 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -27,6 +28,7 @@ java_test_suite(
     deps = [
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/netty/server:test-server",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
@@ -64,27 +66,24 @@ java_selenium_test_suite(
     ],
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     deps = [
         ":helpers",
         "//java/src/org/openqa/selenium/grid/config",
-        "//java/src/org/openqa/selenium/jre/server",
         "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/netty/server:test-server",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
-        artifact("io.netty:netty-codec-haproxy"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
-        artifact("javax.servlet:javax.servlet-api"),
         artifact("org.assertj:assertj-core"),
-        artifact("xyz.rogfam:littleproxy"),
     ] + JUNIT5_DEPS,
 )

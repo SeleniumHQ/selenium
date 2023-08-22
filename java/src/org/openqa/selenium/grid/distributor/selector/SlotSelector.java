@@ -21,6 +21,7 @@ import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.SlotMatcher;
 
 /**
  * Used to determine which {@link org.openqa.selenium.grid.node.Node} to send a particular New
@@ -28,5 +29,5 @@ import org.openqa.selenium.grid.data.SlotId;
  */
 @FunctionalInterface
 public interface SlotSelector {
-  Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes);
+  Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes, SlotMatcher slotMatcher);
 }

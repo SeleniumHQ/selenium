@@ -139,6 +139,20 @@ module Selenium
           expect(driver[:id1]).to be_a(WebDriver::Element)
           expect(driver[xpath: '//h1']).to be_a(WebDriver::Element)
         end
+
+        it 'raises if element not found' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            driver.find_element(id: 'not-there')
+          }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
+        end
+
+        it 'raises if invalid locator' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            driver.find_element(xpath: '*?//-')
+          }.to raise_error(Error::InvalidSelectorError, /errors#invalid-selector-exception/)
+        end
       end
 
       describe 'many elements' do

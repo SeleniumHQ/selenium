@@ -136,7 +136,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
   }
 
   @Test
@@ -319,7 +320,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -367,7 +369,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -443,7 +446,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -517,7 +521,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -599,7 +604,8 @@ class GraphqlHandlerTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            newSessionThreadPoolSize);
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());

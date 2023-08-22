@@ -28,7 +28,8 @@ public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
-  protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
+  protected static final String BASE_SUPPORT_URL =
+      "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors";
 
   private final Map<String, String> extraInfo = new ConcurrentHashMap<>();
 

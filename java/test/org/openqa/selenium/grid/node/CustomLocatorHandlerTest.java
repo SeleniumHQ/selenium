@@ -241,7 +241,7 @@ class CustomLocatorHandlerTest {
 
     Node node = Mockito.mock(Node.class);
     when(node.executeWebDriverCommand(
-            argThat(matchesUri("/session/{sessionId}/element/{elementId}/element"))))
+            argThat(matchesUri("/session/{sessionId}/element/{elementId}/elements"))))
         .thenReturn(
             new HttpResponse()
                 .addHeader("Content-Type", Json.JSON_UTF_8)

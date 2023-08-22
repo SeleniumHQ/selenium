@@ -26,13 +26,13 @@ class BrowsingContext {
       throw Error('WebDriver instance must support BiDi protocol')
     }
 
-    if (type != undefined && !['window', 'tab'].includes(type)) {
+    if (type !== undefined && !['window', 'tab'].includes(type)) {
       throw Error(`Valid types are 'window' & 'tab'. Received: ${type}`)
     }
 
     this.bidi = await this._driver.getBidi()
     this._id =
-      browsingContextId == undefined
+      browsingContextId === undefined
         ? (await this.create(type, referenceContext))['result']['context']
         : browsingContextId
   }
@@ -65,7 +65,7 @@ class BrowsingContext {
    */
   async navigate(url, readinessState = undefined) {
     if (
-      readinessState != undefined &&
+      readinessState !== undefined &&
       !['none', 'interactive', 'complete'].includes(readinessState)
     ) {
       throw Error(
@@ -117,7 +117,7 @@ class BrowsingContext {
   }
 
   /**
-   * Closes the browing context
+   * Closes the browsing context
    * @returns {Promise<void>}
    */
   async close() {

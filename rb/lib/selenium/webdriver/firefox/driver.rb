@@ -38,8 +38,8 @@ module Selenium
 
         include LocalDriver
 
-        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
-          caps, url = initialize_local_driver(capabilities, options, service, url)
+        def initialize(options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(options, service, url)
           super(caps: caps, url: url, **opts)
         end
 

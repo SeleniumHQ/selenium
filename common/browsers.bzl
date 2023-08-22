@@ -18,10 +18,10 @@ chromedriver_data = select({
 chrome_data = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "@linux_chrome//:files",
-        "@linux_chrome//:chrome-linux/chrome",
+        "@linux_chrome//:chrome-linux64/chrome",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
-        "@mac_chrome//:Chromium.app",
+        "@mac_chrome//:Chrome.app",
     ],
     "//conditions:default": [],
 }) + chromedriver_data

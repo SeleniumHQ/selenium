@@ -429,11 +429,11 @@ namespace OpenQA.Selenium.DevTools
             this.domains.Target.TargetDetached += this.OnTargetDetached;
         }
 
-        private async void OnTargetDetached(object sender, TargetDetachedEventArgs e)
+        private void OnTargetDetached(object sender, TargetDetachedEventArgs e)
         {
             if (e.SessionId == this.ActiveSessionId && e.TargetId == this.attachedTargetId)
             {
-                await this.StopSession(false);
+                Task.Run(async () => await this.StopSession(false)).GetAwaiter().GetResult();
             }
         }
 
@@ -524,7 +524,10 @@ namespace OpenQA.Selenium.DevTools
                             using (var reader = new StreamReader(stream, Encoding.UTF8))
                             {
                                 string message = reader.ReadToEnd();
-                                ProcessIncomingMessage(message);
+
+                                // fire and forget
+                                // TODO: we need implement some kind of queue
+                                Task.Run(() => ProcessIncomingMessage(message));
                             }
                         }
                     }
@@ -582,7 +585,9 @@ namespace OpenQA.Selenium.DevTools
                 var eventData = messageObject["params"];
 
                 LogTrace("Recieved Event {0}: {1}", method, eventData.ToString());
+
                 OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
+
                 return;
             }
 

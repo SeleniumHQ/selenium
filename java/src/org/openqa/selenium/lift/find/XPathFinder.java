@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /** A {@link Finder} for elements using XPath expressions */
+@Deprecated
 public class XPathFinder extends BaseFinder<WebElement, WebDriver> {
   private final String xpath;
 

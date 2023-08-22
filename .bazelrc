@@ -11,10 +11,10 @@ build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
 
-build --java_language_version=11
-build --java_runtime_version=remotejdk_11
-build --tool_java_language_version=11
-build --tool_java_runtime_version=remotejdk_11
+build --java_language_version=17
+build --java_runtime_version=remotejdk_17
+build --tool_java_language_version=17
+build --tool_java_runtime_version=remotejdk_17
 
 # We target java 8 by default
 
@@ -121,15 +121,10 @@ build:remote --action_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=HOME=/home/dev
 
 # Make sure we sniff credentials properly
-build:remote --experimental_credential_helper=%workspace%/scripts/credential-helper.sh
+build:remote --credential_helper=%workspace%/scripts/credential-helper.sh
 
 # Use pinned browsers when running remotely
 build:remote --//common:pin_browsers
-
-# Extend the remote config for CI
-build:remote-ci --config=remote
-build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
-build:remote-ci --bes_upload_mode=wait_for_upload_complete
 
 # The remote build machines are pretty small, and 50 threads may leave them
 # thrashing, but our dev machines are a lot larger. Scale the workload so we
@@ -139,3 +134,15 @@ build:remote --local_ram_resources='HOST_RAM*4.0'
 
 # A small hint that we're running our tests remotely
 test:remote --test_env=REMOTE_BUILD=1
+
+# Wait for up to 5 minutes for a test to pass
+test:remote --test_timeout=600
+
+# Extend the remote config for CI
+build:remote-ci --config=remote
+build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
+build:remote-ci --bes_upload_mode=wait_for_upload_complete
+
+# Configuration changes suggested by EngFlow
+build:remote --grpc_keepalive_time=30s
+build:remote --nolegacy_important_outputs
