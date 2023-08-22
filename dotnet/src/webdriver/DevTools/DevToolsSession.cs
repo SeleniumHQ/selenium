@@ -55,6 +55,8 @@ namespace OpenQA.Selenium.DevTools
         private CancellationTokenSource receiveCancellationToken;
         private Task receiveTask;
 
+        private SemaphoreSlim semaphoreSlimForSocketSend = new SemaphoreSlim(1);
+
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
@@ -217,7 +219,18 @@ namespace OpenQA.Selenium.DevTools
                 var contentBuffer = Encoding.UTF8.GetBytes(contents);
 
                 this.pendingCommands.TryAdd(message.CommandId, message);
-                await this.sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
+
+                // socket SendAsync cannot be ran simultaneously, waiting available single worker
+                await semaphoreSlimForSocketSend.WaitAsync(cancellationToken);
+
+                try
+                {
+                    await this.sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
+                }
+                finally
+                {
+                    semaphoreSlimForSocketSend.Release();
+                }
 
                 var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
 
