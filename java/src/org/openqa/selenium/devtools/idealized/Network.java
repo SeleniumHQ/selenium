@@ -62,6 +62,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   private Filter filter = defaultFilter;
   protected final DevTools devTools;
 
+  private final AtomicBoolean networkInterceptorRegistered = new AtomicBoolean();
   private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
 
   public Network(DevTools devtools) {
@@ -149,6 +150,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
+    if (networkInterceptorRegistered.getAndSet(true)) {
+      // we are already prepared, just go ahead
+      return;
+    }
+
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
