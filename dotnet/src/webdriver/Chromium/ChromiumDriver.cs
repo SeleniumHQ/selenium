@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -283,7 +284,7 @@ namespace OpenQA.Selenium.Chromium
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
