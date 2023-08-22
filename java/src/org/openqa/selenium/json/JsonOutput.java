@@ -22,6 +22,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -46,9 +47,12 @@ import java.util.stream.Stream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 
+/**
+ *
+ */
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
-  static final int MAX_DEPTH = 100;
+  static final int MAX_DEPTH = 10;
 
   private static final Predicate<Class<?>> GSON_ELEMENT;
 
@@ -103,7 +107,7 @@ public class JsonOutput implements Closeable {
   private final Map<Predicate<Class<?>>, DepthAwareConsumer> converters;
   private final Appendable appendable;
   private final Consumer<String> appender;
-  private Deque<Node> stack;
+  private final Deque<Node> stack;
   private String indent = "";
   private String lineSeparator = "\n";
   private String indentBy = "  ";
@@ -113,13 +117,13 @@ public class JsonOutput implements Closeable {
     this.appendable = Require.nonNull("Underlying appendable", appendable);
 
     this.appender =
-        str -> {
-          try {
-            appendable.append(str);
-          } catch (IOException e) {
-            throw new JsonException("Unable to write to underlying appendable", e);
-          }
-        };
+      str -> {
+        try {
+          appendable.append(str);
+        } catch (IOException e) {
+          throw new JsonException("Unable to write to underlying appendable", e);
+        }
+      };
 
     this.stack = new ArrayDeque<>();
     this.stack.addFirst(new Empty());
@@ -129,147 +133,161 @@ public class JsonOutput implements Closeable {
     Map<Predicate<Class<?>>, DepthAwareConsumer> builder = new LinkedHashMap<>();
     builder.put(Objects::isNull, (obj, maxDepth, depthRemaining) -> append("null"));
     builder.put(
-        CharSequence.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(obj)));
+      CharSequence.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(asString(obj)));
     builder.put(
-        Number.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(obj.toString()));
+      Number.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(obj.toString()));
     builder.put(
-        Boolean.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append((Boolean) obj ? "true" : "false"));
+      Boolean.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append((Boolean) obj ? "true" : "false"));
     builder.put(
-        Date.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) ->
-            append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
+      Date.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) ->
+        append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
     builder.put(
-        Instant.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) ->
-            append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
+      Instant.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) ->
+        append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
     builder.put(
-        Enum.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
+      Enum.class::isAssignableFrom, (obj, maxDepth, depthRemaining) -> append(asString(obj)));
     builder.put(
-        File.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(((File) obj).getAbsolutePath()));
+      File.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(((File) obj).getAbsolutePath()));
     builder.put(
-        URI.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString((obj).toString())));
+      URI.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(asString((obj).toString())));
     builder.put(
-        URL.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(((URL) obj).toExternalForm())));
+      URL.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(asString(((URL) obj).toExternalForm())));
     builder.put(
-        UUID.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(obj.toString())));
+      UUID.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(asString(obj.toString())));
     builder.put(
-        Level.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> append(asString(LogLevelMapping.getName((Level) obj))));
+      Level.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> append(asString(LogLevelMapping.getName((Level) obj))));
     builder.put(
-        GSON_ELEMENT,
-        (obj, maxDepth, depthRemaining) -> {
-          LOG.log(
-              Level.WARNING,
-              "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
-                  + "Diagnostic stacktrace follows",
-              new JsonException("Stack trace to determine cause of warning"));
-          append(obj.toString());
-        });
+      GSON_ELEMENT,
+      (obj, maxDepth, depthRemaining) -> {
+        LOG.log(
+          Level.WARNING,
+          "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
+            + "Diagnostic stacktrace follows",
+          new JsonException("Stack trace to determine cause of warning"));
+        append(obj.toString());
+      });
     // Special handling of asMap and toJson
     builder.put(
-        cls -> getMethod(cls, "toJson") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("toJson", obj, maxDepth, depthRemaining));
+      cls -> getMethod(cls, "toJson") != null,
+      (obj, maxDepth, depthRemaining) ->
+        convertUsingMethod("toJson", obj, maxDepth, depthRemaining));
     builder.put(
-        cls -> getMethod(cls, "asMap") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("asMap", obj, maxDepth, depthRemaining));
+      cls -> getMethod(cls, "asMap") != null,
+      (obj, maxDepth, depthRemaining) ->
+        convertUsingMethod("asMap", obj, maxDepth, depthRemaining));
     builder.put(
-        cls -> getMethod(cls, "toMap") != null,
-        (obj, maxDepth, depthRemaining) ->
-            convertUsingMethod("toMap", obj, maxDepth, depthRemaining));
+      cls -> getMethod(cls, "toMap") != null,
+      (obj, maxDepth, depthRemaining) ->
+        convertUsingMethod("toMap", obj, maxDepth, depthRemaining));
 
     // And then the collection types
     builder.put(
-        Collection.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginArray();
-          ((Collection<?>) obj)
-              .stream()
-                  .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-                  .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
-          endArray();
-        });
+      Collection.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+            "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        beginArray();
+        ((Collection<?>) obj)
+          .stream()
+          .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+          .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
+        endArray();
+      });
 
     builder.put(
-        Map.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginObject();
-          ((Map<?, ?>) obj)
-              .forEach(
-                  (key, value) -> {
-                    if (value instanceof Optional && !((Optional) value).isPresent()) {
-                      return;
-                    }
-                    name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
-                  });
-          endObject();
-        });
+      Map.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+            "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        beginObject();
+        ((Map<?, ?>) obj)
+          .forEach(
+            (key, value) -> {
+              if (value instanceof Optional && !((Optional) value).isPresent()) {
+                return;
+              }
+              name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
+            });
+        endObject();
+      });
     builder.put(
-        Class::isArray,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          beginArray();
-          Stream.of((Object[]) obj)
-              .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
-              .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
-          endArray();
-        });
+      Class::isArray,
+      (obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+            "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        beginArray();
+        Stream.of((Object[]) obj)
+          .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+          .forEach(o -> write0(o, maxDepth, depthRemaining - 1));
+        endArray();
+      });
 
     builder.put(
-        Optional.class::isAssignableFrom,
-        (obj, maxDepth, depthRemaining) -> {
-          Optional<?> optional = (Optional<?>) obj;
-          if (!optional.isPresent()) {
-            append("null");
-            return;
-          }
+      Optional.class::isAssignableFrom,
+      (obj, maxDepth, depthRemaining) -> {
+        Optional<?> optional = (Optional<?>) obj;
+        if (!optional.isPresent()) {
+          append("null");
+          return;
+        }
 
-          write0(optional.get(), maxDepth, depthRemaining);
-        });
+        write0(optional.get(), maxDepth, depthRemaining);
+      });
 
     // Finally, attempt to convert as an object
     builder.put(
-        cls -> true,
-        (obj, maxDepth, depthRemaining) -> {
-          if (depthRemaining < 1) {
-            throw new JsonException(
-                "Reached the maximum depth of " + maxDepth + " while writing JSON");
-          }
-          mapObject(obj, maxDepth, depthRemaining - 1);
-        });
+      cls -> true,
+      (obj, maxDepth, depthRemaining) -> {
+        if (depthRemaining < 1) {
+          throw new JsonException(
+            "Reached the maximum depth of " + maxDepth + " while writing JSON");
+        }
+        mapObject(obj, maxDepth, depthRemaining - 1);
+      });
 
     this.converters = Collections.unmodifiableMap(builder);
   }
 
+  /**
+   *
+   * @param enablePrettyPrinting
+   * @return
+   */
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
     return this;
   }
 
+  /**
+   *
+   * @param writeClassName
+   * @return
+   */
   public JsonOutput writeClassName(boolean writeClassName) {
     this.writeClassName = writeClassName;
     return this;
   }
 
+  /**
+   *
+   * @return
+   */
   public JsonOutput beginObject() {
     stack.getFirst().write("{" + lineSeparator);
     indent += indentBy;
@@ -277,6 +295,11 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   *
+   * @param name
+   * @return
+   */
   public JsonOutput name(String name) {
     if (!(stack.getFirst() instanceof JsonObject)) {
       throw new JsonException("Attempt to write name, but not writing a json object: " + name);
@@ -285,6 +308,10 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   *
+   * @return
+   */
   public JsonOutput endObject() {
     Node topOfStack = stack.getFirst();
     if (!(topOfStack instanceof JsonObject)) {
@@ -301,6 +328,10 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   *
+   * @return
+   */
   public JsonOutput beginArray() {
     append("[" + lineSeparator);
     indent += indentBy;
@@ -308,6 +339,10 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   *
+   * @return
+   */
   public JsonOutput endArray() {
     Node topOfStack = stack.getFirst();
     if (!(topOfStack instanceof JsonCollection)) {
@@ -324,25 +359,48 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   *
+   * @param value
+   * @return
+   */
   public JsonOutput write(Object value) {
     return write(value, MAX_DEPTH);
   }
 
+  /**
+   *
+   * @param value
+   * @param maxDepth
+   * @return
+   */
   public JsonOutput write(Object value, int maxDepth) {
     return write0(value, maxDepth, maxDepth);
   }
 
+  /**
+   *
+   * @param input
+   * @param maxDepth
+   * @param depthRemaining
+   * @return
+   */
   private JsonOutput write0(Object input, int maxDepth, int depthRemaining) {
     converters.entrySet().stream()
-        .filter(entry -> entry.getKey().test(input == null ? null : input.getClass()))
-        .findFirst()
-        .map(Map.Entry::getValue)
-        .orElseThrow(() -> new JsonException("Unable to write " + input))
-        .consume(input, maxDepth, depthRemaining);
+      .filter(entry -> entry.getKey().test(input == null ? null : input.getClass()))
+      .findFirst()
+      .map(Map.Entry::getValue)
+      .orElseThrow(() -> new JsonException("Unable to write " + input))
+      .consume(input, maxDepth, depthRemaining);
 
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws JsonException if JSON stream isn't empty or an I/O exception is encountered
+   */
   @Override
   public void close() {
     if (appendable instanceof Closeable) {
@@ -358,31 +416,47 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   *
+   * @param text
+   * @return
+   */
   private JsonOutput append(String text) {
     stack.getFirst().write(text);
     return this;
   }
 
+  /**
+   *
+   * @param obj
+   * @return
+   */
   private String asString(Object obj) {
     StringBuilder toReturn = new StringBuilder("\"");
 
     String.valueOf(obj)
-        .chars()
-        .forEach(
-            i -> {
-              String escaped = ESCAPES.get(i);
-              if (escaped != null) {
-                toReturn.append(escaped);
-              } else {
-                toReturn.append((char) i);
-              }
-            });
+      .chars()
+      .forEach(
+        i -> {
+          String escaped = ESCAPES.get(i);
+          if (escaped != null) {
+            toReturn.append(escaped);
+          } else {
+            toReturn.append((char) i);
+          }
+        });
 
     toReturn.append('"');
 
     return toReturn.toString();
   }
 
+  /**
+   *
+   * @param clazz
+   * @param methodName
+   * @return
+   */
   private Method getMethod(Class<?> clazz, String methodName) {
     if (Object.class.equals(clazz)) {
       return null;
@@ -396,17 +470,25 @@ public class JsonOutput implements Closeable {
       return getMethod(clazz.getSuperclass(), methodName);
     } catch (SecurityException e) {
       throw new JsonException(
-          "Unable to find the method because of a security constraint: " + methodName, e);
+        "Unable to find the method because of a security constraint: " + methodName, e);
     }
   }
 
+  /**
+   *
+   * @param methodName
+   * @param toConvert
+   * @param maxDepth
+   * @param depthRemaining
+   * @return
+   */
   private JsonOutput convertUsingMethod(
-      String methodName, Object toConvert, int maxDepth, int depthRemaining) {
+    String methodName, Object toConvert, int maxDepth, int depthRemaining) {
     try {
       Method method = getMethod(toConvert.getClass(), methodName);
       if (method == null) {
         throw new JsonException(
-            String.format("Unable to read object %s using method %s", toConvert, methodName));
+          String.format("Unable to read object %s using method %s", toConvert, methodName));
       }
       Object value = method.invoke(toConvert);
 
@@ -416,6 +498,12 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   *
+   * @param toConvert
+   * @param maxDepth
+   * @param depthRemaining
+   */
   private void mapObject(Object toConvert, int maxDepth, int depthRemaining) {
     if (toConvert instanceof Class) {
       write(((Class<?>) toConvert).getName());
@@ -425,7 +513,7 @@ public class JsonOutput implements Closeable {
     // Raw object via reflection? Nope, not needed
     beginObject();
     for (SimplePropertyDescriptor pd :
-        SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
+      SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
 
       // Only include methods not on java.lang.Object to stop things being super-noisy
       Function<Object, Object> readMethod = pd.getReadMethod();
@@ -446,9 +534,16 @@ public class JsonOutput implements Closeable {
     endObject();
   }
 
+  /**
+   *
+   */
   private class Node {
     protected boolean isEmpty = true;
 
+    /**
+     *
+     * @param text
+     */
     public void write(String text) {
       if (isEmpty) {
         isEmpty = false;
@@ -461,6 +556,9 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   *
+   */
   private class Empty extends Node {
 
     @Override
@@ -473,11 +571,21 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   *
+   */
   private class JsonCollection extends Node {}
 
+  /**
+   *
+   */
   private class JsonObject extends Node {
     private boolean isNameNext = true;
 
+    /**
+     *
+     * @param name
+     */
     public void name(String name) {
       if (!isNameNext) {
         throw new JsonException("Unexpected attempt to set name of json object: " + name);
@@ -498,8 +606,17 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   *
+   */
   @FunctionalInterface
   private interface DepthAwareConsumer {
+
+    /**
+     * @param object
+     * @param maxDepth
+     * @param depthRemaining
+     */
     void consume(Object object, int maxDepth, int depthRemaining);
   }
 }
