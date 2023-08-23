@@ -59,6 +59,8 @@ Options:
           Offline mode (i.e., disabling network requests and downloads)
       --force-browser-download
           Force to download browser. Currently Chrome for Testing (CfT) is supported
+      --avoid-browser-download
+          Avoid to download browser (even when browser-version is specified)
   -h, --help
           Print help
   -V, --version
