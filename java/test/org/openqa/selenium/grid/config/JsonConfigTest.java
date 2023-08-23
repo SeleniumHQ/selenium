@@ -83,8 +83,12 @@ class JsonConfigTest {
 
     List<String> expected =
         Arrays.asList(
-            "name=\"soft cheese\"", "default=\"brie\"", Config.DELIMITER,
-            "name=\"Medium-hard cheese\"", "default=\"Emmental\"", Config.DELIMITER);
+            "name=\"soft cheese\"",
+            "default=\"brie\"",
+            Config.DELIMITER,
+            "name=\"Medium-hard cheese\"",
+            "default=\"Emmental\"",
+            Config.DELIMITER);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))

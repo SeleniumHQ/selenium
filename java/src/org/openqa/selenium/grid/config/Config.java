@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 import org.openqa.selenium.json.Json;
 
 public interface Config {
@@ -66,12 +65,13 @@ public interface Config {
 
   default List<String> toEntryList(Map<String, Object> mapItem) {
     // transform config settings map into list of key/value strings
-    List<String> entryList = mapItem.entrySet().stream()
-      .map(
-        entry -> {
-          return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
-        })
-      .collect(Collectors.toList());
+    List<String> entryList =
+        mapItem.entrySet().stream()
+            .map(
+                entry -> {
+                  return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
+                })
+            .collect(Collectors.toList());
     // add record separator
     entryList.add(DELIMITER);
     // return immutable config settings list
