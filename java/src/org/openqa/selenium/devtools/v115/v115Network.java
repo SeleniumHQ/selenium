@@ -34,6 +34,7 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.v115.fetch.Fetch;
 import org.openqa.selenium.devtools.v115.fetch.model.*;
+import org.openqa.selenium.devtools.v115.network.model.ErrorReason;
 import org.openqa.selenium.devtools.v115.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -166,6 +167,11 @@ public class v115Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected String getRequestId(RequestPaused pausedReq) {
     return pausedReq.getRequestId().toString();
+  }
+
+  @Override
+  protected Command<Void> abortRequest(RequestPaused pausedRequest) {
+    return Fetch.failRequest(pausedRequest.getRequestId(), ErrorReason.ABORTED);
   }
 
   @Override

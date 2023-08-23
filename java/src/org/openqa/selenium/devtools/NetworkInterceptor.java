@@ -19,14 +19,10 @@ package org.openqa.selenium.devtools;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import java.util.Map;
-import java.util.Optional;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
@@ -100,25 +96,5 @@ public class NetworkInterceptor implements AutoCloseable {
   @Override
   public void close() {
     tools.getDomains().network().resetNetworkFilter();
-    tools.getDomains().network().markNetworkInterceptorClosed();
-  }
-
-  protected HttpMethod convertFromCdpHttpMethod(String method) {
-    Require.nonNull("HTTP Method", method);
-    try {
-      return HttpMethod.valueOf(method.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      // Spam in a reasonable value
-      return HttpMethod.GET;
-    }
-  }
-
-  protected HttpRequest createHttpRequest(
-      String cdpMethod, String url, Map<String, Object> headers, Optional<String> postData) {
-    HttpRequest req = new HttpRequest(convertFromCdpHttpMethod(cdpMethod), url);
-    headers.forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
-    postData.ifPresent(data -> req.setContent(utf8String(data)));
-
-    return req;
   }
 }

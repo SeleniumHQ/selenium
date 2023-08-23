@@ -19,7 +19,6 @@ package org.openqa.selenium.devtools.idealized;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.logging.Level.WARNING;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -30,21 +29,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Credentials;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.NetworkInterceptor;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -62,7 +58,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
-  private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
+  private final AtomicBoolean perpared = new AtomicBoolean();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
@@ -76,6 +72,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       authHandlers.clear();
     }
     filter = defaultFilter;
+    perpared.set(false);
   }
 
   public static class UserAgent {
@@ -141,10 +138,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     filter = defaultFilter;
   }
 
-  public void markNetworkInterceptorClosed() {
-    networkInterceptorClosed.set(true);
-  }
-
   public void interceptTrafficWith(Filter filter) {
     Require.nonNull("HTTP filter", filter);
 
@@ -153,6 +146,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
+    if (perpared.getAndSet(true)) {
+      // do not register multiple handlers otherwise the events are processed multiple times
+      return;
+    }
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
@@ -181,65 +178,37 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
           devTools.send(cancelAuth(authRequired));
         });
 
-    Map<String, CompletableFuture<HttpResponse>> responses = new ConcurrentHashMap<>();
-
     devTools.addListener(
         requestPausedEvent(),
         pausedRequest -> {
+          Command<?> toSend;
+
           try {
-            String id = getRequestId(pausedRequest);
             Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
-            if (message.isRight()) {
-              HttpResponse res = message.right();
-              CompletableFuture<HttpResponse> future = responses.remove(id);
+            if (message.isLeft()) {
+              HttpResponse intercepted =
+                  filter
+                      .andFinally(req -> NetworkInterceptor.PROCEED_WITH_REQUEST)
+                      .execute(message.left());
 
-              if (future == null) {
-                devTools.send(continueWithoutModification(pausedRequest));
-                return;
+              if (intercepted != null && intercepted != NetworkInterceptor.PROCEED_WITH_REQUEST) {
+                toSend = fulfillRequest(pausedRequest, intercepted);
+              } else {
+                toSend = continueWithoutModification(pausedRequest);
               }
-
-              future.complete(res);
-              return;
+            } else {
+              // It is currently not needed to have the response here, but we might want to modify
+              // the response in the future? So lets continueWithoutModification for now and allow
+              // other to easily implement this.
+              toSend = continueWithoutModification(pausedRequest);
             }
-
-            HttpResponse forBrowser =
-                filter
-                    .andFinally(
-                        req -> {
-                          // Convert the selenium request to a CDP one and fulfill.
-
-                          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
-                          responses.put(id, res);
-
-                          devTools.send(continueRequest(pausedRequest, req));
-
-                          // Wait for the CDP response and send that back.
-                          try {
-                            return res.get();
-                          } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            throw new WebDriverException(e);
-                          } catch (ExecutionException e) {
-                            if (!networkInterceptorClosed.get()) {
-                              LOG.log(WARNING, e, () -> "Unable to process request");
-                            }
-                            return new HttpResponse();
-                          }
-                        })
-                    .execute(message.left());
-
-            if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
-              devTools.send(continueWithoutModification(pausedRequest));
-              return;
-            }
-
-            devTools.send(fulfillRequest(pausedRequest, forBrowser));
-          } catch (TimeoutException e) {
-            if (!networkInterceptorClosed.get()) {
-              throw new WebDriverException(e);
-            }
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, "interceptor failed", e);
+            toSend = abortRequest(pausedRequest);
           }
+
+          devTools.send(toSend);
         });
 
     devTools.send(enableFetchForAllPatterns());
@@ -328,6 +297,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected abstract String getRequestId(REQUESTPAUSED pausedReq);
 
   protected abstract Either<HttpRequest, HttpResponse> createSeMessages(REQUESTPAUSED pausedReq);
+
+  protected abstract Command<Void> abortRequest(REQUESTPAUSED pausedReq);
 
   protected abstract Command<Void> continueWithoutModification(REQUESTPAUSED pausedReq);
 
