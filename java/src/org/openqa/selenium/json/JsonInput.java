@@ -31,7 +31,8 @@ import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
 
 /**
- * The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java objects.
+ * The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java
+ * objects.
  */
 public class JsonInput implements Closeable {
 
@@ -51,7 +52,8 @@ public class JsonInput implements Closeable {
    * {@code Reader} object specified by [source].
    *
    * @param source {@link Reader} object that supplies the JSON string to be processed
-   * @param coercer {@link JsonTypeCoercer} that encapsulates the defined type-specific deserializers
+   * @param coercer {@link JsonTypeCoercer} that encapsulates the defined type-specific
+   *     deserializers
    * @param setter strategy used to assign values during deserialization
    */
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
@@ -200,7 +202,7 @@ public class JsonInput implements Closeable {
     char read = input.read();
     if (read != ':') {
       throw new JsonException(
-        "Unable to read name. Expected colon separator, but saw '" + read + "'");
+          "Unable to read name. Expected colon separator, but saw '" + read + "'");
     }
     return name;
   }
@@ -232,11 +234,11 @@ public class JsonInput implements Closeable {
     do {
       char read = input.peek();
       if (Character.isDigit(read)
-        || read == '+'
-        || read == '-'
-        || read == 'e'
-        || read == 'E'
-        || read == '.') {
+          || read == '+'
+          || read == '-'
+          || read == 'e'
+          || read == 'E'
+          || read == '.') {
         builder.append(input.read());
       } else {
         break;
@@ -290,7 +292,7 @@ public class JsonInput implements Closeable {
   public boolean hasNext() {
     if (stack.isEmpty()) {
       throw new JsonException(
-        "Unable to determine if an item has next when not in a container type. " + input);
+          "Unable to determine if an item has next when not in a container type. " + input);
     }
 
     skipWhitespace(input);
@@ -325,7 +327,7 @@ public class JsonInput implements Closeable {
     if (expectation != Container.COLLECTION) {
       // The only other thing we could be closing is a map
       throw new JsonException(
-        "Attempt to close a JSON List, but a JSON Object was expected. " + input);
+          "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
     input.read();
   }
@@ -413,7 +415,7 @@ public class JsonInput implements Closeable {
    *
    * @param type data type for deserialization (class or {@link TypeToken})
    * @return object of the specified type deserialized from the JSON input stream<br>
-   * <b>NOTE</b>: Returns {@code null} if the input string is exhausted.
+   *     <b>NOTE</b>: Returns {@code null} if the input string is exhausted.
    * @param <T> result type (as specified by [type])
    * @throws JsonException if coercion of the next element to the specified type fails
    * @throws UncheckedIOException if an I/O exception is encountered
@@ -448,7 +450,7 @@ public class JsonInput implements Closeable {
   private void expect(JsonType type) {
     if (peek() != type) {
       throw new JsonException(
-        "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
+          "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
     }
 
     // Special map handling. Woo!
@@ -474,7 +476,8 @@ public class JsonInput implements Closeable {
   }
 
   /**
-   * Read the next element from the JSON input stream, converting with the supplied mapper if it's the expected string.
+   * Read the next element from the JSON input stream, converting with the supplied mapper if it's
+   * the expected string.
    *
    * @param toCompare expected element string
    * @param mapper function to convert the element string to its corresponding type
@@ -489,8 +492,8 @@ public class JsonInput implements Closeable {
       char read = input.read();
       if (read != toCompare.charAt(i)) {
         throw new JsonException(
-          String.format(
-            "Unable to read %s. Saw %s at position %d. %s", toCompare, read, i, input));
+            String.format(
+                "Unable to read %s. Saw %s at position %d. %s", toCompare, read, i, input));
       }
     }
 
@@ -526,8 +529,8 @@ public class JsonInput implements Closeable {
   }
 
   /**
-   * Convert the escape sequence at the current JSON input stream position, appending the result to the provided
-   * builder.
+   * Convert the escape sequence at the current JSON input stream position, appending the result to
+   * the provided builder.
    *
    * @param builder {@link StringBuilder}
    * @throws JsonException if an unsupported escape sequence is found
@@ -597,9 +600,7 @@ public class JsonInput implements Closeable {
     }
   }
 
-  /**
-   * Used to track the current container processing state.
-   */
+  /** Used to track the current container processing state. */
   private enum Container {
 
     /** Processing a JSON array */

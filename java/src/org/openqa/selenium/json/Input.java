@@ -24,23 +24,28 @@ import org.openqa.selenium.internal.Require;
 
 /**
  * Similar to a {@link Reader} but with the ability to peek a single character ahead.
- * <p>
- * For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
+ *
+ * <p>For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
  * read characters in the input buffer.
  */
 class Input {
   /** end-of-file indicator (0xFFFD) */
   public static final char EOF = (char) -1; // NOTE: Produces Unicode replacement character (0xFFFD)
+
   /** the number of chars to buffer */
   private static final int BUFFER_SIZE = 4096;
+
   /** the number of chars to remember, safe to set to 0 */
   private static final int MEMORY_SIZE = 128;
 
   private final Reader source;
+
   /** a buffer used to minimize read calls and to keep the chars to remember */
   private final char[] buffer;
+
   /** the filled area in the buffer */
   private int filled;
+
   /** the last position read in the buffer */
   private int position;
 

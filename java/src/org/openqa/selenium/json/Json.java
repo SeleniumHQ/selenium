@@ -30,70 +30,78 @@ import java.util.Map;
 /**
  * The <b>Json</b> class is the entrypoint for the JSON processing features of the Selenium API.
  * These features include:
+ *
  * <ul>
- *   <li>Built-in JSON deserialization to primitives and collections from the standard types shown below.</li>
+ *   <li>Built-in JSON deserialization to primitives and collections from the standard types shown
+ *       below.
  *   <li>Facilities to deserialize JSON to custom data types:
- *     <ul>
- *       <li>Classes that declare a {@code fromJson(T)} static method, where <b>T</b> is any of the standard
- *           types shown below.</li>
- *       <li>Classes that declare a {@code fromJson(JsonInput)} static method.<br>
- *           <b>NOTE</b>: Objects deserialized via a {@code fromJson} static method can be immutable.</li>
- *       <li>Classes that declare setter methods adhering to the
- *           <a href="https://docs.oracle.com/javase/tutorial/javabeans/writing/index.html">JavaBean</a>
- *           specification.<br>
- *           <b>NOTE</b>: Deserialized {@code JavaBean} objects are mutable, which may be undesirable.</li>
- *     </ul>
- *   </li>
- *   <li>Built-in JSON serialization from primitives and collections from the standard types shown below.</li>
+ *       <ul>
+ *         <li>Classes that declare a {@code fromJson(T)} static method, where <b>T</b> is any of
+ *             the standard types shown below.
+ *         <li>Classes that declare a {@code fromJson(JsonInput)} static method.<br>
+ *             <b>NOTE</b>: Objects deserialized via a {@code fromJson} static method can be
+ *             immutable.
+ *         <li>Classes that declare setter methods adhering to the <a
+ *             href="https://docs.oracle.com/javase/tutorial/javabeans/writing/index.html">JavaBean</a>
+ *             specification.<br>
+ *             <b>NOTE</b>: Deserialized {@code JavaBean} objects are mutable, which may be
+ *             undesirable.
+ *       </ul>
+ *   <li>Built-in JSON serialization from primitives and collections from the standard types shown
+ *       below.
  *   <li>Facilities to serialize custom data types to JSON:
- *     <ul>
- *       <li>Classes that declare a {@code toJson()} method returning a primitive or collection from
- *           the standard types shown below.</li>
- *       <li>Classes that declare getter methods adhering to the {@code JavaBean} specification.</li>
- *     </ul>
- *   </li>
+ *       <ul>
+ *         <li>Classes that declare a {@code toJson()} method returning a primitive or collection
+ *             from the standard types shown below.
+ *         <li>Classes that declare getter methods adhering to the {@code JavaBean} specification.
+ *       </ul>
  * </ul>
  *
  * The standard types supported by built-in processing:
+ *
  * <ul>
  *   <li><b>Numeric Types</b>:<br>
- *       {@link java.lang.Byte Byte}, {@link java.lang.Double Double}, {@link java.lang.Float Float},
- *       {@link java.lang.Integer Integer}, {@link java.lang.Long Long}, {@link java.lang.Short Short}
- *   </li>
+ *       {@link java.lang.Byte Byte}, {@link java.lang.Double Double}, {@link java.lang.Float
+ *       Float}, {@link java.lang.Integer Integer}, {@link java.lang.Long Long}, {@link
+ *       java.lang.Short Short}
  *   <li><b>Collection Types</b>:<br>
  *       {@link java.util.List List}, {@link java.util.Set Set}
- *   </li>
  *   <li><b>Standard Java Types</b>:<br>
- *       {@link java.util.Map Map}, {@link java.lang.Boolean Boolean}, {@link java.lang.String String},
- *       {@link java.lang.Enum Enum}, {@link java.net.URI URI}, {@link java.net.URL URL},
- *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.lang.Object Object}
- *   </li>
+ *       {@link java.util.Map Map}, {@link java.lang.Boolean Boolean}, {@link java.lang.String
+ *       String}, {@link java.lang.Enum Enum}, {@link java.net.URI URI}, {@link java.net.URL URL},
+ *       {@link java.util.UUID UUID}, {@link java.time.Instant Instant}, {@link java.lang.Object
+ *       Object}
  * </ul>
  *
- * You can serialize objects for which no explicit coercer has been specified, and the <b>Json</b> API will use a
- * generic process to provide best-effort JSON output. For the most predictable results, though, it's best to
- * provide a {@code toJson()} method for the <b>Json</b> API to use for serialization. This is especially beneficial
- * for objects that contain transient properties that should be omitted from the JSON output.
- * <p>
- * You can deserialize objects for which no explicit handling has been defined. Note that the data type of the
- * result will be {@code Map<String,?>}, which means that you'll need to perform type checking and casting every
- * time you extract an entry value from the result. For this reason, it's best to declare a type-specific
- * {@code fromJson()} method in every type you need to deserialize.
+ * You can serialize objects for which no explicit coercer has been specified, and the <b>Json</b>
+ * API will use a generic process to provide best-effort JSON output. For the most predictable
+ * results, though, it's best to provide a {@code toJson()} method for the <b>Json</b> API to use
+ * for serialization. This is especially beneficial for objects that contain transient properties
+ * that should be omitted from the JSON output.
+ *
+ * <p>You can deserialize objects for which no explicit handling has been defined. Note that the
+ * data type of the result will be {@code Map<String,?>}, which means that you'll need to perform
+ * type checking and casting every time you extract an entry value from the result. For this reason,
+ * it's best to declare a type-specific {@code fromJson()} method in every type you need to
+ * deserialize.
  *
  * @see JsonTypeCoercer
  * @see JsonInput
  * @see JsonOutput
  */
 public class Json {
-  /** The value of {@code Content-Type} headers for HTTP requests and
-   * responses with JSON entities */
+  /**
+   * The value of {@code Content-Type} headers for HTTP requests and responses with JSON entities
+   */
   public static final String JSON_UTF_8 = "application/json; charset=utf-8";
 
   /** Specifier for {@code List<Map<String, Object>} input/output type */
   public static final Type LIST_OF_MAPS_TYPE =
-    new TypeToken<List<Map<String, Object>>>() {}.getType();
+      new TypeToken<List<Map<String, Object>>>() {}.getType();
+
   /** Specifier for {@code Map<String, Object>} input/output type */
   public static final Type MAP_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
+
   /** Specifier for {@code Object} input/output type */
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
@@ -101,8 +109,8 @@ public class Json {
 
   /**
    * Serialize the specified object to JSON string representation.<br>
-   * <b>NOTE</b>: This method limits traversal of nested objects to the default
-   * {@link JsonOutput#MAX_DEPTH maximum depth}.
+   * <b>NOTE</b>: This method limits traversal of nested objects to the default {@link
+   * JsonOutput#MAX_DEPTH maximum depth}.
    *
    * @param toConvert the object to be serialized
    * @return JSON string representing the specified object
@@ -121,7 +129,7 @@ public class Json {
    */
   public String toJson(Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
-         JsonOutput jsonOutput = newOutput(writer)) {
+        JsonOutput jsonOutput = newOutput(writer)) {
       jsonOutput.write(toConvert, maxDepth);
       return writer.toString();
     } catch (IOException e) {
@@ -131,8 +139,8 @@ public class Json {
 
   /**
    * Deserialize the specified JSON string into an object of the specified type.<br>
-   * <b>NOTE</b>: This method uses the {@link PropertySetting#BY_NAME BY_NAME} strategy to assign values to properties
-   * in the deserialized object.
+   * <b>NOTE</b>: This method uses the {@link PropertySetting#BY_NAME BY_NAME} strategy to assign
+   * values to properties in the deserialized object.
    *
    * @param source serialized source as JSON string
    * @param typeOfT data type for deserialization (class or {@link TypeToken})
@@ -163,9 +171,10 @@ public class Json {
   }
 
   /**
-   * Deserialize the JSON string supplied by the specified {@code Reader} into an object of the specified type.<br>
-   * <b>NOTE</b>: This method uses the {@link PropertySetting#BY_NAME BY_NAME} strategy to assign values to properties
-   * in the deserialized object.
+   * Deserialize the JSON string supplied by the specified {@code Reader} into an object of the
+   * specified type.<br>
+   * <b>NOTE</b>: This method uses the {@link PropertySetting#BY_NAME BY_NAME} strategy to assign
+   * values to properties in the deserialized object.
    *
    * @param source {@link Reader} that supplies a serialized JSON string
    * @param typeOfT data type for deserialization (class or {@link TypeToken})
@@ -178,7 +187,8 @@ public class Json {
   }
 
   /**
-   * Deserialize the JSON string supplied by the specified {@code Reader} into an object of the specified type.
+   * Deserialize the JSON string supplied by the specified {@code Reader} into an object of the
+   * specified type.
    *
    * @param source {@link Reader} that supplies a serialized JSON string
    * @param typeOfT data type for deserialization (class or {@link TypeToken})
@@ -198,9 +208,11 @@ public class Json {
   }
 
   /**
-   * Create a new {@code JsonInput} object to traverse the JSON string supplied the specified {@code Reader}.<br>
-   * <b>NOTE</b>: The {@code JsonInput} object returned by this method uses the {@link PropertySetting#BY_NAME BY_NAME}
-   * strategy to assign values to properties objects it deserializes.
+   * Create a new {@code JsonInput} object to traverse the JSON string supplied the specified {@code
+   * Reader}.<br>
+   * <b>NOTE</b>: The {@code JsonInput} object returned by this method uses the {@link
+   * PropertySetting#BY_NAME BY_NAME} strategy to assign values to properties objects it
+   * deserializes.
    *
    * @param from {@link Reader} that supplies a serialized JSON string
    * @return {@link JsonInput} object to traverse the JSON string supplied by [from]
@@ -211,7 +223,8 @@ public class Json {
   }
 
   /**
-   * Create a new {@code JsonOutput} object to produce a serialized JSON string in the specified {@code Appendable}.
+   * Create a new {@code JsonOutput} object to produce a serialized JSON string in the specified
+   * {@code Appendable}.
    *
    * @param to {@link Appendable} that consumes a serialized JSON string
    * @return {@link JsonOutput} object to product a JSON string in [to]

@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.json;
 
-/**
- * Used to specify the pending JSON element type.
- */
+/** Used to specify the pending JSON element type. */
 public enum JsonType {
   /** Boolean value */
   BOOLEAN,
