@@ -114,17 +114,8 @@ public class InternetExplorerDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the IEDriverServer binary is available. Grid uses this method to show the available
-   * browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(IE_DRIVER_NAME, IE_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link InternetExplorerDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<

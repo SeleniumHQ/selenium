@@ -101,6 +101,7 @@ BrowserFactory::BrowserFactory(void) {
   this->GetIEVersion();
   this->oleacc_instance_handle_ = NULL;
   this->edge_ie_mode_ = false;
+  this->ignore_process_match_ = false;
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -127,6 +128,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
   this->edge_ie_mode_ = settings.attach_to_edge_ie || this->ie_redirects_edge_;
+  this->ignore_process_match_ = settings.ignore_process_match;
   this->ignore_zoom_setting_ = settings.ignore_zoom_setting || this->edge_ie_mode_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
@@ -565,8 +567,18 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                     reinterpret_cast<LPARAM>(process_window_info));
     } else {
       // If we're in edge_ie_mode, we need to look for different windows
-      ::EnumWindows(&BrowserFactory::FindEdgeWindow,
+      if (this->ignore_process_match_) {
+        LOG(TRACE) << "Finding windonw handle for IE Mode on Edge, "
+                   << "ignoring process id match. This assumes only one "
+                   << "Edge instance is running on the host.";
+        ::EnumWindows(&BrowserFactory::FindEdgeWindowIgnoringProcessMatch,
+                      reinterpret_cast<LPARAM>(process_window_info));
+      } else {
+        LOG(TRACE) << "Finding windonw handle for IE Mode on Edge";
+        ::EnumWindows(&BrowserFactory::FindEdgeWindow,
                     reinterpret_cast<LPARAM>(process_window_info));
+
+      }
     }
 
     if (process_window_info->hwndBrowser == NULL) {
@@ -1112,6 +1124,21 @@ BOOL CALLBACK BrowserFactory::FindEdgeWindow(HWND hwnd, LPARAM arg) {
   if (process_window_info->dwProcessId != process_id) {
     return TRUE;
   }
+
+  return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
+}
+
+BOOL CALLBACK BrowserFactory::FindEdgeWindowIgnoringProcessMatch(HWND hwnd, LPARAM arg) {
+  // Could this be an EdgeChrome window?
+  // 19 == "Chrome_WidgetWin_1"
+  char name[20];
+  if (::GetClassNameA(hwnd, name, 20) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  // continue if it is not "Chrome_WidgetWin_1"
+  if (strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) return TRUE;
 
   return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
 }

@@ -10,6 +10,23 @@ function emit_headers() {
   exit 0
 }
 
+function netrc_password() {
+  if [ ! -e "$HOME/.netrc" ]; then
+    return
+  fi
+
+  cat $HOME/.netrc | sed -e 's/#.*//' | awk -v host="$1" -v field=password '{
+        if ($1 == "machine") {
+          found = ($2 == host);
+        } else if (found && ($1 == field)) {
+          print $2;
+          exit
+        } else if (found && $1 == "machine") {
+          found = false
+        }
+    }'
+}
+
 function get() {
   INPUT=$1
 
@@ -25,7 +42,12 @@ function get() {
     emit_headers "${ENGFLOW_GITHUB_TOKEN}"
   fi
 
-  KEYCHAIN="$(security find-generic-password -a selenium -s 'Selenium EngFlow' -w )"
+  NETRC="$(netrc_password github.com)"
+  if [ -n "${NETRC}" ]; then
+    emit_headers "${NETRC}"
+  fi
+
+  KEYCHAIN="$(security find-generic-password -a selenium -s 'Selenium EngFlow' -w )" 2>/dev/null
   if [ -n "$KEYCHAIN" ]; then
     emit_headers "${KEYCHAIN}"
   fi

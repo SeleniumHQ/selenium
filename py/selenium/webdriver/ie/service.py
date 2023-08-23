@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+import warnings
 from typing import List
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
-
-DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
 
 
 class Service(service.Service):
@@ -27,10 +27,12 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         host: typing.Optional[str] = None,
+        service_args: typing.Optional[typing.List[str]] = None,
         log_level: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         log_file: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
@@ -45,18 +47,19 @@ class Service(service.Service):
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
            Default is "stdout".
         """
-        self.service_args = []
+        self.service_args = service_args or []
         if host:
             self.service_args.append(f"--host={host}")
         if log_level:
             self.service_args.append(f"--log-level={log_level}")
         if log_file:
+            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
             self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(
             executable_path,
             port=port,
-            start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+            log_output=log_output,
             **kwargs,
         )
 

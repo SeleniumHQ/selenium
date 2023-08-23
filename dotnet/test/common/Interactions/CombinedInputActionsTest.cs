@@ -56,6 +56,32 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldAllowSettingActivePointerWithKeyBoardActions()
+        {
+            driver.Url = loginPage;
+
+            IWebElement username = driver.FindElement(By.Id("username-field"));
+            IWebElement password = driver.FindElement(By.Id("password-field"));
+            IWebElement login = driver.FindElement(By.Id("login-form-submit"));
+
+            Actions actionProvider = new Actions(driver);
+            IAction loginAction = actionProvider
+            .SendKeys(username, "username")
+            .SendKeys(password, "password")
+            .SetActivePointer(PointerKind.Mouse, "test")
+            .MoveToElement(login)
+            .Click()
+            .Build();
+
+            loginAction.Perform();
+
+            IAlert alert = driver.SwitchTo().Alert();
+            Assert.AreEqual("You have successfully logged in.", alert.Text);
+
+            alert.Accept();
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
         public void ShiftClickingOnMultiSelectionList()
         {

@@ -20,6 +20,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldSetActiveWheel()
+        {
+            Actions actionProvider = new Actions(driver);
+            actionProvider.SetActiveWheel("test wheel");
+
+            WheelInputDevice device = actionProvider.GetActiveWheel();
+
+            Assert.AreEqual("test wheel", device.DeviceName);
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
         public void ShouldAllowScrollingToAnElement()
         {

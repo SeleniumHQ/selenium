@@ -47,11 +47,7 @@ public class PathResource implements Resource {
   public PathResource limit(String... subpaths) {
     return new PathResource(
         base,
-        path ->
-            Arrays.stream(subpaths)
-                .map(subpath -> Files.exists(base.resolve(subpath)))
-                .reduce(Boolean::logicalOr)
-                .orElse(false));
+        path -> Arrays.stream(subpaths).anyMatch(subpath -> Files.exists(base.resolve(subpath))));
   }
 
   @Override

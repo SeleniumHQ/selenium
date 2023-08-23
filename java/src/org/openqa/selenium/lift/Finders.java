@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.BaseFinder;
 import org.openqa.selenium.lift.find.Finder;
 
+@Deprecated
 public class Finders {
 
   public static org.openqa.selenium.lift.find.HtmlTagFinder div() {

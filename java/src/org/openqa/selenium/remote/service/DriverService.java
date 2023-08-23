@@ -50,7 +50,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 
 /**
  * Manages the life and death of a native executable driver server. It is expected that the driver
@@ -131,11 +130,6 @@ public class DriverService implements Closeable {
     this.executable = executable;
   }
 
-  protected static String findExePath(String exeName, String exeProperty) {
-    String defaultPath = new ExecutableFinder().find(exeName);
-    return System.getProperty(exeProperty, defaultPath);
-  }
-
   protected List<String> getArgs() {
     return args;
   }
@@ -156,7 +150,7 @@ public class DriverService implements Closeable {
     return null;
   }
 
-  protected String getDriverProperty() {
+  public String getDriverProperty() {
     return null;
   }
 
@@ -199,12 +193,6 @@ public class DriverService implements Closeable {
     try {
       if (process != null) {
         return;
-      }
-      if (this.executable == null) {
-        if (getDefaultDriverOptions().getBrowserName().isEmpty()) {
-          throw new WebDriverException("Driver executable is null and browser name is not set.");
-        }
-        this.executable = DriverFinder.getPath(this, getDefaultDriverOptions());
       }
       LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
@@ -465,9 +453,6 @@ public class DriverService implements Closeable {
         }
 
         if (logLocation == null) {
-          LOG.info(
-              "Driver logs no longer sent to console by default; "
-                  + "https://www.selenium.dev/documentation/webdriver/drivers/service/#setting-log-output");
           return ByteStreams.nullOutputStream();
         }
 

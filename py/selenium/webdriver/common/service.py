@@ -19,6 +19,7 @@ import logging
 import os
 import subprocess
 import typing
+import warnings
 from abc import ABC
 from abc import abstractmethod
 from platform import system
@@ -49,17 +50,28 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str,
+        executable: str = None,
         port: int = 0,
-        log_file: SubprocessStdAlias = DEVNULL,
+        log_file: SubprocessStdAlias = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
+        if isinstance(log_output, str):
+            self.log_output = open(log_output, "a+", encoding="utf-8")
+        elif log_output is subprocess.STDOUT:
+            self.log_output = None
+        elif log_output is None or log_output is subprocess.DEVNULL:
+            self.log_output = open(os.devnull, "wb")
+        else:
+            self.log_output = log_output
+
+        if log_file is not None:
+            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
+            self.log_output = open(log_file, "a+", encoding="utf-8")
+
         self._path = executable
         self.port = port or utils.free_port()
-        self.log_file = open(os.devnull, "wb") if not log_file == DEVNULL else log_file
-        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
@@ -129,10 +141,10 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_file != PIPE and not (self.log_file == DEVNULL):
+        if self.log_output != PIPE and not (self.log_output == DEVNULL):
             try:
                 # Todo: Be explicit in what we are catching here.
-                if hasattr(self.log_file, "close"):
+                if hasattr(self.log_output, "close"):
                     self.log_file.close()  # type: ignore
             except Exception:
                 pass
@@ -162,7 +174,7 @@ class Service(ABC):
             self.process.terminate()
             try:
                 self.process.wait(60)
-            except subprocess.TimeoutError:
+            except subprocess.TimeoutExpired:
                 logger.error(
                     "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
                     exc_info=True,
@@ -195,8 +207,8 @@ class Service(ABC):
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=self.log_file,
-                stderr=self.log_file,
+                stdout=self.log_output,
+                stderr=self.log_output,
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 **self.popen_kw,
@@ -205,16 +217,8 @@ class Service(ABC):
         except TypeError:
             raise
         except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    f"'{os.path.basename(self._path)}' executable needs to be in PATH. {self.start_error_message}"
-                )
             if err.errno == errno.EACCES:
                 raise WebDriverException(
-                    f"'{os.path.basename(self._path)}' executable may have wrong permissions. {self.start_error_message}"
-                )
+                    f"'{os.path.basename(self._path)}' executable may have wrong permissions."
+                ) from err
             raise
-        except Exception as e:
-            raise WebDriverException(
-                f"The executable {os.path.basename(self._path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"
-            )

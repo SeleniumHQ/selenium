@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
@@ -59,8 +60,6 @@ import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -102,7 +101,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final DockerAssetsPath assetsPath;
   private final String networkName;
   private final boolean runningInDocker;
-  private final SlotMatcher slotMatcher;
+  private final Predicate<Capabilities> predicate;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -116,7 +115,8 @@ public class DockerSessionFactory implements SessionFactory {
       Image videoImage,
       DockerAssetsPath assetsPath,
       String networkName,
-      boolean runningInDocker) {
+      boolean runningInDocker,
+      Predicate<Capabilities> predicate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -129,7 +129,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
-    this.slotMatcher = new DefaultSlotMatcher();
+    this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
   }
 
   @Override
@@ -139,7 +139,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   @Override
   public boolean test(Capabilities capabilities) {
-    return slotMatcher.matches(stereotype, capabilities);
+    return predicate.test(capabilities);
   }
 
   @Override

@@ -127,7 +127,7 @@ def driver(request):
         if driver_class == "WPEWebKit":
             options = get_options(driver_class, request.config)
         if driver_path is not None:
-            kwargs["executable_path"] = driver_path
+            kwargs["service"] = get_service(driver_class, driver_path)
         if options is not None:
             kwargs["options"] = options
 
@@ -167,6 +167,17 @@ def get_options(driver_class, config):
         if driver_class == "Firefox":
             options.add_argument("-headless")
     return options
+
+
+def get_service(driver_class, executable):
+    # Let the default behaviour be used if we don't set the driver executable
+    if not executable:
+        return None
+
+    module = getattr(webdriver, driver_class.lower())
+    service = module.service.Service(executable_path=executable)
+
+    return service
 
 
 @pytest.fixture(scope="session", autouse=True)

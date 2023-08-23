@@ -41,14 +41,20 @@ public class CdpEndpointFinder {
   private static final Logger LOG = Logger.getLogger(CdpEndpointFinder.class.getName());
   private static final Json JSON = new Json();
 
-  public static Optional<URI> getCdpEndPoint(HttpClient.Factory clientFactory, URI reportedUri) {
+  public static HttpClient getHttpClient(HttpClient.Factory clientFactory, URI reportedUri) {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("DevTools URI", reportedUri);
 
     ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
 
+    return clientFactory.createClient(config);
+  }
+
+  public static Optional<URI> getCdpEndPoint(HttpClient client) {
+    Require.nonNull("HTTP client", client);
+
     HttpResponse res;
-    try (HttpClient client = clientFactory.createClient(config)) {
+    try {
       res = client.execute(new HttpRequest(GET, "/json/version"));
     } catch (UncheckedIOException e) {
       LOG.warning("Unable to connect to determine websocket url: " + e.getMessage());

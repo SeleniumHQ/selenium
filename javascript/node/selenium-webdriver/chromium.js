@@ -669,27 +669,38 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new session with the WebDriver server.
    *
-   * @param {(Capabilities|Options)=} opt_config The configuration options.
+   * @param {(Capabilities|Options)=} caps The configuration options.
    * @param {(remote.DriverService|http.Executor)=} opt_serviceExecutor Either
    *     a  DriverService to use for the remote end, or a preconfigured executor
    *     for an externally managed endpoint. If neither is provided, the
    *     {@linkplain ##getDefaultService default service} will be used by
    *     default.
+   * @param vendorPrefix Either 'goog' or 'ms'
+   * @param vendorCapabilityKey Either 'goog:chromeOptions' or 'ms:edgeOptions'
    * @return {!Driver} A new driver instance.
    */
-  static createSession(caps, opt_serviceExecutor) {
+  static createSession(caps, opt_serviceExecutor,
+    vendorPrefix = '', vendorCapabilityKey = '') {
     let executor
     let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
-      configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
+      configureExecutor(executor, vendorPrefix)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
       if (!service.getExecutable()) {
-        service.setExecutable(getPath(service, caps))
+        const {driverPath, browserPath} = getPath(caps)
+        service.setExecutable(driverPath)
+        const vendorOptions = caps.get(vendorCapabilityKey)
+        if (vendorOptions) {
+          vendorOptions['binary'] = browserPath
+          caps.set(vendorCapabilityKey, vendorOptions)
+        } else {
+          caps.set(vendorCapabilityKey, {binary: browserPath})
+        }
       }
       onQuit = () => service.kill()
-      executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
+      executor = createExecutor(service.start(), vendorPrefix)
     }
 
     // W3C spec requires noProxy value to be an array of strings, but Chromium

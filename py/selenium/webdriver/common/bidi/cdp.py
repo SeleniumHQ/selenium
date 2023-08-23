@@ -147,8 +147,8 @@ class BrowserError(Exception):
     indicates that an error occurred."""
 
     def __init__(self, obj):
-        self.code = obj["code"]
-        self.message = obj["message"]
+        self.code = obj.get("code")
+        self.message = obj.get("message")
         self.detail = obj.get("data")
 
     def __str__(self):
@@ -275,8 +275,8 @@ class CdpBase:
             # Otherwise, continue the generator to parse the JSON result
             # into a CDP object.
             try:
-                response = cmd.send(data["result"])
-                raise InternalError("The command's generator function " "did not exit when expected!")
+                _ = cmd.send(data["result"])
+                raise InternalError("The command's generator function did not exit when expected!")
             except StopIteration as exit:
                 return_ = exit.value
             self.inflight_result[cmd_id] = return_
@@ -442,7 +442,13 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 try:
                     session = self.sessions[session_id]
                 except KeyError:
-                    raise BrowserError(f"Browser sent a message for an invalid session: {session_id!r}")
+                    raise BrowserError(
+                        {
+                            "code": -32700,
+                            "message": "Browser sent a message for an invalid session",
+                            "data": f"{session_id!r}",
+                        }
+                    )
                 session._handle_data(data)
             else:
                 self._handle_data(data)

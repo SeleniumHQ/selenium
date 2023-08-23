@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-
 module Selenium
   module WebDriver
     module Chromium
@@ -26,7 +24,6 @@ module Selenium
       autoload :Driver, 'selenium/webdriver/chromium/driver'
       autoload :Profile, 'selenium/webdriver/chromium/profile'
       autoload :Options, 'selenium/webdriver/chromium/options'
-      autoload :Service, 'selenium/webdriver/chromium/service'
     end # Chromium
   end # WebDriver
 end # Selenium

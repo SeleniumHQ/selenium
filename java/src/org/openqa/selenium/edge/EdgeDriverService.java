@@ -133,17 +133,8 @@ public class EdgeDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the MSEdgeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link EdgeDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
@@ -195,19 +186,6 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withBuildCheckDisabled(boolean noBuildCheck) {
       this.disableBuildCheck = noBuildCheck;
-      return this;
-    }
-
-    /**
-     * Configures the driver server log level.
-     *
-     * @deprecated Use {@link #withLoglevel(ChromiumDriverLogLevel)} instead.
-     */
-    @Deprecated
-    public Builder withLoglevel(String logLevel) {
-      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel);
-      this.silent = false;
-      this.verbose = false;
       return this;
     }
 
@@ -314,7 +292,7 @@ public class EdgeDriverService extends DriverService {
 
       // Readable timestamp and append logs only work if a file is specified
       // Can only get readable logs via arguments; otherwise send service output as directed
-      if (getLogFile() != null && (readableTimestamp || appendLog)) {
+      if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
         if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");

@@ -68,6 +68,7 @@ class DriverServiceSessionFactoryTest {
 
     driverService = mock(DriverService.class);
     when(driverService.getUrl()).thenReturn(new URL("http://localhost:1234/"));
+    when(driverService.getExecutable()).thenReturn("/usr/bin/driver");
 
     builder = mock(DriverService.Builder.class);
     when(builder.build()).thenReturn(driverService);
@@ -145,6 +146,7 @@ class DriverServiceSessionFactoryTest {
 
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
+    verify(driverService, times(1)).getExecutable();
     verify(driverService, times(1)).start();
     verify(driverService, atLeastOnce()).getUrl();
     verify(driverService, times(1)).stop();
@@ -176,6 +178,7 @@ class DriverServiceSessionFactoryTest {
 
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
+    verify(driverService, times(1)).getExecutable();
     verify(driverService, times(1)).start();
     verify(driverService, atLeastOnce()).getUrl();
     verifyNoMoreInteractions(driverService);

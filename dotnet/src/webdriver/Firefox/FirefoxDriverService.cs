@@ -18,7 +18,7 @@
 
 using System;
 using System.Globalization;
-using System.Net;
+using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -30,7 +30,6 @@ namespace OpenQA.Selenium.Firefox
     public sealed class FirefoxDriverService : DriverService
     {
         private const string DefaultFirefoxDriverServiceFileName = "geckodriver";
-        private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
 
         private bool connectToRunningBrowser;
         private bool openBrowserToolbox;
@@ -47,7 +46,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="executableFileName">The file name of the Firefox driver executable.</param>
         /// <param name="port">The port on which the Firefox driver executable should listen.</param>
         private FirefoxDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, FirefoxDriverDownloadUrl)
+            : base(executablePath, port, executableFileName)
         {
         }
 
@@ -220,9 +219,8 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
         public static FirefoxDriverService CreateDefaultService(FirefoxOptions options)
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(FirefoxDriverServiceFileName(), FirefoxDriverDownloadUrl);
-            FirefoxDriverService service = CreateDefaultService(serviceDirectory);
-            return DriverFinder.VerifyDriverServicePath(service, options) as FirefoxDriverService;
+            string fullServicePath = DriverFinder.FullPath(options);
+            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
         }
 
         /// <summary>
@@ -232,6 +230,11 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath)
         {
+            if (File.Exists(driverPath))
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, FirefoxDriverServiceFileName());
         }
 

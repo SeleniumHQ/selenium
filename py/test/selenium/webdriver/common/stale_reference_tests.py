@@ -25,7 +25,8 @@ def test_old_page(driver, pages):
     pages.load("simpleTest.html")
     elem = driver.find_element(by=By.ID, value="links")
     pages.load("xhtmlTest.html")
-    with pytest.raises(StaleElementReferenceException):
+    msg = r"\/errors#stale-element-reference-exception"
+    with pytest.raises(StaleElementReferenceException, match=msg):
         elem.click()
 
 

@@ -28,6 +28,7 @@ import org.openqa.selenium.WebElement;
  * Base {@link Finder} for all types of HTML tags. Subclasses should be created for each specific
  * tag, specifying the tag name (e.g. "a" in the case or an anchor tag), and a description.
  */
+@Deprecated
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
 
   @Override

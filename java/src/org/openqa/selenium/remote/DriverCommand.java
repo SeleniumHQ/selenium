@@ -162,6 +162,15 @@ public interface DriverCommand {
   String REMOVE_CREDENTIAL = "removeCredential";
   String REMOVE_ALL_CREDENTIALS = "removeAllCredentials";
   String SET_USER_VERIFIED = "setUserVerified";
+  // Federated Credential Management API
+  // https://fedidcg.github.io/FedCM/#automation
+  String CANCEL_DIALOG = "cancelDialog";
+  String SELECT_ACCOUNT = "selectAccount";
+  String GET_ACCOUNTS = "getAccounts";
+  String GET_FEDCM_TITLE = "getFedCmTitle";
+  String GET_FEDCM_DIALOG_TYPE = "getFedCmDialogType";
+  String SET_DELAY_ENABLED = "setDelayEnabled";
+  String RESET_COOLDOWN = "resetCooldown";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
@@ -400,5 +409,13 @@ public interface DriverCommand {
     return new CommandPayload(
         SET_CURRENT_WINDOW_SIZE,
         ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+  }
+
+  static CommandPayload SELECT_ACCOUNT(int index) {
+    return new CommandPayload(SELECT_ACCOUNT, ImmutableMap.of("accountIndex", index));
+  }
+
+  static CommandPayload SET_DELAY_ENABLED(boolean enabled) {
+    return new CommandPayload(SET_DELAY_ENABLED, ImmutableMap.of("enabled", enabled));
   }
 }

@@ -24,22 +24,6 @@ module Selenium
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'
         SHUTDOWN_SUPPORTED = true
-
-        private
-
-        def extract_service_args(driver_opts)
-          driver_args = super
-          driver_opts = driver_opts.dup
-          driver_args << "--log-level=#{driver_opts[:log_level].to_s.upcase}" if driver_opts.key?(:log_level)
-          driver_args << "--log-file=#{driver_opts[:log_file]}" if driver_opts.key?(:log_file)
-          if driver_opts.key?(:implementation)
-            driver_args << "--implementation=#{driver_opts[:implementation].to_s.upcase}"
-          end
-          driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
-          driver_args << "--extract_path=#{driver_opts[:extract_path]}" if driver_opts.key?(:extract_path)
-          driver_args << '--silent' if driver_opts[:silent] == true
-          driver_args
-        end
       end # Server
     end # IE
   end # WebDriver
