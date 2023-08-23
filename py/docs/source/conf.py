@@ -19,6 +19,7 @@
 import sys
 import os
 import os.path
+from ...version import SE_VERSION
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -56,7 +57,7 @@ copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # built documents.
 #
 # The short X.Y version.
-version = '4.9'
+version = ".".join(SE_VERSION.split(".", 2)[:2])
 # The full version, including alpha/beta/rc tags.
 release = version
 

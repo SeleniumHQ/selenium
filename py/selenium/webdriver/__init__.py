@@ -35,8 +35,8 @@ from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
 from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
-
-__version__ = "4.9.1"
+from ...version import SE_VERSION
+__version__ = SE_VERSION
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [

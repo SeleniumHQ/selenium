@@ -1,0 +1,42 @@
+name: Prepare Python Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (format X.Y.Z)'
+        required: true
+        default: ''
+        type: string
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  update_version:
+    name: Update Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Run Update Version script with input.version
+        run: ./scripts/github-actions/update-version.sh
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+      - name: Commit files
+        id: git
+        run: |
+          export CHANGES=$(git status -s)
+          if [ -n "$CHANGES" ]; then
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git add common/mirror/selenium
+            git commit -m "Update Python Release Version files (`date`)" -a
+            echo "::set-output name=commit::true"
+          fi
+      - name: Push changes
+        if: steps.git.outputs.commit == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          branch: ${{ github.ref }}

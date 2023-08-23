@@ -16,7 +16,7 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.9.1"
+SE_VERSION = "4.11.2"
 
 BROWSER_VERSIONS = [
     "v85",
