@@ -13,8 +13,8 @@ java_selenium_test_suite(
     ],
     deps = [
         "//java/src/org/openqa/selenium/bidi",
-        "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",

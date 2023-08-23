@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.Environment
 {
     public class DriverStartingEventArgs
@@ -11,9 +5,8 @@ namespace OpenQA.Selenium.Environment
         DriverService service;
         DriverOptions options;
 
-        public DriverStartingEventArgs(DriverService service, DriverOptions options)
+        public DriverStartingEventArgs(DriverOptions options)
         {
-            this.Service = service;
             this.Options = options;
         }
 

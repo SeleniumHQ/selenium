@@ -121,17 +121,6 @@ public class SafariTechPreviewDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the SafariDriver driver binary is available. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(TP_SAFARI_DRIVER_EXECUTABLE.getAbsolutePath(), TP_SAFARI_DRIVER_EXE_PROPERTY)
-        != null;
-  }
-
   @Override
   protected void waitUntilAvailable() {
     try {
@@ -142,6 +131,7 @@ public class SafariTechPreviewDriverService extends DriverService {
   }
 
   /** Builder used to configure new {@link SafariTechPreviewDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<

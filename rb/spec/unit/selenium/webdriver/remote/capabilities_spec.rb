@@ -23,48 +23,6 @@ module Selenium
   module WebDriver
     module Remote
       describe Capabilities do
-        it 'has default capabilities for Chrome' do
-          expect {
-            caps = described_class.chrome
-            expect(caps.browser_name).to eq('chrome')
-          }.to have_deprecated(:caps_browsers)
-        end
-
-        it 'has default capabilities for Edge' do
-          expect {
-            caps = described_class.edge
-            expect(caps.browser_name).to eq('MicrosoftEdge')
-          }.to have_deprecated(:caps_browsers)
-        end
-
-        it 'has default capabilities for Firefox' do
-          expect {
-            caps = described_class.firefox
-            expect(caps.browser_name).to eq('firefox')
-          }.to have_deprecated(:caps_browsers)
-        end
-
-        it 'has default capabilities for HtmlUnit' do
-          expect {
-            caps = described_class.htmlunit
-            expect(caps.browser_name).to eq('htmlunit')
-          }.to have_deprecated(:caps_browsers)
-        end
-
-        it 'has default capabilities for Internet Explorer' do
-          expect {
-            caps = described_class.internet_explorer
-            expect(caps.browser_name).to eq('internet explorer')
-          }.to have_deprecated(:caps_browsers)
-        end
-
-        it 'has default capabilities for Safari' do
-          expect {
-            caps = described_class.safari
-            expect(caps.browser_name).to eq('safari')
-          }.to have_deprecated(:caps_browsers)
-        end
-
         it 'converts noProxy from string to array' do
           proxy = Proxy.new(no_proxy: 'proxy_url, localhost')
           caps = described_class.new(proxy: proxy)
@@ -149,38 +107,6 @@ module Selenium
                                              {'browserName' => 'firefox'}).as_json).to eq(expected)
           expect(described_class.first_match(described_class.new(browser_name: 'chrome'),
                                              described_class.new(browser_name: 'firefox')).as_json).to eq(expected)
-        end
-
-        it 'sets browser version with version' do
-          capabilities = described_class.new
-          expect {
-            capabilities.version = 1
-          }.to have_deprecated(:jwp_caps)
-          expect(capabilities.browser_version).to eq 1
-        end
-
-        it 'gets browser version with version' do
-          capabilities = described_class.new
-          capabilities.browser_version = 1
-          expect {
-            expect(capabilities.version).to eq 1
-          }.to have_deprecated(:jwp_caps)
-        end
-
-        it 'sets platform name with platform' do
-          capabilities = described_class.new
-          capabilities.platform_name = 'this'
-          expect {
-            expect(capabilities.platform).to eq 'this'
-          }.to have_deprecated(:jwp_caps)
-        end
-
-        it 'gets platform name with platform' do
-          capabilities = described_class.new
-          expect {
-            capabilities.platform = 'this'
-          }.to have_deprecated(:jwp_caps)
-          expect(capabilities.platform_name).to eq 'this'
         end
 
         describe 'timeouts' do

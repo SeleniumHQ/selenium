@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -520,7 +521,7 @@ class NodeTest {
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
 
-    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/file", session.getId()));
     String hello = "Hello, world!";
     String zip = Zip.zip(createTmpFile(hello));
     String payload = new Json().toJson(Collections.singletonMap("file", zip));
@@ -634,6 +635,30 @@ class NodeTest {
               .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
       List<String> files = (List<String>) map.get("names");
       assertThat(files).contains(zip);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canDeleteFileDownloads() throws IOException {
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    String zip = simulateFileDownload(session.getId(), "Hello, world!");
+
+    try {
+      assertThat(listFileDownloads(session.getId())).contains(zip);
+
+      HttpRequest deleteRequest =
+          new HttpRequest(DELETE, String.format("/session/%s/se/files", session.getId()));
+      HttpResponse deleteResponse = node.execute(deleteRequest);
+      assertThat(deleteResponse.isSuccessful()).isTrue();
+
+      assertThat(listFileDownloads(session.getId()).isEmpty()).isTrue();
     } finally {
       node.stop(session.getId());
     }
@@ -903,6 +928,18 @@ class NodeTest {
               + target.getParentFile().getAbsolutePath());
     }
     return zip.getName();
+  }
+
+  private List<String> listFileDownloads(SessionId sessionId) {
+    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/se/files", sessionId));
+    HttpResponse rsp = node.execute(req);
+    Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
+    assertThat(raw).isNotNull();
+    Map<String, Object> map =
+        Optional.ofNullable(raw.get("value"))
+            .map(data -> (Map<String, Object>) data)
+            .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+    return (List<String>) map.get("names");
   }
 
   private static class MyClock extends Clock {

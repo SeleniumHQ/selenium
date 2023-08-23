@@ -1,0 +1,15 @@
+-//java/test/org/openqa/selenium:FormHandlingTest-chrome
+-//java/test/org/openqa/selenium/bidi:BiDiSessionTest-remote
+-//java/test/org/openqa/selenium/bidi:BiDiTest-remote
+-//java/test/org/openqa/selenium/bidi/browsingcontext:BrowsingContextTest-remote
+-//java/test/org/openqa/selenium/bidi/log:LogInspectorTest-remote
+-//java/test/org/openqa/selenium/devtools:CdpFacadeTest-remote
+-//java/test/org/openqa/selenium/devtools:ChangeUserAgentTest-remote
+-//java/test/org/openqa/selenium/devtools:DevToolsReuseTest-remote
+-//java/test/org/openqa/selenium/devtools:JavascriptExceptionsTest-remote
+-//java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest-chrome-remote
+-//java/test/org/openqa/selenium/devtools:NetworkInterceptorTest-chrome-remote
+-//java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
+-//java/test/org/openqa/selenium/firefox:RemoteFirefoxDriverTest-remote
+-//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
+-//py:auto-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py

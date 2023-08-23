@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: dotnet-build
+      cache-key: false
       os: windows
       run: bazel build //dotnet/src/webdriver:package //dotnet/src/support:package
 
@@ -27,7 +27,6 @@ jobs:
         framework:
           - net48
           - net6.0
-          - netcoreapp3.1
         include:
           - driver: Chrome
             browser: chrome
@@ -36,8 +35,8 @@ jobs:
     with:
       name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
       browser: ${{ matrix.browser }}
-      cache-key: dotnet-${{ matrix.browser }}-${{ matrix.framework }}
-      java-version: 11
+      cache-key: false
+      java-version: 17
       os: windows
       run: |
         bazel build //dotnet/test/common:${{ matrix.browser }}

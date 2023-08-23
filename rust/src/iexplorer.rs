@@ -17,19 +17,22 @@
 
 use crate::config::ManagerConfig;
 use reqwest::Client;
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::{create_http_client, parse_version, Logger, SeleniumManager};
+use crate::downloads::parse_json_from_url;
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
+    REG_VERSION_ARG, STABLE, WINDOWS,
+};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::mirror::{get_mirror_response, Assets, SeleniumRelease};
+use crate::mirror::{Assets, SeleniumRelease, MIRROR_URL};
 
 pub const IE_NAMES: &[&str] = &[
     "iexplorer",
@@ -43,29 +46,30 @@ pub const IEDRIVER_NAME: &str = "IEDriverServer";
 const DRIVER_URL: &str = "https://github.com/SeleniumHQ/selenium/releases/";
 const IEDRIVER_RELEASE: &str = "IEDriverServer_Win32_";
 
-thread_local!(static RELEASE_URL: RefCell<String> = RefCell::new("".to_string()));
-
 pub struct IExplorerManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub driver_url: Option<String>,
 }
 
 impl IExplorerManager {
     pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = IE_NAMES[0];
         let driver_name = IEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
+            driver_url: None,
         }))
     }
 }
@@ -84,24 +88,34 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::new()
+        HashMap::from([(
+            BrowserPath::new(WINDOWS, STABLE),
+            r#"Internet Explorer\iexplore.exe"#,
+        )])
     }
 
-    fn discover_browser_version(&self) -> Option<String> {
-        None
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_general_browser_version(
+            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            REG_VERSION_ARG,
+            "",
+        )
     }
 
     fn get_driver_name(&self) -> &str {
         self.driver_name
     }
 
-    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
-        let mut metadata = get_metadata(self.get_logger());
-        let driver_ttl = self.get_config().driver_ttl;
+    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+        let major_browser_version_binding = self.get_major_browser_version();
+        let major_browser_version = major_browser_version_binding.as_str();
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            major_browser_version,
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
@@ -110,7 +124,12 @@ impl SeleniumManager for IExplorerManager {
                 Ok(driver_version)
             }
             _ => {
-                let selenium_releases = get_mirror_response(self.get_http_client())?;
+                self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
+
+                let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
+                    self.get_http_client(),
+                    MIRROR_URL.to_string(),
+                )?;
 
                 let filtered_releases: Vec<SeleniumRelease> = selenium_releases
                     .into_iter()
@@ -128,9 +147,7 @@ impl SeleniumManager for IExplorerManager {
                         .filter(|url| url.browser_download_url.contains(IEDRIVER_RELEASE))
                         .collect();
                     let driver_url = &driver_releases.last().unwrap().browser_download_url;
-                    RELEASE_URL.with(|url| {
-                        *url.borrow_mut() = driver_url.to_string();
-                    });
+                    self.driver_url = Some(driver_url.to_string());
 
                     let index_release =
                         driver_url.rfind(IEDRIVER_RELEASE).unwrap() + IEDRIVER_RELEASE.len();
@@ -139,14 +156,15 @@ impl SeleniumManager for IExplorerManager {
                         self.get_logger(),
                     )?;
 
-                    if !browser_version.is_empty() {
+                    let driver_ttl = self.get_ttl();
+                    if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
-                            browser_version,
+                            major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger());
+                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                     }
 
                     Ok(driver_version)
@@ -157,41 +175,39 @@ impl SeleniumManager for IExplorerManager {
         }
     }
 
-    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
-        let mut driver_url = "".to_string();
-        RELEASE_URL.with(|url| {
-            driver_url = url.borrow().to_string();
-        });
-        if driver_url.is_empty() {
-            let driver_version = self.get_driver_version();
-            let mut release_version = driver_version.to_string();
-            if !driver_version.ends_with('0') {
-                // E.g.: version 4.8.1 is shipped within release 4.8.0
-                let error_message = format!(
-                    "Wrong {} version: '{}'",
-                    self.get_driver_name(),
-                    driver_version
-                );
-                let index = release_version.rfind('.').ok_or(error_message)? + 1;
-                release_version = release_version[..index].to_string();
-                release_version.push('0');
-            }
-            driver_url = format!(
-                "{}download/selenium-{}/{}{}.zip",
-                DRIVER_URL, release_version, IEDRIVER_RELEASE, driver_version
-            );
-        }
-        Ok(driver_url)
+    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        Ok(None)
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
+    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
+        if self.driver_url.is_some() {
+            return Ok(self.driver_url.as_ref().unwrap().to_string());
+        }
+
+        let release_version = self.get_selenium_release_version()?;
+        Ok(format!(
+            "{}download/{}/{}{}.zip",
+            DRIVER_URL,
+            release_version,
+            IEDRIVER_RELEASE,
+            self.get_driver_version()
+        ))
+    }
+
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         let driver_version = self.get_driver_version();
         let _minor_driver_version = self
             .get_minor_version(driver_version)
             .unwrap_or_default()
             .parse::<i32>()
             .unwrap_or_default();
-        compose_driver_path_in_cache(self.driver_name, "Windows", "win32", driver_version)
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            "Windows",
+            "win32",
+            driver_version,
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -212,5 +228,9 @@ impl SeleniumManager for IExplorerManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        Ok(None)
     }
 }

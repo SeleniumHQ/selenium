@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -49,8 +50,9 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
     localDriver = seleniumExtension.createNewDriver(options);
 
     localDriver.get(pages.clickJacker);
+
     Object userAgent =
-        ((ChromeDriver) localDriver).executeScript("return window.navigator.userAgent");
+        ((RemoteWebDriver) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -70,7 +72,8 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
     options.setAcceptInsecureCerts(true);
     localDriver = seleniumExtension.createNewDriver(options);
 
-    assertThat(((ChromeDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS))
+    assertThat(
+            ((RemoteWebDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS))
         .isEqualTo(true);
   }
 

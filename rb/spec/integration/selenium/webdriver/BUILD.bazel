@@ -12,9 +12,9 @@ rb_library(
         "spec_support/**/*",
     ]),
     data = [
+        "//rb:manager-linux",
         "//rb:manager-macos",
         "//rb:manager-windows",
-        "//rb:manager-linux",
     ] + select({
         "//rb/spec/integration:remote": ["//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar"],
         "//conditions:default": [],

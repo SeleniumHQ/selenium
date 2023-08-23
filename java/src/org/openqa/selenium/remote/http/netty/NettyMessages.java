@@ -138,7 +138,12 @@ class NettyMessages {
     } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
       rawUrl = uri;
     } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
+      String base = baseUrl.toString();
+      if (base.endsWith("/")) {
+        rawUrl = base.substring(0, base.length() - 1) + uri;
+      } else {
+        rawUrl = base + uri;
+      }
     }
     return rawUrl;
   }

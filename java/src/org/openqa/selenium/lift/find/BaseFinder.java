@@ -28,6 +28,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Base class for {@link Finder}s. These allow the creation of a specification to be applied to
  * objects of type T, to identify and return a Collection of any contained objects of type S.
  */
+@Deprecated
 public abstract class BaseFinder<S, T> implements Finder<S, T> {
 
   protected List<Matcher<S>> matchers = new ArrayList<>();

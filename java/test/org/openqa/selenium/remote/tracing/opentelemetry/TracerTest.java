@@ -618,7 +618,7 @@ class TracerTest {
   @Test
   void shouldBeAbleToSetExternalContextAndCreatedSpansAreItsChildren() {
     List<SpanData> allSpans = new ArrayList<>();
-    Tracer tracer = createTracer(allSpans);
+    OpenTelemetryTracer tracer = createTracer(allSpans);
 
     OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder().build();
     io.opentelemetry.api.trace.Span externalSpan =
@@ -638,7 +638,7 @@ class TracerTest {
         .isEqualTo(externalSpan.getSpanContext().getSpanId());
   }
 
-  private Tracer createTracer(List<SpanData> exportTo) {
+  private OpenTelemetryTracer createTracer(List<SpanData> exportTo) {
     ContextPropagators propagators =
         ContextPropagators.create((W3CTraceContextPropagator.getInstance()));
     SdkTracerProvider sdkTracerProvider =

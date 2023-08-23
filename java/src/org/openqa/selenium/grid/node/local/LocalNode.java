@@ -95,6 +95,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -223,7 +224,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 downloadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Downloads folder associated with "
                                         + notification.getKey());
                               });
@@ -231,7 +232,7 @@ public class LocalNode extends Node {
                           .ifPresent(
                               value -> {
                                 uploadsTempFileSystem.invalidate(value);
-                                LOG.warning(
+                                LOG.fine(
                                     "Removing Uploads folder associated with "
                                         + notification.getKey());
                               });
@@ -666,6 +667,13 @@ public class LocalNode extends Node {
       ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
       return new HttpResponse().setContent(asJson(result));
     }
+    if (req.getMethod().equals(HttpMethod.DELETE)) {
+      File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+      for (File file : files) {
+        FileHandler.delete(file);
+      }
+      return new HttpResponse();
+    }
     String raw = string(req);
     if (raw.isEmpty()) {
       throw new WebDriverException(
@@ -791,8 +799,11 @@ public class LocalNode extends Node {
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
     }
 
+    // Check if the user wants to use BiDi
+    boolean webSocketUrl = toUse.asMap().containsKey("webSocketUrl");
     // Add se:bidi if necessary to send the bidi url back
-    if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
+    boolean bidiSupported = isSupportingBiDi || toUse.getCapability("se:bidi") != null;
+    if (bidiSupported && bidiEnabled && webSocketUrl) {
       String bidiPath = String.format("/session/%s/se/bidi", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
     } else {
@@ -902,7 +913,8 @@ public class LocalNode extends Node {
       int remainingSessions = this.sessionCount.decrementAndGet();
       LOG.log(
           Debug.getDebugLogLevel(),
-          String.format("%s remaining sessions before draining Node", remainingSessions));
+          "{0} remaining sessions before draining Node",
+          remainingSessions);
       if (remainingSessions <= 0) {
         LOG.info(
             String.format(

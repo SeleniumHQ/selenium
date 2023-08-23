@@ -38,9 +38,13 @@ public class Json {
   private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
 
   public String toJson(Object toConvert) {
+    return toJson(toConvert, JsonOutput.MAX_DEPTH);
+  }
+
+  public String toJson(Object toConvert, int maxDepth) {
     try (Writer writer = new StringWriter();
         JsonOutput jsonOutput = newOutput(writer)) {
-      jsonOutput.write(toConvert);
+      jsonOutput.write(toConvert, maxDepth);
       return writer.toString();
     } catch (IOException e) {
       throw new JsonException(e);

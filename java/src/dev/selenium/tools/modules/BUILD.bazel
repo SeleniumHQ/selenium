@@ -1,12 +1,13 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_binary")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 java_binary(
     name = "ModuleGenerator",
     srcs = glob(["*.java"]),
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     main_class = "dev.selenium.tools.modules.ModuleGenerator",
     visibility = ["//visibility:public"],

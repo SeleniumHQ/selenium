@@ -23,6 +23,7 @@ import static com.google.common.net.MediaType.GIF;
 import static com.google.common.net.MediaType.HTML_UTF_8;
 import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static com.google.common.net.MediaType.JPEG;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.common.net.MediaType.OCTET_STREAM;
 import static com.google.common.net.MediaType.PLAIN_TEXT_UTF_8;
 import static com.google.common.net.MediaType.PNG;
@@ -158,6 +159,10 @@ public class ResourceHandler implements Routable {
 
       case "js":
         type = JAVASCRIPT_UTF_8;
+        break;
+
+      case "json":
+        type = JSON_UTF_8;
         break;
 
       case "md":

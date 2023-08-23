@@ -9,17 +9,15 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used to automate web browser interaction from Python.
 
-+-----------+--------------------------------------------------------------------------------------+
-| **Home**: | https://selenium.dev                                                                 |
-+-----------+--------------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
-+-----------+--------------------------------------------------------------------------------------+
-| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                               |
-+-----------+--------------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.org/project/selenium/                                                   |
-+-----------+--------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on LiberaChat                                                  |
-+-----------+--------------------------------------------------------------------------------------+
++-----------------+--------------------------------------------------------------------------------------+
+| **Home**:       | https://selenium.dev                                                                 |
++-----------------+--------------------------------------------------------------------------------------+
+| **GitHub**:     | https://github.com/SeleniumHQ/Selenium                                               |
++-----------------+--------------------------------------------------------------------------------------+
+| **PyPI**:       | https://pypi.org/project/selenium/                                                   |
++-----------------+--------------------------------------------------------------------------------------+
+| **IRC/Slack**:  | `Selenium chat room <https://www.selenium.dev/support/#ChatRoom>`_                   |
++-----------------+--------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
 
@@ -126,13 +124,13 @@ Selenium Server (optional)
 
 For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
-However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
+However, to use Selenium Webdriver Remote , you need to also run the Selenium server. The server requires a Java Runtime Environment (JRE).
 
 Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-4.6.0.jar
+    java -jar selenium-server-4.11.0.jar
 
 Then run your Python client scripts.
 
@@ -142,9 +140,8 @@ Use The Source Luke!
 View source code online:
 
 +-----------+------------------------------------------------------+
-| official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
+| Official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
-
 
 Contributing
 =============

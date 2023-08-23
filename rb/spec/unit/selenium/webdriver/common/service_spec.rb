@@ -25,14 +25,12 @@ module Selenium
       let(:service_path) { '/path/to/service' }
 
       before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
+        allow(Platform).to receive(:assert_executable)
         stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
 
       describe 'browser shortcuts' do
-        before { allow(Platform).to receive(:find_binary).and_return(service_path) }
-
         let(:args) { %w[--foo --bar] }
 
         it 'creates Chrome instance' do

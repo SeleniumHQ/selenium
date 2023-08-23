@@ -66,9 +66,11 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
   private static OpenTelemetryTracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
 
-    // Default exporter for traces and metrics is OTLP 0.17.0 onwards.
-    // If the metrics exporter property is not set to none, external dependency is required.
+    // OLTP is the default exporter for traces and metrics since 0.17.0, and logs
+    // since 1.27.0. If the property is set to a different value from "none", an
+    // external dependency is required.
     System.setProperty("otel.metrics.exporter", "none");
+    System.setProperty("otel.logs.exporter", "none");
     String exporter = System.getProperty("otel.traces.exporter");
     if (exporter == null) {
       System.setProperty("otel.traces.exporter", "none");
@@ -107,7 +109,6 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     return telemetryPropagator;
   }
 
-  @Override
   public void setOpenTelemetryContext(Context context) {
     this.context = context;
   }

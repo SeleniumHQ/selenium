@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 from abc import ABCMeta
 from abc import abstractmethod
+from contextlib import suppress
+from pathlib import Path
 from typing import Optional
 
 from selenium.types import AnyKey
@@ -46,12 +47,6 @@ class LocalFileDetector(FileDetector):
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         file_path = "".join(keys_to_typing(keys))
 
-        if not file_path:
-            return None
-
-        try:
-            if os.path.isfile(file_path):
+        with suppress(OSError):
+            if Path(file_path).is_file():
                 return file_path
-        except Exception:
-            pass
-        return None

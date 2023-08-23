@@ -1,5 +1,4 @@
 {
-  "DriverServiceLocation": "C:\\Projects\\WebDriverServers",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
   "TestWebServerConfig": {
@@ -36,13 +35,6 @@
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Chrome",
       "RemoteCapabilities": "chrome"
-    },
-
-    "IE": {
-      "DriverTypeName": "OpenQA.Selenium.IE.WindowFocusInternetExplorerDriver",
-      "AssemblyName": "WebDriver.Common.Tests",
-      "BrowserValue": "IE",
-      "RemoteCapabilities": "internet explorer"
     },
 
     "EdgeIEMode": {

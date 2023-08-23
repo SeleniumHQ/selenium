@@ -27,7 +27,7 @@ module Selenium
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
           before do
-            allow(Platform).to receive(:assert_executable).and_return(true)
+            allow(Platform).to receive(:assert_executable)
           end
 
           it 'uses default port and nil path' do
@@ -50,31 +50,15 @@ module Selenium
           end
 
           it 'does not create args by default' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new
 
             expect(service.extra_args).to be_empty
           end
 
           it 'uses provided args' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
-          end
-
-          # This is deprecated behavior
-          it 'uses args when passed in as a Hash' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
-            expect {
-              service = described_class.new(args: {log_file: '/path/to/log',
-                                                   silent: true})
-
-              expect(service.extra_args).to eq ['--log-file=/path/to/log', '--silent']
-            }.to have_deprecated(:driver_opts)
           end
         end
 
@@ -100,7 +84,8 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
 
@@ -110,7 +95,8 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
+            allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)
 

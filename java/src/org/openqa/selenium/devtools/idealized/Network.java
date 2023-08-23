@@ -59,7 +59,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
   private final Filter defaultFilter = next -> next::execute;
-  private Filter filter = defaultFilter;
+  private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
   private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
@@ -72,7 +72,9 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     devTools.send(disableFetch());
     devTools.send(enableNetworkCaching());
 
-    authHandlers.clear();
+    synchronized (authHandlers) {
+      authHandlers.clear();
+    }
     filter = defaultFilter;
   }
 
@@ -127,7 +129,9 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
 
-    authHandlers.put(whenThisMatches, useTheseCredentials);
+    synchronized (authHandlers) {
+      authHandlers.put(whenThisMatches, useTheseCredentials);
+    }
 
     prepareToInterceptTraffic();
   }
@@ -244,11 +248,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected Optional<Credentials> getAuthCredentials(URI uri) {
     Require.nonNull("URI", uri);
 
-    return authHandlers.entrySet().stream()
-        .filter(entry -> entry.getKey().test(uri))
-        .map(Map.Entry::getValue)
-        .map(Supplier::get)
-        .findFirst();
+    synchronized (authHandlers) {
+      return authHandlers.entrySet().stream()
+          .filter(entry -> entry.getKey().test(uri))
+          .map(Map.Entry::getValue)
+          .map(Supplier::get)
+          .findFirst();
+    }
   }
 
   protected HttpMethod convertFromCdpHttpMethod(String method) {

@@ -142,7 +142,8 @@ class SessionQueueGridTest {
             Duration.ofMinutes(5),
             false,
             Duration.ofSeconds(5),
-            Runtime.getRuntime().availableProcessors());
+            Runtime.getRuntime().availableProcessors(),
+            new DefaultSlotMatcher());
     handler.addHandler(distributor);
 
     distributor.add(localNode);

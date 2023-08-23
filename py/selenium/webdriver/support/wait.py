@@ -37,7 +37,7 @@ class WebDriverWait:
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
         :Args:
-         - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
+         - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote) or a WebElement
          - timeout - Number of seconds before timing out
          - poll_frequency - sleep interval between calls
            By default, it is 0.5 second.

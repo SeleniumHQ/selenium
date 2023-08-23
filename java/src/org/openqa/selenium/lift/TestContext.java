@@ -23,6 +23,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
 /** Interface for objects that provide a context (maintaining any state) for web tests. */
+@Deprecated
 public interface TestContext {
 
   void goTo(String url);

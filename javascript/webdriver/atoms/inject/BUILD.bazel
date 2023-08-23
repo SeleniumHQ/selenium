@@ -392,6 +392,15 @@ closure_fragment(
 )
 
 closure_fragment(
+    name = "type",
+    function = "webdriver.atoms.inject.action.type",
+    module = "webdriver.atoms.inject.action",
+    deps = [
+        ":action",
+    ],
+)
+
+closure_fragment(
     name = "get-appcache-status",
     function = "webdriver.atoms.inject.storage.appcache.getStatus",
     module = "webdriver.atoms.inject.storage.appcache",

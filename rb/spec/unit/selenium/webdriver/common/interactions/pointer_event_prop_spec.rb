@@ -29,6 +29,7 @@ module Selenium
 
             def initialize(opts)
               @opts = opts
+              super
             end
 
             def assert_source(*); end

@@ -18,6 +18,7 @@
 // Generated source.
 package org.openqa.selenium.lift;
 
+@Deprecated
 public class Matchers {
 
   public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> attribute(

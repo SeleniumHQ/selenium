@@ -20,6 +20,9 @@
 from typing import Optional
 from typing import Sequence
 
+SUPPORT_MSG = "For documentation on this error, please visit:"
+ERROR_URL = "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors"
+
 
 class WebDriverException(Exception):
     """Base webdriver exception."""
@@ -70,6 +73,13 @@ class NoSuchElementException(WebDriverException):
           for how to write a wait wrapper to wait for an element to appear.
     """
 
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#no-such-element-exception"
+
+        super().__init__(with_support, screen, stacktrace)
+
 
 class NoSuchAttributeException(WebDriverException):
     """Thrown when the attribute of element could not be found.
@@ -101,6 +111,13 @@ class StaleElementReferenceException(WebDriverException):
           node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
+
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#stale-element-reference-exception"
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class InvalidElementStateException(WebDriverException):
@@ -194,6 +211,13 @@ class InvalidSelectorException(WebDriverException):
     "count(//input)").
     """
 
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalid-selector-exception"
+
+        super().__init__(with_support, screen, stacktrace)
+
 
 class ImeNotAvailableException(WebDriverException):
     """Thrown when IME support is not available.
@@ -253,5 +277,12 @@ class UnknownMethodException(WebDriverException):
     for that URL."""
 
 
-class SeleniumManagerException(WebDriverException):
-    """Raised when an issue interacting with selenium manager occurs."""
+class NoSuchDriverException(WebDriverException):
+    """Raised when driver is not specified and cannot be located."""
+
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}/driver_location"
+
+        super().__init__(with_support, screen, stacktrace)

@@ -23,20 +23,21 @@ module Selenium
       def self.path(options, klass)
         path = klass.driver_path
         path = path.call if path.is_a?(Proc)
-        path ||= Platform.find_binary(klass::EXECUTABLE)
 
         path ||= begin
-          SeleniumManager.driver_path(options)
+          SeleniumManager.driver_path(options) unless options.is_a?(Remote::Capabilities)
         rescue StandardError => e
-          WebDriver.logger.warn("Unable to obtain driver using Selenium Manager\n #{e.message}",
-                                id: :selenium_manager)
-          nil
+          raise Error::NoSuchDriverError, "Unable to obtain #{klass::EXECUTABLE} using Selenium Manager; #{e.message}"
         end
-        msg = "Unable to locate the #{klass::EXECUTABLE} executable; for more information on how to install drivers, " \
-              'see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/'
-        raise Error::WebDriverError, msg unless path
 
-        Platform.assert_executable path
+        begin
+          Platform.assert_executable(path)
+        rescue TypeError
+          raise Error::NoSuchDriverError, "Unable to locate or obtain #{klass::EXECUTABLE}"
+        rescue Error::WebDriverError => e
+          raise Error::NoSuchDriverError, "#{klass::EXECUTABLE} located, but: #{e.message}"
+        end
+
         path
       end
     end

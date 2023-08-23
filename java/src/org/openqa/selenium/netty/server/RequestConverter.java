@@ -59,10 +59,10 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-    LOG.log(Debug.getDebugLogLevel(), "Incoming message: " + msg);
+    LOG.log(Debug.getDebugLogLevel(), "Incoming message: {0}", msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
-      LOG.log(Debug.getDebugLogLevel(), "Start of http request: " + msg);
+      LOG.log(Debug.getDebugLogLevel(), "Start of http request: {0}", msg);
 
       io.netty.handler.codec.http.HttpRequest nettyRequest =
           (io.netty.handler.codec.http.HttpRequest) msg;
@@ -110,7 +110,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       if (msg instanceof LastHttpContent) {
-        LOG.log(Debug.getDebugLogLevel(), "End of http request: " + msg);
+        LOG.log(Debug.getDebugLogLevel(), "End of http request: {0}", msg);
 
         if (buffer != null) {
           ByteSource source = buffer.asByteSource();

@@ -93,11 +93,12 @@ class FirefoxOptionsTest {
 
   @Test
   void shouldKeepRelativePathToBinaryAsIs() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
+    String path = String.join(File.separator, "some", "path");
+    FirefoxOptions options = new FirefoxOptions().setBinary(path);
     assertThat(options.getBinary())
         .extracting(FirefoxBinary::getFile)
         .extracting(String::valueOf)
-        .isEqualTo("some/path");
+        .isEqualTo(path);
   }
 
   @Test
@@ -138,11 +139,12 @@ class FirefoxOptionsTest {
 
   @Test
   void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
+    String path = String.join(File.separator, "", "i", "like", "cheese");
     Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
     assertThat(json.get(FIREFOX_OPTIONS))
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", "/i/like/cheese");
+        .containsEntry("binary", path);
   }
 
   @Test
@@ -311,7 +313,7 @@ class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", tempFile.toFile().getPath().replaceAll("\\\\", "/"));
+        .containsEntry("binary", tempFile.toFile().getPath());
   }
 
   @Test
