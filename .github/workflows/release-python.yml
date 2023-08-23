@@ -34,6 +34,15 @@ jobs:
             git commit -m "Update Python Release Version files (`date`)" -a
             echo "::set-output name=commit::true"
           fi
+      - name: Build Changelog
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@{latest-release}
+      - name: Update Changelog
+        run: |
+          existing_content=$(cat py/CHANGES)
+          new_changelog="Selenium ${RELEASE_VERSION} \n${{ steps.build_changelog.outputs.changelog }}\\n\\n"
+          updated_content="${new_changelog}${existing_content}"
+          echo "$updated_content" > py/CHANGES
       - name: Push changes
         if: steps.git.outputs.commit == 'true'
         uses: ad-m/github-push-action@master
