@@ -1,3 +1,13 @@
+v4.12.0
+======
+* Add CDP files for v116 and remove v113
+* Fix bug with driver location parsing as a file when no trailing slash (#12473)
+* Improve performance in DriverFactory (#12497)
+* Avoid async void events in CDP Network session (#12486)
+* Rename methods in Actions class to follow .NET convention (#12439)
+
+
+
 v4.11.0
 ======
 * Add CDP files for v115 and remove v112
