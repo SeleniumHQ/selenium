@@ -17,6 +17,7 @@
 
 use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::error::Error;
 use std::fs::File;
 use std::io::copy;
@@ -105,5 +106,14 @@ where
 {
     let content = read_content_from_link(http_client, url)?;
     let response: T = serde_json::from_str(&content)?;
+    Ok(response)
+}
+
+pub fn parse_generic_json_from_url(
+    http_client: &Client,
+    url: String,
+) -> Result<Value, Box<dyn Error>> {
+    let content = read_content_from_link(http_client, url)?;
+    let response: Value = serde_json::from_str(&content)?;
     Ok(response)
 }

@@ -12,3 +12,5 @@
 * unify browser_ttl and driver_ttl (#12526)
 * rename configuration file to se-config.toml (#12550)
 * rename metadata file to se-metadata.json (#12531)
+* automated Firefox management (#11680 and #11682)
+* bump dependencies to the latest versions (#12601)
