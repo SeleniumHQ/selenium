@@ -1,3 +1,15 @@
+## 4.12.0
+
+#### :bug: Bug fix
+
+* Adding browsers when they are present on the host (#12456)
+* Create absolute path for browser binary (#12479)
+* Fix how browsers and drivers are discovered (#12456)
+
+#### :nail_care: Polish
+
+* Add support for Chrome 116 and remove support for Chrome 113
+
 ## 4.11.1
 
 #### :bug: Bug fix
