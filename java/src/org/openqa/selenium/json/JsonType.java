@@ -17,15 +17,26 @@
 
 package org.openqa.selenium.json;
 
+/** Used to specify the pending JSON element type. */
 public enum JsonType {
+  /** Boolean value */
   BOOLEAN,
+  /** property name */
   NAME,
+  /** {@code null} value */
   NULL,
+  /** numeric value */
   NUMBER,
+  /** start of object */
   START_MAP,
+  /** end of object */
   END_MAP,
+  /** start of array */
   START_COLLECTION,
+  /** end of array */
   END_COLLECTION,
+  /** string value */
   STRING,
+  /** end of input */
   END
 }
