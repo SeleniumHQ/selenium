@@ -70,6 +70,7 @@ jobs:
       cache-key: python-nightly
       run: bazel build --stamp //py:selenium-wheel //py:selenium-sdist
       language-release-setup: python
+      get-nightly-version: true
     secrets: inherit
 
 
