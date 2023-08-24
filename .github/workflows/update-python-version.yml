@@ -23,15 +23,6 @@ jobs:
         run: ./scripts/github-actions/update-version.sh
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version }}
-      - name: Build Changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@{latest-release}
-      - name: Update Changelog
-        run: |
-          existing_content=$(cat py/CHANGES)
-          new_changelog="Selenium ${RELEASE_VERSION} \n${{ steps.build_changelog.outputs.changelog }}\\n\\n"
-          updated_content="${new_changelog}${existing_content}"
-          echo "$updated_content" > py/CHANGES
       - name: Commit files
         id: git
         run: |
