@@ -262,7 +262,10 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
    */
   @Override
   public int hashCode() {
-    return id.hashCode();
+    if (id != null) {
+      return id.hashCode();
+    }
+    return this.hashCode();
   }
 
   /*
