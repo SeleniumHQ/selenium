@@ -51,17 +51,6 @@ on:
         required: false
         type: string
         default: ''
-      archive-name:
-        description: Name of the archive to upload
-        required: false
-        type: string
-        default: ''
-      archive-path:
-        description: Path to the archive to upload
-        required: false
-        type: string
-        default: ''
-
 jobs:
   bazel:
     name: ${{ inputs.name }}
@@ -139,9 +128,28 @@ jobs:
         run: |
           latest_tag=$(git describe --tags --abbrev=0 --exclude="nightly")
           ./scripts/github-actions/update-version.sh "$latest_tag"
+      - name: Install Python
+        if: inputs.language-release-setup == 'python'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install Twine and Update .pypirc
+        if: inputs.language-release-setup == 'python'
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade twine
+          echo "[distutils]" > ~/.pypirc
+          echo "index-servers =" >> ~/.pypirc
+          echo "    testpypi" >> ~/.pypirc
+          echo "[testpypi]" >> ~/.pypirc
+          echo "username:$PYPI_TOKEN" >> ~/.pypirc
+          echo "password:$PYPI_PASS" >> ~/.pypirc
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          PYPI_PASS: ${{ secrets.PYPI_PASS }}
       - name: Run Bazel
         run: ${{ inputs.run }}
-      - name: Upload Artifacts
+      - name: Upload Python Artifacts
         if: inputs.archive-name != '' && inputs.archive-path != ''
         uses: actions/upload-artifact@v3
         with:

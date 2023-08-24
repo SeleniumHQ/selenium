@@ -68,10 +68,8 @@ jobs:
     with:
       name: Release
       cache-key: python-nightly
-      run: bazel build //py:selenium-wheel //py:selenium-sdist
+      run: bazel build --stamp //py:selenium-wheel //py:selenium-sdist
       language-release-setup: python
-      archive-name: python-nightly
-      archive-path: py/dist
     secrets: inherit
 
 
