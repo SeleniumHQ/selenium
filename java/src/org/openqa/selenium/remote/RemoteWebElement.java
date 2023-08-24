@@ -265,7 +265,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     if (id != null) {
       return id.hashCode();
     }
-    return this.hashCode();
+    return super.hashCode();
   }
 
   /*
