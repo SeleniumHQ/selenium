@@ -58,7 +58,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
-  private final AtomicBoolean perpared = new AtomicBoolean();
+  private final AtomicBoolean prepared = new AtomicBoolean();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
@@ -72,7 +72,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       authHandlers.clear();
     }
     filter = defaultFilter;
-    perpared.set(false);
+    prepared.set(false);
   }
 
   public static class UserAgent {
@@ -146,7 +146,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
-    if (perpared.getAndSet(true)) {
+    if (prepared.getAndSet(true)) {
       // do not register multiple handlers otherwise the events are processed multiple times
       return;
     }
