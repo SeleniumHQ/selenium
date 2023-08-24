@@ -22,15 +22,6 @@ if [[ -z "$RELEASE_TAG" ]]; then
   exit 1
 fi
 
-# example - 4.11.1
-RELEASE_VERSION=$(echo "$RELEASE_TAG" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-
-# example - 4.12.0
-NEW_VERSION=$(echo "$RELEASE_VERSION" | awk -F. '{print $1"."$2+1".0"}')
-
-# example - 4.12.0.nightly.20230824
-NEW_VERSION_EXTRAS="$NEW_VERSION.nightly.$(date +%Y%m%d)"
-
 # Go to python dir
 cd "$(dirname "$0")"/../../py
 
