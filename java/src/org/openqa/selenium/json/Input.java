@@ -29,20 +29,31 @@ import org.openqa.selenium.internal.Require;
  * read characters in the input buffer.
  */
 class Input {
-  public static final char EOF = (char) -1;
-  // the number of chars to buffer
+  /** end-of-file indicator (0xFFFD) */
+  public static final char EOF = (char) -1; // NOTE: Produces Unicode replacement character (0xFFFD)
+
+  /** the number of chars to buffer */
   private static final int BUFFER_SIZE = 4096;
-  // the number of chars to remember, safe to set to 0
+
+  /** the number of chars to remember, safe to set to 0 */
   private static final int MEMORY_SIZE = 128;
 
   private final Reader source;
-  // a buffer used to minimize read calls and to keep the chars to remember
+
+  /** a buffer used to minimize read calls and to keep the chars to remember */
   private final char[] buffer;
-  // the filled area in the buffer
+
+  /** the filled area in the buffer */
   private int filled;
-  // the last position read in the buffer
+
+  /** the last position read in the buffer */
   private int position;
 
+  /**
+   * Initialize a new instance of the {@link Input} class with the specified source.
+   *
+   * @param source {@link Reader} object that supplies the input to be processed
+   */
   public Input(Reader source) {
     this.source = Require.nonNull("Source", source);
     this.buffer = new char[BUFFER_SIZE + MEMORY_SIZE];
@@ -50,14 +61,29 @@ class Input {
     this.position = -1;
   }
 
+  /**
+   * Extract the next character from the input without consuming it.
+   *
+   * @return the next input character; {@link #EOF} if input is exhausted
+   */
   public char peek() {
     return fill() ? buffer[position + 1] : EOF;
   }
 
+  /**
+   * Read and consume the next character from the input.
+   *
+   * @return the next input character; {@link #EOF} if input is exhausted
+   */
   public char read() {
     return fill() ? buffer[++position] : EOF;
   }
 
+  /**
+   * Return a string containing the most recently consumed input characters.
+   *
+   * @return {@link String} with up to 128 consumed input characters
+   */
   @Override
   public String toString() {
     int offset;
@@ -74,6 +100,13 @@ class Input {
     return "Last " + length + " characters read: " + new String(buffer, offset, length);
   }
 
+  /**
+   * If all buffered input has been consumed, read the next chunk into the buffer.<br>
+   * <b>NOTE</b>: The last 128 character of consumed input is retained for debug output.
+   *
+   * @return {@code true} if new input is available; {@code false} if input is exhausted
+   * @throws UncheckedIOException if an I/O exception is encountered
+   */
   private boolean fill() {
     // do we need to fill the buffer?
     while (filled == position + 1) {

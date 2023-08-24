@@ -42,6 +42,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.internal.Require;
 
+/** */
 class JsonTypeCoercer {
 
   private final Set<TypeCoercer<?>> additionalCoercers;
@@ -49,10 +50,15 @@ class JsonTypeCoercer {
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers =
       new ConcurrentHashMap<>();
 
+  /** */
   JsonTypeCoercer() {
     this(Stream.of());
   }
 
+  /**
+   * @param coercer
+   * @param coercers
+   */
   JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
     this(
         Stream.concat(
@@ -60,6 +66,9 @@ class JsonTypeCoercer {
             coercer.additionalCoercers.stream()));
   }
 
+  /**
+   * @param coercers
+   */
   private JsonTypeCoercer(Stream<TypeCoercer<?>> coercers) {
     this.additionalCoercers =
         coercers.collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
@@ -136,6 +145,15 @@ class JsonTypeCoercer {
     this.coercers = Collections.unmodifiableSet(builder);
   }
 
+  /**
+   * Deserialize the next JSON element as an object of the specified type.
+   *
+   * @param json serialized source as JSON string
+   * @param typeOfT data type for deserialization (class or {@link TypeToken})
+   * @param setter strategy used to assign values during deserialization
+   * @return object of the specified type deserialized from [source]
+   * @param <T> result type (as specified by [typeOfT])
+   */
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
@@ -147,6 +165,10 @@ class JsonTypeCoercer {
     return result;
   }
 
+  /**
+   * @param type
+   * @return
+   */
   private BiFunction<JsonInput, PropertySetting, Object> buildCoercer(Type type) {
     return coercers.stream()
         .filter(coercer -> coercer.test(narrow(type)))
