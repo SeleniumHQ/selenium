@@ -41,8 +41,23 @@ on:
         required: false
         type: string
         default: ''
+      language-release-setup:
+        description: Language to prep nightly release for
+        required: false
+        type: string
+        default: ''
       nightly-release-files:
         description: Files to upload to the Nightly release tah
+        required: false
+        type: string
+        default: ''
+      archive-name:
+        description: Name of the archive to upload
+        required: false
+        type: string
+        default: ''
+      archive-path:
+        description: Path to the archive to upload
         required: false
         type: string
         default: ''
@@ -119,8 +134,19 @@ jobs:
         uses: browser-actions/setup-edge@latest
         with:
           edge-version: ${{ inputs.browser-version || 'stable' }}
+      - name: Setup Python Release
+        if: inputs.language-release-setup == 'python'
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 --exclude="nightly")
+          ./scripts/github-actions/update-version.sh "$latest_tag"
       - name: Run Bazel
         run: ${{ inputs.run }}
+      - name: Upload Artifacts
+        if: inputs.archive-name != '' && inputs.archive-path != ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.archive-name }}
+          path: ${{ inputs.archive-path }}
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

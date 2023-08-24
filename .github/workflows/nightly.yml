@@ -62,5 +62,16 @@ jobs:
       nightly-release-files: build/dist/*.*
 
   python:
+    if: inputs.language == 'python' || github.event_name == 'schedule'
+    name: Python
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Release
+      cache-key: python-nightly
+      run: bazel build //py:selenium-wheel //py:selenium-sdist
+      language-release-setup: python
+      archive-name: python-nightly
+      archive-path: py/dist
+    secrets: inherit
 
 
