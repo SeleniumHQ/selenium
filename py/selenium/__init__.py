@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from ..version import SE_VERSION
 
 
-__version__ = "4.11.2"
+__version__ = SE_VERSION
