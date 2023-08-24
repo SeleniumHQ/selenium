@@ -96,7 +96,6 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldProceedAsNormalIfRequestIsNotIntercepted() {
     interceptor =
         new NetworkInterceptor(
@@ -110,7 +109,6 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldAllowTheInterceptorToChangeTheResponse() {
     interceptor =
         new NetworkInterceptor(
@@ -132,7 +130,6 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
@@ -181,7 +178,6 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldBeAbleToInterceptAResponse() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(
@@ -203,7 +199,6 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldHandleRedirects() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(driver, (Filter) next -> next)) {

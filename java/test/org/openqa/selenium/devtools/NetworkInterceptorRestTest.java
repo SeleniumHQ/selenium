@@ -81,7 +81,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -118,7 +117,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
   void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -191,7 +189,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally.")
   void shouldInterceptDeleteRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -228,7 +225,6 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally.")
   void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
