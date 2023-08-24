@@ -275,7 +275,7 @@ public class SeleniumManager {
       arguments.add("--offline");
     }
 
-    Proxy proxy = (Proxy) options.getCapability("proxy");
+    Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null) {
       if (proxy.getSslProxy() != null) {
         arguments.add("--proxy");
