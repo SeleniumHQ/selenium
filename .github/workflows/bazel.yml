@@ -42,7 +42,7 @@ on:
         type: string
         default: ''
       nightly-release-files:
-        description: Files to upload to the Nightly release tah
+        description: Files to upload to the Nightly release tag
         required: false
         type: string
         default: ''

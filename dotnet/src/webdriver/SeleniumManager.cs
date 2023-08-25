@@ -23,12 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-
-#if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
-#endif
-
 using System.Text;
 
 namespace OpenQA.Selenium
@@ -43,16 +38,9 @@ namespace OpenQA.Selenium
 
         static SeleniumManager()
         {
-#if NET45
-            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-#else
             var currentDirectory = AppContext.BaseDirectory;
-#endif
 
             string binary;
-#if NET45 || NET46 || NET47
-                binary = "selenium-manager/windows/selenium-manager.exe";
-#else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 binary = "selenium-manager/windows/selenium-manager.exe";
@@ -69,7 +57,6 @@ namespace OpenQA.Selenium
             {
                 throw new WebDriverException("Selenium Manager did not find supported operating system");
             }
-#endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
 
@@ -121,7 +108,7 @@ namespace OpenQA.Selenium
                 options.BinaryLocation = browserPath;
                 options.BrowserVersion = null;
             }
-            catch (NotImplementedException e)
+            catch (NotImplementedException)
             {
                 // Cannot set Browser Location for this driver and that is ok
             }
