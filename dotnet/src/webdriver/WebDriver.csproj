@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
@@ -68,19 +68,14 @@
     <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0' or $(TargetFramework) == 'netstandard2.1' or $(TargetFramework) == 'net5.0' or $(TargetFramework) == 'net6.0'">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == 'net45' or $(TargetFramework) == 'net46' or $(TargetFramework) == 'net47' or $(TargetFramework) == 'net48'">
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="All" />
-
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" PrivateAssets="All"/>
+    <!--PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" PrivateAssets="All" /-->
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

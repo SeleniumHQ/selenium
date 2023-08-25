@@ -17,11 +17,8 @@
 // </copyright>
 
 using System;
-#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0
-#else
 using System.Drawing;
 using System.Drawing.Imaging;
-#endif
 using System.IO;
 
 namespace OpenQA.Selenium
@@ -89,31 +86,32 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
-#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0
-            if (format != ScreenshotImageFormat.Png)
-            {
-                throw new WebDriverException(".NET Core does not support image manipulation, so only Portable Network Graphics (PNG) format is supported");
-            }
-#endif
-
             using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
             {
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 {
-#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0
-                    imageStream.WriteTo(fileStream);
-#else
+                    // Optimization: The byte array is already a PNG, so we can just
+                    // write directly to the file. If the user wants to convert to
+                    // another image format, we'll allow them to do so, but on certain
+                    // framework versions (.NET 6 or above) this is likely to fail at
+                    // runtime. It is unclear how many Selenium users are using this
+                    // feature to convert the returned screenshot into a different image
+                    // format. Future mitigations of this issue would need to take a
+                    // dependency on an image processing library like ImageSharp or
+                    // similar.
+                    if (format == ScreenshotImageFormat.Png)
+                    {
+                        imageStream.WriteTo(fileStream);
+                    }
+
                     using (Image screenshotImage = Image.FromStream(imageStream))
                     {
                         screenshotImage.Save(fileStream, ConvertScreenshotImageFormat(format));
                     }
-#endif
                 }
             }
         }
 
-#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0 || NET6_0
-#else
         private static ImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {
             ImageFormat returnedFormat = ImageFormat.Png;
@@ -138,6 +136,5 @@ namespace OpenQA.Selenium
 
             return returnedFormat;
         }
-#endif
     }
 }

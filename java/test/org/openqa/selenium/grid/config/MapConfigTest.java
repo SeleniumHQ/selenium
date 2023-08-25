@@ -68,8 +68,12 @@ class MapConfigTest {
 
     List<String> expected =
         Arrays.asList(
-            "default=\"brie\"", "name=\"soft cheese\"",
-            "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
+            "name=\"soft cheese\"",
+            "default=\"brie\"",
+            Config.DELIMITER,
+            "name=\"Medium-hard cheese\"",
+            "default=\"Emmental\"",
+            Config.DELIMITER);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
@@ -123,7 +127,8 @@ class MapConfigTest {
     List<String> expected =
         Arrays.asList(
             "display-name=\"htmlunit\"",
-            "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}");
+            "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
+            Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).isEqualTo(Optional.of(expected));
   }
