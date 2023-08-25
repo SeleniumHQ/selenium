@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -46,14 +47,15 @@ namespace OpenQA.Selenium.DevTools
         private bool isDisposed = false;
         private string attachedTargetId;
 
-        private ClientWebSocket sessionSocket;
+        private WebSocketConnection connection;
         private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
+        private readonly Channel<string> messageQueue;
+        private readonly Task messageQueueMonitorTask;
         private long currentCommandId = 0;
 
         private DevToolsDomains domains;
 
         private CancellationTokenSource receiveCancellationToken;
-        private Task receiveTask;
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
@@ -72,6 +74,13 @@ namespace OpenQA.Selenium.DevTools
             {
                 this.websocketAddress = endpointAddress;
             }
+            this.messageQueue = Channel.CreateUnbounded<string>(new UnboundedChannelOptions()
+            {
+                SingleReader = true,
+                SingleWriter = true,
+            });
+            this.messageQueueMonitorTask = Task.Run(() => this.MonitorMessageQueue());
+            this.messageQueueMonitorTask.ConfigureAwait(false);
         }
 
         /// <summary>
@@ -158,7 +167,6 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Sends the specified command and returns the associated command response.
         /// </summary>
-        /// <typeparam name="TCommand"></typeparam>
         /// <typeparam name="TCommandResponse"></typeparam>
         /// <typeparam name="TCommand">A command object implementing the <see cref="ICommand"/> interface.</typeparam>
         /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
@@ -209,15 +217,13 @@ namespace OpenQA.Selenium.DevTools
 
             var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), this.ActiveSessionId, commandName, commandParameters);
 
-            if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
+            if (this.connection != null && this.connection.IsActive)
             {
                 LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
 
-                var contents = JsonConvert.SerializeObject(message);
-                var contentBuffer = Encoding.UTF8.GetBytes(contents);
-
+                string contents = JsonConvert.SerializeObject(message);
                 this.pendingCommands.TryAdd(message.CommandId, message);
-                await this.sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
+                await this.connection.SendData(contents);
 
                 var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
 
@@ -226,8 +232,7 @@ namespace OpenQA.Selenium.DevTools
                     throw new InvalidOperationException($"A command response was not received: {commandName}");
                 }
 
-                DevToolsCommandData modified;
-                if (this.pendingCommands.TryRemove(message.CommandId, out modified))
+                if (this.pendingCommands.TryRemove(message.CommandId, out DevToolsCommandData modified))
                 {
                     if (modified.IsError)
                     {
@@ -252,10 +257,7 @@ namespace OpenQA.Selenium.DevTools
             }
             else
             {
-                if (this.sessionSocket != null)
-                {
-                    LogTrace("WebSocket is not connected (current state is {0}); not sending {1}", this.sessionSocket.State, message.CommandName);
-                }
+                LogTrace("WebSocket is not connected; not sending {0}", message.CommandName);
             }
 
             return null;
@@ -323,10 +325,6 @@ namespace OpenQA.Selenium.DevTools
                     this.Domains.Target.TargetDetached -= this.OnTargetDetached;
                     this.pendingCommands.Clear();
                     this.TerminateSocketConnection();
-
-                    // Note: Canceling the receive task will dispose of
-                    // the underlying ClientWebSocket instance.
-                    this.CancelReceiveTask();
                 }
 
                 this.isDisposed = true;
@@ -367,28 +365,6 @@ namespace OpenQA.Selenium.DevTools
             }
 
             return protocolVersion;
-        }
-
-        private async Task InitializeSocketConnection()
-        {
-            LogTrace("Creating WebSocket");
-            this.sessionSocket = new ClientWebSocket();
-            this.sessionSocket.Options.KeepAliveInterval = TimeSpan.Zero;
-
-            try
-            {
-                var timeoutTokenSource = new CancellationTokenSource(this.openConnectionWaitTimeSpan);
-                await this.sessionSocket.ConnectAsync(new Uri(this.websocketAddress), timeoutTokenSource.Token);
-                while (this.sessionSocket.State != WebSocketState.Open && !timeoutTokenSource.Token.IsCancellationRequested) ;
-            }
-            catch (OperationCanceledException e)
-            {
-                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Could not establish WebSocket connection within {0} seconds.", this.openConnectionWaitTimeSpan.TotalSeconds), e);
-            }
-
-            LogTrace("WebSocket created; starting message listener");
-            this.receiveCancellationToken = new CancellationTokenSource();
-            this.receiveTask = Task.Run(() => ReceiveMessage().ConfigureAwait(false));
         }
 
         private async Task InitializeSession()
@@ -437,116 +413,38 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
-        private void TerminateSocketConnection()
+        private async Task InitializeSocketConnection()
         {
-            if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
+            LogTrace("Creating WebSocket");
+            this.connection = new WebSocketConnection();
+            connection.DataReceived += OnConnectionDataReceived;
+            await connection.Start(this.websocketAddress);
+            LogTrace("WebSocket created; starting message listener");
+        }
+
+        private async void TerminateSocketConnection()
+        {
+            if (this.connection != null && this.connection.IsActive)
             {
-                var closeConnectionTokenSource = new CancellationTokenSource(this.closeConnectionWaitTimeSpan);
-                try
-                {
-                    // Since Chromium-based DevTools does not respond to the close
-                    // request with a correctly echoed WebSocket close packet, but
-                    // rather just terminates the socket connection, so we have to
-                    // catch the exception thrown when the socket is terminated
-                    // unexpectedly. Also, because we are using async, waiting for
-                    // the task to complete might throw a TaskCanceledException,
-                    // which we should also catch. Additiionally, there are times
-                    // when mulitple failure modes can be seen, which will throw an
-                    // AggregateException, consolidating several exceptions into one,
-                    // and this too must be caught. Finally, the call to CloseAsync
-                    // will hang even though the connection is already severed.
-                    // Wait for the task to complete for a short time (since we're
-                    // restricted to localhost, the default of 2 seconds should be
-                    // plenty; if not, change the initialization of the timout),
-                    // and if the task is still running, then we assume the connection
-                    // is properly closed.
-                    LogTrace("Sending socket close request");
-                    Task closeTask = Task.Run(async () => await this.sessionSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, closeConnectionTokenSource.Token));
-                    closeTask.Wait();
-                }
-                catch (WebSocketException)
-                {
-                }
-                catch (TaskCanceledException)
-                {
-                }
-                catch (AggregateException)
-                {
-                }
+                await this.connection.Stop();
+                await this.ShutdownMessageQueue();
             }
         }
 
-        private void CancelReceiveTask()
+        private async Task ShutdownMessageQueue()
         {
-            if (this.receiveTask != null)
+            // Attempt to wait for the channel to empty before marking the
+            // writer as complete and waiting for the monitor task to end.
+            while (this.messageQueue.Reader.TryPeek(out _))
             {
-                // Wait for the recieve task to be completely exited (for
-                // whatever reason) before attempting to dispose it. Also
-                // note that canceling the receive task will dispose of the
-                // underlying WebSocket.
-                this.receiveCancellationToken.Cancel();
-                this.receiveTask.Wait();
-                this.receiveTask.Dispose();
-                this.receiveTask = null;
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
             }
+
+            this.messageQueue.Writer.Complete();
+            this.messageQueueMonitorTask.Wait();
         }
 
-        private async Task ReceiveMessage()
-        {
-            var cancellationToken = this.receiveCancellationToken.Token;
-            try
-            {
-                var buffer = WebSocket.CreateClientBuffer(1024, 1024);
-                while (this.sessionSocket.State != WebSocketState.Closed && !cancellationToken.IsCancellationRequested)
-                {
-                    WebSocketReceiveResult result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
-                    if (!cancellationToken.IsCancellationRequested)
-                    {
-                        if (result.MessageType == WebSocketMessageType.Close && this.sessionSocket.State == WebSocketState.CloseReceived)
-                        {
-                            LogTrace("Got WebSocket close message from browser");
-                            await this.sessionSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken);
-                        }
-                    }
-
-                    if (this.sessionSocket.State == WebSocketState.Open && result.MessageType != WebSocketMessageType.Close)
-                    {
-                        using (var stream = new MemoryStream())
-                        {
-                            stream.Write(buffer.Array, 0, result.Count);
-                            while (!result.EndOfMessage)
-                            {
-                                result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
-                                stream.Write(buffer.Array, 0, result.Count);
-                            }
-
-                            stream.Seek(0, SeekOrigin.Begin);
-                            using (var reader = new StreamReader(stream, Encoding.UTF8))
-                            {
-                                string message = reader.ReadToEnd();
-
-                                // fire and forget
-                                // TODO: we need implement some kind of queue
-                                Task.Run(() => ProcessIncomingMessage(message));
-                            }
-                        }
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (WebSocketException)
-            {
-            }
-            finally
-            {
-                this.sessionSocket.Dispose();
-                this.sessionSocket = null;
-            }
-        }
-
-        private void ProcessIncomingMessage(string message)
+        private void ProcessMessage(string message)
         {
             var messageObject = JObject.Parse(message);
 
@@ -586,12 +484,36 @@ namespace OpenQA.Selenium.DevTools
 
                 LogTrace("Recieved Event {0}: {1}", method, eventData.ToString());
 
-                OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
+                // Dispatch the event on a new thread so that any event handlers
+                // responding to the event will not block this thread from processing
+                // DevTools commands that may be sent in the body of the attached
+                // event handler. If thread pool starvation seems to become a problem,
+                // we can switch to a channel-based queue.
+                Task.Run(() => OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData)));
 
                 return;
             }
 
             LogTrace("Recieved Other: {0}", message);
+        }
+
+        /// <summary>
+        /// Reads incoming messages in the message queue.
+        /// </summary>
+        private void ReadIncomingMessages()
+        {
+            while (this.messageQueue.Reader.TryRead(out string message))
+            {
+                this.ProcessMessage(message);
+            }
+        }
+
+        private async Task MonitorMessageQueue()
+        {
+            while (await this.messageQueue.Reader.WaitToReadAsync())
+            {
+                this.ReadIncomingMessages();
+            }
         }
 
         private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
@@ -600,6 +522,11 @@ namespace OpenQA.Selenium.DevTools
             {
                 DevToolsEventReceived(this, e);
             }
+        }
+
+        private void OnConnectionDataReceived(object sender, WebSocketConnectionDataReceivedEventArgs e)
+        {
+            _ = this.messageQueue.Writer.TryWrite(e.Data);
         }
 
         private void LogTrace(string message, params object[] args)

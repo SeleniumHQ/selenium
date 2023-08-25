@@ -76,6 +76,7 @@
   <ItemGroup>
     <!--PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" PrivateAssets="All" /-->
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

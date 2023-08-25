@@ -42,6 +42,18 @@ def selenium_register_dotnet():
     )
 
     import_nuget_package(
+        name = "system.threading.channels",
+        file = "third_party/dotnet/nuget/packages/system.threading.channels.7.0.0.nupkg",
+        sha256 = "0aed208d0b0b211f18be1d01e1c38f252615ab5d1afb717da55cff0b8dc235e3",
+    )
+
+    import_nuget_package(
+        name = "system.threading.tasks.extensions",
+        file = "third_party/dotnet/nuget/packages/system.threading.tasks.extensions.4.5.4.nupkg",
+        sha256 = "a304a963cc0796c5179f9c6b7d8022bbce3b2fa7c029eb6196f631f7b462d678",
+    )
+
+    import_nuget_package(
         name = "moq",
         file = "third_party/dotnet/nuget/packages/moq.4.12.0.nupkg",
         sha256 = "339bbb71107e137a753a89c6b74adb5d9072f0916cf8f19f48b30ae29c41f434",

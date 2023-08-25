@@ -65,6 +65,8 @@ csharp_library(
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
         "@system.drawing.common//:System.Drawing.Common",
+        "@system.threading.channels//:System.Threading.Channels",
+        "@system.threading.tasks.extensions//:System.Threading.Tasks.Extensions",
     ],
 )
 
