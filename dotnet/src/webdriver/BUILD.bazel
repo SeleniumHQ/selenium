@@ -4,7 +4,6 @@ load(
     "//dotnet:defs.bzl",
     "devtools_version_targets",
     "generated_assembly_info",
-    "merged_assembly",
     "nuget_package",
     "nuget_push",
 )
@@ -28,7 +27,6 @@ generated_assembly_info(
     title = "Selenium WebDriver",
     version = ASSEMBLY_VERSION,
 )
-
 
 csharp_library(
     name = "webdriver",
@@ -157,8 +155,8 @@ nuget_package(
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
-        ":webdriver",
         ":props",
+        ":webdriver",
     ],
 )
 

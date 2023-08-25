@@ -42,10 +42,9 @@ csharp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:webdriver",
+        "//dotnet/src/webdriver",
     ],
 )
-
 
 csharp_library(
     name = "webdriver-support-strongnamed",
