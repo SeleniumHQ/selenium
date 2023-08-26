@@ -29,17 +29,17 @@ RELEASE_VERSION=$(echo "$SE_VERSION" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 NEW_VERSION=$(echo "$RELEASE_VERSION" | awk -F. '{print $1"."$2+1".0"}')
 
 # example - 4.12.0.nightly.20230824
-NEW_VERSION_EXTRAS="$NEW_VERSION.nightly.$(date +%Y%m%d)"
+NIGHTLY_VERSION="$NEW_VERSION.nightly.$(date +%Y%m%d)"
 
 # would prefer to use sed -i but awk is more portable
 # Replace version in py/version.py
-awk -v new_version="$NEW_VERSION_EXTRAS" '/SE_VERSION =/ && !found { sub(/SE_VERSION = "[0-9]+\.[0-9]+\.[0-9]+"/, "SE_VERSION = \"" new_version "\""); found = 1 } { print }' version.py > tmp.txt && mv tmp.txt version.py
+awk -v new_version="$NIGHTLY_VERSION" '/SE_VERSION =/ && !found { sub(/SE_VERSION = "[0-9]+\.[0-9]+\.[0-9]+"/, "SE_VERSION = \"" new_version "\""); found = 1 } { print }' version.py > tmp.txt && mv tmp.txt version.py
 
 # Replace SE_VERSION in py/BUILD.bazel
-awk -v new_version="$NEW_VERSION_EXTRAS" '/SE_VERSION =/ && !found { sub(/SE_VERSION = "[0-9]+\.[0-9]+\.[0-9]+"/, "SE_VERSION = \"" new_version "\""); found = 1 } { print }' BUILD.bazel > tmp.txt && mv tmp.txt BUILD.bazel
+awk -v new_version="$NIGHTLY_VERSION" '/SE_VERSION =/ && !found { sub(/SE_VERSION = "[0-9]+\.[0-9]+\.[0-9]+"/, "SE_VERSION = \"" new_version "\""); found = 1 } { print }' BUILD.bazel > tmp.txt && mv tmp.txt BUILD.bazel
 
 # Replace selenium-#.#.#.tar.gz with selenium-RELEASE_VERSION.tar.gz in docs/source/index.rst
-awk -v new_version="$NEW_VERSION_EXTRAS" '/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/ && !found { sub(/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/, "selenium-" new_version ".tar.gz"); found = 1 } { print }' docs/source/index.rst > tmp.txt && mv tmp.txt docs/source/index.rst
+awk -v new_version="$NIGHTLY_VERSION" '/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/ && !found { sub(/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/, "selenium-" new_version ".tar.gz"); found = 1 } { print }' docs/source/index.rst > tmp.txt && mv tmp.txt docs/source/index.rst
 
 # Set NEW_VERSION_EXTRAS for use in github actions
-echo "NEW_VERSION_EXTRAS=$NEW_VERSION_EXTRAS" >> $GITHUB_ENV
+echo "NIGHTLY_VERSION=$NIGHTLY_VERSION" >> $GITHUB_ENV

@@ -91,4 +91,4 @@ jobs:
       - name: Build and Upload
         run: |
           bazel build --stamp //py:selenium-wheel //py:selenium-sdist
-          twine upload bazel-bin/py/selenium-$NEW_VERSION_EXTRAS-py3-none-any.whl bazel-bin/py/selenium-$NEW_VERSION_EXTRAS.tar.gz
+          twine upload bazel-bin/py/selenium-$NIGHTLY_VERSION-py3-none-any.whl bazel-bin/py/selenium-$NIGHTLY_VERSION.tar.gz
