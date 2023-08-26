@@ -62,15 +62,33 @@ jobs:
       nightly-release-files: build/dist/*.*
 
   python:
-    if: inputs.language == 'python' || github.event_name == 'schedule'
-    name: Python
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Release
-      cache-key: python-nightly
-      run: bazel build --stamp //py:selenium-wheel //py:selenium-sdist
-      language-release-setup: python
-      get-nightly-version: true
-    secrets: inherit
-
-
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install Twine and Update .pypirc
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade twine
+          echo "[distutils]" > ~/.pypirc
+          echo "index-servers =" >> ~/.pypirc
+          echo "    testpypi" >> ~/.pypirc
+          echo "[testpypi]" >> ~/.pypirc
+          echo "username:$PYPI_TOKEN" >> ~/.pypirc
+          echo "password:$PYPI_PASS" >> ~/.pypirc
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          PYPI_PASS: ${{ secrets.PYPI_PASS }}
+      - name: Update Version
+        run: |
+          chmod +x scripts/github-actions/update-python.sh
+          ./scripts/github-actions/update-python-version.sh
+      - name: Build and Upload
+        run: |
+          bazel build --stamp //py:selenium-wheel //py:selenium-sdist
+          twine upload bazel-bin/py/selenium-$NEW_VERSION_EXTRAS-py3-none-any.whl bazel-bin/py/selenium-$NEW_VERSION_EXTRAS.tar.gz

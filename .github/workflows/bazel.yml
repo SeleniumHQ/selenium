@@ -41,21 +41,11 @@ on:
         required: false
         type: string
         default: ''
-      language-release-setup:
-        description: Language to prep nightly release for
-        required: false
-        type: string
-        default: ''
       nightly-release-files:
         description: Files to upload to the Nightly release tah
         required: false
         type: string
         default: ''
-      get-nightly-version:
-        description: Whether to get the nightly version
-        required: false
-        type: boolean
-        default: false
 jobs:
   bazel:
     name: ${{ inputs.name }}
@@ -128,43 +118,8 @@ jobs:
         uses: browser-actions/setup-edge@latest
         with:
           edge-version: ${{ inputs.browser-version || 'stable' }}
-      - name: Get Nightly Version
-        if: inputs.get-nightly-version == true
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 --exclude="nightly")
-          RELEASE_VERSION=$(echo "$LATEST_TAG" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
-          NEW_VERSION=$(echo "$RELEASE_VERSION" | awk -F. '{print $1"."$2+1".0"}')
-          NIGHTLY_VERSION="$NEW_VERSION.nightly.$(date +%Y%m%d)"
-          echo "NIGHTLY_VERSION=$NIGHTLY_VERSION" >> $GITHUB_ENV
-      - name: Update Version
-        if: inputs.language-release-setup == 'python'
-        run: |
-          ./scripts/github-actions/update-version.sh ${{ github.env.NIGHTLY_VERSION }}
-      - name: Install Python
-        if: inputs.language-release-setup == 'python'
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - name: Install Twine and Update .pypirc
-        if: inputs.language-release-setup == 'python'
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade twine
-          echo "[distutils]" > ~/.pypirc
-          echo "index-servers =" >> ~/.pypirc
-          echo "    testpypi" >> ~/.pypirc
-          echo "[testpypi]" >> ~/.pypirc
-          echo "username:$PYPI_TOKEN" >> ~/.pypirc
-          echo "password:$PYPI_PASS" >> ~/.pypirc
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          PYPI_PASS: ${{ secrets.PYPI_PASS }}
       - name: Run Bazel
         run: ${{ inputs.run }}
-      - name: Upload Python Artifacts
-        if: inputs.language-release-setup == 'python'
-        run: |
-            twine upload bazel-bin/py/selenium-${{ github.env.NIGHTLY_VERSION }}-py3-none-any.whl bazel-bin/py/selenium-${{ github.env.NIGHTLY_VERSION }}.tar.gz
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

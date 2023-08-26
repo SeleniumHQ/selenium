@@ -14,16 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# example - selenium-4.11.1-javascript
-RELEASE_TAG=$1
-
-if [[ -z "$RELEASE_TAG" ]]; then
-  echo "Usage: $0 <release-tag>"
-  exit 1
-fi
 
 # Go to python dir
 cd "$(dirname "$0")"/../../py
+
+# Get SE_VERSION from version.py
+# example - SE_VERSION = "4.11.1"
+SE_VERSION=$(awk -F\" '/SE_VERSION =/ {print $2}' version.py)
+
+# example - 4.11.1
+RELEASE_VERSION=$(echo "$SE_VERSION" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+
+# example - 4.12.0
+NEW_VERSION=$(echo "$RELEASE_VERSION" | awk -F. '{print $1"."$2+1".0"}')
+
+# example - 4.12.0.nightly.20230824
+NEW_VERSION_EXTRAS="$NEW_VERSION.nightly.$(date +%Y%m%d)"
 
 # would prefer to use sed -i but awk is more portable
 # Replace version in py/version.py
@@ -34,3 +40,6 @@ awk -v new_version="$NEW_VERSION_EXTRAS" '/SE_VERSION =/ && !found { sub(/SE_VER
 
 # Replace selenium-#.#.#.tar.gz with selenium-RELEASE_VERSION.tar.gz in docs/source/index.rst
 awk -v new_version="$NEW_VERSION_EXTRAS" '/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/ && !found { sub(/selenium-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz/, "selenium-" new_version ".tar.gz"); found = 1 } { print }' docs/source/index.rst > tmp.txt && mv tmp.txt docs/source/index.rst
+
+# Set NEW_VERSION_EXTRAS for use in github actions
+echo "NEW_VERSION_EXTRAS=$NEW_VERSION_EXTRAS" >> $GITHUB_ENV
