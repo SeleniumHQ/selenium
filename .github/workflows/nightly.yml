@@ -86,7 +86,7 @@ jobs:
           PYPI_PASS: ${{ secrets.PYPI_PASS }}
       - name: Update Version
         run: |
-          chmod +x scripts/github-actions/update-python.sh
+          chmod +x scripts/github-actions/update-python-version.sh
           ./scripts/github-actions/update-python-version.sh
       - name: Build and Upload
         run: |
