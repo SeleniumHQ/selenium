@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
-  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private ExecutorService executorService;
   private NettyAppServer server;
   private URL url;
 
@@ -43,6 +43,7 @@ class UrlCheckerTest {
   public void buildServer() throws MalformedURLException, UrlChecker.TimeoutException {
     // Warming NettyServer up
     final NettyAppServer server = createServer();
+    executorService = Executors.newSingleThreadExecutor();
     executorService.submit(
         () -> {
           server.start();
