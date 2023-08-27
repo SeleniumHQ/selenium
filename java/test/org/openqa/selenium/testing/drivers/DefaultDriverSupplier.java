@@ -46,8 +46,8 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
 
       return ServiceLoader.load(WebDriverInfo.class).stream()
           .map(ServiceLoader.Provider::get)
-          .filter(WebDriverInfo::isAvailable)
           .filter(info -> info.isSupporting(capabilities))
+          .filter(WebDriverInfo::isAvailable)
           .findFirst()
           .orElseThrow(
               () ->
