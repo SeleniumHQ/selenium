@@ -62,13 +62,14 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
-  private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
+  private final AtomicBoolean fetchEnabled = new AtomicBoolean();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
   }
 
   public void disable() {
+    fetchEnabled.set(false);
     devTools.send(disableFetch());
     devTools.send(enableNetworkCaching());
 
@@ -141,10 +142,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     filter = defaultFilter;
   }
 
-  public void markNetworkInterceptorClosed() {
-    networkInterceptorClosed.set(true);
-  }
-
   public void interceptTrafficWith(Filter filter) {
     Require.nonNull("HTTP filter", filter);
 
@@ -153,6 +150,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
+    if (fetchEnabled.getAndSet(true)) {
+      // ensure we do not register the listeners multiple times, otherwise the events are handled
+      // multiple times
+      return;
+    }
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
@@ -221,7 +223,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
                             Thread.currentThread().interrupt();
                             throw new WebDriverException(e);
                           } catch (ExecutionException e) {
-                            if (!networkInterceptorClosed.get()) {
+                            if (fetchEnabled.get()) {
                               LOG.log(WARNING, e, () -> "Unable to process request");
                             }
                             return new HttpResponse();
@@ -236,8 +238,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
             devTools.send(fulfillRequest(pausedRequest, forBrowser));
           } catch (TimeoutException e) {
-            if (!networkInterceptorClosed.get()) {
-              throw new WebDriverException(e);
+            if (fetchEnabled.get()) {
+              throw e;
             }
           }
         });
