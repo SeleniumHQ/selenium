@@ -522,7 +522,8 @@ public class JsonOutput implements Closeable {
   }
 
   /**
-   * Convert the specified Java object via accessors that conform to the {@code JavaBean} specification.
+   * Convert the specified Java object via accessors that conform to the {@code JavaBean}
+   * specification.
    *
    * @param toConvert Java object to be converted
    * @param maxDepth maximum depth of nested object traversal
