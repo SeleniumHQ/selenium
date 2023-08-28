@@ -113,13 +113,7 @@ namespace OpenQA.Selenium
         [OneTimeSetUp]
         public void SetUp()
         {
-            driver = EnvironmentManager.Instance.CreateFreshDriver();
-        }
-
-        [OneTimeTearDown]
-        public void TearDown()
-        {
-            // EnvironmentManager.Instance.CloseCurrentDriver();
+            driver = EnvironmentManager.Instance.GetCurrentDriver();
         }
 
         [TearDown]

@@ -27,63 +27,72 @@
       "DriverTypeName": "OpenQA.Selenium.Chrome.StableChannelChromeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Chrome",
-      "RemoteCapabilities": "chrome"
+      "RemoteCapabilities": "chrome",
+      "Logging": false
     },
 
     "ChromeDev": {
       "DriverTypeName": "OpenQA.Selenium.Chrome.DevChannelChromeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Chrome",
-      "RemoteCapabilities": "chrome"
+      "RemoteCapabilities": "chrome",
+      "Logging": false
     },
 
     "EdgeIEMode": {
       "DriverTypeName": "OpenQA.Selenium.IE.EdgeInternetExplorerModeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "IE",
-      "RemoteCapabilities": "internet explorer"
+      "RemoteCapabilities": "internet explorer",
+      "Logging": false
     },
 
     "Edge": {
       "DriverTypeName": "OpenQA.Selenium.Edge.StableChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge"
+      "RemoteCapabilities": "MicrosoftEdge",
+      "Logging": false
     },
 
     "EdgeDev": {
       "DriverTypeName": "OpenQA.Selenium.Edge.DevChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge"
+      "RemoteCapabilities": "MicrosoftEdge",
+      "Logging": false
     },
 
     "Firefox": {
       "DriverTypeName": "OpenQA.Selenium.Firefox.StableChannelFirefoxDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Firefox",
-      "RemoteCapabilities": "firefox"
+      "RemoteCapabilities": "firefox",
+      "Logging": false
     },
 
     "FirefoxNightly": {
       "DriverTypeName": "OpenQA.Selenium.Firefox.NightlyChannelFirefoxDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Firefox",
-      "RemoteCapabilities": "firefox"
+      "RemoteCapabilities": "firefox",
+      "Logging": false
     },
 
     "Safari": {
       "DriverTypeName": "OpenQA.Selenium.Safari.DefaultSafariDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Safari",
-      "RemoteCapabilities": "safari"
+      "RemoteCapabilities": "safari",
+      "Logging": false
     },
 
     "SafariTechPreview": {
       "DriverTypeName": "OpenQA.Selenium.Safari.SafariTechnologyPreviewDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Safari",
-      "RemoteCapabilities": "safari"
+      "RemoteCapabilities": "safari",
+      "Logging": false
     },
 
     "Remote": {
@@ -91,7 +100,8 @@
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Remote",
       "RemoteCapabilities": "chrome",
-      "AutoStartRemoteServer": true
+      "AutoStartRemoteServer": true,
+      "Logging": false
     }
   }
 }

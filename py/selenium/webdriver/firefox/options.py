@@ -59,9 +59,7 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        :Returns: The location of the binary.
-        """
+        """:Returns: The location of the binary."""
         return self.binary._start_cmd
 
     @binary_location.setter  # noqa
@@ -82,9 +80,7 @@ class Options(ArgOptions):
 
     @property
     def profile(self) -> FirefoxProfile:
-        """
-        :Returns: The Firefox profile to use.
-        """
+        """:Returns: The Firefox profile to use."""
         if self._profile:
             warnings.warn("Getting a profile has been deprecated.", DeprecationWarning, stacklevel=2)
         return self._profile
@@ -104,9 +100,7 @@ class Options(ArgOptions):
 
     @property
     def headless(self) -> bool:
-        """
-        :Returns: True if the headless argument is set, else False
-        """
+        """:Returns: True if the headless argument is set, else False."""
         warnings.warn(
             "headless property is deprecated, instead check for '-headless' in arguments",
             DeprecationWarning,

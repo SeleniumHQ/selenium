@@ -83,7 +83,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         public ChromeDriver(ChromeOptions options)
-            : this(ChromeDriverService.CreateDefaultService(options), options, RemoteWebDriver.DefaultCommandTimeout)
+            : this(ChromeDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 

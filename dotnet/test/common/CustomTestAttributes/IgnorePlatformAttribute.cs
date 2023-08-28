@@ -6,10 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium.Environment;
 
-#if !NET45 && !NET46 && !NET47
-using System.Runtime.InteropServices;
 using OSPlatform = System.Runtime.InteropServices.OSPlatform;
-#endif
 
 
 namespace OpenQA.Selenium
@@ -91,9 +88,6 @@ namespace OpenQA.Selenium
 
         private string CurrentPlatform()
         {
-#if NET45 || NET46 || NET47
-            return null;
-#else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return "windows";
@@ -110,7 +104,6 @@ namespace OpenQA.Selenium
             {
                 throw new WebDriverException("Selenium Manager did not find supported operating system");
             }
-#endif
         }
     }
 }

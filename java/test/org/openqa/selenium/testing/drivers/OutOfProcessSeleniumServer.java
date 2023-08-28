@@ -96,6 +96,8 @@ class OutOfProcessSeleniumServer {
 
     List<String> startupArgs = new ArrayList<>();
     startupArgs.add(mode);
+    startupArgs.add("--host");
+    startupArgs.add(localAddress);
     startupArgs.add("--port");
     startupArgs.add(String.valueOf(port));
     if (!driverProvided) {

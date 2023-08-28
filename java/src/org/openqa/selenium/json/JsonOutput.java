@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 
+/** */
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
   static final int MAX_DEPTH = 100;
@@ -103,7 +104,7 @@ public class JsonOutput implements Closeable {
   private final Map<Predicate<Class<?>>, DepthAwareConsumer> converters;
   private final Appendable appendable;
   private final Consumer<String> appender;
-  private Deque<Node> stack;
+  private final Deque<Node> stack;
   private String indent = "";
   private String lineSeparator = "\n";
   private String indentBy = "  ";
@@ -259,17 +260,28 @@ public class JsonOutput implements Closeable {
     this.converters = Collections.unmodifiableMap(builder);
   }
 
+  /**
+   * @param enablePrettyPrinting
+   * @return
+   */
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
     return this;
   }
 
+  /**
+   * @param writeClassName
+   * @return
+   */
   public JsonOutput writeClassName(boolean writeClassName) {
     this.writeClassName = writeClassName;
     return this;
   }
 
+  /**
+   * @return
+   */
   public JsonOutput beginObject() {
     stack.getFirst().write("{" + lineSeparator);
     indent += indentBy;
@@ -277,6 +289,10 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * @param name
+   * @return
+   */
   public JsonOutput name(String name) {
     if (!(stack.getFirst() instanceof JsonObject)) {
       throw new JsonException("Attempt to write name, but not writing a json object: " + name);
@@ -285,6 +301,9 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * @return
+   */
   public JsonOutput endObject() {
     Node topOfStack = stack.getFirst();
     if (!(topOfStack instanceof JsonObject)) {
@@ -301,6 +320,9 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * @return
+   */
   public JsonOutput beginArray() {
     append("[" + lineSeparator);
     indent += indentBy;
@@ -308,6 +330,9 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * @return
+   */
   public JsonOutput endArray() {
     Node topOfStack = stack.getFirst();
     if (!(topOfStack instanceof JsonCollection)) {
@@ -324,14 +349,29 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * @param value
+   * @return
+   */
   public JsonOutput write(Object value) {
     return write(value, MAX_DEPTH);
   }
 
+  /**
+   * @param value
+   * @param maxDepth
+   * @return
+   */
   public JsonOutput write(Object value, int maxDepth) {
     return write0(value, maxDepth, maxDepth);
   }
 
+  /**
+   * @param input
+   * @param maxDepth
+   * @param depthRemaining
+   * @return
+   */
   private JsonOutput write0(Object input, int maxDepth, int depthRemaining) {
     converters.entrySet().stream()
         .filter(entry -> entry.getKey().test(input == null ? null : input.getClass()))
@@ -343,6 +383,11 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws JsonException if JSON stream isn't empty or an I/O exception is encountered
+   */
   @Override
   public void close() {
     if (appendable instanceof Closeable) {
@@ -358,11 +403,19 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   * @param text
+   * @return
+   */
   private JsonOutput append(String text) {
     stack.getFirst().write(text);
     return this;
   }
 
+  /**
+   * @param obj
+   * @return
+   */
   private String asString(Object obj) {
     StringBuilder toReturn = new StringBuilder("\"");
 
@@ -383,6 +436,11 @@ public class JsonOutput implements Closeable {
     return toReturn.toString();
   }
 
+  /**
+   * @param clazz
+   * @param methodName
+   * @return
+   */
   private Method getMethod(Class<?> clazz, String methodName) {
     if (Object.class.equals(clazz)) {
       return null;
@@ -400,6 +458,13 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   * @param methodName
+   * @param toConvert
+   * @param maxDepth
+   * @param depthRemaining
+   * @return
+   */
   private JsonOutput convertUsingMethod(
       String methodName, Object toConvert, int maxDepth, int depthRemaining) {
     try {
@@ -416,6 +481,11 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /**
+   * @param toConvert
+   * @param maxDepth
+   * @param depthRemaining
+   */
   private void mapObject(Object toConvert, int maxDepth, int depthRemaining) {
     if (toConvert instanceof Class) {
       write(((Class<?>) toConvert).getName());
@@ -446,9 +516,13 @@ public class JsonOutput implements Closeable {
     endObject();
   }
 
+  /** */
   private class Node {
     protected boolean isEmpty = true;
 
+    /**
+     * @param text
+     */
     public void write(String text) {
       if (isEmpty) {
         isEmpty = false;
@@ -461,6 +535,7 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /** */
   private class Empty extends Node {
 
     @Override
@@ -473,11 +548,16 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /** */
   private class JsonCollection extends Node {}
 
+  /** */
   private class JsonObject extends Node {
     private boolean isNameNext = true;
 
+    /**
+     * @param name
+     */
     public void name(String name) {
       if (!isNameNext) {
         throw new JsonException("Unexpected attempt to set name of json object: " + name);
@@ -498,8 +578,15 @@ public class JsonOutput implements Closeable {
     }
   }
 
+  /** */
   @FunctionalInterface
   private interface DepthAwareConsumer {
+
+    /**
+     * @param object
+     * @param maxDepth
+     * @param depthRemaining
+     */
     void consume(Object object, int maxDepth, int depthRemaining);
   }
 }
