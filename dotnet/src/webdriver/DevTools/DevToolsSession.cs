@@ -440,23 +440,15 @@ namespace OpenQA.Selenium.DevTools
 
         private void MonitorMessageQueue()
         {
-            // Loop until the BlockingCollection is marked as completed for adding
-            // (meaning no more information will be added into the collection, and
-            // it is empty (meaning all items in the collection have been processed).
-            while (!this.messageQueue.IsCompleted)
+            // GetConsumingEnumerable blocks until if BlockingCollection.IsCompleted
+            // is false (i.e., is still able to be written to), and there are no items
+            // in the collection. Once any items are added to the collection, the method
+            // unblocks and we can process any items in the collection at that moment.
+            // Once IsCompleted is true, the method unblocks with no items in returned
+            // in the IEnumerable, meaning the foreach loop will terminate gracefully.
+            foreach (string message in this.messageQueue.GetConsumingEnumerable())
             {
-                try
-                {
-                    // The Take() method blocks until there is something to
-                    // remove from the BlockingCollection.
-                    this.ProcessMessage(this.messageQueue.Take());
-                }
-                catch (InvalidOperationException)
-                {
-                    // InvalidOperationException is normal when the collection
-                    // is marked as completed while being blocked by the Take()
-                    // method.
-                }
+                this.ProcessMessage(message);
             }
         }
 
