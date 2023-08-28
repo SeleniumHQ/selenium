@@ -42,7 +42,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.internal.Require;
 
-/** */
+/**
+ * The <b>JsonTypeCoercer</b> class manages a collection of type coercers, providing a single source
+ * for obtaining functions to convert JSON strings into instances of their corresponding Java types.
+ */
 class JsonTypeCoercer {
 
   private final Set<TypeCoercer<?>> additionalCoercers;
@@ -50,15 +53,10 @@ class JsonTypeCoercer {
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers =
       new ConcurrentHashMap<>();
 
-  /** */
   JsonTypeCoercer() {
     this(Stream.of());
   }
 
-  /**
-   * @param coercer
-   * @param coercers
-   */
   JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
     this(
         Stream.concat(
@@ -66,9 +64,6 @@ class JsonTypeCoercer {
             coercer.additionalCoercers.stream()));
   }
 
-  /**
-   * @param coercers
-   */
   private JsonTypeCoercer(Stream<TypeCoercer<?>> coercers) {
     this.additionalCoercers =
         coercers.collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
@@ -145,15 +140,6 @@ class JsonTypeCoercer {
     this.coercers = Collections.unmodifiableSet(builder);
   }
 
-  /**
-   * Deserialize the next JSON element as an object of the specified type.
-   *
-   * @param json serialized source as JSON string
-   * @param typeOfT data type for deserialization (class or {@link TypeToken})
-   * @param setter strategy used to assign values during deserialization
-   * @return object of the specified type deserialized from [source]
-   * @param <T> result type (as specified by [typeOfT])
-   */
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
@@ -166,8 +152,11 @@ class JsonTypeCoercer {
   }
 
   /**
-   * @param type
-   * @return
+   * Extract the coercer that supports the specified type from the collection managed by this {@code
+   * JsonTypeCoercer}, returning a coercion function for the client to use.
+   *
+   * @param type data type for deserialization (class or {@link TypeToken})
+   * @return {@link BiFunction} object to deserialize the specified Java type
    */
   private BiFunction<JsonInput, PropertySetting, Object> buildCoercer(Type type) {
     return coercers.stream()
