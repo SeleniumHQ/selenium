@@ -71,9 +71,9 @@ class RelativeBy:
     """
 
     def __init__(self, root: Optional[Dict[Union[By, str], str]] = None, filters: Optional[List] = None):
-        """
-        Creates a new RelativeBy object. It is preferred if you use the
+        """Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
+
         :Args:
             root - A dict with `By` enum as the key and the search query as the value
             filters - A list of the filters that will be searched. If none are passed
@@ -83,8 +83,8 @@ class RelativeBy:
         self.filters = filters or []
 
     def above(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
-        """
-        Add a filter to look for elements above.
+        """Add a filter to look for elements above.
+
         :Args:
             - element_or_locator: Element to look above
         """
@@ -95,8 +95,8 @@ class RelativeBy:
         return self
 
     def below(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
-        """
-        Add a filter to look for elements below.
+        """Add a filter to look for elements below.
+
         :Args:
             - element_or_locator: Element to look below
         """
@@ -107,8 +107,8 @@ class RelativeBy:
         return self
 
     def to_left_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
-        """
-        Add a filter to look for elements to the left of.
+        """Add a filter to look for elements to the left of.
+
         :Args:
             - element_or_locator: Element to look to the left of
         """
@@ -119,8 +119,8 @@ class RelativeBy:
         return self
 
     def to_right_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
-        """
-        Add a filter to look for elements right of.
+        """Add a filter to look for elements right of.
+
         :Args:
             - element_or_locator: Element to look right of
         """
@@ -131,8 +131,8 @@ class RelativeBy:
         return self
 
     def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
-        """
-        Add a filter to look for elements near.
+        """Add a filter to look for elements near.
+
         :Args:
             - element_or_locator_distance: Element to look near by the element or within a distance
         """
