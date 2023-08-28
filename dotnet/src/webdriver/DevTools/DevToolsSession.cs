@@ -55,7 +55,7 @@ namespace OpenQA.Selenium.DevTools
         private CancellationTokenSource receiveCancellationToken;
         private Task receiveTask;
 
-        private SemaphoreSlim semaphoreSlimForSocketSend = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim semaphoreSlimForSocketSend = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
