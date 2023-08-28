@@ -158,8 +158,8 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <typeparam name="TCommandResponse"></typeparam>
         /// <typeparam name="TCommand">A command object implementing the <see cref="ICommand"/> interface.</typeparam>
-        /// <param name="command">A CancellationToken object to allow for cancellation of the command.</param>
-        /// <param name="cancellationToken">The command to be sent.</param>
+        /// <param name="command">The command to be sent.</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
         /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
