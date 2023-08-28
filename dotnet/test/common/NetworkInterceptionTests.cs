@@ -12,6 +12,7 @@ namespace OpenQA.Selenium
     public class NetworkInterceptionTests : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
         public async Task TestCanInterceptNetworkCalls()
         {
             if (driver is IDevTools)

@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Firefox
 
         public static FirefoxOptions DefaultOptions
         {
-            get { return new FirefoxOptions() { BrowserVersion = "nightly" }; }
+            get { return new FirefoxOptions() { BrowserVersion = "nightly", AcceptInsecureCertificates = true, EnableDevToolsProtocol = true }; }
         }
     }
 }

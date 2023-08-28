@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Firefox
 
         public static FirefoxOptions DefaultOptions
         {
-            get { return new FirefoxOptions() { AcceptInsecureCertificates = true }; }
+            get { return new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true }; }
         }
     }
 }
