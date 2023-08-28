@@ -238,6 +238,7 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
+          opts[:browser_version] = 'stable'
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
           WebDriver::Options.chrome(args: args, **opts)
