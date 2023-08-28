@@ -61,9 +61,6 @@ public class SeleniumManager {
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String EXE = ".exe";
-  private static final String INFO = "INFO";
-  private static final String WARN = "WARN";
-  private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
 
@@ -275,7 +272,7 @@ public class SeleniumManager {
       arguments.add("--offline");
     }
 
-    Proxy proxy = (Proxy) options.getCapability("proxy");
+    Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null) {
       if (proxy.getSslProxy() != null) {
         arguments.add("--proxy");

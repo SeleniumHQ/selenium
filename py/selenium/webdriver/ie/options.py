@@ -367,12 +367,12 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """:Returns: A dictionary of browser options"""
+        """:Returns: A dictionary of browser options."""
         return self._options
 
     @property
     def additional_options(self) -> dict:
-        """:Returns: The additional options"""
+        """:Returns: The additional options."""
         return self._additional
 
     def add_additional_option(self, name: str, value):

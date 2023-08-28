@@ -573,22 +573,25 @@ public class NodeOptions {
     }
 
     // We don't expect duplicates, but they're fine
-    List<WebDriverInfo> infos =
-        StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-            .filter(WebDriverInfo::isPresent)
-            .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
-            .collect(Collectors.toList());
-
+    List<WebDriverInfo> infos = new ArrayList<>();
     if (config.getBool(NODE_SECTION, "selenium-manager").orElse(DEFAULT_USE_SELENIUM_MANAGER)) {
-      List<String> present =
-          infos.stream().map(WebDriverInfo::getDisplayName).collect(Collectors.toList());
       List<WebDriverInfo> driversSM =
           StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-              .filter(info -> !present.contains(info.getDisplayName()))
               .filter(WebDriverInfo::isAvailable)
               .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
               .collect(Collectors.toList());
       infos.addAll(driversSM);
+    } else {
+      LOG.log(Level.INFO, "Looking for existing drivers on the PATH.");
+      LOG.log(
+          Level.INFO,
+          "Add '--selenium-manager true' to the startup command to setup drivers automatically.");
+      List<WebDriverInfo> localDrivers =
+          StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+              .filter(WebDriverInfo::isPresent)
+              .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
+              .collect(Collectors.toList());
+      infos.addAll(localDrivers);
     }
 
     // Same

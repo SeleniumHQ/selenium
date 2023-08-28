@@ -24,7 +24,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as 
 Supported Python Versions
 =========================
 
-* Python 3.7+
+* Python 3.8+
 
 Installing
 ==========
@@ -148,7 +148,7 @@ Contributing
 
  - Create a branch for your work
  - Ensure `tox` is installed (using a `virtualenv` is recommended)
- - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - `python3.8 -m venv .venv && . .venv/bin/activate && pip install tox`
  - After making changes, before committing execute `tox -e linting`
  - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
  - `flake8` requires manual fixes

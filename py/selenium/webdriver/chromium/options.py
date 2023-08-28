@@ -39,15 +39,13 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        :Returns: The location of the binary, otherwise an empty string
-        """
+        """:Returns: The location of the binary, otherwise an empty string."""
         return self._binary_location
 
     @binary_location.setter
     def binary_location(self, value: str) -> None:
-        """
-        Allows you to set where the chromium binary lives
+        """Allows you to set where the chromium binary lives.
+
         :Args:
          - value: path to the Chromium binary
         """
@@ -57,17 +55,14 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def debugger_address(self) -> str:
-        """
-        :Returns: The address of the remote devtools instance
-        """
+        """:Returns: The address of the remote devtools instance."""
         return self._debugger_address
 
     @debugger_address.setter
     def debugger_address(self, value: str) -> None:
-        """
-        Allows you to set the address of the remote devtools instance
-        that the ChromeDriver instance will try to connect to during an
-        active wait.
+        """Allows you to set the address of the remote devtools instance that
+        the ChromeDriver instance will try to connect to during an active wait.
+
         :Args:
          - value: address of remote devtools instance if any (hostname[:port])
         """
@@ -77,9 +72,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def extensions(self) -> List[str]:
-        """
-        :Returns: A list of encoded extensions that will be loaded
-        """
+        """:Returns: A list of encoded extensions that will be loaded."""
 
         def _decode(file_data: BinaryIO) -> str:
             # Should not use base64.encodestring() which inserts newlines every
@@ -124,9 +117,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def experimental_options(self) -> dict:
-        """
-        :Returns: A dictionary of experimental options for chromium
-        """
+        """:Returns: A dictionary of experimental options for chromium."""
         return self._experimental_options
 
     def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
@@ -140,9 +131,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def headless(self) -> bool:
-        """
-        :Returns: True if the headless argument is set, else False
-        """
+        """:Returns: True if the headless argument is set, else False."""
         warnings.warn(
             "headless property is deprecated, instead check for '--headless' in arguments",
             DeprecationWarning,
@@ -176,10 +165,8 @@ class ChromiumOptions(ArgOptions):
             self._arguments = list(set(self._arguments) - args)
 
     def to_capabilities(self) -> dict:
-        """
-        Creates a capabilities with all the options that have been set
-        :Returns: A dictionary with everything
-        """
+        """Creates a capabilities with all the options that have been set
+        :Returns: A dictionary with everything."""
         caps = self._caps
         chrome_options = self.experimental_options.copy()
         if self.mobile_options:
