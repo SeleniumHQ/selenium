@@ -19,10 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.IO;
 using System.Net.Http;
-using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -324,7 +321,7 @@ namespace OpenQA.Selenium.DevTools
                 {
                     this.Domains.Target.TargetDetached -= this.OnTargetDetached;
                     this.pendingCommands.Clear();
-                    this.TerminateSocketConnection();
+                    this.TerminateSocketConnection().GetAwaiter().GetResult();
                 }
 
                 this.isDisposed = true;
@@ -422,7 +419,7 @@ namespace OpenQA.Selenium.DevTools
             LogTrace("WebSocket created; starting message listener");
         }
 
-        private async void TerminateSocketConnection()
+        private async Task TerminateSocketConnection()
         {
             if (this.connection != null && this.connection.IsActive)
             {
@@ -435,13 +432,17 @@ namespace OpenQA.Selenium.DevTools
         {
             // Attempt to wait for the channel to empty before marking the
             // writer as complete and waiting for the monitor task to end.
+            // THe WebSockect connection is always closed before this method
+            // is called, so there will eventually be no more data written
+            // into the message queue, so this loop should be guaranteed to
+            // complete.
             while (this.messageQueue.Reader.TryPeek(out _))
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
             }
 
             this.messageQueue.Writer.Complete();
-            this.messageQueueMonitorTask.Wait();
+            await this.messageQueueMonitorTask;
         }
 
         private void ProcessMessage(string message)

@@ -12,7 +12,7 @@ namespace OpenQA.Selenium
     public class NetworkInterceptionTests : DriverTestFixture
     {
         [Test]
-        public void TestCanInterceptNetworkCalls()
+        public async Task TestCanInterceptNetworkCalls()
         {
             if (driver is IDevTools)
             {
@@ -25,10 +25,10 @@ namespace OpenQA.Selenium
                     return responseData;
                 };
                 network.AddResponseHandler(handler);
-                network.StartMonitoring();
+                await network.StartMonitoring();
                 driver.Url = simpleTestPage;
                 string text = driver.FindElement(By.CssSelector("p")).Text;
-                network.StopMonitoring();
+                await network.StopMonitoring();
                 Assert.AreEqual("I intercepted you", text);
             }
         }
