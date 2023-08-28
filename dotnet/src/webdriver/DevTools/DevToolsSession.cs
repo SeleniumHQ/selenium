@@ -21,7 +21,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -46,13 +45,11 @@ namespace OpenQA.Selenium.DevTools
 
         private WebSocketConnection connection;
         private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
-        private readonly Channel<string> messageQueue;
+        private readonly BlockingCollection<string> messageQueue = new BlockingCollection<string>();
         private readonly Task messageQueueMonitorTask;
         private long currentCommandId = 0;
 
         private DevToolsDomains domains;
-
-        private CancellationTokenSource receiveCancellationToken;
 
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
@@ -71,11 +68,6 @@ namespace OpenQA.Selenium.DevTools
             {
                 this.websocketAddress = endpointAddress;
             }
-            this.messageQueue = Channel.CreateUnbounded<string>(new UnboundedChannelOptions()
-            {
-                SingleReader = true,
-                SingleWriter = true,
-            });
             this.messageQueueMonitorTask = Task.Run(() => this.MonitorMessageQueue());
             this.messageQueueMonitorTask.ConfigureAwait(false);
         }
@@ -166,7 +158,8 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <typeparam name="TCommandResponse"></typeparam>
         /// <typeparam name="TCommand">A command object implementing the <see cref="ICommand"/> interface.</typeparam>
-        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="command">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="cancellationToken">The command to be sent.</param>
         /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
@@ -295,7 +288,7 @@ namespace OpenQA.Selenium.DevTools
         /// Asynchronously stops the session.
         /// </summary>
         /// <param name="manualDetach"><see langword="true"/> to manually detach the session
-        /// from its attached target; otherswise <see langword="false""/>.</param>
+        /// from its attached target; otherswise <see langword="false"/>.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal async Task StopSession(bool manualDetach)
         {
@@ -413,36 +406,58 @@ namespace OpenQA.Selenium.DevTools
         private async Task InitializeSocketConnection()
         {
             LogTrace("Creating WebSocket");
-            this.connection = new WebSocketConnection();
+            this.connection = new WebSocketConnection(this.openConnectionWaitTimeSpan, this.closeConnectionWaitTimeSpan);
             connection.DataReceived += OnConnectionDataReceived;
             await connection.Start(this.websocketAddress);
-            LogTrace("WebSocket created; starting message listener");
+            LogTrace("WebSocket created");
         }
 
         private async Task TerminateSocketConnection()
         {
+            LogTrace("Closing WebSocket");
             if (this.connection != null && this.connection.IsActive)
             {
                 await this.connection.Stop();
                 await this.ShutdownMessageQueue();
             }
+            LogTrace("WebSocket closed");
         }
 
         private async Task ShutdownMessageQueue()
         {
-            // Attempt to wait for the channel to empty before marking the
-            // writer as complete and waiting for the monitor task to end.
             // THe WebSockect connection is always closed before this method
             // is called, so there will eventually be no more data written
-            // into the message queue, so this loop should be guaranteed to
-            // complete.
-            while (this.messageQueue.Reader.TryPeek(out _))
+            // into the message queue, meaning this loop should be guaranteed
+            // to complete.
+            while (this.connection.IsActive)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
             }
 
-            this.messageQueue.Writer.Complete();
+            this.messageQueue.CompleteAdding();
             await this.messageQueueMonitorTask;
+        }
+
+        private void MonitorMessageQueue()
+        {
+            // Loop until the BlockingCollection is marked as completed for adding
+            // (meaning no more information will be added into the collection, and
+            // it is empty (meaning all items in the collection have been processed).
+            while (!this.messageQueue.IsCompleted)
+            {
+                try
+                {
+                    // The Take() method blocks until there is something to
+                    // remove from the BlockingCollection.
+                    this.ProcessMessage(this.messageQueue.Take());
+                }
+                catch (InvalidOperationException)
+                {
+                    // InvalidOperationException is normal when the collection
+                    // is marked as completed while being blocked by the Take()
+                    // method.
+                }
+            }
         }
 
         private void ProcessMessage(string message)
@@ -498,25 +513,6 @@ namespace OpenQA.Selenium.DevTools
             LogTrace("Recieved Other: {0}", message);
         }
 
-        /// <summary>
-        /// Reads incoming messages in the message queue.
-        /// </summary>
-        private void ReadIncomingMessages()
-        {
-            while (this.messageQueue.Reader.TryRead(out string message))
-            {
-                this.ProcessMessage(message);
-            }
-        }
-
-        private async Task MonitorMessageQueue()
-        {
-            while (await this.messageQueue.Reader.WaitToReadAsync())
-            {
-                this.ReadIncomingMessages();
-            }
-        }
-
         private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
         {
             if (DevToolsEventReceived != null)
@@ -527,7 +523,7 @@ namespace OpenQA.Selenium.DevTools
 
         private void OnConnectionDataReceived(object sender, WebSocketConnectionDataReceivedEventArgs e)
         {
-            _ = this.messageQueue.Writer.TryWrite(e.Data);
+            this.messageQueue.Add(e.Data);
         }
 
         private void LogTrace(string message, params object[] args)

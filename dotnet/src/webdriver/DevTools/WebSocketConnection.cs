@@ -142,7 +142,10 @@ namespace OpenQA.Selenium.DevTools
             // Whether we closed the socket or timed out, we cancel the token causing ReceiveAsync to abort the socket.
             // The finally block at the end of the processing loop will dispose of the ClientWebSocket object.
             this.clientTokenSource.Cancel();
-            this.dataReceiveTask?.Wait();
+            if (this.dataReceiveTask != null)
+            {
+                await this.dataReceiveTask;
+            }
         }
 
         /// <summary>
