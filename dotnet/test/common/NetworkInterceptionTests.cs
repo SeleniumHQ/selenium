@@ -33,5 +33,25 @@ namespace OpenQA.Selenium
                 Assert.AreEqual("I intercepted you", text);
             }
         }
+
+        [Test]
+        public async Task TestCanUseAuthorizationHandler()
+        {
+            if (driver is IDevTools)
+            {
+                INetwork network = driver.Manage().Network;
+                NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
+                {
+                    UriMatcher = (uri) => uri.PathAndQuery.Contains("basicAuth"),
+                    Credentials = new PasswordCredentials("test", "test")
+                };
+                network.AddAuthenticationHandler(handler);
+                await network.StartMonitoring();
+                driver.Url = authenticationPage;
+                string text = driver.FindElement(By.CssSelector("h1")).Text;
+                await network.StopMonitoring();
+                Assert.AreEqual("authorized", text);
+            }
+        }
     }
 }
