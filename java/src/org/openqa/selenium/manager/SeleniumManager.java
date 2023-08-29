@@ -111,7 +111,7 @@ public class SeleniumManager {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
       command.executeAsync();
-      command.waitFor(10000); // A generous timeout
+      command.waitFor(120000); // TODO: make this configurable
       if (command.isRunning()) {
         LOG.warning("Selenium Manager did not exit");
       }
