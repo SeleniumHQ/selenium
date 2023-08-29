@@ -35,6 +35,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox does not implement the CDP Fetch domain required for network interception")]
         public async Task TestCanUseAuthorizationHandler()
         {
             if (driver is IDevTools)
