@@ -47,7 +47,7 @@ module Selenium
         #
         # @example
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
-        #   driver = Selenium::WebDriver.for(:chrome, capabilities: options)
+        #   driver = Selenium::WebDriver.for(:chrome, options: options)
         #
         # @param [Profile] profile An instance of a Chrome::Profile Class
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
