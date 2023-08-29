@@ -51,7 +51,9 @@ jobs:
       - name: Test with tox
         run: tox -c py/tox.ini
         env:
-          TOXENV: linting-check
+          # If this fails, it will exit. Local work should be using `tox -e linting` prior to committing.
+          # the linting-ci recipe exists solely for CI and will not attempt to rewrite any files in-place etc.
+          TOXENV: linting-ci
 
   mypy:
     name: Mypy
