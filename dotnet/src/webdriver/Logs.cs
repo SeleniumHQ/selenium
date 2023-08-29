@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
         private WebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteLogs"/> class.
+        /// Initializes a new instance of the <see cref="Logs"/> class.
         /// </summary>
         /// <param name="driver">Instance of the driver currently in use</param>
         public Logs(WebDriver driver)

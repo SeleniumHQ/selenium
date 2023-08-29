@@ -57,7 +57,13 @@ namespace OpenQA.Selenium.Interactions
             get { return this.actionExecutor; }
         }
 
-        public Actions SetActivePointer(PointerKind kind, String name)
+        /// <summary>
+        /// Sets the active pointer device for this Actions class.
+        /// </summary>
+        /// <param name="kind">The kind of pointer device to set as active.</param>
+        /// <param name="name">The name of the pointer device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActivePointer(PointerKind kind, string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -65,11 +71,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -88,7 +94,12 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        public Actions SetActiveKeyboard(String name)
+        /// <summary>
+        /// Sets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the keyboard device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveKeyboard(string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -96,11 +107,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -119,7 +130,12 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        public Actions SetActiveWheel(String name)
+        /// <summary>
+        /// Sets the active wheel device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the wheel device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveWheel(string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -127,11 +143,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -150,35 +166,47 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-
+        /// <summary>
+        /// Gets the active pointer device for this Actions class.
+        /// </summary>
+        /// <returns>The active pointer device for this Actions class.</returns>
         public PointerInputDevice GetActivePointer()
         {
             if (this.activePointer == null)
             {
                 SetActivePointer(PointerKind.Mouse, "default mouse");
             }
+
             return this.activePointer;
         }
 
+        /// <summary>
+        /// Gets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <returns>The active keyboard device for this Actions class.</returns>
         public KeyInputDevice GetActiveKeyboard()
         {
             if (this.activeKeyboard == null)
             {
                 SetActiveKeyboard("default keyboard");
             }
+
             return this.activeKeyboard;
         }
 
+        /// <summary>
+        /// Gets the active wheel device for this Actions class.
+        /// </summary>
+        /// <returns>The active wheel device for this Actions class.</returns>
         public WheelInputDevice GetActiveWheel()
         {
             if (this.activeWheel == null)
             {
                 SetActiveWheel("default wheel");
             }
+
             return this.activeWheel;
         }
-
-
 
         /// <summary>
         /// Sends a modifier key down message to the browser.

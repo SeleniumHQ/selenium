@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.DevTools.V85
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V86Target"/> class.
+        /// Initializes a new instance of the <see cref="V85Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
         public V85Target(TargetAdapter adapter)
@@ -92,8 +92,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// </summary>
         /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
         /// <param name="targetId">The ID of the target from which to detach.</param>
-        /// <returns>
-        /// A task representing the asynchronous detach operation.
+        /// <returns>A task representing the asynchronous detach operation.</returns>
         public override async Task DetachFromTarget(string sessionId = null, string targetId = null)
         {
             await adapter.DetachFromTarget(new DetachFromTargetCommandSettings()

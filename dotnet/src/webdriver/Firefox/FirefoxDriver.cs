@@ -371,7 +371,6 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
-        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
@@ -427,6 +426,12 @@ namespace OpenQA.Selenium.Firefox
             // Does nothing, but provides a hook for subclasses to do "stuff"
         }
 
+        /// <summary>
+        /// Disposes of the FirefoxDriver and frees all resources.
+        /// </summary>
+        /// <param name="disposing">A value indicating whether the user initiated the
+        /// disposal of the object. Pass <see langword="true"/> if the user is actively
+        /// disposing the object; otherwise <see langword="false"/>.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
