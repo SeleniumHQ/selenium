@@ -36,6 +36,10 @@ namespace OpenQA.Selenium.DevTools
     ///</summary>
     public class DevToolsSession : IDevToolsSession
     {
+        /// <summary>
+        /// A value indicating that the version of the DevTools protocol in use
+        /// by the browser should be automatically detected.
+        /// </summary>
         public const int AutoDetectDevToolsProtocolVersion = 0;
 
         private readonly string debuggerEndpoint;
@@ -158,9 +162,9 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Sends the specified command and returns the associated command response.
         /// </summary>
-        /// <typeparam name="TCommand"></typeparam>
-        /// <typeparam name="TCommandResponse"></typeparam>
         /// <typeparam name="TCommand">A command object implementing the <see cref="ICommand"/> interface.</typeparam>
+        /// <typeparam name="TCommandResponse">A response object implementing the <see cref="ICommandResponse"/> interface.</typeparam>
+        /// <param name="command">The command to send.</param>
         /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
         /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
@@ -262,8 +266,8 @@ namespace OpenQA.Selenium.DevTools
         }
 
         /// <summary>
-        /// Disposes of the DevToolsSession and frees all resources.
-        ///</summary>
+        /// Releases all resources associated with this <see cref="DevToolsSession"/>.
+        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
@@ -296,7 +300,7 @@ namespace OpenQA.Selenium.DevTools
         /// Asynchronously stops the session.
         /// </summary>
         /// <param name="manualDetach"><see langword="true"/> to manually detach the session
-        /// from its attached target; otherswise <see langword="false""/>.</param>
+        /// from its attached target; otherswise <see langword="false"/>.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal async Task StopSession(bool manualDetach)
         {
@@ -314,6 +318,10 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
+        /// <summary>
+        /// Releases all resources associated with this <see cref="DevToolsSession"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
         protected void Dispose(bool disposing)
         {
             if (!this.isDisposed)

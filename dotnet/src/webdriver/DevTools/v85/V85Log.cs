@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.DevTools.V85
         private LogAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V86Log"/> class.
+        /// Initializes a new instance of the <see cref="V85Log"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Log domain.</param>
         public V85Log(LogAdapter adapter)

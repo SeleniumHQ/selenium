@@ -97,8 +97,7 @@ namespace OpenQA.Selenium.DevTools.V116
         /// </summary>
         /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
         /// <param name="targetId">The ID of the target from which to detach.</param>
-        /// <returns>
-        /// A task representing the asynchronous detach operation.
+        /// <returns>A task representing the asynchronous detach operation.</returns>
         public override async Task DetachFromTarget(string sessionId = null, string targetId = null)
         {
             await adapter.DetachFromTarget(new DetachFromTargetCommandSettings()

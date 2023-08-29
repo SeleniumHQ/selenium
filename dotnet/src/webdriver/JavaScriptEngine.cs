@@ -312,6 +312,34 @@ namespace OpenQA.Selenium
             await ClearAll();
         }
 
+        /// <summary>
+        /// Releases all resources associated with this <see cref="JavaScriptEngine"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases all resources associated with this <see cref="JavaScriptEngine"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    if (this.session.IsValueCreated)
+                    {
+                        this.session.Value.Dispose();
+                    }
+                }
+
+                this.isDisposed = true;
+            }
+        }
+
         private async Task ClearPinnedScripts()
         {
             // Use a copy of the list to prevent the iterator from becoming invalid
@@ -393,27 +421,6 @@ namespace OpenQA.Selenium
                     MessageTimeStamp = e.Timestamp,
                     MessageType = e.Type
                 });
-            }
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.isDisposed)
-            {
-                if (disposing)
-                {
-                    if (this.session.IsValueCreated)
-                    {
-                        this.session.Value.Dispose();
-                    }
-                }
-
-                this.isDisposed = true;
             }
         }
     }

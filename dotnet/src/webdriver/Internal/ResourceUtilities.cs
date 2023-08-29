@@ -31,7 +31,6 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     internal static class ResourceUtilities
     {
-        private static string assemblyVersion;
         private static string productVersion;
         private static string platformFamily;
 

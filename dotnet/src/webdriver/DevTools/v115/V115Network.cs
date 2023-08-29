@@ -64,11 +64,19 @@ namespace OpenQA.Selenium.DevTools.V115
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = false });
         }
 
+        /// <summary>
+        /// Asynchronously enables the Network domain..
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task EnableNetwork()
         {
             await network.Enable(new Network.EnableCommandSettings());
         }
 
+        /// <summary>
+        /// Asynchronously disables the Network domain..
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task DisableNetwork()
         {
             await network.Disable();
