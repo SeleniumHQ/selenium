@@ -31,10 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -256,6 +258,7 @@ public class SeleniumManager {
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
       arguments.add(options.getBrowserVersion());
+      ((MutableCapabilities) options).setCapability("browserVersion", Optional.empty());
     }
 
     String browserBinary = getBrowserBinary(options);
