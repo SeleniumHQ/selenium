@@ -70,7 +70,8 @@ function driverLocation(options) {
   let args = ['--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
-    args.push('--browser-version', options.getBrowserVersion())
+    args.push('--browser-version', options.getBrowserVersion());
+    options.setBrowserVersion("");
   }
 
   const vendorOptions =
