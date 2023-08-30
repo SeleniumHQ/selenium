@@ -76,8 +76,8 @@ class WebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
 
+        self.service.log_output.close()
         self.service.stop()
-        self.log_output.close()
 
     def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})
