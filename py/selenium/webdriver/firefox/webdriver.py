@@ -77,6 +77,7 @@ class WebDriver(RemoteWebDriver):
             pass
 
         self.service.stop()
+        self.log_output.close()
 
     def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})
