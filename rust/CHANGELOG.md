@@ -1,4 +1,5 @@
 0.4.12
+======
 
 * build universal macOS Selenium-Manager on CI (#12455)
 * fix bug in condition to check stable label (#12472)

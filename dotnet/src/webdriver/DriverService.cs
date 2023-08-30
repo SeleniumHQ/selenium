@@ -23,7 +23,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium

@@ -61,9 +61,6 @@ public class SeleniumManager {
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String EXE = ".exe";
-  private static final String INFO = "INFO";
-  private static final String WARN = "WARN";
-  private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
 
@@ -114,7 +111,7 @@ public class SeleniumManager {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
       command.executeAsync();
-      command.waitFor(10000); // A generous timeout
+      command.waitFor(120000); // TODO: make this configurable
       if (command.isRunning()) {
         LOG.warning("Selenium Manager did not exit");
       }
@@ -275,7 +272,7 @@ public class SeleniumManager {
       arguments.add("--offline");
     }
 
-    Proxy proxy = (Proxy) options.getCapability("proxy");
+    Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null) {
       if (proxy.getSslProxy() != null) {
         arguments.add("--proxy");

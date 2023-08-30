@@ -125,6 +125,18 @@ class CircularOutputStreamTest {
   }
 
   @Test
+  void testWriteExceedsBuffer() {
+    CircularOutputStream os = new CircularOutputStream(5);
+    try (PrintWriter pw = new PrintWriter(os, true)) {
+
+      pw.write("00");
+      pw.write("000000000000012345");
+      pw.flush();
+      assertThat(os.toString()).isEqualTo("12345");
+    }
+  }
+
+  @Test
   void testConcurrentWrites() throws InterruptedException {
     final int bytesToWrite = 10000;
     CircularOutputStream os = new CircularOutputStream(2 * bytesToWrite);

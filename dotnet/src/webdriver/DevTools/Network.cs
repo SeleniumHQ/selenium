@@ -197,6 +197,14 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <summary>
+        /// Am asynchrounous delegate for handling network events.
+        /// </summary>
+        /// <typeparam name="TEventArgs">The type of event args the event raises.</typeparam>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">An object containing information about the event.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public delegate Task AsyncEventHandler<TEventArgs>(object sender, TEventArgs e);
     }
 }

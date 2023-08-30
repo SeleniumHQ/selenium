@@ -1,5 +1,5 @@
 {
-  "checksum": "a6f3e704e2deacabf5b897203b267dada426df3b8b8b6e80a1cfe12130b76bb9",
+  "checksum": "0c722a74f5cadc8bb75a62763e298e0698afcb48a51d9f7bf6754e285caa644b",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -7754,7 +7754,7 @@
               "target": "serde_json"
             },
             {
-              "id": "sevenz-rust 0.5.0",
+              "id": "sevenz-rust 0.5.2",
               "target": "sevenz_rust"
             },
             {
@@ -8150,13 +8150,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "sevenz-rust 0.5.0": {
+    "sevenz-rust 0.5.2": {
       "name": "sevenz-rust",
-      "version": "0.5.0",
+      "version": "0.5.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/sevenz-rust/0.5.0/download",
-          "sha256": "e2b4f55cc8838a27c4717b4bef491e936e31e19510136f31efd8e463343d0c3c"
+          "url": "https://crates.io/api/v1/crates/sevenz-rust/0.5.2/download",
+          "sha256": "08f8f9506caeb765a103766f8d32d5a16ba11495e0e6ad44f29a3cd6b1dfe31b"
         }
       },
       "targets": [
@@ -8227,7 +8227,7 @@
           }
         },
         "edition": "2021",
-        "version": "0.5.0"
+        "version": "0.5.2"
       },
       "license": "Apache-2.0"
     },

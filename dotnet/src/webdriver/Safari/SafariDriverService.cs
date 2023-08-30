@@ -159,7 +159,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService that implements default settings.</returns>
         public static SafariDriverService CreateDefaultService()
         {
-            return CreateDefaultService(new SafariOptions());
+            return new SafariDriverService(null, null, PortUtilities.FindFreePort());
         }
 
         /// <summary>
@@ -167,6 +167,7 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
         /// <returns>A SafariDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
         public static SafariDriverService CreateDefaultService(SafariOptions options)
         {
             string fullServicePath = DriverFinder.FullPath(options);

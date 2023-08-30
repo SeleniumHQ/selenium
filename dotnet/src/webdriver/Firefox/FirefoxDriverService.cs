@@ -208,7 +208,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
         public static FirefoxDriverService CreateDefaultService()
         {
-            return CreateDefaultService(new FirefoxOptions());
+            return new FirefoxDriverService(null, null, PortUtilities.FindFreePort());
         }
 
 
@@ -217,6 +217,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
         public static FirefoxDriverService CreateDefaultService(FirefoxOptions options)
         {
             string fullServicePath = DriverFinder.FullPath(options);

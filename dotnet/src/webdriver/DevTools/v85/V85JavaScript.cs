@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.DevTools.V85
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V86JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V85JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>

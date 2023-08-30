@@ -46,16 +46,6 @@ public class JsonInput implements Closeable {
   // figuring out whether we're expecting a NAME properly.
   private final Deque<Container> stack = new ArrayDeque<>();
 
-  /**
-   * This package-private constructor initializes new instances of the {@code JsonInput} class.<br>
-   * This class declares methods that enable structured traversal of the JSON string supplied by the
-   * {@code Reader} object specified by [source].
-   *
-   * @param source {@link Reader} object that supplies the JSON string to be processed
-   * @param coercer {@link JsonTypeCoercer} that encapsulates the defined type-specific
-   *     deserializers
-   * @param setter strategy used to assign values during deserialization
-   */
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
     this.source = Require.nonNull("Source", source);
     this.coercer = Require.nonNull("Coercer", coercer);

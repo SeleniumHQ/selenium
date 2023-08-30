@@ -97,6 +97,11 @@ namespace OpenQA.Selenium.Chromium
             }
         }
 
+        /// <summary>
+        /// Creates a ChromiumNetworkConditions object from a dictionary of key-value pairs.
+        /// </summary>
+        /// <param name="dictionary">The dictionary to use to create the object.</param>
+        /// <returns>The ChromiumNetworkConditions object created from the dictionary.</returns>
         public static ChromiumNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
         {
             ChromiumNetworkConditions conditions = new ChromiumNetworkConditions();
