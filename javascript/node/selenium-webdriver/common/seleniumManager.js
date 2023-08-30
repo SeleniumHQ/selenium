@@ -25,6 +25,7 @@ const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
+const { Capability } = require('../lib/capabilities')
 
 let debugMessagePrinted = false;
 
@@ -124,6 +125,11 @@ function driverLocation(options) {
     throw new Error(
       `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
     )
+  }
+
+  // Once driverPath is available, delete browserVersion from payload
+  if (output.result.driver_path) {
+    options.delete(Capability.BROWSER_VERSION)
   }
 
   logOutput(output)
