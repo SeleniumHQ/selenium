@@ -21,7 +21,7 @@ import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
-
+from typing import TextIO
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -76,7 +76,10 @@ class WebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
 
-        self.service.log_output.close()
+        if isinstance(self.service.log_output,TextIO):
+            self.service.log_output.close()
+        elif isinstance(self.service.log_output,int):
+            os.close(self.service.log_output)
         self.service.stop()
 
     def set_context(self, context) -> None:
