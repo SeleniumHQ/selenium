@@ -59,7 +59,7 @@ def _get_relative_destination_file(src_file):
     src_file_dirs = src_file.dirname.split("/")
     framework_dir = src_file_dirs[-1]
     for src_file_dir in reversed(src_file_dirs):
-        if src_file_dir in src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
+        if src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
             framework_dir = src_file_dir
             break
     return "{}/{}".format(framework_dir, src_file.basename)
