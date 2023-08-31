@@ -390,7 +390,8 @@ namespace OpenQA.Selenium.DevTools
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("postForm.html");
             driver.FindElement(By.XPath("//form/input")).Click();
-            requestSync.Wait(TimeSpan.FromSeconds(5));
+            bool requestEventFired = requestSync.Wait(TimeSpan.FromSeconds(5));
+            Assert.That(requestEventFired, Is.True);
 
             var response = await domains.Network.GetRequestPostData(new CurrentCdpVersion.Network.GetRequestPostDataCommandSettings()
             {
