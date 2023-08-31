@@ -9,6 +9,7 @@
 #### :nail_care: Polish
 
 * Add support for Chrome 116 and remove support for Chrome 113
+* Remove browserVersion from options in Selenium Manager (#12641)
 
 ## 4.11.1
 

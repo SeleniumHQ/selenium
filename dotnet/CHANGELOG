@@ -5,8 +5,12 @@ v4.12.0
 * Improve performance in DriverFactory (#12497)
 * Avoid async void events in CDP Network session (#12486)
 * Rename methods in Actions class to follow .NET convention (#12439)
-
-
+* Fix bug with Selenium Manager executing in new window (#12593)
+* Simplify to only target .NET Standard 2.0 (#12608)
+* DriverFinder executed in Driver constructor not Service constructor (#12534)
+* Refactor WebScocket communication for BiDi (#12614)
+* Avoid potential deadlocks for new dev tools sessions (#12592)
+* Send data over cdp consecutively (#12591)
 
 v4.11.0
 ======
