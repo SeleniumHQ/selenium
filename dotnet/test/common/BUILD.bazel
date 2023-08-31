@@ -59,7 +59,7 @@ config_setting(
     ],
     target_frameworks = select({
         ":netframework": ["net48"],
-        ":netcore": ["net6.0"]
+        ":netcore": ["net6.0"],
         "//conditions:default": ["net6.0"],
     }),
     visibility = ["//visibility:public"],
