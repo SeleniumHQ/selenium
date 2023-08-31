@@ -267,6 +267,8 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
+            // do not show process output, we can redirect it to logging mechanism when we will have it in place
+            this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
 
             DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
             this.OnDriverProcessStarting(eventArgs);
