@@ -175,7 +175,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(capabilities: nil, options: nil, service: nil, url: nil, **opts)  &#x21d2; Driver </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(options: nil, service: nil, url: nil, **opts)  &#x21d2; Driver </a>
     
 
     
@@ -257,7 +257,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(capabilities: nil, options: nil, service: nil, url: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Driver (class)">Driver</a></span></tt> 
+    #<strong>initialize</strong>(options: nil, service: nil, url: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Driver (class)">Driver</a></span></tt> 
   
 
   
@@ -292,8 +292,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/driver.rb', line 33</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>capabilities:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>service:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_initialize_local_driver'>initialize_local_driver</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>service:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_initialize_local_driver'>initialize_local_driver</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>caps:</span> <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -356,7 +356,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Aug  1 10:25:16 2023 by
+  Generated on Thu Aug 31 15:19:22 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>
