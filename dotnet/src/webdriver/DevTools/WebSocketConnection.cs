@@ -146,6 +146,8 @@ namespace OpenQA.Selenium.DevTools
             {
                 await this.dataReceiveTask;
             }
+
+            this.client.Dispose();
         }
 
         /// <summary>
@@ -268,7 +270,6 @@ namespace OpenQA.Selenium.DevTools
             }
             finally
             {
-                this.client.Dispose();
                 this.isActive = false;
             }
         }
