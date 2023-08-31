@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    selenium-devtools (0.115.0)
+    selenium-devtools (0.116.0)
       selenium-webdriver (~> 4.2)
     selenium-webdriver (4.12.0)
       rexml (~> 3.2, >= 3.2.5)
