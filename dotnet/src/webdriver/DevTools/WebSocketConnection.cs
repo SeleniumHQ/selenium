@@ -186,6 +186,10 @@ namespace OpenQA.Selenium.DevTools
             {
                 // An OperationCanceledException is normal upon task/token cancellation, so disregard it
             }
+            catch (WebSocketException e)
+            {
+                this.Log($"Unexpected error during attempt at close: {e.Message}", DevToolsSessionLogLevel.Error);
+            }
         }
 
         /// <summary>

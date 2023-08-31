@@ -55,8 +55,6 @@ namespace OpenQA.Selenium.DevTools
 
         private DevToolsDomains domains;
 
-        private readonly SemaphoreSlim semaphoreSlimForSocketSend = new SemaphoreSlim(1, 1);
-
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
@@ -219,18 +217,7 @@ namespace OpenQA.Selenium.DevTools
 
                 string contents = JsonConvert.SerializeObject(message);
                 this.pendingCommands.TryAdd(message.CommandId, message);
-
-                // socket SendAsync cannot be ran simultaneously, waiting available single worker
-                await semaphoreSlimForSocketSend.WaitAsync(cancellationToken);
-
-                try
-                {
-                    await this.connection.SendData(contents);
-                }
-                finally
-                {
-                    semaphoreSlimForSocketSend.Release();
-                }
+                await this.connection.SendData(contents);
 
                 var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
 
@@ -335,7 +322,7 @@ namespace OpenQA.Selenium.DevTools
                 {
                     this.Domains.Target.TargetDetached -= this.OnTargetDetached;
                     this.pendingCommands.Clear();
-                    this.TerminateSocketConnection().GetAwaiter().GetResult();
+                    Task.Run(async () => await this.TerminateSocketConnection()).GetAwaiter().GetResult();
                 }
 
                 this.isDisposed = true;
