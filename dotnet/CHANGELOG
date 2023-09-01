@@ -1,3 +1,7 @@
+v4.12.2
+======
+* No code changes; issue with 4.12.1 release
+
 v4.12.1
 ======
 * Only target Netstandard 2.0 for release
