@@ -191,7 +191,7 @@ class Select {
     }
 
     for (let option of options) {
-      if ((await option.getAttribute('index')) === index.toString()) {
+      if ((await option.getProperty('index')) === index) {
         await this.setSelected(option)
       }
     }
@@ -415,7 +415,7 @@ class Select {
     }
 
     for (let option of options) {
-      if ((await option.getAttribute('index')) === index.toString()) {
+      if ((await option.getProperty('index')) === index) {
         if (await option.isSelected()) {
           await option.click()
         }
