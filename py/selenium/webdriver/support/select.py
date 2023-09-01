@@ -85,16 +85,15 @@ class Select:
 
     def select_by_index(self, index: int) -> None:
         """Select the option at the given index. This is done by examining the
-        "index" attribute of an element, and not merely by counting.
+        "index" property of an element, and not merely by counting.
 
         :Args:
          - index - The option at this index will be selected
 
         throws NoSuchElementException If there is no option with specified index in SELECT
         """
-        match = str(index)
         for opt in self.options:
-            if opt.get_attribute("index") == match:
+            if opt.get_property("index") == index:
                 self._set_selected(opt)
                 return
         raise NoSuchElementException(f"Could not locate element with index {index}")
@@ -172,7 +171,7 @@ class Select:
 
     def deselect_by_index(self, index: int) -> None:
         """Deselect the option at the given index. This is done by examining
-        the "index" attribute of an element, and not merely by counting.
+        the "index" property of an element, and not merely by counting.
 
         :Args:
          - index - The option at this index will be deselected
@@ -182,7 +181,7 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         for opt in self.options:
-            if opt.get_attribute("index") == str(index):
+            if opt.get_property("index") == index:
                 self._unset_selected(opt)
                 return
         raise NoSuchElementException(f"Could not locate element with index {index}")
