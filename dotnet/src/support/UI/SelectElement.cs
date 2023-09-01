@@ -247,7 +247,7 @@ namespace OpenQA.Selenium.Support.UI
 
             foreach (IWebElement option in this.Options)
             {
-                if (option.GetAttribute("index") == match)
+                if (option.GetDomProperty("index") == match)
                 {
                     SetSelected(option, true);
                     return;
@@ -364,7 +364,7 @@ namespace OpenQA.Selenium.Support.UI
             string match = index.ToString(CultureInfo.InvariantCulture);
             foreach (IWebElement option in this.Options)
             {
-                if (match == option.GetAttribute("index"))
+                if (match == option.GetDomProperty("index"))
                 {
                     SetSelected(option, false);
                     return;
