@@ -101,14 +101,14 @@ namespace OpenQA.Selenium.DevTools
             {
                 try
                 {
-                    await this.client.ConnectAsync(new Uri(url), this.clientTokenSource.Token);
+                    await this.client.ConnectAsync(new Uri(url), this.clientTokenSource.Token).ConfigureAwait(false);
                     connected = true;
                 }
                 catch (WebSocketException)
                 {
                     // If the server-side socket is not yet ready, it leaves the client socket in a closed state,
                     // which sees the object as disposed, so we must create a new one to try again
-                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
                     this.client = new ClientWebSocket();
                 }
             }
@@ -136,7 +136,7 @@ namespace OpenQA.Selenium.DevTools
             }
             else
             {
-                await this.CloseClientWebSocket();
+                await this.CloseClientWebSocket().ConfigureAwait(false);
             }
 
             // Whether we closed the socket or timed out, we cancel the token causing ReceiveAsync to abort the socket.
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium.DevTools
             this.clientTokenSource.Cancel();
             if (this.dataReceiveTask != null)
             {
-                await this.dataReceiveTask;
+                await this.dataReceiveTask.ConfigureAwait(false);
             }
 
             this.client.Dispose();
@@ -159,7 +159,7 @@ namespace OpenQA.Selenium.DevTools
         {
             ArraySegment<byte> messageBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data));
             this.Log($"SEND >>> {data}");
-            await this.client.SendAsync(messageBuffer, WebSocketMessageType.Text, endOfMessage: true, CancellationToken.None);
+            await this.client.SendAsync(messageBuffer, WebSocketMessageType.Text, endOfMessage: true, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -173,13 +173,13 @@ namespace OpenQA.Selenium.DevTools
             try
             {
                 // After this, the socket state which change to CloseSent
-                await this.client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Closing", timeout.Token);
+                await this.client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Closing", timeout.Token).ConfigureAwait(false);
 
                 // Now we wait for the server response, which will close the socket
                 while (this.client.State != WebSocketState.Closed && this.client.State != WebSocketState.Aborted && !timeout.Token.IsCancellationRequested)
                 {
                     // The loop may be too tight for the cancellation token to get triggered, so add a small delay
-                    await Task.Delay(TimeSpan.FromMilliseconds(10));
+                    await Task.Delay(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
                 }
 
                 this.Log($"Client state is {this.client.State}", DevToolsSessionLogLevel.Trace);
@@ -227,7 +227,7 @@ namespace OpenQA.Selenium.DevTools
                 ArraySegment<byte> buffer = WebSocket.CreateClientBuffer(this.bufferSize, this.bufferSize);
                 while (this.client.State != WebSocketState.Closed && !cancellationToken.IsCancellationRequested)
                 {
-                    WebSocketReceiveResult receiveResult = await this.client.ReceiveAsync(buffer, cancellationToken);
+                    WebSocketReceiveResult receiveResult = await this.client.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
 
                     // If the token is cancelled while ReceiveAsync is blocking, the socket state changes to aborted and it can't be used
                     if (!cancellationToken.IsCancellationRequested)
@@ -237,7 +237,7 @@ namespace OpenQA.Selenium.DevTools
                         if (receiveResult.MessageType == WebSocketMessageType.Close && this.client.State != WebSocketState.Closed && this.client.State != WebSocketState.CloseSent)
                         {
                             this.Log($"Acknowledging Close frame received from server (client state: {this.client.State})", DevToolsSessionLogLevel.Trace);
-                            await this.client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Acknowledge Close frame", CancellationToken.None);
+                            await this.client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Acknowledge Close frame", CancellationToken.None).ConfigureAwait(false);
                         }
 
                         // Display text or binary data
