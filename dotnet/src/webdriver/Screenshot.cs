@@ -103,10 +103,12 @@ namespace OpenQA.Selenium
                     {
                         imageStream.WriteTo(fileStream);
                     }
-
-                    using (Image screenshotImage = Image.FromStream(imageStream))
+                    else
                     {
-                        screenshotImage.Save(fileStream, ConvertScreenshotImageFormat(format));
+                        using (Image screenshotImage = Image.FromStream(imageStream))
+                        {
+                            screenshotImage.Save(fileStream, ConvertScreenshotImageFormat(format));
+                        }
                     }
                 }
             }
