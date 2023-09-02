@@ -552,7 +552,7 @@ public interface WebDriverListener {
   default void beforeGetCssValue(WebElement element, String propertyName) {}
 
   /**
-   * This action will be performed each time after {@link WebElement#getCssValue(String)}  is called.
+   * This action will be performed each time after {@link WebElement#getCssValue(String)} is called.
    *
    * @param element - decorated WebElement instance
    * @param propertyName - name of the css property
@@ -560,32 +560,113 @@ public interface WebDriverListener {
    */
   default void afterGetCssValue(WebElement element, String propertyName, String result) {}
 
-  // Navigation
+  // Navigation (WebDriver.Navigation)
 
+  /**
+   * This method will be called before any method of a {@link WebDriver.Navigation} instance is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param method - method that will be called
+   * @param args - arguments for the method
+   */
   default void beforeAnyNavigationCall(
       WebDriver.Navigation navigation, Method method, Object[] args) {}
 
+  /**
+   * This method will be called after any method of a {@link WebDriver.Navigation} instance is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param method - method that was called
+   * @param args - arguments for the method
+   * @param result - result of the method call
+   */
   default void afterAnyNavigationCall(
       WebDriver.Navigation navigation, Method method, Object[] args, Object result) {}
 
+  /**
+   * This action will be performed each time before {@link WebDriver.Navigation#to(String)} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param url - url to navigate to (can be relative)
+   */
   default void beforeTo(WebDriver.Navigation navigation, String url) {}
 
+  /**
+   * This action will be performed each time after {@link WebDriver.Navigation#to(String)} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param url - url to navigate to (can be relative)
+   */
   default void afterTo(WebDriver.Navigation navigation, String url) {}
 
+  /**
+   * This action will be performed each time before {@link WebDriver.Navigation#to(URL)} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param url - url to navigate to (can be relative)
+   */
   default void beforeTo(WebDriver.Navigation navigation, URL url) {}
 
+  /**
+   * This action will be performed each time after {@link WebDriver.Navigation#to(URL)} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   * @param url - url to navigate to (can be relative)
+   */
   default void afterTo(WebDriver.Navigation navigation, URL url) {}
 
+  /**
+   * This action will be performed each time before {@link WebDriver.Navigation#back()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void beforeBack(WebDriver.Navigation navigation) {}
 
+  /**
+   * This action will be performed each time after {@link WebDriver.Navigation#back()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void afterBack(WebDriver.Navigation navigation) {}
 
+  /**
+   * This action will be performed each time before {@link WebDriver.Navigation#forward()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void beforeForward(WebDriver.Navigation navigation) {}
 
+  /**
+   * This action will be performed each time after {@link WebDriver.Navigation#forward()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void afterForward(WebDriver.Navigation navigation) {}
 
+  /**
+   * This action will be performed each time before {@link WebDriver.Navigation#refresh()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void beforeRefresh(WebDriver.Navigation navigation) {}
 
+  /**
+   * This action will be performed each time after {@link WebDriver.Navigation#refresh()} is
+   * called.
+   *
+   * @param navigation - decorated WebDriver.Navigation instance
+   */
   default void afterRefresh(WebDriver.Navigation navigation) {}
 
   // Alert

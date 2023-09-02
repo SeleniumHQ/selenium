@@ -28,6 +28,8 @@ import static org.mockito.Mockito.withSettings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -550,7 +552,7 @@ class EventFiringDecoratorTest {
   }
 
   @Test
-  void shouldFireNavigationEvents() {
+  void shouldFireNavigationEvents() throws MalformedURLException {
     WebDriver driver = mock(WebDriver.class);
     WebDriver.Navigation navigation = mock(WebDriver.Navigation.class);
     when(driver.navigate()).thenReturn(navigation);
@@ -560,13 +562,11 @@ class EventFiringDecoratorTest {
           @Override
           public void beforeAnyNavigationCall(
               WebDriver.Navigation navigation, Method method, Object[] args) {
-            acc.append("beforeAnyNavigationCall ").append(method.getName()).append("\n");
           }
 
           @Override
           public void afterAnyNavigationCall(
               WebDriver.Navigation navigation, Method method, Object[] args, Object result) {
-            acc.append("afterAnyNavigationCall ").append(method.getName()).append("\n");
           }
 
           @Override
@@ -578,11 +578,61 @@ class EventFiringDecoratorTest {
           public void afterBack(WebDriver.Navigation navigation) {
             acc.append("afterBack").append("\n");
           }
+
+          @Override
+          public void beforeTo(WebDriver.Navigation navigation, String url) {
+            acc.append("beforeTo String").append("\n");
+          }
+
+          @Override
+          public void afterTo(WebDriver.Navigation navigation, String url) {
+            acc.append("afterTo String").append("\n");
+          }
+
+          @Override
+          public void beforeTo(WebDriver.Navigation navigation, URL url) {
+            acc.append("beforeTo URL").append("\n");
+          }
+
+          @Override
+          public void afterTo(WebDriver.Navigation navigation, URL url) {
+            acc.append("afterTo URL").append("\n");
+          }
+
+          @Override
+          public void beforeRefresh(WebDriver.Navigation navigation) {
+            acc.append("beforeRefresh").append("\n");
+          }
+
+          @Override
+          public void afterRefresh(WebDriver.Navigation navigation) {
+            acc.append("afterRefresh").append("\n");
+          }
+
+          @Override
+          public void beforeForward(WebDriver.Navigation navigation) {
+            acc.append("beforeForward").append("\n");
+          }
+
+          @Override
+          public void afterForward(WebDriver.Navigation navigation) {
+            acc.append("afterForward").append("\n");
+          }
+
         };
 
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
-    decorated.navigate().back();
+    WebDriver.Navigation nav = decorated.navigate();
+    nav.back();
+    nav.forward();
+    nav.refresh();
+
+    String url = "http://example.com/";
+
+    nav.to(url);
+    nav.to(new URL(url));
+
 
     assertThat(listener.acc.toString().trim())
         .isEqualTo(
@@ -593,11 +643,25 @@ class EventFiringDecoratorTest {
                 "afterAnyWebDriverCall navigate",
                 "afterAnyCall navigate",
                 "beforeAnyCall back",
-                "beforeAnyNavigationCall back",
                 "beforeBack",
                 "afterBack",
-                "afterAnyNavigationCall back",
-                "afterAnyCall back"));
+                "afterAnyCall back",
+                "beforeAnyCall forward",
+                "beforeForward",
+                "afterForward",
+                "afterAnyCall forward",
+                "beforeAnyCall refresh",
+                "beforeRefresh",
+                "afterRefresh",
+                "afterAnyCall refresh",
+                "beforeAnyCall to",
+                "beforeTo String",
+                "afterTo String",
+                "afterAnyCall to",
+                "beforeAnyCall to",
+                "beforeTo URL",
+                "afterTo URL",
+                "afterAnyCall to"));
   }
 
   @Test
