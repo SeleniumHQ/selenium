@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -41,6 +42,8 @@ namespace OpenQA.Selenium
 
         private WebDriver driver;
         private string elementId;
+
+        private static ConcurrentDictionary<string, string> atomsCache = new ConcurrentDictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebElement"/> class.
@@ -711,18 +714,28 @@ namespace OpenQA.Selenium
 
         private static string GetAtom(string atomResourceName)
         {
-            string atom = string.Empty;
-            using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+            if (atomsCache.TryGetValue(atomResourceName, out string cachedAtom))
             {
-                using (StreamReader atomReader = new StreamReader(atomStream))
-                {
-                    atom = atomReader.ReadToEnd();
-                }
+                return cachedAtom;
             }
+            else
+            {
+                string atom = string.Empty;
+                using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+                {
+                    using (StreamReader atomReader = new StreamReader(atomStream))
+                    {
+                        atom = atomReader.ReadToEnd();
+                    }
+                }
 
-            string atomName = atomResourceName.Replace(".js", "");
-            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", atomName, atom);
-            return wrappedAtom;
+                string atomName = atomResourceName.Replace(".js", "");
+                string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", atomName, atom);
+
+                atomsCache[atomResourceName] = wrappedAtom;
+
+                return wrappedAtom;
+            }
         }
 
         private string UploadFile(string localFile)
