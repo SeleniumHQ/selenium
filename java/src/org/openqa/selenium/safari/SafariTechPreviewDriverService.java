@@ -47,7 +47,7 @@ public class SafariTechPreviewDriverService extends DriverService {
    */
   public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
 
-  private static final String TP_SAFARI_DRIVER_LOGGING = "webdriver.tp.safari.logging";
+  public static final String TP_SAFARI_DRIVER_LOGGING = "webdriver.tp.safari.logging";
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
       new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
