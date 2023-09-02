@@ -1,4 +1,4 @@
-4.12.0 (Unreleased)
+4.12.0 (2023-08-31)
 =========================
 Ruby:
   * Fix bug preventing good error messages in Selenium Manager when stdout empty
