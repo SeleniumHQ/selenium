@@ -167,6 +167,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
 
   private final List<WebDriverListener> listeners;
 
+  /**
+   *
+   * @param listeners the listeners to notify about events happening in the decorated WebDriver
+   */
   public EventFiringDecorator(WebDriverListener... listeners) {
     this.listeners = Arrays.asList(listeners);
   }
