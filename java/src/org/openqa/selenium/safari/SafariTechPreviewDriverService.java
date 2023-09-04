@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -172,7 +174,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
-      if (this.diagnose) {
+      if (Boolean.TRUE.equals(diagnose)) {
         args.add("--diagnose");
       }
       return args;
@@ -182,6 +184,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     protected SafariTechPreviewDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
+        withLogOutput(ByteStreams.nullOutputStream());
         return new SafariTechPreviewDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
