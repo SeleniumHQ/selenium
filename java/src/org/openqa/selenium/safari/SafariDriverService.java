@@ -47,7 +47,7 @@ public class SafariDriverService extends DriverService {
    */
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
-  private static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
+  public static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
 

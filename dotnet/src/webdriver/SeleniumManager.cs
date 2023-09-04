@@ -92,9 +92,12 @@ namespace OpenQA.Selenium
 
             if (options.Proxy != null)
             {
-                if (options.Proxy.SslProxy != null) {
+                if (options.Proxy.SslProxy != null)
+                {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
-                } else if (options.Proxy.HttpProxy != null) {
+                }
+                else if (options.Proxy.HttpProxy != null)
+                {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
                 }
             }
@@ -137,16 +140,20 @@ namespace OpenQA.Selenium
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
+            StringBuilder errorOutputBuilder = new StringBuilder();
 
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
+            DataReceivedEventHandler errorOutputHandler = (sender, e) => errorOutputBuilder.AppendLine(e.Data);
 
             try
             {
                 process.OutputDataReceived += outputHandler;
+                process.ErrorDataReceived += errorOutputHandler;
 
                 process.Start();
 
                 process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
 
                 process.WaitForExit();
 
@@ -154,7 +161,25 @@ namespace OpenQA.Selenium
                 {
                     // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
 
-                    throw new WebDriverException($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}\n{outputBuilder}");
+                    var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}");
+
+                    if (!string.IsNullOrEmpty(errorOutputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append("Error Output >>");
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append(errorOutputBuilder);
+                    }
+
+                    if (!string.IsNullOrEmpty(outputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append("Standard Output >>");
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append(outputBuilder);
+                    }
+
+                    throw new WebDriverException(exceptionMessageBuilder.ToString());
                 }
             }
             catch (Exception ex)
@@ -164,6 +189,7 @@ namespace OpenQA.Selenium
             finally
             {
                 process.OutputDataReceived -= outputHandler;
+                process.ErrorDataReceived -= errorOutputHandler;
             }
 
             string output = outputBuilder.ToString().Trim();

@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
@@ -261,7 +260,11 @@ public class SeleniumManager {
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
       arguments.add(options.getBrowserVersion());
-      ((MutableCapabilities) options).setCapability("browserVersion", Optional.empty());
+      // We know the browser binary path, we don't need the browserVersion.
+      // Useful when "beta" is specified as browserVersion, but the browser driver cannot match it.
+      if (options instanceof MutableCapabilities) {
+        ((MutableCapabilities) options).setCapability("browserVersion", (String) null);
+      }
     }
 
     String browserBinary = getBrowserBinary(options);
