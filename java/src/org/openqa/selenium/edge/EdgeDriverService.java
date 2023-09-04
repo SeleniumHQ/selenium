@@ -23,6 +23,7 @@ import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
+import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -30,8 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
@@ -297,7 +296,8 @@ public class EdgeDriverService extends DriverService {
         if (Boolean.TRUE.equals(appendLog)) {
           args.add("--append-log");
         }
-        withLogOutput(ByteStreams.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+        withLogOutput(
+            ByteStreams.nullOutputStream()); // Do not overwrite log file in getLogOutput()
       }
 
       if (logLevel != null) {
