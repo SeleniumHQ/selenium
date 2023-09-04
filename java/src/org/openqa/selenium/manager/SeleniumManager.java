@@ -127,7 +127,10 @@ public class SeleniumManager {
     if (!output.isEmpty()) {
       try {
         jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
-        jsonOutput.getLogs().forEach(logged -> LOG.log(logged.getLevel(), logged.getMessage()));
+        jsonOutput.getLogs().forEach(logged -> {
+          Level currentLevel = logged.getLevel() == Level.INFO ? Level.FINE : logged.getLevel();
+          LOG.log(currentLevel, logged.getMessage());
+        });
         dump = jsonOutput.getResult().getMessage();
       } catch (JsonException e) {
         failedToParse = e;
