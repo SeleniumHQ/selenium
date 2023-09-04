@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Firefox_FirefoxDriverService.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Firefox.FirefoxDriverService%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -570,7 +581,8 @@ when Firefox is launched.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static FirefoxDriverService CreateDefaultService(FirefoxOptions options)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;CreateDefaultService() now evaluates options in Driver constructor&quot;)]
+public static FirefoxDriverService CreateDefaultService(FirefoxOptions options)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -601,7 +613,7 @@ when Firefox is launched.</p>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String)">
   CreateDefaultService(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriverService.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriverService.cs/#L232"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable.</p>
@@ -640,7 +652,7 @@ when Firefox is launched.</p>
 
   <h3 id="OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_System_String_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String,System.String)">
   CreateDefaultService(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriverService.cs/#L247"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxDriverService.cs/#L248"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable with the given name.</p>

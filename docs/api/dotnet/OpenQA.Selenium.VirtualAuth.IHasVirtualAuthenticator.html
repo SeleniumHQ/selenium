@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -79,7 +90,7 @@
 
   <h1 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator" class="text-break">
     Interface IHasVirtualAuthenticator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -87,7 +98,8 @@
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Interface indicating that an object supports using a virtual authenticator.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -114,10 +126,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_AddCredential_OpenQA_Selenium_VirtualAuth_Credential_" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.AddCredential(OpenQA.Selenium.VirtualAuth.Credential)">
   AddCredential(Credential)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a credential to the virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -127,7 +140,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>credential</code> <a class="xref" href="OpenQA.Selenium.VirtualAuth.Credential.html">Credential</a></dt>
-    <dd></dd>
+    <dd><p>The credential to add to the authenticator.</p>
+</dd>
   </dl>
 
 
@@ -145,10 +159,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_AddVirtualAuthenticator_OpenQA_Selenium_VirtualAuth_VirtualAuthenticatorOptions_" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.AddVirtualAuthenticator(OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions)">
   AddVirtualAuthenticator(VirtualAuthenticatorOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -158,13 +173,15 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.VirtualAuth.VirtualAuthenticatorOptions.html">VirtualAuthenticatorOptions</a></dt>
-    <dd></dd>
+    <dd><p>The VirtualAuthenticatorOptions to use in creating the authenticator.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd><p>The ID of the added virtual authenticator.</p>
+</dd>
   </dl>
 
 
@@ -181,10 +198,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_GetCredentials" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.GetCredentials">
   GetCredentials()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a list of the credentials registered to the virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -195,7 +213,8 @@
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="OpenQA.Selenium.VirtualAuth.Credential.html">Credential</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The list of credentials registered to the virtual authenticator.</p>
+</dd>
   </dl>
 
 
@@ -212,10 +231,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_RemoveAllCredentials" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.RemoveAllCredentials">
   RemoveAllCredentials()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes all credentials registered to this virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -238,10 +258,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_RemoveCredential_System_Byte___" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.RemoveCredential(System.Byte[])">
   RemoveCredential(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes a credential from the virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -251,7 +272,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>credentialId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
-    <dd></dd>
+    <dd><p>A byte array representing the ID of the credential to remove.</p>
+</dd>
   </dl>
 
 
@@ -269,10 +291,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_RemoveCredential_System_String_" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.RemoveCredential(System.String)">
   RemoveCredential(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes a credential from the virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -282,7 +305,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>credentialId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd><p>A string representing the ID of the credential to remove.</p>
+</dd>
   </dl>
 
 
@@ -300,10 +324,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_RemoveVirtualAuthenticator_System_String_" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.RemoveVirtualAuthenticator(System.String)">
   RemoveVirtualAuthenticator(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes a virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -313,7 +338,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
+    <dd><p>The ID of the virtual authenticator to remove.</p>
+</dd>
   </dl>
 
 
@@ -331,10 +357,11 @@
 
   <h3 id="OpenQA_Selenium_VirtualAuth_IHasVirtualAuthenticator_SetUserVerified_System_Boolean_" data-uid="OpenQA.Selenium.VirtualAuth.IHasVirtualAuthenticator.SetUserVerified(System.Boolean)">
   SetUserVerified(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets whether or not a user is verified in this virtual authenticator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -344,7 +371,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>verified</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the user is verified; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -362,7 +390,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/VirtualAuth/IHasVirtualAuthenticator.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
         

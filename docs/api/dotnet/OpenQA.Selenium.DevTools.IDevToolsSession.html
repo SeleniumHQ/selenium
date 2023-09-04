@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DevTools_IDevToolsSession.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.IDevToolsSession%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -281,7 +292,8 @@ commands and recieve events.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>command</code> <span class="xref">TCommand</span></dt>
-    <dd></dd>
+    <dd><p>The command to send.</p>
+</dd>
     <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
     <dd><p>A CancellationToken object to allow for cancellation of the command.</p>
 </dd>
@@ -303,9 +315,11 @@ commands and recieve events.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TCommand</code></dt>
-    <dd></dd>
+    <dd><p>A command object implementing the <a class="xref" href="OpenQA.Selenium.DevTools.ICommand.html">ICommand</a> interface.</p>
+</dd>
     <dt><code>TCommandResponse</code></dt>
-    <dd></dd>
+    <dd><p>A response object implementing the <a class="xref" href="OpenQA.Selenium.DevTools.ICommandResponse.html">ICommandResponse</a> interface.</p>
+</dd>
   </dl>
 
 

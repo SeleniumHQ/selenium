@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -111,7 +122,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCacheCommandResponse.html">CanClearBrowserCacheCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Tells whether clearing browser cache is supported.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCacheCommandSettings.html">CanClearBrowserCacheCommandSettings</a></dt>
@@ -120,7 +132,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCookiesCommandResponse.html">CanClearBrowserCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Tells whether clearing browser cookies is supported.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanClearBrowserCookiesCommandSettings.html">CanClearBrowserCookiesCommandSettings</a></dt>
@@ -129,7 +142,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanEmulateNetworkConditionsCommandResponse.html">CanEmulateNetworkConditionsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Tells whether emulation of network conditions is supported.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.CanEmulateNetworkConditionsCommandSettings.html">CanEmulateNetworkConditionsCommandSettings</a></dt>
@@ -138,7 +152,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCacheCommandResponse.html">ClearBrowserCacheCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Clears browser cache.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCacheCommandSettings.html">ClearBrowserCacheCommandSettings</a></dt>
@@ -147,7 +162,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCookiesCommandResponse.html">ClearBrowserCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Clears browser cookies.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ClearBrowserCookiesCommandSettings.html">ClearBrowserCookiesCommandSettings</a></dt>
@@ -156,7 +172,12 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandResponse.html">ContinueInterceptedRequestCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Response to Network.requestIntercepted which either modifies the request to continue with any
+modifications, or blocks it, or completes it with the provided response bytes. If a network
+fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
+event will be sent with the same InterceptionId.
+Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ContinueInterceptedRequestCommandSettings.html">ContinueInterceptedRequestCommandSettings</a></dt>
@@ -184,7 +205,8 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DeleteCookiesCommandResponse.html">DeleteCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Deletes browser cookies with matching name and url or domain/path pair.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DeleteCookiesCommandSettings.html">DeleteCookiesCommandSettings</a></dt>
@@ -193,7 +215,8 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Disables network tracking, prevents network events from being sent to the client.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.DisableCommandSettings.html">DisableCommandSettings</a></dt>
@@ -202,7 +225,8 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandResponse.html">EmulateNetworkConditionsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Activates emulation of network conditions.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EmulateNetworkConditionsCommandSettings.html">EmulateNetworkConditionsCommandSettings</a></dt>
@@ -211,7 +235,8 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Enables network tracking, network events will now be delivered to the client.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.EnableCommandSettings.html">EnableCommandSettings</a></dt>
@@ -225,7 +250,9 @@ Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failReques
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetAllCookiesCommandResponse.html">GetAllCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns all browser cookies. Depending on the backend support, will return detailed cookie
+information in the <code>cookies</code> field.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetAllCookiesCommandSettings.html">GetAllCookiesCommandSettings</a></dt>
@@ -235,7 +262,8 @@ information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCertificateCommandResponse.html">GetCertificateCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns the DER-encoded certificate.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCertificateCommandSettings.html">GetCertificateCommandSettings</a></dt>
@@ -244,7 +272,9 @@ information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCookiesCommandResponse.html">GetCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns all browser cookies for the current URL. Depending on the backend support, will return
+detailed cookie information in the <code>cookies</code> field.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetCookiesCommandSettings.html">GetCookiesCommandSettings</a></dt>
@@ -254,7 +284,8 @@ detailed cookie information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetRequestPostDataCommandResponse.html">GetRequestPostDataCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns post data sent with the request. Returns an error when no data was sent with the request.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetRequestPostDataCommandSettings.html">GetRequestPostDataCommandSettings</a></dt>
@@ -263,7 +294,8 @@ detailed cookie information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyCommandResponse.html">GetResponseBodyCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns content served for the given request.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyCommandSettings.html">GetResponseBodyCommandSettings</a></dt>
@@ -272,7 +304,8 @@ detailed cookie information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyForInterceptionCommandResponse.html">GetResponseBodyForInterceptionCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns content served for the given currently intercepted request.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.GetResponseBodyForInterceptionCommandSettings.html">GetResponseBodyForInterceptionCommandSettings</a></dt>
@@ -306,7 +339,10 @@ detailed cookie information in the <code>cookies</code> field.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ReplayXHRCommandResponse.html">ReplayXHRCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for This method sends a new XMLHttpRequest which is identical to the original one. The following
+parameters should be identical: method, url, async, request body, extra headers, withCredentials
+attribute, user, password.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.ReplayXHRCommandSettings.html">ReplayXHRCommandSettings</a></dt>
@@ -379,7 +415,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandResponse.html">SearchInResponseBodyCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Searches for given string in response content.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SearchInResponseBodyCommandSettings.html">SearchInResponseBodyCommandSettings</a></dt>
@@ -393,7 +430,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBlockedURLsCommandResponse.html">SetBlockedURLsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Blocks URLs from loading.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBlockedURLsCommandSettings.html">SetBlockedURLsCommandSettings</a></dt>
@@ -402,7 +440,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBypassServiceWorkerCommandResponse.html">SetBypassServiceWorkerCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Toggles ignoring of service worker for each request.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetBypassServiceWorkerCommandSettings.html">SetBypassServiceWorkerCommandSettings</a></dt>
@@ -411,7 +450,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCacheDisabledCommandResponse.html">SetCacheDisabledCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCacheDisabledCommandSettings.html">SetCacheDisabledCommandSettings</a></dt>
@@ -420,7 +460,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookieCommandResponse.html">SetCookieCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookieCommandSettings.html">SetCookieCommandSettings</a></dt>
@@ -429,7 +470,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookiesCommandResponse.html">SetCookiesCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Sets given cookies.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetCookiesCommandSettings.html">SetCookiesCommandSettings</a></dt>
@@ -438,7 +480,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetDataSizeLimitsForTestCommandResponse.html">SetDataSizeLimitsForTestCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for For testing.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetDataSizeLimitsForTestCommandSettings.html">SetDataSizeLimitsForTestCommandSettings</a></dt>
@@ -447,7 +490,8 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetExtraHTTPHeadersCommandResponse.html">SetExtraHTTPHeadersCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Specifies whether to always send extra HTTP headers with the requests from this page.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetExtraHTTPHeadersCommandSettings.html">SetExtraHTTPHeadersCommandSettings</a></dt>
@@ -456,7 +500,9 @@ it, and responseReceivedExtraInfo may be fired before or after responseReceived.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetRequestInterceptionCommandResponse.html">SetRequestInterceptionCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Sets the requests to intercept that match the provided patterns and optionally resource types.
+Deprecated, please use Fetch.enable instead.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetRequestInterceptionCommandSettings.html">SetRequestInterceptionCommandSettings</a></dt>
@@ -466,7 +512,8 @@ Deprecated, please use Fetch.enable instead.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetUserAgentOverrideCommandResponse.html">SetUserAgentOverrideCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Allows overriding user agent with the given string.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.SetUserAgentOverrideCommandSettings.html">SetUserAgentOverrideCommandSettings</a></dt>
@@ -507,7 +554,11 @@ Deprecated, please use Fetch.enable instead.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.TakeResponseBodyForInterceptionAsStreamCommandResponse.html">TakeResponseBodyForInterceptionAsStreamCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns a handle to the stream representing the response body. Note that after this command,
+the intercepted request can't be continued as is -- you either need to cancel it or to provide
+the response body. The stream only supports sequential read, IO.read will fail if the position
+is specified.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Network.TakeResponseBodyForInterceptionAsStreamCommandSettings.html">TakeResponseBodyForInterceptionAsStreamCommandSettings</a></dt>

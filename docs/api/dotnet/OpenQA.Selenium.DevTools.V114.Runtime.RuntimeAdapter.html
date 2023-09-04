@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -147,10 +158,11 @@
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter__ctor_OpenQA_Selenium_DevTools_IDevToolsSession_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.#ctor(OpenQA.Selenium.DevTools.IDevToolsSession)">
   RuntimeAdapter(IDevToolsSession)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the RuntimeAdapter class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -160,7 +172,8 @@
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>session</code> <a class="xref" href="OpenQA.Selenium.DevTools.IDevToolsSession.html">IDevToolsSession</a></dt>
-    <dd></dd>
+    <dd><p>The IDevToolsSession to be used with this adapter.</p>
+</dd>
   </dl>
 
 
@@ -182,7 +195,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_Session" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.Session">
   Session
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the DevToolsSession associated with the adapter.</p>
@@ -218,7 +231,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_AddBinding_OpenQA_Selenium_DevTools_V114_Runtime_AddBindingCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.AddBinding(OpenQA.Selenium.DevTools.V114.Runtime.AddBindingCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AddBinding(AddBindingCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L227"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L231"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>If executionContextId is empty, adds binding with the given name on the
@@ -266,7 +279,7 @@ Each binding function call produces Runtime.bindingCalled notification.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_AwaitPromise_OpenQA_Selenium_DevTools_V114_Runtime_AwaitPromiseCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.AwaitPromise(OpenQA.Selenium.DevTools.V114.Runtime.AwaitPromiseCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   AwaitPromise(AwaitPromiseCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L80"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Add handler to promise with given promise object id.</p>
@@ -309,7 +322,7 @@ Each binding function call produces Runtime.bindingCalled notification.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_CallFunctionOn_OpenQA_Selenium_DevTools_V114_Runtime_CallFunctionOnCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.CallFunctionOn(OpenQA.Selenium.DevTools.V114.Runtime.CallFunctionOnCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CallFunctionOn(CallFunctionOnCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calls function with given declaration on the given object. Object group of the result is
@@ -353,7 +366,7 @@ inherited from the target object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_CompileScript_OpenQA_Selenium_DevTools_V114_Runtime_CompileScriptCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.CompileScript(OpenQA.Selenium.DevTools.V114.Runtime.CompileScriptCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   CompileScript(CompileScriptCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Compiles expression.</p>
@@ -396,7 +409,7 @@ inherited from the target object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_Disable_OpenQA_Selenium_DevTools_V114_Runtime_DisableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.Disable(OpenQA.Selenium.DevTools.V114.Runtime.DisableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Disable(DisableCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Disables reporting of execution contexts creation.</p>
@@ -439,7 +452,7 @@ inherited from the target object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_DiscardConsoleEntries_OpenQA_Selenium_DevTools_V114_Runtime_DiscardConsoleEntriesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.DiscardConsoleEntries(OpenQA.Selenium.DevTools.V114.Runtime.DiscardConsoleEntriesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   DiscardConsoleEntries(DiscardConsoleEntriesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Discards collected exceptions and console API calls.</p>
@@ -482,7 +495,7 @@ inherited from the target object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_Enable_OpenQA_Selenium_DevTools_V114_Runtime_EnableCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.Enable(OpenQA.Selenium.DevTools.V114.Runtime.EnableCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Enable(EnableCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event.
@@ -527,7 +540,7 @@ context.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_Evaluate_OpenQA_Selenium_DevTools_V114_Runtime_EvaluateCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.Evaluate(OpenQA.Selenium.DevTools.V114.Runtime.EvaluateCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   Evaluate(EvaluateCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Evaluates expression on global object.</p>
@@ -570,7 +583,7 @@ context.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_GetExceptionDetails_OpenQA_Selenium_DevTools_V114_Runtime_GetExceptionDetailsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.GetExceptionDetails(OpenQA.Selenium.DevTools.V114.Runtime.GetExceptionDetailsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetExceptionDetails(GetExceptionDetailsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L246"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L250"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>This method tries to lookup and populate exception details for a
@@ -617,7 +630,7 @@ Error was thrown.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_GetHeapUsage_OpenQA_Selenium_DevTools_V114_Runtime_GetHeapUsageCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.GetHeapUsage(OpenQA.Selenium.DevTools.V114.Runtime.GetHeapUsageCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetHeapUsage(GetHeapUsageCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L140"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the JavaScript heap usage.
@@ -661,7 +674,7 @@ It is the total usage of the corresponding isolate not scoped to a particular Ru
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_GetIsolateId_OpenQA_Selenium_DevTools_V114_Runtime_GetIsolateIdCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.GetIsolateId(OpenQA.Selenium.DevTools.V114.Runtime.GetIsolateIdCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetIsolateId(GetIsolateIdCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the isolate id.</p>
@@ -704,7 +717,7 @@ It is the total usage of the corresponding isolate not scoped to a particular Ru
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_GetProperties_OpenQA_Selenium_DevTools_V114_Runtime_GetPropertiesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.GetProperties(OpenQA.Selenium.DevTools.V114.Runtime.GetPropertiesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GetProperties(GetPropertiesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns properties of a given object. Object group of the result is inherited from the target
@@ -748,7 +761,7 @@ object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_GlobalLexicalScopeNames_OpenQA_Selenium_DevTools_V114_Runtime_GlobalLexicalScopeNamesCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.GlobalLexicalScopeNames(OpenQA.Selenium.DevTools.V114.Runtime.GlobalLexicalScopeNamesCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   GlobalLexicalScopeNames(GlobalLexicalScopeNamesCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L155"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns all let, const and class variables from global scope.</p>
@@ -791,7 +804,7 @@ object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_QueryObjects_OpenQA_Selenium_DevTools_V114_Runtime_QueryObjectsCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.QueryObjects(OpenQA.Selenium.DevTools.V114.Runtime.QueryObjectsCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   QueryObjects(QueryObjectsCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L162"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>queryObjects</p>
@@ -834,7 +847,7 @@ object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ReleaseObject_OpenQA_Selenium_DevTools_V114_Runtime_ReleaseObjectCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ReleaseObject(OpenQA.Selenium.DevTools.V114.Runtime.ReleaseObjectCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ReleaseObject(ReleaseObjectCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L169"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Releases remote object with given id.</p>
@@ -877,7 +890,7 @@ object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ReleaseObjectGroup_OpenQA_Selenium_DevTools_V114_Runtime_ReleaseObjectGroupCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ReleaseObjectGroup(OpenQA.Selenium.DevTools.V114.Runtime.ReleaseObjectGroupCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   ReleaseObjectGroup(ReleaseObjectGroupCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L176"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Releases all remote objects that belong to a given group.</p>
@@ -920,7 +933,7 @@ object.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_RemoveBinding_OpenQA_Selenium_DevTools_V114_Runtime_RemoveBindingCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.RemoveBinding(OpenQA.Selenium.DevTools.V114.Runtime.RemoveBindingCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   RemoveBinding(RemoveBindingCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L239"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>This method does not remove binding function from global object but
@@ -964,7 +977,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_RunIfWaitingForDebugger_OpenQA_Selenium_DevTools_V114_Runtime_RunIfWaitingForDebuggerCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.RunIfWaitingForDebugger(OpenQA.Selenium.DevTools.V114.Runtime.RunIfWaitingForDebuggerCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   RunIfWaitingForDebugger(RunIfWaitingForDebuggerCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L183"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells inspected instance to run if it was waiting for debugger to attach.</p>
@@ -1007,7 +1020,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_RunScript_OpenQA_Selenium_DevTools_V114_Runtime_RunScriptCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.RunScript(OpenQA.Selenium.DevTools.V114.Runtime.RunScriptCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   RunScript(RunScriptCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L190"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Runs script with given id in a given context.</p>
@@ -1050,7 +1063,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_SetAsyncCallStackDepth_OpenQA_Selenium_DevTools_V114_Runtime_SetAsyncCallStackDepthCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.SetAsyncCallStackDepth(OpenQA.Selenium.DevTools.V114.Runtime.SetAsyncCallStackDepthCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetAsyncCallStackDepth(SetAsyncCallStackDepthCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L197"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Enables or disables async call stacks tracking.</p>
@@ -1093,7 +1106,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_SetCustomObjectFormatterEnabled_OpenQA_Selenium_DevTools_V114_Runtime_SetCustomObjectFormatterEnabledCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.SetCustomObjectFormatterEnabled(OpenQA.Selenium.DevTools.V114.Runtime.SetCustomObjectFormatterEnabledCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetCustomObjectFormatterEnabled(SetCustomObjectFormatterEnabledCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L204"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>setCustomObjectFormatterEnabled</p>
@@ -1136,7 +1149,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_SetMaxCallStackSizeToCapture_OpenQA_Selenium_DevTools_V114_Runtime_SetMaxCallStackSizeToCaptureCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.SetMaxCallStackSizeToCapture(OpenQA.Selenium.DevTools.V114.Runtime.SetMaxCallStackSizeToCaptureCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   SetMaxCallStackSizeToCapture(SetMaxCallStackSizeToCaptureCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L211"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>setMaxCallStackSizeToCapture</p>
@@ -1179,7 +1192,7 @@ unsubscribes current runtime agent from Runtime.bindingCalled notifications.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_TerminateExecution_OpenQA_Selenium_DevTools_V114_Runtime_TerminateExecutionCommandSettings_System_Threading_CancellationToken_System_Nullable_System_Int32__System_Boolean_" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.TerminateExecution(OpenQA.Selenium.DevTools.V114.Runtime.TerminateExecutionCommandSettings,System.Threading.CancellationToken,System.Nullable{System.Int32},System.Boolean)">
   TerminateExecution(TerminateExecutionCommandSettings, CancellationToken, int?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L219"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Terminate current or next JavaScript execution.
@@ -1226,7 +1239,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_BindingCalled" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.BindingCalled">
   BindingCalled
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Notification is issued every time when binding is called.</p>
@@ -1257,7 +1270,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ConsoleAPICalled" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ConsoleAPICalled">
   ConsoleAPICalled
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when console API was called.</p>
@@ -1288,7 +1301,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ExceptionRevoked" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ExceptionRevoked">
   ExceptionRevoked
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when unhandled exception was revoked.</p>
@@ -1319,7 +1332,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ExceptionThrown" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ExceptionThrown">
   ExceptionThrown
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when exception was thrown and unhandled.</p>
@@ -1350,7 +1363,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ExecutionContextCreated" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ExecutionContextCreated">
   ExecutionContextCreated
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when new execution context is created.</p>
@@ -1381,7 +1394,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ExecutionContextDestroyed" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ExecutionContextDestroyed">
   ExecutionContextDestroyed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when execution context is destroyed.</p>
@@ -1412,7 +1425,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_ExecutionContextsCleared" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.ExecutionContextsCleared">
   ExecutionContextsCleared
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when all executionContexts were cleared in browser</p>
@@ -1443,7 +1456,7 @@ Will cancel the termination when the outer-most script execution ends.</p>
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Runtime_RuntimeAdapter_InspectRequested" data-uid="OpenQA.Selenium.DevTools.V114.Runtime.RuntimeAdapter.InspectRequested">
   InspectRequested
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Runtime/RuntimeAdapter.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Issued when object should be inspected (for example, as a result of inspect() command line API

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DevTools_V114_Fetch_TakeResponseBodyAsStreamCommandResponse.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.V114.Fetch.TakeResponseBodyAsStreamCommandResponse%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -79,7 +90,7 @@
 
   <h1 id="OpenQA_Selenium_DevTools_V114_Fetch_TakeResponseBodyAsStreamCommandResponse" data-uid="OpenQA.Selenium.DevTools.V114.Fetch.TakeResponseBodyAsStreamCommandResponse" class="text-break">
     Class TakeResponseBodyAsStreamCommandResponse
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L53"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -87,7 +98,17 @@
   <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Response for Returns a handle to the stream representing the response body.
+The request must be paused in the HeadersReceived stage.
+Note that after this command the request can't be continued
+as is -- client either needs to cancel it or to provide the
+response body.
+The stream only supports sequential read, IO.read will fail if the position
+is specified.
+This method is mutually exclusive with getResponseBody.
+Calling other methods that affect the request or disabling fetch
+domain before body is received results in an undefined behavior.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -157,7 +178,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_V114_Fetch_TakeResponseBodyAsStreamCommandResponse_Stream" data-uid="OpenQA.Selenium.DevTools.V114.Fetch.TakeResponseBodyAsStreamCommandResponse.Stream">
   Stream
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets or sets the stream</p>
@@ -190,7 +211,7 @@ public string Stream { get; set; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L38" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/bazel-bin/dotnet/src/webdriver/cdp/v114/Fetch/TakeResponseBodyAsStreamCommand.cs/#L53" class="edit-link">Edit this page</a>
         </div>
 
         

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -102,7 +113,8 @@ The request is paused until client responds with continueWithAuth.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueRequestCommandResponse.html">ContinueRequestCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Continues the request, optionally modifying some of its parameters.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueRequestCommandSettings.html">ContinueRequestCommandSettings</a></dt>
@@ -111,7 +123,10 @@ The request is paused until client responds with continueWithAuth.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueResponseCommandResponse.html">ContinueResponseCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Continues loading of the paused response, optionally modifying the
+response headers. If either responseCode or headers are modified, all of them
+must be present.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueResponseCommandSettings.html">ContinueResponseCommandSettings</a></dt>
@@ -122,7 +137,8 @@ must be present.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueWithAuthCommandResponse.html">ContinueWithAuthCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Continues a request supplying authChallengeResponse following authRequired event.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.ContinueWithAuthCommandSettings.html">ContinueWithAuthCommandSettings</a></dt>
@@ -131,7 +147,8 @@ must be present.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Disables the fetch domain.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.DisableCommandSettings.html">DisableCommandSettings</a></dt>
@@ -140,7 +157,9 @@ must be present.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Enables issuing of requestPaused events. A request will be paused until client
+calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.EnableCommandSettings.html">EnableCommandSettings</a></dt>
@@ -150,7 +169,8 @@ calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.</p
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.FailRequestCommandResponse.html">FailRequestCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Causes the request to fail with specified reason.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.FailRequestCommandSettings.html">FailRequestCommandSettings</a></dt>
@@ -164,7 +184,8 @@ calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.</p
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.FulfillRequestCommandResponse.html">FulfillRequestCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Provides response to the request.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.FulfillRequestCommandSettings.html">FulfillRequestCommandSettings</a></dt>
@@ -173,7 +194,13 @@ calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.</p
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.GetResponseBodyCommandResponse.html">GetResponseBodyCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Causes the body of the response to be received from the server and
+returned as a single string. May only be issued for a request that
+is paused in the Response stage and is mutually exclusive with
+takeResponseBodyForInterceptionAsStream. Calling other methods that
+affect the request or disabling fetch domain before body is received
+results in an undefined behavior.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.GetResponseBodyCommandSettings.html">GetResponseBodyCommandSettings</a></dt>
@@ -207,7 +234,17 @@ of these fields is present and in the request stage otherwise.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.TakeResponseBodyAsStreamCommandResponse.html">TakeResponseBodyAsStreamCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns a handle to the stream representing the response body.
+The request must be paused in the HeadersReceived stage.
+Note that after this command the request can't be continued
+as is -- client either needs to cancel it or to provide the
+response body.
+The stream only supports sequential read, IO.read will fail if the position
+is specified.
+This method is mutually exclusive with getResponseBody.
+Calling other methods that affect the request or disabling fetch
+domain before body is received results in an undefined behavior.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Fetch.TakeResponseBodyAsStreamCommandSettings.html">TakeResponseBodyAsStreamCommandSettings</a></dt>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_DevTools_Network.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.DevTools.Network%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -110,9 +121,9 @@
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.DevTools.V113.V113Network.html">V113Network</a></div>
       <div><a class="xref" href="OpenQA.Selenium.DevTools.V114.V114Network.html">V114Network</a></div>
       <div><a class="xref" href="OpenQA.Selenium.DevTools.V115.V115Network.html">V115Network</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DevTools.V116.V116Network.html">V116Network</a></div>
       <div><a class="xref" href="OpenQA.Selenium.DevTools.V85.V85Network.html">V85Network</a></div>
     </dd>
   </dl>
@@ -669,7 +680,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_Network_OnRequestPaused_OpenQA_Selenium_DevTools_RequestPausedEventArgs_" data-uid="OpenQA.Selenium.DevTools.Network.OnRequestPaused(OpenQA.Selenium.DevTools.RequestPausedEventArgs)">
   OnRequestPaused(RequestPausedEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Network.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Network.cs/#L170"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the RequestPaused event.</p>
@@ -702,7 +713,7 @@
 
   <h3 id="OpenQA_Selenium_DevTools_Network_OnResponsePaused_OpenQA_Selenium_DevTools_ResponsePausedEventArgs_" data-uid="OpenQA.Selenium.DevTools.Network.OnResponsePaused(OpenQA.Selenium.DevTools.ResponsePausedEventArgs)">
   OnResponsePaused(ResponsePausedEventArgs)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Network.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/Network.cs/#L187"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raises the ResponseReceived event.</p>
@@ -824,7 +835,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event EventHandler&lt;AuthRequiredEventArgs&gt; AuthRequired</code></pre>
+    <pre><code class="lang-csharp hljs">public event Network.AsyncEventHandler&lt;AuthRequiredEventArgs&gt; AuthRequired</code></pre>
   </div>
 
 
@@ -834,7 +845,7 @@
 
   <h4 class="section">Event Type</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.AuthRequiredEventArgs.html">AuthRequiredEventArgs</a>&gt;</dt>
+    <dt><a class="xref" href="OpenQA.Selenium.DevTools.Network.html">Network</a>.<a class="xref" href="OpenQA.Selenium.DevTools.Network.AsyncEventHandler-1.html">AsyncEventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.AuthRequiredEventArgs.html">AuthRequiredEventArgs</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -855,7 +866,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event EventHandler&lt;RequestPausedEventArgs&gt; RequestPaused</code></pre>
+    <pre><code class="lang-csharp hljs">public event Network.AsyncEventHandler&lt;RequestPausedEventArgs&gt; RequestPaused</code></pre>
   </div>
 
 
@@ -865,7 +876,7 @@
 
   <h4 class="section">Event Type</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.RequestPausedEventArgs.html">RequestPausedEventArgs</a>&gt;</dt>
+    <dt><a class="xref" href="OpenQA.Selenium.DevTools.Network.html">Network</a>.<a class="xref" href="OpenQA.Selenium.DevTools.Network.AsyncEventHandler-1.html">AsyncEventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.RequestPausedEventArgs.html">RequestPausedEventArgs</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -886,7 +897,7 @@
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event EventHandler&lt;ResponsePausedEventArgs&gt; ResponsePaused</code></pre>
+    <pre><code class="lang-csharp hljs">public event Network.AsyncEventHandler&lt;ResponsePausedEventArgs&gt; ResponsePaused</code></pre>
   </div>
 
 
@@ -896,7 +907,7 @@
 
   <h4 class="section">Event Type</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.ResponsePausedEventArgs.html">ResponsePausedEventArgs</a>&gt;</dt>
+    <dt><a class="xref" href="OpenQA.Selenium.DevTools.Network.html">Network</a>.<a class="xref" href="OpenQA.Selenium.DevTools.Network.AsyncEventHandler-1.html">AsyncEventHandler</a>&lt;<a class="xref" href="OpenQA.Selenium.DevTools.ResponsePausedEventArgs.html">ResponsePausedEventArgs</a>&gt;</dt>
     <dd></dd>
   </dl>
 

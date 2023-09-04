@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -101,7 +112,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.DisableCommandResponse.html">DisableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Disable</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.DisableCommandSettings.html">DisableCommandSettings</a></dt>
@@ -110,7 +122,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.EnableCommandResponse.html">EnableCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Enable</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.EnableCommandSettings.html">EnableCommandSettings</a></dt>
@@ -124,7 +137,9 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.GetBestEffortCoverageCommandResponse.html">GetBestEffortCoverageCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Collect coverage data for the current isolate. The coverage data may be incomplete due to
+garbage collection.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.GetBestEffortCoverageCommandSettings.html">GetBestEffortCoverageCommandSettings</a></dt>
@@ -167,7 +182,8 @@ trigger collection of coverage data immediately at a certain point in time.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.SetSamplingIntervalCommandResponse.html">SetSamplingIntervalCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.SetSamplingIntervalCommandSettings.html">SetSamplingIntervalCommandSettings</a></dt>
@@ -176,7 +192,8 @@ trigger collection of coverage data immediately at a certain point in time.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StartCommandResponse.html">StartCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Start</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StartCommandSettings.html">StartCommandSettings</a></dt>
@@ -185,7 +202,10 @@ trigger collection of coverage data immediately at a certain point in time.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StartPreciseCoverageCommandResponse.html">StartPreciseCoverageCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
+coverage may be incomplete. Enabling prevents running optimized code and resets execution
+counters.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StartPreciseCoverageCommandSettings.html">StartPreciseCoverageCommandSettings</a></dt>
@@ -196,7 +216,8 @@ counters.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StopCommandResponse.html">StopCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Stop</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StopCommandSettings.html">StopCommandSettings</a></dt>
@@ -205,7 +226,9 @@ counters.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StopPreciseCoverageCommandResponse.html">StopPreciseCoverageCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Disable precise code coverage. Disabling releases unnecessary execution count records and allows
+executing optimized code.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.StopPreciseCoverageCommandSettings.html">StopPreciseCoverageCommandSettings</a></dt>
@@ -215,7 +238,9 @@ executing optimized code.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.TakePreciseCoverageCommandResponse.html">TakePreciseCoverageCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Collect coverage data for the current isolate, and resets execution counters. Precise code
+coverage needs to have started.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V114.Profiler.TakePreciseCoverageCommandSettings.html">TakePreciseCoverageCommandSettings</a></dt>

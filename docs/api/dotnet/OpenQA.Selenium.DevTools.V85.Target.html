@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,6 +18,17 @@
       
       
       
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
   </head>
 
   <script type="module">
@@ -86,7 +97,8 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.ActivateTargetCommandResponse.html">ActivateTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Activates (focuses) the target.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.ActivateTargetCommandSettings.html">ActivateTargetCommandSettings</a></dt>
@@ -95,7 +107,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.AttachToBrowserTargetCommandResponse.html">AttachToBrowserTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Attaches to the browser target, only uses flat sessionId mode.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.AttachToBrowserTargetCommandSettings.html">AttachToBrowserTargetCommandSettings</a></dt>
@@ -104,7 +117,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.AttachToTargetCommandResponse.html">AttachToTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Attaches to the target with given id.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.AttachToTargetCommandSettings.html">AttachToTargetCommandSettings</a></dt>
@@ -118,7 +132,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CloseTargetCommandResponse.html">CloseTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Closes the target. If the target is a page that gets closed too.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CloseTargetCommandSettings.html">CloseTargetCommandSettings</a></dt>
@@ -127,7 +142,9 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CreateBrowserContextCommandResponse.html">CreateBrowserContextCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
+one.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CreateBrowserContextCommandSettings.html">CreateBrowserContextCommandSettings</a></dt>
@@ -137,7 +154,8 @@ one.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CreateTargetCommandResponse.html">CreateTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Creates a new page.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.CreateTargetCommandSettings.html">CreateTargetCommandSettings</a></dt>
@@ -146,7 +164,8 @@ one.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.DetachFromTargetCommandResponse.html">DetachFromTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Detaches session with given id.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.DetachFromTargetCommandSettings.html">DetachFromTargetCommandSettings</a></dt>
@@ -161,7 +180,9 @@ issued multiple times per target if multiple sessions have been attached to it.<
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.DisposeBrowserContextCommandResponse.html">DisposeBrowserContextCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Deletes a BrowserContext. All the belonging pages will be closed without calling their
+beforeunload hooks.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.DisposeBrowserContextCommandSettings.html">DisposeBrowserContextCommandSettings</a></dt>
@@ -171,7 +192,15 @@ beforeunload hooks.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.ExposeDevToolsProtocolCommandResponse.html">ExposeDevToolsProtocolCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Inject object to the target's main frame that provides a communication
+channel with browser target.</p>
+<p>Injected object will be available as <code>window[bindingName]</code>.</p>
+<p>The object has the follwing API:</p>
+<ul>
+<li><code>binding.send(json)</code> - a method to send messages over the remote debugging protocol</li>
+<li><code>binding.onmessage = json =&gt; handleMessage(json)</code> - a callback that will be called for the protocol notifications and command responses.</li>
+</ul>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.ExposeDevToolsProtocolCommandSettings.html">ExposeDevToolsProtocolCommandSettings</a></dt>
@@ -187,7 +216,8 @@ channel with browser target.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetBrowserContextsCommandResponse.html">GetBrowserContextsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns all browser contexts created with <code>Target.createBrowserContext</code> method.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetBrowserContextsCommandSettings.html">GetBrowserContextsCommandSettings</a></dt>
@@ -196,7 +226,8 @@ channel with browser target.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetTargetInfoCommandResponse.html">GetTargetInfoCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Returns information about a target.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetTargetInfoCommandSettings.html">GetTargetInfoCommandSettings</a></dt>
@@ -205,7 +236,8 @@ channel with browser target.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetTargetsCommandResponse.html">GetTargetsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Retrieves a list of available targets.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.GetTargetsCommandSettings.html">GetTargetsCommandSettings</a></dt>
@@ -225,7 +257,10 @@ channel with browser target.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SendMessageToTargetCommandResponse.html">SendMessageToTargetCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Sends protocol message over session with given id.
+Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
+and crbug.com/991325.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SendMessageToTargetCommandSettings.html">SendMessageToTargetCommandSettings</a></dt>
@@ -236,7 +271,10 @@ and crbug.com/991325.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetAutoAttachCommandResponse.html">SetAutoAttachCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Controls whether to automatically attach to new targets which are considered to be related to
+this one. When turned on, attaches to all existing related targets as well. When turned off,
+automatically detaches from all currently attached targets.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetAutoAttachCommandSettings.html">SetAutoAttachCommandSettings</a></dt>
@@ -247,7 +285,9 @@ automatically detaches from all currently attached targets.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetDiscoverTargetsCommandResponse.html">SetDiscoverTargetsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Controls whether to discover available targets and notify via
+<code>targetCreated/targetInfoChanged/targetDestroyed</code> events.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetDiscoverTargetsCommandSettings.html">SetDiscoverTargetsCommandSettings</a></dt>
@@ -257,7 +297,9 @@ automatically detaches from all currently attached targets.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetRemoteLocationsCommandResponse.html">SetRemoteLocationsCommandResponse</a></dt>
-      <dd></dd>
+      <dd><p>Response for Enables target discovery for the specified locations, when <code>setDiscoverTargets</code> was set to
+<code>true</code>.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="OpenQA.Selenium.DevTools.V85.Target.SetRemoteLocationsCommandSettings.html">SetRemoteLocationsCommandSettings</a></dt>
