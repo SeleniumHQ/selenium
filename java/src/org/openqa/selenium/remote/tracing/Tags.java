@@ -75,65 +75,57 @@ public class Tags {
         }
       };
 
-  public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest> HTTP_REQUEST_EVENT =
+  public static final BiConsumer<AttributeMap, HttpRequest> HTTP_REQUEST_EVENT =
       (map, req) -> {
-        map.put(
-            AttributeKey.HTTP_METHOD.getKey(), EventAttribute.setValue(req.getMethod().toString()));
-        map.put(AttributeKey.HTTP_TARGET.getKey(), EventAttribute.setValue(req.getUri()));
+        map.put(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
+        map.put(AttributeKey.HTTP_TARGET.getKey(), req.getUri());
 
         String userAgent = req.getHeader(HttpHeaders.USER_AGENT);
         if (userAgent != null) {
-          map.put(AttributeKey.HTTP_USER_AGENT.getKey(), EventAttribute.setValue(userAgent));
+          map.put(AttributeKey.HTTP_USER_AGENT.getKey(), userAgent);
         }
 
         String host = req.getHeader(HttpHeaders.HOST);
         if (host != null) {
-          map.put(AttributeKey.HTTP_HOST.getKey(), EventAttribute.setValue(host));
+          map.put(AttributeKey.HTTP_HOST.getKey(), host);
         }
 
         String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
         if (contentLength != null) {
-          map.put(
-              AttributeKey.HTTP_REQUEST_CONTENT_LENGTH.getKey(),
-              EventAttribute.setValue(contentLength));
+          map.put(AttributeKey.HTTP_REQUEST_CONTENT_LENGTH.getKey(), contentLength);
         }
 
         String clientIpAddress = req.getHeader(HttpHeaders.X_FORWARDED_FOR);
         if (clientIpAddress != null) {
-          map.put(AttributeKey.HTTP_CLIENT_IP.getKey(), EventAttribute.setValue(clientIpAddress));
+          map.put(AttributeKey.HTTP_CLIENT_IP.getKey(), clientIpAddress);
         }
 
         Object httpScheme = req.getAttribute(AttributeKey.HTTP_SCHEME.getKey());
         if (httpScheme != null) {
-          map.put(AttributeKey.HTTP_SCHEME.getKey(), EventAttribute.setValue((String) httpScheme));
+          map.put(AttributeKey.HTTP_SCHEME.getKey(), (String) httpScheme);
         }
 
         Object httpVersion = req.getAttribute(AttributeKey.HTTP_FLAVOR.getKey());
         if (httpVersion != null) {
-          map.put(
-              AttributeKey.HTTP_FLAVOR.getKey(), EventAttribute.setValue((Integer) httpVersion));
+          map.put(AttributeKey.HTTP_FLAVOR.getKey(), (Integer) httpVersion);
         }
       };
 
-  public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
-      HTTP_RESPONSE_EVENT =
-          (map, res) -> {
-            int statusCode = res.getStatus();
-            if (res.getTargetHost() != null) {
-              map.put(
-                  AttributeKey.HTTP_TARGET_HOST.getKey(),
-                  EventAttribute.setValue(res.getTargetHost()));
-            }
-            map.put(AttributeKey.HTTP_STATUS_CODE.getKey(), EventAttribute.setValue(statusCode));
-          };
+  public static final BiConsumer<AttributeMap, HttpResponse> HTTP_RESPONSE_EVENT =
+      (map, res) -> {
+        int statusCode = res.getStatus();
+        if (res.getTargetHost() != null) {
+          map.put(AttributeKey.HTTP_TARGET_HOST.getKey(), res.getTargetHost());
+        }
+        map.put(AttributeKey.HTTP_STATUS_CODE.getKey(), statusCode);
+      };
 
-  public static final BiConsumer<Map<String, EventAttributeValue>, Throwable> EXCEPTION =
+  public static final BiConsumer<AttributeMap, Throwable> EXCEPTION =
       (map, t) -> {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
 
-        map.put(
-            AttributeKey.EXCEPTION_TYPE.getKey(), EventAttribute.setValue(t.getClass().getName()));
-        map.put(AttributeKey.EXCEPTION_STACKTRACE.getKey(), EventAttribute.setValue(sw.toString()));
+        map.put(AttributeKey.EXCEPTION_TYPE.getKey(), t.getClass().getName());
+        map.put(AttributeKey.EXCEPTION_STACKTRACE.getKey(), sw.toString());
       };
 }

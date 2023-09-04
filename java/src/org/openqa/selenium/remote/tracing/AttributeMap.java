@@ -17,43 +17,21 @@
 
 package org.openqa.selenium.remote.tracing;
 
-public interface Span extends AutoCloseable, TraceContext {
+public interface AttributeMap {
 
-  Span setName(String name);
+  void put(String key, String value);
 
-  Span setAttribute(String key, boolean value);
+  void put(String key, long value);
 
-  Span setAttribute(String key, Number value);
+  void put(String key, double value);
 
-  Span setAttribute(String key, String value);
+  void put(String key, boolean value);
 
-  Span addEvent(String name);
+  void put(String key, String... value);
 
-  Span addEvent(String name, AttributeMap attributeMap);
+  void put(String key, long... value);
 
-  Span setStatus(Status status);
+  void put(String key, double... value);
 
-  @Override
-  void close();
-
-  enum Kind {
-    CLIENT("client"),
-    SERVER("server"),
-
-    PRODUCER("producer"),
-    CONSUMER("consumer"),
-    ;
-
-    // The nice name is the name expected in an OT trace.
-    private final String niceName;
-
-    Kind(String niceName) {
-      this.niceName = niceName;
-    }
-
-    @Override
-    public String toString() {
-      return niceName;
-    }
-  }
+  void put(String key, boolean... value);
 }
