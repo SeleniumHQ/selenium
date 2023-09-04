@@ -46,9 +46,9 @@ namespace {{rootNamespace}}.{{domain.Name}}
         /// <summary>
         /// {{xml-code-comment Description 2}}
         /// </summary>
-        public async Task<{{dehumanize Name}}CommandResponse> {{dehumanize Name}}({{dehumanize Name}}CommandSettings command{{#if NoParameters}} = null{{/if}}, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        public Task<{{dehumanize Name}}CommandResponse> {{dehumanize Name}}({{dehumanize Name}}CommandSettings command{{#if NoParameters}} = null{{/if}}, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
-            return await m_session.SendCommand<{{dehumanize Name}}CommandSettings, {{dehumanize Name}}CommandResponse>(command{{#if NoParameters}} ?? new {{dehumanize Name}}CommandSettings(){{/if}}, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            return m_session.SendCommand<{{dehumanize Name}}CommandSettings, {{dehumanize Name}}CommandResponse>(command{{#if NoParameters}} ?? new {{dehumanize Name}}CommandSettings(){{/if}}, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
         }
     {{/each}}
 
