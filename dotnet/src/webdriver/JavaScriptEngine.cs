@@ -415,12 +415,15 @@ namespace OpenQA.Selenium
         {
             if (this.JavaScriptConsoleApiCalled != null)
             {
-                this.JavaScriptConsoleApiCalled(this, new JavaScriptConsoleApiCalledEventArgs()
+                for (int i = 0; i < e.Arguments.Count; i++)
                 {
-                    MessageContent = e.Arguments[0].Value,
-                    MessageTimeStamp = e.Timestamp,
-                    MessageType = e.Type
-                });
+                    this.JavaScriptConsoleApiCalled(this, new JavaScriptConsoleApiCalledEventArgs()
+                    {
+                        MessageContent = e.Arguments[i].Value,
+                        MessageTimeStamp = e.Timestamp,
+                        MessageType = e.Type
+                    });
+                }
             }
         }
     }
