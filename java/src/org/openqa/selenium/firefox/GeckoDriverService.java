@@ -245,6 +245,7 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected void loadSystemProperties() {
+      parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
       if (logLevel == null) {
         String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
         if (logFilePath != null) {
@@ -304,9 +305,7 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected GeckoDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
-        service.sendOutputTo(getLogOutput(GECKO_DRIVER_LOG_PROPERTY));
-        return service;
+        return new GeckoDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

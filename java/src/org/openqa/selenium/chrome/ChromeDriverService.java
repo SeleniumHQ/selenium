@@ -22,6 +22,7 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
+import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -287,12 +288,7 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected void loadSystemProperties() {
-      if (getLogFile() == null) {
-        String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
-        if (logFilePath != null) {
-          withLogFile(new File(logFilePath));
-        }
-      }
+      parseLogOutput(CHROME_DRIVER_LOG_PROPERTY);
       if (disableBuildCheck == null) {
         this.disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
       }
@@ -322,17 +318,18 @@ public class ChromeDriverService extends DriverService {
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
 
-      // Readable timestamp and append logs only work if a file is specified
-      // Can only get readable logs via arguments; otherwise send service output as directed
+      // Readable timestamp and append logs only work if log path is specified in args
+      // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
+        if (Boolean.TRUE.equals(readableTimestamp)) {
           args.add("--readable-timestamp");
         }
-        if (appendLog != null && appendLog.equals(Boolean.TRUE)) {
+        if (Boolean.TRUE.equals(appendLog)) {
           args.add("--append-log");
         }
-        withLogFile(null); // Do not overwrite in sendOutputTo()
+        withLogOutput(
+            ByteStreams.nullOutputStream()); // Do not overwrite log file in getLogOutput()
       }
 
       if (logLevel != null) {
@@ -341,7 +338,7 @@ public class ChromeDriverService extends DriverService {
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
-      if (disableBuildCheck != null && disableBuildCheck.equals(Boolean.TRUE)) {
+      if (Boolean.TRUE.equals(disableBuildCheck)) {
         args.add("--disable-build-check");
       }
 
@@ -352,10 +349,7 @@ public class ChromeDriverService extends DriverService {
     protected ChromeDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        ChromeDriverService service =
-            new ChromeDriverService(exe, port, timeout, args, environment);
-        service.sendOutputTo(getLogOutput(CHROME_DRIVER_LOG_PROPERTY));
-        return service;
+        return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
