@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 import com.google.auto.service.AutoService;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -186,20 +184,6 @@ public class GeckoDriverService extends FirefoxDriverService {
       }
 
       return score;
-    }
-
-    /**
-     * Sets which browser executable the builder will use.
-     *
-     * @param firefoxBinary The browser executable to use.
-     * @return A self reference.
-     * @deprecated use {@link FirefoxOptions#setBinary(Path)}
-     */
-    @Deprecated
-    public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
-      Require.nonNull("Firefox binary", firefoxBinary);
-      this.firefoxBinary = firefoxBinary;
-      return this;
     }
 
     /**
