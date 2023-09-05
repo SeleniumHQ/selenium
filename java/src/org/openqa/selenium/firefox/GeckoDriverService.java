@@ -139,16 +139,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     return new Builder().build();
   }
 
-  /**
-   * @param caps Capabilities instance - this is not used
-   * @return default GeckoDriverService
-   * @deprecated use {@link GeckoDriverService#createDefaultService()}
-   */
-  @Deprecated
-  static GeckoDriverService createDefaultService(Capabilities caps) {
-    return createDefaultService();
-  }
-
   @Override
   protected void waitUntilAvailable() {
     PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
