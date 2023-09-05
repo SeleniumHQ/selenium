@@ -1,3 +1,7 @@
+v4.12.4
+======
+* No code changes; issue with 4.12.3 release
+
 v4.12.3
 ======
 * Fix saving png screenshot as file (#12654)
