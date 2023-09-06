@@ -31,8 +31,6 @@ jobs:
   linux64:
     name: "[Linux x64] Build selenium-manager"
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=-crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
