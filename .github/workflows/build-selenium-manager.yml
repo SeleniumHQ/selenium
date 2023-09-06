@@ -10,7 +10,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
@@ -64,7 +64,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
