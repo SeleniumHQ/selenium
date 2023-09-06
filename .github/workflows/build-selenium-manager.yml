@@ -43,6 +43,7 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
+          cross -V
       - name: "Build release"
         run: |
           cd rust
