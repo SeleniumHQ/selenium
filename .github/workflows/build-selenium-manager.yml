@@ -46,8 +46,7 @@ jobs:
       - name: "Build release"
         run: |
           cd rust
-          rustup target add x86_64-unknown-linux-musl
-          cross build --release --target x86_64-unknown-linux-musl
+          cross build --target x86_64-unknown-linux-musl --release
       - name: "Tar binary (to keep executable permission)"
         run: |
           cd rust/target/x86_64-unknown-linux-musl/release
