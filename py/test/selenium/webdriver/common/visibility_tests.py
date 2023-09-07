@@ -127,6 +127,17 @@ def test_should_say_element_with_zero_transform_is_visible(driver, pages):
     assert zero_tranform.is_displayed() is True
 
 
+def test_checking_for_visibility_does_not_overwrite_underscore(driver, pages):
+    pages.load("cssTransform.html")
+    driver.execute_script("_ = 'abc123';")
+    zero_tranform = driver.find_element(By.ID, "zero-tranform")
+    underscore_1 = driver.execute_script("return _;")
+    zero_tranform.is_displayed()
+    underscore_2 = driver.execute_script("return _;")
+    assert underscore_1 == underscore_2
+    assert underscore_2 == 'abc123'
+
+
 def test_should_say_element_is_visible_when_it_has_negative_transform_but_elementisnt_in_anegative_space(driver, pages):
     pages.load("cssTransform2.html")
     zero_tranform = driver.find_element(By.ID, "negative-percentage-transformY")
