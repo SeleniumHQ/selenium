@@ -54,8 +54,10 @@ def closure_fragment(
     # own scope on each invocation.
     wrapper = (
         "function(){" +
-        "return (function(){%output%; return this._.apply(null,arguments);}).apply(" +
-        "window, arguments);}"
+        "return (function(){%output%; return this._.apply(null,arguments);}).apply({" +
+        "navigator:typeof window!='undefined'?window.navigator:null," +
+        "document:typeof window!='undefined'?window.document:null" +
+        "}, arguments);}"
     )
 
     browser_defs = {
