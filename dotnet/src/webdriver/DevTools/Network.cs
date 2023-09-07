@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task SetUserAgentOverride(string userAgent)
         {
-            await SetUserAgentOverride(new UserAgent() { UserAgentString = userAgent });
+            await SetUserAgentOverride(new UserAgent() { UserAgentString = userAgent }).ConfigureAwait(false);
         }
 
         /// <summary>
