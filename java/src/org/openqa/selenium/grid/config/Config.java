@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +45,23 @@ public interface Config {
 
   default Optional<Boolean> getBool(String section, String option) {
     return get(section, option).map(Boolean::parseBoolean);
+  }
+
+  default Optional<List<List<String>>> getArray(String section, String option) {
+    Optional<List<String>> flatConfigs = getAll(section, option);
+    if (!flatConfigs.isPresent()) return Optional.empty();
+
+    List<String> configItem = new ArrayList<>();
+    List<List<String>> configList = new ArrayList<>();
+    for (String next : flatConfigs.get()) {
+      if (Config.DELIMITER.equals(next)) {
+        configList.add(configItem);
+        configItem = new ArrayList<>();
+      } else {
+        configItem.add(next);
+      }
+    }
+    return Optional.of(configList);
   }
 
   default <X> X getClass(String section, String option, Class<X> typeOfClass, String defaultClazz) {
