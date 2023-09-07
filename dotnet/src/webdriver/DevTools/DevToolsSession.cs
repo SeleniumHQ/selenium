@@ -218,7 +218,7 @@ namespace OpenQA.Selenium.DevTools
                 this.pendingCommands.TryAdd(message.CommandId, message);
                 await this.connection.SendData(contents).ConfigureAwait(false);
 
-                var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
+                var responseWasReceived = message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken);
 
                 if (!responseWasReceived && throwExceptionIfResponseNotReceived)
                 {
