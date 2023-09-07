@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
-            this.CommandTimeout = TimeSpan.FromSeconds(5);
+            this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws:"))
             {
@@ -223,7 +223,7 @@ namespace OpenQA.Selenium.DevTools
 
                 if (!responseWasReceived && throwExceptionIfResponseNotReceived)
                 {
-                    throw new InvalidOperationException($"A command response was not received: {commandName}");
+                    throw new InvalidOperationException($"A command response was not received: {commandName}, timeout: {millisecondsTimeout.Value}ms");
                 }
 
                 if (this.pendingCommands.TryRemove(message.CommandId, out DevToolsCommandData modified))
