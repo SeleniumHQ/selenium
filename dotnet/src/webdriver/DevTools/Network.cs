@@ -158,7 +158,7 @@ namespace OpenQA.Selenium.DevTools
             {
                 foreach (var d in delegates.Cast<AsyncEventHandler<AuthRequiredEventArgs>>())
                 {
-                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                    d.Invoke(this, e).GetAwaiter().GetResult();
                 }
             }
         }
@@ -175,7 +175,7 @@ namespace OpenQA.Selenium.DevTools
             {
                 foreach (var d in delegates.Cast<AsyncEventHandler<RequestPausedEventArgs>>())
                 {
-                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                    d.Invoke(this, e).GetAwaiter().GetResult();
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace OpenQA.Selenium.DevTools
             {
                 foreach (var d in delegates.Cast<AsyncEventHandler<ResponsePausedEventArgs>>())
                 {
-                    Task.Run(async () => await d.Invoke(this, e)).GetAwaiter().GetResult();
+                    d.Invoke(this, e).GetAwaiter().GetResult();
                 }
             }
         }

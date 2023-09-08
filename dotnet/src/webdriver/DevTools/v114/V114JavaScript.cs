@@ -28,8 +28,8 @@ namespace OpenQA.Selenium.DevTools.V114
     /// </summary>
     public class V114JavaScript : JavaScript
     {
-        private RuntimeAdapter runtime;
-        private PageAdapter page;
+        private readonly RuntimeAdapter runtime;
+        private readonly PageAdapter page;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="V114JavaScript"/> class.
