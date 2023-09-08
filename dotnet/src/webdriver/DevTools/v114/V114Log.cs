@@ -15,10 +15,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V114.Log;
 
@@ -29,7 +25,7 @@ namespace OpenQA.Selenium.DevTools.V114
     /// </summary>
     public class V114Log : DevTools.Log
     {
-        private LogAdapter adapter;
+        private readonly LogAdapter adapter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="V114Log"/> class.

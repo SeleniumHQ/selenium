@@ -16,8 +16,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.DevTools.V115
 {
@@ -26,7 +24,11 @@ namespace OpenQA.Selenium.DevTools.V115
     /// </summary>
     public class V115Domains : DevToolsDomains
     {
-        private DevToolsSessionDomains domains;
+        private readonly DevToolsSessionDomains domains;
+        private readonly Lazy<DevTools.Network> network;
+        private readonly Lazy<JavaScript> javaScript;
+        private readonly Lazy<DevTools.Target> target;
+        private readonly Lazy<DevTools.Log> log;
 
         /// <summary>
         /// Initializes a new instance of the V115Domains class.
@@ -35,6 +37,10 @@ namespace OpenQA.Selenium.DevTools.V115
         public V115Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
+            this.network = new Lazy<DevTools.Network>(() => new V115Network(domains.Network, domains.Fetch));
+            this.javaScript = new Lazy<JavaScript>(() => new V115JavaScript(domains.Runtime, domains.Page));
+            this.target = new Lazy<DevTools.Target>(() => new V115Target(domains.Target));
+            this.log = new Lazy<DevTools.Log>(() => new V115Log(domains.Log));
         }
 
         /// <summary>
@@ -50,21 +56,21 @@ namespace OpenQA.Selenium.DevTools.V115
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V115Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => network.Value;
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V115JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => javaScript.Value;
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V115Target(domains.Target);
+        public override DevTools.Target Target => target.Value;
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V115Log(domains.Log);
+        public override DevTools.Log Log => log.Value;
     }
 }

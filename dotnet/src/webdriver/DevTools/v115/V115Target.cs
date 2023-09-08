@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V115.Target;
 
@@ -30,7 +29,7 @@ namespace OpenQA.Selenium.DevTools.V115
     /// </summary>
     public class V115Target : DevTools.Target
     {
-        private TargetAdapter adapter;
+        private readonly TargetAdapter adapter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="V115Target"/> class.
@@ -51,7 +50,6 @@ namespace OpenQA.Selenium.DevTools.V115
         /// targets available for this session.
         /// </returns>
         public override async Task<ReadOnlyCollection<TargetInfo>> GetTargets(Object settings = null)
-
         {
             List<TargetInfo> targets = new List<TargetInfo>();
             if (settings == null)

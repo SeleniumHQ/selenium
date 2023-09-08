@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V85.Target;
 
@@ -30,7 +29,7 @@ namespace OpenQA.Selenium.DevTools.V85
     /// </summary>
     public class V85Target : DevTools.Target
     {
-        private TargetAdapter adapter;
+        private readonly TargetAdapter adapter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="V85Target"/> class.

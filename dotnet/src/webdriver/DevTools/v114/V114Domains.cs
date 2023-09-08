@@ -16,8 +16,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.DevTools.V114
 {
@@ -26,7 +24,11 @@ namespace OpenQA.Selenium.DevTools.V114
     /// </summary>
     public class V114Domains : DevToolsDomains
     {
-        private DevToolsSessionDomains domains;
+        private readonly DevToolsSessionDomains domains;
+        private readonly Lazy<DevTools.Network> network;
+        private readonly Lazy<JavaScript> javaScript;
+        private readonly Lazy<DevTools.Target> target;
+        private readonly Lazy<DevTools.Log> log;
 
         /// <summary>
         /// Initializes a new instance of the V114Domains class.
@@ -35,6 +37,10 @@ namespace OpenQA.Selenium.DevTools.V114
         public V114Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
+            this.network = new Lazy<DevTools.Network>(() => new V114Network(domains.Network, domains.Fetch));
+            this.javaScript = new Lazy<JavaScript>(() => new V114JavaScript(domains.Runtime, domains.Page));
+            this.target = new Lazy<DevTools.Target>(() => new V114Target(domains.Target));
+            this.log = new Lazy<DevTools.Log>(() => new V114Log(domains.Log));
         }
 
         /// <summary>
@@ -45,26 +51,26 @@ namespace OpenQA.Selenium.DevTools.V114
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
         /// </summary>
-        public override DevTools.DevToolsSessionDomains VersionSpecificDomains => this.domains;
+        public override DevTools.DevToolsSessionDomains VersionSpecificDomains => domains;
 
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V114Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => network.Value;
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V114JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => javaScript.Value;
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V114Target(domains.Target);
+        public override DevTools.Target Target => target.Value;
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V114Log(domains.Log);
+        public override DevTools.Log Log => log.Value;
     }
 }

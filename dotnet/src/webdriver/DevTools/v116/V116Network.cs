@@ -30,8 +30,8 @@ namespace OpenQA.Selenium.DevTools.V116
     /// </summary>
     public class V116Network : DevTools.Network
     {
-        private FetchAdapter fetch;
-        private NetworkAdapter network;
+        private readonly FetchAdapter fetch;
+        private readonly NetworkAdapter network;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="V116Network"/> class.
@@ -323,16 +323,15 @@ namespace OpenQA.Selenium.DevTools.V116
                 {
                     foreach (var header in e.ResponseHeaders)
                     {
-                        if (header.Name.ToLowerInvariant() == "set-cookie")
+                        if (header.Name.Equals("set-cookie", StringComparison.InvariantCultureIgnoreCase))
                         {
                             wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
                         }
                         else
                         {
-                            if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                            if (wrappedResponse.ResponseData.Headers.TryGetValue(header.Name, out var headerValue))
                             {
-                                string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
-                                wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                                wrappedResponse.ResponseData.Headers[header.Name] = headerValue + ", " + header.Value;
                             }
                             else
                             {
