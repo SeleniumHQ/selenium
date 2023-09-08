@@ -66,14 +66,13 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
-            this.CommandTimeout = TimeSpan.FromSeconds(5);
+            this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws:"))
             {
                 this.websocketAddress = endpointAddress;
             }
             this.messageQueueMonitorTask = Task.Run(() => this.MonitorMessageQueue());
-            this.messageQueueMonitorTask.ConfigureAwait(false);
         }
 
         /// <summary>
@@ -142,7 +141,7 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
             if (result == null)
             {
@@ -176,7 +175,7 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
             if (result == null)
             {
@@ -206,7 +205,7 @@ namespace OpenQA.Selenium.DevTools
             if (this.attachedTargetId == null)
             {
                 LogTrace("Session not currently attached to a target; reattaching");
-                await this.InitializeSession();
+                await this.InitializeSession().ConfigureAwait(false);
             }
 
             var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), this.ActiveSessionId, commandName, commandParameters);
@@ -217,13 +216,13 @@ namespace OpenQA.Selenium.DevTools
 
                 string contents = JsonConvert.SerializeObject(message);
                 this.pendingCommands.TryAdd(message.CommandId, message);
-                await this.connection.SendData(contents);
+                await this.connection.SendData(contents).ConfigureAwait(false);
 
-                var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
+                var responseWasReceived = message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken);
 
                 if (!responseWasReceived && throwExceptionIfResponseNotReceived)
                 {
-                    throw new InvalidOperationException($"A command response was not received: {commandName}");
+                    throw new InvalidOperationException($"A command response was not received: {commandName}, timeout: {millisecondsTimeout.Value}ms");
                 }
 
                 if (this.pendingCommands.TryRemove(message.CommandId, out DevToolsCommandData modified))
@@ -272,15 +271,15 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal async Task StartSession(int requestedProtocolVersion)
         {
-            int protocolVersion = await InitializeProtocol(requestedProtocolVersion);
+            int protocolVersion = await InitializeProtocol(requestedProtocolVersion).ConfigureAwait(false);
             this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
-            await this.InitializeSocketConnection();
-            await this.InitializeSession();
+            await this.InitializeSocketConnection().ConfigureAwait(false);
+            await this.InitializeSession().ConfigureAwait(false);
             try
             {
                 // Wrap this in a try-catch, because it's not the end of the
                 // world if clearing the log doesn't work.
-                await this.domains.Log.Clear();
+                await this.domains.Log.Clear().ConfigureAwait(false);
                 LogTrace("Log cleared.", this.attachedTargetId);
             }
             catch (WebDriverException)
@@ -303,7 +302,7 @@ namespace OpenQA.Selenium.DevTools
                 this.ActiveSessionId = null;
                 if (manualDetach)
                 {
-                    await this.Domains.Target.DetachFromTarget(sessionId, this.attachedTargetId);
+                    await this.Domains.Target.DetachFromTarget(sessionId, this.attachedTargetId).ConfigureAwait(false);
                 }
 
                 this.attachedTargetId = null;
@@ -339,7 +338,7 @@ namespace OpenQA.Selenium.DevTools
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(debuggerUrl);
-                    rawVersionInfo = await client.GetStringAsync("/json/version");
+                    rawVersionInfo = await client.GetStringAsync("/json/version").ConfigureAwait(false);
                 }
 
                 var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
@@ -375,7 +374,7 @@ namespace OpenQA.Selenium.DevTools
                 // that when getting the available targets, we won't
                 // recursively try to call InitializeSession.
                 this.attachedTargetId = "";
-                var targets = await this.domains.Target.GetTargets();
+                var targets = await this.domains.Target.GetTargets().ConfigureAwait(false);
                 foreach (var target in targets)
                 {
                     if (target.Type == "page")
@@ -393,11 +392,11 @@ namespace OpenQA.Selenium.DevTools
                 throw new WebDriverException("Unable to find target to attach to, no taargets of type 'page' available");
             }
 
-            string sessionId = await this.domains.Target.AttachToTarget(this.attachedTargetId);
+            string sessionId = await this.domains.Target.AttachToTarget(this.attachedTargetId).ConfigureAwait(false);
             LogTrace("Target ID {0} attached. Active session ID: {1}", this.attachedTargetId, sessionId);
             this.ActiveSessionId = sessionId;
 
-            await this.domains.Target.SetAutoAttach();
+            await this.domains.Target.SetAutoAttach().ConfigureAwait(false);
             LogTrace("AutoAttach is set.", this.attachedTargetId);
 
             this.domains.Target.TargetDetached += this.OnTargetDetached;
@@ -416,7 +415,7 @@ namespace OpenQA.Selenium.DevTools
             LogTrace("Creating WebSocket");
             this.connection = new WebSocketConnection(this.openConnectionWaitTimeSpan, this.closeConnectionWaitTimeSpan);
             connection.DataReceived += OnConnectionDataReceived;
-            await connection.Start(this.websocketAddress);
+            await connection.Start(this.websocketAddress).ConfigureAwait(false);
             LogTrace("WebSocket created");
         }
 
@@ -425,8 +424,8 @@ namespace OpenQA.Selenium.DevTools
             LogTrace("Closing WebSocket");
             if (this.connection != null && this.connection.IsActive)
             {
-                await this.connection.Stop();
-                await this.ShutdownMessageQueue();
+                await this.connection.Stop().ConfigureAwait(false);
+                await this.ShutdownMessageQueue().ConfigureAwait(false);
             }
             LogTrace("WebSocket closed");
         }
@@ -443,7 +442,7 @@ namespace OpenQA.Selenium.DevTools
             }
 
             this.messageQueue.CompleteAdding();
-            await this.messageQueueMonitorTask;
+            await this.messageQueueMonitorTask.ConfigureAwait(false);
         }
 
         private void MonitorMessageQueue()
