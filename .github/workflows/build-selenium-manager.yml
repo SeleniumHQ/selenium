@@ -10,7 +10,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
@@ -31,11 +31,9 @@ jobs:
   linux64:
     name: "[Linux x64] Build selenium-manager"
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=-crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
@@ -43,11 +41,11 @@ jobs:
       - name: "Install cross"
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
+          cross -V
       - name: "Build release"
         run: |
           cd rust
-          rustup target add x86_64-unknown-linux-musl
-          cross build --release --target x86_64-unknown-linux-musl
+          cross build --target x86_64-unknown-linux-musl --release
       - name: "Tar binary (to keep executable permission)"
         run: |
           cd rust/target/x86_64-unknown-linux-musl/release
@@ -66,7 +64,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update

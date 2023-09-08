@@ -187,7 +187,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
         if (platformName.isPresent()) {
           caps = setInitialCapabilityValue(caps, "platformName", platformName.get());
         }
-        if (browserVersion.isPresent()) {
+
+        if (caps.getBrowserVersion().isEmpty()
+            && browserVersion.isPresent()
+            && !browserVersion.get().isEmpty()) {
           caps = setInitialCapabilityValue(caps, "browserVersion", browserVersion.get());
         }
 

@@ -57,7 +57,7 @@ jobs:
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh

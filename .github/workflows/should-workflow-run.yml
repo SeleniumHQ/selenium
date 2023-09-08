@@ -25,7 +25,7 @@ jobs:
       result: ${{ steps.check-bazel-target-prefix.outputs.run-workflow }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 50
       - name: Setup Bazel
