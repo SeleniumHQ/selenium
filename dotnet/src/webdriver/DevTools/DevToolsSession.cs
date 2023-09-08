@@ -86,7 +86,7 @@ namespace OpenQA.Selenium.DevTools
         public event EventHandler<DevToolsEventReceivedEventArgs> DevToolsEventReceived;
 
         /// <summary>
-        /// Gets or sets the time to wait for a command to complete. Default is 5 seconds.
+        /// Gets or sets the time to wait for a command to complete. Default is 30 seconds.
         /// </summary>
         public TimeSpan CommandTimeout { get; set; }
 
