@@ -203,16 +203,32 @@ class Service(ABC):
         cmd.extend(self.command_line_args())
         close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
         try:
-            self.process = subprocess.Popen(
-                cmd,
-                env=self.env,
-                close_fds=close_file_descriptors,
-                stdout=self.log_output,
-                stderr=self.log_output,
-                stdin=PIPE,
-                creationflags=self.creation_flags,
-                **self.popen_kw,
-            )
+            if system() == "Windows":
+                si = subprocess.STARTUPINFO()
+                si.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                si.wShowWindow = subprocess.SW_HIDE
+                self.process = subprocess.Popen(
+                    cmd,
+                    env=self.env,
+                    close_fds=close_file_descriptors,
+                    stdout=self.log_output,
+                    stderr=self.log_output,
+                    stdin=PIPE,
+                    creationflags=self.creation_flags,
+                    startupinfo=si,
+                    **self.popen_kw,
+                )
+            else:
+                self.process = subprocess.Popen(
+                    cmd,
+                    env=self.env,
+                    close_fds=close_file_descriptors,
+                    stdout=self.log_output,
+                    stderr=self.log_output,
+                    stdin=PIPE,
+                    creationflags=self.creation_flags,
+                    **self.popen_kw,
+                )
             logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
         except TypeError:
             raise
