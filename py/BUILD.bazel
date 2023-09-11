@@ -46,6 +46,7 @@ BROWSER_VERSIONS = [
 ]
 
 TEST_DEPS = [
+    requirement("aiohttp"),
     requirement("attrs"),
     requirement("debugpy"),
     requirement("idna"),
@@ -58,6 +59,7 @@ TEST_DEPS = [
     requirement("pluggy"),
     requirement("py"),
     requirement("pytest"),
+    requirement("pytest-asyncio"),
     requirement("pytest-instafail"),
     requirement("pytest-trio"),
     requirement("pytest-mock"),
@@ -170,6 +172,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        requirement("aiohttp"),
         requirement("typing_extensions"),
         requirement("trio"),
         requirement("trio_websocket"),
@@ -184,6 +187,7 @@ py_package(
         "py.selenium",
         "py.selenium.common",
         "py.selenium.webdriver",
+        "py.selenium.webdriver.async",
         "py.selenium.webdriver.chrome",
         "py.selenium.webdriver.chromium",
         "py.selenium.webdriver.common",
@@ -254,6 +258,7 @@ py_wheel(
     python_requires = ">=3.8",
     python_tag = "py3",
     requires = [
+        "aiohttp=3.8.5",
         "urllib3[socks]>=1.26,<3",
         "trio~=0.17",
         "trio-websocket~=0.9",
@@ -279,6 +284,7 @@ py_library(
         "test/__init__.py",
         "test/selenium/__init__.py",
         "test/selenium/webdriver/__init__.py",
+        "test/selenium/webdriver/async/__init__.py",
         "test/selenium/webdriver/chrome/__init__.py",
         "test/selenium/webdriver/common/__init__.py",
         "test/selenium/webdriver/common/conftest.py",
@@ -357,6 +363,7 @@ py_library(
         size = "large",
         srcs = glob(
             [
+                "test/selenium/webdriver/async/**/*.py",
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
@@ -385,6 +392,9 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
+            "test/selenium/webdriver/async/**/*.py",
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
         ],
         exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
     ),

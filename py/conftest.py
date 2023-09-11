@@ -25,6 +25,7 @@ from test.selenium.webdriver.common.webserver import SimpleWebServer
 from urllib.request import urlopen
 
 import pytest
+import pytest_asyncio
 
 from selenium import webdriver
 
@@ -94,12 +95,14 @@ def pytest_ignore_collect(path, config):
 driver_instance = None
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 def driver(request):
     kwargs = {}
 
-    # browser can be changed with `--driver=firefox` as an argument or to addopts in pytest.ini
-    driver_class = getattr(request, "param", "Chrome").capitalize()
+    try:
+        driver_class = request.config.option.drivers[0].capitalize()
+    except AttributeError:
+        raise Exception("This test requires a --driver to be specified.")
 
     # skip tests if not available on the platform
     _platform = platform.system()
@@ -141,7 +144,9 @@ def driver(request):
         if driver_class == "Chrome":
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
-            options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            options = (
+                get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            )
             options.set_capability("moz:firefoxOptions", {})
             options.enable_downloads = True
         if driver_class == "WebKitGTK":
@@ -206,7 +211,7 @@ def get_service(driver_class, executable):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def stop_driver(request):
+async def stop_driver(request):
     def fin():
         global driver_instance
         if driver_instance is not None:
@@ -230,8 +235,8 @@ def pages(driver, webserver):
         def url(self, name, localhost=False):
             return webserver.where_is(name, localhost)
 
-        def load(self, name):
-            driver.get(self.url(name))
+        async def load(self, name):
+            await driver.get(self.url(name))
 
     return Pages()
 
@@ -285,7 +290,9 @@ def server(request):
             ]
         )
         print(f"Selenium server running as process: {process.pid}")
-        assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
+        assert wait_for_server(
+            url, 10
+        ), f"Timed out waiting for Selenium server at {url}"
         print("Selenium server is ready")
         yield process
         process.terminate()
@@ -304,7 +311,7 @@ def webserver(request):
 
 
 @pytest.fixture
-def edge_service():
+async def edge_service():
     from selenium.webdriver.edge.service import Service as EdgeService
 
     return EdgeService

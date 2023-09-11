@@ -1,3 +1,4 @@
+aiohttp==3.8.5
 async-generator==1.10
 attrs==23.1.0
 certifi==2023.7.22
@@ -20,7 +21,8 @@ pycparser==2.21
 pyOpenSSL==22.0.0
 pyparsing==3.1.1
 PySocks==1.7.1
-pytest==7.4.2
+pytest==7.4.3
+pytest-asyncio==0.21.1
 pytest-instafail==0.5.0
 pytest-mock==3.12.0
 pytest-trio==0.8.0
