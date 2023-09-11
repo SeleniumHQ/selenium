@@ -20,6 +20,7 @@ load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
 # Add your linters here.
 lint_setup({
     "java-spotbugs": "//java:spotbugs-config",
+    "rust-rustfmt": "//rust:enable-rustfmt",
 })
 
 http_archive(

@@ -179,7 +179,6 @@ fn main() {
     }
     selenium_manager.set_logger(log);
 
-
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
     }

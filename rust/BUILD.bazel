@@ -1,5 +1,9 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite")
+load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite", "rustfmt_config")
+
+rustfmt_config(
+    name = "enable-rustfmt",
+)
 
 # We want the release versions of Selenium to include the prebuilt
 # binaries, but if we're doing day-to-day dev work, then we should
