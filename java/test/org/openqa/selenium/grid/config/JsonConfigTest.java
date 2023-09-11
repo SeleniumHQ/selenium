@@ -83,8 +83,12 @@ class JsonConfigTest {
 
     List<String> expected =
         Arrays.asList(
-            "default=\"brie\"", "name=\"soft cheese\"",
-            "default=\"Emmental\"", "name=\"Medium-hard cheese\"");
+            "name=\"soft cheese\"",
+            "default=\"brie\"",
+            Config.DELIMITER,
+            "name=\"Medium-hard cheese\"",
+            "default=\"Emmental\"",
+            Config.DELIMITER);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
@@ -116,8 +120,43 @@ class JsonConfigTest {
     List<String> expected =
         Arrays.asList(
             "display-name=\"htmlunit\"",
-            "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}");
+            "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
+            Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).isEqualTo(Optional.of(expected));
+  }
+
+  @Test
+  void ensureCanReadListOfLists() {
+    String raw =
+        String.join(
+                "",
+                "",
+                "{",
+                "`cheeses`: {",
+                "`default`: `manchego`,",
+                "`type`: [",
+                "{",
+                "`name`: `soft cheese`,",
+                "`default`: `brie`",
+                "},",
+                "{",
+                "`name`: `Medium-hard cheese`,",
+                "`default`: `Emmental`",
+                "}",
+                "]",
+                "}",
+                "}")
+            .replace("`", "\"");
+    Config config = new JsonConfig(new StringReader(raw));
+
+    List<List<String>> expected =
+        Arrays.asList(
+            Arrays.asList("name=\"soft cheese\"", "default=\"brie\""),
+            Arrays.asList("name=\"Medium-hard cheese\"", "default=\"Emmental\""));
+    assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
+        .isEqualTo(expected);
+    assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))
+        .isEqualTo(expected.subList(0, 1));
   }
 }

@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.DevTools.V116
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task Enable()
         {
-            await adapter.Enable();
+            await adapter.Enable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.DevTools.V116
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task Disable()
         {
-            await adapter.Disable();
+            await adapter.Disable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace OpenQA.Selenium.DevTools.V116
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task Clear()
         {
-            await adapter.Clear();
+            await adapter.Clear().ConfigureAwait(false);
         }
 
         private void OnAdapterEntryAdded(object sender, Log.EntryAddedEventArgs e)

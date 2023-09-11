@@ -95,8 +95,6 @@ def selenium_java_deps():
             "org.junit.platform:junit-platform-reporting:%s" % junit_platform_version,
             "org.junit.platform:junit-platform-commons:%s" % junit_platform_version,
             "org.junit.platform:junit-platform-engine:%s" % junit_platform_version,
-            "org.junit.platform:junit-platform-suite-engine:%s" % junit_platform_version,
-            "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
             "org.mockito:mockito-core:4.11.0",
             "org.mockito:mockito-inline:4.11.0",
             "org.redisson:redisson:3.23.2",

@@ -14,6 +14,10 @@ namespace OpenQA.Selenium.Edge
         {
         }
 
+        public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
+            : base(service, options)
+        {
+        }
         public static EdgeOptions DefaultOptions
         {
             get { return new EdgeOptions(); }

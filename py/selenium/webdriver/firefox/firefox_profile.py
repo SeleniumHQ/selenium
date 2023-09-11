@@ -83,7 +83,7 @@ class FirefoxProfile:
 
     # Public Methods
     def set_preference(self, key, value):
-        """sets the preference that we want in the profile."""
+        """Sets the preference that we want in the profile."""
         self.default_preferences[key] = value
 
     def add_extension(self, extension=WEBDRIVER_EXT):
@@ -164,7 +164,7 @@ class FirefoxProfile:
         return tempfile.mkdtemp()
 
     def _write_user_prefs(self, user_prefs):
-        """writes the current user prefs dictionary to disk."""
+        """Writes the current user prefs dictionary to disk."""
         with open(self.userPrefs, "w", encoding="utf-8") as f:
             for key, value in user_prefs.items():
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')

@@ -126,7 +126,9 @@ module Selenium
 
       it 'can minimize the window', except: {browser: %i[chrome edge]} do
         window.minimize
-        expect(driver.execute_script('return document.hidden;')).to be true
+        expect {
+          wait.until { driver.execute_script('return document.hidden;') }
+        }.not_to raise_error
       end
     end
   end # WebDriver

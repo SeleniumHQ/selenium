@@ -32,6 +32,14 @@ public class MultiOutputStream extends OutputStream {
   }
 
   @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    mandatory.write(b, off, len);
+    if (optional != null) {
+      optional.write(b, off, len);
+    }
+  }
+
+  @Override
   public void write(int b) throws IOException {
     mandatory.write(b);
     if (optional != null) {

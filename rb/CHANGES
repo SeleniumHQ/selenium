@@ -1,3 +1,13 @@
+4.12.0 (2023-08-31)
+=========================
+Ruby:
+  * Fix bug preventing good error messages in Selenium Manager when stdout empty
+  * Fix bug with Firefox not loading net/http library by default (#12506)
+  * Remove support for using capabilities in local drivers
+
+BiDi:
+  * Released selenium-devtools 0.116.0 (supports CDP v85, v114, v115, v116)
+
 4.11.0 (2023-07-31)
 =========================
 Ruby:

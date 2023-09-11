@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Internal;
 
@@ -59,7 +60,14 @@ namespace OpenQA.Selenium.Remote
     /// </example>
     public class RemoteWebDriver : WebDriver, IDevTools
     {
+        /// <summary>
+        /// The name of the Selenium grid remote DevTools end point capability.
+        /// </summary>
         public readonly string RemoteDevToolsEndPointCapabilityName = "se:cdp";
+
+        /// <summary>
+        /// The name of the Selenium remote DevTools version capability.
+        /// </summary>
         public readonly string RemoteDevToolsVersionCapabilityName = "se:cdpVersion";
 
         private const string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
@@ -408,11 +416,20 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("css selector", cssSelector);
         }
 
+        /// <summary>
+        /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
+        /// </summary>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
             return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
         }
 
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(int protocolVersion)
         {
             if (this.devToolsSession == null)
@@ -439,7 +456,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -458,10 +475,14 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
+                Task.Run(async () => await this.devToolsSession.StopSession(true)).GetAwaiter().GetResult();
             }
         }
 
+        /// <summary>
+        /// Releases all resources associated with this <see cref="RemoteWebDriver"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

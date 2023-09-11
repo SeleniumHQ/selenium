@@ -23,10 +23,9 @@ import java.nio.charset.Charset;
 /** Captures the last N bytes of output. */
 public class CircularOutputStream extends OutputStream {
   private static final int DEFAULT_SIZE = 4096;
-  private int start;
   private int end;
   private boolean filled = false;
-  private byte[] buffer;
+  private final byte[] buffer;
 
   public CircularOutputStream(int maxSize) {
     buffer = new byte[maxSize];
@@ -37,21 +36,56 @@ public class CircularOutputStream extends OutputStream {
   }
 
   @Override
+  public void write(byte[] b) {
+    // overridden to get rid of the IOException
+    write(b, 0, b.length);
+  }
+
+  @Override
+  public synchronized void write(byte[] b, int off, int len) {
+    int bufferSize = buffer.length;
+
+    while (len > 0) {
+      int chunk = Math.min(bufferSize, len);
+
+      if (bufferSize >= end + chunk) {
+        System.arraycopy(b, off, buffer, end, chunk);
+        end += chunk;
+      } else {
+        int space = bufferSize - end;
+        System.arraycopy(b, off, buffer, end, space);
+        filled = true;
+        end = chunk - space;
+        System.arraycopy(b, off + space, buffer, 0, end);
+      }
+
+      off += chunk;
+      len -= chunk;
+    }
+  }
+
+  @Override
   public synchronized void write(int b) {
     if (end == buffer.length) {
       filled = true;
       end = 0;
     }
 
-    if (filled && end == start) {
-      start = start == buffer.length - 1 ? 0 : start + 1;
-    }
-
     buffer[end++] = (byte) b;
   }
 
   @Override
-  public String toString() {
+  public void flush() {
+    // overridden to get rid of the IOException
+  }
+
+  @Override
+  public void close() {
+    // overridden to get rid of the IOException
+  }
+
+  @Override
+  public synchronized String toString() {
     int size = filled ? buffer.length : end;
     byte[] toReturn = new byte[size];
 
@@ -61,13 +95,9 @@ public class CircularOutputStream extends OutputStream {
       return new String(toReturn, Charset.defaultCharset());
     }
 
-    int copyStart = buffer.length - start;
-    if (copyStart == buffer.length) {
-      copyStart = 0;
-    }
-
-    System.arraycopy(buffer, start, toReturn, 0, copyStart);
-    System.arraycopy(buffer, 0, toReturn, copyStart, end);
+    int n = buffer.length - end;
+    System.arraycopy(buffer, end, toReturn, 0, n);
+    System.arraycopy(buffer, 0, toReturn, n, end);
     return new String(toReturn, Charset.defaultCharset());
   }
 }

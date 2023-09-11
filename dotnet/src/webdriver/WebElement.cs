@@ -29,6 +29,9 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
+    /// <summary>
+    /// A base class representing an HTML element on a page.
+    /// </summary>
     public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference
     {
         /// <summary>
@@ -261,7 +264,7 @@ namespace OpenQA.Selenium
         /// <remarks>This property is internal to the WebDriver instance, and is
         /// not intended to be used in your code. The element's ID has no meaning
         /// outside of internal WebDriver usage, so it would be improper to scope
-        /// it as public. However, both subclasses of <see cref="RemoteWebElement"/>
+        /// it as public. However, both subclasses of <see cref="WebElement"/>
         /// and the parent driver hosting the element have a need to access the
         /// internal element ID. Therefore, we have two properties returning the
         /// same value, one scoped as internal, the other as protected.</remarks>

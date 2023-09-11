@@ -100,7 +100,6 @@ public class NetworkInterceptor implements AutoCloseable {
   @Override
   public void close() {
     tools.getDomains().network().resetNetworkFilter();
-    tools.getDomains().network().markNetworkInterceptorClosed();
   }
 
   protected HttpMethod convertFromCdpHttpMethod(String method) {

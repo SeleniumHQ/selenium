@@ -50,6 +50,7 @@ pub struct ManagerConfig {
     pub ttl: u64,
     pub offline: bool,
     pub force_browser_download: bool,
+    pub avoid_browser_download: bool,
 }
 
 impl ManagerConfig {
@@ -99,6 +100,7 @@ impl ManagerConfig {
             ttl: IntegerKey("ttl", TTL_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
             force_browser_download: BooleanKey("force-browser-download", false).get_value(),
+            avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
         }
     }
 }

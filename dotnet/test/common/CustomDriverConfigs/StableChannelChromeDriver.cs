@@ -13,9 +13,14 @@ namespace OpenQA.Selenium.Chrome
         {
         }
 
+        public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+            : base(service, options)
+        {
+        }
+
         public static ChromeOptions DefaultOptions
         {
-            get { return new ChromeOptions() { AcceptInsecureCertificates = true, BrowserVersion = "116" }; }
+            get { return new ChromeOptions() { BrowserVersion = "116" }; }
         }
     }
 }

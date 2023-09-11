@@ -73,7 +73,9 @@ class HandleSession implements HttpHandler {
 
     this.httpClients =
         CacheBuilder.newBuilder()
-            .expireAfterAccess(Duration.ofMinutes(1))
+            // this timeout must be bigger than default connection + read timeout, to ensure we do
+            // not close HttpClients which might have requests waiting for responses
+            .expireAfterAccess(Duration.ofMinutes(4))
             .removalListener(
                 (RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
             .build();

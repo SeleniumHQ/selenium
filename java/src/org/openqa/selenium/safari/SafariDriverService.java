@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI;
 
 import com.google.auto.service.AutoService;
+import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -47,7 +48,7 @@ public class SafariDriverService extends DriverService {
    */
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
-  private static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
+  public static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
 
@@ -168,7 +169,7 @@ public class SafariDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
-      if (diagnose != null && diagnose.equals(Boolean.TRUE)) {
+      if (Boolean.TRUE.equals(diagnose)) {
         args.add("--diagnose");
       }
       return args;
@@ -178,6 +179,7 @@ public class SafariDriverService extends DriverService {
     protected SafariDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
+        withLogOutput(ByteStreams.nullOutputStream());
         return new SafariDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);

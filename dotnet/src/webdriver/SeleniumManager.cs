@@ -23,12 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-
-#if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
-#endif
-
 using System.Text;
 
 namespace OpenQA.Selenium
@@ -43,16 +38,9 @@ namespace OpenQA.Selenium
 
         static SeleniumManager()
         {
-#if NET45
-            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-#else
             var currentDirectory = AppContext.BaseDirectory;
-#endif
 
             string binary;
-#if NET45 || NET46 || NET47
-                binary = "selenium-manager/windows/selenium-manager.exe";
-#else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 binary = "selenium-manager/windows/selenium-manager.exe";
@@ -69,7 +57,6 @@ namespace OpenQA.Selenium
             {
                 throw new WebDriverException("Selenium Manager did not find supported operating system");
             }
-#endif
 
             binaryFullPath = Path.Combine(currentDirectory, binary);
 
@@ -105,9 +92,12 @@ namespace OpenQA.Selenium
 
             if (options.Proxy != null)
             {
-                if (options.Proxy.SslProxy != null) {
+                if (options.Proxy.SslProxy != null)
+                {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
-                } else if (options.Proxy.HttpProxy != null) {
+                }
+                else if (options.Proxy.HttpProxy != null)
+                {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
                 }
             }
@@ -121,7 +111,7 @@ namespace OpenQA.Selenium
                 options.BinaryLocation = browserPath;
                 options.BrowserVersion = null;
             }
-            catch (NotImplementedException e)
+            catch (NotImplementedException)
             {
                 // Cannot set Browser Location for this driver and that is ok
             }
@@ -143,22 +133,27 @@ namespace OpenQA.Selenium
             process.StartInfo.FileName = binaryFullPath;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
             process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
             process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
+            StringBuilder errorOutputBuilder = new StringBuilder();
 
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
+            DataReceivedEventHandler errorOutputHandler = (sender, e) => errorOutputBuilder.AppendLine(e.Data);
 
             try
             {
                 process.OutputDataReceived += outputHandler;
+                process.ErrorDataReceived += errorOutputHandler;
 
                 process.Start();
 
                 process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
 
                 process.WaitForExit();
 
@@ -166,7 +161,25 @@ namespace OpenQA.Selenium
                 {
                     // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
 
-                    throw new WebDriverException($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}\n{outputBuilder}");
+                    var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}");
+
+                    if (!string.IsNullOrEmpty(errorOutputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append("Error Output >>");
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append(errorOutputBuilder);
+                    }
+
+                    if (!string.IsNullOrEmpty(outputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append("Standard Output >>");
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.Append(outputBuilder);
+                    }
+
+                    throw new WebDriverException(exceptionMessageBuilder.ToString());
                 }
             }
             catch (Exception ex)
@@ -176,6 +189,7 @@ namespace OpenQA.Selenium
             finally
             {
                 process.OutputDataReceived -= outputHandler;
+                process.ErrorDataReceived -= errorOutputHandler;
             }
 
             string output = outputBuilder.ToString().Trim();
