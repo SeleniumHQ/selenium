@@ -126,7 +126,7 @@ struct Cli {
 }
 
 fn main() {
-    let cli = Cli::parse();
+    let mut cli = Cli::parse();
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
@@ -157,6 +157,19 @@ fn main() {
         flush_and_exit(DATAERR, &log);
     };
 
+    if cli.offline {
+        if cli.force_browser_download {
+            log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
+        }
+        cli.force_browser_download = false;
+        if !cli.avoid_browser_download {
+            log.warn("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
+        }
+        cli.avoid_browser_download = true;
+    }
+
+    // Logger set first so other setters can use it
+    selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
@@ -167,17 +180,6 @@ fn main() {
     selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
     selenium_manager.set_offline(cli.offline);
-    if cli.offline {
-        if cli.force_browser_download {
-            log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
-        }
-        selenium_manager.set_force_browser_download(false);
-        if !cli.avoid_browser_download {
-            log.warn("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
-        }
-        selenium_manager.set_avoid_browser_download(true);
-    }
-    selenium_manager.set_logger(log);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
