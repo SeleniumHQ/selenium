@@ -102,25 +102,25 @@ class TomlConfigTest {
   @Test
   void ensureCanReadListOfLists() {
     String[] rawConfig =
-      new String[] {
-        "[cheeses]",
-        "default = manchego",
-        "[[cheeses.type]]",
-        "name = \"soft cheese\"",
-        "default = \"brie\"",
-        "[[cheeses.type]]",
-        "name = \"Medium-hard cheese\"",
-        "default = \"Emmental\""
-      };
+        new String[] {
+          "[cheeses]",
+          "default = manchego",
+          "[[cheeses.type]]",
+          "name = \"soft cheese\"",
+          "default = \"brie\"",
+          "[[cheeses.type]]",
+          "name = \"Medium-hard cheese\"",
+          "default = \"Emmental\""
+        };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<List<String>> expected =
-      Arrays.asList(
-        Arrays.asList("default=\"brie\"", "name=\"soft cheese\""),
-        Arrays.asList("default=\"Emmental\"", "name=\"Medium-hard cheese\""));
+        Arrays.asList(
+            Arrays.asList("default=\"brie\"", "name=\"soft cheese\""),
+            Arrays.asList("default=\"Emmental\"", "name=\"Medium-hard cheese\""));
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
-      .isEqualTo(expected);
+        .isEqualTo(expected);
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))
-      .isEqualTo(expected.subList(0, 1));
+        .isEqualTo(expected.subList(0, 1));
   }
 }
