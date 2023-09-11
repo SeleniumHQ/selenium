@@ -45,7 +45,7 @@ module Selenium
         info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
 
         expect(browsing_context.id).not_to be_nil
-        expect(info.navigation_id).to be_nil
+        expect(info.navigation_id).not_to be_nil
         expect(info.url).to include('/bidi/logEntryAdded.html')
 
         driver.find_element(id: 'jsException').click
