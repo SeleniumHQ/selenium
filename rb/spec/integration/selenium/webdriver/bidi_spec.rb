@@ -36,7 +36,7 @@ module Selenium
         expect(status.message).not_to be_empty
       end
 
-      it 'can navigate and listen to errors', except: {browser: %i[chrome edge], reason: 'not yet implemented'} do
+      it 'can navigate and listen to errors' do
         log_entry = nil
         log_inspector = BiDi::LogInspector.new(driver)
         log_inspector.on_javascript_exception { |log| log_entry = log }
