@@ -232,7 +232,7 @@ build_bazel_rules_nodejs_dependencies()
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "18.12.0",
+    node_version = "18.17.0",
 )
 
 npm_install(
