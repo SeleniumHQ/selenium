@@ -147,7 +147,8 @@ module Selenium
           }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
         end
 
-        it 'raises if invalid locator', exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'}   do
+        it 'raises if invalid locator',
+           exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')

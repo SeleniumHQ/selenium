@@ -31,13 +31,14 @@ module Selenium
         expect(shadow_root).to be_a described_class
       end
 
-      it 'raises error if no shadow root', exclude: { browser: :safari, reason: 'NoMethodError' } do
+      it 'raises error if no shadow root', exclude: {browser: :safari, reason: 'NoMethodError'} do
         driver.navigate.to url_for('simpleTest.html')
         div = driver.find_element(css: 'div')
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
       end
 
-      it 'gets shadow root from script', exclude: { browser: :safari, reason: 'returns correct node, but references shadow root as a element' } do
+      it 'gets shadow root from script',
+         exclude: {browser: :safari, reason: 'returns correct node, but references shadow root as a element'} do
         shadow_root = custom_element.shadow_root
         execute_shadow_root = driver.execute_script('return arguments[0].shadowRoot;', custom_element)
         expect(execute_shadow_root).to eq shadow_root

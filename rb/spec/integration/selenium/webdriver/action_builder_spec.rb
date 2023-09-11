@@ -203,7 +203,7 @@ module Selenium
         end
 
         it 'moves to element with offset', except: {browser: :firefox,
-                                                    platform: [:windows, :macosx],
+                                                    platform: %i[windows macosx],
                                                     reason: 'Some issues with resolution?'} do
           driver.navigate.to url_for('javascriptPage.html')
           origin = driver.find_element(id: 'keyUpArea')
@@ -335,7 +335,7 @@ module Selenium
 
       describe '#scroll_from' do
         it 'scrolls from element by given amount',
-           except: {browser: [:firefox, :safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
           scroll_origin = WheelActions::ScrollOrigin.element(iframe)
@@ -349,7 +349,7 @@ module Selenium
         end
 
         it 'scrolls from element by given amount with offset',
-           except: {browser: [:firefox, :safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
