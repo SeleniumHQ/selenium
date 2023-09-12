@@ -1,8 +1,10 @@
+using Bazel;
 using System;
 using System.Reflection;
 using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -17,27 +19,35 @@ namespace OpenQA.Selenium.Environment
         private DriverFactory driverFactory;
         private RemoteSeleniumServer remoteServer;
         private string remoteCapabilities;
-        private bool logging;
 
         private EnvironmentManager()
         {
+            var runfiles = Runfiles.Create();
+            var dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
             string currentDirectory = this.CurrentDirectory;
-            string defaultConfigFile = Path.Combine(currentDirectory, "appconfig.json");
-            string configFile = TestContext.Parameters.Get<string>("ConfigFile", defaultConfigFile).Replace('/', Path.DirectorySeparatorChar);
 
-            string content = File.ReadAllText(configFile);
+            string content = File.ReadAllText(dataFilePath);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
             string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
+            string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
+
+            string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
+
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
+
+            int port = PortUtilities.FindFreePort();
+            websiteConfig.Port = port.ToString();
+
             TestWebServerConfig webServerConfig = env.TestWebServerConfig;
             webServerConfig.CaptureConsoleOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.TestWebServerConfig.CaptureConsoleOutput);
             webServerConfig.HideCommandPromptWindow = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.TestWebServerConfig.HideCommandPromptWindow);
             webServerConfig.JavaHomeDirectory = TestContext.Parameters.Get("WebServerJavaHome", env.TestWebServerConfig.JavaHomeDirectory);
+            webServerConfig.Port = websiteConfig.Port;
 
-            this.driverFactory = new DriverFactory();
+            this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
             Assembly driverAssembly = null;
@@ -53,7 +63,6 @@ namespace OpenQA.Selenium.Environment
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
-            logging = driverConfig.Logging;
 
             urlBuilder = new UrlBuilder(websiteConfig);
 
@@ -192,11 +201,6 @@ namespace OpenQA.Selenium.Environment
             get { return remoteCapabilities; }
         }
 
-        public bool Logging
-        {
-            get { return logging; }
-        }
-
         public UrlBuilder UrlBuilder
         {
             get
@@ -211,18 +215,20 @@ namespace OpenQA.Selenium.Environment
             {
                 return driver;
             }
-
-            return CreateFreshDriver();
+            else
+            {
+                return CreateFreshDriver();
+            }
         }
 
         public IWebDriver CreateDriverInstance()
         {
-            return driverFactory.CreateDriver(driverType, Logging);
+            return driverFactory.CreateDriver(driverType);
         }
 
         public IWebDriver CreateDriverInstance(DriverOptions options)
         {
-            return driverFactory.CreateDriverWithOptions(driverType, options, Logging);
+            return driverFactory.CreateDriverWithOptions(driverType, options);
         }
 
         public IWebDriver CreateFreshDriver()
@@ -236,15 +242,9 @@ namespace OpenQA.Selenium.Environment
         {
             if (driver != null)
             {
-                try
-                {
-                    driver.Quit();
-                }
-                finally
-                {
-                    driver = null;
-                }
+                driver.Quit();
             }
+            driver = null;
         }
 
         protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
