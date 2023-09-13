@@ -48,7 +48,9 @@ module Selenium
         expect(info.navigation_id).not_to be_nil
         expect(info.url).to include('/bidi/logEntryAdded.html')
 
-        driver.find_element(id: 'jsException').click
+        js_exception = wait.until { driver.find_element(id: 'jsException') }
+        js_exception.click
+
         wait.until { !log_entry.nil? }
 
         expect(log_entry).to have_attributes(
