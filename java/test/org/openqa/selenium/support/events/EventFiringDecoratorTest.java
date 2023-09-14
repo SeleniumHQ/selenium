@@ -693,11 +693,22 @@ class EventFiringDecoratorTest {
           public void afterDismiss(Alert alert) {
             acc.append("afterDismiss").append("\n");
           }
+
+          @Override
+          public void beforeAccept(Alert alert) {
+            acc.append("beforeAccept").append("\n");
+          }
+
+          @Override
+          public void afterAccept(Alert alert) {
+            acc.append("afterAccept").append("\n");
+          }
         };
 
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
-    decorated.switchTo().alert().dismiss();
+    Alert alert1 = decorated.switchTo().alert();
+    alert1.dismiss();
 
     assertThat(listener.acc.toString().trim())
         .isEqualTo(
@@ -709,11 +720,9 @@ class EventFiringDecoratorTest {
                 "afterAnyCall switchTo",
                 "beforeAnyCall alert",
                 "afterAnyCall alert",
-                "beforeAnyCall dismiss",
                 "beforeAnyAlertCall dismiss",
                 "beforeDismiss",
                 "afterDismiss",
-                "afterAnyAlertCall dismiss",
                 "afterAnyCall dismiss"));
   }
 

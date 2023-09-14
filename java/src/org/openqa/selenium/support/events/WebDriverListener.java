@@ -669,8 +669,13 @@ public interface WebDriverListener {
    */
   default void afterRefresh(WebDriver.Navigation navigation) {}
 
-  // Alert
+  // Alert (WebDriver.Alert)
 
+  /**
+   * @param alert - The alert that will be called
+   * @param method - The method that will be called
+   * @param args - The arguments that will be passed to the method
+   */
   default void beforeAnyAlertCall(Alert alert, Method method, Object[] args) {}
 
   default void afterAnyAlertCall(Alert alert, Method method, Object[] args, Object result) {}
@@ -678,28 +683,28 @@ public interface WebDriverListener {
   /**
    * This action will be performed each time before {@link Alert#accept()}
    *
-   * @param Alert alert
+   * @param Alert - alert to accept
    */
   default void beforeAccept(Alert alert) {}
 
   /**
    * This action will be performed each time after {@link Alert#accept()}
    *
-   * @param Alert alert
+   * @param Alert - alert to accept
    */
   default void afterAccept(Alert alert) {}
 
   /**
    * This action will be performed each time before {@link Alert#dismiss()}
    *
-   * @param Alert alert
+   * @param Alert - alert to dismiss
    */
   default void beforeDismiss(Alert alert) {}
 
   /**
    * This action will be performed each time after {@link Alert#dismiss()}
    *
-   * @param Alert alert
+   * @param Alert - alert to dismiss
    */
   default void afterDismiss(Alert alert) {}
 
@@ -733,8 +738,13 @@ public interface WebDriverListener {
    */
   default void afterSendKeys(Alert alert, String text) {}
 
-  // Options
+  // Options (WebDriver.Options)
 
+  /**
+   * @param options The options object that will be called
+   * @param method The method that will be called
+   * @param args
+   */
   default void beforeAnyOptionsCall(WebDriver.Options options, Method method, Object[] args) {}
 
   default void afterAnyOptionsCall(
