@@ -168,16 +168,22 @@ public class SeleniumManager {
         } else if (current.is(MAC)) {
           folder = "macos";
         }
-        String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-        try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
-          Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
+        String binaryPath;
+        if (System.getenv("SE_MANAGER_PATH") != null) {
+          folder = System.getenv("SE_MANAGER_PATH");
+          binary = Path.of(String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension));
+        } else {
+          binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+          try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
+            Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
 
-          deleteOnExit(tmpPath);
+            deleteOnExit(tmpPath);
 
-          binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
-          Files.copy(inputStream, binary, REPLACE_EXISTING);
+            binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
+            Files.copy(inputStream, binary, REPLACE_EXISTING);
+          }
+          binary.toFile().setExecutable(true);
         }
-        binary.toFile().setExecutable(true);
       } catch (Exception e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
