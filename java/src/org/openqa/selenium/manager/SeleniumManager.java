@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -171,7 +172,7 @@ public class SeleniumManager {
         String binaryPath;
         if (System.getenv("SE_MANAGER_PATH") != null) {
           folder = System.getenv("SE_MANAGER_PATH");
-          binary = Path.of(String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension));
+          binary = Paths.get(String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension));
         } else {
           binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
           try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
