@@ -31,7 +31,7 @@ module Selenium
         attr_writer :bin_path
 
         def bin_path
-          @bin_path ||= ENV.fetch('SE_MANAGER_PATH', '../../../../../bin')
+          @bin_path ||= '../../../../../bin'
         end
 
         # @param [Options] options browser options.
@@ -80,10 +80,10 @@ module Selenium
                       '/windows/selenium-manager.exe'
                     elsif Platform.mac?
                       '/macos/selenium-manager'
-                    elsif Platform.linux?
+                    else
                       '/linux/selenium-manager'
                     end
-            location = File.expand_path(path, __FILE__)
+            location = ENV.fetch('SE_MANAGER_PATH', File.expand_path(path, __FILE__))
 
             begin
               Platform.assert_file(location)

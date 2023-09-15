@@ -40,31 +40,24 @@ namespace OpenQA.Selenium
         {
             var currentDirectory = AppContext.BaseDirectory;
 
-            string binary;
             string file = "selenium-manager";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            string binary = $"selenium-manager/linux/{file}";
+
+            if (Environment.GetEnvironmentVariable("SE_MANAGER_PATH") != null)
+            {
+                binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 file = "selenium-manager.exe";
                 binary = $"selenium-manager/windows/{file}";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                binary = $"selenium-manager/linux/{file}";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 binary = $"selenium-manager/macos/{file}";
             }
-            else
-            {
-                throw new WebDriverException("Selenium Manager did not find supported operating system");
-            }
 
-            if (Environment.GetEnvironmentVariable("SE_MANAGER_PATH") != null)
-            {
-                binaryFullPath = Path.Combine(Environment.GetEnvironmentVariable("SE_MANAGER_PATH"), file);
-            }
-            else
+            if (binaryFullPath == null)
             {
                 binaryFullPath = Path.Combine(currentDirectory, binary);
             }

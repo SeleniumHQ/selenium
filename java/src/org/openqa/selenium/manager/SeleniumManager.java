@@ -171,8 +171,7 @@ public class SeleniumManager {
         }
         String binaryPath;
         if (System.getenv("SE_MANAGER_PATH") != null) {
-          folder = System.getenv("SE_MANAGER_PATH");
-          binary = Paths.get(String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension));
+          binary = Paths.get(System.getenv("SE_MANAGER_PATH"));
         } else {
           binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
           try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
