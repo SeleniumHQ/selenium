@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ShadowRoot, only: {browser: %i[chrome firefox edge]} do
+    describe ShadowRoot, only: {browser: %i[chrome firefox edge safari]} do
       before { driver.navigate.to url_for('webComponents.html') }
 
       let(:custom_element) { driver.find_element(css: 'custom-checkbox-element') }
@@ -31,13 +31,14 @@ module Selenium
         expect(shadow_root).to be_a described_class
       end
 
-      it 'raises error if no shadow root' do
+      it 'raises error if no shadow root', exclude: {browser: :safari, reason: 'NoMethodError'} do
         driver.navigate.to url_for('simpleTest.html')
         div = driver.find_element(css: 'div')
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
       end
 
-      it 'gets shadow root from script' do
+      it 'gets shadow root from script',
+         exclude: {browser: :safari, reason: 'returns correct node, but references shadow root as a element'} do
         shadow_root = custom_element.shadow_root
         execute_shadow_root = driver.execute_script('return arguments[0].shadowRoot;', custom_element)
         expect(execute_shadow_root).to eq shadow_root
@@ -51,7 +52,7 @@ module Selenium
           expect(element).to be_a Element
         end
 
-        it 'by xpath', except: {browser: %i[chrome edge firefox],
+        it 'by xpath', except: {browser: %i[chrome edge firefox safari],
                                 reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
           shadow_root = custom_element.shadow_root
           element = shadow_root.find_element(xpath: "//input[type='checkbox']")
@@ -73,7 +74,7 @@ module Selenium
           expect(element).to be_a Element
         end
 
-        it 'by tag name', except: {browser: %i[chrome edge firefox],
+        it 'by tag name', except: {browser: %i[chrome edge firefox safari],
                                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
           shadow_root = custom_element.shadow_root
           element = shadow_root.find_element(tag_name: 'input')
@@ -97,7 +98,7 @@ module Selenium
           expect(elements.first).to be_a Element
         end
 
-        it 'by xpath', except: {browser: %i[chrome edge firefox],
+        it 'by xpath', except: {browser: %i[chrome edge firefox safari],
                                 reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
           shadow_root = custom_element.shadow_root
           elements = shadow_root.find_elements(xpath: "//input[type='checkbox']")
@@ -122,7 +123,7 @@ module Selenium
           expect(elements.first).to be_a Element
         end
 
-        it 'by tag name', except: {browser: %i[chrome edge firefox],
+        it 'by tag name', except: {browser: %i[chrome edge firefox safari],
                                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
           shadow_root = custom_element.shadow_root
           elements = shadow_root.find_elements(tag_name: 'input')

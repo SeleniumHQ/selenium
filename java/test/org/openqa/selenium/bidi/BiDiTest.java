@@ -69,8 +69,9 @@ class BiDiTest extends JupiterTestBase {
       page = server.whereIs("/bidi/logEntryAdded.html");
       NavigationResult info = browsingContext.navigate(page, ReadinessState.COMPLETE);
 
+      // If navigation was successful, we expect both the url and navigation id to be set
       assertThat(browsingContext.getId()).isNotEmpty();
-      assertThat(info.getNavigationId()).isNull();
+      assertThat(info.getNavigationId()).isNotNull();
       assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
 
       driver.findElement(By.id("jsException")).click();

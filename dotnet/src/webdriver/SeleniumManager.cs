@@ -163,20 +163,20 @@ namespace OpenQA.Selenium
 
                     var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}");
 
-                    if (!string.IsNullOrEmpty(errorOutputBuilder.ToString()))
+                    if (!string.IsNullOrWhiteSpace(errorOutputBuilder.ToString()))
                     {
                         exceptionMessageBuilder.AppendLine();
-                        exceptionMessageBuilder.Append("Error Output >>");
-                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.AppendLine("Error Output >>");
                         exceptionMessageBuilder.Append(errorOutputBuilder);
+                        exceptionMessageBuilder.AppendLine("<<");
                     }
 
-                    if (!string.IsNullOrEmpty(outputBuilder.ToString()))
+                    if (!string.IsNullOrWhiteSpace(outputBuilder.ToString()))
                     {
                         exceptionMessageBuilder.AppendLine();
-                        exceptionMessageBuilder.Append("Standard Output >>");
-                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.AppendLine("Standard Output >>");
                         exceptionMessageBuilder.Append(outputBuilder);
+                        exceptionMessageBuilder.AppendLine("<<");
                     }
 
                     throw new WebDriverException(exceptionMessageBuilder.ToString());

@@ -452,7 +452,7 @@ public class DriverService implements Closeable {
     }
 
     protected void parseLogOutput(String logProperty) {
-      if (getLogFile() != null) {
+      if (getLogFile() != null || logOutputStream != null) {
         return;
       }
 
