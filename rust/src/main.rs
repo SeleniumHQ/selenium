@@ -214,14 +214,12 @@ fn main() {
                     selenium_manager.get_browser_path(),
                 );
                 flush_and_exit(OK, log);
+            } else if selenium_manager.is_offline() {
+                log.warn(err.to_string());
+                flush_and_exit(OK, log);
             } else {
-                if selenium_manager.is_offline() {
-                    log.warn(err.to_string());
-                    flush_and_exit(OK, log);
-                } else {
-                    log.error(err.to_string());
-                    flush_and_exit(DATAERR, log);
-                }
+                log.error(err.to_string());
+                flush_and_exit(DATAERR, log);
             }
         });
 }

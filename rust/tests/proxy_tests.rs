@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::assert::AssertResult;
+use crate::common::assert_output;
 use assert_cmd::Command;
 use exitcode::DATAERR;
-use std::str;
+
+mod common;
 
 #[tokio::test]
 async fn wrong_proxy_test() {
@@ -34,7 +35,7 @@ async fn wrong_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "in PATH");
+    assert_output(&mut cmd, result, "in PATH", DATAERR);
 }
 #[test]
 fn wrong_protocol_proxy_test() {
@@ -44,7 +45,7 @@ fn wrong_protocol_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "There was an error");
+    assert_output(&mut cmd, result, "There was an error", DATAERR);
 }
 
 #[test]
@@ -60,19 +61,5 @@ fn wrong_port_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "There was an error");
-}
-
-fn assert_output(cmd: &mut Command, assert_result: AssertResult, expected_output: &str) {
-    if assert_result.is_ok() {
-        let stdout = &cmd.unwrap().stdout;
-        let output = str::from_utf8(stdout).unwrap();
-        assert!(output.contains(expected_output));
-    } else {
-        assert!(assert_result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(&DATAERR.to_string()));
-    }
+    assert_output(&mut cmd, result, "There was an error", DATAERR);
 }
