@@ -52,7 +52,11 @@ class SeleniumManager:
 
         file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
 
-        path = Path(__file__).parent.joinpath(directory, file)
+        if os.getenv("SE_MANAGER_PATH"):
+            directory = os.getenv("SE_MANAGER_PATH")
+            path = f"{Path(directory)}/{file}"
+        else:
+            path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file() and os.environ["CONDA_PREFIX"]:
             # conda has a separate package selenium-manager, installs in bin
