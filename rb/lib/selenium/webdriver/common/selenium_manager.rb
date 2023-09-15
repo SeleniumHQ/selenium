@@ -31,7 +31,7 @@ module Selenium
         attr_writer :bin_path
 
         def bin_path
-          @bin_path ||= '../../../../../bin'
+          @bin_path ||= ENV.fetch('SE_MANAGER_PATH', '../../../../../bin')
         end
 
         # @param [Options] options browser options.
