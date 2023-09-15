@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::path::PathBuf;
 use std::process::exit;
 
 use clap::Parser;
@@ -194,28 +195,47 @@ fn main() {
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            if driver_path.exists() {
-                log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
-            } else {
-                log.error(format!("Driver unavailable: {}", DRIVER_PATH));
-                flush_and_exit(UNAVAILABLE, log);
-            }
-            let browser_path = selenium_manager.get_browser_path();
-            if !browser_path.is_empty() {
-                log.info(format!("{}{}", BROWSER_PATH, browser_path));
-            }
+            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
             flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if selenium_manager.is_offline() {
-                log.warn(err.to_string());
+            if let Some(best_driver_from_cache) =
+                selenium_manager.find_best_driver_from_cache().unwrap()
+            {
+                log.warn(format!(
+                    "There was an error managing {} ({}); using driver found in the cache",
+                    selenium_manager.get_browser_name(),
+                    err
+                ));
+                log_driver_and_browser_path(
+                    log,
+                    &best_driver_from_cache,
+                    selenium_manager.get_browser_path(),
+                );
                 flush_and_exit(OK, log);
             } else {
-                log.error(err.to_string());
-                flush_and_exit(DATAERR, log);
+                if selenium_manager.is_offline() {
+                    log.warn(err.to_string());
+                    flush_and_exit(OK, log);
+                } else {
+                    log.error(err.to_string());
+                    flush_and_exit(DATAERR, log);
+                }
             }
         });
+}
+
+fn log_driver_and_browser_path(log: &Logger, driver_path: &PathBuf, browser_path: &str) {
+    if driver_path.exists() {
+        log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
+    } else {
+        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        flush_and_exit(UNAVAILABLE, log);
+    }
+    if !browser_path.is_empty() {
+        log.info(format!("{}{}", BROWSER_PATH, browser_path));
+    }
 }
 
 fn flush_and_exit(code: i32, log: &Logger) -> ! {
