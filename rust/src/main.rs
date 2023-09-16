@@ -163,7 +163,7 @@ fn main() {
         }
         cli.force_browser_download = false;
         if !cli.avoid_browser_download {
-            log.warn("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
+            log.debug("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
         }
         cli.avoid_browser_download = true;
     }
