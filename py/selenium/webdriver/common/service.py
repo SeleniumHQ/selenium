@@ -23,9 +23,9 @@ import warnings
 from abc import ABC
 from abc import abstractmethod
 from platform import system
-from subprocess import DEVNULL
 from subprocess import PIPE
 from time import sleep
+from typing import TextIO
 from urllib import request
 from urllib.error import URLError
 
@@ -141,13 +141,12 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_output != PIPE and not (self.log_output == DEVNULL):
-            try:
-                # Todo: Be explicit in what we are catching here.
-                if hasattr(self.log_output, "close"):
-                    self.log_file.close()  # type: ignore
-            except Exception:
-                pass
+
+        if self.log_output != PIPE:
+            if isinstance(self.log_output, TextIO):
+                self.log_output.close()
+            elif isinstance(self.log_output, int):
+                os.close(self.log_output)
 
         if self.process is not None:
             try:
