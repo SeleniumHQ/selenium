@@ -65,7 +65,7 @@ public class v117Javascript extends Javascript<ScriptIdentifier, BindingCalled> 
 
   @Override
   protected Command<ScriptIdentifier> addScriptToEvaluateOnNewDocument(String script) {
-    return Page.addScriptToEvaluateOnNewDocument(script, Optional.empty(), Optional.empty());
+    return Page.addScriptToEvaluateOnNewDocument(script, Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   @Override
