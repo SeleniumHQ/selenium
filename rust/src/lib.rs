@@ -935,13 +935,7 @@ pub trait SeleniumManager {
     }
 
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
-        let canon_path = path_buf
-            .as_path()
-            .canonicalize()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .to_string();
+        let canon_path = path_buf_to_string(path_buf.as_path().canonicalize().unwrap_or(path_buf));
         if WINDOWS.is(self.get_os()) {
             canon_path.replace(UNC_PREFIX, "")
         } else {
