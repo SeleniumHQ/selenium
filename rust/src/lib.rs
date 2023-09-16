@@ -34,6 +34,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
+use walkdir::{DirEntry, WalkDir};
 
 use crate::downloads::download_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
@@ -591,6 +592,74 @@ pub trait SeleniumManager {
             self.download_driver()?;
         }
         Ok(driver_path)
+    }
+
+    fn is_driver(&self, entry: &DirEntry) -> bool {
+        let is_file = entry.path().is_file();
+
+        let is_driver = entry
+            .file_name()
+            .to_str()
+            .map(|s| s.contains(&self.get_driver_name_with_extension()))
+            .unwrap_or(false);
+
+        let match_os = entry
+            .path()
+            .to_str()
+            .map(|s| s.contains(self.get_platform_label()))
+            .unwrap_or(false);
+
+        is_file && is_driver && match_os
+    }
+
+    fn is_driver_and_matches_browser_version(&self, entry: &DirEntry) -> bool {
+        let match_driver_version = entry
+            .path()
+            .parent()
+            .unwrap_or(entry.path())
+            .file_name()
+            .map(|s| {
+                s.to_str()
+                    .unwrap_or_default()
+                    .starts_with(&self.get_major_browser_version())
+            })
+            .unwrap_or(false);
+
+        self.is_driver(entry) && match_driver_version
+    }
+
+    fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        let cache_path = self.get_cache_path()?;
+        let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
+            .into_iter()
+            .filter_map(|entry| entry.ok())
+            .filter(|entry| self.is_driver_and_matches_browser_version(entry))
+            .map(|entry| entry.path().to_owned())
+            .collect();
+
+        // First we look for drivers in cache that matches browser version (should work for Chrome and Edge)
+        if !drivers_in_cache_matching_version.is_empty() {
+            Ok(Some(
+                drivers_in_cache_matching_version
+                    .iter()
+                    .last()
+                    .unwrap()
+                    .to_owned(),
+            ))
+        } else {
+            // If not available, we look for the latest available driver in the cache
+            let drivers_in_cache: Vec<PathBuf> = WalkDir::new(&cache_path)
+                .into_iter()
+                .filter_map(|entry| entry.ok())
+                .filter(|entry| self.is_driver(entry))
+                .map(|entry| entry.path().to_owned())
+                .collect();
+            if !drivers_in_cache.is_empty() {
+                Ok(Some(drivers_in_cache.iter().last().unwrap().to_owned()))
+            } else {
+                Ok(None)
+            }
+        }
     }
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
