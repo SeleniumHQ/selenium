@@ -1265,7 +1265,6 @@ suite(
       it('can evaluate in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const secondTab = await driver.getWindowHandle()
         const manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()

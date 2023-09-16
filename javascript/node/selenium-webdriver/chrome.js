@@ -127,7 +127,6 @@
 
 'use strict'
 
-const io = require('./io')
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
 const CHROME_CAPABILITY_KEY = 'goog:chromeOptions'
