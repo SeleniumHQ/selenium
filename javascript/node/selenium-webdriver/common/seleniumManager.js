@@ -27,7 +27,7 @@ const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
 const { Capability } = require('../lib/capabilities')
 
-let debugMessagePrinted = false;
+let debugMessagePrinted = false
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -49,12 +49,12 @@ function getBinary() {
   const filePath = path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
-    throw new Error(`Unable to obtain Selenium Manager`)
+    throw new Error(`Unable to obtain Selenium Manager at ${filePath}`)
   }
 
   if (!debugMessagePrinted) {
     console.debug(`Selenium Manager binary found at ${filePath}`)
-    debugMessagePrinted = true; // Set the flag to true after printing the debug message
+    debugMessagePrinted = true // Set the flag to true after printing the debug message
   }
 
   return filePath
@@ -82,19 +82,17 @@ function driverLocation(options) {
     args.push('--browser-path', path.resolve(vendorOptions.binary))
   }
 
-  const proxyOptions = options.getProxy();
+  const proxyOptions = options.getProxy()
 
   // Check if proxyOptions exists and has properties
   if (proxyOptions && Object.keys(proxyOptions).length > 0) {
-    const httpProxy = proxyOptions['httpProxy'];
-    const sslProxy = proxyOptions['sslProxy'];
+    const httpProxy = proxyOptions['httpProxy']
+    const sslProxy = proxyOptions['sslProxy']
 
     if (httpProxy !== undefined) {
-      args.push('--proxy', httpProxy);
-    }
-
-    else if (sslProxy !== undefined) {
-      args.push('--proxy', sslProxy);
+      args.push('--proxy', httpProxy)
+    } else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy)
     }
   }
 
@@ -139,7 +137,7 @@ function driverLocation(options) {
   }
 }
 
-function logOutput (output) {
+function logOutput(output) {
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       console.warn(`${output.logs[key].message}`)

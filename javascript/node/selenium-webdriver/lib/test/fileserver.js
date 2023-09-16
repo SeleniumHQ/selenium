@@ -264,7 +264,7 @@ function handleUpload(request, response) {
         .contentType('html')
         .send(
           files.join('\n') +
-          '\n<script>window.top.window.onUploadDone();</script>'
+            '\n<script>window.top.window.onUploadDone();</script>'
         )
     }
   })
