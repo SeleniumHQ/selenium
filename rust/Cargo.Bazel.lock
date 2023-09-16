@@ -1,5 +1,5 @@
 {
-  "checksum": "0c722a74f5cadc8bb75a62763e298e0698afcb48a51d9f7bf6754e285caa644b",
+  "checksum": "1f16f4cfa433faeb0bd8242b382da4d71e41405dc8a07363d8c1f410ee0d651e",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -7636,6 +7636,47 @@
       },
       "license": "Apache-2.0 OR BSL-1.0"
     },
+    "same-file 1.0.6": {
+      "name": "same-file",
+      "version": "1.0.6",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/same-file/1.0.6/download",
+          "sha256": "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "same_file",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "same_file",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [],
+          "selects": {
+            "cfg(windows)": [
+              {
+                "id": "winapi-util 0.1.5",
+                "target": "winapi_util"
+              }
+            ]
+          }
+        },
+        "edition": "2018",
+        "version": "1.0.6"
+      },
+      "license": "Unlicense/MIT"
+    },
     "sct 0.7.0": {
       "name": "sct",
       "version": "0.7.0",
@@ -7772,6 +7813,10 @@
             {
               "id": "toml 0.7.6",
               "target": "toml"
+            },
+            {
+              "id": "walkdir 2.4.0",
+              "target": "walkdir"
             },
             {
               "id": "zip 0.6.6",
@@ -10299,6 +10344,52 @@
         "version": "0.2.0"
       },
       "license": "MIT/Apache-2.0"
+    },
+    "walkdir 2.4.0": {
+      "name": "walkdir",
+      "version": "2.4.0",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/walkdir/2.4.0/download",
+          "sha256": "d71d857dc86794ca4c280d616f7da00d2dbfd8cd788846559a6813e6aa4b54ee"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "walkdir",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "walkdir",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "same-file 1.0.6",
+              "target": "same_file"
+            }
+          ],
+          "selects": {
+            "cfg(windows)": [
+              {
+                "id": "winapi-util 0.1.5",
+                "target": "winapi_util"
+              }
+            ]
+          }
+        },
+        "edition": "2018",
+        "version": "2.4.0"
+      },
+      "license": "Unlicense/MIT"
     },
     "want 0.3.0": {
       "name": "want",

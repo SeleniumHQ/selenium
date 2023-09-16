@@ -36,7 +36,7 @@ use crate::config::OS::WINDOWS;
 use crate::{
     format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
     CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MV_PAYLOAD_COMMAND,
-    MV_PAYLOAD_OLD_VERSIONS_COMMAND, MV_SFX_COMMAND, PKGUTIL_COMMAND,
+    MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
 };
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -135,7 +135,7 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(DMG) {
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
-        uncompress_sfx(compressed_file, target, log, os)?
+        uncompress_sfx(compressed_file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -156,26 +156,29 @@ pub fn uncompress_sfx(
     compressed_file: &str,
     target: &Path,
     log: &Logger,
-    os: &str,
 ) -> Result<(), Box<dyn Error>> {
+    let zip_parent = Path::new(compressed_file).parent().unwrap();
     log.trace(format!(
-        "Uncompress {} to {}",
+        "Decompressing {} to {}",
         compressed_file,
-        target.display()
+        zip_parent.display()
     ));
+
     let file_bytes = read_bytes_from_file(compressed_file)?;
     let header = find_bytes(&file_bytes, SEVEN_ZIP_HEADER);
     let index_7z = header.ok_or("Incorrect SFX (self extracting exe) file")?;
     let file_reader = Cursor::new(&file_bytes[index_7z..]);
-    sevenz_rust::decompress(file_reader, target).unwrap();
+    sevenz_rust::decompress(file_reader, zip_parent).unwrap();
 
+    let zip_parent_str = path_buf_to_string(zip_parent.to_path_buf());
     let target_str = path_buf_to_string(target.to_path_buf());
-    let command = Command::new_single(format_two_args(MV_SFX_COMMAND, &target_str, &target_str));
-    log.trace(format!("Running command: {}", command.display()));
-    run_shell_command_by_os(os, command)?;
-
-    let setup_file = target.join("setup.exe");
-    fs::remove_file(setup_file.as_path())?;
+    let core_str = format!(r#"{}\core"#, zip_parent_str);
+    log.trace(format!(
+        "Moving extracted files and folders from {} to {}",
+        core_str, target_str
+    ));
+    create_parent_path_if_not_exists(target)?;
+    fs::rename(&core_str, &target_str)?;
 
     Ok(())
 }

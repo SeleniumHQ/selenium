@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::path::PathBuf;
 use std::process::exit;
 
 use clap::Parser;
@@ -126,7 +127,7 @@ struct Cli {
 }
 
 fn main() {
-    let cli = Cli::parse();
+    let mut cli = Cli::parse();
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
@@ -157,6 +158,18 @@ fn main() {
         flush_and_exit(DATAERR, &log);
     };
 
+    if cli.offline {
+        if cli.force_browser_download {
+            log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
+        }
+        cli.force_browser_download = false;
+        if !cli.avoid_browser_download {
+            log.debug("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
+        }
+        cli.avoid_browser_download = true;
+    }
+
+    // Logger set first so other setters can use it
     selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
@@ -164,10 +177,10 @@ fn main() {
     selenium_manager.set_os(cli.os.unwrap_or_default());
     selenium_manager.set_arch(cli.arch.unwrap_or_default());
     selenium_manager.set_ttl(cli.ttl);
-    selenium_manager.set_offline(cli.offline);
     selenium_manager.set_force_browser_download(cli.force_browser_download);
     selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
+    selenium_manager.set_offline(cli.offline);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -182,21 +195,26 @@ fn main() {
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            if driver_path.exists() {
-                log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
-            } else {
-                log.error(format!("Driver unavailable: {}", DRIVER_PATH));
-                flush_and_exit(UNAVAILABLE, log);
-            }
-            let browser_path = selenium_manager.get_browser_path();
-            if !browser_path.is_empty() {
-                log.info(format!("{}{}", BROWSER_PATH, browser_path));
-            }
+            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
             flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if selenium_manager.is_offline() {
+            if let Some(best_driver_from_cache) =
+                selenium_manager.find_best_driver_from_cache().unwrap()
+            {
+                log.warn(format!(
+                    "There was an error managing {} ({}); using driver found in the cache",
+                    selenium_manager.get_browser_name(),
+                    err
+                ));
+                log_driver_and_browser_path(
+                    log,
+                    &best_driver_from_cache,
+                    selenium_manager.get_browser_path(),
+                );
+                flush_and_exit(OK, log);
+            } else if selenium_manager.is_offline() {
                 log.warn(err.to_string());
                 flush_and_exit(OK, log);
             } else {
@@ -204,6 +222,18 @@ fn main() {
                 flush_and_exit(DATAERR, log);
             }
         });
+}
+
+fn log_driver_and_browser_path(log: &Logger, driver_path: &PathBuf, browser_path: &str) {
+    if driver_path.exists() {
+        log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
+    } else {
+        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        flush_and_exit(UNAVAILABLE, log);
+    }
+    if !browser_path.is_empty() {
+        log.info(format!("{}{}", BROWSER_PATH, browser_path));
+    }
 }
 
 fn flush_and_exit(code: i32, log: &Logger) -> ! {

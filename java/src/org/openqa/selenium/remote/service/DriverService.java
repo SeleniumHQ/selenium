@@ -444,15 +444,19 @@ public class DriverService implements Closeable {
     }
 
     protected OutputStream getLogOutput() {
+      if (logOutputStream != null) {
+        return logOutputStream;
+      }
       try {
-        return logOutputStream != null ? logOutputStream : new FileOutputStream(logFile);
+        File logFile = getLogFile();
+        return logFile == null ? ByteStreams.nullOutputStream() : new FileOutputStream(logFile);
       } catch (FileNotFoundException e) {
         throw new RuntimeException(e);
       }
     }
 
     protected void parseLogOutput(String logProperty) {
-      if (getLogFile() != null) {
+      if (getLogFile() != null || logOutputStream != null) {
         return;
       }
 

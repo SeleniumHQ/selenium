@@ -23,9 +23,9 @@ import warnings
 from abc import ABC
 from abc import abstractmethod
 from platform import system
-from subprocess import DEVNULL
 from subprocess import PIPE
 from time import sleep
+from typing import TextIO
 from urllib import request
 from urllib.error import URLError
 
@@ -141,13 +141,12 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_output != PIPE and not (self.log_output == DEVNULL):
-            try:
-                # Todo: Be explicit in what we are catching here.
-                if hasattr(self.log_output, "close"):
-                    self.log_file.close()  # type: ignore
-            except Exception:
-                pass
+
+        if self.log_output != PIPE:
+            if isinstance(self.log_output, TextIO):
+                self.log_output.close()
+            elif isinstance(self.log_output, int):
+                os.close(self.log_output)
 
         if self.process is not None:
             try:
@@ -203,16 +202,32 @@ class Service(ABC):
         cmd.extend(self.command_line_args())
         close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
         try:
-            self.process = subprocess.Popen(
-                cmd,
-                env=self.env,
-                close_fds=close_file_descriptors,
-                stdout=self.log_output,
-                stderr=self.log_output,
-                stdin=PIPE,
-                creationflags=self.creation_flags,
-                **self.popen_kw,
-            )
+            if system() == "Windows":
+                si = subprocess.STARTUPINFO()
+                si.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                si.wShowWindow = subprocess.SW_HIDE
+                self.process = subprocess.Popen(
+                    cmd,
+                    env=self.env,
+                    close_fds=close_file_descriptors,
+                    stdout=self.log_output,
+                    stderr=self.log_output,
+                    stdin=PIPE,
+                    creationflags=self.creation_flags,
+                    startupinfo=si,
+                    **self.popen_kw,
+                )
+            else:
+                self.process = subprocess.Popen(
+                    cmd,
+                    env=self.env,
+                    close_fds=close_file_descriptors,
+                    stdout=self.log_output,
+                    stderr=self.log_output,
+                    stdin=PIPE,
+                    creationflags=self.creation_flags,
+                    **self.popen_kw,
+                )
             logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
         except TypeError:
             raise

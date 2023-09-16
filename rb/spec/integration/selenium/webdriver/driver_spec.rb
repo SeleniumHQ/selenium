@@ -24,7 +24,7 @@ module Selenium
     describe Driver do
       it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
-      it 'creates default capabilities' do
+      it 'creates default capabilities', exclude: {browser: %i[safari safari_preview]} do
         reset_driver! do |driver|
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
@@ -147,7 +147,8 @@ module Selenium
           }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
         end
 
-        it 'raises if invalid locator' do
+        it 'raises if invalid locator',
+           exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect {
             driver.find_element(xpath: '*?//-')
