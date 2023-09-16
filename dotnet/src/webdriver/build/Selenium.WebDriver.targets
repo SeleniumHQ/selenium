@@ -6,23 +6,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(Selenium_Manager_BinariesRootPath)\linux\selenium-manager">
+    <Content Include="$(Selenium_Manager_BinariesRootPath)\linux\selenium-manager">
       <Link>selenium-manager\linux\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
-    </None>
+    </Content>
 
-    <None Include="$(Selenium_Manager_BinariesRootPath)\macos\selenium-manager">
+    <Content Include="$(Selenium_Manager_BinariesRootPath)\macos\selenium-manager">
       <Link>selenium-manager\macos\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
-    </None>
+    </Content>
 
-    <None Include="$(Selenium_Manager_BinariesRootPath)\windows\selenium-manager.exe">
+    <Content Include="$(Selenium_Manager_BinariesRootPath)\windows\selenium-manager.exe">
       <Link>selenium-manager\windows\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>

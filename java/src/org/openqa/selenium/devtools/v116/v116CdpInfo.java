@@ -14,17 +14,16 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.interactions;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
+package org.openqa.selenium.devtools.v116;
 
-@SelectClasses({
-  DefaultKeyboardTest.class,
-  DefaultMouseTest.class,
-  CombinedInputActionsTest.class,
-  CompositeActionTest.class,
-  DragAndDropTest.class
-})
-@Suite
-class InteractionTests {}
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
+
+@AutoService(CdpInfo.class)
+public class v116CdpInfo extends CdpInfo {
+
+  public v116CdpInfo() {
+    super(116, v116Domains::new);
+  }
+}

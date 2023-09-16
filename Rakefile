@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.11'
+  '4.12'
 end
 
 def version
-  "#{release_version}.0"
+  "#{release_version}.1"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v113:v113.publish
   //java/src/org/openqa/selenium/devtools/v114:v114.publish
   //java/src/org/openqa/selenium/devtools/v115:v115.publish
+  //java/src/org/openqa/selenium/devtools/v116:v116.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -113,6 +113,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
   //java/src/org/openqa/selenium/manager:manager.publish
+  //java/src/org/openqa/selenium/os:os.publish
   //java/src/org/openqa/selenium/remote/http/jdk:jdk.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish

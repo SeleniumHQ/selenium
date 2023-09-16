@@ -5,6 +5,7 @@ py_binary(
     name = "pinned_browsers",
     srcs = ["pinned_browsers.py"],
     deps = [
+        requirement("packaging"),
         requirement("urllib3"),
     ],
 )

@@ -1,4 +1,4 @@
-﻿namespace {{rootNamespace}}.{{domain.Name}}
+namespace {{rootNamespace}}.{{domain.Name}}
 {
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
@@ -11,6 +11,9 @@
     public enum {{className}}
     {
     {{#each type.Enum}}
+        /// <summary>
+        /// Enumerated member for the {{this}} value.
+        /// </summary>
         [EnumMember(Value = "{{this}}")]
         {{dehumanize this}},
     {{/each}}

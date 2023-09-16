@@ -36,7 +36,7 @@ def test_log_output_as_filename() -> None:
     service = Service(log_output=log_file)
     try:
         driver = Firefox(service=service)
-        with open(log_file, "r") as fp:
+        with open(log_file) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()
@@ -49,7 +49,7 @@ def test_log_output_as_file() -> None:
     service = Service(log_output=log_file)
     try:
         driver = Firefox(service=service)
-        with open(log_name, "r") as fp:
+        with open(log_name) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()
@@ -73,7 +73,7 @@ def test_log_output_default_deprecated() -> None:
     try:
         with pytest.warns(match=msg, expected_warning=DeprecationWarning):
             driver = Firefox()
-        with open(log_name, "r") as fp:
+        with open(log_name) as fp:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()

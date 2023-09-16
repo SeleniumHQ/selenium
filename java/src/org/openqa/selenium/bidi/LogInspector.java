@@ -59,14 +59,6 @@ public class LogInspector implements AutoCloseable {
     this.browsingContextIds = browsingContextIds;
   }
 
-  @Deprecated
-  public void onConsoleLog(Consumer<ConsoleLogEntry> consumer) {
-    Consumer<LogEntry> logEntryConsumer =
-        logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
-
-    addLogEntryAddedListener(logEntryConsumer);
-  }
-
   public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);

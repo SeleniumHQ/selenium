@@ -1,4 +1,4 @@
-name: build-selenium-manager
+name: Build selenium-manager
 
 on: workflow_dispatch
 
@@ -10,7 +10,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
@@ -31,24 +31,21 @@ jobs:
   linux64:
     name: "[Linux x64] Build selenium-manager"
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=-crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
           rustc -vV
-      - name: "Install zig"
+      - name: "Install cross"
         run: |
-          sudo snap install zig --beta --classic
+          cargo install cross --git https://github.com/cross-rs/cross
+          cross -V
       - name: "Build release"
         run: |
           cd rust
-          cargo install cargo-zigbuild
-          rustup target add x86_64-unknown-linux-musl
-          cargo zigbuild --release --target x86_64-unknown-linux-musl
+          cross build --target x86_64-unknown-linux-musl --release
       - name: "Tar binary (to keep executable permission)"
         run: |
           cd rust/target/x86_64-unknown-linux-musl/release
@@ -61,28 +58,40 @@ jobs:
           retention-days: 6
 
   macos64:
-    name: "[macOS x64] Build selenium-manager"
+    name: "[macOS x64/arm64] Build selenium-manager"
     runs-on: macos-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add aarch64-apple-darwin
           rustc -vV
-      - name: "Build release"
+      - name: "Build x64"
         run: |
           cd rust
           cargo build --release --target x86_64-apple-darwin
+      - name: "Build arm64"
+        run: |
+          cd rust
+          cargo build --release --target aarch64-apple-darwin
+      - name: "Build universal"
+        run: |
+          cd rust
+          lipo -create \
+            -output target/selenium-manager \
+            target/aarch64-apple-darwin/release/selenium-manager \
+            target/x86_64-apple-darwin/release/selenium-manager
       - name: "Tar binary (to keep executable permission)"
         run: |
-          cd rust/target/x86_64-apple-darwin/release
-          tar -cvf ../../../../selenium-manager.tar selenium-manager
+          cd rust/target
+          tar -cvf ../../selenium-manager.tar selenium-manager
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
         with:
-          name: selenium-manager_macos-x64
+          name: selenium-manager_macos-universal
           path: selenium-manager.tar
           retention-days: 6

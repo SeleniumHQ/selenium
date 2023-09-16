@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasNetworkConditions
     implements AugmenterProvider<HasNetworkConditions>, AdditionalHttpCommands {

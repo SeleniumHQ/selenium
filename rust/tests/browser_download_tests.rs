@@ -17,44 +17,52 @@
 
 use assert_cmd::Command;
 
-use crate::common::assert_driver_and_browser;
+use crate::common::{assert_browser, assert_driver};
 use rstest::rstest;
 
 mod common;
 
-#[test]
-fn chrome_latest_download_test() {
+#[rstest]
+#[case("chrome")]
+#[case("firefox")]
+fn browser_latest_download_test(#[case] browser: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
-        "chrome",
+        &browser,
         "--force-browser-download",
         "--output",
         "json",
+        "--debug",
     ])
     .assert()
     .success()
     .code(0);
 
-    assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }
 
 #[rstest]
-#[case("113")]
-#[case("beta")]
-fn chrome_version_download_test(#[case] browser_version: String) {
+#[case("chrome", "113")]
+#[case("chrome", "beta")]
+#[case("firefox", "116")]
+#[case("firefox", "beta")]
+fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
-        "chrome",
+        &browser,
         "--browser-version",
         &browser_version,
         "--output",
         "json",
+        "--debug",
     ])
     .assert()
     .success()
     .code(0);
 
-    assert_driver_and_browser(&mut cmd);
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }

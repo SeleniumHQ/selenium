@@ -25,7 +25,8 @@ use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
 use crate::downloads::parse_json_from_url;
 use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, WINDOWS,
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
+    REG_VERSION_ARG, STABLE, WINDOWS,
 };
 
 use crate::metadata::{
@@ -61,13 +62,13 @@ impl IExplorerManager {
         let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
-        config.os = WINDOWS.to_str().to_string();
+        config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
             driver_url: None,
         }))
     }
@@ -87,11 +88,18 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::new()
+        HashMap::from([(
+            BrowserPath::new(WINDOWS, STABLE),
+            r#"Internet Explorer\iexplore.exe"#,
+        )])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
-        None
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.general_discover_browser_version(
+            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            REG_VERSION_ARG,
+            "",
+        )
     }
 
     fn get_driver_name(&self) -> &str {
@@ -101,7 +109,7 @@ impl SeleniumManager for IExplorerManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger());
+        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -148,15 +156,15 @@ impl SeleniumManager for IExplorerManager {
                         self.get_logger(),
                     )?;
 
-                    let driver_ttl = self.get_driver_ttl();
-                    if driver_ttl > 0 && !major_browser_version.is_empty() {
+                    let driver_ttl = self.get_ttl();
+                    if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger());
+                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
                     }
 
                     Ok(driver_version)
@@ -186,14 +194,14 @@ impl SeleniumManager for IExplorerManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
-        let driver_version = self.get_driver_version();
-        let _minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
-        compose_driver_path_in_cache(self.driver_name, "Windows", "win32", driver_version)
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(compose_driver_path_in_cache(
+            self.get_cache_path()?,
+            self.driver_name,
+            "Windows",
+            self.get_platform_label(),
+            self.get_driver_version(),
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -218,5 +226,17 @@ impl SeleniumManager for IExplorerManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        "win32"
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
     }
 }

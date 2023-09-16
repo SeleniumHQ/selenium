@@ -278,15 +278,13 @@ public abstract class Route implements HttpHandler, Routable {
 
       HttpRequest toForward = new HttpRequest(request.getMethod(), unprefixed);
 
-      request
-          .getHeaderNames()
-          .forEach(
-              name -> {
-                if (name == null) {
-                  return;
-                }
-                request.getHeaders(name).forEach(value -> toForward.addHeader(name, value));
-              });
+      request.forEachHeader(
+          (name, value) -> {
+            if (name == null) {
+              return;
+            }
+            toForward.addHeader(name, value);
+          });
 
       request
           .getAttributeNames()

@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 

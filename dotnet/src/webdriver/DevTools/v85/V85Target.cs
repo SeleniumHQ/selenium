@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.DevTools.V85
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V86Target"/> class.
+        /// Initializes a new instance of the <see cref="V85Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
         public V85Target(TargetAdapter adapter)
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.DevTools.V85
         public override async Task<ReadOnlyCollection<TargetInfo>> GetTargets(Object settings = null)
         {
             List<TargetInfo> targets = new List<TargetInfo>();
-            var response = await adapter.GetTargets();
+            var response = await adapter.GetTargets().ConfigureAwait(false);
             for (int i = 0; i < response.TargetInfos.Length; i++)
             {
                 var targetInfo = response.TargetInfos[i];
@@ -83,7 +83,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// </returns>
         public override async Task<string> AttachToTarget(string targetId)
         {
-            var result = await adapter.AttachToTarget(new AttachToTargetCommandSettings() { TargetId = targetId, Flatten = true });
+            var result = await adapter.AttachToTarget(new AttachToTargetCommandSettings() { TargetId = targetId, Flatten = true }).ConfigureAwait(false);
             return result.SessionId;
         }
 
@@ -92,15 +92,14 @@ namespace OpenQA.Selenium.DevTools.V85
         /// </summary>
         /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
         /// <param name="targetId">The ID of the target from which to detach.</param>
-        /// <returns>
-        /// A task representing the asynchronous detach operation.
+        /// <returns>A task representing the asynchronous detach operation.</returns>
         public override async Task DetachFromTarget(string sessionId = null, string targetId = null)
         {
             await adapter.DetachFromTarget(new DetachFromTargetCommandSettings()
             {
                 SessionId = sessionId,
                 TargetId = targetId
-            });
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task SetAutoAttach()
         {
-            await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true });
+            await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true }).ConfigureAwait(false);
         }
 
         private void OnDetachedFromTarget(object sender, DetachedFromTargetEventArgs e)

@@ -6,7 +6,6 @@ using OpenQA.Selenium.Environment;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
     public class AlertsTest : DriverTestFixture
     {
         [Test]

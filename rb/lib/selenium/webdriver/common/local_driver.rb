@@ -20,35 +20,26 @@
 module Selenium
   module WebDriver
     module LocalDriver
-      def initialize_local_driver(capabilities, options, service, url)
+      def initialize_local_driver(options, service, url)
         raise ArgumentError, "Can't initialize #{self.class} with :url" if url
 
         service ||= Service.send(browser)
-        caps = process_options(options, capabilities, service)
+        caps = process_options(options, service)
         url = service_url(service)
 
         [caps, url]
       end
 
-      def process_options(options, capabilities, service)
+      def process_options(options, service)
         default_options = Options.send(browser)
+        options ||= default_options
 
-        if options && capabilities
-          msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
-          raise ArgumentError, msg
-        elsif options && !options.is_a?(default_options.class)
+        unless options.is_a?(default_options.class)
           raise ArgumentError, ":options must be an instance of #{default_options.class}"
-        elsif capabilities
-          WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
-                                     ":options argument with an instance of #{self.class}",
-                                     id: :capabilities)
-          service.executable_path ||= WebDriver::DriverFinder.path(capabilities, service.class)
-          generate_capabilities(capabilities)
-        else
-          options ||= default_options
-          service.executable_path ||= WebDriver::DriverFinder.path(options, service.class)
-          options.as_json
         end
+
+        service.executable_path ||= WebDriver::DriverFinder.path(options, service.class)
+        options.as_json
       end
     end
   end

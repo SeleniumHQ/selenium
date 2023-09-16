@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::config::BooleanKey;
 use crate::metadata::now_unix_timestamp;
 use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
@@ -70,6 +71,12 @@ pub struct JsonOutput {
 }
 
 impl Logger {
+    pub fn new() -> Self {
+        let debug = BooleanKey("debug", false).get_value();
+        let trace = BooleanKey("trace", false).get_value();
+        Logger::create("", debug, trace)
+    }
+
     pub fn create(output: &str, debug: bool, trace: bool) -> Self {
         let output_type;
         if output.eq_ignore_ascii_case("json") {

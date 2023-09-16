@@ -58,26 +58,26 @@ config_setting(
         "requires-network",
     ],
     target_frameworks = select({
-        ":netframework": ["net471"],
-        ":netcore": ["netcoreapp3.1"],
-        "//conditions:default": ["netcoreapp3.1"],
+        ":netframework": ["net48"],
+        ":netcore": ["net6.0"],
+        "//conditions:default": ["net6.0"],
     }),
     visibility = ["//visibility:public"],
     deps = select({
         ":netframework": [
-            "//dotnet/src/webdriver:net47",
+            "//dotnet/src/webdriver",
             "@benderproxy//:BenderProxy",
             "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",
         ],
         ":netcore": [
-            "//dotnet/src/webdriver:netstandard2.1",
+            "//dotnet/src/webdriver",
             "@benderproxy//:BenderProxy",
             "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",
         ],
         "//conditions:default": [
-            "//dotnet/src/webdriver:netstandard2.1",
+            "//dotnet/src/webdriver",
             "@benderproxy//:BenderProxy",
             "@json.net//:Newtonsoft.Json",
             "@moq//:Moq",

@@ -32,13 +32,13 @@ java_binary(
     name = "pinned-grid",
     data = select({
         "//common:linux": [
-            "@linux_chrome//:chrome-linux/chrome",
+            "@linux_chrome//:chrome-linux64/chrome",
             "@linux_chromedriver//:chromedriver",
             "@linux_firefox//:firefox/firefox",
             "@linux_geckodriver//:geckodriver",
         ],
         "//common:macos": [
-            "@mac_chrome//:Chromium.app",
+            "@mac_chrome//:Chrome.app",
             "@mac_chromedriver//:chromedriver",
             "@mac_firefox//:Firefox.app",
             "@mac_geckodriver//:geckodriver",
@@ -48,13 +48,13 @@ java_binary(
     jvm_flags = select({
         "//common:linux": [
             "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
-            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux/chrome)",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux64/chrome)",
             "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
             "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
         ],
         "//common:macos": [
             "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
-            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",
             "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
         ],
@@ -215,7 +215,6 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
-    javadocopts = ["--no-module-directories"],
     third_party_prefixes = [
         "@maven//",
         "//third_party",

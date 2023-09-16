@@ -22,10 +22,10 @@ use std::error::Error;
 use std::path::PathBuf;
 use std::string::ToString;
 
-use crate::files::{path_buf_to_string, BrowserPath};
+use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
-use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
+use crate::{create_http_client, Logger, SeleniumManager, STABLE};
 
 pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
@@ -58,7 +58,7 @@ impl SafariTPManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
         }))
     }
 }
@@ -80,23 +80,8 @@ impl SeleniumManager for SafariTPManager {
         HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARITP_PATH)])
     }
 
-    fn discover_browser_version(&mut self) -> Option<String> {
-        let mut browser_path = self.get_browser_path().to_string();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = self.get_escaped_path(path_buf_to_string(path));
-                }
-                _ => return None,
-            }
-        }
-        let command = if MACOS.is(self.get_os()) {
-            vec![format_one_arg(PLIST_COMMAND, &browser_path)]
-        } else {
-            return None;
-        };
-        self.set_browser_path(SAFARITP_FULL_PATH.to_string());
-        self.detect_browser_version(command)
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+        self.discover_safari_version(SAFARITP_FULL_PATH.to_string())
     }
 
     fn get_driver_name(&self) -> &str {
@@ -115,8 +100,10 @@ impl SeleniumManager for SafariTPManager {
         Err(format!("{} not available for download", self.get_driver_name()).into())
     }
 
-    fn get_driver_path_in_cache(&self) -> PathBuf {
-        PathBuf::from("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver")
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+        Ok(PathBuf::from(
+            "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver",
+        ))
     }
 
     fn get_config(&self) -> &ManagerConfig {
@@ -141,5 +128,17 @@ impl SeleniumManager for SafariTPManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        ""
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
     }
 }

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
@@ -79,7 +80,7 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="options">The <see cref="SafariOptions"/> to use for this <see cref="SafariDriver"/> instance.</param>
         public SafariDriver(SafariOptions options)
-            : this(SafariDriverService.CreateDefaultService(options), options)
+            : this(SafariDriverService.CreateDefaultService(), options)
         {
         }
 
@@ -143,11 +144,28 @@ namespace OpenQA.Selenium.Safari
         /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public SafariDriver(SafariDriverService service, SafariOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             this.AddCustomSafariCommand(AttachDebuggerCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/attach_debugger");
             this.AddCustomSafariCommand(GetPermissionsCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/apple/permissions");
             this.AddCustomSafariCommand(SetPermissionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/permissions");
+        }
+
+        /// <summary>
+        /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+        {
+            if (service.DriverServicePath == null) {
+                string fullServicePath = DriverFinder.FullPath(options);
+                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+            }
+            return new DriverServiceCommandExecutor(service, commandTimeout);
         }
 
         /// <summary>

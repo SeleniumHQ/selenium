@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
 import com.google.common.net.MediaType;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,8 +40,8 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -59,7 +60,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get();
+    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
@@ -96,7 +97,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldProceedAsNormalIfRequestIsNotIntercepted() {
     interceptor =
         new NetworkInterceptor(
@@ -110,7 +111,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldAllowTheInterceptorToChangeTheResponse() {
     interceptor =
         new NetworkInterceptor(
@@ -132,7 +133,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
@@ -156,6 +157,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldClearListenersWhenNetworkInterceptorIsClosed() {
     try (NetworkInterceptor interceptor =
         new NetworkInterceptor(
@@ -181,7 +183,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldBeAbleToInterceptAResponse() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(
@@ -190,7 +192,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
                 next ->
                     req -> {
                       HttpResponse res = next.execute(req);
-                      res.addHeader("Content-Type", MediaType.HTML_UTF_8.toString());
+                      res.setHeader("Content-Type", MediaType.HTML_UTF_8.toString());
                       res.setContent(Contents.utf8String("Sausages"));
                       return res;
                     })) {
@@ -203,7 +205,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldHandleRedirects() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(driver, (Filter) next -> next)) {

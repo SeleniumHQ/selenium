@@ -109,9 +109,11 @@ namespace OpenQA.Selenium.Environment
             payloadDictionary["content"] = page.ToString();
             string commandPayload = JsonConvert.SerializeObject(payloadDictionary);
             byte[] data = Encoding.UTF8.GetBytes(commandPayload);
+
             HttpWebRequest request = HttpWebRequest.Create(createPageUri) as HttpWebRequest;
             request.Method = "POST";
             request.ContentType = "application/json;charset=utf8";
+            request.ServicePoint.Expect100Continue = false;
             Stream requestStream = request.GetRequestStream();
             requestStream.Write(data, 0, data.Length);
             requestStream.Close();

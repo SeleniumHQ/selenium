@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderTha
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,8 +37,8 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -56,7 +57,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get();
+    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
@@ -81,7 +82,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -118,7 +119,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally. Needs debugging.")
+  @NoDriverBeforeTest
   void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -155,6 +156,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptPostRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -191,7 +193,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally.")
+  @NoDriverBeforeTest
   void shouldInterceptDeleteRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -228,7 +230,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(gitHubActions = true, reason = "Fails in GH Actions but passes locally.")
+  @NoDriverBeforeTest
   void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =

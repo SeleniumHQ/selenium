@@ -26,25 +26,40 @@ class ElementScrollBehavior(Enum):
 
 
 class _IeOptionsDescriptor:
-    """IeOptionsDescriptor which validates below attributes of Options class:
+    """_IeOptionsDescriptor is an implementation of Descriptor Protocol:
 
-    - BROWSER_ATTACH_TIMEOUT
-    - ELEMENT_SCROLL_BEHAVIOR
-    - ENSURE_CLEAN_SESSION
-    - FILE_UPLOAD_DIALOG_TIMEOUT
-    - FORCE_CREATE_PROCESS_API
-    - FORCE_SHELL_WINDOWS_API
-    - FULL_PAGE_SCREENSHOT
-    - IGNORE_PROTECTED_MODE_SETTINGS
-    - IGNORE_ZOOM_LEVEL
-    - INITIAL_BROWSER_URL
-    - NATIVE_EVENTS
-    - PERSISTENT_HOVER
-    - REQUIRE_WINDOW_FOCUS
-    - USE_PER_PROCESS_PROXY
-    - USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING
-    - ATTACH_TO_EDGE_CHROME
-    - EDGE_EXECUTABLE_PATH
+    : Any look-up or assignment to the below attributes in `Options` class will be intercepted
+    by `__get__` and `__set__` method respectively.
+
+    - `browser_attach_timeout`
+    - `element_scroll_behavior`
+    - `ensure_clean_session`
+    - `file_upload_dialog_timeout`
+    - `force_create_process_api`
+    - `force_shell_windows_api`
+    - `full_page_screenshot`
+    - `ignore_protected_mode_settings`
+    - `ignore_zoom_level`
+    - `initial_browser_url`
+    - `native_events`
+    - `persistent_hover`
+    - `require_window_focus`
+    - `use_per_process_proxy`
+    - `use_legacy_file_upload_dialog_handling`
+    - `attach_to_edge_chrome`
+    - `edge_executable_path`
+
+
+    : When an attribute lookup happens,
+    Example:
+        `self. browser_attach_timeout`
+        `__get__` method does a dictionary look up in the dictionary `_options` in `Options` class
+        and returns the value of key `browserAttachTimeout`
+    : When an attribute assignment happens,
+    Example:
+        `self.browser_attach_timeout` = 30
+        `__set__` method sets/updates the value of the key `browserAttachTimeout` in `_options`
+        dictionary in `Options` class.
     """
 
     def __init__(self, name, expected_type):
@@ -59,8 +74,8 @@ class _IeOptionsDescriptor:
             raise ValueError(f"{self.name} should be of type {self.expected_type.__name__}")
 
         if self.name == "elementScrollBehavior" and value not in [
-            ElementScrollBehavior.TOP.value,
-            ElementScrollBehavior.BOTTOM.value,
+            ElementScrollBehavior.TOP,
+            ElementScrollBehavior.BOTTOM,
         ]:
             raise ValueError("Element Scroll Behavior out of range.")
         obj._options[self.name] = value
@@ -105,7 +120,7 @@ class Options(ArgOptions):
     `value`: `int` (Timeout) in milliseconds
     """
 
-    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, int)
+    element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, Enum)
     """Gets and Sets `element_scroll_behavior`
 
     Usage
@@ -352,12 +367,12 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """:Returns: A dictionary of browser options"""
+        """:Returns: A dictionary of browser options."""
         return self._options
 
     @property
     def additional_options(self) -> dict:
-        """:Returns: The additional options"""
+        """:Returns: The additional options."""
         return self._additional
 
     def add_additional_option(self, name: str, value):

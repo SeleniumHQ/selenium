@@ -25,6 +25,7 @@ const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
+const { Capability } = require('../lib/capabilities')
 
 let debugMessagePrinted = false;
 
@@ -78,7 +79,7 @@ function driverLocation(options) {
     options.get('ms:edgeOptions') ||
     options.get('moz:firefoxOptions')
   if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
-    args.push('--browser-path', '"' + vendorOptions.binary + '"')
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
   }
 
   const proxyOptions = options.getProxy();
@@ -124,6 +125,11 @@ function driverLocation(options) {
     throw new Error(
       `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
     )
+  }
+
+  // Once driverPath is available, delete browserVersion from payload
+  if (output.result.driver_path) {
+    options.delete(Capability.BROWSER_VERSION)
   }
 
   logOutput(output)

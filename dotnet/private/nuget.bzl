@@ -2,7 +2,6 @@ load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//dotnet/private:copy_files.bzl", "copy_files")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
-    "SUPPORTED_NET_FRAMEWORKS",
     "SUPPORTED_NET_STANDARD_VERSIONS",
 )
 
@@ -60,7 +59,7 @@ def _get_relative_destination_file(src_file):
     src_file_dirs = src_file.dirname.split("/")
     framework_dir = src_file_dirs[-1]
     for src_file_dir in reversed(src_file_dirs):
-        if src_file_dir in SUPPORTED_NET_FRAMEWORKS or src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
+        if src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
             framework_dir = src_file_dir
             break
     return "{}/{}".format(framework_dir, src_file.basename)

@@ -1,4 +1,4 @@
-// <copyright file="V113Target.cs" company="WebDriver Committers">
+// <copyright file="V116Target.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -21,22 +21,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V113.Target;
+using OpenQA.Selenium.DevTools.V116.Target;
 
-namespace OpenQA.Selenium.DevTools.V113
+namespace OpenQA.Selenium.DevTools.V116
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 113 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 116 of the DevTools Protocol
     /// </summary>
-    public class V113Target : DevTools.Target
+    public class V116Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V113Target"/> class.
+        /// Initializes a new instance of the <see cref="V116Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
-        public V113Target(TargetAdapter adapter)
+        public V116Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
             adapter.DetachedFromTarget += OnDetachedFromTarget;
@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.DevTools.V113
             {
                 settings = new GetTargetsCommandSettings();
             }
-            var response = await adapter.GetTargets((GetTargetsCommandSettings) settings);
+            var response = await adapter.GetTargets((GetTargetsCommandSettings) settings).ConfigureAwait(false);
             for (int i = 0; i < response.TargetInfos.Length; i++)
             {
                 var targetInfo = response.TargetInfos[i];
@@ -88,7 +88,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// </returns>
         public override async Task<string> AttachToTarget(string targetId)
         {
-            var result = await adapter.AttachToTarget(new AttachToTargetCommandSettings() { TargetId = targetId, Flatten = true });
+            var result = await adapter.AttachToTarget(new AttachToTargetCommandSettings() { TargetId = targetId, Flatten = true }).ConfigureAwait(false);
             return result.SessionId;
         }
 
@@ -97,15 +97,14 @@ namespace OpenQA.Selenium.DevTools.V113
         /// </summary>
         /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
         /// <param name="targetId">The ID of the target from which to detach.</param>
-        /// <returns>
-        /// A task representing the asynchronous detach operation.
+        /// <returns>A task representing the asynchronous detach operation.</returns>
         public override async Task DetachFromTarget(string sessionId = null, string targetId = null)
         {
             await adapter.DetachFromTarget(new DetachFromTargetCommandSettings()
             {
                 SessionId = sessionId,
                 TargetId = targetId
-            });
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -114,7 +113,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task SetAutoAttach()
         {
-            await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true });
+            await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true }).ConfigureAwait(false);
         }
 
         private void OnDetachedFromTarget(object sender, DetachedFromTargetEventArgs e)

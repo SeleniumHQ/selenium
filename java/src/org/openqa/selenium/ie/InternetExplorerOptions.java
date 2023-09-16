@@ -202,6 +202,12 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
+  /**
+   * Method that defines to use whether to use native or javascript events during operations.
+   *
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   public InternetExplorerOptions disableNativeEvents() {
     return amend(NATIVE_EVENTS, false);
   }

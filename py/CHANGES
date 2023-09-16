@@ -1,3 +1,15 @@
+Selenium 4.12.0
+* Add CDP files for v116 and remove v113
+* fix bug in ElementScrollBehavior in IE Options (#12462)
+* fix bug preventing sending keys with long strings (#12474)
+* fix typing for action_chains (#12477)
+* fix typing for IE Options (#12464)
+* fix bug in common options (#12499)
+* allow setting http client certifications with REQUESTS_CA_BUNDLE env (#11957)
+* support conda installation of selenium manager (#12536)
+* Drop support for `python3.7`
+* Fixed a bug where `Popen.wait()` calls caught the wrong exceptions when timing out
+
 Selenium 4.11.2
 * better bug fix for #12454
 

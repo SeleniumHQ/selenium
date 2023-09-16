@@ -53,6 +53,6 @@ public class DevMode {
           () -> Boolean.getBoolean("selenium.dev-mode"));
 
   public static boolean isInDevMode() {
-    return DEV_MODE_CHECKS.stream().map(Supplier::get).reduce(Boolean::logicalOr).orElse(false);
+    return DEV_MODE_CHECKS.stream().anyMatch(Supplier::get);
   }
 }

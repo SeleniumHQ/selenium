@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.IO;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -75,7 +76,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(options), options)
+            : this(InternetExplorerDriverService.CreateDefaultService(), options)
         {
         }
 
@@ -140,8 +141,25 @@ namespace OpenQA.Selenium.IE
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+        }
+
+        /// <summary>
+        /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+        {
+            if (service.DriverServicePath == null) {
+                string fullServicePath = DriverFinder.FullPath(options);
+                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+            }
+            return new DriverServiceCommandExecutor(service, commandTimeout);
         }
 
         /// <summary>

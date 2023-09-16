@@ -1,4 +1,4 @@
-// <copyright file="V113JavaScript.cs" company="WebDriver Committers">
+// <copyright file="V116JavaScript.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,25 +18,25 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V113.Page;
-using OpenQA.Selenium.DevTools.V113.Runtime;
+using OpenQA.Selenium.DevTools.V116.Page;
+using OpenQA.Selenium.DevTools.V116.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V113
+namespace OpenQA.Selenium.DevTools.V116
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 113 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 116 of the DevTools Protocol.
     /// </summary>
-    public class V113JavaScript : JavaScript
+    public class V116JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V113JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V116JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
-        public V113JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V116JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime;
             this.page = page;
@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task EnableRuntime()
         {
-            await runtime.Enable();
+            await runtime.Enable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task DisableRuntime()
         {
-            await runtime.Disable();
+            await runtime.Disable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task EnablePage()
         {
-            await page.Enable();
+            await page.Enable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task DisablePage()
         {
-            await page.Disable();
+            await page.Disable().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task AddBinding(string name)
         {
-            await runtime.AddBinding(new AddBindingCommandSettings() { Name = name });
+            await runtime.AddBinding(new AddBindingCommandSettings() { Name = name }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task RemoveBinding(string name)
         {
-            await runtime.RemoveBinding(new RemoveBindingCommandSettings() { Name = name });
+            await runtime.RemoveBinding(new RemoveBindingCommandSettings() { Name = name }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation. The task result contains the internal ID of the script.</returns>
         public override async Task<string> AddScriptToEvaluateOnNewDocument(string script)
         {
-            var result = await page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings() { Source = script });
+            var result = await page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings() { Source = script }).ConfigureAwait(false);
             return result.Identifier;
         }
 
@@ -119,7 +119,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task RemoveScriptToEvaluateOnNewDocument(string scriptId)
         {
-            await page.RemoveScriptToEvaluateOnNewDocument(new RemoveScriptToEvaluateOnNewDocumentCommandSettings() { Identifier = scriptId });
+            await page.RemoveScriptToEvaluateOnNewDocument(new RemoveScriptToEvaluateOnNewDocumentCommandSettings() { Identifier = scriptId }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace OpenQA.Selenium.DevTools.V113
         /// </remarks>
         internal override async Task Evaluate(string script)
         {
-            await runtime.Evaluate(new EvaluateCommandSettings { Expression = script });
+            await runtime.Evaluate(new EvaluateCommandSettings { Expression = script }).ConfigureAwait(false);
         }
 
         private void OnRuntimeBindingCalled(object sender, Runtime.BindingCalledEventArgs e)

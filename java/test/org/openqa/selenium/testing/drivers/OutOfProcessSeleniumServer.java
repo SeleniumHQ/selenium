@@ -23,16 +23,23 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.remote.service.DriverService;
 
 class OutOfProcessSeleniumServer {
 
@@ -60,7 +67,7 @@ class OutOfProcessSeleniumServer {
       throw new RuntimeException("Server already started");
     }
 
-    String serverJar = buildServerAndClasspath();
+    String serverBinary = buildServerAndClasspath();
 
     int port = PortProber.findFreePort();
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
@@ -74,16 +81,38 @@ class OutOfProcessSeleniumServer {
                   String key = String.valueOf(entry.getKey());
                   return key.startsWith("selenium") || key.startsWith("webdriver");
                 })
-            .map(entry -> "-D" + entry.getKey() + "=" + entry.getValue());
+            .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
+
+    // Only use Selenium Manager if we're not running with pinned browsers.
+    boolean driverProvided =
+        Stream.of(
+                GeckoDriverService.createDefaultService(),
+                EdgeDriverService.createDefaultService(),
+                ChromeDriverService.createDefaultService())
+            .map(DriverService::getDriverProperty)
+            .filter(Objects::nonNull)
+            .map(System::getProperty)
+            .anyMatch(Objects::nonNull);
+
+    List<String> startupArgs = new ArrayList<>();
+    startupArgs.add(mode);
+    startupArgs.add("--host");
+    startupArgs.add(localAddress);
+    startupArgs.add("--port");
+    startupArgs.add(String.valueOf(port));
+    if (!driverProvided) {
+      startupArgs.add("--selenium-manager");
+      startupArgs.add("true");
+    }
 
     command =
         new CommandLine(
-            "java",
+            serverBinary,
             Stream.concat(
                     javaFlags,
                     Stream.concat(
-                        Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
-                        Stream.of(extraFlags)))
+                        // If the driver is provided, we _don't_ want to use Selenium Manager
+                        startupArgs.stream(), Stream.of(extraFlags)))
                 .toArray(String[]::new));
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
@@ -135,13 +164,10 @@ class OutOfProcessSeleniumServer {
   private String buildServerAndClasspath() {
     if (DevMode.isInDevMode()) {
       Path serverJar =
-          InProject.locate(
-              "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+          InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       if (serverJar == null) {
         new BazelBuild().build("grid");
-        serverJar =
-            InProject.locate(
-                "bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+        serverJar = InProject.locate("bazel-bin/java/src/org/openqa/selenium/grid/selenium_server");
       }
       if (serverJar != null) {
         return serverJar.toAbsolutePath().toString();

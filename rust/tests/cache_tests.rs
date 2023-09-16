@@ -15,15 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v113;
+use crate::common::get_driver_path;
+use assert_cmd::Command;
+use std::fs;
+use std::path::Path;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+mod common;
 
-@AutoService(CdpInfo.class)
-public class v113CdpInfo extends CdpInfo {
+#[test]
+fn cache_path_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let tmp_cache_folder_name = "../tmp";
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--cache-path",
+        tmp_cache_folder_name,
+        "--output",
+        "json",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
-  public v113CdpInfo() {
-    super(113, v113Domains::new);
-  }
+    let driver_path = get_driver_path(&mut cmd);
+    println!("*** Custom cache path: {}", driver_path);
+    assert!(!driver_path.contains(r#"cache\selenium"#));
+
+    let tmp_cache_path = Path::new(tmp_cache_folder_name);
+    fs::remove_dir_all(tmp_cache_path).unwrap();
+    assert!(!tmp_cache_path.exists());
 }

@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         private WebElement element;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteCoordinates"/> class.
+        /// Initializes a new instance of the <see cref="ElementCoordinates"/> class.
         /// </summary>
         /// <param name="element">The <see cref="WebElement"/> to be located.</param>
         public ElementCoordinates(WebElement element)

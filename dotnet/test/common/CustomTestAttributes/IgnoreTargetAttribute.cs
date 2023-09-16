@@ -85,13 +85,7 @@ namespace OpenQA.Selenium
 
         private string CurrentPlatform()
         {
-#if NET6_0
             return "net6";
-#endif
-#if NET48
-            return "net48";
-#endif
-            return null;
         }
     }
 }

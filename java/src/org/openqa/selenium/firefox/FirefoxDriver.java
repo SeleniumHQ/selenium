@@ -398,14 +398,6 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_BINARY = "webdriver.firefox.bin";
 
     /**
-     * System property that defines the location of the file where Firefox log should be stored.
-     *
-     * @deprecated equivalent constant located at {@link
-     *     GeckoDriverService#GECKO_DRIVER_LOG_PROPERTY}
-     */
-    @Deprecated public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
-
-    /**
      * System property that defines the profile that should be used as a template. When the driver
      * starts, it will make a copy of the profile it is using, rather than using that profile
      * directly.
