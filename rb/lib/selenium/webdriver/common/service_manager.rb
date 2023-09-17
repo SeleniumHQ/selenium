@@ -40,8 +40,8 @@ module Selenium
         @executable_path = config.executable_path
         @host = Platform.localhost
         @port = config.port
-        @extra_args = config.args
         @io = config.log
+        @extra_args = config.args
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
