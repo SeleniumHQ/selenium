@@ -139,12 +139,12 @@ namespace OpenQA.Selenium
             string left = r2.GetCssValue("left");
             Assert.AreEqual(Math.Round(Convert.ToDecimal(left.Replace("px", "")), 1), 10.9);
             string top = r2.GetCssValue("top");
-            Assert.That(top, Does.StartWith("10.1"));
+            Assert.AreEqual(Math.Round(Convert.ToDecimal(top.Replace("px", "")), 1), 10.1);
             Assert.AreEqual(new Point(11, 10), r2.Location);
             string width = r2.GetCssValue("width");
-            Assert.That(width, Does.StartWith("48.6"));
+            Assert.AreEqual(Math.Round(Convert.ToDecimal(width.Replace("px", "")), 1), 48.6);
             string height = r2.GetCssValue("height");
-            Assert.That(height, Does.StartWith("49.3"));
+            Assert.AreEqual(Math.Round(Convert.ToDecimal(height.Replace("px", "")), 1), 49.3);
             Assert.AreEqual(r2.Size, new Size(49, 49));
         }
 
