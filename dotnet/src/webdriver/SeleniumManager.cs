@@ -38,28 +38,28 @@ namespace OpenQA.Selenium
 
         static SeleniumManager()
         {
-            var currentDirectory = AppContext.BaseDirectory;
+            binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
 
-            string file = "selenium-manager";
-            string binary = $"selenium-manager/linux/{file}";
+            if (string.IsNullOrEmpty(binaryFullPath))
+            {
+                var currentDirectory = AppContext.BaseDirectory;
 
-            if (Environment.GetEnvironmentVariable("SE_MANAGER_PATH") != null)
-            {
-                binaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                file = "selenium-manager.exe";
-                binary = $"selenium-manager/windows/{file}";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                binary = $"selenium-manager/macos/{file}";
-            }
-
-            if (binaryFullPath == null)
-            {
-                binaryFullPath = Path.Combine(currentDirectory, binary);
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/windows/selenium-manager.exe");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/linux/selenium-manager");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/macos/selenium-manager");
+                }
+                else
+                {
+                    throw new PlatformNotSupportedException($"Selenium Manager doesn't support you runtime platform: {RuntimeInformation.OSDescription}");
+                }
             }
 
             if (!File.Exists(binaryFullPath))
