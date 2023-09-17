@@ -53,9 +53,6 @@ class FirefoxProfile:
            This defaults to None and will create a new
            directory when object is created.
         """
-        warnings.warn(
-            "firefox_profile has been deprecated, please use an Options object", DeprecationWarning, stacklevel=2
-        )
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(
                 os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES), encoding="utf-8"
