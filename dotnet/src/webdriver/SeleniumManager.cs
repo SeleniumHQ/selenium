@@ -46,15 +46,15 @@ namespace OpenQA.Selenium
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/windows/selenium-manager.exe");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager\\windows\\selenium-manager.exe");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/linux/selenium-manager");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager\\linux\\selenium-manager");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager/macos/selenium-manager");
+                    binaryFullPath = Path.Combine(currentDirectory, "selenium-manager\\macos\\selenium-manager");
                 }
                 else
                 {
