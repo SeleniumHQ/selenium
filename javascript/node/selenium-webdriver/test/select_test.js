@@ -78,13 +78,10 @@ suite(
         let selector = new Select(
           driver.findElement(By.name(singleSelectValues1['name']))
         )
-        for (let x in singleSelectValues1['values']) {
-          await selector.selectByIndex(x)
+        for (let [index, value] of singleSelectValues1['values'].entries()) {
+          await selector.selectByIndex(index)
           let ele = await selector.getFirstSelectedOption()
-          assert.deepEqual(
-            await ele.getText(),
-            singleSelectValues1['values'][x]
-          )
+          assert.deepEqual(await ele.getText(), value)
         }
       })
 
