@@ -16,7 +16,6 @@
 # under the License.
 import typing
 
-from selenium.common import InvalidArgumentException
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
@@ -42,14 +41,12 @@ class ChromiumService(service.Service):
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        self.log_output = log_output
-        if "--append-log" in self.service_args or "--readable-timestamp" in self.service_args:
-            if isinstance(self.log_output, str):
-                self.service_args.append(f"--log-path={self.log_output}")
-                self.log_output = None
-            else:
-                msg = "Appending logs and readable timestamps require log output to be a string representing file path"
-                raise InvalidArgumentException(msg)
+
+        if isinstance(log_output, str):
+            self.service_args.append(f"--log-path={log_output}")
+            self.log_output = None
+        else:
+            self.log_output = log_output
 
         super().__init__(
             executable=executable_path,
