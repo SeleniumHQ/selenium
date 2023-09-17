@@ -1,3 +1,12 @@
+0.4.13
+======
+* Ensure logger is set first so other setters can use it (#12720)
+* Avoid using robocopy to move extracted files from sfx in windows (#12690)
+* Make sure offline sets associated flags (#12718)
+* Do not log a warning for defaults (#12754)
+* Search better driver possible in the cache (#12753)
+* Use original path when unwrap fails in canonicalize function (#12699)
+
 0.4.12
 ======
 

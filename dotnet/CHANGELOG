@@ -1,3 +1,12 @@
+v4.13.0
+======
+* Add CDP files for v117 and remove v114
+* Stabilize cdp network monitoring via increasing default timeout (#12701)
+* Configure await false to all awaitable invocations (#12664)
+* Update cdp default command timeout in inline docs (#12707)
+* Indicate end of output taken from selenium manager (#12744)
+* Declare selenium manager binaries as content (#12711)
+
 v4.12.4
 ======
 * No code changes; issue with 4.12.3 release
