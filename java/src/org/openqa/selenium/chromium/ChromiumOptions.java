@@ -205,20 +205,6 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
     return (T) this;
   }
 
-  /**
-   * @deprecated Use {@link #addArguments(String...)}. Recommended to use '--headless=chrome' as
-   *     argument for browsers v94-108. Recommended to use '--headless=new' as argument for browsers
-   *     v109+. Example: `addArguments("--headless=new")`.
-   */
-  @Deprecated
-  public T setHeadless(boolean headless) {
-    args.remove("--headless");
-    if (headless) {
-      args.add("--headless");
-    }
-    return (T) this;
-  }
-
   public T setAndroidPackage(String androidPackage) {
     Require.nonNull("Android package", androidPackage);
     return setAndroidCapability("androidPackage", androidPackage);
