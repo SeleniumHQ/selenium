@@ -19,6 +19,9 @@ package org.openqa.selenium.devtools.v117;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
@@ -29,10 +32,6 @@ import org.openqa.selenium.devtools.v117.target.Target;
 import org.openqa.selenium.devtools.v117.target.model.TargetInfo;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 public class v117Target implements org.openqa.selenium.devtools.idealized.target.Target {
 
