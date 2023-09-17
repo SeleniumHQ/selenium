@@ -98,33 +98,6 @@ class Options(ArgOptions):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
 
-    @property
-    def headless(self) -> bool:
-        """:Returns: True if the headless argument is set, else False."""
-        warnings.warn(
-            "headless property is deprecated, instead check for '-headless' in arguments",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return "-headless" in self._arguments
-
-    @headless.setter
-    def headless(self, value: bool) -> None:
-        """Sets the headless argument.
-
-        Args:
-          value: boolean value indicating to set the headless option
-        """
-        warnings.warn(
-            "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
-        )
-        if not isinstance(value, bool):
-            raise TypeError("value must be a boolean")
-        if value:
-            self._arguments.append("-headless")
-        elif "-headless" in self._arguments:
-            self._arguments.remove("-headless")
-
     def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
         super().enable_mobile(android_package, android_activity, device_serial)
 
