@@ -58,7 +58,7 @@ namespace OpenQA.Selenium
                 }
                 else
                 {
-                    throw new PlatformNotSupportedException($"Selenium Manager doesn't support you runtime platform: {RuntimeInformation.OSDescription}");
+                    throw new PlatformNotSupportedException($"Selenium Manager doesn't support your runtime platform: {RuntimeInformation.OSDescription}");
                 }
             }
 
