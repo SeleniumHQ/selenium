@@ -52,7 +52,7 @@ class Service(service.Service):
             self._service_args.append(f"--host-{host}")
 
         if log_level:
-            self._service_args.append(f"--log-level-{log_level}")
+            self._service_args.append(f"--log-level={log_level}")
 
         super().__init__(
             executable_path,
