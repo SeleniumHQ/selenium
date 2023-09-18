@@ -192,19 +192,21 @@ public class BrowsingContext {
             navigationInfoMapper));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt() {
+  public void handleUserPrompt() {
     this.bidi.send(new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id)));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(String userText) {
+  public void handleUserPrompt(boolean accept) {
+    this.bidi.send(
+      new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "accept", accept)));
+  }
+
+  public void handleUserPrompt(String userText) {
     this.bidi.send(
         new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "userText", userText)));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(boolean accept, String userText) {
+  public void handleUserPrompt(boolean accept, String userText) {
     this.bidi.send(
         new Command<>(
             HANDLE_USER_PROMPT,
