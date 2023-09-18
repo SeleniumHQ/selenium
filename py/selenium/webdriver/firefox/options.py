@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from typing import Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities

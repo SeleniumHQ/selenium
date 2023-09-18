@@ -17,8 +17,6 @@
 import os
 import subprocess
 
-import pytest
-
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.service import Service
 
