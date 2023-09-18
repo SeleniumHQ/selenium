@@ -201,6 +201,36 @@ class BrowsingContextTest extends JupiterTestBase {
   // TODO: Add a test for closing the last tab once the behavior is finalized
   // Refer: https://github.com/w3c/webdriver-bidi/issues/187
 
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canReloadABrowsingContext() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+
+    String url = server.whereIs("/bidi/logEntryAdded.html");
+    browsingContext.navigate(url, ReadinessState.COMPLETE);
+
+    NavigationResult reloadInfo = browsingContext.reload();
+
+    assertThat(reloadInfo.getNavigationId()).isNotNull();
+    assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canReloadWithReadinessState() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+
+    String url = server.whereIs("/bidi/logEntryAdded.html");
+    browsingContext.navigate(url, ReadinessState.COMPLETE);
+
+    NavigationResult reloadInfo = browsingContext.reload(ReadinessState.COMPLETE);
+
+    assertThat(reloadInfo.getNavigationId()).isNotNull();
+    assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
   @AfterEach
   public void quitDriver() {
     if (driver != null) {
