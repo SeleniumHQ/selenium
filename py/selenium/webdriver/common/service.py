@@ -54,7 +54,6 @@ class Service(ABC):
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
         **kwargs,
     ) -> None:
-        print("__init__ Main Service")
         if isinstance(log_output, str):
             self.log_output = open(log_output, "a+", encoding="utf-8")
         elif log_output is subprocess.STDOUT:

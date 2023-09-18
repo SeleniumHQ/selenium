@@ -39,8 +39,8 @@ class Service(service.Service):
          - executable_path : Path to the IEDriver
          - port : Port the service is running on
          - host : IP address the service port is bound
-         - log_level : Level of logging of service, may be "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL".
-           Default is "WARNING".
+         - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
+           Default is "FATAL".
          - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
            Default is "stdout".
         """
