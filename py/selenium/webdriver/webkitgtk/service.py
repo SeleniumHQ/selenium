@@ -41,7 +41,10 @@ class Service(service.Service):
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ):
-        self.service_args = service_args or []
+        if service_args is None:
+            service_args = []
+        self._service_args = service_args
+
         log_file = open(log_path, "wb") if log_path else None
         super().__init__(
             executable=executable_path,
@@ -51,5 +54,15 @@ class Service(service.Service):
             **kwargs,
         )  # type: ignore
 
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, list):
+            raise TypeError("service args must be a list")
+        self._service_args.extend(value)
+
     def command_line_args(self) -> typing.List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+        return ["-p", f"{self.port}"] + self._service_args

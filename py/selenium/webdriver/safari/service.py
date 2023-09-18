@@ -42,11 +42,14 @@ class Service(service.Service):
         reuse_service=False,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        if service_args is None:
+            service_args = []
+        self._service_args = service_args
+
         if quiet is not None:
             warnings.warn("quiet is no longer needed to supress output", DeprecationWarning, stacklevel=2)
+        self.reuse_service = reuse_service
 
-        self._reuse_service = reuse_service
         super().__init__(
             executable=executable_path,
             port=port,
@@ -54,8 +57,15 @@ class Service(service.Service):
             **kwargs,
         )
 
-    def command_line_args(self) -> typing.List[str]:
-        return ["-p", f"{self.port}"] + self.service_args
+    @property
+    def service_args(self):
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value):
+        if not isinstance(value, list):
+            raise TypeError("service args must be a list")
+        self._service_args.extend(value)
 
     @property
     def service_url(self) -> str:
@@ -71,3 +81,6 @@ class Service(service.Service):
         if not isinstance(reuse, bool):
             raise TypeError("reuse must be a boolean")
         self._reuse_service = reuse
+
+    def command_line_args(self) -> typing.List[str]:
+        return ["-p", f"{self.port}"] + self._service_args
