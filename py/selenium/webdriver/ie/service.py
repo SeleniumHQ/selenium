@@ -49,7 +49,7 @@ class Service(service.Service):
         self._service_args = service_args
 
         if host:
-            self._service_args.append(f"--host-{host}")
+            self._service_args.append(f"--host={host}")
 
         if log_level:
             self._service_args.append(f"--log-level={log_level}")
