@@ -30,9 +30,10 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_browser_metadata, create_http_client, download_to_tmp_folder,
+    create_browser_metadata, create_http_client, download_to_tmp_folder, format_two_args,
     get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger, SeleniumManager,
-    BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
+    BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE,
+    REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -413,12 +414,16 @@ impl SeleniumManager for EdgeManager {
 
     // TODO check
     fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
         let browser_version = self.get_browser_version();
         let edge_updates_url = if browser_version.is_empty() || self.is_browser_version_unstable() {
             BROWSER_URL.to_string()
         } else {
             format!("{}?view=enterprise", BROWSER_URL)
         };
+        self.get_logger()
+            .debug(format!("Checking Edge releases on {}", edge_updates_url));
+
         let edge_products = parse_json_from_url::<Vec<EdgeProduct>>(
             self.get_http_client(),
             edge_updates_url.clone(),
@@ -441,7 +446,9 @@ impl SeleniumManager for EdgeManager {
 
         let os = self.get_os();
         let arch = self.get_arch();
+        let os_label;
         let arch_label = if WINDOWS.is(os) {
+            os_label = "Windows";
             if ARM64.is(arch) {
                 "arm64"
             } else if X32.is(arch) {
@@ -450,8 +457,10 @@ impl SeleniumManager for EdgeManager {
                 "x64"
             }
         } else if MACOS.is(os) {
+            os_label = "MacOS";
             "universal"
         } else {
+            os_label = "Linux";
             "x64"
         };
         let releases: Vec<&Release> = products
@@ -460,8 +469,14 @@ impl SeleniumManager for EdgeManager {
             .releases
             .iter()
             .filter(|r| {
-                r.platform.eq_ignore_ascii_case(os)
-                    && r.architecture.eq_ignore_ascii_case(arch_label)
+                let os_arch = r.platform.eq_ignore_ascii_case(os_label)
+                    && r.architecture.eq_ignore_ascii_case(arch_label);
+                if !browser_version.is_empty() && !self.is_browser_version_unstable() {
+                    let browser_version_label = format!("{}.", browser_version);
+                    os_arch && r.product_version.starts_with(&browser_version_label)
+                } else {
+                    os_arch
+                }
             })
             .collect();
         self.get_logger().trace(format!("Releases: {:?}", releases));
@@ -473,6 +488,14 @@ impl SeleniumManager for EdgeManager {
         } else {
             "deb"
         };
+        if releases.is_empty() {
+            return Err(format_two_args(
+                ONLINE_DISCOVERY_ERROR_MESSAGE,
+                browser_name,
+                self.get_browser_version(),
+            )
+            .into());
+        }
         let release = releases.first().unwrap();
         let artifacts: Vec<&Artifact> = release
             .artifacts

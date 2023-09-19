@@ -35,7 +35,7 @@ use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_three_args,
     format_two_args, get_browser_version_from_metadata, path_to_string, uncompress, Logger,
     SeleniumManager, BETA, CANARY, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
-    REG_CURRENT_VERSION_ARG, STABLE,
+    ONLINE_DISCOVERY_ERROR_MESSAGE, REG_CURRENT_VERSION_ARG, STABLE,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -61,7 +61,6 @@ const FIREFOX_NIGHTLY_VOLUME: &str = r#"Firefox\ Nightly"#;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
-const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {} {} in online repository";
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
     "{} {} not available for downloading (minimum version: {})";
 
