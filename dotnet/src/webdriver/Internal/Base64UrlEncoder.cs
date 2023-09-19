@@ -1,7 +1,6 @@
 // Thanks to Microsoft.IdentityModel.Tokens package for this code.
 // https://raw.githubusercontent.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/6.19.0/src/Microsoft.IdentityModel.Tokens/Base64UrlEncoder.cs
 using System;
-using System.Text;
 
 namespace OpenQA.Selenium.Internal
 {
