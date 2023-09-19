@@ -414,7 +414,7 @@ impl SeleniumManager for EdgeManager {
     // TODO check
     fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
         let browser_version = self.get_browser_version();
-        let edge_updates_url = if browser_version.is_empty() {
+        let edge_updates_url = if browser_version.is_empty() || self.is_browser_version_unstable() {
             BROWSER_URL.to_string()
         } else {
             format!("{}?view=enterprise", BROWSER_URL)
@@ -459,7 +459,10 @@ impl SeleniumManager for EdgeManager {
             .unwrap()
             .releases
             .iter()
-            .filter(|r| r.architecture.eq_ignore_ascii_case(arch_label))
+            .filter(|r| {
+                r.platform.eq_ignore_ascii_case(os)
+                    && r.architecture.eq_ignore_ascii_case(arch_label)
+            })
             .collect();
         self.get_logger().trace(format!("Releases: {:?}", releases));
 
@@ -486,9 +489,8 @@ impl SeleniumManager for EdgeManager {
         Ok(browser_version)
     }
 
-    // TODO
     fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        self.unavailable_download()
+        self.request_latest_browser_version_from_online()
     }
 }
 
