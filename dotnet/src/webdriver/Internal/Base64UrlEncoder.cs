@@ -122,13 +122,6 @@ namespace OpenQA.Selenium.Internal
             return Encode(inArray, 0, inArray.Length);
         }
 
-        internal static string EncodeString(string str)
-        {
-            _ = str ?? throw new ArgumentNullException(nameof(str));
-
-            return Encode(Encoding.UTF8.GetBytes(str));
-        }
-
         /// <summary>
         ///  Converts the specified string, which encodes binary data as base-64-url digits, to an equivalent 8-bit unsigned integer array.</summary>
         /// <param name="str">base64Url encoded string.</param>
