@@ -75,9 +75,11 @@ impl EdgeManager {
     }
 
     // TODO check
-    fn get_browser_url(&self) -> Result<String, Box<dyn Error>> {
-        let browser_url = self.browser_url.clone();
-        Ok(browser_url.unwrap_or_default())
+    fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
+        if self.browser_url.is_none() {
+            self.request_latest_browser_version_from_online()?;
+        }
+        Ok(self.browser_url.clone().unwrap())
     }
 
     fn get_browser_binary_path_in_cache(
