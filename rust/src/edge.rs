@@ -32,8 +32,8 @@ use crate::metadata::{
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_two_args,
     get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger, SeleniumManager,
-    BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE,
-    REG_VERSION_ARG, STABLE,
+    BETA, CANARY, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    ONLINE_DISCOVERY_ERROR_MESSAGE, REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -80,14 +80,19 @@ impl EdgeManager {
         Ok(browser_url.unwrap_or_default())
     }
 
-    fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path_in_cache(
+        &self,
+        original_browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
-            let macos_app_name = if self.is_browser_version_beta() {
+            let macos_app_name = if original_browser_version.eq_ignore_ascii_case(BETA) {
                 EDGE_BETA_MACOS_APP_NAME
-            } else if self.is_browser_version_dev() {
+            } else if original_browser_version.eq_ignore_ascii_case(DEV) {
                 EDGE_DEV_MACOS_APP_NAME
-            } else if self.is_browser_version_nightly() {
+            } else if original_browser_version.eq_ignore_ascii_case(NIGHTLY)
+                || original_browser_version.eq_ignore_ascii_case(CANARY)
+            {
                 EDGE_CANARY_MACOS_APP_NAME
             } else {
                 EDGE_MACOS_APP_NAME
@@ -303,6 +308,7 @@ impl SeleniumManager for EdgeManager {
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         let browser_version;
         let browser_name = self.browser_name;
+        let original_browser_version = self.get_config().browser_version.clone();
         let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
         let major_browser_version = self.get_major_browser_version();
 
@@ -350,7 +356,8 @@ impl SeleniumManager for EdgeManager {
         ));
 
         // Checking if browser version is in the cache
-        let browser_binary_path = self.get_browser_binary_path_in_cache()?;
+        let browser_binary_path =
+            self.get_browser_binary_path_in_cache(&original_browser_version)?;
         if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} already in the cache",
@@ -421,8 +428,10 @@ impl SeleniumManager for EdgeManager {
         } else {
             format!("{}?view=enterprise", BROWSER_URL)
         };
-        self.get_logger()
-            .debug(format!("Checking Edge releases on {}", edge_updates_url));
+        self.get_logger().debug(format!(
+            "Checking {} releases on {}",
+            browser_name, edge_updates_url
+        ));
 
         let edge_products = parse_json_from_url::<Vec<EdgeProduct>>(
             self.get_http_client(),
