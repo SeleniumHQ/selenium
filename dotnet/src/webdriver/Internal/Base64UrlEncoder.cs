@@ -1,5 +1,5 @@
 // Thanks to Microsoft.IdentityModel.Tokens package for this code.
-
+// https://raw.githubusercontent.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/6.19.0/src/Microsoft.IdentityModel.Tokens/Base64UrlEncoder.cs
 using System;
 using System.Text;
 
@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encodes and Decodes strings as Base64Url encoding.
     /// </summary>
-    public static class Base64UrlEncoder
+    internal static class Base64UrlEncoder
     {
         private const char base64PadCharacter = '=';
         private const string doubleBase64PadCharacter = "==";
