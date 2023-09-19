@@ -30,21 +30,6 @@ namespace OpenQA.Selenium.Internal
         };
 
         /// <summary>
-        /// The following functions perform base64url encoding which differs from regular base64 encoding as follows
-        /// * padding is skipped so the pad character '=' doesn't have to be percent encoded
-        /// * the 62nd and 63rd regular base64 encoding characters ('+' and '/') are replace with ('-' and '_')
-        /// The changes make the encoding alphabet file and URL safe.
-        /// </summary>
-        /// <param name="arg">string to encode.</param>
-        /// <returns>Base64Url encoding of the UTF8 bytes.</returns>
-        public static string Encode(string arg)
-        {
-            _ = arg ?? throw new ArgumentNullException(nameof(arg));
-
-            return Encode(Encoding.UTF8.GetBytes(arg));
-        }
-
-        /// <summary>
         /// Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation which is encoded with base-64-url digits. Parameters specify
         /// the subset as an offset in the input array, and the number of elements in the array to convert.
         /// </summary>
@@ -177,16 +162,6 @@ namespace OpenQA.Selenium.Internal
             }
 
             return Convert.FromBase64String(str);
-        }
-
-        /// <summary>
-        /// Decodes the string from Base64UrlEncoded to UTF8.
-        /// </summary>
-        /// <param name="arg">string to decode.</param>
-        /// <returns>UTF8 string.</returns>
-        public static string Decode(string arg)
-        {
-            return Encoding.UTF8.GetString(DecodeBytes(arg));
         }
     }
 }
