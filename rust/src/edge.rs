@@ -425,10 +425,13 @@ impl SeleniumManager for EdgeManager {
     fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         let browser_version = self.get_browser_version();
-        let edge_updates_url = if browser_version.is_empty() || self.is_browser_version_unstable() {
-            BROWSER_URL.to_string()
-        } else {
+        let is_fixed_browser_version = !self.is_browser_version_empty()
+            && !self.is_browser_version_stable()
+            && !self.is_browser_version_unstable();
+        let edge_updates_url = if is_fixed_browser_version {
             format!("{}?view=enterprise", BROWSER_URL)
+        } else {
+            BROWSER_URL.to_string()
         };
         self.get_logger().debug(format!(
             "Checking {} releases on {}",
@@ -440,14 +443,16 @@ impl SeleniumManager for EdgeManager {
             edge_updates_url.clone(),
         )?;
 
-        let edge_channel = if self.is_browser_version_beta() {
+        let edge_channel = if self.is_browser_version_empty() || self.is_browser_version_stable() {
+            "Stable"
+        } else if self.is_browser_version_beta() {
             "Beta"
         } else if self.is_browser_version_dev() {
             "Dev"
         } else if self.is_browser_version_nightly() {
             "Canary"
         } else {
-            "Stable"
+            return Err(format!("Incorrect {} version: {}", browser_name, browser_version).into());
         };
         let products: Vec<&EdgeProduct> = edge_products
             .iter()
@@ -482,7 +487,7 @@ impl SeleniumManager for EdgeManager {
             .filter(|r| {
                 let os_arch = r.platform.eq_ignore_ascii_case(os_label)
                     && r.architecture.eq_ignore_ascii_case(arch_label);
-                if !browser_version.is_empty() && !self.is_browser_version_unstable() {
+                if is_fixed_browser_version {
                     let browser_version_label = format!("{}.", browser_version);
                     os_arch && r.product_version.starts_with(&browser_version_label)
                 } else {
