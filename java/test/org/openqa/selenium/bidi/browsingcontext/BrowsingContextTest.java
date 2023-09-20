@@ -336,6 +336,19 @@ class BrowsingContextTest extends JupiterTestBase {
     assertThat(driver.getPageSource()).doesNotContain(userText);
   }
 
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canCaptureScreenshot() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(pages.simpleTestPage);
+
+    String screenshot = browsingContext.captureScreenshot();
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
   private String alertPage() {
     return appServer.create(
       new Page()

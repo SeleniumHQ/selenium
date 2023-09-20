@@ -213,11 +213,10 @@ public class BrowsingContext {
             ImmutableMap.of(CONTEXT, id, "accept", accept, "userText", userText)));
   }
 
-  // Yet to be implemented by browser vendors
-  private String captureScreenshot() {
+  public String captureScreenshot() {
     return this.bidi.send(
         new Command<>(
-            HANDLE_USER_PROMPT,
+            "browsingContext.captureScreenshot",
             ImmutableMap.of(CONTEXT, id),
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
