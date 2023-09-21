@@ -18,8 +18,8 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command_by_os;
 use crate::{
-    default_cache_folder, format_one_arg, path_buf_to_string, Command, REQUEST_TIMEOUT_SEC,
-    UNAME_COMMAND,
+    default_cache_folder, format_one_arg, get_escaped_path, path_buf_to_string, Command,
+    REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
 };
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
 use std::cell::RefCell;
@@ -258,7 +258,8 @@ fn check_cache_path(value_in_config_or_env: String, default_value: String) -> St
 
 fn write_cache_path(cache_path: String) {
     CACHE_PATH.with(|value| {
-        *value.borrow_mut() = cache_path;
+        let os = StringKey(vec!["os"], OS).get_value();
+        *value.borrow_mut() = get_escaped_path(&os, cache_path);
     });
 }
 

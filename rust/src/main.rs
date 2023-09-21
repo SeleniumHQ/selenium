@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::path::PathBuf;
+use std::path::Path;
 use std::process::exit;
 
 use clap::Parser;
@@ -230,7 +230,7 @@ fn main() {
         });
 }
 
-fn log_driver_and_browser_path(log: &Logger, driver_path: &PathBuf, browser_path: &str) {
+fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
