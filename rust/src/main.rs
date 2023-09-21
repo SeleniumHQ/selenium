@@ -135,8 +135,14 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
-    let browser_name: String = cli.browser.unwrap_or_default();
-    let driver_name: String = cli.driver.unwrap_or_default();
+    let mut browser_name: String = cli.browser.unwrap_or_default();
+    let mut driver_name: String = cli.driver.unwrap_or_default();
+    if browser_name.is_empty() {
+        browser_name = StringKey(vec!["browser"], "").get_value();
+    }
+    if driver_name.is_empty() {
+        driver_name = StringKey(vec!["driver"], "").get_value();
+    }
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
