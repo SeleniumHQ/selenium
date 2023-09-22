@@ -351,26 +351,26 @@ class BrowsingContextTest extends JupiterTestBase {
 
   private String alertPage() {
     return appServer.create(
-      new Page()
-        .withTitle("Testing Alerts")
-        .withBody(
-          "<a href='#' id='alert' onclick='alert(\"works\");'>click me</a>"));
+        new Page()
+            .withTitle("Testing Alerts")
+            .withBody("<a href='#' id='alert' onclick='alert(\"works\");'>click me</a>"));
   }
 
   private String promptPage() {
     return appServer.create(
-      new Page()
-        .withTitle("Testing Alerts")
-        .withScripts(
-          "function myFunction() {",
-          "  let message = prompt('Please enter a message');",
-          "  if (message != null) {",
-          "    document.getElementById('result').innerHTML =",
-          "    'Message: ' + message ;",
-          "  }",
-          "}")
-        .withBody("<button id='alert' onclick='myFunction()'>Try it</button>",
-                  "<p id=\"result\"></p>"));
+        new Page()
+            .withTitle("Testing Alerts")
+            .withScripts(
+                "function myFunction() {",
+                "  let message = prompt('Please enter a message');",
+                "  if (message != null) {",
+                "    document.getElementById('result').innerHTML =",
+                "    'Message: ' + message ;",
+                "  }",
+                "}")
+            .withBody(
+                "<button id='alert' onclick='myFunction()'>Try it</button>",
+                "<p id=\"result\"></p>"));
   }
 
   @AfterEach

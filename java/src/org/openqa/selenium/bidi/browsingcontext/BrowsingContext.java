@@ -161,15 +161,17 @@ public class BrowsingContext {
   }
 
   public NavigationResult reload() {
-    return this.bidi.send(new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id), navigationInfoMapper));
+    return this.bidi.send(
+        new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id), navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
   private NavigationResult reload(boolean ignoreCache) {
-    return this.bidi.send(new Command<>(
-      RELOAD,
-      ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache),
-      navigationInfoMapper));
+    return this.bidi.send(
+        new Command<>(
+            RELOAD,
+            ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache),
+            navigationInfoMapper));
   }
 
   // TODO: Handle timeouts in case of Readiness state "interactive" and "complete".
@@ -177,9 +179,9 @@ public class BrowsingContext {
   public NavigationResult reload(ReadinessState readinessState) {
     return this.bidi.send(
         new Command<>(
-          RELOAD,
-          ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString()),
-          navigationInfoMapper));
+            RELOAD,
+            ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString()),
+            navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
@@ -198,7 +200,7 @@ public class BrowsingContext {
 
   public void handleUserPrompt(boolean accept) {
     this.bidi.send(
-      new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "accept", accept)));
+        new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "accept", accept)));
   }
 
   public void handleUserPrompt(String userText) {
