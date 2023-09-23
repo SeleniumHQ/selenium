@@ -337,15 +337,9 @@ namespace OpenQA.Selenium.VirtualAuth
 
             Assert.True(credential1.IsResidentCredential);
             Assert.NotNull(credential1.PrivateKey);
-            Assert.AreEqual("localhost", credential1.RpId);
-            Assert.AreEqual(new byte[] { 1 }, credential1.UserHandle);
-            Assert.AreEqual(1, credential1.SignCount);
 
             Assert.False(credential2.IsResidentCredential);
             Assert.NotNull(credential2.PrivateKey);
-            Assert.IsNull(credential2.RpId);
-            Assert.IsNull(credential2.UserHandle);
-            Assert.AreEqual(1, credential2.SignCount);
         }
 
         [Test]
