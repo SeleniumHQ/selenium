@@ -180,7 +180,8 @@ public class SeleniumManager {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
     } else if (!Files.exists(binary)) {
-      throw new WebDriverException(String.format("Unable to obtain Selenium Manager Binary at: %s", binary));
+      throw new WebDriverException(
+          String.format("Unable to obtain Selenium Manager Binary at: %s", binary));
     }
     binary.toFile().setExecutable(true);
 
