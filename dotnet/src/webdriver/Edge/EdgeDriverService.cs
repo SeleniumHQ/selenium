@@ -41,6 +41,12 @@ namespace OpenQA.Selenium.Edge
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new EdgeOptions();
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the service should use verbose logging.
         /// </summary>
