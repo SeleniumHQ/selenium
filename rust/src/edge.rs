@@ -31,9 +31,9 @@ use crate::metadata::{
 };
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_two_args,
-    get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger, SeleniumManager,
-    BETA, CANARY, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
-    ONLINE_DISCOVERY_ERROR_MESSAGE, REG_VERSION_ARG, STABLE,
+    get_binary_extension, get_browser_version_from_metadata, path_buf_to_string, uncompress,
+    Logger, SeleniumManager, BETA, CANARY, DASH_DASH_VERSION, DEV, NIGHTLY,
+    OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE, REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -42,6 +42,7 @@ const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products";
+const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
 const EDGE_BETA_MACOS_APP_NAME: &str = "Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta";
 const EDGE_DEV_MACOS_APP_NAME: &str = "Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev";
@@ -74,7 +75,6 @@ impl EdgeManager {
         }))
     }
 
-    // TODO check
     fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
         if self.browser_url.is_none() {
             self.request_latest_browser_version_from_online()?;
@@ -101,7 +101,11 @@ impl EdgeManager {
             };
             Ok(browser_in_cache.join(macos_app_name))
         } else {
-            Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
+            Ok(browser_in_cache.join(format!(
+                "{}{}",
+                EDGE_WINDOWS_AND_LINUX_APP_NAME,
+                get_binary_extension(self.get_os())
+            )))
         }
     }
 }
@@ -381,13 +385,26 @@ impl SeleniumManager for EdgeManager {
                 .get_major_browser_version()
                 .parse::<i32>()
                 .unwrap_or_default();
+
+            // TODO check
+            let extract_label = if original_browser_version.eq_ignore_ascii_case(BETA) {
+                Some("msedge-beta")
+            } else if original_browser_version.eq_ignore_ascii_case(DEV) {
+                Some("msedge-dev")
+            } else if original_browser_version.eq_ignore_ascii_case(NIGHTLY)
+                || original_browser_version.eq_ignore_ascii_case(CANARY)
+            {
+                Some("msedge-canary")
+            } else {
+                Some("msedge")
+            };
             uncompress(
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
                 self.get_logger(),
                 self.get_os(),
                 None,
-                None,
+                extract_label,
                 Some(major_browser_version_int),
             )?;
         }
@@ -443,16 +460,14 @@ impl SeleniumManager for EdgeManager {
             edge_updates_url.clone(),
         )?;
 
-        let edge_channel = if self.is_browser_version_empty() || self.is_browser_version_stable() {
-            "Stable"
-        } else if self.is_browser_version_beta() {
+        let edge_channel = if self.is_browser_version_beta() {
             "Beta"
         } else if self.is_browser_version_dev() {
             "Dev"
         } else if self.is_browser_version_nightly() {
             "Canary"
         } else {
-            return Err(format!("Incorrect {} version: {}", browser_name, browser_version).into());
+            "Stable"
         };
         let products: Vec<&EdgeProduct> = edge_products
             .iter()

@@ -49,6 +49,7 @@ const BZ2: &str = "bz2";
 const PKG: &str = "pkg";
 const DMG: &str = "dmg";
 const EXE: &str = "exe";
+const DEB: &str = "deb";
 const SEVEN_ZIP_HEADER: &[u8; 6] = b"7z\xBC\xAF\x27\x1C";
 const UNCOMPRESS_MACOS_ERR_MSG: &str = "{} files are only supported in macOS";
 
@@ -136,6 +137,8 @@ pub fn uncompress(
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log)?
+    } else if extension.eq_ignore_ascii_case(DEB) {
+        uncompress_deb(compressed_file, target, log, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -255,6 +258,36 @@ pub fn uncompress_dmg(
     command = Command::new_single(format_one_arg(HDIUTIL_DETACH_COMMAND, volume));
     log.trace(format!("Running command: {}", command.display()));
     run_shell_command_by_os(os, command)?;
+
+    Ok(())
+}
+
+pub fn uncompress_deb(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    label: &str,
+) -> Result<(), Box<dyn Error>> {
+    let zip_parent = Path::new(compressed_file).parent().unwrap();
+    log.trace(format!(
+        "Extracting from {} to {}",
+        compressed_file,
+        zip_parent.display()
+    ));
+
+    let deb_file = File::open(compressed_file)?;
+    let mut deb_pkg = debpkg::DebPkg::parse(deb_file)?;
+    deb_pkg.data()?.unpack(zip_parent)?;
+
+    let zip_parent_str = path_buf_to_string(zip_parent.to_path_buf());
+    let target_str = path_buf_to_string(target.to_path_buf());
+    let opt_edge_str = format!(r#"{}\opt\microsoft\{}"#, zip_parent_str, label);
+    log.trace(format!(
+        "Moving extracted files and folders from {} to {}",
+        opt_edge_str, target_str
+    ));
+    create_parent_path_if_not_exists(target)?;
+    fs::rename(&opt_edge_str, &target_str)?;
 
     Ok(())
 }
