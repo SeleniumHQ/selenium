@@ -6,6 +6,8 @@ v4.13.0
 * Update cdp default command timeout in inline docs (#12707)
 * Indicate end of output taken from selenium manager (#12744)
 * Declare selenium manager binaries as content (#12711)
+* Use the lowest version of Newtonsoft.Json as dependency (#12772, #12776)
+* Add browsing context methods for reload, screenshot and prompt
 
 v4.12.4
 ======
@@ -20,6 +22,7 @@ v4.12.3
 * Show output from selenium manager error stream (#12677)
 * Return Task instead of wait it in generated CDP method invocations (#12672)
 * Invoke console log api called event many times depending on count of args (#12669)
+* Allow users to set Selenium Manager path by environment variable (#12752)
 
 v4.12.2
 ======
