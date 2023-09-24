@@ -40,19 +40,22 @@ class SeleniumManager:
 
         :Returns: The Selenium Manager executable location
         """
-        platform = sys.platform
 
-        dirs = {
-            "darwin": "macos",
-            "win32": "windows",
-            "cygwin": "windows",
-        }
+        if os.getenv("SE_MANAGER_PATH"):
+            path = os.getenv("SE_MANAGER_PATH")
+        else:
+            platform = sys.platform
 
-        directory = dirs.get(platform) if dirs.get(platform) else platform
+            dirs = {
+                "darwin": "macos",
+                "win32": "windows",
+                "cygwin": "windows",
+            }
 
-        file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+            directory = dirs.get(platform) if dirs.get(platform) else platform
+            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
 
-        path = Path(__file__).parent.joinpath(directory, file)
+            path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file() and os.environ["CONDA_PREFIX"]:
             # conda has a separate package selenium-manager, installs in bin
