@@ -281,7 +281,7 @@ pub fn uncompress_deb(
 
     let zip_parent_str = path_buf_to_string(zip_parent.to_path_buf());
     let target_str = path_buf_to_string(target.to_path_buf());
-    let opt_edge_str = format!(r#"{}\opt\microsoft\{}"#, zip_parent_str, label);
+    let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
