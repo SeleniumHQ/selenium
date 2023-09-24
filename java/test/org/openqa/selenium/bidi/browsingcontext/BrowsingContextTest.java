@@ -19,9 +19,11 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -29,10 +31,12 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -200,6 +204,183 @@ class BrowsingContextTest extends JupiterTestBase {
 
   // TODO: Add a test for closing the last tab once the behavior is finalized
   // Refer: https://github.com/w3c/webdriver-bidi/issues/187
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canReloadABrowsingContext() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+
+    String url = server.whereIs("/bidi/logEntryAdded.html");
+    browsingContext.navigate(url, ReadinessState.COMPLETE);
+
+    NavigationResult reloadInfo = browsingContext.reload();
+
+    assertThat(reloadInfo.getNavigationId()).isNotNull();
+    assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canReloadWithReadinessState() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+
+    String url = server.whereIs("/bidi/logEntryAdded.html");
+    browsingContext.navigate(url, ReadinessState.COMPLETE);
+
+    NavigationResult reloadInfo = browsingContext.reload(ReadinessState.COMPLETE);
+
+    assertThat(reloadInfo.getNavigationId()).isNotNull();
+    assertThat(reloadInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canHandleUserPrompt() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(alertPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    browsingContext.handleUserPrompt();
+
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canAcceptUserPrompt() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(alertPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    browsingContext.handleUserPrompt(true);
+
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canDismissUserPrompt() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(alertPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    browsingContext.handleUserPrompt(false);
+
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canPassUserTextToUserPrompt() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(promptPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    String userText = "Selenium automates browsers";
+
+    browsingContext.handleUserPrompt(userText);
+
+    assertThat(driver.getPageSource()).contains(userText);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canAcceptUserPromptWithUserText() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(promptPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    String userText = "Selenium automates browsers";
+
+    browsingContext.handleUserPrompt(true, userText);
+
+    assertThat(driver.getPageSource()).contains(userText);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
+  void canDismissUserPromptWithUserText() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(promptPage());
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    String userText = "Selenium automates browsers";
+
+    browsingContext.handleUserPrompt(false, userText);
+
+    assertThat(driver.getPageSource()).doesNotContain(userText);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canCaptureScreenshot() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(pages.simpleTestPage);
+
+    String screenshot = browsingContext.captureScreenshot();
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
+  private String alertPage() {
+    return appServer.create(
+        new Page()
+            .withTitle("Testing Alerts")
+            .withBody("<a href='#' id='alert' onclick='alert(\"works\");'>click me</a>"));
+  }
+
+  private String promptPage() {
+    return appServer.create(
+        new Page()
+            .withTitle("Testing Alerts")
+            .withScripts(
+                "function myFunction() {",
+                "  let message = prompt('Please enter a message');",
+                "  if (message != null) {",
+                "    document.getElementById('result').innerHTML =",
+                "    'Message: ' + message ;",
+                "  }",
+                "}")
+            .withBody(
+                "<button id='alert' onclick='myFunction()'>Try it</button>",
+                "<p id=\"result\"></p>"));
+  }
 
   @AfterEach
   public void quitDriver() {

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::path::PathBuf;
+use std::path::Path;
 use std::process::exit;
 
 use clap::Parser;
@@ -135,8 +135,14 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
-    let browser_name: String = cli.browser.unwrap_or_default();
-    let driver_name: String = cli.driver.unwrap_or_default();
+    let mut browser_name: String = cli.browser.unwrap_or_default();
+    let mut driver_name: String = cli.driver.unwrap_or_default();
+    if browser_name.is_empty() {
+        browser_name = StringKey(vec!["browser"], "").get_value();
+    }
+    if driver_name.is_empty() {
+        driver_name = StringKey(vec!["driver"], "").get_value();
+    }
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
@@ -224,7 +230,7 @@ fn main() {
         });
 }
 
-fn log_driver_and_browser_path(log: &Logger, driver_path: &PathBuf, browser_path: &str) {
+fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {

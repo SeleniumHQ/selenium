@@ -74,26 +74,6 @@ public class GeckoDriverService extends FirefoxDriverService {
   /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link GeckoDriverService#GeckoDriverService(File, int, Duration, List, Map)}
-   */
-  @Deprecated
-  public GeckoDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    super(
-        executable,
-        port,
-        DEFAULT_TIMEOUT,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
-  }
-
-  /**
-   * @param executable The GeckoDriver executable.
-   * @param port Which port to start the GeckoDriver on.
    * @param timeout Timeout waiting for driver server to start.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
@@ -260,12 +240,6 @@ public class GeckoDriverService extends FirefoxDriverService {
       if (profileRoot != null) {
         args.add("--profile-root");
         args.add(profileRoot.getAbsolutePath());
-      }
-
-      // deprecated
-      if (firefoxBinary != null) {
-        args.add("--binary");
-        args.add(firefoxBinary.getPath());
       }
 
       if (allowHosts != null) {

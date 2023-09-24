@@ -1,3 +1,19 @@
+v4.13.0
+======
+* Supported CDP versions: 85, 115, 116, 117
+* Deprecate setScriptTimeout(), use scriptTimeout()
+* Remove deprecated method move on Point class
+* Remove deprecated method GeckoDriverService usingFirefoxBinary, use setBinary
+* Remove deprecated method GeckoDriverService createDefaultService with capabilities
+* Remove deprecated onConsoleLog in BiDi LogInspector
+* Fix NewSession Runner (#12700)
+* Add 'getArray' method for array values (#12703)
+* Ensure HttpClients not closed while waiting for responses
+* Fix bug for overwriting driver log output stream passed in by user
+* Update pinned browser versions
+* Improve stability with final variables (#12733)
+* Fix bug for Appium subclass that sets neither log file nor output (#12696)
+
 v4.12.1
 ======
 * Supported CDP versions: 85, 114, 115, 116

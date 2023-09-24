@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.12'
+  '4.13'
 end
 
 def version
-  "#{release_version}.1"
+  "#{release_version}.0-SNAPSHOT"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v114:v114.publish
   //java/src/org/openqa/selenium/devtools/v115:v115.publish
   //java/src/org/openqa/selenium/devtools/v116:v116.publish
+  //java/src/org/openqa/selenium/devtools/v117:v117.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish

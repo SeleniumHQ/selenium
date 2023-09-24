@@ -55,6 +55,24 @@ module Selenium
             expect(service.extra_args).to be_empty
           end
 
+          it 'uses sets log path to stdout' do
+            service = described_class.new(log: :stdout)
+
+            expect(service.log).to eq $stdout
+          end
+
+          it 'uses sets log path to stderr' do
+            service = described_class.new(log: :stderr)
+
+            expect(service.log).to eq $stderr
+          end
+
+          it 'sets log path as file location' do
+            service = described_class.new(log: '/path/to/log.txt')
+
+            expect(service.log).to eq '/path/to/log.txt'
+          end
+
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 

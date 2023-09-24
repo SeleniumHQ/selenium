@@ -92,26 +92,6 @@ public class ChromeDriverService extends DriverService {
   /**
    * @param executable The ChromeDriver executable.
    * @param port Which port to start the ChromeDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link ChromeDriverService#ChromeDriverService(File, int, Duration, List, Map)}
-   */
-  @Deprecated
-  public ChromeDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    this(
-        executable,
-        port,
-        DEFAULT_TIMEOUT,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
-  }
-
-  /**
-   * @param executable The ChromeDriver executable.
-   * @param port Which port to start the ChromeDriver on.
    * @param timeout Timeout waiting for driver server to start.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
@@ -246,20 +226,6 @@ public class ChromeDriverService extends DriverService {
         this.logLevel = ChromiumDriverLogLevel.ALL;
       }
       this.verbose = false;
-      return this;
-    }
-
-    /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
-     * the driver server.
-     *
-     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
-     * @return A self reference.
-     * @deprecated use {@link #withAllowedListIps(String)}
-     */
-    @Deprecated
-    public Builder withWhitelistedIps(String allowedListIps) {
-      this.allowedListIps = allowedListIps;
       return this;
     }
 

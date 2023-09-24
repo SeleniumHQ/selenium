@@ -1,3 +1,10 @@
+## 4.13.0
+
+#### :nail_care: Polish
+
+* Adding CDP v117 and removing v114
+* Added file location to exception message for Selenium Manager 
+
 ## 4.12.0
 
 #### :bug: Bug fix

@@ -55,21 +55,6 @@ public class SafariDriverService extends DriverService {
   /**
    * @param executable The SafariDriver executable.
    * @param port Which port to start the SafariDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link SafariDriverService#SafariDriverService(File, int, Duration, List, Map)}
-   */
-  @Deprecated
-  public SafariDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    this(executable, port, DEFAULT_TIMEOUT, args, environment);
-  }
-
-  /**
-   * @param executable The SafariDriver executable.
-   * @param port Which port to start the SafariDriver on.
    * @param timeout Timeout waiting for driver server to start.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.

@@ -348,7 +348,7 @@ suite(
         let info = await browsingContext.navigate(Pages.logEntryAdded)
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
       })
 
@@ -363,7 +363,7 @@ suite(
         )
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
       })
 
@@ -1265,7 +1265,6 @@ suite(
       it('can evaluate in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const secondTab = await driver.getWindowHandle()
         const manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()
@@ -1962,7 +1961,7 @@ suite(
         const info = await browsingContext.navigate(Pages.logEntryAdded)
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
 
         await driver.wait(until.urlIs(Pages.logEntryAdded))
