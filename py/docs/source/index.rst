@@ -130,7 +130,7 @@ Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-4.12.0.jar
+    java -jar selenium-server-4.13.0.jar
 
 Then run your Python client scripts.
 

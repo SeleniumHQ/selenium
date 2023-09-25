@@ -6,8 +6,9 @@ v4.13.0
 * Update cdp default command timeout in inline docs (#12707)
 * Indicate end of output taken from selenium manager (#12744)
 * Declare selenium manager binaries as content (#12711)
-* Use the lowest version of Newtonsoft.Json as dependency (#12772, #12776)
 * Add browsing context methods for reload, screenshot and prompt
+* Allow user to start service before creating driver (#12816)
+* Remove Microsoft.IdentityModel.Tokens as dependency (#12777)
 
 v4.12.4
 ======
