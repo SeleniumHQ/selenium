@@ -28,7 +28,7 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Microsoft.IdentityModel.Tokens" version="6.19.0" exclude="Build,Analyzers" />
-        <dependency id="Newtonsoft.Json" version="11.0.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="5.0.1" exclude="Build,Analyzers" />
         <dependency id="System.Drawing.Common" version="7.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
