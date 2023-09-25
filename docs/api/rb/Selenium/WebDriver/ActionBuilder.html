@@ -555,38 +555,6 @@
   
     <li>
       
-        <span class='name'>deprecated_mouse</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Interactions/PointerInput.html" title="Selenium::WebDriver::Interactions::PointerInput (class)">Selenium::WebDriver::Interactions::PointerInput</a></span></tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>PointerInput for the mouse.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>deprecated_keyboard</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Interactions/KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">Selenium::WebDriver::Interactions::KeyInput</a></span></tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>KeyInput for the keyboard.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>deprecated_async</span>
       
       
@@ -646,17 +614,17 @@
       <pre class="lines">
 
 
+43
+44
 45
 46
 47
 48
 49
-50
-51
-52</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='label'>devices:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>async:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='int'>250</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -804,12 +772,12 @@
       <pre class="lines">
 
 
-84
-85
-86</pre>
+82
+83
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_key_input'>add_key_input</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_input'>add_input</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key'><span class='object_link'><a href="Interactions.html#key-class_method" title="Selenium::WebDriver::Interactions.key (method)">key</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -913,12 +881,12 @@
       <pre class="lines">
 
 
-68
-69
-70</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_pointer_input'>add_pointer_input</span><span class='lparen'>(</span><span class='id identifier rubyid_kind'>kind</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_input'>add_input</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='period'>.</span><span class='id identifier rubyid_pointer'><span class='object_link'><a href="Interactions.html#pointer-class_method" title="Selenium::WebDriver::Interactions.pointer (method)">pointer</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_kind'>kind</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1006,12 +974,12 @@
       <pre class="lines">
 
 
-100
-101
-102</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_wheel_input'>add_wheel_input</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_input'>add_input</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='period'>.</span><span class='id identifier rubyid_wheel'><span class='object_link'><a href="Interactions.html#wheel-class_method" title="Selenium::WebDriver::Interactions.wheel (method)">wheel</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1047,12 +1015,12 @@
       <pre class="lines">
 
 
-211
-212
-213</pre>
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 211</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_all_actions'>clear_all_actions</span>
   <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:clear_actions</span><span class='rparen'>)</span>
@@ -1159,16 +1127,16 @@
       <pre class="lines">
 
 
+110
+111
 112
 113
 114
 115
-116
-117
-118</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_device'>device</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>type:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_input'>input</span> <span class='op'>=</span> <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_device'>device</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>||</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>||</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -1226,12 +1194,12 @@
       <pre class="lines">
 
 
-136
-137
-138</pre>
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_inputs'>key_inputs</span>
   <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_device'>device</span><span class='op'>|</span> <span class='id identifier rubyid_device'>device</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions.html#KEY-constant" title="Selenium::WebDriver::Interactions::KEY (constant)">KEY</a></span></span> <span class='rbrace'>}</span>
@@ -1341,14 +1309,14 @@
       <pre class="lines">
 
 
+164
+165
 166
 167
-168
-169
-170</pre>
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pause'>pause</span><span class='lparen'>(</span><span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_device'>device</span> <span class='op'>||=</span> <span class='id identifier rubyid_pointer_input'>pointer_input</span>
@@ -1478,17 +1446,17 @@
       <pre class="lines">
 
 
+186
+187
 188
 189
 190
 191
 192
-193
-194
-195</pre>
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pauses'>pauses</span><span class='lparen'>(</span><span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_number'>number</span> <span class='op'>||=</span> <span class='int'>2</span>
@@ -1529,14 +1497,14 @@
       <pre class="lines">
 
 
+199
+200
 201
 202
-203
-204
-205</pre>
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 201</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 199</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_perform'>perform</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_send_actions'>send_actions</span> <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_filter_map'>filter_map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:encode</span><span class='rparen'>)</span>
@@ -1592,12 +1560,12 @@
       <pre class="lines">
 
 
-126
-127
-128</pre>
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pointer_inputs'>pointer_inputs</span>
   <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_device'>device</span><span class='op'>|</span> <span class='id identifier rubyid_device'>device</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions.html#POINTER-constant" title="Selenium::WebDriver::Interactions::POINTER (constant)">POINTER</a></span></span> <span class='rbrace'>}</span>
@@ -1633,12 +1601,12 @@
       <pre class="lines">
 
 
-219
-220
-221</pre>
+217
+218
+219</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 217</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_actions'>release_actions</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_release_actions'>release_actions</span>
@@ -1692,12 +1660,12 @@
       <pre class="lines">
 
 
-146
-147
-148</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wheel_inputs'>wheel_inputs</span>
   <span class='ivar'>@devices</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_device'>device</span><span class='op'>|</span> <span class='id identifier rubyid_device'>device</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions.html#WHEEL-constant" title="Selenium::WebDriver::Interactions::WHEEL (constant)">WHEEL</a></span></span> <span class='rbrace'>}</span>
@@ -1712,7 +1680,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 31 15:19:25 2023 by
+  Generated on Mon Sep 25 15:02:54 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>
