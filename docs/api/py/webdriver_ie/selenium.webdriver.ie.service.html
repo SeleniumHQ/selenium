@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.ie.service &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.ie.service &#8212; Selenium 4.13 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.13 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -52,7 +52,7 @@
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.ie.service.Service">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.ie.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = None</em>, <em>port: int = 0</em>, <em>host: Optional[str] = None</em>, <em>service_args: Optional[List[str]] = None</em>, <em>log_level: Optional[str] = None</em>, <em>log_output: Union[int</em>, <em>str</em>, <em>IO[Any]] = None</em>, <em>log_file: Optional[str] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/ie/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.ie.service.Service" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.ie.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = None, port: int = 0, host: Optional[str, None] = None, service_args: Optional[List[str], None] = None, log_level: Optional[str, None] = None, log_output: Union[int, str, IO[Any]] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/ie/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.ie.service.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object that manages the starting and stopping of the IEDriver.</p>
 <p>Creates a new instance of the Service.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -65,7 +65,7 @@
 <li>host : IP address the service port is bound</li>
 <li>log_level : Level of logging of service, may be “FATAL”, “ERROR”, “WARN”, “INFO”, “DEBUG”, “TRACE”.
 Default is “FATAL”.</li>
-<li>log_file : Target of logging of service, may be “stdout”, “stderr” or file path.
+<li>log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
 Default is “stdout”.</li>
 </ul>
 </td>
@@ -175,7 +175,7 @@ or when it can’t connect to the service</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.13 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

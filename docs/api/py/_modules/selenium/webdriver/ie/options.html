@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.ie.options &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.ie.options &#8212; Selenium 4.13 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -66,25 +66,40 @@
 
 
 <span class="k">class</span> <span class="nc">_IeOptionsDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;IeOptionsDescriptor which validates below attributes of Options class:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;_IeOptionsDescriptor is an implementation of Descriptor Protocol:</span>
 
-<span class="sd">    - BROWSER_ATTACH_TIMEOUT</span>
-<span class="sd">    - ELEMENT_SCROLL_BEHAVIOR</span>
-<span class="sd">    - ENSURE_CLEAN_SESSION</span>
-<span class="sd">    - FILE_UPLOAD_DIALOG_TIMEOUT</span>
-<span class="sd">    - FORCE_CREATE_PROCESS_API</span>
-<span class="sd">    - FORCE_SHELL_WINDOWS_API</span>
-<span class="sd">    - FULL_PAGE_SCREENSHOT</span>
-<span class="sd">    - IGNORE_PROTECTED_MODE_SETTINGS</span>
-<span class="sd">    - IGNORE_ZOOM_LEVEL</span>
-<span class="sd">    - INITIAL_BROWSER_URL</span>
-<span class="sd">    - NATIVE_EVENTS</span>
-<span class="sd">    - PERSISTENT_HOVER</span>
-<span class="sd">    - REQUIRE_WINDOW_FOCUS</span>
-<span class="sd">    - USE_PER_PROCESS_PROXY</span>
-<span class="sd">    - USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span>
-<span class="sd">    - ATTACH_TO_EDGE_CHROME</span>
-<span class="sd">    - EDGE_EXECUTABLE_PATH</span>
+<span class="sd">    : Any look-up or assignment to the below attributes in `Options` class will be intercepted</span>
+<span class="sd">    by `__get__` and `__set__` method respectively.</span>
+
+<span class="sd">    - `browser_attach_timeout`</span>
+<span class="sd">    - `element_scroll_behavior`</span>
+<span class="sd">    - `ensure_clean_session`</span>
+<span class="sd">    - `file_upload_dialog_timeout`</span>
+<span class="sd">    - `force_create_process_api`</span>
+<span class="sd">    - `force_shell_windows_api`</span>
+<span class="sd">    - `full_page_screenshot`</span>
+<span class="sd">    - `ignore_protected_mode_settings`</span>
+<span class="sd">    - `ignore_zoom_level`</span>
+<span class="sd">    - `initial_browser_url`</span>
+<span class="sd">    - `native_events`</span>
+<span class="sd">    - `persistent_hover`</span>
+<span class="sd">    - `require_window_focus`</span>
+<span class="sd">    - `use_per_process_proxy`</span>
+<span class="sd">    - `use_legacy_file_upload_dialog_handling`</span>
+<span class="sd">    - `attach_to_edge_chrome`</span>
+<span class="sd">    - `edge_executable_path`</span>
+
+
+<span class="sd">    : When an attribute lookup happens,</span>
+<span class="sd">    Example:</span>
+<span class="sd">        `self. browser_attach_timeout`</span>
+<span class="sd">        `__get__` method does a dictionary look up in the dictionary `_options` in `Options` class</span>
+<span class="sd">        and returns the value of key `browserAttachTimeout`</span>
+<span class="sd">    : When an attribute assignment happens,</span>
+<span class="sd">    Example:</span>
+<span class="sd">        `self.browser_attach_timeout` = 30</span>
+<span class="sd">        `__set__` method sets/updates the value of the key `browserAttachTimeout` in `_options`</span>
+<span class="sd">        dictionary in `Options` class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
@@ -99,8 +114,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elementScrollBehavior&quot;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span>
+            <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span>
         <span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Element Scroll Behavior out of range.&quot;</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -145,7 +160,7 @@
 <span class="sd">    `value`: `int` (Timeout) in milliseconds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">element_scroll_behavior</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">element_scroll_behavior</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `element_scroll_behavior`</span>
 
 <span class="sd">    Usage</span>
@@ -392,12 +407,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: A dictionary of browser options&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: A dictionary of browser options.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">additional_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The additional options&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The additional options.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span>
 
 <div class="viewcode-block" id="Options.add_additional_option"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.add_additional_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_additional_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -459,7 +474,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

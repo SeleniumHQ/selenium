@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.13 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.13 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -63,10 +63,10 @@
 <tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Credential</span></code></a>(credential_id,&nbsp;…)</td>
 <td>Constructor.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="selenium.webdriver.common.virtual_authenticator.Protocol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Protocol</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="selenium.webdriver.common.virtual_authenticator.Protocol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Protocol</span></code></a>(*args,&nbsp;**kwds)</td>
 <td>Protocol to communicate with the authenticator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="selenium.webdriver.common.virtual_authenticator.Transport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transport</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="selenium.webdriver.common.virtual_authenticator.Transport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transport</span></code></a>(*args,&nbsp;**kwds)</td>
 <td>Transport method to communicate with the authenticator.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions" title="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualAuthenticatorOptions</span></code></a>(protocol,&nbsp;…)</td>
@@ -76,7 +76,7 @@
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.common.virtual_authenticator.Credential">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Credential</code><span class="sig-paren">(</span><em>credential_id: bytes, is_resident_credential: bool, rp_id: str, user_handle: Optional[bytes], private_key: bytes, sign_count: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Credential</code><span class="sig-paren">(</span><em>credential_id: bytes, is_resident_credential: bool, rp_id: str, user_handle: Optional[bytes, None], private_key: bytes, sign_count: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor. A credential stored in a virtual authenticator.
 <a class="reference external" href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -122,7 +122,7 @@ sign_count (int): intital value for a signature counter.</p>
 
 <dl class="classmethod">
 <dt id="selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential">
-<em class="property">classmethod </em><code class="descname">create_resident_credential</code><span class="sig-paren">(</span><em>id: bytes, rp_id: str, user_handle: Optional[bytes], private_key: bytes, sign_count: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.virtual_authenticator.Credential<a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_resident_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">create_resident_credential</code><span class="sig-paren">(</span><em>id: bytes, rp_id: str, user_handle: Optional[bytes, None], private_key: bytes, sign_count: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.virtual_authenticator.Credential<a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_resident_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a resident (i.e. stateful) credential.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -191,7 +191,7 @@ sign_count (int): intital value for a signature counter.</p>
 
 <dl class="class">
 <dt id="selenium.webdriver.common.virtual_authenticator.Protocol">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Protocol</code><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Protocol</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Protocol to communicate with the authenticator.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.common.virtual_authenticator.Protocol.CTAP2">
@@ -203,11 +203,437 @@ sign_count (int): intital value for a signature counter.</p>
 <code class="descname">U2F</code><em class="property"> = 'ctap1/u2f'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.U2F" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.capitalize">
+<code class="descname">capitalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.capitalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.casefold">
+<code class="descname">casefold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.casefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string suitable for caseless comparisons.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.center">
+<code class="descname">center</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.encode">
+<code class="descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode the string using the codec registered for encoding.</p>
+<dl class="docutils">
+<dt>encoding</dt>
+<dd>The encoding in which to encode the string.</dd>
+<dt>errors</dt>
+<dd>The error handling scheme to use for encoding errors.
+The default is ‘strict’ meaning that encoding errors raise a
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
+codecs.register_error that can handle UnicodeEncodeErrors.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.endswith">
+<code class="descname">endswith</code><span class="sig-paren">(</span><em>suffix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.expandtabs">
+<code class="descname">expandtabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.expandtabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.format_map">
+<code class="descname">format_map</code><span class="sig-paren">(</span><em>mapping</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.format_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isalnum">
+<code class="descname">isalnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isalnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isalpha">
+<code class="descname">isalpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isascii">
+<code class="descname">isascii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isdecimal">
+<code class="descname">isdecimal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isdecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isdigit">
+<code class="descname">isdigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isdigit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isidentifier">
+<code class="descname">isidentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isidentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.islower">
+<code class="descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.islower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isnumeric">
+<code class="descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isprintable">
+<code class="descname">isprintable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isprintable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isspace">
+<code class="descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.istitle">
+<code class="descname">istitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.istitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.isupper">
+<code class="descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.isupper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.ljust">
+<code class="descname">ljust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.ljust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.lstrip">
+<code class="descname">lstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.lstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.maketrans">
+<em class="property">static </em><code class="descname">maketrans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.maketrans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.partition">
+<code class="descname">partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.removeprefix">
+<code class="descname">removeprefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.removeprefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given prefix string removed if present.</p>
+<p>If the string starts with the prefix string, return string[len(prefix):].
+Otherwise, return a copy of the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.removesuffix">
+<code class="descname">removesuffix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.removesuffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given suffix string removed if present.</p>
+<p>If the string ends with the suffix string and that suffix is not empty,
+return string[:-len(suffix)]. Otherwise, return a copy of the original
+string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>count</dt>
+<dd>Maximum number of occurrences to replace.
+-1 (the default value) means replace all occurrences.</dd>
+</dl>
+</div></blockquote>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rfind">
+<code class="descname">rfind</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rindex">
+<code class="descname">rindex</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rjust">
+<code class="descname">rjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rpartition">
+<code class="descname">rpartition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rpartition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rsplit">
+<code class="descname">rsplit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Splitting starts at the end of the string and works to the front.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.rstrip">
+<code class="descname">rstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.rstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.splitlines">
+<code class="descname">splitlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.splitlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.startswith">
+<code class="descname">startswith</code><span class="sig-paren">(</span><em>prefix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.strip">
+<code class="descname">strip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.swapcase">
+<code class="descname">swapcase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.swapcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.title">
+<code class="descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace each character in the string using the given translation table.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>table</dt>
+<dd>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</dd>
+</dl>
+</div></blockquote>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.upper">
+<code class="descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.zfill">
+<code class="descname">zfill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.zfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="selenium.webdriver.common.virtual_authenticator.Transport">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Transport</code><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Transport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Transport</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Transport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transport method to communicate with the authenticator.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.common.virtual_authenticator.Transport.BLE">
@@ -229,6 +655,432 @@ sign_count (int): intital value for a signature counter.</p>
 <code class="descname">USB</code><em class="property"> = 'usb'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.USB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.capitalize">
+<code class="descname">capitalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.capitalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.casefold">
+<code class="descname">casefold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.casefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string suitable for caseless comparisons.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.center">
+<code class="descname">center</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.encode">
+<code class="descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode the string using the codec registered for encoding.</p>
+<dl class="docutils">
+<dt>encoding</dt>
+<dd>The encoding in which to encode the string.</dd>
+<dt>errors</dt>
+<dd>The error handling scheme to use for encoding errors.
+The default is ‘strict’ meaning that encoding errors raise a
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
+codecs.register_error that can handle UnicodeEncodeErrors.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.endswith">
+<code class="descname">endswith</code><span class="sig-paren">(</span><em>suffix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.expandtabs">
+<code class="descname">expandtabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.expandtabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.format_map">
+<code class="descname">format_map</code><span class="sig-paren">(</span><em>mapping</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.format_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isalnum">
+<code class="descname">isalnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isalnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isalpha">
+<code class="descname">isalpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isascii">
+<code class="descname">isascii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isdecimal">
+<code class="descname">isdecimal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isdecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isdigit">
+<code class="descname">isdigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isdigit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isidentifier">
+<code class="descname">isidentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isidentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.islower">
+<code class="descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.islower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isnumeric">
+<code class="descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isprintable">
+<code class="descname">isprintable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isprintable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isspace">
+<code class="descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.istitle">
+<code class="descname">istitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.istitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.isupper">
+<code class="descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.isupper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.ljust">
+<code class="descname">ljust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.ljust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.lstrip">
+<code class="descname">lstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.lstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.maketrans">
+<em class="property">static </em><code class="descname">maketrans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.maketrans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.partition">
+<code class="descname">partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.removeprefix">
+<code class="descname">removeprefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.removeprefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given prefix string removed if present.</p>
+<p>If the string starts with the prefix string, return string[len(prefix):].
+Otherwise, return a copy of the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.removesuffix">
+<code class="descname">removesuffix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.removesuffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given suffix string removed if present.</p>
+<p>If the string ends with the suffix string and that suffix is not empty,
+return string[:-len(suffix)]. Otherwise, return a copy of the original
+string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>count</dt>
+<dd>Maximum number of occurrences to replace.
+-1 (the default value) means replace all occurrences.</dd>
+</dl>
+</div></blockquote>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rfind">
+<code class="descname">rfind</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rindex">
+<code class="descname">rindex</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rjust">
+<code class="descname">rjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rpartition">
+<code class="descname">rpartition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rpartition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rsplit">
+<code class="descname">rsplit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Splitting starts at the end of the string and works to the front.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.rstrip">
+<code class="descname">rstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.rstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.splitlines">
+<code class="descname">splitlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.splitlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.startswith">
+<code class="descname">startswith</code><span class="sig-paren">(</span><em>prefix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.strip">
+<code class="descname">strip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.swapcase">
+<code class="descname">swapcase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.swapcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.title">
+<code class="descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace each character in the string using the given translation table.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>table</dt>
+<dd>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</dd>
+</dl>
+</div></blockquote>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.upper">
+<code class="descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.zfill">
+<code class="descname">zfill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.zfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -238,7 +1090,7 @@ sign_count (int): intital value for a signature counter.</p>
 <p>Initialize VirtualAuthenticatorOptions object.</p>
 <dl class="class">
 <dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol">
-<em class="property">class </em><code class="descname">Protocol</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Protocol</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Protocol to communicate with the authenticator.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.CTAP2">
@@ -250,11 +1102,437 @@ sign_count (int): intital value for a signature counter.</p>
 <code class="descname">U2F</code><em class="property"> = 'ctap1/u2f'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.U2F" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.capitalize">
+<code class="descname">capitalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.capitalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.casefold">
+<code class="descname">casefold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.casefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string suitable for caseless comparisons.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.center">
+<code class="descname">center</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.encode">
+<code class="descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode the string using the codec registered for encoding.</p>
+<dl class="docutils">
+<dt>encoding</dt>
+<dd>The encoding in which to encode the string.</dd>
+<dt>errors</dt>
+<dd>The error handling scheme to use for encoding errors.
+The default is ‘strict’ meaning that encoding errors raise a
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
+codecs.register_error that can handle UnicodeEncodeErrors.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.endswith">
+<code class="descname">endswith</code><span class="sig-paren">(</span><em>suffix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.expandtabs">
+<code class="descname">expandtabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.expandtabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.format_map">
+<code class="descname">format_map</code><span class="sig-paren">(</span><em>mapping</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.format_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalnum">
+<code class="descname">isalnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalpha">
+<code class="descname">isalpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isascii">
+<code class="descname">isascii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdecimal">
+<code class="descname">isdecimal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdigit">
+<code class="descname">isdigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isdigit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isidentifier">
+<code class="descname">isidentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isidentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.islower">
+<code class="descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.islower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isnumeric">
+<code class="descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isprintable">
+<code class="descname">isprintable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isprintable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isspace">
+<code class="descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.istitle">
+<code class="descname">istitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.istitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isupper">
+<code class="descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.isupper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.ljust">
+<code class="descname">ljust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.ljust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.lstrip">
+<code class="descname">lstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.lstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.maketrans">
+<em class="property">static </em><code class="descname">maketrans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.maketrans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.partition">
+<code class="descname">partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.removeprefix">
+<code class="descname">removeprefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.removeprefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given prefix string removed if present.</p>
+<p>If the string starts with the prefix string, return string[len(prefix):].
+Otherwise, return a copy of the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.removesuffix">
+<code class="descname">removesuffix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.removesuffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given suffix string removed if present.</p>
+<p>If the string ends with the suffix string and that suffix is not empty,
+return string[:-len(suffix)]. Otherwise, return a copy of the original
+string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>count</dt>
+<dd>Maximum number of occurrences to replace.
+-1 (the default value) means replace all occurrences.</dd>
+</dl>
+</div></blockquote>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rfind">
+<code class="descname">rfind</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rindex">
+<code class="descname">rindex</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rjust">
+<code class="descname">rjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rpartition">
+<code class="descname">rpartition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rpartition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rsplit">
+<code class="descname">rsplit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Splitting starts at the end of the string and works to the front.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rstrip">
+<code class="descname">rstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.rstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.splitlines">
+<code class="descname">splitlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.splitlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.startswith">
+<code class="descname">startswith</code><span class="sig-paren">(</span><em>prefix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.strip">
+<code class="descname">strip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.swapcase">
+<code class="descname">swapcase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.swapcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.title">
+<code class="descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace each character in the string using the given translation table.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>table</dt>
+<dd>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</dd>
+</dl>
+</div></blockquote>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.upper">
+<code class="descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.zfill">
+<code class="descname">zfill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.zfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport">
-<em class="property">class </em><code class="descname">Transport</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">Transport</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transport method to communicate with the authenticator.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.BLE">
@@ -275,6 +1553,432 @@ sign_count (int): intital value for a signature counter.</p>
 <dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.USB">
 <code class="descname">USB</code><em class="property"> = 'usb'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.USB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.capitalize">
+<code class="descname">capitalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.capitalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.casefold">
+<code class="descname">casefold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.casefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string suitable for caseless comparisons.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.center">
+<code class="descname">center</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.encode">
+<code class="descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode the string using the codec registered for encoding.</p>
+<dl class="docutils">
+<dt>encoding</dt>
+<dd>The encoding in which to encode the string.</dd>
+<dt>errors</dt>
+<dd>The error handling scheme to use for encoding errors.
+The default is ‘strict’ meaning that encoding errors raise a
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
+codecs.register_error that can handle UnicodeEncodeErrors.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.endswith">
+<code class="descname">endswith</code><span class="sig-paren">(</span><em>suffix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.expandtabs">
+<code class="descname">expandtabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.expandtabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.format_map">
+<code class="descname">format_map</code><span class="sig-paren">(</span><em>mapping</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.format_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalnum">
+<code class="descname">isalnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalpha">
+<code class="descname">isalpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isascii">
+<code class="descname">isascii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdecimal">
+<code class="descname">isdecimal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdigit">
+<code class="descname">isdigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isdigit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isidentifier">
+<code class="descname">isidentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isidentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.islower">
+<code class="descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.islower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isnumeric">
+<code class="descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isprintable">
+<code class="descname">isprintable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isprintable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isspace">
+<code class="descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.istitle">
+<code class="descname">istitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.istitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isupper">
+<code class="descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.isupper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.ljust">
+<code class="descname">ljust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.ljust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.lstrip">
+<code class="descname">lstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.lstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.maketrans">
+<em class="property">static </em><code class="descname">maketrans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.maketrans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.partition">
+<code class="descname">partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.removeprefix">
+<code class="descname">removeprefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.removeprefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given prefix string removed if present.</p>
+<p>If the string starts with the prefix string, return string[len(prefix):].
+Otherwise, return a copy of the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.removesuffix">
+<code class="descname">removesuffix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.removesuffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a str with the given suffix string removed if present.</p>
+<p>If the string ends with the suffix string and that suffix is not empty,
+return string[:-len(suffix)]. Otherwise, return a copy of the original
+string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>count</dt>
+<dd>Maximum number of occurrences to replace.
+-1 (the default value) means replace all occurrences.</dd>
+</dl>
+</div></blockquote>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rfind">
+<code class="descname">rfind</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rindex">
+<code class="descname">rindex</code><span class="sig-paren">(</span><em>sub</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rjust">
+<code class="descname">rjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rpartition">
+<code class="descname">rpartition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rpartition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rsplit">
+<code class="descname">rsplit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Splitting starts at the end of the string and works to the front.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rstrip">
+<code class="descname">rstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.rstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>sep</dt>
+<dd><p class="first">The separator used to split the string.</p>
+<p class="last">When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt>
+<dd>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</dd>
+</dl>
+</div></blockquote>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.splitlines">
+<code class="descname">splitlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.splitlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.startswith">
+<code class="descname">startswith</code><span class="sig-paren">(</span><em>prefix</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.strip">
+<code class="descname">strip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.swapcase">
+<code class="descname">swapcase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.swapcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.title">
+<code class="descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace each character in the string using the given translation table.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>table</dt>
+<dd>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</dd>
+</dl>
+</div></blockquote>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.upper">
+<code class="descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.zfill">
+<code class="descname">zfill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.zfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -339,7 +2043,7 @@ authenticator.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.13 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

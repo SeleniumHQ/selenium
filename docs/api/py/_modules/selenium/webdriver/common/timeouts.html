@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.13 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,16 +55,10 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypedDict</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">TypedDict</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypedDict</span>
 
     <span class="k">class</span> <span class="nc">JSONTimeouts</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">implicit</span><span class="p">:</span> <span class="nb">int</span>
@@ -78,13 +72,11 @@
 
 
 <span class="k">class</span> <span class="nc">_TimeoutsDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;TimeoutsDescriptor which gets and sets value of below attributes:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or set the value of the attributes listed below.</span>
 
-<span class="sd">    _implicit _timeout</span>
-<span class="sd">    _page_load</span>
-<span class="sd">    _script</span>
+<span class="sd">    _implicit_wait _page_load _script</span>
 
-<span class="sd">    This does not set the value on the remote end</span>
+<span class="sd">    This does not set the value on the remote end.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -100,32 +92,38 @@
 
 <div class="viewcode-block" id="Timeouts"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.timeouts.html#selenium.webdriver.common.timeouts.Timeouts">[docs]</a><span class="k">class</span> <span class="nc">Timeouts</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">implicit_wait</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">page_load</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Timeout object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Timeouts object.</span>
+
+<span class="sd">        This implements https://w3c.github.io/webdriver/#timeouts.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - implicit_wait - Either an int or a float. The number passed in needs to how many</span>
-<span class="sd">            seconds the driver will wait.</span>
-<span class="sd">         - page_load - Either an int or a float. The number passed in needs to how many</span>
-<span class="sd">            seconds the driver will wait.</span>
-<span class="sd">         - script - Either an int or a float. The number passed in needs to how many</span>
-<span class="sd">            seconds the driver will wait.</span>
+<span class="sd">         - implicit_wait - Either an int or a float. Set how many</span>
+<span class="sd">            seconds to wait when searching for elements before</span>
+<span class="sd">            throwing an error.</span>
+<span class="sd">         - page_load - Either an int or a float. Set how many seconds</span>
+<span class="sd">            to wait for a page load to complete before throwing</span>
+<span class="sd">            an error.</span>
+<span class="sd">         - script - Either an int or a float. Set how many seconds to</span>
+<span class="sd">            wait for an asynchronous script to finish execution</span>
+<span class="sd">            before throwing an error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">implicit_wait</span> <span class="o">=</span> <span class="n">implicit_wait</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">page_load</span> <span class="o">=</span> <span class="n">page_load</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script</span> <span class="o">=</span> <span class="n">script</span>
 
     <span class="c1"># Creating descriptor objects</span>
     <span class="n">implicit_wait</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_implicit_wait&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets and Gets the value of the implicit_timeout:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or set how many seconds to wait when searching for elements.</span>
 
 <span class="sd">    This does not set the value on the remote end.</span>
 
 <span class="sd">    Usage</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Get</span>
-<span class="sd">        - `self.implicit_timeout`</span>
+<span class="sd">        - `self.implicit_wait`</span>
 <span class="sd">    - Set</span>
-<span class="sd">        - `self.implicit_timeout` = `value`</span>
+<span class="sd">        - `self.implicit_wait` = `value`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -133,7 +131,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">page_load</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_page_load&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets and Gets the value of page load wait:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or set how many seconds to wait for the page to load.</span>
 
 <span class="sd">    This does not set the value on the remote end.</span>
 
@@ -150,7 +148,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">script</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_script&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets and Gets the value of script wait:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or set how many seconds to wait for an asynchronous script to finish</span>
+<span class="sd">    execution.</span>
 
 <span class="sd">    This does not set the value on the remote end.</span>
 
@@ -213,7 +212,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

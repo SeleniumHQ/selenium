@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.10 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.13 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -174,13 +174,14 @@
 
     <span class="n">browser_name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span>
-    <span class="n">_ca_certs</span> <span class="o">=</span> <span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">()</span>
+    <span class="n">_ca_certs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;REQUESTS_CA_BUNDLE&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;REQUESTS_CA_BUNDLE&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="k">else</span> <span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">()</span>
 
 <div class="viewcode-block" id="RemoteConnection.get_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.get_timeout">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns:</span>
-<span class="sd">            Timeout value in seconds for all http requests made to the Remote Connection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns:</span>
+
+<span class="sd">        Timeout value in seconds for all http requests made to the</span>
+<span class="sd">        Remote Connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span></div>
 
@@ -200,9 +201,11 @@
 
 <div class="viewcode-block" id="RemoteConnection.get_certificate_bundle_path"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.get_certificate_bundle_path">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_certificate_bundle_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns:</span>
-<span class="sd">            Paths of the .pem encoded certificate to verify connection to command executor</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns:</span>
+
+<span class="sd">        Paths of the .pem encoded certificate to verify connection to</span>
+<span class="sd">        command executor. Defaults to certifi.where() or</span>
+<span class="sd">        REQUESTS_CA_BUNDLE env variable if set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ca_certs</span></div>
 
@@ -323,9 +326,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">command_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">command_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unrecognised command </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span>
+        <span class="n">path_string</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">substitute_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">path_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)}</span>  <span class="c1"># remove dollar sign</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">substitute_params</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">substitute_params</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
@@ -423,7 +429,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.13 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
