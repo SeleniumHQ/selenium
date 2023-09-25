@@ -160,55 +160,65 @@ public class BrowsingContext {
         new Command<>("browsingContext.getTree", new HashMap<>(), browsingContextInfoListMapper));
   }
 
-  // Yet to be implemented by browser vendors
-  private void reload() {
-    this.bidi.send(new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id)));
+  public NavigationResult reload() {
+    return this.bidi.send(
+        new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id), navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
-  private void reload(boolean ignoreCache) {
-    this.bidi.send(new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache)));
+  private NavigationResult reload(boolean ignoreCache) {
+    return this.bidi.send(
+        new Command<>(
+            RELOAD,
+            ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache),
+            navigationInfoMapper));
+  }
+
+  // TODO: Handle timeouts in case of Readiness state "interactive" and "complete".
+  // Refer https://github.com/w3c/webdriver-bidi/issues/188
+  public NavigationResult reload(ReadinessState readinessState) {
+    return this.bidi.send(
+        new Command<>(
+            RELOAD,
+            ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString()),
+            navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
-  private void reload(ReadinessState readinessState) {
-    this.bidi.send(
-        new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString())));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void reload(boolean ignoreCache, ReadinessState readinessState) {
-    this.bidi.send(
+  private NavigationResult reload(boolean ignoreCache, ReadinessState readinessState) {
+    return this.bidi.send(
         new Command<>(
             RELOAD,
             ImmutableMap.of(
-                CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString())));
+                CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString()),
+            navigationInfoMapper));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt() {
+  public void handleUserPrompt() {
     this.bidi.send(new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id)));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(String userText) {
+  public void handleUserPrompt(boolean accept) {
+    this.bidi.send(
+        new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "accept", accept)));
+  }
+
+  public void handleUserPrompt(String userText) {
     this.bidi.send(
         new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "userText", userText)));
   }
 
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(boolean accept, String userText) {
+  public void handleUserPrompt(boolean accept, String userText) {
     this.bidi.send(
         new Command<>(
             HANDLE_USER_PROMPT,
             ImmutableMap.of(CONTEXT, id, "accept", accept, "userText", userText)));
   }
 
-  // Yet to be implemented by browser vendors
-  private String captureScreenshot() {
+  public String captureScreenshot() {
     return this.bidi.send(
         new Command<>(
-            HANDLE_USER_PROMPT,
+            "browsingContext.captureScreenshot",
             ImmutableMap.of(CONTEXT, id),
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);

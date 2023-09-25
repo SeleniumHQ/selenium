@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Software Freedom Conservancy"
             VALUE "FileDescription", "Command line server for the IE driver"
-            VALUE "FileVersion", "4.11.0.0"
+            VALUE "FileVersion", "4.13.0.0"
             VALUE "InternalName", "IEDriverServer.exe"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "IEDriverServer.exe"
             VALUE "ProductName", "Selenium WebDriver"
-            VALUE "ProductVersion", "4.11.0.0"
+            VALUE "ProductVersion", "4.13.0.0"
         END
     END
     BLOCK "VarFileInfo"

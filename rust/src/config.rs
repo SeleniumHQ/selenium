@@ -185,6 +185,9 @@ impl StringKey<'_> {
                 // to be discovered in the first place and stored globally (on CACHE_PATH)
                 return check_cache_path(result, default_value);
             }
+            if !result.is_empty() {
+                return result;
+            }
         }
         default_value
     }

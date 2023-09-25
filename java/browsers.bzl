@@ -75,3 +75,39 @@ firefox_jvm_flags = select({
     ],
     "//conditions:default": [],
 }) + geckodriver_jvm_flags
+
+firefox_beta_jvm_flags = select({
+    "@selenium//common:use_pinned_linux_firefox": [
+        "-Dwebdriver.firefox.bin=$(location @linux_beta_firefox//:firefox/firefox)",
+    ],
+    "@selenium//common:use_pinned_macos_firefox": [
+        "-Dwebdriver.firefox.bin=$(location @mac_beta_firefox//:Firefox.app)/Contents/MacOS/firefox",
+    ],
+    "@selenium//common:use_local_geckodriver": [],
+    "//conditions:default": [
+        "-Dselenium.skiptest=false",
+    ],
+}) + select({
+    "@selenium//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
+}) + geckodriver_jvm_flags
+
+firefox_dev_jvm_flags = select({
+    "@selenium//common:use_pinned_linux_firefox": [
+        "-Dwebdriver.firefox.bin=$(location @linux_dev_firefox//:firefox/firefox)",
+    ],
+    "@selenium//common:use_pinned_macos_firefox": [
+        "-Dwebdriver.firefox.bin=$(location @mac_dev_firefox//:Firefox.app)/Contents/MacOS/firefox",
+    ],
+    "@selenium//common:use_local_geckodriver": [],
+    "//conditions:default": [
+        "-Dselenium.skiptest=false",
+    ],
+}) + select({
+    "@selenium//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
+}) + geckodriver_jvm_flags

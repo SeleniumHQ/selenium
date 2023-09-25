@@ -41,6 +41,12 @@ namespace OpenQA.Selenium.Chrome
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new ChromeOptions();
+        }
+
         /// <summary>
         /// Creates a default instance of the ChromeDriverService.
         /// </summary>

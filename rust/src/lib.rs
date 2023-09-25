@@ -935,18 +935,28 @@ pub trait SeleniumManager {
     }
 
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
-        let canon_path = path_buf_to_string(path_buf.as_path().canonicalize().unwrap_or(path_buf));
+        let mut canon_path = path_buf_to_string(
+            path_buf
+                .as_path()
+                .canonicalize()
+                .unwrap_or(path_buf.clone()),
+        );
         if WINDOWS.is(self.get_os()) {
-            canon_path.replace(UNC_PREFIX, "")
-        } else {
-            canon_path
+            canon_path = canon_path.replace(UNC_PREFIX, "")
         }
+        if !path_buf_to_string(path_buf.clone()).eq(&canon_path) {
+            self.get_logger().trace(format!(
+                "Path {} has been canonicalized to {}",
+                path_buf.display(),
+                canon_path
+            ));
+        }
+        canon_path
     }
 
     fn get_escaped_path(&self, string_path: String) -> String {
-        let original_path = string_path.clone();
-        let mut escaped_path = string_path;
-        let path = Path::new(&original_path);
+        let mut escaped_path = string_path.clone();
+        let path = Path::new(&string_path);
 
         if path.exists() {
             escaped_path = self.canonicalize_path(path.to_path_buf());
@@ -957,14 +967,16 @@ pub trait SeleniumManager {
                     Command::new_single(format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()));
                 escaped_path = run_shell_command("bash", "-c", escape_command).unwrap_or_default();
                 if escaped_path.is_empty() {
-                    escaped_path = original_path.clone();
+                    escaped_path = string_path.clone();
                 }
             }
         }
-        self.get_logger().trace(format!(
-            "Original path: {} - Escaped path: {}",
-            original_path, escaped_path
-        ));
+        if !string_path.eq(&escaped_path) {
+            self.get_logger().trace(format!(
+                "Path {} has been escaped to {}",
+                string_path, escaped_path
+            ));
+        }
         escaped_path
     }
 

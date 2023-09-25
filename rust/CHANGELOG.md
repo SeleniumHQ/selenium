@@ -6,6 +6,7 @@
 * Do not log a warning for defaults (#12754)
 * Search better driver possible in the cache (#12753)
 * Use original path when unwrap fails in canonicalize function (#12699)
+* Fix config setup in Selenium Manager (#12807)
 
 0.4.12
 ======

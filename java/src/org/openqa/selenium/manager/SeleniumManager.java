@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -61,11 +62,11 @@ public class SeleniumManager {
   private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
-  private static final String EXE = ".exe";
 
   private static volatile SeleniumManager manager;
 
-  private Path binary;
+  private final String managerPath = System.getenv("SE_MANAGER_PATH");
+  private Path binary = managerPath == null ? null : Paths.get(managerPath);
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
@@ -158,30 +159,32 @@ public class SeleniumManager {
    */
   private synchronized Path getBinary() {
     if (binary == null) {
-      try {
-        Platform current = Platform.getCurrent();
-        String folder = "linux";
-        String extension = "";
-        if (current.is(WINDOWS)) {
-          extension = EXE;
-          folder = "windows";
-        } else if (current.is(MAC)) {
-          folder = "macos";
-        }
-        String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-        try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
-          Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
+      Platform current = Platform.getCurrent();
+      String folder = "linux";
+      String extension = "";
+      if (current.is(WINDOWS)) {
+        extension = ".exe";
+        folder = "windows";
+      } else if (current.is(MAC)) {
+        folder = "macos";
+      }
+      String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+      try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
+        Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
 
-          deleteOnExit(tmpPath);
+        deleteOnExit(tmpPath);
 
-          binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
-          Files.copy(inputStream, binary, REPLACE_EXISTING);
-        }
-        binary.toFile().setExecutable(true);
+        binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
+        Files.copy(inputStream, binary, REPLACE_EXISTING);
       } catch (Exception e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
+    } else if (!Files.exists(binary)) {
+      throw new WebDriverException(
+          String.format("Unable to obtain Selenium Manager Binary at: %s", binary));
     }
+    binary.toFile().setExecutable(true);
+
     LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
 
     return binary;

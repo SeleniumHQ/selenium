@@ -1,5 +1,9 @@
 4.13.0 (Unreleased)
 =========================
+Ruby:
+  * Fix bug prevening using performance logging with chromium
+  * Allow users to set Selenium Manager path by environment variable (#12752)
+
 BiDi:
   * Released selenium-devtools 0.117.0 (supports CDP v85, v115, v116, v117)
 
@@ -9,6 +13,8 @@ Ruby:
   * Fix bug preventing good error messages in Selenium Manager when stdout empty
   * Fix bug with Firefox not loading net/http library by default (#12506)
   * Remove support for using capabilities in local drivers
+  * Fix bug prevening using performance logging with chromium
+  * Allow users to set Selenium Manager path by environment variable (#12752)
 
 BiDi:
   * Released selenium-devtools 0.116.0 (supports CDP v85, v114, v115, v116)

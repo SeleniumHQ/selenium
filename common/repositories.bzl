@@ -33,6 +33,54 @@ exports_files(
     )
 
     http_archive(
+        name = "linux_beta_firefox",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/118.0b9/linux-x86_64/en-US/firefox-118.0b9.tar.bz2",
+        sha256 = "aabef5f4ad520030de0d7ab47e1b9fab6a90d5deea50829fe7e92feb4a426e56",
+        build_file_content = """
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["firefox/firefox"],
+)
+""",
+    )
+
+    dmg_archive(
+        name = "mac_beta_firefox",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/118.0b9/mac/en-US/Firefox%20118.0b9.dmg",
+        sha256 = "0794dcdace86d8e7ddd7392c191abb15c6ee71cd23a7c99ef857957c5aa36c7d",
+        build_file_content = "exports_files([\"Firefox.app\"])",
+    )
+
+    http_archive(
+        name = "linux_dev_firefox",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/118.0b9/linux-x86_64/en-US/firefox-118.0b9.tar.bz2",
+        sha256 = "aabef5f4ad520030de0d7ab47e1b9fab6a90d5deea50829fe7e92feb4a426e56",
+        build_file_content = """
+filegroup(
+    name = "files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["firefox/firefox"],
+)
+""",
+    )
+
+    dmg_archive(
+        name = "mac_dev_firefox",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/118.0b9/mac/en-US/Firefox%20118.0b9.dmg",
+        sha256 = "0794dcdace86d8e7ddd7392c191abb15c6ee71cd23a7c99ef857957c5aa36c7d",
+        build_file_content = "exports_files([\"Firefox.app\"])",
+    )
+
+    http_archive(
         name = "linux_geckodriver",
         url = "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz",
         sha256 = "5f5e89bb31fe5f55f963f56ef7e55a5c8e9dc415d94b1ddc539171a327b8e6c4",
