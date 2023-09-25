@@ -262,6 +262,11 @@ namespace OpenQA.Selenium
                 return;
             }
 
+            if (this.driverServicePath == null)
+            {
+                DriverFinder.FullPath(this.GetDefaultDriverOptions());
+            }
+
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
@@ -282,6 +287,12 @@ namespace OpenQA.Selenium
                 throw new WebDriverException(msg);
             }
         }
+
+        /// <summary>
+        /// The browser options instance that corresponds to the driver service
+        /// </summary>
+        /// <returns></returns>
+        protected abstract DriverOptions GetDefaultDriverOptions();
 
         /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.

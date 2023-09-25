@@ -319,3 +319,14 @@ Selenium contributors frequent the `#selenium` channel on
 [`irc.freenode.org`](https://webchat.freenode.net/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
 Check https://selenium.dev/support/ for a complete list of options to communicate.
+
+## Using the EngFlow RBE
+
+To access the EngFlow RBE, a developer needs to be granted access to our project
+container repository. Once that has been done, then any bazel command can be run
+remotely by using `--config=remote`. For example: `bazel build --config=remote
+grid` or `bazel test --config=remote java/test/...`
+
+When you run a remote build, one of the first lines of output from Bazel will 
+include a link to the EngFlow UI so you can track the progress of the build and
+gather information about the efficiency of the build.

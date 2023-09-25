@@ -50,6 +50,12 @@ namespace OpenQA.Selenium.Firefox
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new FirefoxOptions();
+        }
+
         /// <summary>
         /// Gets or sets the location of the Firefox binary executable.
         /// </summary>
