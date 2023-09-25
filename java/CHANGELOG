@@ -13,6 +13,10 @@ v4.13.0
 * Update pinned browser versions
 * Improve stability with final variables (#12733)
 * Fix bug for Appium subclass that sets neither log file nor output (#12696)
+* Remove deprecated headless methods from Options classes
+* Remove deprecated driver service constructors and methods
+* Remove deprecated log_file methods
+* Allow users to set Selenium Manager path by environment variable (#12752)
 
 v4.12.1
 ======
