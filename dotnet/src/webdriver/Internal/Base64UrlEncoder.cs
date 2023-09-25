@@ -45,39 +45,28 @@ namespace OpenQA.Selenium.Internal
         };
 
         /// <summary>
-        /// Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation which is encoded with base-64-url digits. Parameters specify
-        /// the subset as an offset in the input array, and the number of elements in the array to convert.
+        /// Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation which is encoded with base-64-url digits.
         /// </summary>
         /// <param name="inArray">An array of 8-bit unsigned integers.</param>
-        /// <param name="length">An offset in inArray.</param>
-        /// <param name="offset">The number of elements of inArray to convert.</param>
         /// <returns>The string representation in base 64 url encoding of length elements of inArray, starting at position offset.</returns>
         /// <exception cref="ArgumentNullException">'inArray' is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">offset or length is negative OR offset plus length is greater than the length of inArray.</exception>
-        public static string Encode(byte[] inArray, int offset, int length)
+        public static string Encode(byte[] inArray)
         {
             _ = inArray ?? throw new ArgumentNullException(nameof(inArray));
 
-            if (length == 0)
+            if (inArray.Length == 0)
                 return string.Empty;
 
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length));
-
-            if (offset < 0 || inArray.Length < offset)
-                throw new ArgumentOutOfRangeException(nameof(offset));
-
-            if (inArray.Length < offset + length)
-                throw new ArgumentOutOfRangeException(nameof(length));
+            var length = inArray.Length;
 
             int lengthmod3 = length % 3;
-            int limit = offset + (length - lengthmod3);
+            int limit = length - lengthmod3;
             char[] output = new char[(length + 2) / 3 * 4];
             char[] table = s_base64Table;
             int i, j = 0;
 
             // takes 3 bytes from inArray and insert 4 bytes into output
-            for (i = offset; i < limit; i += 3)
+            for (i = 0; i < limit; i += 3)
             {
                 byte d0 = inArray[i];
                 byte d1 = inArray[i + 1];
@@ -121,20 +110,6 @@ namespace OpenQA.Selenium.Internal
             }
 
             return new string(output, 0, j);
-        }
-
-        /// <summary>
-        /// Converts a subset of an array of 8-bit unsigned integers to its equivalent string representation which is encoded with base-64-url digits.
-        /// </summary>
-        /// <param name="inArray">An array of 8-bit unsigned integers.</param>
-        /// <returns>The string representation in base 64 url encoding of length elements of inArray, starting at position offset.</returns>
-        /// <exception cref="ArgumentNullException">'inArray' is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">offset or length is negative OR offset plus length is greater than the length of inArray.</exception>
-        public static string Encode(byte[] inArray)
-        {
-            _ = inArray ?? throw new ArgumentNullException(nameof(inArray));
-
-            return Encode(inArray, 0, inArray.Length);
         }
 
         /// <summary>
