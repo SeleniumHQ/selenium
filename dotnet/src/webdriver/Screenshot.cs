@@ -21,10 +21,10 @@ using System.IO;
 
 namespace OpenQA.Selenium
 {
-    [Obsolete("Selenium doesn't support decoding/encoding between different image formats.")]
     /// <summary>
     /// File format for saving screenshots.
     /// </summary>
+    [Obsolete("Selenium doesn't support decoding/encoding between different image formats.")]
     public enum ScreenshotImageFormat
     {
         /// <summary>
@@ -77,13 +77,13 @@ namespace OpenQA.Selenium
             File.WriteAllBytes(fileName, this.AsByteArray);
         }
 
-        [Obsolete("Selenium doesn't support decoding/encoding between different image formats. Use \"SaveAsFile(string fileName)\" method instead.")]
         /// <summary>
         /// Saves the screenshot to a file, overwriting the file if it already exists.
         /// </summary>
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
         /// <param name="format">A <see cref="ScreenshotImageFormat"/> value indicating the format
         /// to save the image to.</param>
+        [Obsolete("Selenium doesn't support decoding/encoding between different image formats. Use \"SaveAsFile(string fileName)\" method instead.")]
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
             using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
