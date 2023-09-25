@@ -4,9 +4,9 @@ Selenium 4.13.0
 * close out driver logging on quit (#12637)
 * disable console appearing on windows when running in pythonw (#12715)
 * remove deprecated headless methods
-* remove deprecated driver extensions for location and network connection
 * fix bug preventing using performance logging in chromium
 * remove deprecation notice from Firefox profiles
+* Allow users to set Selenium Manager path by environment variable (#12752)
 
 Selenium 4.12.0
 * Add CDP files for v116 and remove v113
@@ -19,7 +19,6 @@ Selenium 4.12.0
 * support conda installation of selenium manager (#12536)
 * Drop support for `python3.7`
 * Fixed a bug where `Popen.wait()` calls caught the wrong exceptions when timing out
-* Allow users to set Selenium Manager path by environment variable (#12752)
 
 Selenium 4.11.2
 * better bug fix for #12454
