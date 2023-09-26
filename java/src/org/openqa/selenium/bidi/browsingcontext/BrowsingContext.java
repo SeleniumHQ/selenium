@@ -226,6 +226,24 @@ public class BrowsingContext {
             }));
   }
 
+  public String captureBoxScreenshot(double x, double y, double width, double height) {
+    return this.bidi.send(
+      new Command<>(
+        "browsingContext.captureScreenshot",
+        ImmutableMap.of(CONTEXT, id,
+                        "clip", ImmutableMap.of(
+                        "type", "viewport",
+                        "x", x,
+                        "y", y,
+                        "width", width,
+                        "height", height
+          )),
+        jsonInput -> {
+          Map<String, Object> result = jsonInput.read(Map.class);
+          return (String) result.get("data");
+        }));
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.
