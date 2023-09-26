@@ -1,3 +1,8 @@
+v4.13.1
+======
+* Fix bug in selenium manager paths to work on mac and linux
+* Don't break devtools processing events thread in case of unexpected exception (#12820)
+
 v4.13.0
 ======
 * Add CDP files for v117 and remove v114
