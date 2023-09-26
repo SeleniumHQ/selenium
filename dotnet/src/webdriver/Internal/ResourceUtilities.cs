@@ -31,7 +31,6 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     internal static class ResourceUtilities
     {
-        private static string assemblyVersion;
         private static string productVersion;
         private static string platformFamily;
 
@@ -121,7 +120,6 @@ namespace OpenQA.Selenium.Internal
         private static string GetPlatformString()
         {
             string platformName = "unknown";
-#if NETSTANDARD2_0 || NETCOREAPP2_0
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 platformName = "windows";
@@ -134,38 +132,6 @@ namespace OpenQA.Selenium.Internal
             {
                 platformName = "mac";
             }
-#else
-            // Unfortunately, detecting the currently running platform isn't as
-            // straightforward as you might hope.
-            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
-            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
-            const int PlatformMonoUnixValue = 128;
-            PlatformID platformId = Environment.OSVersion.Platform;
-            if (platformId == PlatformID.Unix || platformId == PlatformID.MacOSX || (int)platformId == PlatformMonoUnixValue)
-            {
-                using (Process unameProcess = new Process())
-                {
-                    unameProcess.StartInfo.FileName = "uname";
-                    unameProcess.StartInfo.UseShellExecute = false;
-                    unameProcess.StartInfo.RedirectStandardOutput = true;
-                    unameProcess.Start();
-                    unameProcess.WaitForExit(1000);
-                    string output = unameProcess.StandardOutput.ReadToEnd();
-                    if (output.ToLowerInvariant().StartsWith("darwin"))
-                    {
-                        platformName = "mac";
-                    }
-                    else
-                    {
-                        platformName = "linux";
-                    }
-                }
-            }
-            else if (platformId == PlatformID.Win32NT || platformId == PlatformID.Win32S || platformId == PlatformID.Win32Windows || platformId == PlatformID.WinCE)
-            {
-                platformName = "windows";
-            }
-#endif
             return platformName;
         }
     }

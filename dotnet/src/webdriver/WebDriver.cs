@@ -24,10 +24,12 @@ using System.Globalization;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.VirtualAuth;
-using Microsoft.IdentityModel.Tokens;
 
 namespace OpenQA.Selenium
 {
+    /// <summary>
+    /// A base class representing a driver for a web browser.
+    /// </summary>
     public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator
     {
         /// <summary>
@@ -421,11 +423,21 @@ namespace OpenQA.Selenium
             return new TargetLocator(this);
         }
 
+        /// <summary>
+        /// Instructs the driver to change its settings.
+        /// </summary>
+        /// <returns>An <see cref="IOptions"/> object allowing the user to change
+        /// the settings of the driver.</returns>
         public IOptions Manage()
         {
             return new OptionsManager(this);
         }
 
+        /// <summary>
+        /// Instructs the driver to navigate the browser to another location.
+        /// </summary>
+        /// <returns>An <see cref="INavigation"/> object allowing the user to access
+        /// the browser's history and to navigate to a given URL.</returns>
         public INavigation Navigate()
         {
             return new Navigator(this);
@@ -450,7 +462,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Registers a set of commands to be executed with this driver instance.
         /// </summary>
-        /// <param name="commands">An <see cref="IReadOnlyDictionary{string, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
+        /// <param name="commands">An <see cref="IReadOnlyDictionary{String, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
         public void RegisterCustomDriverCommands(IReadOnlyDictionary<string, CommandInfo> commands)
         {
             foreach (KeyValuePair<string, CommandInfo> entry in commands)
@@ -995,6 +1007,9 @@ namespace OpenQA.Selenium
             this.authenticatorId = null;
         }
 
+        /// <summary>
+        /// Gets the virtual authenticator ID for this WebDriver instance.
+        /// </summary>
         public string AuthenticatorId { get; }
 
         /// <summary>

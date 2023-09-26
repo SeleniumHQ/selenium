@@ -53,12 +53,12 @@ module Selenium
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new(args: ['--host=127.0.0.1'])
-        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
+        #   driver = Selenium::WebDriver.for(:ie, options: options)
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new
         #   options.element_scroll_behavior = Selenium::WebDriver::IE::Options::SCROLL_BOTTOM
-        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
+        #   driver = Selenium::WebDriver.for(:ie, options: options)
         #
         # @param [Hash] opts the pre-defined options
         # @option opts [Array<String>] args

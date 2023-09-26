@@ -52,7 +52,7 @@ impl SafariManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
         }))
     }
 }
@@ -120,5 +120,17 @@ impl SeleniumManager for SafariManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        ""
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
     }
 }

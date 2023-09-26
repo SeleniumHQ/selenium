@@ -1,5 +1,3 @@
-using OpenQA.Selenium.Remote;
-
 namespace OpenQA.Selenium.Firefox
 {
     // This is a simple wrapper class to create a FirefoxDriver that
@@ -18,9 +16,14 @@ namespace OpenQA.Selenium.Firefox
         {
         }
 
+        public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
+            : base(service, options)
+        {
+        }
+
         public static FirefoxOptions DefaultOptions
         {
-            get { return new FirefoxOptions() { AcceptInsecureCertificates = true }; }
+            get { return new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true }; }
         }
     }
 }

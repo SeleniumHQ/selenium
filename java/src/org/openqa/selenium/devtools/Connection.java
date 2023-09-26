@@ -273,7 +273,16 @@ public class Connection implements Closeable {
           "Method {0} called with {1} callbacks available",
           new Object[] {raw.get("method"), eventCallbacks.keySet().size()});
       Lock lock = callbacksLock.readLock();
-      lock.lock();
+      // A waiting writer will block a reader to enter the lock, even if there are currently other
+      // readers holding the lock. TryLock will bypass the waiting writers and acquire the read
+      // lock.
+      // A thread processing an event (and holding the read-lock) might wait for another event
+      // before continue processing the event (and releasing the read-lock). Without tryLock this
+      // would end in a deadlock, as soon as a writer will try to acquire a write-lock.
+      // (e.g. the devtools.idealized.Network works this way)
+      if (!lock.tryLock()) {
+        lock.lock();
+      }
       try {
         // TODO: Also only decode once.
         eventCallbacks.keySet().stream()

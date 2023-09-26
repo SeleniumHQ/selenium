@@ -19,6 +19,10 @@ use assert_cmd::Command;
 use rstest::rstest;
 use std::env::consts::OS;
 
+use crate::common::assert_output;
+
+mod common;
+
 #[rstest]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
@@ -37,6 +41,7 @@ fn browser_version_test(
         "--browser-version",
         &browser_version,
         "--debug",
+        "--avoid-browser-download",
     ])
     .assert()
     .success()
@@ -67,7 +72,7 @@ fn wrong_parameters_test(
     #[case] error_code: i32,
 ) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let assert_result = cmd
+    let result = cmd
         .args([
             "--debug",
             "--browser",
@@ -80,17 +85,7 @@ fn wrong_parameters_test(
         .assert()
         .try_success();
 
-    if assert_result.is_ok() {
-        let stdout = &cmd.unwrap().stdout;
-        let output = std::str::from_utf8(stdout).unwrap();
-        assert!(output.contains("in PATH"));
-    } else {
-        assert!(assert_result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(&error_code.to_string()));
-    }
+    assert_output(&mut cmd, result, "in PATH", error_code);
 }
 
 #[rstest]
@@ -100,7 +95,14 @@ fn wrong_parameters_test(
 fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let assert = cmd
-        .args(["--browser", &browser, "--browser-version", "beta"])
+        .args([
+            "--browser",
+            &browser,
+            "--browser-version",
+            "beta",
+            "--avoid-browser-download",
+            "--debug",
+        ])
         .assert();
 
     let stdout = &assert.get_output().stdout;

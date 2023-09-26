@@ -59,7 +59,7 @@ impl EdgeManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
         }))
     }
 }
@@ -121,7 +121,7 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        self.discover_general_browser_version(
+        self.general_discover_browser_version(
             r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
             REG_VERSION_ARG,
             DASH_DASH_VERSION,
@@ -151,7 +151,10 @@ impl SeleniumManager for EdgeManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                if self.is_browser_version_stable() || major_browser_version.is_empty() {
+                if self.is_browser_version_stable()
+                    || major_browser_version.is_empty()
+                    || self.is_browser_version_unstable()
+                {
                     let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
@@ -183,7 +186,7 @@ impl SeleniumManager for EdgeManager {
                 let driver_version =
                     read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
-                let driver_ttl = self.get_driver_ttl();
+                let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
@@ -231,32 +234,12 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let os = self.get_os();
-        let arch = self.get_arch();
-        let arch_folder = if WINDOWS.is(os) {
-            if ARM64.is(arch) {
-                "win-arm64"
-            } else if X32.is(arch) {
-                "win32"
-            } else {
-                "win64"
-            }
-        } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac64"
-            }
-        } else {
-            "linux64"
-        };
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
-            os,
-            arch_folder,
-            driver_version,
+            self.get_os(),
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -282,5 +265,35 @@ impl SeleniumManager for EdgeManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        let os = self.get_os();
+        let arch = self.get_arch();
+        if WINDOWS.is(os) {
+            if ARM64.is(arch) {
+                "win-arm64"
+            } else if X32.is(arch) {
+                "win32"
+            } else {
+                "win64"
+            }
+        } else if MACOS.is(os) {
+            if ARM64.is(arch) {
+                "mac-arm64"
+            } else {
+                "mac64"
+            }
+        } else {
+            "linux64"
+        }
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
     }
 }

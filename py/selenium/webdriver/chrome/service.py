@@ -27,7 +27,7 @@ class Service(service.ChromiumService):
     :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
@@ -36,7 +36,6 @@ class Service(service.ChromiumService):
         executable_path=None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
-        log_path: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
@@ -45,7 +44,6 @@ class Service(service.ChromiumService):
             executable_path=executable_path,
             port=port,
             service_args=service_args,
-            log_path=log_path,
             log_output=log_output,
             env=env,
             **kwargs,

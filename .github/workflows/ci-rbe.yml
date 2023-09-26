@@ -1,10 +1,21 @@
 name: CI - RBE
 
 on:
-  workflow_call:
+  pull_request:
+  push:
+    branches:
+      - trunk
   workflow_dispatch:
 
 jobs:
+  format:
+    name: Format
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check format script run
+      cache-key: rbe
+      ruby-version: jruby-9.4.2.0
+      run: ./scripts/github-actions/check-format.sh
   test:
     name: Test
     uses: ./.github/workflows/bazel.yml

@@ -15,16 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import sys
-
-    if sys.version_info >= (3, 8):
-        from typing import TypedDict
-    else:
-        from typing_extensions import TypedDict
+    from typing import TypedDict
 
     class JSONTimeouts(TypedDict, total=False):
         implicit: int
@@ -38,13 +32,11 @@ else:
 
 
 class _TimeoutsDescriptor:
-    """TimeoutsDescriptor which gets and sets value of below attributes:
+    """Get or set the value of the attributes listed below.
 
-    _implicit _timeout
-    _page_load
-    _script
+    _implicit_wait _page_load _script
 
-    This does not set the value on the remote end
+    This does not set the value on the remote end.
     """
 
     def __init__(self, name):
@@ -60,32 +52,38 @@ class _TimeoutsDescriptor:
 
 class Timeouts:
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
-        """Create a new Timeout object.
+        """Create a new Timeouts object.
+
+        This implements https://w3c.github.io/webdriver/#timeouts.
 
         :Args:
-         - implicit_wait - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
-         - page_load - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
-         - script - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
+         - implicit_wait - Either an int or a float. Set how many
+            seconds to wait when searching for elements before
+            throwing an error.
+         - page_load - Either an int or a float. Set how many seconds
+            to wait for a page load to complete before throwing
+            an error.
+         - script - Either an int or a float. Set how many seconds to
+            wait for an asynchronous script to finish execution
+            before throwing an error.
         """
+
         self.implicit_wait = implicit_wait
         self.page_load = page_load
         self.script = script
 
     # Creating descriptor objects
     implicit_wait = _TimeoutsDescriptor("_implicit_wait")
-    """Sets and Gets the value of the implicit_timeout:
+    """Get or set how many seconds to wait when searching for elements.
 
     This does not set the value on the remote end.
 
     Usage
     -----
     - Get
-        - `self.implicit_timeout`
+        - `self.implicit_wait`
     - Set
-        - `self.implicit_timeout` = `value`
+        - `self.implicit_wait` = `value`
 
     Parameters
     ----------
@@ -93,7 +91,7 @@ class Timeouts:
     """
 
     page_load = _TimeoutsDescriptor("_page_load")
-    """Sets and Gets the value of page load wait:
+    """Get or set how many seconds to wait for the page to load.
 
     This does not set the value on the remote end.
 
@@ -110,7 +108,8 @@ class Timeouts:
     """
 
     script = _TimeoutsDescriptor("_script")
-    """Sets and Gets the value of script wait:
+    """Get or set how many seconds to wait for an asynchronous script to finish
+    execution.
 
     This does not set the value on the remote end.
 

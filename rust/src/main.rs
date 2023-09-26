@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::path::Path;
 use std::process::exit;
 
 use clap::Parser;
@@ -26,8 +27,7 @@ use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
 use selenium_manager::REQUEST_TIMEOUT_SEC;
-use selenium_manager::TTL_BROWSERS_SEC;
-use selenium_manager::TTL_DRIVERS_SEC;
+use selenium_manager::TTL_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -88,13 +88,9 @@ struct Cli {
     #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
     timeout: u64,
 
-    /// Driver TTL (time-to-live)
-    #[clap(long, value_parser, default_value_t = TTL_DRIVERS_SEC)]
-    driver_ttl: u64,
-
-    /// Browser TTL (time-to-live)
-    #[clap(long, value_parser, default_value_t = TTL_BROWSERS_SEC)]
-    browser_ttl: u64,
+    /// TTL (time-to-live) for discovered versions (online) of drivers and browsers
+    #[clap(long, value_parser, default_value_t = TTL_SEC)]
+    ttl: u64,
 
     /// Local folder used to store downloaded assets (drivers and browsers), local metadata,
     /// and configuration file [default: ~/.cache/selenium]
@@ -121,13 +117,17 @@ struct Cli {
     #[clap(long)]
     offline: bool,
 
-    /// Force to download browser. Currently Chrome for Testing (CfT) is supported
+    /// Force to download browser (even when browser is already in the system)
     #[clap(long)]
     force_browser_download: bool,
+
+    /// Avoid to download browser (even when browser-version is specified)
+    #[clap(long)]
+    avoid_browser_download: bool,
 }
 
 fn main() {
-    let cli = Cli::parse();
+    let mut cli = Cli::parse();
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
@@ -135,8 +135,14 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
-    let browser_name: String = cli.browser.unwrap_or_default();
-    let driver_name: String = cli.driver.unwrap_or_default();
+    let mut browser_name: String = cli.browser.unwrap_or_default();
+    let mut driver_name: String = cli.driver.unwrap_or_default();
+    if browser_name.is_empty() {
+        browser_name = StringKey(vec!["browser"], "").get_value();
+    }
+    if driver_name.is_empty() {
+        driver_name = StringKey(vec!["driver"], "").get_value();
+    }
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
@@ -158,17 +164,29 @@ fn main() {
         flush_and_exit(DATAERR, &log);
     };
 
+    if cli.offline {
+        if cli.force_browser_download {
+            log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
+        }
+        cli.force_browser_download = false;
+        if !cli.avoid_browser_download {
+            log.debug("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
+        }
+        cli.avoid_browser_download = true;
+    }
+
+    // Logger set first so other setters can use it
     selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
     selenium_manager.set_os(cli.os.unwrap_or_default());
     selenium_manager.set_arch(cli.arch.unwrap_or_default());
-    selenium_manager.set_driver_ttl(cli.driver_ttl);
-    selenium_manager.set_browser_ttl(cli.browser_ttl);
-    selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_ttl(cli.ttl);
     selenium_manager.set_force_browser_download(cli.force_browser_download);
+    selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
+    selenium_manager.set_offline(cli.offline);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -180,24 +198,29 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
-        .and_then(|_| selenium_manager.resolve_driver())
+        .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            if driver_path.exists() {
-                log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
-            } else {
-                log.error(format!("Driver unavailable: {}", DRIVER_PATH));
-                flush_and_exit(UNAVAILABLE, log);
-            }
-            let browser_path = selenium_manager.get_browser_path();
-            if !browser_path.is_empty() {
-                log.info(format!("{}{}", BROWSER_PATH, browser_path));
-            }
+            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
             flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            if selenium_manager.is_offline() {
+            if let Some(best_driver_from_cache) =
+                selenium_manager.find_best_driver_from_cache().unwrap()
+            {
+                log.warn(format!(
+                    "There was an error managing {} ({}); using driver found in the cache",
+                    selenium_manager.get_browser_name(),
+                    err
+                ));
+                log_driver_and_browser_path(
+                    log,
+                    &best_driver_from_cache,
+                    selenium_manager.get_browser_path(),
+                );
+                flush_and_exit(OK, log);
+            } else if selenium_manager.is_offline() {
                 log.warn(err.to_string());
                 flush_and_exit(OK, log);
             } else {
@@ -205,6 +228,18 @@ fn main() {
                 flush_and_exit(DATAERR, log);
             }
         });
+}
+
+fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
+    if driver_path.exists() {
+        log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
+    } else {
+        log.error(format!("Driver unavailable: {}", DRIVER_PATH));
+        flush_and_exit(UNAVAILABLE, log);
+    }
+    if !browser_path.is_empty() {
+        log.info(format!("{}{}", BROWSER_PATH, browser_path));
+    }
 }
 
 fn flush_and_exit(code: i32, log: &Logger) -> ! {

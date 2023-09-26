@@ -177,15 +177,7 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                // Use TaskFactory to avoid deadlock in multithreaded implementations.
-                responseInfo = new TaskFactory(CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskContinuationOptions.None,
-                        TaskScheduler.Default)
-                    .StartNew(() => this.MakeHttpRequest(requestInfo))
-                    .Unwrap()
-                    .GetAwaiter()
-                    .GetResult();
+                responseInfo = Task.Run(async () => await this.MakeHttpRequest(requestInfo)).GetAwaiter().GetResult();
             }
             catch (HttpRequestException ex)
             {
@@ -278,10 +270,10 @@ namespace OpenQA.Selenium.Remote
                     requestMessage.Content.Headers.ContentType = contentTypeHeader;
                 }
 
-                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage))
+                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
-                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
+                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
                     httpResponseInfo.StatusCode = responseMessage.StatusCode;
 

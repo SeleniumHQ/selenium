@@ -68,7 +68,7 @@ impl IExplorerManager {
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
-            log: Logger::default(),
+            log: Logger::new(),
             driver_url: None,
         }))
     }
@@ -95,7 +95,7 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
-        self.discover_general_browser_version(
+        self.general_discover_browser_version(
             r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
             REG_VERSION_ARG,
             "",
@@ -156,7 +156,7 @@ impl SeleniumManager for IExplorerManager {
                         self.get_logger(),
                     )?;
 
-                    let driver_ttl = self.get_driver_ttl();
+                    let driver_ttl = self.get_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,
@@ -195,18 +195,12 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
-        let _minor_driver_version = self
-            .get_minor_version(driver_version)
-            .unwrap_or_default()
-            .parse::<i32>()
-            .unwrap_or_default();
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?,
             self.driver_name,
             "Windows",
-            "win32",
-            driver_version,
+            self.get_platform_label(),
+            self.get_driver_version(),
         ))
     }
 
@@ -232,5 +226,17 @@ impl SeleniumManager for IExplorerManager {
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         Ok(None)
+    }
+
+    fn get_platform_label(&self) -> &str {
+        "win32"
+    }
+
+    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
     }
 }

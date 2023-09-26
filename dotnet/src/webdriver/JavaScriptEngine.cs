@@ -117,7 +117,7 @@ namespace OpenQA.Selenium
             this.session.Value.Domains.JavaScript.BindingCalled += OnScriptBindingCalled;
             this.session.Value.Domains.JavaScript.ExceptionThrown += OnJavaScriptExceptionThrown;
             this.session.Value.Domains.JavaScript.ConsoleApiCalled += OnConsoleApiCalled;
-            await this.EnableDomains();
+            await this.EnableDomains().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -138,10 +138,10 @@ namespace OpenQA.Selenium
         {
             // Execute the script to have it enabled on the currently loaded page.
             string script = GetMutationListenerScript();
-            await this.session.Value.Domains.JavaScript.Evaluate(script);
+            await this.session.Value.Domains.JavaScript.Evaluate(script).ConfigureAwait(false);
 
-            await this.AddScriptCallbackBinding(MonitorBindingName);
-            await this.AddInitializationScript(MonitorBindingName, script);
+            await this.AddScriptCallbackBinding(MonitorBindingName).ConfigureAwait(false);
+            await this.AddInitializationScript(MonitorBindingName, script).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -150,8 +150,8 @@ namespace OpenQA.Selenium
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task DisableDomMutationMonitoring()
         {
-            await this.RemoveScriptCallbackBinding(MonitorBindingName);
-            await this.RemoveInitializationScript(MonitorBindingName);
+            await this.RemoveScriptCallbackBinding(MonitorBindingName).ConfigureAwait(false);
+            await this.RemoveInitializationScript(MonitorBindingName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -167,9 +167,9 @@ namespace OpenQA.Selenium
                 return this.initializationScripts[scriptName];
             }
 
-            await this.EnableDomains();
+            await this.EnableDomains().ConfigureAwait(false);
 
-            string scriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(script);
+            string scriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(script).ConfigureAwait(false);
             InitializationScript initializationScript = new InitializationScript()
             {
                 ScriptId = scriptId,
@@ -191,7 +191,7 @@ namespace OpenQA.Selenium
             if (this.initializationScripts.ContainsKey(scriptName))
             {
                 string scriptId = this.initializationScripts[scriptName].ScriptId;
-                await this.session.Value.Domains.JavaScript.RemoveScriptToEvaluateOnNewDocument(scriptId);
+                await this.session.Value.Domains.JavaScript.RemoveScriptToEvaluateOnNewDocument(scriptId).ConfigureAwait(false);
                 this.initializationScripts.Remove(scriptName);
             }
         }
@@ -207,7 +207,7 @@ namespace OpenQA.Selenium
             List<string> scriptNames = new List<string>(this.initializationScripts.Keys);
             foreach (string scriptName in scriptNames)
             {
-                await this.RemoveInitializationScript(scriptName);
+                await this.RemoveInitializationScript(scriptName).ConfigureAwait(false);
             }
         }
 
@@ -222,9 +222,9 @@ namespace OpenQA.Selenium
             // We do an "Evaluate" first so as to immediately create the script on the loaded
             // page, then will add it to the initialization of future pages.
             PinnedScript pinnedScript = new PinnedScript(script);
-            await this.EnableDomains();
-            await this.session.Value.Domains.JavaScript.Evaluate(pinnedScript.CreationScript);
-            pinnedScript.ScriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(pinnedScript.CreationScript);
+            await this.EnableDomains().ConfigureAwait(false);
+            await this.session.Value.Domains.JavaScript.Evaluate(pinnedScript.CreationScript).ConfigureAwait(false);
+            pinnedScript.ScriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(pinnedScript.CreationScript).ConfigureAwait(false);
             this.pinnedScripts[pinnedScript.Handle] = pinnedScript;
             return pinnedScript;
         }
@@ -238,8 +238,8 @@ namespace OpenQA.Selenium
         {
             if (this.pinnedScripts.ContainsKey(script.Handle))
             {
-                await this.session.Value.Domains.JavaScript.Evaluate(script.RemovalScript);
-                await this.session.Value.Domains.JavaScript.RemoveScriptToEvaluateOnNewDocument(script.ScriptId);
+                await this.session.Value.Domains.JavaScript.Evaluate(script.RemovalScript).ConfigureAwait(false);
+                await this.session.Value.Domains.JavaScript.RemoveScriptToEvaluateOnNewDocument(script.ScriptId).ConfigureAwait(false);
                 this.pinnedScripts.Remove(script.Handle);
             }
         }
@@ -257,8 +257,8 @@ namespace OpenQA.Selenium
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "A binding named {0} has already been added", bindingName));
             }
 
-            await this.EnableDomains();
-            await this.session.Value.Domains.JavaScript.AddBinding(bindingName);
+            await this.EnableDomains().ConfigureAwait(false);
+            await this.session.Value.Domains.JavaScript.AddBinding(bindingName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace OpenQA.Selenium
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task RemoveScriptCallbackBinding(string bindingName)
         {
-            await this.session.Value.Domains.JavaScript.RemoveBinding(bindingName);
+            await this.session.Value.Domains.JavaScript.RemoveBinding(bindingName).ConfigureAwait(false);
             this.bindings.Remove(bindingName);
         }
 
@@ -283,7 +283,7 @@ namespace OpenQA.Selenium
             List<string> bindingList = new List<string>(this.bindings);
             foreach (string binding in bindingList)
             {
-                await this.RemoveScriptCallbackBinding(binding);
+                await this.RemoveScriptCallbackBinding(binding).ConfigureAwait(false);
             }
         }
 
@@ -295,9 +295,9 @@ namespace OpenQA.Selenium
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task ClearAll()
         {
-            await this.ClearPinnedScripts();
-            await this.ClearInitializationScripts();
-            await this.ClearScriptCallbackBindings();
+            await this.ClearPinnedScripts().ConfigureAwait(false);
+            await this.ClearInitializationScripts().ConfigureAwait(false);
+            await this.ClearScriptCallbackBindings().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -309,7 +309,35 @@ namespace OpenQA.Selenium
         public async Task Reset()
         {
             this.StopEventMonitoring();
-            await ClearAll();
+            await ClearAll().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Releases all resources associated with this <see cref="JavaScriptEngine"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases all resources associated with this <see cref="JavaScriptEngine"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    if (this.session.IsValueCreated)
+                    {
+                        this.session.Value.Dispose();
+                    }
+                }
+
+                this.isDisposed = true;
+            }
         }
 
         private async Task ClearPinnedScripts()
@@ -319,7 +347,7 @@ namespace OpenQA.Selenium
             List<string> scriptHandles = new List<string>(this.pinnedScripts.Keys);
             foreach (string scriptHandle in scriptHandles)
             {
-                await this.UnpinScript(this.pinnedScripts[scriptHandle]);
+                await this.UnpinScript(this.pinnedScripts[scriptHandle]).ConfigureAwait(false);
             }
         }
 
@@ -327,8 +355,8 @@ namespace OpenQA.Selenium
         {
             if (!this.isEnabled)
             {
-                await this.session.Value.Domains.JavaScript.EnablePage();
-                await this.session.Value.Domains.JavaScript.EnableRuntime();
+                await this.session.Value.Domains.JavaScript.EnablePage().ConfigureAwait(false);
+                await this.session.Value.Domains.JavaScript.EnableRuntime().ConfigureAwait(false);
                 this.isEnabled = true;
             }
         }
@@ -387,33 +415,15 @@ namespace OpenQA.Selenium
         {
             if (this.JavaScriptConsoleApiCalled != null)
             {
-                this.JavaScriptConsoleApiCalled(this, new JavaScriptConsoleApiCalledEventArgs()
+                for (int i = 0; i < e.Arguments.Count; i++)
                 {
-                    MessageContent = e.Arguments[0].Value,
-                    MessageTimeStamp = e.Timestamp,
-                    MessageType = e.Type
-                });
-            }
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.isDisposed)
-            {
-                if (disposing)
-                {
-                    if (this.session.IsValueCreated)
+                    this.JavaScriptConsoleApiCalled(this, new JavaScriptConsoleApiCalledEventArgs()
                     {
-                        this.session.Value.Dispose();
-                    }
+                        MessageContent = e.Arguments[i].Value,
+                        MessageTimeStamp = e.Timestamp,
+                        MessageType = e.Type
+                    });
                 }
-
-                this.isDisposed = true;
             }
         }
     }

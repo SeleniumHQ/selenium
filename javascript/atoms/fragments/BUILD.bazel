@@ -79,6 +79,16 @@ closure_fragment(
 )
 
 closure_fragment(
+    name = "get-element-from-cache",
+    function = "bot.inject.cache.getElement",
+    module = "bot.inject",
+    visibility = [],
+    deps = [
+        "//javascript/atoms:inject",
+    ],
+)
+
+closure_fragment(
     name = "get-location",
     function = "bot.geolocation.getCurrentPosition",
     module = "bot.geolocation",

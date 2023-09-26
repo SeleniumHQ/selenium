@@ -28,10 +28,9 @@ else:
 
 if TYPE_CHECKING:
     from typing import SupportsFloat
+    from typing import SupportsIndex
     from typing import SupportsInt
     from typing import Union
-
-    from typing_extensions import SupportsIndex
 
     ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]
     ParseableInt = Union[SupportsInt, SupportsIndex, str, bytes]

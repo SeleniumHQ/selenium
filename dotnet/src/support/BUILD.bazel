@@ -1,5 +1,5 @@
-load("//common:defs.bzl", "copy_file")
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load("//common:defs.bzl", "copy_file")
 load(
     "//dotnet:defs.bzl",
     "generated_assembly_info",
@@ -14,8 +14,6 @@ load(
     "ASSEMBLY_PRODUCT",
     "ASSEMBLY_VERSION",
     "SE_VERSION",
-    "SUPPORTED_NET_FRAMEWORKS",
-    "SUPPORTED_NET_STANDARD_VERSIONS",
 )
 
 generated_assembly_info(
@@ -29,8 +27,8 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-[csharp_library(
-    name = "{}".format(framework),
+csharp_library(
+    name = "webdriver-support",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -40,40 +38,16 @@ generated_assembly_info(
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
     target_frameworks = [
-        "{}".format(framework),
+        "netstandard2.0",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@net//:System",
-        "@net//:System.Core",
-        "@net//:System.Data",
-        "@net//:System.Drawing",
-        "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}".format(framework),
+        "//dotnet/src/webdriver",
     ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
+)
 
-[csharp_library(
-    name = "{}".format(standard_version),
-    srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "PageObjects/**/*.cs",
-        "UI/*.cs",
-    ]) + [":assembly-info"],
-    out = "WebDriver.Support",
-    target_frameworks = [
-        "{}".format(standard_version),
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//dotnet/src/webdriver:{}".format(standard_version),
-    ],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
-
-[csharp_library(
-    name = "{}-strongnamed".format(framework),
+csharp_library(
+    name = "webdriver-support-strongnamed",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -84,38 +58,13 @@ generated_assembly_info(
     out = "strongnamed/WebDriver.Support",
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
-        "{}".format(framework),
+        "netstandard2.0",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@net//:System",
-        "@net//:System.Core",
-        "@net//:System.Data",
-        "@net//:System.Drawing",
-        "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}-strongnamed".format(framework),
+        "//dotnet/src/webdriver:webdriver-strongnamed",
     ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
-
-[csharp_library(
-    name = "{}-strongnamed".format(standard_version),
-    srcs = glob([
-        "*.cs",
-        "Events/*.cs",
-        "Extensions/*.cs",
-        "PageObjects/**/*.cs",
-        "UI/*.cs",
-    ]) + [":assembly-info"],
-    out = "strongnamed/WebDriver.Support",
-    keyfile = "//dotnet:WebDriver.snk",
-    target_frameworks = [
-        "{}".format(standard_version),
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//dotnet/src/webdriver:{}-strongnamed".format(standard_version),
-    ],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
+)
 
 copy_file(
     name = "logo",
@@ -135,14 +84,7 @@ nuget_package(
     package_version = "{}".format(SE_VERSION),
     deps = [
         ":logo",
-        ":net45",
-        ":net46",
-        ":net47",
-        ":net48",
-        ":net5.0",
-        ":net6.0",
-        ":netstandard2.0",
-        ":netstandard2.1",
+        ":webdriver-support",
     ],
 )
 
@@ -157,14 +99,7 @@ nuget_package(
     package_version = "{}".format(SE_VERSION),
     deps = [
         ":logo",
-        ":net45-strongnamed",
-        ":net46-strongnamed",
-        ":net47-strongnamed",
-        ":net48-strongnamed",
-        ":net5.0-strongnamed",
-        ":net6.0-strongnamed",
-        ":netstandard2.0-strongnamed",
-        ":netstandard2.1-strongnamed",
+        ":webdriver-support-strongnamed",
     ],
 )
 

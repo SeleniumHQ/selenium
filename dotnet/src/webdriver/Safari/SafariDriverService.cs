@@ -46,6 +46,12 @@ namespace OpenQA.Selenium.Safari
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new SafariOptions();
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether to use the default open-source project
         /// dialect of the protocol instead of the default dialect compliant with the
@@ -159,7 +165,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A SafariDriverService that implements default settings.</returns>
         public static SafariDriverService CreateDefaultService()
         {
-            return CreateDefaultService(new SafariOptions());
+            return new SafariDriverService(null, null, PortUtilities.FindFreePort());
         }
 
         /// <summary>
@@ -167,6 +173,7 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="options">Browser options used to find the correct GeckoDriver binary.</param>
         /// <returns>A SafariDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
         public static SafariDriverService CreateDefaultService(SafariOptions options)
         {
             string fullServicePath = DriverFinder.FullPath(options);

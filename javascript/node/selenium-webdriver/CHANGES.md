@@ -1,3 +1,27 @@
+## 4.13.0
+
+#### :nail_care: Polish
+
+* Adding CDP v117 and removing v114
+* Added file location to exception message for Selenium Manager 
+
+#### :rocket: New Feature
+
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
+## 4.12.0
+
+#### :bug: Bug fix
+
+* Adding browsers when they are present on the host (#12456)
+* Create absolute path for browser binary (#12479)
+* Fix how browsers and drivers are discovered (#12456)
+
+#### :nail_care: Polish
+
+* Add support for Chrome 116 and remove support for Chrome 113
+* Remove browserVersion from options in Selenium Manager (#12641)
+
 ## 4.11.1
 
 #### :bug: Bug fix

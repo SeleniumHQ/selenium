@@ -1,3 +1,25 @@
+Selenium 4.13.0
+* add CDP files for v117 and remove v114
+* do not send parameters in payload that are used in endpoint (#12685)
+* close out driver logging on quit (#12637)
+* disable console appearing on windows when running in pythonw (#12715)
+* remove deprecated headless methods
+* fix bug preventing using performance logging in chromium
+* remove deprecation notice from Firefox profiles
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
+Selenium 4.12.0
+* Add CDP files for v116 and remove v113
+* fix bug in ElementScrollBehavior in IE Options (#12462)
+* fix bug preventing sending keys with long strings (#12474)
+* fix typing for action_chains (#12477)
+* fix typing for IE Options (#12464)
+* fix bug in common options (#12499)
+* allow setting http client certifications with REQUESTS_CA_BUNDLE env (#11957)
+* support conda installation of selenium manager (#12536)
+* Drop support for `python3.7`
+* Fixed a bug where `Popen.wait()` calls caught the wrong exceptions when timing out
+
 Selenium 4.11.2
 * better bug fix for #12454
 

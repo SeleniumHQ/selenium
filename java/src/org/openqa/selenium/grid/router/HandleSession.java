@@ -32,8 +32,6 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableMap;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,8 +50,7 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
@@ -73,7 +70,9 @@ class HandleSession implements HttpHandler {
 
     this.httpClients =
         CacheBuilder.newBuilder()
-            .expireAfterAccess(Duration.ofMinutes(1))
+            // this timeout must be bigger than default connection + read timeout, to ensure we do
+            // not close HttpClients which might have requests waiting for responses
+            .expireAfterAccess(Duration.ofMinutes(4))
             .removalListener(
                 (RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
             .build();
@@ -93,9 +92,8 @@ class HandleSession implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) {
     try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "router.handle_session")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(
-          AttributeKey.HTTP_HANDLER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(), getClass().getName());
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
@@ -110,9 +108,8 @@ class HandleSession implements HttpHandler {
                     EXCEPTION.accept(attributeMap, exception);
                     attributeMap.put(
                         AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                        EventAttribute.setValue(
-                            "Unable to execute request for an existing session: "
-                                + exception.getMessage()));
+                        "Unable to execute request for an existing session: "
+                            + exception.getMessage());
                     span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
                     return exception;
                   });
@@ -134,8 +131,7 @@ class HandleSession implements HttpHandler {
         String errorMessage =
             "Unable to execute request for an existing session: " + e.getMessage();
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(
-            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         if (e instanceof NoSuchSessionException) {

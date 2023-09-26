@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Software Freedom Conservancy"
             VALUE "FileDescription", "Driver library for the IE driver"
-            VALUE "FileVersion", "4.11.0.0"
+            VALUE "FileVersion", "4.13.0.0"
             VALUE "InternalName", "IEDriver.dll"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "IEDriver.dll"
             VALUE "ProductName", "Selenium WebDriver"
-            VALUE "ProductVersion", "4.11.0.0"
+            VALUE "ProductVersion", "4.13.0.0"
         END
     END
     BLOCK "VarFileInfo"

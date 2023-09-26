@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -58,7 +57,13 @@ namespace OpenQA.Selenium.Interactions
             get { return this.actionExecutor; }
         }
 
-        public Actions setActivePointer(PointerKind kind, String name)
+        /// <summary>
+        /// Sets the active pointer device for this Actions class.
+        /// </summary>
+        /// <param name="kind">The kind of pointer device to set as active.</param>
+        /// <param name="name">The name of the pointer device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActivePointer(PointerKind kind, string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -66,11 +71,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -89,7 +94,12 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        public Actions setActiveKeyboard(String name)
+        /// <summary>
+        /// Sets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the keyboard device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveKeyboard(string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -97,11 +107,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -120,7 +130,12 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-         public Actions setActiveWheel(String name)
+        /// <summary>
+        /// Sets the active wheel device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the wheel device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveWheel(string name)
         {
             IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
 
@@ -128,11 +143,11 @@ namespace OpenQA.Selenium.Interactions
 
             foreach (var sequence in sequences)
             {
-                Dictionary<String, Object> actions = sequence.ToDictionary();
+                Dictionary<string, object> actions = sequence.ToDictionary();
 
-                String id = (string)actions["id"];
+                string id = (string)actions["id"];
 
-                if (id.Equals(name))
+                if (id == name)
                 {
                     device = sequence.inputDevice;
                     break;
@@ -151,35 +166,47 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-
-        public PointerInputDevice getActivePointer()
+        /// <summary>
+        /// Gets the active pointer device for this Actions class.
+        /// </summary>
+        /// <returns>The active pointer device for this Actions class.</returns>
+        public PointerInputDevice GetActivePointer()
         {
             if (this.activePointer == null)
             {
-                setActivePointer(PointerKind.Mouse, "default mouse");
+                SetActivePointer(PointerKind.Mouse, "default mouse");
             }
+
             return this.activePointer;
         }
 
-        public KeyInputDevice getActiveKeyboard()
+        /// <summary>
+        /// Gets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <returns>The active keyboard device for this Actions class.</returns>
+        public KeyInputDevice GetActiveKeyboard()
         {
             if (this.activeKeyboard == null)
             {
-                setActiveKeyboard("default keyboard");
+                SetActiveKeyboard("default keyboard");
             }
+
             return this.activeKeyboard;
         }
 
-         public WheelInputDevice getActiveWheel()
+        /// <summary>
+        /// Gets the active wheel device for this Actions class.
+        /// </summary>
+        /// <returns>The active wheel device for this Actions class.</returns>
+        public WheelInputDevice GetActiveWheel()
         {
             if (this.activeWheel == null)
             {
-                setActiveWheel("default wheel");
+                SetActiveWheel("default wheel");
             }
+
             return this.activeWheel;
         }
-
-
 
         /// <summary>
         /// Sends a modifier key down message to the browser.
@@ -215,13 +242,13 @@ namespace OpenQA.Selenium.Interactions
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyDown(theKey[0]));
-            this.actionBuilder.AddAction(new PauseInteraction(this.getActiveKeyboard(), TimeSpan.FromMilliseconds(100)));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(theKey[0]));
+            this.actionBuilder.AddAction(new PauseInteraction(this.GetActiveKeyboard(), TimeSpan.FromMilliseconds(100)));
             return this;
         }
 
@@ -259,12 +286,12 @@ namespace OpenQA.Selenium.Interactions
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyUp(theKey[0]));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(theKey[0]));
             return this;
         }
 
@@ -294,15 +321,15 @@ namespace OpenQA.Selenium.Interactions
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
             foreach (char key in keysToSend)
             {
-                this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyDown(key));
-                this.actionBuilder.AddAction(this.getActiveKeyboard().CreateKeyUp(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(key));
             }
 
             return this;
@@ -325,7 +352,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold()
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
             return this;
         }
 
@@ -346,7 +373,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release()
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -367,8 +394,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -389,10 +416,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick()
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -421,7 +448,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -433,7 +460,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -445,7 +472,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToLocation(int offsetX, int offsetY)
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -466,8 +493,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick()
         {
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerDown(MouseButton.Right));
-            this.actionBuilder.AddAction(this.getActivePointer().CreatePointerUp(MouseButton.Right));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Right));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Right));
             return this;
         }
 
@@ -503,7 +530,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ScrollToElement(IWebElement element)
         {
-            this.actionBuilder.AddAction(this.getActiveWheel().CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
+            this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
 
             return this;
         }
@@ -516,7 +543,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ScrollByAmount(int deltaX, int deltaY)
         {
-            this.actionBuilder.AddAction(this.getActiveWheel().CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
+            this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
 
             return this;
         }
@@ -543,12 +570,12 @@ namespace OpenQA.Selenium.Interactions
 
             if (scrollOrigin.Viewport)
             {
-                this.actionBuilder.AddAction(this.getActiveWheel().CreateWheelScroll(CoordinateOrigin.Viewport,
+                this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(CoordinateOrigin.Viewport,
                     scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
             else
             {
-                this.actionBuilder.AddAction(this.getActiveWheel().CreateWheelScroll(scrollOrigin.Element,
+                this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(scrollOrigin.Element,
                     scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
 
@@ -562,7 +589,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Pause(TimeSpan duration)
         {
-            this.actionBuilder.AddAction(new PauseInteraction(this.getActivePointer(), duration));
+            this.actionBuilder.AddAction(new PauseInteraction(this.GetActivePointer(), duration));
             return this;
         }
 

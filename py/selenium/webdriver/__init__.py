@@ -44,7 +44,7 @@ from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
 from .wpewebkit.service import Service as WPEWebKitService  # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 
-__version__ = "4.11.2"
+__version__ = "4.12.0"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [

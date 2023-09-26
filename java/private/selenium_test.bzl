@@ -4,12 +4,16 @@ load(
     "COMMON_TAGS",
     "chrome_data",
     "edge_data",
+    "firefox_beta_data",
     "firefox_data",
+    "firefox_dev_data",
 )
 load(
     "//java:browsers.bzl",
     "chrome_jvm_flags",
     "edge_jvm_flags",
+    "firefox_beta_jvm_flags",
+    "firefox_dev_jvm_flags",
     "firefox_jvm_flags",
 )
 
@@ -32,6 +36,18 @@ BROWSERS = {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
         "data": firefox_data,
+        "tags": COMMON_TAGS + ["firefox"],
+    },
+    "firefox-beta": {
+        "deps": ["//java/src/org/openqa/selenium/firefox"],
+        "jvm_flags": ["-Dselenium.browser=ff"] + firefox_beta_jvm_flags,
+        "data": firefox_beta_data,
+        "tags": COMMON_TAGS + ["firefox"],
+    },
+    "firefox-dev": {
+        "deps": ["//java/src/org/openqa/selenium/firefox"],
+        "jvm_flags": ["-Dselenium.browser=ff"] + firefox_dev_jvm_flags,
+        "data": firefox_dev_data,
         "tags": COMMON_TAGS + ["firefox"],
     },
     "ie": {

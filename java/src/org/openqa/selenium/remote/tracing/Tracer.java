@@ -22,4 +22,6 @@ public interface Tracer {
   TraceContext getCurrentContext();
 
   Propagator getPropagator();
+
+  AttributeMap createAttributeMap();
 }

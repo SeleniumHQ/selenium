@@ -21,7 +21,7 @@ use crate::{
     default_cache_folder, format_one_arg, path_buf_to_string, Command, REQUEST_TIMEOUT_SEC,
     UNAME_COMMAND,
 };
-use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
+use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
@@ -32,7 +32,7 @@ use toml::Table;
 
 thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_buf_to_string(default_cache_folder())));
 
-pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
+pub const CONFIG_FILE: &str = "se-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
@@ -47,10 +47,10 @@ pub struct ManagerConfig {
     pub arch: String,
     pub proxy: String,
     pub timeout: u64,
-    pub browser_ttl: u64,
-    pub driver_ttl: u64,
+    pub ttl: u64,
     pub offline: bool,
     pub force_browser_download: bool,
+    pub avoid_browser_download: bool,
 }
 
 impl ManagerConfig {
@@ -97,10 +97,10 @@ impl ManagerConfig {
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
-            browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
-            driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
+            ttl: IntegerKey("ttl", TTL_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
             force_browser_download: BooleanKey("force-browser-download", false).get_value(),
+            avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
         }
     }
 }
@@ -171,24 +171,22 @@ impl StringKey<'_> {
         let config = get_config().unwrap_or_default();
         let keys = self.0.to_owned();
         let default_value = self.1.to_owned();
-
         let mut result;
-        let mut first_key = "";
         for key in keys {
-            if first_key.is_empty() {
-                first_key = key;
-            }
             if config.contains_key(key) {
                 result = config[key].as_str().unwrap().to_string()
             } else {
                 result = env::var(get_env_name(key)).unwrap_or_default()
             }
-            if !result.is_empty() {
+            if key.eq(CACHE_PATH_KEY) {
                 // The configuration key for the cache path ("cache-path") is special because
                 // the rest of the configuration values depend on this value (since the
                 // configuration file is stored in the cache path). Therefore, this value needs
                 // to be discovered in the first place and stored globally (on CACHE_PATH)
-                return check_cache_path(key, result, default_value);
+                return check_cache_path(result, default_value);
+            }
+            if !result.is_empty() {
+                return result;
             }
         }
         default_value
@@ -246,19 +244,15 @@ fn concat(prefix: &str, suffix: &str) -> String {
     version_label
 }
 
-fn check_cache_path(key: &str, value_in_config_or_env: String, default_value: String) -> String {
-    let return_value = if key.eq(CACHE_PATH_KEY) {
-        if default_value.is_empty() {
-            value_in_config_or_env
-        } else {
-            default_value
-        }
-    } else {
+fn check_cache_path(value_in_config_or_env: String, default_value: String) -> String {
+    let return_value = if !value_in_config_or_env.is_empty() {
         value_in_config_or_env
+    } else if !default_value.is_empty() {
+        default_value
+    } else {
+        read_cache_path()
     };
-    if key.eq(CACHE_PATH_KEY) {
-        write_cache_path(return_value.clone());
-    }
+    write_cache_path(return_value.clone());
     return_value
 }
 

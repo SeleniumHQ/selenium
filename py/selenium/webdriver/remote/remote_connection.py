@@ -134,13 +134,14 @@ class RemoteConnection:
 
     browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
-    _ca_certs = certifi.where()
+    _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
     @classmethod
     def get_timeout(cls):
-        """
-        :Returns:
-            Timeout value in seconds for all http requests made to the Remote Connection
+        """:Returns:
+
+        Timeout value in seconds for all http requests made to the
+        Remote Connection
         """
         return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
 
@@ -160,9 +161,11 @@ class RemoteConnection:
 
     @classmethod
     def get_certificate_bundle_path(cls):
-        """
-        :Returns:
-            Paths of the .pem encoded certificate to verify connection to command executor
+        """:Returns:
+
+        Paths of the .pem encoded certificate to verify connection to
+        command executor. Defaults to certifi.where() or
+        REQUESTS_CA_BUNDLE env variable if set.
         """
         return cls._ca_certs
 
@@ -283,9 +286,12 @@ class RemoteConnection:
         """
         command_info = self._commands[command]
         assert command_info is not None, f"Unrecognised command {command}"
-        path = string.Template(command_info[1]).substitute(params)
-        if isinstance(params, dict) and "sessionId" in params:
-            del params["sessionId"]
+        path_string = command_info[1]
+        path = string.Template(path_string).substitute(params)
+        substitute_params = {word[1:] for word in path_string.split("/") if word.startswith("$")}  # remove dollar sign
+        if isinstance(params, dict) and substitute_params:
+            for word in substitute_params:
+                del params[word]
         data = utils.dump_json(params)
         url = f"{self._url}{path}"
         return self._request(command_info[0], url, body=data)

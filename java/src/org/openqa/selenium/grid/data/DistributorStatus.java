@@ -41,9 +41,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(node -> node.getAvailability().equals(Availability.UP) && node.hasCapacity())
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+        .anyMatch(node -> node.getAvailability().equals(Availability.UP) && node.hasCapacity());
   }
 
   public Set<NodeStatus> getNodes() {

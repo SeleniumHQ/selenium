@@ -71,7 +71,7 @@ pub struct JsonOutput {
 }
 
 impl Logger {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         let debug = BooleanKey("debug", false).get_value();
         let trace = BooleanKey("trace", false).get_value();
         Logger::create("", debug, trace)

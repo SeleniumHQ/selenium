@@ -42,7 +42,7 @@ import org.openqa.selenium.support.ui.TickingClock;
 @Tag("UnitTests")
 class AjaxElementLocatorTest {
 
-  private TickingClock clock = new TickingClock();
+  private final TickingClock clock = new TickingClock();
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new MonkeyedAjaxElementLocator(clock, driver, field, 10);

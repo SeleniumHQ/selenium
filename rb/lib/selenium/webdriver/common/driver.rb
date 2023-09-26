@@ -318,18 +318,6 @@ module Selenium
         end
       end
 
-      def generate_capabilities(capabilities)
-        Array(capabilities).map { |cap|
-          if cap.is_a? Symbol
-            cap = WebDriver::Options.send(cap)
-          elsif !cap.respond_to? :as_json
-            msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
-            raise ArgumentError, msg
-          end
-          cap.as_json
-        }.inject(:merge)
-      end
-
       def service_url(service)
         @service_manager = service.launch
         @service_manager.uri

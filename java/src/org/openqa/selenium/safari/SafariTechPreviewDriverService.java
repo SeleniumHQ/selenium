@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 import com.google.auto.service.AutoService;
+import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -47,26 +48,10 @@ public class SafariTechPreviewDriverService extends DriverService {
    */
   public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
 
-  private static final String TP_SAFARI_DRIVER_LOGGING = "webdriver.tp.safari.logging";
+  public static final String TP_SAFARI_DRIVER_LOGGING = "webdriver.tp.safari.logging";
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
       new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
-
-  /**
-   * @param executable The SafariDriver executable.
-   * @param port Which port to start the SafariDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link SafariTechPreviewDriverService#SafariTechPreviewDriverService(File, int,
-   *     Duration, List, Map)}
-   */
-  @Deprecated
-  public SafariTechPreviewDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    this(executable, port, DEFAULT_TIMEOUT, args, environment);
-  }
 
   /**
    * @param executable The SafariDriver executable.
@@ -104,7 +89,7 @@ public class SafariTechPreviewDriverService extends DriverService {
   }
 
   @Override
-  protected Capabilities getDefaultDriverOptions() {
+  public Capabilities getDefaultDriverOptions() {
     return new SafariOptions().setUseTechnologyPreview(true);
   }
 
@@ -131,6 +116,7 @@ public class SafariTechPreviewDriverService extends DriverService {
   }
 
   /** Builder used to configure new {@link SafariTechPreviewDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends DriverService.Builder<
@@ -171,7 +157,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>(Arrays.asList("--port", String.valueOf(getPort())));
-      if (this.diagnose) {
+      if (Boolean.TRUE.equals(diagnose)) {
         args.add("--diagnose");
       }
       return args;
@@ -181,6 +167,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     protected SafariTechPreviewDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
+        withLogOutput(ByteStreams.nullOutputStream());
         return new SafariTechPreviewDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);

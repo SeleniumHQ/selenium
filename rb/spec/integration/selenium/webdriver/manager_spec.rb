@@ -134,7 +134,7 @@ module Selenium
         end
 
         describe 'sameSite' do
-          it 'allows adding with value Strict', only: {browser: %i[chrome edge firefox]} do
+          it 'allows adding with value Strict' do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'strict',
                                      same_site: 'Strict'
@@ -142,7 +142,7 @@ module Selenium
             expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
           end
 
-          it 'allows adding with value Lax', only: {browser: %i[chrome edge firefox]} do
+          it 'allows adding with value Lax' do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'lax',
                                      same_site: 'Lax'

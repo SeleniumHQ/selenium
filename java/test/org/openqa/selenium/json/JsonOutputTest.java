@@ -727,7 +727,7 @@ class JsonOutputTest {
 
     Object value = emptyList();
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 100; i++) {
       jsonOutput.write(value);
 
       value = singletonList(value);

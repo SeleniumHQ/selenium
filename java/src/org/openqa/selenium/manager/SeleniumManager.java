@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -60,14 +62,11 @@ public class SeleniumManager {
   private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
-  private static final String EXE = ".exe";
-  private static final String INFO = "INFO";
-  private static final String WARN = "WARN";
-  private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
 
-  private Path binary;
+  private final String managerPath = System.getenv("SE_MANAGER_PATH");
+  private Path binary = managerPath == null ? null : Paths.get(managerPath);
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
@@ -114,7 +113,7 @@ public class SeleniumManager {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
       command.executeAsync();
-      command.waitFor(10000); // A generous timeout
+      command.waitFor();
       if (command.isRunning()) {
         LOG.warning("Selenium Manager did not exit");
       }
@@ -129,7 +128,14 @@ public class SeleniumManager {
     if (!output.isEmpty()) {
       try {
         jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
-        jsonOutput.getLogs().forEach(logged -> LOG.log(logged.getLevel(), logged.getMessage()));
+        jsonOutput
+            .getLogs()
+            .forEach(
+                logged -> {
+                  Level currentLevel =
+                      logged.getLevel() == Level.INFO ? Level.FINE : logged.getLevel();
+                  LOG.log(currentLevel, logged.getMessage());
+                });
         dump = jsonOutput.getResult().getMessage();
       } catch (JsonException e) {
         failedToParse = e;
@@ -153,30 +159,32 @@ public class SeleniumManager {
    */
   private synchronized Path getBinary() {
     if (binary == null) {
-      try {
-        Platform current = Platform.getCurrent();
-        String folder = "linux";
-        String extension = "";
-        if (current.is(WINDOWS)) {
-          extension = EXE;
-          folder = "windows";
-        } else if (current.is(MAC)) {
-          folder = "macos";
-        }
-        String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-        try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
-          Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
+      Platform current = Platform.getCurrent();
+      String folder = "linux";
+      String extension = "";
+      if (current.is(WINDOWS)) {
+        extension = ".exe";
+        folder = "windows";
+      } else if (current.is(MAC)) {
+        folder = "macos";
+      }
+      String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+      try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
+        Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
 
-          deleteOnExit(tmpPath);
+        deleteOnExit(tmpPath);
 
-          binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
-          Files.copy(inputStream, binary, REPLACE_EXISTING);
-        }
-        binary.toFile().setExecutable(true);
+        binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
+        Files.copy(inputStream, binary, REPLACE_EXISTING);
       } catch (Exception e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
+    } else if (!Files.exists(binary)) {
+      throw new WebDriverException(
+          String.format("Unable to obtain Selenium Manager Binary at: %s", binary));
     }
+    binary.toFile().setExecutable(true);
+
     LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
 
     return binary;
@@ -259,6 +267,11 @@ public class SeleniumManager {
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
       arguments.add(options.getBrowserVersion());
+      // We know the browser binary path, we don't need the browserVersion.
+      // Useful when "beta" is specified as browserVersion, but the browser driver cannot match it.
+      if (options instanceof MutableCapabilities) {
+        ((MutableCapabilities) options).setCapability("browserVersion", (String) null);
+      }
     }
 
     String browserBinary = getBrowserBinary(options);
@@ -275,7 +288,7 @@ public class SeleniumManager {
       arguments.add("--offline");
     }
 
-    Proxy proxy = (Proxy) options.getCapability("proxy");
+    Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null) {
       if (proxy.getSslProxy() != null) {
         arguments.add("--proxy");
