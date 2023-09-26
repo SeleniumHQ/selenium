@@ -1,4 +1,9 @@
 load(
+    "@contrib_rules_jvm//java:defs.bzl",
+    _JUNIT5_DEPS = "JUNIT5_DEPS",
+    _java_test_suite = "java_test_suite",
+)
+load(
     "@rules_java//java:defs.bzl",
     _java_binary = "java_binary",
     _java_import = "java_import",
@@ -10,11 +15,6 @@ load("//java/private:merge_jars.bzl", _merge_jars = "merge_jars")
 load("//java/private:module.bzl", _java_module = "java_module")
 load("//java/private:selenium_test.bzl", _selenium_test = "selenium_test")
 load("//java/private:suite.bzl", _java_selenium_test_suite = "java_selenium_test_suite")
-load(
-    "@contrib_rules_jvm//java:defs.bzl",
-    _JUNIT5_DEPS = "JUNIT5_DEPS",
-    _java_test_suite = "java_test_suite",
-)
 
 def java_test_suite(name, runner = "junit5", **kwargs):
     _java_test_suite(name = name, runner = runner, **kwargs)

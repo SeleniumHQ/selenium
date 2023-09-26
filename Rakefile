@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.13'
+  '4.14'
 end
 
 def version
@@ -345,11 +345,11 @@ task 'prep-release-zip': [
 
   mkdir_p 'build/dist'
   File.delete
-  cp Rake::Task['//java/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
-  cp Rake::Task['//java/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp Rake::Task['//java/src/org/openqa/selenium/grid:executable-grid'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.jar"
 end
 

@@ -62,10 +62,10 @@ python_register_multi_toolchains(
 )
 
 load("@python//:pip.bzl", "multi_pip_parse")
-load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
 load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
-load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
+load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
 load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
+load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 
 multi_pip_parse(
     name = "py_dev_requirements",
@@ -316,12 +316,12 @@ http_archive(
     url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
 )
 
-load("//rb:ruby_version.bzl", "RUBY_VERSION")
 load(
     "@rules_ruby//ruby:deps.bzl",
     "rb_bundle",
     "rb_register_toolchains",
 )
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 
 rb_register_toolchains(version = RUBY_VERSION)
 

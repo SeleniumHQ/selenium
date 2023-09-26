@@ -1,3 +1,4 @@
+load("//rust/private:rustfmt_config.bzl", _rustfmt_config = "rustfmt_config")
 load(
     "//rust/private:rustfmt_wrapper.bzl",
     _rust_binary = "rust_binary",
@@ -5,7 +6,6 @@ load(
     _rust_test = "rust_test",
     _rust_test_suite = "rust_test_suite",
 )
-load("//rust/private:rustfmt_config.bzl", _rustfmt_config = "rustfmt_config")
 
 rust_binary = _rust_binary
 rust_library = _rust_library

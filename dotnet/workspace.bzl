@@ -31,8 +31,8 @@ def selenium_register_dotnet():
 
     import_nuget_package(
         name = "json.net",
-        file = "third_party/dotnet/nuget/packages/newtonsoft.json.11.0.1.nupkg",
-        sha256 = "95b47bae94bf117809f13a90b29b8822a02c8a8aeb65bd6838ae07170f90c8fc",
+        file = "third_party/dotnet/nuget/packages/newtonsoft.json.13.0.1.nupkg",
+        sha256 = "2b6b52556e27e1b7913f33eedeb95568110c746bd64afff74357f1683878323a",
     )
 
     import_nuget_package(
