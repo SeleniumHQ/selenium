@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -29,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.List;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +76,7 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(EDGE)
   void canCreateAWindowWithAReferenceContext() {
     BrowsingContext browsingContext =
-      new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
+        new BrowsingContext(driver, WindowType.WINDOW, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
@@ -97,7 +95,7 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(EDGE)
   void canCreateATabWithAReferenceContext() {
     BrowsingContext browsingContext =
-      new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
+        new BrowsingContext(driver, WindowType.TAB, driver.getWindowHandle());
     assertThat(browsingContext.getId()).isNotEmpty();
   }
 
@@ -362,8 +360,8 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   void canCaptureScreenshotOfViewport() {
     String expectedBase64EncodedImage =
-      "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVQYV2P8z8AARIQB41BQOAvomScE/MIElGdcCFS4B"
-      + "8hYTEAx3NdLgApjkRRbA9mrgRgUdrdBJsKC5x6Qo4yksBbIbkLiwxW+BwoKIUnUAdmNSHwAe44dOkRcP14AAAAASUVORK5CYII=";
+        "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVQYV2P8z8AARIQB41BQOAvomScE/MIElGdcCFS4B"
+            + "8hYTEAx3NdLgApjkRRbA9mrgRgUdrdBJsKC5x6Qo4yksBbIbkLiwxW+BwoKIUnUAdmNSHwAe44dOkRcP14AAAAASUVORK5CYII=";
 
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -372,11 +370,9 @@ class BrowsingContextTest extends JupiterTestBase {
 
     Rectangle elementRectangle = element.getRect();
 
-    String screenshot = browsingContext.captureBoxScreenshot(
-      elementRectangle.getX(),
-      elementRectangle.getY(),
-      5,
-      5);
+    String screenshot =
+        browsingContext.captureBoxScreenshot(
+            elementRectangle.getX(), elementRectangle.getY(), 5, 5);
 
     assertThat(screenshot.length()).isPositive();
     assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
