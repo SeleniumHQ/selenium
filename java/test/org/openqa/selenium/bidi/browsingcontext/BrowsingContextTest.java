@@ -32,6 +32,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -39,6 +40,7 @@ import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.environment.webserver.Page;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -373,6 +375,54 @@ class BrowsingContextTest extends JupiterTestBase {
     String screenshot =
         browsingContext.captureBoxScreenshot(
             elementRectangle.getX(), elementRectangle.getY(), 5, 5);
+
+    assertThat(screenshot.length()).isPositive();
+    assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  void canCaptureElementScreenshot() {
+    String expectedBase64EncodedImage =
+        "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAsUlEQVRIS2P8DwR37z5kOH/+KsPr1+8Yfv78xUBtICMjwW"
+            + "BhYcggIyPJwHjnzoP/mzfvpbYdWM0LCfFkYFy1auv/p09f0MVCaWkJBsb+/rn/6WIb0BJ2djZMCwsKkqhq/4QJ81DMw"
+            + "/DhqIWkhvdokDKMJprRRIMeAqPZYjRbkJorGEYTzQhINCSnChI0sLGxDkAzke4NYVhT/9w5UFP/LcOvX79JCCTilIIa"
+            + "wJaWkKY+ALWasZyUg91yAAAAAElFTkSuQmCC";
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("formPage.html"));
+
+    WebElement element = driver.findElement(By.id("checky"));
+
+    String screenshot =
+        browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId());
+
+    assertThat(screenshot.length()).isPositive();
+    assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  void canScrollAndCaptureElementScreenshot() {
+    Dimension dimension = new Dimension(300, 300);
+    driver.manage().window().setSize(dimension);
+    String expectedBase64EncodedImage =
+        "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAn0lEQVRIS2P8DwQMQHD37kOG8+evMrx+/Y7h589fICGqA"
+            + "hkZCQYLC0MGRpCFIMs2b95LVQtwGQa2cPXqbQxPn76gn4UTJsyji2UgS8A+RLewoCCJqg5ANn/UQqoE7WiQMoymUlJT"
+            + "0miiGU00pKYZhtFEM5pohkGiIdkLJGgYmGYi3RvCsKb+uXOgpv5bhl+/fpMQSMQplZaWYLC0NGQAAKpf/Fe7M+wtAAA"
+            + "AAElFTkSuQmCC";
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("formPage.html"));
+
+    WebElement element = driver.findElement(By.id("checkbox-with-label"));
+
+    String screenshot =
+        browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId(), true);
 
     assertThat(screenshot.length()).isPositive();
     assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);

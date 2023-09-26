@@ -246,6 +246,48 @@ public class BrowsingContext {
             }));
   }
 
+  public String captureElementScreenshot(String elementId) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            ImmutableMap.of(
+                CONTEXT,
+                id,
+                "clip",
+                ImmutableMap.of(
+                    "type",
+                    "element",
+                    "element",
+                    ImmutableMap.of("sharedId", elementId),
+                    "scrollIntoView",
+                    false)),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
+  public String captureElementScreenshot(String elementId, boolean scrollIntoView) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            ImmutableMap.of(
+                CONTEXT,
+                id,
+                "clip",
+                ImmutableMap.of(
+                    "type",
+                    "element",
+                    "element",
+                    ImmutableMap.of("sharedId", elementId),
+                    "scrollIntoView",
+                    scrollIntoView)),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.
