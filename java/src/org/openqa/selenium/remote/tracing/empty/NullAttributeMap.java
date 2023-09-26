@@ -18,23 +18,45 @@
 package org.openqa.selenium.remote.tracing.empty;
 
 import org.openqa.selenium.remote.tracing.AttributeMap;
-import org.openqa.selenium.remote.tracing.Propagator;
-import org.openqa.selenium.remote.tracing.TraceContext;
-import org.openqa.selenium.remote.tracing.Tracer;
 
-public class NullTracer implements Tracer {
+public class NullAttributeMap implements AttributeMap {
   @Override
-  public TraceContext getCurrentContext() {
-    return new NullContext();
+  public void put(String key, String value) {
+    // drop the key/value pair
   }
 
   @Override
-  public Propagator getPropagator() {
-    return new NullPropagator();
+  public void put(String key, long value) {
+    // drop the key/value pair
   }
 
   @Override
-  public AttributeMap createAttributeMap() {
-    return new NullAttributeMap();
+  public void put(String key, double value) {
+    // drop the key/value pair
+  }
+
+  @Override
+  public void put(String key, boolean value) {
+    // drop the key/value pair
+  }
+
+  @Override
+  public void put(String key, String... value) {
+    // drop the key/value pair
+  }
+
+  @Override
+  public void put(String key, long... value) {
+    // drop the key/value pair
+  }
+
+  @Override
+  public void put(String key, double... value) {
+    // drop the key/value pair
+  }
+
+  @Override
+  public void put(String key, boolean... value) {
+    // drop the key/value pair
   }
 }

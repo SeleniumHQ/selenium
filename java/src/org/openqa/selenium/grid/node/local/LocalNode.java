@@ -105,8 +105,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -404,24 +403,21 @@ public class LocalNode extends Node {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
       attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+          "session.request.capabilities", sessionRequest.getDesiredCapabilities().toString());
       attributeMap.put(
-          "session.request.capabilities",
-          EventAttribute.setValue(sessionRequest.getDesiredCapabilities().toString()));
-      attributeMap.put(
-          "session.request.downstreamdialect",
-          EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+          "session.request.downstreamdialect", sessionRequest.getDownstreamDialects().toString());
 
       int currentSessionCount = getCurrentSessionCount();
       span.setAttribute("current.session.count", currentSessionCount);
-      attributeMap.put("current.session.count", EventAttribute.setValue(currentSessionCount));
+      attributeMap.put("current.session.count", currentSessionCount);
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.RESOURCE_EXHAUSTED);
-        attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
+        attributeMap.put("max.session.count", maxSessionCount);
         span.addEvent("Max session count reached", attributeMap);
         return Either.left(new RetrySessionRequestException("Max session count reached."));
       }

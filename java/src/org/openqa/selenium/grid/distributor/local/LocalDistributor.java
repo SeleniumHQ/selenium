@@ -107,8 +107,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -509,13 +508,11 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     Require.nonNull("Requests to process", request);
 
     Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    AttributeMap attributeMap = tracer.createAttributeMap();
     try {
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
 
-      attributeMap.put(
-          "request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
+      attributeMap.put("request.payload", request.getDesiredCapabilities().toString());
       String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
       LOG.info(
@@ -528,8 +525,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue(
-                "Unable to create session. No capabilities found: " + exception.getMessage()));
+            "Unable to create session. No capabilities found: " + exception.getMessage());
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(exception);
       }
@@ -574,7 +570,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           SESSION_ID_EVENT.accept(attributeMap, sessionId);
           CAPABILITIES_EVENT.accept(attributeMap, sessionCaps);
           span.setAttribute(SESSION_URI.getKey(), sessionUri);
-          attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+          attributeMap.put(SESSION_URI.getKey(), sessionUri);
 
           String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
@@ -596,13 +592,13 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
                 "Will re-attempt to find a node which can run this session", lastFailure);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue("Will retry session " + request.getRequestId()));
+            "Will retry session " + request.getRequestId());
 
       } else {
         EXCEPTION.accept(attributeMap, lastFailure);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+            "Unable to create session: " + lastFailure.getMessage());
       }
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.ABORTED);
@@ -614,8 +610,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to create session: " + e.getMessage()));
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), "Unable to create session: " + e.getMessage());
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(e);
@@ -626,8 +621,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(
           AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue(
-              "Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+          "Unknown error in LocalDistributor while creating session: " + e.getMessage());
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
@@ -817,14 +811,12 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
       try (Span span =
           TraceSessionRequest.extract(tracer, sessionRequest)
               .createSpan("distributor.poll_queue")) {
-        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-        attributeMap.put(
-            AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+        AttributeMap attributeMap = tracer.createAttributeMap();
+        attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
         span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
-        attributeMap.put(
-            AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
+        attributeMap.put(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
 
-        attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+        attributeMap.put("request", sessionRequest.toString());
         Either<SessionNotCreatedException, CreateSessionResponse> response =
             newSession(sessionRequest);
 
@@ -834,7 +826,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
                 Debug.getDebugLogLevel(), "Retrying {0}", sessionRequest.getDesiredCapabilities());
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
-            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+            attributeMap.put("request.retry_add", retried);
             childSpan.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
 
             if (retried) {
