@@ -30,7 +30,7 @@ module Selenium
     #
 
     class NightlyVersionGenerator
-      REGEXP = /VERSION = ['"]([\d.]+)['"]/
+      REGEXP = /VERSION = ['"]([\d.]+\.nightly)['"]/
 
       def self.call(version_file, version_suffix)
         version_suffix ||= Date.today.strftime('%Y%m%d')
