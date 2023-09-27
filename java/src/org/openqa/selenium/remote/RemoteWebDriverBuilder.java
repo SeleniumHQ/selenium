@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -108,6 +109,7 @@ public class RemoteWebDriverBuilder {
   private Credentials credentials = null;
   private boolean useCustomConfig;
   private Augmenter augmenter = new Augmenter();
+  private Map<String, CommandInfo> additionalCommands = Collections.emptyMap();
 
   RemoteWebDriverBuilder() {
     // Access through RemoteWebDriver.builder
@@ -242,6 +244,18 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("User name and password", usernameAndPassword);
 
     this.credentials = usernameAndPassword;
+
+    return this;
+  }
+
+  /**
+   * Add commands to support non-standard {@code additionalCommands} in addition to the standard.
+   *
+   * @param additionalCommands additional commands to allow the command executor to process
+   */
+  public RemoteWebDriverBuilder additionalCommands(Map<String, CommandInfo> additionalCommands) {
+    Require.nonNull("Additional commands", additionalCommands);
+    this.additionalCommands = additionalCommands;
 
     return this;
   }
@@ -438,7 +452,13 @@ public class RemoteWebDriverBuilder {
 
   private CommandExecutor createExecutor(HttpHandler handler, ProtocolHandshake.Result result) {
     Dialect dialect = result.getDialect();
-    Function<Command, HttpRequest> commandEncoder = dialect.getCommandCodec()::encode;
+    CommandCodec<HttpRequest> commandCodec = dialect.getCommandCodec();
+    for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+      commandCodec.defineCommand(
+          entry.getKey(), entry.getValue().getMethod(), entry.getValue().getUrl());
+    }
+
+    Function<Command, HttpRequest> commandEncoder = commandCodec::encode;
     Function<HttpResponse, Response> responseDecoder = dialect.getResponseCodec()::decode;
 
     Response newSessionResponse = result.createResponse();
