@@ -486,7 +486,6 @@ pub trait SeleniumManager {
         let browser_version = self.get_browser_version();
         browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
-            || browser_version.contains('a') // This happens in Firefox versions
     }
 
     fn is_browser_version_unstable(&self) -> bool {

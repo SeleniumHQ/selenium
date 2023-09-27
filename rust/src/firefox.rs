@@ -34,7 +34,7 @@ use crate::metadata::{
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_three_args,
     format_two_args, get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger,
-    SeleniumManager, BETA, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    SeleniumManager, BETA, CANARY, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_CURRENT_VERSION_ARG, STABLE,
 };
 
@@ -115,7 +115,10 @@ impl FirefoxManager {
             .collect())
     }
 
-    fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url(
+        &mut self,
+        is_browser_version_nightly: bool,
+    ) -> Result<String, Box<dyn Error>> {
         let arch = self.get_arch();
         let os = self.get_os();
         let platform_label;
@@ -145,7 +148,7 @@ impl FirefoxManager {
             } else {
                 artifact_extension = "pkg";
             }
-            if self.is_browser_version_nightly() {
+            if is_browser_version_nightly {
                 platform_label = "osx";
             } else {
                 platform_label = "mac";
@@ -156,7 +159,7 @@ impl FirefoxManager {
             artifact_extension = "tar.bz2";
             if X32.is(arch) {
                 platform_label = "linux-i686";
-            } else if self.is_browser_version_nightly() {
+            } else if is_browser_version_nightly {
                 platform_label = "linux64";
             } else {
                 platform_label = "linux-x86_64";
@@ -165,7 +168,7 @@ impl FirefoxManager {
 
         // A possible future improvement is to allow downloading language-specific releases
         let language = FIREFOX_DEFAULT_LANG;
-        if self.is_browser_version_nightly() {
+        if is_browser_version_nightly {
             Ok(format_two_args(
                 FIREFOX_NIGHTLY_URL,
                 platform_label,
@@ -383,8 +386,11 @@ impl SeleniumManager for FirefoxManager {
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         let browser_version;
         let browser_name = self.browser_name;
+        let original_browser_version = self.get_config().browser_version.clone();
         let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
         let major_browser_version = self.get_major_browser_version();
+        let is_browser_version_nightly = original_browser_version.eq_ignore_ascii_case(NIGHTLY)
+            || original_browser_version.eq_ignore_ascii_case(CANARY);
 
         // Browser version is checked in the local metadata
         match get_browser_version_from_metadata(
@@ -438,7 +444,7 @@ impl SeleniumManager for FirefoxManager {
             ));
         } else {
             // If browser is not in the cache, download it
-            let browser_url = self.get_browser_url()?;
+            let browser_url = self.get_browser_url(is_browser_version_nightly)?;
             self.get_logger().debug(format!(
                 "Downloading {} {} from {}",
                 self.get_browser_name(),
@@ -452,7 +458,7 @@ impl SeleniumManager for FirefoxManager {
                 .get_major_browser_version()
                 .parse::<i32>()
                 .unwrap_or_default();
-            let volume = if self.is_browser_version_nightly() {
+            let volume = if is_browser_version_nightly {
                 FIREFOX_NIGHTLY_VOLUME
             } else {
                 FIREFOX_VOLUME
