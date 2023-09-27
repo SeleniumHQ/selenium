@@ -343,6 +343,12 @@ class BrowsingContextTest extends JupiterTestBase {
     assertThat(driver.getPageSource()).doesNotContain(userText);
   }
 
+  // The resulting screenshot should be checked for expected image.
+  // Since, sending wrong command parameters (for viewport or element screenshot), defaults to capture screenshot functionality.
+  // So it can lead to a false positive if underlying implementation is not doing the right thing.
+  // However, comparing images is a hard problem. Especially when they are different sizes.
+  // TODO: A potential solution can be replicating classic WebDriver screenshot tests.
+  // Meanwhile, trusting the browsers to do the right thing.
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
