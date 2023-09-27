@@ -388,15 +388,15 @@ impl SeleniumManager for EdgeManager {
 
             // TODO check
             let extract_label = if original_browser_version.eq_ignore_ascii_case(BETA) {
-                Some("msedge-beta")
+                "msedge-beta"
             } else if original_browser_version.eq_ignore_ascii_case(DEV) {
-                Some("msedge-dev")
+                "msedge-dev"
             } else if original_browser_version.eq_ignore_ascii_case(NIGHTLY)
                 || original_browser_version.eq_ignore_ascii_case(CANARY)
             {
-                Some("msedge-canary")
+                "msedge-canary"
             } else {
-                Some("msedge")
+                "msedge"
             };
             uncompress(
                 &driver_zip_file,
@@ -404,7 +404,7 @@ impl SeleniumManager for EdgeManager {
                 self.get_logger(),
                 self.get_os(),
                 None,
-                extract_label,
+                Some(extract_label),
                 Some(major_browser_version_int),
             )?;
         }
@@ -503,8 +503,7 @@ impl SeleniumManager for EdgeManager {
                 let os_arch = r.platform.eq_ignore_ascii_case(os_label)
                     && r.architecture.eq_ignore_ascii_case(arch_label);
                 if is_fixed_browser_version {
-                    let browser_version_label = format!("{}.", browser_version);
-                    os_arch && r.product_version.starts_with(&browser_version_label)
+                    os_arch && r.product_version.starts_with(&browser_version)
                 } else {
                     os_arch
                 }
