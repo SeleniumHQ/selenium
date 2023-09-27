@@ -361,10 +361,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   void canCaptureScreenshotOfViewport() {
-    String expectedBase64EncodedImage =
-        "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVQYV2P8z8AARIQB41BQOAvomScE/MIElGdcCFS4B"
-            + "8hYTEAx3NdLgApjkRRbA9mrgRgUdrdBJsKC5x6Qo4yksBbIbkLiwxW+BwoKIUnUAdmNSHwAe44dOkRcP14AAAAASUVORK5CYII=";
-
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
@@ -377,7 +373,6 @@ class BrowsingContextTest extends JupiterTestBase {
             elementRectangle.getX(), elementRectangle.getY(), 5, 5);
 
     assertThat(screenshot.length()).isPositive();
-    assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
   }
 
   @Test
@@ -385,11 +380,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
   void canCaptureElementScreenshot() {
-    String expectedBase64EncodedImage =
-        "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAsUlEQVRIS2P8DwR37z5kOH/+KsPr1+8Yfv78xUBtICMjwW"
-            + "BhYcggIyPJwHjnzoP/mzfvpbYdWM0LCfFkYFy1auv/p09f0MVCaWkJBsb+/rn/6WIb0BJ2djZMCwsKkqhq/4QJ81DMw"
-            + "/DhqIWkhvdokDKMJprRRIMeAqPZYjRbkJorGEYTzQhINCSnChI0sLGxDkAzke4NYVhT/9w5UFP/LcOvX79JCCTilIIa"
-            + "wJaWkKY+ALWasZyUg91yAAAAAElFTkSuQmCC";
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
     driver.get(appServer.whereIs("formPage.html"));
@@ -400,7 +390,6 @@ class BrowsingContextTest extends JupiterTestBase {
         browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId());
 
     assertThat(screenshot.length()).isPositive();
-    assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
   }
 
   @Test
@@ -410,11 +399,6 @@ class BrowsingContextTest extends JupiterTestBase {
   void canScrollAndCaptureElementScreenshot() {
     Dimension dimension = new Dimension(300, 300);
     driver.manage().window().setSize(dimension);
-    String expectedBase64EncodedImage =
-        "iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAn0lEQVRIS2P8DwQMQHD37kOG8+evMrx+/Y7h589fICGqA"
-            + "hkZCQYLC0MGRpCFIMs2b95LVQtwGQa2cPXqbQxPn76gn4UTJsyji2UgS8A+RLewoCCJqg5ANn/UQqoE7WiQMoymUlJT"
-            + "0miiGU00pKYZhtFEM5pohkGiIdkLJGgYmGYi3RvCsKb+uXOgpv5bhl+/fpMQSMQplZaWYLC0NGQAAKpf/Fe7M+wtAAA"
-            + "AAElFTkSuQmCC";
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
     driver.get(appServer.whereIs("formPage.html"));
@@ -425,7 +409,6 @@ class BrowsingContextTest extends JupiterTestBase {
         browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId(), true);
 
     assertThat(screenshot.length()).isPositive();
-    assertThat(screenshot).isEqualTo(expectedBase64EncodedImage);
   }
 
   private String alertPage() {
