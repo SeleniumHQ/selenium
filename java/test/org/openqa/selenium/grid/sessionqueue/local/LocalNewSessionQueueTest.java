@@ -35,6 +35,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -261,7 +262,7 @@ class LocalNewSessionQueueTest {
                           .getBytes(UTF_8));
 
               try {
-                Thread.sleep(2000); // simulate session creation delay
+                Thread.sleep(10000); // simulate session creation delay
               } catch (InterruptedException ignore) {
               }
               queue.complete(
@@ -273,6 +274,61 @@ class LocalNewSessionQueueTest {
 
     assertThat(isPresent.get()).isTrue();
     assertEquals(HTTP_OK, httpResponse.getStatus());
+  }
+
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBeAbleToAddToQueueWithTimeoutDoNotCreateSessionAfterTimeout(Supplier<TestData> supplier) {
+    setup(supplier);
+
+    SessionRequest sessionRequestWithTimeout =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(CAPS),
+            Map.of(),
+            Map.of());
+
+    AtomicBoolean isPresent = new AtomicBoolean(false);
+
+    new Thread(
+            () -> {
+              waitUntilAddedToQueue(sessionRequestWithTimeout);
+              isPresent.set(true);
+
+              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+
+              try {
+                Thread.sleep(4000); // simulate session waiting in queue
+              } catch (InterruptedException ignore) {
+              }
+
+              // remove request from queue
+              Map<Capabilities, Long> stereotypes = new HashMap<>();
+              stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
+              queue.getNextAvailable(stereotypes);
+              try {
+                Thread.sleep(2000); // wait to go past the request session timeout
+              } catch (InterruptedException ignore) {
+              }
+
+              // LocalDistributor could not distribute the session, add it back to queue
+              // it should not be re-added to queue and send back error on session creation
+              queue.retryAddToQueue(sessionRequestWithTimeout);
+
+            })
+        .start();
+System.out.println("coucou");
+    LocalDateTime start = LocalDateTime.now();
+    HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
+
+    // check we do not wait more than necessary
+    assertThat(LocalDateTime.now().minusSeconds(10).isBefore(start)).isTrue();
+
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
 
   @ParameterizedTest

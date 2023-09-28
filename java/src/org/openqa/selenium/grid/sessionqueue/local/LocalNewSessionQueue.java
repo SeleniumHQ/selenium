@@ -215,16 +215,20 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       try {
         LOG.info(String.format("%s: start waiting session creation", request.getRequestId()));
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
+        
+        // do not allow to retry once the timeout expired
+        data.setNoMoreRetry(true);
+
         if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
           LOG.info(String.format("%s: a bit more time", request.getRequestId()));
-          sessionCreated = data.latch.await(5000, MILLISECONDS);
+          sessionCreated = data.latch.await(15000, MILLISECONDS);
         }
 
         if (sessionCreated) {
-          LOG.info(String.format("%s: session created", request.getRequestId()));
+          LOG.info(String.format("%s: we got a result", request.getRequestId()));
           result = data.result;
         } else {
-          LOG.info(String.format("%s: session not created", request.getRequestId()));
+          LOG.info(String.format("%s: no result in the expected time", request.getRequestId()));
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
         }
       } catch (InterruptedException e) {
@@ -240,8 +244,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
-        requests.remove(request.getRequestId());
         queue.remove(request);
+        contexts.remove(request.getRequestId());
       } finally {
         writeLock.unlock();
       }
@@ -294,9 +298,15 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
+
         if (!requests.containsKey(request.getRequestId())) {
           return false;
-        }
+        } else if (requests.get(request.getRequestId()).noMoreRetry) {
+          // as we try to re-add a session request that has already expired, force session timeout
+          complete(request.getRequestId(), Either.left(new SessionNotCreatedException("Timed out creating session")));
+          return false;
+        } 
+        
 
         if (queue.contains(request)) {
           // No need to re-add this
@@ -475,6 +485,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     private final CountDownLatch latch = new CountDownLatch(1);
     public Either<SessionNotCreatedException, CreateSessionResponse> result;
     private boolean complete;
+    private boolean noMoreRetry = false;
 
     public Data(Instant enqueued) {
       this.endTime = enqueued.plus(requestTimeout);
@@ -489,6 +500,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       this.result = result;
       complete = true;
       latch.countDown();
+    }
+
+    public void setNoMoreRetry(boolean noMoreRetry) {
+      this.noMoreRetry = noMoreRetry;
+    }
+
+    public boolean getNoMoreRetry() {
+      return this.noMoreRetry;
     }
   }
 }
