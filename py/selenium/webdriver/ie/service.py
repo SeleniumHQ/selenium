@@ -28,7 +28,7 @@ class Service(service.Service):
         executable_path: str = None,
         port: int = 0,
         host: typing.Optional[str] = None,
-        service_args: typing.Sequence[str] = None,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
         log_level: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         **kwargs,

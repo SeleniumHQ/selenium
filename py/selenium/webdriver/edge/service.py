@@ -40,7 +40,7 @@ class Service(service.ChromiumService):
         port: int = 0,
         verbose: bool = False,
         log_output: SubprocessStdAlias = None,
-        service_args: typing.Sequence[str] = None,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:

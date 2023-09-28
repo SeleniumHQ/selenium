@@ -35,7 +35,7 @@ class ChromiumService(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: typing.Sequence[str] = None,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,

@@ -37,7 +37,7 @@ class Service(service.Service):
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
         log_path: typing.Optional[str] = None,
-        service_args: typing.Sequence[str] = None,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ):
