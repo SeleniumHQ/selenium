@@ -148,9 +148,15 @@ pub trait SeleniumManager {
 
     fn get_platform_label(&self) -> &str;
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>>;
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>>;
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>>;
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>>;
 
     fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>>;
 
@@ -247,11 +253,13 @@ pub trait SeleniumManager {
                 self.set_browser_version(browser_version.clone());
             }
             _ => {
-                // If not in metadata, discover version using Mozilla online metadata
+                // If not in metadata, discover version using online metadata
                 if self.is_browser_version_stable() || self.is_browser_version_empty() {
-                    browser_version = self.request_latest_browser_version_from_online()?;
+                    browser_version =
+                        self.request_latest_browser_version_from_online(&original_browser_version)?;
                 } else {
-                    browser_version = self.request_fixed_browser_version_from_online()?;
+                    browser_version =
+                        self.request_fixed_browser_version_from_online(&original_browser_version)?;
                 }
                 self.set_browser_version(browser_version.clone());
 
@@ -673,12 +681,20 @@ pub trait SeleniumManager {
         self.is_unstable(self.get_browser_version())
     }
 
+    fn is_empty(&self, browser_version: &str) -> bool {
+        browser_version.is_empty()
+    }
+
     fn is_browser_version_empty(&self) -> bool {
-        self.get_browser_version().is_empty()
+        self.is_empty(self.get_browser_version())
+    }
+
+    fn is_stable(&self, browser_version: &str) -> bool {
+        browser_version.eq_ignore_ascii_case(STABLE)
     }
 
     fn is_browser_version_stable(&self) -> bool {
-        self.get_browser_version().eq_ignore_ascii_case(STABLE)
+        self.is_stable(self.get_browser_version())
     }
 
     fn setup(&mut self) -> Result<PathBuf, Box<dyn Error>> {
@@ -894,6 +910,7 @@ pub trait SeleniumManager {
         browser_name: &str,
     ) -> Result<Option<String>, Box<dyn Error>> {
         let browser_version;
+        let original_browser_version = self.get_config().browser_version.clone();
         let major_browser_version = self.get_major_browser_version();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
@@ -916,9 +933,9 @@ pub trait SeleniumManager {
                 // If not in metadata, discover version using online endpoints
                 browser_version =
                     if major_browser_version.is_empty() || self.is_browser_version_stable() {
-                        self.request_latest_browser_version_from_online()?
+                        self.request_latest_browser_version_from_online(&original_browser_version)?
                     } else {
-                        self.request_fixed_browser_version_from_online()?
+                        self.request_fixed_browser_version_from_online(&original_browser_version)?
                     };
 
                 let browser_ttl = self.get_ttl();

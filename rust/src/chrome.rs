@@ -419,7 +419,10 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
@@ -447,7 +450,10 @@ impl SeleniumManager for ChromeManager {
         Ok(browser_version)
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         let mut browser_version = self.get_browser_version().to_string();
         let major_browser_version = self.get_major_browser_version();
@@ -526,15 +532,15 @@ impl SeleniumManager for ChromeManager {
 
     fn get_browser_url_for_download(
         &mut self,
-        _browser_version: &str,
+        browser_version: &str,
     ) -> Result<String, Box<dyn Error>> {
         if let Some(browser_url) = self.browser_url.clone() {
             Ok(browser_url)
         } else {
             if self.is_browser_version_stable() || self.is_browser_version_empty() {
-                self.request_latest_browser_version_from_online()?;
+                self.request_latest_browser_version_from_online(browser_version)?;
             } else {
-                self.request_fixed_browser_version_from_online()?;
+                self.request_fixed_browser_version_from_online(browser_version)?;
             }
             Ok(self.browser_url.clone().unwrap())
         }

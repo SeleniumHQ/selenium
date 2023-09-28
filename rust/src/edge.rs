@@ -299,12 +299,14 @@ impl SeleniumManager for EdgeManager {
         }
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
-        let browser_version = self.get_browser_version();
-        let is_fixed_browser_version = !self.is_browser_version_empty()
-            && !self.is_browser_version_stable()
-            && !self.is_browser_version_unstable();
+        let is_fixed_browser_version = !self.is_empty(browser_version)
+            && !self.is_stable(browser_version)
+            && !self.is_unstable(browser_version);
         let edge_updates_url = if is_fixed_browser_version {
             format!("{}?view=enterprise", BROWSER_URL)
         } else {
@@ -318,11 +320,11 @@ impl SeleniumManager for EdgeManager {
         let edge_products =
             parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), edge_updates_url)?;
 
-        let edge_channel = if self.is_browser_version_beta() {
+        let edge_channel = if self.is_beta(browser_version) {
             "Beta"
-        } else if self.is_browser_version_dev() {
+        } else if self.is_dev(browser_version) {
             "Dev"
-        } else if self.is_browser_version_nightly() {
+        } else if self.is_nightly(browser_version) {
             "Canary"
         } else {
             "Stable"
@@ -403,8 +405,11 @@ impl SeleniumManager for EdgeManager {
         Ok(browser_version)
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        self.request_latest_browser_version_from_online()
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.request_latest_browser_version_from_online(browser_version)
     }
 
     fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
@@ -455,10 +460,10 @@ impl SeleniumManager for EdgeManager {
 
     fn get_browser_url_for_download(
         &mut self,
-        _browser_version: &str,
+        browser_version: &str,
     ) -> Result<String, Box<dyn Error>> {
         if self.browser_url.is_none() {
-            self.request_latest_browser_version_from_online()?;
+            self.request_latest_browser_version_from_online(browser_version)?;
         }
         Ok(self.browser_url.clone().unwrap())
     }

@@ -326,7 +326,10 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         self.get_logger().trace(format!(
             "Using Firefox endpoints to find out latest stable {} version",
@@ -345,7 +348,10 @@ impl SeleniumManager for FirefoxManager {
         Ok(browser_version.to_string())
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         let browser_version = self.get_browser_version().to_string();
         self.get_logger().trace(format!(
