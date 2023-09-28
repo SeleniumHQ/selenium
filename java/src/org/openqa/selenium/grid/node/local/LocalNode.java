@@ -401,7 +401,7 @@ public class LocalNode extends Node {
   public Either<WebDriverException, CreateSessionResponse> newSession(
       CreateSessionRequest sessionRequest) {
     Require.nonNull("Session request", sessionRequest);
-
+    LOG.info("new session => start creating");
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());

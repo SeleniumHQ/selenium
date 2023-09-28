@@ -506,7 +506,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
   public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
       SessionRequest request) throws SessionNotCreatedException {
     Require.nonNull("Requests to process", request);
-
+    LOG.info(String.format("%s: new session", request.getRequestId()));
     Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
     AttributeMap attributeMap = tracer.createAttributeMap();
     try {
@@ -558,6 +558,8 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
             new CreateSessionRequest(request.getDownstreamDialects(), caps, request.getMetadata());
 
         try {
+
+          LOG.info(String.format("%s: new session => start creating", request.getRequestId()));
           CreateSessionResponse response = startSession(selectedSlot, singleRequest);
           sessions.add(response.getSession());
           model.setSession(selectedSlot, response.getSession());
@@ -571,7 +573,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           CAPABILITIES_EVENT.accept(attributeMap, sessionCaps);
           span.setAttribute(SESSION_URI.getKey(), sessionUri);
           attributeMap.put(SESSION_URI.getKey(), sessionUri);
-
+          LOG.info(String.format("%s: new session => created", request.getRequestId()));
           String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
@@ -580,6 +582,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
+          LOG.info(String.format("%s: new session => not created", request.getRequestId()));
           model.setSession(selectedSlot, null);
           lastFailure = e;
         }
