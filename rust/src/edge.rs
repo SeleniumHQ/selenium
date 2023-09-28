@@ -30,10 +30,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_browser_metadata, create_http_client, download_to_tmp_folder, format_two_args,
-    get_binary_extension, get_browser_version_from_metadata, path_buf_to_string, uncompress,
-    Logger, SeleniumManager, BETA, CANARY, DASH_DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE, REG_VERSION_ARG, STABLE,
+    create_http_client, format_two_args, get_binary_extension, Logger, SeleniumManager, BETA,
+    DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE,
+    REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -42,6 +41,7 @@ const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products";
+const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
 const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
 const EDGE_BETA_MACOS_APP_NAME: &str = "Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta";
@@ -73,40 +73,6 @@ impl EdgeManager {
             log: Logger::new(),
             browser_url: None,
         }))
-    }
-
-    fn get_browser_url(&mut self) -> Result<String, Box<dyn Error>> {
-        if self.browser_url.is_none() {
-            self.request_latest_browser_version_from_online()?;
-        }
-        Ok(self.browser_url.clone().unwrap())
-    }
-
-    fn get_browser_binary_path_in_cache(
-        &self,
-        original_browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
-        let browser_in_cache = self.get_browser_path_in_cache()?;
-        if MACOS.is(self.get_os()) {
-            let macos_app_name = if original_browser_version.eq_ignore_ascii_case(BETA) {
-                EDGE_BETA_MACOS_APP_NAME
-            } else if original_browser_version.eq_ignore_ascii_case(DEV) {
-                EDGE_DEV_MACOS_APP_NAME
-            } else if original_browser_version.eq_ignore_ascii_case(NIGHTLY)
-                || original_browser_version.eq_ignore_ascii_case(CANARY)
-            {
-                EDGE_CANARY_MACOS_APP_NAME
-            } else {
-                EDGE_MACOS_APP_NAME
-            };
-            Ok(browser_in_cache.join(macos_app_name))
-        } else {
-            Ok(browser_in_cache.join(format!(
-                "{}{}",
-                EDGE_WINDOWS_AND_LINUX_APP_NAME,
-                get_binary_extension(self.get_os())
-            )))
-        }
     }
 }
 
@@ -310,112 +276,6 @@ impl SeleniumManager for EdgeManager {
         self.log = log;
     }
 
-    // TODO check
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        let browser_version;
-        let browser_name = self.browser_name;
-        let original_browser_version = self.get_config().browser_version.clone();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
-        let major_browser_version = self.get_major_browser_version();
-
-        // Browser version is checked in the local metadata
-        match get_browser_version_from_metadata(
-            &metadata.browsers,
-            browser_name,
-            &major_browser_version,
-        ) {
-            Some(version) => {
-                self.get_logger().trace(format!(
-                    "Browser with valid TTL. Getting {} version from metadata",
-                    browser_name
-                ));
-                browser_version = version;
-                self.set_browser_version(browser_version.clone());
-            }
-            _ => {
-                // If not in metadata, discover version using Mozilla online metadata
-                if self.is_browser_version_stable() || self.is_browser_version_empty() {
-                    browser_version = self.request_latest_browser_version_from_online()?;
-                } else {
-                    browser_version = self.request_fixed_browser_version_from_online()?;
-                }
-                self.set_browser_version(browser_version.clone());
-
-                let browser_ttl = self.get_ttl();
-                if browser_ttl > 0
-                    && !self.is_browser_version_empty()
-                    && !self.is_browser_version_stable()
-                {
-                    metadata.browsers.push(create_browser_metadata(
-                        browser_name,
-                        &major_browser_version,
-                        &browser_version,
-                        browser_ttl,
-                    ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
-                }
-            }
-        }
-        self.get_logger().debug(format!(
-            "Required browser: {} {}",
-            browser_name, browser_version
-        ));
-
-        // Checking if browser version is in the cache
-        let browser_binary_path =
-            self.get_browser_binary_path_in_cache(&original_browser_version)?;
-        if browser_binary_path.exists() {
-            self.get_logger().debug(format!(
-                "{} {} already in the cache",
-                browser_name, browser_version
-            ));
-        } else {
-            // If browser is not in the cache, download it
-            let browser_url = self.get_browser_url()?;
-            self.get_logger().debug(format!(
-                "Downloading {} {} from {}",
-                self.get_browser_name(),
-                self.get_browser_version(),
-                browser_url
-            ));
-            let (_tmp_folder, driver_zip_file) =
-                download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
-
-            let major_browser_version_int = self
-                .get_major_browser_version()
-                .parse::<i32>()
-                .unwrap_or_default();
-
-            // TODO check
-            let extract_label = if original_browser_version.eq_ignore_ascii_case(BETA) {
-                "msedge-beta"
-            } else if original_browser_version.eq_ignore_ascii_case(DEV) {
-                "msedge-dev"
-            } else if original_browser_version.eq_ignore_ascii_case(NIGHTLY)
-                || original_browser_version.eq_ignore_ascii_case(CANARY)
-            {
-                "msedge-canary"
-            } else {
-                "msedge"
-            };
-            uncompress(
-                &driver_zip_file,
-                &self.get_browser_path_in_cache()?,
-                self.get_logger(),
-                self.get_os(),
-                None,
-                Some(extract_label),
-                Some(major_browser_version_int),
-            )?;
-        }
-        if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
-            Ok(Some(browser_binary_path))
-        } else {
-            Ok(None)
-        }
-    }
-
     fn get_platform_label(&self) -> &str {
         let os = self.get_os();
         let arch = self.get_arch();
@@ -438,7 +298,6 @@ impl SeleniumManager for EdgeManager {
         }
     }
 
-    // TODO check
     fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
         let browser_name = self.browser_name;
         let browser_version = self.get_browser_version();
@@ -457,7 +316,7 @@ impl SeleniumManager for EdgeManager {
 
         let edge_products = parse_json_from_url::<Vec<EdgeProduct>>(
             self.get_http_client(),
-            edge_updates_url.clone(),
+            edge_updates_url,
         )?;
 
         let edge_channel = if self.is_browser_version_beta() {
@@ -503,7 +362,7 @@ impl SeleniumManager for EdgeManager {
                 let os_arch = r.platform.eq_ignore_ascii_case(os_label)
                     && r.architecture.eq_ignore_ascii_case(arch_label);
                 if is_fixed_browser_version {
-                    os_arch && r.product_version.starts_with(&browser_version)
+                    os_arch && r.product_version.starts_with(browser_version)
                 } else {
                     os_arch
                 }
@@ -544,6 +403,58 @@ impl SeleniumManager for EdgeManager {
 
     fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
         self.request_latest_browser_version_from_online()
+    }
+
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+        Ok(MIN_EDGE_VERSION_DOWNLOAD)
+    }
+
+    fn get_browser_binary_path(&self, browser_version: &str) -> Result<PathBuf, Box<dyn Error>> {
+        let browser_in_cache = self.get_browser_path_in_cache()?;
+        if MACOS.is(self.get_os()) {
+            let macos_app_name = if self.is_beta(browser_version) {
+                EDGE_BETA_MACOS_APP_NAME
+            } else if self.is_dev(browser_version) {
+                EDGE_DEV_MACOS_APP_NAME
+            } else if self.is_nightly(browser_version) {
+                EDGE_CANARY_MACOS_APP_NAME
+            } else {
+                EDGE_MACOS_APP_NAME
+            };
+            Ok(browser_in_cache.join(macos_app_name))
+        } else {
+            Ok(browser_in_cache.join(format!(
+                "{}{}",
+                EDGE_WINDOWS_AND_LINUX_APP_NAME,
+                get_binary_extension(self.get_os())
+            )))
+        }
+    }
+
+    fn get_browser_url_for_download(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        if self.browser_url.is_none() {
+            self.request_latest_browser_version_from_online()?;
+        }
+        Ok(self.browser_url.clone().unwrap())
+    }
+
+    fn get_browser_label_for_download(
+        &self,
+        browser_version: &str,
+    ) -> Result<Option<&str>, Box<dyn Error>> {
+        let browser_label = if self.is_beta(browser_version) {
+            "msedge-beta"
+        } else if self.is_dev(browser_version) {
+            "msedge-dev"
+        } else if self.is_nightly(browser_version) {
+            "msedge-canary"
+        } else {
+            "msedge"
+        };
+        Ok(Some(browser_label))
     }
 }
 
