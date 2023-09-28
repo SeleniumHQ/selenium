@@ -495,7 +495,12 @@ pub trait SeleniumManager {
             }
         }
 
-        if download_browser && !self.is_avoid_browser_download() {
+        if download_browser
+            && !self.is_avoid_browser_download()
+            && !self.is_iexplorer()
+            && !self.is_grid()
+            && !self.is_safari()
+        {
             let browser_path = self.download_browser()?;
             if browser_path.is_some() {
                 self.get_logger().debug(format!(
@@ -504,7 +509,7 @@ pub trait SeleniumManager {
                     self.get_browser_version(),
                     browser_path.unwrap().display()
                 ));
-            } else if !self.is_iexplorer() && !self.is_grid() {
+            } else if !self.is_iexplorer() && !self.is_grid() && !self.is_safari() {
                 return Err(format!(
                     "{}{} cannot be downloaded",
                     self.get_browser_name(),
