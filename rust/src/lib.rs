@@ -82,6 +82,7 @@ pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
 pub const MV_PAYLOAD_COMMAND: &str = "mv {}/*{}/Payload/*.app {}";
 pub const MV_PAYLOAD_OLD_VERSIONS_COMMAND: &str = "mv {}/Payload/*.app {}";
 pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDOWNGRADE=1";
+pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
 pub const DASH_VERSION: &str = "{}{}{} -v";
 pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
 pub const DOUBLE_QUOTE: &str = "\"";
@@ -105,6 +106,8 @@ pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mod
 pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{}{} not available for download";
 pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
     "{} {} not available for download (minimum version: {})";
+pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
+    "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {} {} in online repository";
 pub const UNC_PREFIX: &str = r#"\\?\"#;
 
@@ -199,6 +202,14 @@ pub trait SeleniumManager {
     }
 
     fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+        if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
+            return Err(format_one_arg(
+                NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
+                self.get_browser_name(),
+            )
+            .into());
+        }
+
         let browser_version;
         let original_browser_version = self.get_config().browser_version.clone();
         let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
@@ -587,6 +598,17 @@ pub trait SeleniumManager {
             None
         } else {
             Some(first)
+        }
+    }
+
+    fn is_windows_admin(&self) -> bool {
+        let os = self.get_os();
+        if WINDOWS.is(os) {
+            let command = Command::new_single(WINDOWS_CHECK_ADMIN_COMMAND.to_string());
+            let output = run_shell_command_by_os(os, command).unwrap_or_default();
+            !output.is_empty() && !output.contains("error")
+        } else {
+            false
         }
     }
 
