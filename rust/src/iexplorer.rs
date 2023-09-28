@@ -241,7 +241,10 @@ impl SeleniumManager for IExplorerManager {
         self.unavailable_download()
     }
 
-    fn get_browser_binary_path(&self, _browser_version: &str) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
         self.unavailable_download()
     }
 

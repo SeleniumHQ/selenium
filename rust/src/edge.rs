@@ -19,8 +19,9 @@ use crate::config::ManagerConfig;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::env;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
@@ -30,8 +31,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_two_args, get_binary_extension, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE,
+    create_http_client, get_binary_extension, path_buf_to_string, Logger, SeleniumManager, BETA,
+    DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE,
 };
 
@@ -314,10 +315,8 @@ impl SeleniumManager for EdgeManager {
             browser_name, edge_updates_url
         ));
 
-        let edge_products = parse_json_from_url::<Vec<EdgeProduct>>(
-            self.get_http_client(),
-            edge_updates_url,
-        )?;
+        let edge_products =
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), edge_updates_url)?;
 
         let edge_channel = if self.is_browser_version_beta() {
             "Beta"
@@ -353,6 +352,10 @@ impl SeleniumManager for EdgeManager {
             os_label = "Linux";
             "x64"
         };
+        if products.is_empty() {
+            return self.unavailable_download();
+        }
+
         let releases: Vec<&Release> = products
             .first()
             .unwrap()
@@ -378,13 +381,9 @@ impl SeleniumManager for EdgeManager {
             "deb"
         };
         if releases.is_empty() {
-            return Err(format_two_args(
-                ONLINE_DISCOVERY_ERROR_MESSAGE,
-                browser_name,
-                self.get_browser_version(),
-            )
-            .into());
+            return self.unavailable_download();
         }
+
         let release = releases.first().unwrap();
         let artifacts: Vec<&Artifact> = release
             .artifacts
@@ -394,6 +393,9 @@ impl SeleniumManager for EdgeManager {
         self.get_logger()
             .trace(format!("Artifacts: {:?}", artifacts));
 
+        if artifacts.is_empty() {
+            return self.unavailable_download();
+        }
         let artifact = artifacts.first().unwrap();
         let browser_version = release.product_version.clone();
         self.browser_url = Some(artifact.location.clone());
@@ -409,7 +411,10 @@ impl SeleniumManager for EdgeManager {
         Ok(MIN_EDGE_VERSION_DOWNLOAD)
     }
 
-    fn get_browser_binary_path(&self, browser_version: &str) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             let macos_app_name = if self.is_beta(browser_version) {
@@ -422,6 +427,23 @@ impl SeleniumManager for EdgeManager {
                 EDGE_MACOS_APP_NAME
             };
             Ok(browser_in_cache.join(macos_app_name))
+        } else if WINDOWS.is(self.get_os()) {
+            let browser_path = if self.is_unstable(browser_version) {
+                self.get_browser_path_from_version(browser_version)
+                    .to_string()
+            } else {
+                format!(
+                    r#"Microsoft\Edge\Application\{}\msedge.exe"#,
+                    self.get_browser_version()
+                )
+            };
+            let mut full_browser_path = Path::new(&browser_path).to_path_buf();
+            if WINDOWS.is(self.get_os()) {
+                let env_value = env::var(ENV_PROGRAM_FILES_X86).unwrap_or_default();
+                let parent_path = Path::new(&env_value);
+                full_browser_path = parent_path.join(&browser_path);
+            }
+            Ok((&path_buf_to_string(full_browser_path)).into())
         } else {
             Ok(browser_in_cache.join(format!(
                 "{}{}",

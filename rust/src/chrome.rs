@@ -33,7 +33,8 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_three_args, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE, UNAVAILABLE_DOWNLOAD_WITH_VERSION_ERR_MSG,
+    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
+    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
 };
 
 pub const CHROME_NAME: &str = "chrome";
@@ -170,7 +171,7 @@ impl ChromeManager {
             .collect();
         if filtered_versions.is_empty() {
             return Err(format_three_args(
-                UNAVAILABLE_DOWNLOAD_WITH_VERSION_ERR_MSG,
+                UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_driver_name(),
                 &version_for_filtering,
                 &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
@@ -487,7 +488,7 @@ impl SeleniumManager for ChromeManager {
                 .collect();
             if filtered_versions.is_empty() {
                 return Err(format_three_args(
-                    UNAVAILABLE_DOWNLOAD_WITH_VERSION_ERR_MSG,
+                    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                     browser_name,
                     &major_browser_version,
                     &MIN_CHROME_VERSION_CFT.to_string(),
@@ -511,7 +512,10 @@ impl SeleniumManager for ChromeManager {
         Ok(MIN_CHROME_VERSION_CFT)
     }
 
-    fn get_browser_binary_path(&self, _browser_version: &str) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             Ok(browser_in_cache.join(CFT_MACOS_APP_NAME))
