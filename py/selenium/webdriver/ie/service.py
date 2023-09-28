@@ -28,7 +28,7 @@ class Service(service.Service):
         executable_path: str = None,
         port: int = 0,
         host: typing.Optional[str] = None,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: typing.Sequence[str] = None,
         log_level: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         **kwargs,
@@ -46,7 +46,7 @@ class Service(service.Service):
         """
         if service_args is None:
             service_args = []
-        self._service_args = service_args
+        self.service_args = service_args
 
         if host:
             self._service_args.append(f"--host={host}")
@@ -66,9 +66,9 @@ class Service(service.Service):
 
     @service_args.setter
     def service_args(self, value):
-        if not isinstance(value, list):
-            raise TypeError("Service args must be a list")
-        self._service_args.extend(value)
+        if not isinstance(value, typing.Sequence):
+            raise TypeError("Service args must be a sequence")
+        self._service_args = value
 
     def command_line_args(self) -> typing.List[str]:
         return [f"--port={self.port}"] + self._service_args

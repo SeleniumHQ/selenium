@@ -37,14 +37,14 @@ class Service(service.Service):
         executable_path: str = None,
         port: int = 0,
         quiet: bool = None,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: typing.Sequence[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         reuse_service=False,
         **kwargs,
     ) -> None:
         if service_args is None:
             service_args = []
-        self._service_args = service_args
+        self.service_args = service_args
 
         if quiet is not None:
             warnings.warn("quiet is no longer needed to supress output", DeprecationWarning, stacklevel=2)
@@ -63,9 +63,9 @@ class Service(service.Service):
 
     @service_args.setter
     def service_args(self, value):
-        if not isinstance(value, list):
-            raise TypeError("service args must be a list")
-        self._service_args.extend(value)
+        if not isinstance(value, typing.Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
 
     @property
     def service_url(self) -> str:

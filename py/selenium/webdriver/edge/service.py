@@ -40,13 +40,13 @@ class Service(service.ChromiumService):
         port: int = 0,
         verbose: bool = False,
         log_output: SubprocessStdAlias = None,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: typing.Sequence[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
         if service_args is None:
             service_args = []
-        self._service_args = service_args
+        self.service_args = service_args
 
         if verbose:
             warnings.warn(
@@ -70,6 +70,6 @@ class Service(service.ChromiumService):
 
     @service_args.setter
     def service_args(self, value):
-        if not isinstance(value, list):
-            raise TypeError("service args must be a list")
-        self._service_args.extend(value)
+        if not isinstance(value, typing.Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value

@@ -36,14 +36,14 @@ class Service(service.Service):
         self,
         executable_path: str = None,
         port: int = 0,
-        service_args: typing.Optional[typing.List[str]] = None,
+        service_args: typing.Sequence[str] = None,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
         if service_args is None:
             service_args = []
-        self._service_args = service_args
+        self.service_args = service_args
 
         # Set a port for CDP
         if "--connect-existing" not in self._service_args:
@@ -64,9 +64,9 @@ class Service(service.Service):
 
     @service_args.setter
     def service_args(self, value):
-        if not isinstance(value, list):
-            raise TypeError("service args must be a list")
-        self._service_args.extend(value)
+        if not isinstance(value, typing.Sequence):
+            raise TypeError("service args must be a sequence")
+        self._service_args = value
 
     def command_line_args(self) -> typing.List[str]:
         return ["--port", f"{self.port}"] + self._service_args
