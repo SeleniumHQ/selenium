@@ -60,9 +60,6 @@ csharp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
         "@system.drawing.common//:System.Drawing.Common",
     ],
@@ -101,9 +98,6 @@ csharp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
         "@system.drawing.common//:System.Drawing.Common",
     ],
