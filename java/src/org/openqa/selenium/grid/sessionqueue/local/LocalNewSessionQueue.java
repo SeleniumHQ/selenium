@@ -215,14 +215,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       try {
         LOG.info(String.format("%s: start waiting session creation", request.getRequestId()));
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
-        
-        // do not allow to retry once the timeout expired
-        data.setNoMoreRetry(true);
 
-        if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
+        /*if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
           LOG.info(String.format("%s: a bit more time", request.getRequestId()));
           sessionCreated = data.latch.await(15000, MILLISECONDS);
-        }
+        }*/
 
         if (sessionCreated) {
           LOG.info(String.format("%s: we got a result", request.getRequestId()));
@@ -241,14 +238,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                 new SessionNotCreatedException("An error occurred creating the session", e));
       }
 
-      Lock writeLock = this.lock.writeLock();
+      /*Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
         requests.remove(request.getRequestId());
         queue.remove(request);
       } finally {
         writeLock.unlock();
-      }
+      }*/
 
       HttpResponse res = new HttpResponse();
       if (result.isRight()) {
@@ -301,7 +298,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
         if (!requests.containsKey(request.getRequestId())) {
           return false;
-        } else if (requests.get(request.getRequestId()).noMoreRetry) {
+        } else if (isTimedOut(Instant.now(), requests.get(request.getRequestId()))) {
           // as we try to re-add a session request that has already expired, force session timeout
           complete(request.getRequestId(), Either.left(new SessionNotCreatedException("Timed out creating session")));
           return false;
@@ -460,6 +457,26 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
+  @Override
+  public boolean isSessionRequestTimedOut(RequestId reqId) {
+    Require.nonNull("Request ID", reqId);
+
+    Lock readLock = lock.readLock();
+    readLock.lock();
+
+    try {
+      Data data = requests.get(reqId);
+
+      if (data == null) {
+        return true;
+      } else {
+        return isTimedOut(Instant.now(), data);
+      }
+    } finally {
+      readLock.unlock();
+    }
+  }
+
   @ManagedAttribute(name = "NewSessionQueueSize")
   public int getQueueSize() {
     return queue.size();
@@ -485,7 +502,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     private final CountDownLatch latch = new CountDownLatch(1);
     public Either<SessionNotCreatedException, CreateSessionResponse> result;
     private boolean complete;
-    private boolean noMoreRetry = false;
 
     public Data(Instant enqueued) {
       this.endTime = enqueued.plus(requestTimeout);
@@ -502,12 +518,5 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       latch.countDown();
     }
 
-    public void setNoMoreRetry(boolean noMoreRetry) {
-      this.noMoreRetry = noMoreRetry;
-    }
-
-    public boolean getNoMoreRetry() {
-      return this.noMoreRetry;
-    }
   }
 }

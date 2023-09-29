@@ -320,7 +320,7 @@ class LocalNewSessionQueueTest {
 
             })
         .start();
-System.out.println("coucou");
+
     LocalDateTime start = LocalDateTime.now();
     HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
 

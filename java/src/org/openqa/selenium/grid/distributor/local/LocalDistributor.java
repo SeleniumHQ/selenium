@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -840,7 +841,31 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
         }
 
         sessionQueue.complete(reqId, response);
+        // is session request has timed out, tell the node to remove the session, so that it's not staled
+        if (sessionQueue.isSessionRequestTimedOut(reqId) && response.isRight()) {
+          LOG.info("Stopping expired session");
+          URI nodeURI = response.right().getSession().getUri();
+          Node node = getNodeFromURI(nodeURI);
+          node.stop(response.right().getSession().getId());
+        }
       }
+    }
+  }
+
+  protected Node getNodeFromURI(URI uri) {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      Optional<NodeStatus> nodeStatus = model.getSnapshot().stream()
+          .filter(node -> node.getExternalUri().equals(uri))
+          .findFirst();
+      if (nodeStatus.isPresent()) {
+        return nodes.get(nodeStatus.get().getNodeId());
+      } else {
+        return null;
+      }
+    } finally {
+      readLock.unlock();
     }
   }
 }
