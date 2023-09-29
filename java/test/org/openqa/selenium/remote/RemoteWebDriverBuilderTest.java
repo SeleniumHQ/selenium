@@ -55,6 +55,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -311,6 +312,30 @@ class RemoteWebDriverBuilderTest {
         .build();
 
     assertThat(seen.get()).isEqualTo(uri);
+  }
+
+  @Test
+  void shouldBeAbleToAddCommands() {
+    class CheeseDriver extends RemoteWebDriver {
+      public String getCheese() {
+        return (String) getExecuteMethod().execute("cheese", null);
+      }
+    }
+
+    URI uri = URI.create("http://localhost:5763");
+    CommandInfo cheese = new CommandInfo("session/:sessionId/cheese", HttpMethod.GET);
+    Map<String, CommandInfo> commands = ImmutableMap.of("getCheese", cheese);
+
+    WebDriver driver =
+        RemoteWebDriver.builder()
+            .address(uri.toString())
+            .oneOf(new FirefoxOptions())
+            .additionalCommands(commands)
+            .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
+            .build();
+
+    CheeseDriver cheeseDriver = (CheeseDriver) driver;
+    assertThat(cheeseDriver.getCheese()).isEqualTo("gouda");
   }
 
   @Test
