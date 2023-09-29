@@ -69,13 +69,9 @@ impl BrowserPath {
     }
 }
 
-pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
-        if p.to_path_buf().read_dir()?.next().is_some() {
-            // If not empty
-            fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
-        }
     }
     Ok(())
 }
@@ -187,7 +183,7 @@ pub fn uncompress_sfx(
         "Moving extracted files and folders from {} to {}",
         core_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&core_str, &target_str)?;
 
     Ok(())
@@ -293,7 +289,7 @@ pub fn uncompress_deb(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&opt_edge_str, &target_str)?;
 
     Ok(())
@@ -406,7 +402,7 @@ pub fn unzip(
             fs::create_dir_all(&tmp_path)?;
         } else {
             let target_path = tmp_path.join(path.clone());
-            create_empty_parent_path_if_not_exists(target_path.as_path())?;
+            create_parent_path_if_not_exists(target_path.as_path())?;
             let mut outfile = File::create(&target_path)?;
 
             // Set permissions in Unix-like systems
