@@ -486,7 +486,6 @@ pub trait SeleniumManager {
         let browser_version = self.get_browser_version();
         browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
-            || browser_version.contains('a') // This happens in Firefox versions
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -941,7 +940,7 @@ pub trait SeleniumManager {
                 .canonicalize()
                 .unwrap_or(path_buf.clone()),
         );
-        if WINDOWS.is(self.get_os()) {
+        if WINDOWS.is(self.get_os()) || canon_path.starts_with(UNC_PREFIX) {
             canon_path = canon_path.replace(UNC_PREFIX, "")
         }
         if !path_buf_to_string(path_buf.clone()).eq(&canon_path) {
