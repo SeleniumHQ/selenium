@@ -355,7 +355,7 @@ impl SeleniumManager for EdgeManager {
             "x64"
         };
         if products.is_empty() {
-            return self.unavailable_download();
+            return self.unavailable_discovery();
         }
 
         let releases: Vec<&Release> = products
@@ -383,7 +383,7 @@ impl SeleniumManager for EdgeManager {
             "deb"
         };
         if releases.is_empty() {
-            return self.unavailable_download();
+            return self.unavailable_discovery();
         }
 
         let release = releases.first().unwrap();
@@ -396,7 +396,7 @@ impl SeleniumManager for EdgeManager {
             .trace(format!("Artifacts: {:?}", artifacts));
 
         if artifacts.is_empty() {
-            return self.unavailable_download();
+            return self.unavailable_discovery();
         }
         let artifact = artifacts.first().unwrap();
         let browser_version = release.product_version.clone();

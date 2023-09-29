@@ -33,8 +33,7 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_three_args, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, ONLINE_DISCOVERY_ERROR_MESSAGE,
-    REG_CURRENT_VERSION_ARG, STABLE,
+    DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -399,12 +398,7 @@ impl SeleniumManager for FirefoxManager {
                 firefox_versions =
                     self.request_versions_from_online(FIREFOX_HISTORY_DEV_ENDPOINT)?;
                 if firefox_versions.is_empty() {
-                    return Err(format_two_args(
-                        ONLINE_DISCOVERY_ERROR_MESSAGE,
-                        browser_name,
-                        self.get_browser_version(),
-                    )
-                    .into());
+                    return self.unavailable_discovery();
                 }
             }
 
@@ -417,12 +411,7 @@ impl SeleniumManager for FirefoxManager {
                     return Ok(version.to_string());
                 }
             }
-            Err(format_two_args(
-                ONLINE_DISCOVERY_ERROR_MESSAGE,
-                browser_name,
-                self.get_browser_version(),
-            )
-            .into())
+            self.unavailable_discovery()
         }
     }
 

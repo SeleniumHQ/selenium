@@ -1058,6 +1058,20 @@ pub trait SeleniumManager {
     where
         Self: Sized,
     {
+        self.throw_error_message(UNAVAILABLE_DOWNLOAD_ERR_MSG)
+    }
+
+    fn unavailable_discovery<T>(&self) -> Result<T, Box<dyn Error>>
+    where
+        Self: Sized,
+    {
+        self.throw_error_message(ONLINE_DISCOVERY_ERROR_MESSAGE)
+    }
+
+    fn throw_error_message<T>(&self, error_message: &str) -> Result<T, Box<dyn Error>>
+    where
+        Self: Sized,
+    {
         let browser_version = self.get_browser_version();
         let browser_version_label = if browser_version.is_empty() {
             "".to_string()
@@ -1065,7 +1079,7 @@ pub trait SeleniumManager {
             format!(" {}", browser_version)
         };
         Err(format_two_args(
-            UNAVAILABLE_DOWNLOAD_ERR_MSG,
+            error_message,
             self.get_browser_name(),
             &browser_version_label,
         )
