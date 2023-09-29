@@ -429,11 +429,11 @@ impl SeleniumManager for FirefoxManager {
 
     fn get_browser_binary_path(
         &mut self,
-        _browser_version: &str,
+        browser_version: &str,
     ) -> Result<PathBuf, Box<dyn Error>> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
-            let macos_app_name = if self.is_browser_version_nightly() {
+            let macos_app_name = if self.is_nightly(browser_version) {
                 FIREFOX_NIGHTLY_MACOS_APP_NAME
             } else {
                 FIREFOX_MACOS_APP_NAME
