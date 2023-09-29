@@ -244,8 +244,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
+        requests.remove(request.getRequestId());
         queue.remove(request);
-        contexts.remove(request.getRequestId());
       } finally {
         writeLock.unlock();
       }
