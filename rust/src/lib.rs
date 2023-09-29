@@ -108,7 +108,7 @@ pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
     "{} {} not available for download (minimum version: {})";
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
-pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {} {} in online repository";
+pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
 pub const UNC_PREFIX: &str = r#"\\?\"#;
 
 pub trait SeleniumManager {
@@ -324,6 +324,11 @@ pub trait SeleniumManager {
             self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
             Ok(Some(browser_binary_path))
         } else {
+            self.get_logger().warn(format!(
+                "Expected {} path does not exists: {}",
+                self.get_browser_name(),
+                browser_binary_path.display()
+            ));
             Ok(None)
         }
     }
