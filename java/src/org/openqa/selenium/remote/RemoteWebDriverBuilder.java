@@ -453,11 +453,9 @@ public class RemoteWebDriverBuilder {
   private CommandExecutor createExecutor(HttpHandler handler, ProtocolHandshake.Result result) {
     Dialect dialect = result.getDialect();
     CommandCodec<HttpRequest> commandCodec = dialect.getCommandCodec();
-    for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-      commandCodec.defineCommand(
-          entry.getKey(), entry.getValue().getMethod(), entry.getValue().getUrl());
-    }
-
+    additionalCommands.forEach(
+        (name, commandInfo) ->
+            commandCodec.defineCommand(name, commandInfo.getMethod(), commandInfo.getUrl()));
     Function<Command, HttpRequest> commandEncoder = commandCodec::encode;
     Function<HttpResponse, Response> responseDecoder = dialect.getResponseCodec()::decode;
 
