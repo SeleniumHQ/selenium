@@ -18,8 +18,8 @@
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
-    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_to_string,
+    create_empty_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
+    get_binary_extension, path_buf_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -190,7 +190,7 @@ pub trait SeleniumManager {
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
-            create_parent_path_if_not_exists(&driver_path_in_cache)?;
+            create_empty_parent_path_if_not_exists(&driver_path_in_cache)?;
             Ok(fs::rename(driver_zip_file, driver_path_in_cache)?)
         } else {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
