@@ -70,8 +70,10 @@ impl BrowserPath {
 }
 
 pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
-    create_parent_path_if_not_exists(path)?;
-    fs::remove_dir_all(path).and_then(|_| fs::create_dir(path))?;
+    if let Some(p) = path.parent() {
+        create_path_if_not_exists(p)?;
+        fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
+    }
     Ok(())
 }
 
