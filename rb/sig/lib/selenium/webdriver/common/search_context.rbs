@@ -1,0 +1,16 @@
+module Selenium
+  module WebDriver
+    module SearchContext
+      # @api private
+      FINDERS: untyped
+
+      def find_element: (*untyped args) -> untyped
+
+      def find_elements: (*untyped args) -> untyped
+
+      private
+
+      def extract_args: (untyped args) -> untyped
+    end
+  end
+end
