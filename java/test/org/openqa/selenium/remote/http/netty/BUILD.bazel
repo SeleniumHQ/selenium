@@ -7,7 +7,7 @@ java_test_suite(
     srcs = glob(["*.java"]),
     deps = [
         "//java/src/org/openqa/selenium/remote/http",
-        "//java/src/org/openqa/selenium/remote/http/netty",
+        "//java/src/org/openqa/selenium/remote/http/jdk",
         "//java/test/org/openqa/selenium/remote/internal:test-lib",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.junit.jupiter:junit-jupiter-api"),

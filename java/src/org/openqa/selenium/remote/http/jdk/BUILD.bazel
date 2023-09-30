@@ -1,17 +1,12 @@
-load("//java:defs.bzl", "java_export")
-load("//java:version.bzl", "SE_VERSION")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
-java_export(
+java_library(
     name = "jdk",
     srcs = glob(["*.java"]),
-    javacopts = [
-        "--release",
-        "11",  # Deliberately targeting Java 11 for widest possible support
-    ],
-    maven_coordinates = "org.seleniumhq.selenium:selenium-http-jdk-client:%s" % SE_VERSION,
-    pom_template = "//java/src/org/openqa/selenium:template-pom",
     visibility = [
-        "//visibility:public",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/test/org/openqa/selenium/remote/http:__subpackages__",
     ],
     deps = [
         "//java:auto-service",
