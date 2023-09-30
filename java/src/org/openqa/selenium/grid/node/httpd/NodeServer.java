@@ -32,6 +32,7 @@ import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -200,25 +201,26 @@ public class NodeServer extends TemplateGridServerCommand {
                 .build();
 
         LOG.info("Starting registration process for Node " + node.getUri());
-        Executors.newSingleThreadExecutor()
-            .submit(
-                () -> {
-                  Failsafe.with(registrationPolicy)
-                      .run(
-                          () -> {
-                            if (nodeRegistered.get()) {
-                              throw new InterruptedException("Stopping registration thread.");
-                            }
-                            HealthCheck.Result check = node.getHealthCheck().check();
-                            if (DOWN.equals(check.getAvailability())) {
-                              LOG.severe("Node is not alive: " + check.getMessage());
-                              // Throw an exception to force another check sooner.
-                              throw new UnsupportedOperationException("Node cannot be registered");
-                            }
-                            bus.fire(new NodeStatusEvent(node.getStatus()));
-                            LOG.info("Sending registration event...");
-                          });
-                });
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(
+            () -> {
+              Failsafe.with(registrationPolicy)
+                  .run(
+                      () -> {
+                        if (nodeRegistered.get()) {
+                          throw new InterruptedException("Stopping registration thread.");
+                        }
+                        HealthCheck.Result check = node.getHealthCheck().check();
+                        if (DOWN.equals(check.getAvailability())) {
+                          LOG.severe("Node is not alive: " + check.getMessage());
+                          // Throw an exception to force another check sooner.
+                          throw new UnsupportedOperationException("Node cannot be registered");
+                        }
+                        bus.fire(new NodeStatusEvent(node.getStatus()));
+                        LOG.info("Sending registration event...");
+                      });
+            });
+        executor.shutdown();
 
         return this;
       }
