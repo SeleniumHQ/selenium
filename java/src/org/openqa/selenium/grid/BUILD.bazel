@@ -110,7 +110,6 @@ maven_bom(
         "//java/src/org/openqa/selenium/json:json",
         "//java/src/org/openqa/selenium/lift:lift",
         "//java/src/org/openqa/selenium/manager:manager",
-        "//java/src/org/openqa/selenium/remote/http/jdk:jdk",
         "//java/src/org/openqa/selenium/remote/http:http",
         "//java/src/org/openqa/selenium/remote:remote",
         "//java/src/org/openqa/selenium/safari:safari",
