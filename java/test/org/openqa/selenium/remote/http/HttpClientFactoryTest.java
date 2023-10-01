@@ -48,13 +48,15 @@ class HttpClientFactoryTest {
   @Test
   void canCreateDefaultHttpClientFactory() {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("jdk-http-client");
+    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value())
+        .isEqualTo("jdk-http-client");
   }
 
   @Test
   void canCreateHttpClientFactoryByName() {
     HttpClient.Factory factory = HttpClient.Factory.create("jdk-http-client");
-    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("jdk-http-client");
+    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value())
+        .isEqualTo("jdk-http-client");
   }
 
   @Test
