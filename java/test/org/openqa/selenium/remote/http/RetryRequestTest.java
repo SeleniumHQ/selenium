@@ -33,7 +33,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.remote.http.netty.NettyClient;
 
 class RetryRequestTest {
 
@@ -47,7 +46,7 @@ class RetryRequestTest {
             .baseUrl(URI.create("http://localhost:2345").toURL())
             .withRetries()
             .readTimeout(Duration.ofSeconds(1));
-    client = new NettyClient.Factory().createClient(config);
+    client = HttpClient.Factory.createDefault().createClient(config);
   }
 
   @Test
