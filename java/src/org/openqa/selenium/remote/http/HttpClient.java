@@ -71,7 +71,7 @@ public interface HttpClient extends Closeable, HttpHandler {
      * <p>{@see create}
      */
     static Factory createDefault() {
-      return create("jdk-http-client");
+      return create(System.getProperty("webdriver.http.factory", "jdk-http-client"));
     }
 
     /**
