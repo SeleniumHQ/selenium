@@ -5,7 +5,7 @@ module Selenium
 
       include TakesScreenshot
 
-      def self.for: (untyped browser, ?::Hash[untyped, untyped] opts) -> untyped
+      def self.for: (Symbol browser, ?::Hash[Symbol, untyped] opts) -> Driver
 
       def initialize: (?bridge: untyped? bridge, ?listener: untyped? listener, **untyped opts) -> void
 
@@ -17,11 +17,11 @@ module Selenium
       #
       # @return [Hash]
       #
-      def status: () -> untyped
+      def status: () -> Hash[untyped, untyped]
 
-      def navigate: () -> untyped
+      def navigate: () -> Navigation
 
-      def switch_to: () -> untyped
+      def switch_to: () -> TargetLocator
 
       def manage: () -> untyped
 

@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    class Navigation
+      def initialize: (untyped bridge) -> void
+
+      def to: (String url) -> void
+
+      def back: () -> void
+
+      def forward: () -> void
+
+      def refresh: () -> void
+    end
+  end
+end

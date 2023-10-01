@@ -1,0 +1,88 @@
+module Selenium
+  module WebDriver
+    class Element
+      ELEMENT_KEY: ::String
+
+      include SearchContext
+
+      include TakesScreenshot
+
+      def initialize: (untyped bridge, untyped id) -> void
+
+      def inspect: () -> untyped
+
+      def ==: (untyped other) -> untyped
+
+      alias eql? ==
+
+      def hash: () -> untyped
+
+      def click: () -> untyped
+
+      def tag_name: () -> untyped
+
+      def attribute: (untyped name) -> untyped
+
+      def dom_attribute: (untyped name) -> untyped
+
+      def property: (untyped name) -> untyped
+
+      def aria_role: () -> untyped
+
+      def accessible_name: () -> untyped
+
+      def text: () -> untyped
+
+      def send_keys: (*untyped args) -> untyped
+
+      alias send_key send_keys
+
+      def clear: () -> untyped
+
+      def enabled?: () -> untyped
+
+      def selected?: () -> untyped
+
+      def displayed?: () -> untyped
+
+      def submit: () -> untyped
+
+      def css_value: (untyped prop) -> untyped
+
+      alias style css_value
+
+      def location: () -> untyped
+
+      def rect: () -> untyped
+
+      def location_once_scrolled_into_view: () -> untyped
+
+      def size: () -> untyped
+
+      def shadow_root: () -> untyped
+
+      alias first find_element
+
+      alias all find_elements
+
+      #
+      #   element['class'] or element[:class] #=> "someclass"
+      #
+      alias [] attribute
+
+      def ref: () -> ::Array[:element | untyped]
+
+      def to_json: () -> untyped
+
+      def as_json: () -> untyped
+
+      private
+
+      attr_reader bridge: untyped
+
+      def selectable?: () -> untyped
+
+      def screenshot: () -> untyped
+    end
+  end
+end
