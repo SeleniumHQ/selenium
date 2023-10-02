@@ -229,7 +229,7 @@ fn main() {
             }
         });
 
-        exit(0)
+    exit(0)
 }
 
 fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {

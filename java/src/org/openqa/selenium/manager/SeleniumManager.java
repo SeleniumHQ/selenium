@@ -114,11 +114,7 @@ public class SeleniumManager {
     try {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
-      command.executeAsync();
-      command.waitFor();
-      if (command.isRunning()) {
-        LOG.warning("Selenium Manager did not exit");
-      }
+      command.execute();
       code = command.getExitCode();
       output = command.getStdOut();
     } catch (Exception e) {
