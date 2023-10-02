@@ -230,15 +230,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                 new SessionNotCreatedException("An error occurred creating the session", e));
       }
 
-      /*Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        requests.remove(request.getRequestId());
-        queue.remove(request);
-      } finally {
-        writeLock.unlock();
-      }*/
-
       HttpResponse res = new HttpResponse();
       if (result.isRight()) {
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));

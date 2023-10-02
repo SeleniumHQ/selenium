@@ -169,6 +169,97 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
+  void testCompleteWithCreatedSession(Supplier<TestData> supplier) {
+    setup(supplier);
+
+    AtomicBoolean isCompleted = new AtomicBoolean(false);
+
+    new Thread(
+            () -> {
+              waitUntilAddedToQueue(sessionRequest);
+
+              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+              SessionId sessionId = new SessionId("123");
+              Session session =
+                  new Session(
+                      sessionId,
+                      URI.create("https://example.com"),
+                      CAPS,
+                      capabilities,
+                      Instant.now());
+              CreateSessionResponse sessionResponse =
+                  new CreateSessionResponse(
+                      session,
+                      JSON.toJson(
+                              ImmutableMap.of(
+                                  "value",
+                                  ImmutableMap.of(
+                                      "sessionId", sessionId,
+                                      "capabilities", capabilities)))
+                          .getBytes(UTF_8));
+
+              isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse)));
+            })
+        .start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequest);
+    try {
+      Thread.sleep(400); // wait for thread to complete
+    } catch (InterruptedException ignore) {
+    }
+    assertThat(isCompleted.get()).isTrue();
+  }
+
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void testCompleteWithSessionInTimeout(Supplier<TestData> supplier) {
+    setup(supplier);
+
+    AtomicBoolean isCompleted = new AtomicBoolean(false);
+
+    new Thread(
+            () -> {
+              waitUntilAddedToQueue(sessionRequest);
+              try {
+                Thread.sleep(5500); // simulate session long to create
+              } catch (InterruptedException ignore) {
+              }
+              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+              SessionId sessionId = new SessionId("123");
+              Session session =
+                  new Session(
+                      sessionId,
+                      URI.create("https://example.com"),
+                      CAPS,
+                      capabilities,
+                      Instant.now());
+              CreateSessionResponse sessionResponse =
+                  new CreateSessionResponse(
+                      session,
+                      JSON.toJson(
+                              ImmutableMap.of(
+                                  "value",
+                                  ImmutableMap.of(
+                                      "sessionId", sessionId,
+                                      "capabilities", capabilities)))
+                          .getBytes(UTF_8));
+
+              isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.left(new SessionNotCreatedException("not created"))));
+            })
+        .start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequest);
+    try {
+      Thread.sleep(400); // wait for thread to complete
+    } catch (InterruptedException ignore) {
+    }
+
+    assertThat(isCompleted.get()).isFalse();
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
   void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
@@ -320,6 +411,7 @@ class LocalNewSessionQueueTest {
     assertThat(isPresent.get()).isTrue();
     assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
+  
 
   @ParameterizedTest
   @MethodSource("data")
