@@ -23,7 +23,7 @@ module Selenium
 
       def switch_to: () -> TargetLocator
 
-      def manage: () -> untyped
+      def manage: () -> Manager
 
       def action: (**untyped opts) -> untyped
 
