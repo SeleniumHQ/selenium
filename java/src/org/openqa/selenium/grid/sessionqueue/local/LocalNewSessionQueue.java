@@ -94,7 +94,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
     objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
     description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
-  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
@@ -213,19 +212,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
       Either<SessionNotCreatedException, CreateSessionResponse> result;
       try {
-        LOG.info(String.format("%s: start waiting session creation", request.getRequestId()));
+
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
 
-        /*if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
-          LOG.info(String.format("%s: a bit more time", request.getRequestId()));
-          sessionCreated = data.latch.await(15000, MILLISECONDS);
-        }*/
-
         if (sessionCreated) {
-          LOG.info(String.format("%s: we got a result", request.getRequestId()));
           result = data.result;
         } else {
-          LOG.info(String.format("%s: no result in the expected time", request.getRequestId()));
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
         }
       } catch (InterruptedException e) {
