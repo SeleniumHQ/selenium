@@ -16,12 +16,13 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use anyhow::anyhow;
+use anyhow::Error;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::env;
-use std::error::Error;
-use std::path::{Path, PathBuf};
+
+use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
@@ -60,7 +61,7 @@ pub struct EdgeManager {
 }
 
 impl EdgeManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = EDGE_NAMES[0];
         let driver_name = EDGEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
@@ -137,7 +138,7 @@ impl SeleniumManager for EdgeManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
             r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
             REG_VERSION_ARG,
@@ -149,7 +150,7 @@ impl SeleniumManager for EdgeManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         let mut major_browser_version = self.get_major_browser_version();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
@@ -220,11 +221,11 @@ impl SeleniumManager for EdgeManager {
         }
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         Ok(None)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Error> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -251,7 +252,7 @@ impl SeleniumManager for EdgeManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
@@ -281,6 +282,10 @@ impl SeleniumManager for EdgeManager {
         self.log = log;
     }
 
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Error> {
+        Ok(None)
+    }
+
     fn get_platform_label(&self) -> &str {
         let os = self.get_os();
         let arch = self.get_arch();
@@ -306,7 +311,7 @@ impl SeleniumManager for EdgeManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
@@ -412,18 +417,15 @@ impl SeleniumManager for EdgeManager {
     fn request_fixed_browser_version_from_online(
         &mut self,
         browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         self.request_latest_browser_version_from_online(browser_version)
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         Ok(MIN_EDGE_VERSION_DOWNLOAD)
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, browser_version: &str) -> Result<PathBuf, Error> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             let macos_app_name = if self.is_beta(browser_version) {
@@ -462,20 +464,14 @@ impl SeleniumManager for EdgeManager {
         }
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error> {
         if self.browser_url.is_none() {
             self.request_latest_browser_version_from_online(browser_version)?;
         }
         Ok(self.browser_url.clone().unwrap())
     }
 
-    fn get_browser_label_for_download(
-        &self,
-        browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    fn get_browser_label_for_download(&self, browser_version: &str) -> Result<Option<&str>, Error> {
         let browser_label = if self.is_beta(browser_version) {
             "msedge-beta"
         } else if self.is_dev(browser_version) {

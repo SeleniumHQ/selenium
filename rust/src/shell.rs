@@ -16,7 +16,7 @@
 // under the License.
 
 use crate::{Logger, WINDOWS};
-use std::error::Error;
+use anyhow::Error;
 
 pub const CRLF: &str = "\r\n";
 pub const LF: &str = "\n";
@@ -68,14 +68,14 @@ pub fn run_shell_command_with_log(
     log: &Logger,
     os: &str,
     command: Command,
-) -> Result<String, Box<dyn Error>> {
+) -> Result<String, Error> {
     log.debug(format!("Running command: {}", command.display()));
     let output = run_shell_command_by_os(os, command)?;
     log.debug(format!("Output: {:?}", output));
     Ok(output)
 }
 
-pub fn run_shell_command_by_os(os: &str, command: Command) -> Result<String, Box<dyn Error>> {
+pub fn run_shell_command_by_os(os: &str, command: Command) -> Result<String, Error> {
     let (shell, flag) = if WINDOWS.is(os) {
         ("cmd", "/c")
     } else {
@@ -84,11 +84,7 @@ pub fn run_shell_command_by_os(os: &str, command: Command) -> Result<String, Box
     run_shell_command(shell, flag, command)
 }
 
-pub fn run_shell_command(
-    shell: &str,
-    flag: &str,
-    command: Command,
-) -> Result<String, Box<dyn Error>> {
+pub fn run_shell_command(shell: &str, flag: &str, command: Command) -> Result<String, Error> {
     let mut process = std::process::Command::new(shell);
     process.arg(flag);
 

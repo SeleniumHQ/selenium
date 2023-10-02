@@ -28,10 +28,12 @@ use std::{env, fs};
 
 use crate::config::OS::{MACOS, WINDOWS};
 use crate::config::{str_to_os, ManagerConfig};
+use anyhow::Error;
 use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
-use std::error::Error;
+
+use anyhow::anyhow;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use walkdir::{DirEntry, WalkDir};
@@ -126,17 +128,17 @@ pub trait SeleniumManager {
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>>;
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error>;
 
     fn get_driver_name(&self) -> &str;
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>>;
+    fn request_driver_version(&mut self) -> Result<String, Error>;
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>>;
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error>;
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>>;
+    fn get_driver_url(&mut self) -> Result<String, Error>;
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>>;
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error>;
 
     fn get_config(&self) -> &ManagerConfig;
 
@@ -153,33 +155,27 @@ pub trait SeleniumManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         browser_version: &str,
-    ) -> Result<String, Box<dyn Error>>;
+    ) -> Result<String, Error>;
 
     fn request_fixed_browser_version_from_online(
         &mut self,
         browser_version: &str,
-    ) -> Result<String, Box<dyn Error>>;
+    ) -> Result<String, Error>;
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>>;
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error>;
 
-    fn get_browser_binary_path(&mut self, browser_version: &str)
-        -> Result<PathBuf, Box<dyn Error>>;
+    fn get_browser_binary_path(&mut self, browser_version: &str) -> Result<PathBuf, Error>;
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>>;
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, dyn Error>;
 
-    fn get_browser_label_for_download(
-        &self,
-        _browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>>;
+    fn get_browser_label_for_download(&self, _browser_version: &str)
+        -> Result<Option<&str>, Error>;
 
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
 
-    fn download_driver(&mut self) -> Result<(), Box<dyn Error>> {
+    fn download_driver(&mut self) -> Result<(), Error> {
         let driver_url = self.get_driver_url()?;
         self.get_logger().debug(format!(
             "Downloading {} {} from {}",
@@ -429,7 +425,7 @@ pub trait SeleniumManager {
 
     fn discover_driver_version_and_download_browser_if_necessary(
         &mut self,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let mut download_browser = self.is_force_browser_download();
         let major_browser_version = self.get_major_browser_version();
 
@@ -515,23 +511,21 @@ pub trait SeleniumManager {
                     browser_path.unwrap().display()
                 ));
             } else if !self.is_iexplorer() && !self.is_grid() && !self.is_safari() {
-                return Err(format!(
+                return Err(anyhow!(format!(
                     "{}{} cannot be downloaded",
                     self.get_browser_name(),
                     self.get_browser_version_label()
-                )
-                .into());
+                )));
             }
         }
 
         // Second, we request the driver version using online endpoints
         let driver_version = self.request_driver_version()?;
         if driver_version.is_empty() {
-            Err(format!(
+            Err(anyhow!(format!(
                 "The {} version cannot be discovered",
                 self.get_driver_name()
-            )
-            .into())
+            )))
         } else {
             self.get_logger().debug(format!(
                 "Required driver: {} {}",
@@ -702,7 +696,7 @@ pub trait SeleniumManager {
         self.is_stable(self.get_browser_version())
     }
 
-    fn setup(&mut self) -> Result<PathBuf, Box<dyn Error>> {
+    fn setup(&mut self) -> Result<PathBuf, Error> {
         let mut driver_in_path = None;
         let mut driver_in_path_version = None;
 
@@ -824,7 +818,7 @@ pub trait SeleniumManager {
         self.is_driver(entry) && match_driver_version
     }
 
-    fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+    fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Error> {
         let cache_path = self.get_cache_path()?.unwrap_or_default();
         let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
             .into_iter()
@@ -858,15 +852,15 @@ pub trait SeleniumManager {
         }
     }
 
-    fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
+    fn get_major_version(&self, full_version: &str) -> Result<String, Error> {
         get_index_version(full_version, 0)
     }
 
-    fn get_minor_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
+    fn get_minor_version(&self, full_version: &str) -> Result<String, Error> {
         get_index_version(full_version, 1)
     }
 
-    fn get_selenium_release_version(&self) -> Result<String, Box<dyn Error>> {
+    fn get_selenium_release_version(&self) -> Result<String, Error> {
         let driver_version = self.get_driver_version();
         if driver_version.contains(SNAPSHOT) {
             return Ok(NIGHTLY.to_string());
@@ -880,16 +874,16 @@ pub trait SeleniumManager {
                 self.get_driver_name(),
                 driver_version
             );
-            let index = release_version.rfind('.').ok_or(error_message)? + 1;
+            let index = release_version.rfind('.').ok_or(anyhow!(error_message))? + 1;
             release_version = release_version[..index].to_string();
             release_version.push('0');
         }
         Ok(format!("selenium-{release_version}"))
     }
 
-    fn assert_online_or_err(&self, message: &str) -> Result<(), Box<dyn Error>> {
+    fn assert_online_or_err(&self, message: &str) -> Result<(), Error> {
         if self.is_offline() {
-            return Err(format_one_arg(message, self.get_driver_name()).into());
+            return Err(anyhow!(format_one_arg(message, self.get_driver_name())));
         }
         Ok(())
     }
@@ -913,7 +907,7 @@ pub trait SeleniumManager {
     fn general_request_browser_version(
         &mut self,
         browser_name: &str,
-    ) -> Result<Option<String>, Box<dyn Error>> {
+    ) -> Result<Option<String>, Error> {
         let browser_version;
         let original_browser_version = self.get_config().browser_version.clone();
         let major_browser_version = self.get_major_browser_version();
@@ -964,7 +958,7 @@ pub trait SeleniumManager {
         reg_key: &'static str,
         reg_version_arg: &'static str,
         cmd_version_arg: &str,
-    ) -> Result<Option<String>, Box<dyn Error>> {
+    ) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
         let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
@@ -1017,10 +1011,7 @@ pub trait SeleniumManager {
         Ok(self.detect_browser_version(commands))
     }
 
-    fn discover_safari_version(
-        &mut self,
-        safari_path: String,
-    ) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_safari_version(&mut self, safari_path: String) -> Result<Option<String>, Error> {
         let mut browser_path = self.get_browser_path().to_string();
         let mut commands = Vec::new();
         if browser_path.is_empty() {
@@ -1041,7 +1032,7 @@ pub trait SeleniumManager {
         Ok(self.detect_browser_version(commands))
     }
 
-    fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(self
             .get_cache_path()?
             .unwrap_or_default()
@@ -1059,21 +1050,21 @@ pub trait SeleniumManager {
         }
     }
 
-    fn unavailable_download<T>(&self) -> Result<T, Box<dyn Error>>
+    fn unavailable_download<T>(&self) -> Result<T, Error>
     where
         Self: Sized,
     {
         self.throw_error_message(UNAVAILABLE_DOWNLOAD_ERR_MSG)
     }
 
-    fn unavailable_discovery<T>(&self) -> Result<T, Box<dyn Error>>
+    fn unavailable_discovery<T>(&self) -> Result<T, Error>
     where
         Self: Sized,
     {
         self.throw_error_message(ONLINE_DISCOVERY_ERROR_MESSAGE)
     }
 
-    fn throw_error_message<T>(&self, error_message: &str) -> Result<T, Box<dyn Error>>
+    fn throw_error_message<T>(&self, error_message: &str) -> Result<T, Error>
     where
         Self: Sized,
     {
@@ -1083,12 +1074,11 @@ pub trait SeleniumManager {
         } else {
             format!(" {}", browser_version)
         };
-        Err(format_two_args(
+        Err(anyhow!(format_two_args(
             error_message,
             self.get_browser_name(),
             &browser_version_label,
-        )
-        .into())
+        )))
     }
 
     // ----------------------------------------------------------
@@ -1212,7 +1202,7 @@ pub trait SeleniumManager {
         self.get_config().proxy.as_str()
     }
 
-    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
+    fn set_proxy(&mut self, proxy: String) -> Result<(), Error> {
         if !proxy.is_empty() && !self.is_offline() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
             self.get_config_mut().proxy = proxy;
@@ -1225,7 +1215,7 @@ pub trait SeleniumManager {
         self.get_config().timeout
     }
 
-    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
+    fn set_timeout(&mut self, timeout: u64) -> Result<(), Error> {
         if timeout != REQUEST_TIMEOUT_SEC {
             self.get_config_mut().timeout = timeout;
             self.get_logger()
@@ -1235,7 +1225,7 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn update_http_client(&mut self) -> Result<(), Box<dyn Error>> {
+    fn update_http_client(&mut self) -> Result<(), Error> {
         let proxy = self.get_proxy();
         let timeout = self.get_timeout();
         let http_client = create_http_client(timeout, proxy)?;
@@ -1283,7 +1273,7 @@ pub trait SeleniumManager {
         }
     }
 
-    fn get_cache_path(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+    fn get_cache_path(&self) -> Result<Option<PathBuf>, Error> {
         let path = Path::new(&self.get_config().cache_path);
         match create_path_if_not_exists(path) {
             Ok(_) => {
@@ -1312,9 +1302,7 @@ pub trait SeleniumManager {
 // Public functions
 // ----------------------------------------------------------
 
-pub fn get_manager_by_browser(
-    browser_name: String,
-) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
+pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, Error> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
     if browser_name_lower_case.eq(CHROME_NAME) {
         Ok(ChromeManager::new()?)
@@ -1329,16 +1317,11 @@ pub fn get_manager_by_browser(
     } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new()?)
     } else {
-        Err(Box::new(std::io::Error::new(
-            std::io::ErrorKind::InvalidInput,
-            format!("Invalid browser name: {browser_name}"),
-        )))
+        Err(anyhow!(format!("Invalid browser name: {browser_name}")))
     }
 }
 
-pub fn get_manager_by_driver(
-    driver_name: String,
-) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
+pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumManager>, Error> {
     if driver_name.eq_ignore_ascii_case(CHROMEDRIVER_NAME) {
         Ok(ChromeManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(GECKODRIVER_NAME) {
@@ -1350,10 +1333,7 @@ pub fn get_manager_by_driver(
     } else if driver_name.eq_ignore_ascii_case(SAFARIDRIVER_NAME) {
         Ok(SafariManager::new()?)
     } else {
-        Err(Box::new(std::io::Error::new(
-            std::io::ErrorKind::InvalidInput,
-            format!("Invalid driver name: {driver_name}"),
-        )))
+        Err(anyhow!(format!("Invalid driver name: {driver_name}")))
     }
 }
 
@@ -1371,7 +1351,7 @@ pub fn clear_cache(log: &Logger, path: &str) {
     }
 }
 
-pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
+pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
     let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
@@ -1401,10 +1381,10 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
 // Private functions
 // ----------------------------------------------------------
 
-fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
+fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
-        .ok_or(format!("Wrong version: {}", full_version))?
+        .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
 }
