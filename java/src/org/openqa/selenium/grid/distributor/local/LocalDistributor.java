@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -380,8 +381,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
               .build();
 
       LOG.log(getDebugLogLevel(), "Running health check for Node " + status.getExternalUri());
-      Executors.newSingleThreadExecutor()
-          .submit(() -> Failsafe.with(initialHealthCheckPolicy).run(healthCheck::run));
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> Failsafe.with(initialHealthCheckPolicy).run(healthCheck::run));
+      executor.shutdown();
     }
   }
 
