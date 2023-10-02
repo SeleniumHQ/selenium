@@ -28,7 +28,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -106,12 +105,10 @@ class PenPointerTest extends JupiterTestBase {
   // This test is very similar to testDraggingElementWithPen. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testDraggingElementWithPenFiresEvents() {
     performDragAndDropWithPen();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
-    // This is failing under HtmlUnit. A bug was filed.
     String text = dragReporter.getText();
     assertThat(text).matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3");
   }
@@ -179,7 +176,6 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testMovingPastViewPortThrowsException() {
     assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
@@ -244,7 +240,6 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testMovingPenByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -262,7 +257,6 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testMovingPenToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -278,7 +272,6 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testMovingPenToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -293,7 +286,6 @@ class PenPointerTest extends JupiterTestBase {
 
   @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testMoveRelativeToBody() {
     try {
@@ -316,7 +308,6 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testMovePenByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
@@ -355,7 +346,6 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);

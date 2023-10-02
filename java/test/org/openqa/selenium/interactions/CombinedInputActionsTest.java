@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -258,7 +257,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
@@ -271,7 +269,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -311,7 +308,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
    * driver keeps the wrong state, mouse movement will end up at the wrong coordinates.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
