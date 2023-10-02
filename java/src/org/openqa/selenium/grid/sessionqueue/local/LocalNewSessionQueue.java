@@ -381,8 +381,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
+  /**
+   * Returns true if the session is still valid (not timed out)
+   */
   @Override
-  public void complete(
+  public boolean complete(
       RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
@@ -391,6 +394,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock readLock = lock.readLock();
       readLock.lock();
       Data data;
+      boolean isSessionTimedOut = false;
       try {
         data = requests.get(reqId);
       } finally {
@@ -398,7 +402,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       }
 
       if (data == null) {
-        return;
+        return false;
+      } else {
+        isSessionTimedOut = isTimedOut(Instant.now(), data);
       }
 
       Lock writeLock = lock.writeLock();
@@ -412,6 +418,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       }
 
       data.setResult(result);
+
+      return !isSessionTimedOut;
     }
   }
 
@@ -444,26 +452,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
           .map(
               req -> new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
           .collect(Collectors.toList());
-    } finally {
-      readLock.unlock();
-    }
-  }
-
-  @Override
-  public boolean isSessionRequestTimedOut(RequestId reqId) {
-    Require.nonNull("Request ID", reqId);
-
-    Lock readLock = lock.readLock();
-    readLock.lock();
-
-    try {
-      Data data = requests.get(reqId);
-
-      if (data == null) {
-        return true;
-      } else {
-        return isTimedOut(Instant.now(), data);
-      }
     } finally {
       readLock.unlock();
     }

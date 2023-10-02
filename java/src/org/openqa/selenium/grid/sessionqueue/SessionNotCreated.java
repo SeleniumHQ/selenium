@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
@@ -54,7 +56,7 @@ class SessionNotCreated implements HttpHandler {
       SessionNotCreatedException exception = new SessionNotCreatedException(message);
       queue.complete(requestId, Either.left(exception));
 
-      HttpResponse res = new HttpResponse();
+      HttpResponse res = new HttpResponse().setContent(asJson(singletonMap("value", false)));
       HTTP_RESPONSE.accept(span, res);
       return res;
     }

@@ -137,24 +137,6 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public boolean isSessionRequestTimedOut(RequestId reqId) {
-    Require.nonNull("Session request id", reqId);
-
-    HttpRequest upstream =
-        new HttpRequest(
-            GET,
-            String.format("/se/grid/newsessionqueue/session/%s/istimeout", reqId));
-    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    HttpResponse response = client.with(addSecret).execute(upstream);
-    if (response.isSuccessful()) {
-      return Values.get(response, Boolean.class);
-    } else {
-      return true;
-    }
-    
-  }
-
-  @Override
   public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
@@ -172,7 +154,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public void complete(
+  public boolean complete(
       RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("Request ID", reqId);
     Require.nonNull("Result", result);
@@ -189,7 +171,12 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     }
 
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    client.with(addSecret).execute(upstream);
+    HttpResponse response = client.with(addSecret).execute(upstream);
+    if (response.isSuccessful()) {
+      return Values.get(response, Boolean.class);
+    } else {
+      return false;
+    }
   }
 
   @Override

@@ -840,10 +840,9 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           }
         }
 
-        boolean isSessionExpired = sessionQueue.isSessionRequestTimedOut(reqId);
-        sessionQueue.complete(reqId, response);
+        boolean isSessionValid = sessionQueue.complete(reqId, response);
         // is session request has timed out, tell the node to remove the session, so that it's not staled
-        if (isSessionExpired && response.isRight()) {
+        if (!isSessionValid && response.isRight()) {
           LOG.info("Stopping expired session");
           URI nodeURI = response.right().getSession().getUri();
           Node node = getNodeFromURI(nodeURI);
