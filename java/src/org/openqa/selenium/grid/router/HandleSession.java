@@ -26,21 +26,19 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableMap;
 import java.net.URL;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Iterator;
+import java.time.Duration;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
@@ -60,60 +58,24 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 class HandleSession implements HttpHandler {
 
-  private static final Logger LOG = Logger.getLogger(HandleSession.class.getName());
-
-  private static class CacheEntry {
-    private final SessionId sessionId;
-    private final HttpClient httpClient;
-    // volatile as the ConcurrentMap will not take care of synchronization
-    private volatile Instant lastUse;
-
-    public CacheEntry(SessionId sessionId, HttpClient httpClient) {
-      this.sessionId = sessionId;
-      this.httpClient = httpClient;
-      this.lastUse = Instant.now();
-    }
-  }
-
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final ConcurrentMap<URL, CacheEntry> httpClients;
+  private final Cache<URL, HttpClient> httpClients;
 
   HandleSession(Tracer tracer, HttpClient.Factory httpClientFactory, SessionMap sessions) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.sessions = Require.nonNull("Sessions", sessions);
 
-    this.httpClients = new ConcurrentHashMap<>();
-
-    Runnable cleanUpHttpClients =
-        () -> {
-          Instant revalidateBefore = Instant.now().minus(1, ChronoUnit.MINUTES);
-          Iterator<CacheEntry> iterator = httpClients.values().iterator();
-
-          while (iterator.hasNext()) {
-            CacheEntry entry = iterator.next();
-
-            if (!entry.lastUse.isBefore(revalidateBefore)) {
-              // the session was recently used
-              return;
-            }
-
-            try {
-              sessions.get(entry.sessionId);
-            } catch (NoSuchSessionException e) {
-              // the session is dead, remove it from the cache
-              iterator.remove();
-
-              try {
-                entry.httpClient.close();
-              } catch (Exception ex) {
-                LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
-              }
-            }
-          }
-        };
+    this.httpClients =
+        CacheBuilder.newBuilder()
+            // this timeout must be bigger than default connection + read timeout, to ensure we do
+            // not close HttpClients which might have requests waiting for responses
+            .expireAfterAccess(Duration.ofMinutes(4))
+            .removalListener(
+                (RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
+            .build();
 
     ScheduledExecutorService cleanUpHttpClientsCacheService =
         Executors.newSingleThreadScheduledExecutor(
@@ -124,7 +86,7 @@ class HandleSession implements HttpHandler {
               return thread;
             });
     cleanUpHttpClientsCacheService.scheduleAtFixedRate(
-        GuardedRunnable.guard(cleanUpHttpClients), 1, 1, TimeUnit.MINUTES);
+        GuardedRunnable.guard(httpClients::cleanUp), 1, 1, TimeUnit.MINUTES);
   }
 
   @Override
@@ -203,18 +165,11 @@ class HandleSession implements HttpHandler {
   private Callable<HttpHandler> loadSessionId(Tracer tracer, Span span, SessionId id) {
     return span.wrap(
         () -> {
-          CacheEntry cacheEntry =
-              httpClients.computeIfAbsent(
-                  Urls.fromUri(sessions.getUri(id)),
-                  (sessionUrl) -> {
-                    ClientConfig config =
-                        ClientConfig.defaultConfig().baseUrl(sessionUrl).withRetries();
-                    HttpClient httpClient = httpClientFactory.createClient(config);
-
-                    return new CacheEntry(id, httpClient);
-                  });
-          cacheEntry.lastUse = Instant.now();
-          return new ReverseProxyHandler(tracer, cacheEntry.httpClient);
+          Session session = sessions.get(id);
+          URL url = Urls.fromUri(session.getUri());
+          ClientConfig config = ClientConfig.defaultConfig().baseUrl(url).withRetries();
+          HttpClient client = httpClients.get(url, () -> httpClientFactory.createClient(config));
+          return new ReverseProxyHandler(tracer, client);
         });
   }
 }
