@@ -74,19 +74,6 @@ public class RetryRequest implements Filter {
             return executionAttemptedEvent.getLastResult();
           });
 
-  private static final Fallback<Object> connectionFailureFallback =
-      Fallback.builder(
-              e -> {
-                return new HttpResponse()
-                    .setStatus(HTTP_CLIENT_TIMEOUT)
-                    .setContent(
-                        asJson(
-                            ImmutableMap.of(
-                                "value", ImmutableMap.of("message", "Connection failure"))));
-              })
-          .handleIf(failure -> failure.getCause() instanceof ConnectException)
-          .build();
-
   // Retry on connection error.
   private static final RetryPolicy<Object> connectionFailurePolicy =
       RetryPolicy.builder()
