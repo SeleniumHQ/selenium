@@ -54,9 +54,9 @@ class SessionNotCreated implements HttpHandler {
 
       String message = Contents.fromJson(req, String.class);
       SessionNotCreatedException exception = new SessionNotCreatedException(message);
-      queue.complete(requestId, Either.left(exception));
+      boolean isSessionValid = queue.complete(requestId, Either.left(exception));
 
-      HttpResponse res = new HttpResponse().setContent(asJson(singletonMap("value", false)));
+      HttpResponse res = new HttpResponse().setContent(asJson(singletonMap("value", isSessionValid)));
       HTTP_RESPONSE.accept(span, res);
       return res;
     }
