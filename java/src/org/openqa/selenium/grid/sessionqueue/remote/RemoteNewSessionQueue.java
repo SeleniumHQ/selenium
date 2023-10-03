@@ -172,11 +172,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
 
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
-    if (response.isSuccessful()) {
-      return Values.get(response, Boolean.class);
-    } else {
-      return false;
-    }
+    return Values.get(response, Boolean.class);
   }
 
   @Override
