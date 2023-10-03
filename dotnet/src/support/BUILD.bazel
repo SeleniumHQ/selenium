@@ -97,7 +97,7 @@ nuget_pack(
     libs = {
         ":support-strongnamed-lib": "WebDriver.Support.StrongNamed",
     },
-    nuspec_template = "WebDriver.Support.nuspec",
+    nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],
