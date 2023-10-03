@@ -137,9 +137,9 @@ fn main() {
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
-    let debug = cli.debug || BooleanKey("debug", false).get_value();
-    let trace = cli.trace || BooleanKey("trace", false).get_value();
     let backtrace = cli.backtrace || BooleanKey("backtrace", false).get_value();
+    let debug = backtrace || cli.debug || BooleanKey("debug", false).get_value();
+    let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
@@ -261,10 +261,11 @@ fn log_driver_and_browser_path(
 }
 
 fn flush_and_exit(code: i32, log: &Logger, is_backtrace: bool, err: Option<Error>) -> ! {
-    if err.is_some() && is_backtrace {
-        let backtrace = Backtrace::force_capture();
+    if err.is_some() {
+        let mut backtrace = Backtrace::capture();
         let backtrace_status = backtrace.status();
-        if backtrace_status == BacktraceStatus::Captured {
+        if is_backtrace || backtrace_status == BacktraceStatus::Captured {
+            backtrace = Backtrace::force_capture();
             log.debug(format!("Backtrace:\n{}", backtrace));
         }
     }
