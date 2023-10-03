@@ -126,10 +126,6 @@ struct Cli {
     /// Avoid to download browser (even when browser-version is specified)
     #[clap(long)]
     avoid_browser_download: bool,
-
-    /// Capture backtrace when some error happens
-    #[clap(long)]
-    backtrace: bool,
 }
 
 fn main() {
@@ -137,8 +133,7 @@ fn main() {
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
-    let backtrace = cli.backtrace || BooleanKey("backtrace", false).get_value();
-    let debug = backtrace || cli.debug || BooleanKey("debug", false).get_value();
+    let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
     let grid = cli.grid;
@@ -154,21 +149,21 @@ fn main() {
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
             log.error(&err);
-            flush_and_exit(DATAERR, &log, backtrace, Some(err));
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
             log.error(&err);
-            flush_and_exit(DATAERR, &log, backtrace, Some(err));
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else if grid.is_some() {
         GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
             log.error(&err);
-            flush_and_exit(DATAERR, &log, backtrace, Some(err));
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else {
         log.error("You need to specify a browser or driver");
-        flush_and_exit(DATAERR, &log, backtrace, None);
+        flush_and_exit(DATAERR, &log, None);
     };
 
     if cli.offline {
@@ -210,11 +205,10 @@ fn main() {
             let log = selenium_manager.get_logger();
             log_driver_and_browser_path(
                 log,
-                backtrace,
                 &driver_path,
                 selenium_manager.get_browser_path(),
             );
-            flush_and_exit(OK, log, backtrace, None);
+            flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
@@ -228,24 +222,22 @@ fn main() {
                 ));
                 log_driver_and_browser_path(
                     log,
-                    backtrace,
                     &best_driver_from_cache,
                     selenium_manager.get_browser_path(),
                 );
-                flush_and_exit(OK, log, backtrace, Some(err));
+                flush_and_exit(OK, log, Some(err));
             } else if selenium_manager.is_offline() {
                 log.warn(err.to_string());
-                flush_and_exit(OK, log, backtrace, Some(err));
+                flush_and_exit(OK, log, Some(err));
             } else {
                 log.error(err.to_string());
-                flush_and_exit(DATAERR, log, backtrace, Some(err));
+                flush_and_exit(DATAERR, log, Some(err));
             }
         });
 }
 
 fn log_driver_and_browser_path(
     log: &Logger,
-    backtrace: bool,
     driver_path: &Path,
     browser_path: &str,
 ) {
@@ -253,20 +245,19 @@ fn log_driver_and_browser_path(
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
         log.error(format!("Driver unavailable: {}", DRIVER_PATH));
-        flush_and_exit(UNAVAILABLE, log, backtrace, None);
+        flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {
         log.info(format!("{}{}", BROWSER_PATH, browser_path));
     }
 }
 
-fn flush_and_exit(code: i32, log: &Logger, is_backtrace: bool, err: Option<Error>) -> ! {
-    if err.is_some() {
-        let mut backtrace = Backtrace::capture();
+fn flush_and_exit(code: i32, log: &Logger, err: Option<Error>) -> ! {
+    if let Some(error) = err {
+        let backtrace = Backtrace::capture();
         let backtrace_status = backtrace.status();
-        if is_backtrace || backtrace_status == BacktraceStatus::Captured {
-            backtrace = Backtrace::force_capture();
-            log.debug(format!("Backtrace:\n{}", backtrace));
+        if backtrace_status == BacktraceStatus::Captured {
+            log.debug(format!("Backtrace:\n{}", error.backtrace()));
         }
     }
     log.set_code(code);
