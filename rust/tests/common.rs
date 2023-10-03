@@ -78,13 +78,15 @@ pub fn display_output(cmd: &mut Command) {
 pub fn assert_output(
     cmd: &mut Command,
     assert_result: AssertResult,
-    expected_output: &str,
+    expected_output: Vec<&str>,
     error_code: i32,
 ) {
     if assert_result.is_ok() {
         let stdout = &cmd.unwrap().stdout;
         let output = std::str::from_utf8(stdout).unwrap();
-        assert!(output.contains(expected_output));
+        expected_output
+            .iter()
+            .for_each(|o| assert!(output.contains(o)));
     } else {
         assert!(assert_result
             .err()

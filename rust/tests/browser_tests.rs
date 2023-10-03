@@ -75,6 +75,7 @@ fn wrong_parameters_test(
     let result = cmd
         .args([
             "--debug",
+            "--backtrace",
             "--browser",
             &browser,
             "--browser-version",
@@ -85,7 +86,7 @@ fn wrong_parameters_test(
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "in PATH", error_code);
+    assert_output(&mut cmd, result, vec!["in PATH", "Backtrace"], error_code);
 }
 
 #[rstest]
