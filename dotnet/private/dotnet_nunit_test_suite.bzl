@@ -139,6 +139,7 @@ def dotnet_nunit_test_suite(
                 target_frameworks = target_frameworks,
                 data = data,
                 tags = tags,
+                size = size,
                 **kwargs
             )
             tests.append(test_name)
@@ -160,6 +161,7 @@ def dotnet_nunit_test_suite(
                     args = _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
                     data = data + _BROWSERS[browser]["data"],
                     tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
+                    size = size,
                     **kwargs
                 )
                 tests.append(browser_test_name)

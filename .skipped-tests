@@ -7,7 +7,7 @@
 -//dotnet/test/common:TakesScreenshotTest-firefox
 -//dotnet/test/common:VirtualAuthn/VirtualAuthenticatorTest-chrome
 -//dotnet/test/support/UI:SelectBrowserTests-firefox
--//dotnet/test/support/UI:SmallTests
+-//dotnet/test/support/UI:SelectTests
 -//java/test/org/openqa/selenium:FormHandlingTest-chrome
 -//java/test/org/openqa/selenium/bidi:BiDiSessionTest-remote
 -//java/test/org/openqa/selenium/bidi:BiDiTest-remote

@@ -1,10 +1,10 @@
-load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework", "nunit_test")
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
 
 SMALL_TESTS = [
     "EventFiringWebDriverTest.cs",
 ]
 
-nunit_test(
+dotnet_nunit_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = SMALL_TESTS,
