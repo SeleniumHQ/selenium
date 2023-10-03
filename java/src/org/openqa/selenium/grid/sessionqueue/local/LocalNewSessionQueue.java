@@ -324,19 +324,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
-  private boolean isRequestInQueue(RequestId requestId) {
-    Lock readLock = lock.readLock();
-    readLock.lock();
-
-    try {
-      Optional<SessionRequest> result =
-          queue.stream().filter(req -> req.getRequestId().equals(requestId)).findAny();
-      return result.isPresent();
-    } finally {
-      readLock.unlock();
-    }
-  }
-
   @Override
   public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
