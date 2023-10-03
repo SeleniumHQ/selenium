@@ -1,0 +1,18 @@
+ dotnet/repositories.bzl | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/dotnet/repositories.bzl b/dotnet/repositories.bzl
+index 988559e..cf8fd6d 100644
+--- a/dotnet/repositories.bzl
++++ b/dotnet/repositories.bzl
+@@ -83,9 +83,7 @@ filegroup(
+     }}),
+     data = glob([
+         "host/**/*",
+-        "sdk/**/*.dll",
+-        "sdk/**/dotnet.runtimeconfig.json",
+-        "sdk/**/dotnet.deps.json",
++        "sdk/**/*",
+         "shared/Microsoft.NETCore.App/**/*",
+     ]),
+     visibility = ["//visibility:public"],

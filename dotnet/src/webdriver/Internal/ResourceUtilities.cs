@@ -44,7 +44,15 @@ namespace OpenQA.Selenium.Internal
                 if (productVersion == null)
                 {
                     Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                    productVersion = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                    var assemblyInformationalVersionAttribute = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                    if (assemblyInformationalVersionAttribute == null)
+                    {
+                        productVersion = "Unknown";
+                    }
+                    else
+                    {
+                        productVersion = assemblyInformationalVersionAttribute.InformationalVersion;
+                    }
                 }
 
                 return productVersion;

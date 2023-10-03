@@ -1,3 +1,13 @@
+-//dotnet/test/common:DevTools/DevToolsNetworkTest-chrome
+-//dotnet/test/common:Interactions/BasicMouseInterfaceTest-chrome
+-//dotnet/test/common:Interactions/BasicMouseInterfaceTest-firefox
+-//dotnet/test/common:JavascriptEnabledBrowserTest-chrome
+-//dotnet/test/common:NetworkInterceptionTests-chrome
+-//dotnet/test/common:TakesScreenshotTest-chrome
+-//dotnet/test/common:TakesScreenshotTest-firefox
+-//dotnet/test/common:VirtualAuthn/VirtualAuthenticatorTest-chrome
+-//dotnet/test/support/UI:SelectBrowserTests-firefox
+-//dotnet/test/support/UI:SelectTests
 -//java/test/org/openqa/selenium:FormHandlingTest-chrome
 -//java/test/org/openqa/selenium/bidi:BiDiSessionTest-remote
 -//java/test/org/openqa/selenium/bidi:BiDiTest-remote
