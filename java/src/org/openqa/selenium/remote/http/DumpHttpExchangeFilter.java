@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 
 public class DumpHttpExchangeFilter implements Filter {
