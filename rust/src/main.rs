@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::backtrace::{Backtrace, BacktraceStatus};
+use std::env;
 use std::path::Path;
 use std::process::exit;
 
@@ -129,6 +129,8 @@ struct Cli {
 }
 
 fn main() {
+    env::set_var("RUST_BACKTRACE", "1"); // Enable capture backtrace by default
+
     let mut cli = Cli::parse();
     let cache_path =
         StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
@@ -203,11 +205,7 @@ fn main() {
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log_driver_and_browser_path(
-                log,
-                &driver_path,
-                selenium_manager.get_browser_path(),
-            );
+            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
@@ -236,11 +234,7 @@ fn main() {
         });
 }
 
-fn log_driver_and_browser_path(
-    log: &Logger,
-    driver_path: &Path,
-    browser_path: &str,
-) {
+fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
@@ -254,10 +248,9 @@ fn log_driver_and_browser_path(
 
 fn flush_and_exit(code: i32, log: &Logger, err: Option<Error>) -> ! {
     if let Some(error) = err {
-        let backtrace = Backtrace::capture();
-        let backtrace_status = backtrace.status();
-        if backtrace_status == BacktraceStatus::Captured {
-            log.debug(format!("Backtrace:\n{}", error.backtrace()));
+        let backtrace = error.backtrace();
+        if !backtrace.to_string().ends_with("backtrace") {
+            log.debug(format!("Backtrace:\n{}", backtrace));
         }
     }
     log.set_code(code);
