@@ -203,11 +203,7 @@ fn main() {
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log_driver_and_browser_path(
-                log,
-                &driver_path,
-                selenium_manager.get_browser_path(),
-            );
+            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
@@ -236,11 +232,7 @@ fn main() {
         });
 }
 
-fn log_driver_and_browser_path(
-    log: &Logger,
-    driver_path: &Path,
-    browser_path: &str,
-) {
+fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
