@@ -1,0 +1,53 @@
+module Selenium
+  module WebDriver
+    class ActionBuilder
+      @bridge: untyped
+
+      @duration: untyped
+
+      @async: untyped
+
+      @devices: untyped
+
+      include KeyActions
+
+      include PointerActions
+
+      include WheelActions
+
+      attr_reader devices: untyped
+
+      def initialize: (untyped bridge, ?devices: untyped, ?async: bool, ?duration: ::Integer) -> void
+
+      def add_pointer_input: (untyped kind, untyped name) -> untyped
+
+      def add_key_input: (untyped name) -> untyped
+
+      def add_wheel_input: (untyped name) -> untyped
+
+      def device: (?name: untyped?, ?type: untyped?) -> untyped
+
+      def pointer_inputs: () -> untyped
+
+      def key_inputs: () -> untyped
+
+      def wheel_inputs: () -> untyped
+
+      def pause: (?device: untyped?, ?duration: ::Integer) -> self
+
+      def pauses: (?device: untyped?, ?number: untyped?, ?duration: ::Integer) -> self
+
+      def perform: () -> nil
+
+      def clear_all_actions: () -> untyped
+
+      def release_actions: () -> untyped
+
+      private
+
+      def tick: (*untyped action_devices) -> (nil | untyped)
+
+      def add_input: (untyped device) -> untyped
+    end
+  end
+end

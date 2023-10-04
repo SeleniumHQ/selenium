@@ -1,0 +1,29 @@
+module Selenium
+  module WebDriver
+    module WheelActions
+      class ScrollOrigin
+        @origin: untyped
+
+        @x_offset: untyped
+
+        @y_offset: untyped
+
+        def self.element: (untyped element, ?::Integer x_offset, ?::Integer y_offset) -> untyped
+
+        def self.viewport: (?::Integer x_offset, ?::Integer y_offset) -> untyped
+
+        attr_reader origin: untyped
+
+        attr_reader x_offset: untyped
+
+        attr_reader y_offset: untyped
+
+        #
+        # Use a static method to access
+        # @api private
+        #
+        def initialize: (untyped origin, untyped x_offset, untyped y_offset) -> void
+      end
+    end
+  end
+end

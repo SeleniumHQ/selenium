@@ -25,7 +25,7 @@ module Selenium
 
       def manage: () -> Manager
 
-      def action: (**untyped opts) -> untyped
+      def action: (**untyped opts) -> ActionBuilder
 
       def get: (untyped url) -> untyped
 

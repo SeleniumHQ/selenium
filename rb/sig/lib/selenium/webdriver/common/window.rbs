@@ -5,21 +5,21 @@ module Selenium
 
       def initialize: (untyped bridge) -> void
 
-      def size=: (untyped dimension) -> untyped
+      def size=: (Dimension dimension) -> untyped
 
-      def size: () -> untyped
+      def size: () -> Dimension
 
-      def position=: (untyped point) -> untyped
+      def position=: (Point point) -> untyped
 
-      def position: () -> untyped
+      def position: () -> Point
 
-      def rect=: (untyped rectangle) -> untyped
+      def rect=: (Rectangle rectangle) -> untyped
 
-      def rect: () -> untyped
+      def rect: () -> Rectangle
 
-      def resize_to: (untyped width, untyped height) -> untyped
+      def resize_to: (Integer width, Integer height) -> untyped
 
-      def move_to: (untyped x, untyped y) -> untyped
+      def move_to: (Integer x, Integer y) -> untyped
 
       def maximize: () -> untyped
 

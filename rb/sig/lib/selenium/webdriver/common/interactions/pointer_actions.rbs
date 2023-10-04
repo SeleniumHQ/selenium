@@ -1,0 +1,41 @@
+module Selenium
+  module WebDriver
+    module PointerActions
+      @default_move_duration: untyped
+
+      attr_writer default_move_duration: untyped
+
+      def default_move_duration: () -> untyped
+
+      def pointer_down: (?::Symbol button, ?device: untyped?, **untyped opts) -> untyped
+
+      def pointer_up: (?::Symbol button, ?device: untyped?, **untyped opts) -> untyped
+
+      def move_to: (untyped element, ?untyped? right_by, ?untyped? down_by, **untyped opts) -> self
+
+      def move_by: (untyped right_by, untyped down_by, ?device: untyped?, ?duration: untyped, **untyped opts) -> self
+
+      def move_to_location: (untyped x, untyped y, ?device: untyped?, ?duration: untyped, **untyped opts) -> self
+
+      def click_and_hold: (?untyped? element, ?button: untyped?, ?device: untyped?) -> self
+
+      def release: (?button: untyped?, ?device: untyped?) -> self
+
+      def click: (?untyped? element, ?button: untyped?, ?device: untyped?) -> self
+
+      def double_click: (?untyped? element, ?device: untyped?) -> self
+
+      def context_click: (?untyped? element, ?device: untyped?) -> untyped
+
+      def drag_and_drop: (untyped source, untyped target, ?device: untyped?) -> self
+
+      def drag_and_drop_by: (untyped source, untyped right_by, untyped down_by, ?device: untyped?) -> self
+
+      private
+
+      def button_action: (untyped button, untyped action, ?device: untyped?, **untyped opts) -> self
+
+      def pointer_input: (?untyped? name) -> untyped
+    end
+  end
+end
