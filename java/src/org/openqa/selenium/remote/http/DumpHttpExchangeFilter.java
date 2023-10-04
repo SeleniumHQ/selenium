@@ -31,7 +31,7 @@ public class DumpHttpExchangeFilter implements Filter {
   private final Level logLevel;
 
   public DumpHttpExchangeFilter() {
-    this(Debug.getDebugLogLevel());
+    this(Level.FINER);
   }
 
   public DumpHttpExchangeFilter(Level logLevel) {
