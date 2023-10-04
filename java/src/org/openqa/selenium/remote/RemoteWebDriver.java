@@ -742,21 +742,18 @@ public class RemoteWebDriver
       return;
     }
     String text = String.valueOf(toLog);
-
-    if (Boolean.getBoolean("webdriver.remote.shorten_log_messages")) {
-      if (commandName.equals(DriverCommand.EXECUTE_SCRIPT)
-          || commandName.equals(DriverCommand.EXECUTE_ASYNC_SCRIPT)) {
-        if (text.length() > 100) {
-          text = text.substring(0, 100) + "...";
-        }
-      } else if (commandName.equals(DriverCommand.NEW_SESSION) && toLog instanceof Response) {
-        Response responseToLog = (Response) toLog;
-        try {
-          Map<String, Object> value = (Map<String, Object>) responseToLog.getValue();
-          text = new MutableCapabilities(value).toString();
-        } catch (ClassCastException ex) {
-          // keep existing text
-        }
+    if (commandName.equals(DriverCommand.EXECUTE_SCRIPT)
+        || commandName.equals(DriverCommand.EXECUTE_ASYNC_SCRIPT)) {
+      if (text.length() > 100 && Boolean.getBoolean("webdriver.remote.shorten_log_messages")) {
+        text = text.substring(0, 100) + "...";
+      }
+    } else if (commandName.equals(DriverCommand.NEW_SESSION) && toLog instanceof Response) {
+      Response responseToLog = (Response) toLog;
+      try {
+        Map<String, Object> value = (Map<String, Object>) responseToLog.getValue();
+        text = new MutableCapabilities(value).toString();
+      } catch (ClassCastException ex) {
+        // keep existing text
       }
     }
 
