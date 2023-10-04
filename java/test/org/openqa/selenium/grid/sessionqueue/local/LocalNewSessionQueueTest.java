@@ -21,6 +21,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,6 +49,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -169,10 +171,11 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void testCompleteWithCreatedSession(Supplier<TestData> supplier) {
+  void testCompleteWithCreatedSession(Supplier<TestData> supplier) throws InterruptedException {
     setup(supplier);
 
     AtomicBoolean isCompleted = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
 
     new Thread(
             () -> {
@@ -199,24 +202,24 @@ class LocalNewSessionQueueTest {
                           .getBytes(UTF_8));
 
               isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse)));
+              latch.countDown();
             })
         .start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
-    try {
-      Thread.sleep(400); // wait for thread to complete
-    } catch (InterruptedException ignore) {
-    }
+
+    assertThat(latch.await(1000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isTrue();
   }
 
 
   @ParameterizedTest
   @MethodSource("data")
-  void testCompleteWithSessionInTimeout(Supplier<TestData> supplier) {
+  void testCompleteWithSessionInTimeout(Supplier<TestData> supplier) throws InterruptedException {
     setup(supplier);
 
     AtomicBoolean isCompleted = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
 
     new Thread(
             () -> {
@@ -246,15 +249,12 @@ class LocalNewSessionQueueTest {
                           .getBytes(UTF_8));
 
               isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.left(new SessionNotCreatedException("not created"))));
+              latch.countDown();
             })
         .start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
-    try {
-      Thread.sleep(400); // wait for thread to complete
-    } catch (InterruptedException ignore) {
-    }
-
+    assertThat(latch.await(1000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isFalse();
   }
 
