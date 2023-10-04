@@ -750,11 +750,12 @@ public class RemoteWebDriver
     }
     // No need to log a screenshot response.
     if ((commandName.equals(DriverCommand.SCREENSHOT)
-            || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT))
+            || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT)
+            || commandName.equals(DriverCommand.PRINT_PAGE))
         && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
       Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
-      copyToLog.setValue("*Screenshot response suppressed*");
+      copyToLog.setValue(String.format("*%s response suppressed*", commandName));
       copyToLog.setStatus(responseToLog.getStatus());
       copyToLog.setState(responseToLog.getState());
       text = String.valueOf(copyToLog);
