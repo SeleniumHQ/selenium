@@ -76,13 +76,6 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
     setCapability(capabilityType, browserType);
-    if (!"jdk-http-client".equalsIgnoreCase(System.getProperty("webdriver.http.factory", ""))) {
-      // Allowing any origin "*" might sound risky but an attacker would need to know
-      // the port used to start DevTools to establish a connection. Given these sessions
-      // are relatively short-lived, the risk is reduced. Only set when the Java 11 client
-      // is not used.
-      addArguments("--remote-allow-origins=*");
-    }
   }
 
   /**
