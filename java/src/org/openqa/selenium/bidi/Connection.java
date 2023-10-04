@@ -215,7 +215,8 @@ public class Connection implements Closeable {
 
       // If WebDriver close() is called, it closes the session if it is the last browsing context.
       // It also closes the WebSocket from the remote end.
-      // If we try to now send commands, depending on the underlying web socket implementation, it will throw errors.
+      // If we try to now send commands, depending on the underlying web socket implementation, it
+      // will throw errors.
       // Ideally, such errors should not prevent freeing up resources.
       if (!underlyingSocketClosed.get()) {
         send(new Command<>("session.unsubscribe", ImmutableMap.of("events", events)));
