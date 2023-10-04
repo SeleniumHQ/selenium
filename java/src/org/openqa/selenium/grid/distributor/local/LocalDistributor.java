@@ -561,7 +561,6 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
             new CreateSessionRequest(request.getDownstreamDialects(), caps, request.getMetadata());
 
         try {
-
           CreateSessionResponse response = startSession(selectedSlot, singleRequest);
           sessions.add(response.getSession());
           model.setSession(selectedSlot, response.getSession());

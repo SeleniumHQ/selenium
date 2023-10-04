@@ -94,6 +94,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
     objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
     description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
+  
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
@@ -230,6 +231,15 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                 new SessionNotCreatedException("An error occurred creating the session", e));
       }
 
+      Lock writeLock = this.lock.writeLock();
+      writeLock.lock();
+      try {
+        requests.remove(request.getRequestId());
+        queue.remove(request);
+      } finally {
+        writeLock.unlock();
+      }
+
       HttpResponse res = new HttpResponse();
       if (result.isRight()) {
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));
@@ -278,13 +288,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
-
         if (!requests.containsKey(request.getRequestId())) {
           return false;
-        } else if (isTimedOut(Instant.now(), requests.get(request.getRequestId()))) {
+        } 
+        if (isTimedOut(Instant.now(), requests.get(request.getRequestId()))) {
           // as we try to re-add a session request that has already expired, force session timeout
-          complete(request.getRequestId(), Either.left(new SessionNotCreatedException("Timed out creating session")));
-          return false;
+          failDueToTimeout(request.getRequestId());
+          // return true to avoid handleNewSessionRequest to call 'complete' an other time
+          return true;
         } 
         
 
