@@ -27,6 +27,8 @@ import java.time.Duration;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.internal.Require;
 
+import javax.net.ssl.SSLContext;
+
 public class ClientConfig {
 
   private static final Filter RETRY_FILTER = new RetryRequest();
@@ -38,24 +40,28 @@ public class ClientConfig {
   private final Proxy proxy;
   private final Credentials credentials;
 
+  private final SSLContext sslContext;
+
   protected ClientConfig(
       URI baseUri,
       Duration connectionTimeout,
       Duration readTimeout,
       Filter filters,
       Proxy proxy,
-      Credentials credentials) {
+      Credentials credentials,
+      SSLContext sslContext) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
     this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
     this.credentials = credentials;
+    this.sslContext = sslContext;
   }
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
-        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null);
+        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null,null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
@@ -65,7 +71,8 @@ public class ClientConfig {
         readTimeout,
         filters,
         proxy,
-        credentials);
+        credentials,
+        sslContext);
   }
 
   public ClientConfig baseUrl(URL baseUrl) {
@@ -95,7 +102,8 @@ public class ClientConfig {
         readTimeout,
         filters,
         proxy,
-        credentials);
+        credentials,
+        sslContext);
   }
 
   public Duration connectionTimeout() {
@@ -109,7 +117,8 @@ public class ClientConfig {
         Require.nonNull("Read timeout", timeout),
         filters,
         proxy,
-        credentials);
+        credentials,
+        sslContext);
   }
 
   public Duration readTimeout() {
@@ -124,12 +133,13 @@ public class ClientConfig {
         readTimeout,
         filter.andThen(DEFAULT_FILTER),
         proxy,
-        credentials);
+        credentials,
+        sslContext);
   }
 
   public ClientConfig withRetries() {
     return new ClientConfig(
-        baseUri, connectionTimeout, readTimeout, filters.andThen(RETRY_FILTER), proxy, credentials);
+        baseUri, connectionTimeout, readTimeout, filters.andThen(RETRY_FILTER), proxy, credentials, sslContext);
   }
 
   public Filter filter() {
@@ -143,25 +153,42 @@ public class ClientConfig {
         readTimeout,
         filters,
         Require.nonNull("Proxy", proxy),
-        credentials);
+        credentials,
+        sslContext);
   }
 
   public Proxy proxy() {
     return proxy;
   }
 
-  public ClientConfig authenticateAs(Credentials credentials) {
+  public ClientConfig sslContext(Credentials credentials) {
     return new ClientConfig(
         baseUri,
         connectionTimeout,
         readTimeout,
         filters,
         proxy,
-        Require.nonNull("Credentials", credentials));
+        Require.nonNull("Credentials", credentials),
+        sslContext);
   }
 
   public Credentials credentials() {
     return credentials;
+  }
+
+  public ClientConfig sslContext(SSLContext sslContext) {
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      filters,
+      proxy,
+      credentials,
+    Require.nonNull("SSL Context", sslContext));
+  }
+
+  public SSLContext sslContext() {
+    return sslContext;
   }
 
   @Override
@@ -179,6 +206,8 @@ public class ClientConfig {
         + proxy
         + ", credentials="
         + credentials
+        + ", sslcontext="
+        + sslContext
         + '}';
   }
 }

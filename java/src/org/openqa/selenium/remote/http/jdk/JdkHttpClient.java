@@ -65,6 +65,8 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import javax.net.ssl.SSLContext;
+
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
@@ -142,6 +144,11 @@ public class JdkHttpClient implements HttpClient {
             }
           };
       builder = builder.proxy(proxySelector);
+    }
+
+    SSLContext sslContext = config.sslContext();
+    if (sslContext != null) {
+      builder.sslContext(sslContext);
     }
 
     this.client = builder.build();

@@ -380,7 +380,7 @@ public class RemoteWebDriverBuilder {
       driverClientConfig = driverClientConfig.baseUri(baseUri);
     }
     if (credentials != null) {
-      driverClientConfig = driverClientConfig.authenticateAs(credentials);
+      driverClientConfig = driverClientConfig.sslContext(credentials);
     }
 
     HttpHandler client = handlerFactory.apply(driverClientConfig);
