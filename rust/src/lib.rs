@@ -281,7 +281,7 @@ pub trait SeleniumManager {
         browser_version
     }
 
-    fn discover_or_download_browser_and_driver_version(
+    fn discover_driver_version_and_download_browser_if_necessary(
         &mut self,
     ) -> Result<String, Box<dyn Error>> {
         let mut download_browser = self.is_force_browser_download();
@@ -530,21 +530,21 @@ pub trait SeleniumManager {
 
         // Discover browser version (or download it, if not available and possible).
         // With the found browser version, discover the proper driver version using online endpoints
-        match self.discover_or_download_browser_and_driver_version() {
-            Ok(driver_version) => {
-                if self.get_driver_version().is_empty() {
+        if self.get_driver_version().is_empty() {
+            match self.discover_driver_version_and_download_browser_if_necessary() {
+                Ok(driver_version) => {
                     self.set_driver_version(driver_version);
                 }
-            }
-            Err(err) => {
-                if driver_in_path_version.is_some() && driver_in_path.is_some() {
-                    self.get_logger().warn(format!(
-                        "Exception managing {}: {}",
-                        self.get_browser_name(),
-                        err
-                    ));
-                } else {
-                    return Err(err);
+                Err(err) => {
+                    if driver_in_path_version.is_some() && driver_in_path.is_some() {
+                        self.get_logger().warn(format!(
+                            "Exception managing {}: {}",
+                            self.get_browser_name(),
+                            err
+                        ));
+                    } else {
+                        return Err(err);
+                    }
                 }
             }
         }
