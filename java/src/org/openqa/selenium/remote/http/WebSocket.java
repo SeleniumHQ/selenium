@@ -65,7 +65,7 @@ public interface WebSocket extends Closeable {
 
     default void onError(Throwable cause) {
       String message = cause.getMessage();
-      if (message == null && cause.getCause().getMessage() != null) {
+      if (message == null && cause.getCause() != null) {
         message = cause.getCause().getMessage();
       }
       LOG.log(WARNING, message, cause);
