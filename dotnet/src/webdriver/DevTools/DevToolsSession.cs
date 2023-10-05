@@ -461,7 +461,7 @@ namespace OpenQA.Selenium.DevTools
                 {
                     this.ProcessMessage(message);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogError("Unexpected error occured while processing message: {0}", ex);
                 }

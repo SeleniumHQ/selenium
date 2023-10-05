@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Support.UI
     /// <typeparam name="T">The type to be returned (normally the subclass' type)</typeparam>
     public abstract class SlowLoadableComponent<T> : LoadableComponent<T>
             where T : SlowLoadableComponent<T>
-        {
+    {
         private readonly IClock clock;
         private readonly TimeSpan timeout;
         private TimeSpan sleepInterval = TimeSpan.FromMilliseconds(200);
