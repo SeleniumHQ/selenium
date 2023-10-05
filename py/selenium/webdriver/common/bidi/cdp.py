@@ -65,7 +65,7 @@ def import_devtools(ver):
         versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
         latest = max(int(x[1:]) for x in versions)
         selenium_logger = logging.getLogger(__name__)
-        selenium_logger.debug(f"Falling back to loading `devtools`: v{latest}")
+        selenium_logger.debug("Falling back to loading `devtools`: v%s", latest)
         devtools = importlib.import_module(f"{base}{latest}")
         return devtools
 
@@ -265,7 +265,7 @@ class CdpBase:
         try:
             cmd, event = self.inflight_cmd.pop(cmd_id)
         except KeyError:
-            logger.warning(f"Got a message with a command ID that does not exist: {data}")
+            logger.warning("Got a message with a command ID that does not exist: %s", data)
             return
         if "error" in data:
             # If the server reported an error, convert it to an exception and do

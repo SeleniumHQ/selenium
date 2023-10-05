@@ -70,21 +70,23 @@ public class SeleniumManager {
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  if (binary != null && Files.exists(binary)) {
-                    try {
-                      Files.delete(binary);
-                    } catch (IOException e) {
-                      LOG.warning(
-                          String.format(
-                              "%s deleting temporal file: %s",
-                              e.getClass().getSimpleName(), e.getMessage()));
+    if (managerPath == null) {
+      Runtime.getRuntime()
+          .addShutdownHook(
+              new Thread(
+                  () -> {
+                    if (binary != null && Files.exists(binary)) {
+                      try {
+                        Files.delete(binary);
+                      } catch (IOException e) {
+                        LOG.warning(
+                            String.format(
+                                "%s deleting temporal file: %s",
+                                e.getClass().getSimpleName(), e.getMessage()));
+                      }
                     }
-                  }
-                }));
+                  }));
+    }
   }
 
   public static SeleniumManager getInstance() {

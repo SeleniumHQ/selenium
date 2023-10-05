@@ -212,7 +212,7 @@ class Service(ABC):
                 startupinfo=start_info,
                 **self.popen_kw,
             )
-            logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
+            logger.debug("Started executable: `%s` in a child process with pid: %s", self._path, self.process.pid)
         except TypeError:
             raise
         except OSError as err:

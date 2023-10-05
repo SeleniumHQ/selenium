@@ -101,7 +101,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
         public void ShouldTakeScreenshotsOfAnElement()
         {
-#if NET6_0
+#if NET6_0 || NET7_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -130,7 +130,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
         public void ShouldCaptureScreenshotAtFramePage()
         {
-#if NET6_0
+#if NET6_0 || NET7_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -175,7 +175,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
-#if NET6_0
+#if NET6_0 || NET7_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -218,7 +218,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
         public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
         {
-#if NET6_0
+#if NET6_0 || NET7_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -259,7 +259,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {
-#if NET6_0
+#if NET6_0 || NET7_0
             Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
@@ -335,7 +335,7 @@ namespace OpenQA.Selenium
         {
             HashSet<string> colors = new HashSet<string>();
 
-#if !NET6_0
+#if !NET6_0 && !NET7_0
             try
             {
                 Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
@@ -369,7 +369,7 @@ namespace OpenQA.Selenium
         {
             Color pixelColor = Color.Black;
 
-#if !NET6_0
+#if !NET6_0 && !NET7_0
             Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
             Bitmap bitmap = new Bitmap(image);
             pixelColor = bitmap.GetPixel(1, 1);

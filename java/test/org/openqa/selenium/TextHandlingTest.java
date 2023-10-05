@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -377,7 +376,6 @@ class TextHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
@@ -418,7 +416,6 @@ class TextHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
