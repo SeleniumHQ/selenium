@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -38,6 +37,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,11 +67,6 @@ import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509ExtendedTrustManager;
 
 class ProxyWebsocketTest {
 
@@ -193,8 +191,10 @@ class ProxyWebsocketTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldBeAbleToSendMessagesOverSecureWebSocket(Supplier<String> values)
-      throws URISyntaxException, InterruptedException, NoSuchAlgorithmException,
-             KeyManagementException {
+      throws URISyntaxException,
+          InterruptedException,
+          NoSuchAlgorithmException,
+          KeyManagementException {
     setFields(values);
     Config secureConfig =
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("https-self-signed", true)));
@@ -250,7 +250,7 @@ class ProxyWebsocketTest {
         };
 
     SSLContext sslContext = SSLContext.getInstance("SSL");
-    sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
+    sslContext.init(null, new TrustManager[] {trustManager}, new SecureRandom());
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();

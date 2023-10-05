@@ -24,10 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import javax.net.ssl.SSLContext;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.internal.Require;
-
-import javax.net.ssl.SSLContext;
 
 public class ClientConfig {
 
@@ -61,7 +60,7 @@ public class ClientConfig {
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
-        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null,null);
+        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null, null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
@@ -139,7 +138,13 @@ public class ClientConfig {
 
   public ClientConfig withRetries() {
     return new ClientConfig(
-        baseUri, connectionTimeout, readTimeout, filters.andThen(RETRY_FILTER), proxy, credentials, sslContext);
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters.andThen(RETRY_FILTER),
+        proxy,
+        credentials,
+        sslContext);
   }
 
   public Filter filter() {
@@ -178,13 +183,13 @@ public class ClientConfig {
 
   public ClientConfig sslContext(SSLContext sslContext) {
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      filters,
-      proxy,
-      credentials,
-    Require.nonNull("SSL Context", sslContext));
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        Require.nonNull("SSL Context", sslContext));
   }
 
   public SSLContext sslContext() {
