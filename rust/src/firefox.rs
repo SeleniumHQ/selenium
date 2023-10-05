@@ -474,7 +474,7 @@ impl SeleniumManager for FirefoxManager {
             )?;
         }
         if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
+            self.set_browser_path(path_buf_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
         } else {
             Ok(None)

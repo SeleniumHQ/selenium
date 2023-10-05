@@ -30,7 +30,7 @@ use std::fs::read_to_string;
 use std::path::Path;
 use toml::Table;
 
-thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_buf_to_string(default_cache_folder())));
+thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_buf_to_string(&default_cache_folder())));
 
 pub const CONFIG_FILE: &str = "se-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
@@ -263,7 +263,7 @@ fn write_cache_path(cache_path: String) {
 }
 
 fn read_cache_path() -> String {
-    let mut cache_path: String = path_buf_to_string(default_cache_folder());
+    let mut cache_path: String = path_buf_to_string(&default_cache_folder());
     CACHE_PATH.with(|value| {
         let path: String = (&*value.borrow().to_string()).into();
         if !path.is_empty() {

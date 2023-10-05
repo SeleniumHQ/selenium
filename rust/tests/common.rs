@@ -54,7 +54,7 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    path_buf_to_string(Path::new(&json.result.driver_path).to_path_buf())
+    path_buf_to_string(&Path::new(&json.result.driver_path).to_path_buf())
 }
 
 #[allow(dead_code)]

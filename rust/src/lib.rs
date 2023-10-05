@@ -770,7 +770,7 @@ pub trait SeleniumManager {
         let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
-                browser_path = path_buf_to_string(path);
+                browser_path = path_buf_to_string(&path);
                 escaped_browser_path = self.get_escaped_path(browser_path.to_string());
             }
         }
@@ -827,7 +827,7 @@ pub trait SeleniumManager {
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = self.get_escaped_path(path_buf_to_string(path));
+                    browser_path = self.get_escaped_path(path_buf_to_string(&path));
                 }
                 _ => return Ok(None),
             }
@@ -934,16 +934,17 @@ pub trait SeleniumManager {
     }
 
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
-        let mut canon_path = path_buf_to_string(
-            path_buf
-                .as_path()
-                .canonicalize()
-                .unwrap_or(path_buf.clone()),
-        );
+        let mut canon_path = path_buf_to_string(&path_buf);
         if WINDOWS.is(self.get_os()) || canon_path.starts_with(UNC_PREFIX) {
-            canon_path = canon_path.replace(UNC_PREFIX, "")
+            canon_path = path_buf_to_string(
+                &path_buf
+                    .as_path()
+                    .canonicalize()
+                    .unwrap_or(path_buf.clone()),
+            )
+            .replace(UNC_PREFIX, "")
         }
-        if !path_buf_to_string(path_buf.clone()).eq(&canon_path) {
+        if !path_buf_to_string(&path_buf).eq(&canon_path) {
             self.get_logger().trace(format!(
                 "Path {} has been canonicalized to {}",
                 path_buf.display(),
