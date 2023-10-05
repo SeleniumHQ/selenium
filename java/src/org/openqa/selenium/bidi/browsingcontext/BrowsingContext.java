@@ -77,9 +77,7 @@ public class BrowsingContext {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
 
-    if (id.isEmpty()) {
-      throw new IllegalArgumentException("Browsing Context id cannot be empty");
-    }
+    Require.precondition(!id.isEmpty(), "Browsing Context id cannot be empty");
 
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.id = id;
