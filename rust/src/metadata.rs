@@ -168,7 +168,7 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
     )
     .unwrap_or_else(|err| {
         log.warn(format!(
-            "Metadata cannot be written in cache {}: {}",
+            "Metadata cannot be written in cache ({}): {}",
             cache_path.display(),
             err
         ));

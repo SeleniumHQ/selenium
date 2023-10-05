@@ -1067,7 +1067,7 @@ pub trait SeleniumManager {
             }
             Err(err) => {
                 self.get_logger().warn(format!(
-                    "Cache folder {} cannot be created: {}",
+                    "Cache folder ({}) cannot be created: {}",
                     path.display(),
                     err
                 ));
