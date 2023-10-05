@@ -165,7 +165,9 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
         metadata_path,
         serde_json::to_string_pretty(metadata).unwrap(),
     )
-    .unwrap();
+    .unwrap_or_else(|err| {
+        log.warn(format!("Metadata cannot be written in cache: {}", err));
+    });
 }
 
 pub fn clear_metadata(log: &Logger, path: &str) {
