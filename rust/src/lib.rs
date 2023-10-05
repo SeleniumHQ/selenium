@@ -19,7 +19,7 @@ use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_buf_to_string,
+    get_binary_extension, path_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -772,7 +772,7 @@ pub trait SeleniumManager {
         let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
-                browser_path = path_buf_to_string(&path);
+                browser_path = path_to_string(&path);
                 escaped_browser_path = self.get_escaped_path(browser_path.to_string());
             }
         }
@@ -829,7 +829,7 @@ pub trait SeleniumManager {
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = self.get_escaped_path(path_buf_to_string(&path));
+                    browser_path = self.get_escaped_path(path_to_string(&path));
                 }
                 _ => return Ok(None),
             }
@@ -937,9 +937,9 @@ pub trait SeleniumManager {
     }
 
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
-        let mut canon_path = path_buf_to_string(&path_buf);
+        let mut canon_path = path_to_string(&path_buf);
         if WINDOWS.is(self.get_os()) || canon_path.starts_with(UNC_PREFIX) {
-            canon_path = path_buf_to_string(
+            canon_path = path_to_string(
                 &path_buf
                     .as_path()
                     .canonicalize()
@@ -947,7 +947,7 @@ pub trait SeleniumManager {
             )
             .replace(UNC_PREFIX, "")
         }
-        if !path_buf_to_string(&path_buf).eq(&canon_path) {
+        if !path_to_string(&path_buf).eq(&canon_path) {
             self.get_logger().trace(format!(
                 "Path {} has been canonicalized to {}",
                 path_buf.display(),

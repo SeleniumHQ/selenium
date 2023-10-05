@@ -26,7 +26,7 @@ use std::path::PathBuf;
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{compose_driver_path_in_cache, path_buf_to_string, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, path_to_string, BrowserPath};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -515,7 +515,7 @@ impl SeleniumManager for ChromeManager {
             )?;
         }
         if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(&browser_binary_path));
+            self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
         } else {
             Ok(None)

@@ -33,7 +33,7 @@ use crate::metadata::{
 };
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_three_args,
-    format_two_args, get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger,
+    format_two_args, get_browser_version_from_metadata, path_to_string, uncompress, Logger,
     SeleniumManager, BETA, CANARY, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_CURRENT_VERSION_ARG, STABLE,
 };
@@ -476,7 +476,7 @@ impl SeleniumManager for FirefoxManager {
             )?;
         }
         if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(&browser_binary_path));
+            self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
         } else {
             Ok(None)
