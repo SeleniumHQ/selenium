@@ -161,7 +161,7 @@ public class ClientConfig {
     return proxy;
   }
 
-  public ClientConfig sslContext(Credentials credentials) {
+  public ClientConfig authenticateAs(Credentials credentials) {
     return new ClientConfig(
         baseUri,
         connectionTimeout,
