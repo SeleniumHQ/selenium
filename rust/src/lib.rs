@@ -19,7 +19,7 @@ use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_buf_to_string,
+    get_binary_extension, path_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -281,7 +281,7 @@ pub trait SeleniumManager {
         browser_version
     }
 
-    fn discover_or_download_browser_and_driver_version(
+    fn discover_driver_version_and_download_browser_if_necessary(
         &mut self,
     ) -> Result<String, Box<dyn Error>> {
         let mut download_browser = self.is_force_browser_download();
@@ -530,21 +530,21 @@ pub trait SeleniumManager {
 
         // Discover browser version (or download it, if not available and possible).
         // With the found browser version, discover the proper driver version using online endpoints
-        match self.discover_or_download_browser_and_driver_version() {
-            Ok(driver_version) => {
-                if self.get_driver_version().is_empty() {
+        if self.get_driver_version().is_empty() {
+            match self.discover_driver_version_and_download_browser_if_necessary() {
+                Ok(driver_version) => {
                     self.set_driver_version(driver_version);
                 }
-            }
-            Err(err) => {
-                if driver_in_path_version.is_some() && driver_in_path.is_some() {
-                    self.get_logger().warn(format!(
-                        "Exception managing {}: {}",
-                        self.get_browser_name(),
-                        err
-                    ));
-                } else {
-                    return Err(err);
+                Err(err) => {
+                    if driver_in_path_version.is_some() && driver_in_path.is_some() {
+                        self.get_logger().warn(format!(
+                            "Exception managing {}: {}",
+                            self.get_browser_name(),
+                            err
+                        ));
+                    } else {
+                        return Err(err);
+                    }
                 }
             }
         }
@@ -553,8 +553,9 @@ pub trait SeleniumManager {
         if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
             // If proper driver version is not the same as the driver in path, display warning
             let major_version = self.get_major_version(version)?;
-            if (self.is_firefox() && !version.eq(self.get_driver_version()))
-                || !major_version.eq(&self.get_major_browser_version())
+            if !self.get_driver_version().is_empty()
+                && (self.is_firefox() && !version.eq(self.get_driver_version()))
+                || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
             {
                 self.get_logger().warn(format!(
                     "The {} version ({}) detected in PATH at {} might not be compatible with \
@@ -628,7 +629,7 @@ pub trait SeleniumManager {
     }
 
     fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        let cache_path = self.get_cache_path()?;
+        let cache_path = self.get_cache_path()?.unwrap_or_default();
         let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
             .into_iter()
             .filter_map(|entry| entry.ok())
@@ -719,7 +720,8 @@ pub trait SeleniumManager {
     ) -> Result<Option<String>, Box<dyn Error>> {
         let browser_version;
         let major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         // Browser version is checked in the local metadata
         match get_browser_version_from_metadata(
@@ -752,7 +754,7 @@ pub trait SeleniumManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
             }
         }
@@ -770,7 +772,7 @@ pub trait SeleniumManager {
         let mut escaped_browser_path = self.get_escaped_path(browser_path.to_string());
         if browser_path.is_empty() {
             if let Some(path) = self.detect_browser_path() {
-                browser_path = path_buf_to_string(path);
+                browser_path = path_to_string(&path);
                 escaped_browser_path = self.get_escaped_path(browser_path.to_string());
             }
         }
@@ -827,7 +829,7 @@ pub trait SeleniumManager {
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = self.get_escaped_path(path_buf_to_string(path));
+                    browser_path = self.get_escaped_path(path_to_string(&path));
                 }
                 _ => return Ok(None),
             }
@@ -845,6 +847,7 @@ pub trait SeleniumManager {
     fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(self
             .get_cache_path()?
+            .unwrap_or_default()
             .join(self.get_browser_name())
             .join(self.get_platform_label())
             .join(self.get_browser_version()))
@@ -934,16 +937,17 @@ pub trait SeleniumManager {
     }
 
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
-        let mut canon_path = path_buf_to_string(
-            path_buf
-                .as_path()
-                .canonicalize()
-                .unwrap_or(path_buf.clone()),
-        );
+        let mut canon_path = path_to_string(&path_buf);
         if WINDOWS.is(self.get_os()) || canon_path.starts_with(UNC_PREFIX) {
-            canon_path = canon_path.replace(UNC_PREFIX, "")
+            canon_path = path_to_string(
+                &path_buf
+                    .as_path()
+                    .canonicalize()
+                    .unwrap_or(path_buf.clone()),
+            )
+            .replace(UNC_PREFIX, "")
         }
-        if !path_buf_to_string(path_buf.clone()).eq(&canon_path) {
+        if !path_to_string(&path_buf).eq(&canon_path) {
             self.get_logger().trace(format!(
                 "Path {} has been canonicalized to {}",
                 path_buf.display(),
@@ -1054,11 +1058,22 @@ pub trait SeleniumManager {
         }
     }
 
-    fn get_cache_path(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_cache_path(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         let path = Path::new(&self.get_config().cache_path);
-        create_path_if_not_exists(path)?;
-        let canon_path = self.canonicalize_path(path.to_path_buf());
-        Ok(Path::new(&canon_path).to_path_buf())
+        match create_path_if_not_exists(path) {
+            Ok(_) => {
+                let canon_path = self.canonicalize_path(path.to_path_buf());
+                Ok(Some(Path::new(&canon_path).to_path_buf()))
+            }
+            Err(err) => {
+                self.get_logger().warn(format!(
+                    "Cache folder ({}) cannot be created: {}",
+                    path.display(),
+                    err
+                ));
+                Ok(None)
+            }
+        }
     }
 
     fn set_cache_path(&mut self, cache_path: String) {

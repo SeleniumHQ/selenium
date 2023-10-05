@@ -33,7 +33,7 @@ use crate::metadata::{
 };
 use crate::{
     create_browser_metadata, create_http_client, download_to_tmp_folder, format_three_args,
-    format_two_args, get_browser_version_from_metadata, path_buf_to_string, uncompress, Logger,
+    format_two_args, get_browser_version_from_metadata, path_to_string, uncompress, Logger,
     SeleniumManager, BETA, CANARY, DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_CURRENT_VERSION_ARG, STABLE,
 };
@@ -274,7 +274,8 @@ impl SeleniumManager for FirefoxManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -303,7 +304,7 @@ impl SeleniumManager for FirefoxManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
 
                 Ok(driver_version)
@@ -355,7 +356,7 @@ impl SeleniumManager for FirefoxManager {
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(compose_driver_path_in_cache(
-            self.get_cache_path()?,
+            self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
             self.get_os(),
             self.get_platform_label(),
@@ -387,7 +388,8 @@ impl SeleniumManager for FirefoxManager {
         let browser_version;
         let browser_name = self.browser_name;
         let original_browser_version = self.get_config().browser_version.clone();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
         let major_browser_version = self.get_major_browser_version();
         let is_browser_version_nightly = original_browser_version.eq_ignore_ascii_case(NIGHTLY)
             || original_browser_version.eq_ignore_ascii_case(CANARY);
@@ -426,7 +428,7 @@ impl SeleniumManager for FirefoxManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
             }
         }
@@ -474,7 +476,7 @@ impl SeleniumManager for FirefoxManager {
             )?;
         }
         if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
+            self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
         } else {
             Ok(None)

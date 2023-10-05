@@ -170,8 +170,8 @@ pub fn uncompress_sfx(
     let file_reader = Cursor::new(&file_bytes[index_7z..]);
     sevenz_rust::decompress(file_reader, zip_parent).unwrap();
 
-    let zip_parent_str = path_buf_to_string(zip_parent.to_path_buf());
-    let target_str = path_buf_to_string(target.to_path_buf());
+    let zip_parent_str = path_to_string(zip_parent);
+    let target_str = path_to_string(target);
     let core_str = format!(r#"{}\core"#, zip_parent_str);
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
@@ -191,11 +191,7 @@ pub fn uncompress_pkg(
     major_browser_version: i32,
 ) -> Result<(), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix(PKG).tempdir()?;
-    let out_folder = format!(
-        "{}/{}",
-        path_buf_to_string(tmp_dir.path().to_path_buf()),
-        PKG
-    );
+    let out_folder = format!("{}/{}", path_to_string(tmp_dir.path()), PKG);
     let mut command = Command::new_single(format_two_args(
         PKGUTIL_COMMAND,
         compressed_file,
@@ -205,7 +201,7 @@ pub fn uncompress_pkg(
     run_shell_command_by_os(os, command)?;
 
     fs::create_dir_all(target)?;
-    let target_folder = path_buf_to_string(target.to_path_buf());
+    let target_folder = path_to_string(target);
     command = if major_browser_version == 0 || major_browser_version > 84 {
         Command::new_single(format_three_args(
             MV_PAYLOAD_COMMAND,
@@ -246,7 +242,7 @@ pub fn uncompress_dmg(
     run_shell_command_by_os(os, command)?;
 
     fs::create_dir_all(target)?;
-    let target_folder = path_buf_to_string(target.to_path_buf());
+    let target_folder = path_to_string(target);
     command = Command::new_single(format_three_args(
         CP_VOLUME_COMMAND,
         volume,
@@ -497,8 +493,11 @@ pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<d
     Ok(parsed_version)
 }
 
-pub fn path_buf_to_string(path_buf: PathBuf) -> String {
-    path_buf.into_os_string().into_string().unwrap_or_default()
+pub fn path_to_string(path: &Path) -> String {
+    path.to_path_buf()
+        .into_os_string()
+        .into_string()
+        .unwrap_or_default()
 }
 
 pub fn read_bytes_from_file(file_path: &str) -> Result<Vec<u8>, Box<dyn Error>> {

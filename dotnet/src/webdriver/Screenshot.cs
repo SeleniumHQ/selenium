@@ -26,6 +26,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// File format for saving screenshots.
     /// </summary>
+    [Obsolete("Support for decoding/encoding between different image formats is deprecated")]
     public enum ScreenshotImageFormat
     {
         /// <summary>
@@ -84,6 +85,7 @@ namespace OpenQA.Selenium
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
         /// <param name="format">A <see cref="ScreenshotImageFormat"/> value indicating the format
         /// to save the image to.</param>
+        [Obsolete("Support for decoding/encoding between different image formats is deprecated; use SaveAsFile(string fileName) method instead")]
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
             using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))

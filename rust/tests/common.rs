@@ -22,7 +22,7 @@ use std::env::consts::OS;
 use std::path::Path;
 
 use is_executable::is_executable;
-use selenium_manager::files::path_buf_to_string;
+use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
@@ -54,7 +54,7 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    path_buf_to_string(Path::new(&json.result.driver_path).to_path_buf())
+    path_to_string(Path::new(&json.result.driver_path))
 }
 
 #[allow(dead_code)]
