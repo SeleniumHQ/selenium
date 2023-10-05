@@ -30,7 +30,6 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class TestUtilities {
 
@@ -40,9 +39,6 @@ public class TestUtilities {
     } catch (Throwable e) {
       // Some drivers will only execute JS once a page has been loaded. Since those
       // drivers aren't Firefox or IE, we don't worry about that here.
-      //
-      // Non-javascript-enabled HtmlUnit throws an UnsupportedOperationException here.
-      // Let's just ignore that.
       return "";
     }
   }
@@ -61,7 +57,7 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
+    return getUserAgent(driver).contains("Chrome");
   }
 
   public static int getChromeVersion(WebDriver driver) {

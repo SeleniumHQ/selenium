@@ -60,7 +60,7 @@ csharp_library(
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
-    out = "WebDriver",
+    out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
     private_deps = [
         framework("nuget", "NETStandard.Library"),
@@ -130,7 +130,7 @@ nuget_pack(
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
-        ":webdriver-strongnamed-lib": "WebDriver",
+        ":webdriver-strongnamed-lib": "WebDriver.StrongNamed",
     },
     nuspec_template = "WebDriver.StrongNamed.nuspec",
     property_group_vars = {

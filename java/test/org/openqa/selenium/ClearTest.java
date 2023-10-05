@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 
 import org.junit.jupiter.api.Test;
@@ -122,20 +121,17 @@ class ClearTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearRangeInput() {
     shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(IE)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDateInput() {
     shouldBeAbleToClearInput(By.name("date_input"), "2017-11-22");
   }
@@ -146,25 +142,21 @@ class ClearTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDatetimeLocalInput() {
     shouldBeAbleToClearInput(By.name("datetime_local_input"), "2017-11-22T11:22");
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearTimeInput() {
     shouldBeAbleToClearInput(By.name("time_input"), "11:22");
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearMonthInput() {
     shouldBeAbleToClearInput(By.name("month_input"), "2017-11");
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearWeekInput() {
     shouldBeAbleToClearInput(By.name("week_input"), "2017-W47");
   }

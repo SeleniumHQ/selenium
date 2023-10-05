@@ -74,7 +74,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "WebDriver.Support",
+    out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
     private_deps = [
         framework("nuget", "NETStandard.Library"),
@@ -95,9 +95,9 @@ nuget_pack(
     },
     id = "Selenium.Support.StrongNamed",
     libs = {
-        ":support-strongnamed-lib": "WebDriver.Support",
+        ":support-strongnamed-lib": "WebDriver.Support.StrongNamed",
     },
-    nuspec_template = "WebDriver.Support.nuspec",
+    nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],
