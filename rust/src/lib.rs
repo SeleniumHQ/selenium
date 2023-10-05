@@ -629,7 +629,7 @@ pub trait SeleniumManager {
     }
 
     fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        let cache_path = self.get_cache_path()?;
+        let cache_path = self.get_cache_path()?.unwrap_or_default();
         let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
             .into_iter()
             .filter_map(|entry| entry.ok())
@@ -720,7 +720,8 @@ pub trait SeleniumManager {
     ) -> Result<Option<String>, Box<dyn Error>> {
         let browser_version;
         let major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         // Browser version is checked in the local metadata
         match get_browser_version_from_metadata(
@@ -746,14 +747,14 @@ pub trait SeleniumManager {
                     };
 
                 let browser_ttl = self.get_ttl();
-                if browser_ttl > 0 {
+                if cache_path.is_some() && browser_ttl > 0 {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
                         &major_browser_version,
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
                 }
             }
         }
@@ -846,6 +847,7 @@ pub trait SeleniumManager {
     fn get_browser_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(self
             .get_cache_path()?
+            .unwrap_or_default()
             .join(self.get_browser_name())
             .join(self.get_platform_label())
             .join(self.get_browser_version()))
@@ -1056,14 +1058,19 @@ pub trait SeleniumManager {
         }
     }
 
-    fn get_cache_path(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_cache_path(&self) -> Result<Option<PathBuf>, Box<dyn Error>> {
         let path = Path::new(&self.get_config().cache_path);
-        create_path_if_not_exists(path).unwrap_or_else(|err| {
-            self.get_logger()
-                .warn(format!("Cache folder cannot be created: {}", err));
-        });
-        let canon_path = self.canonicalize_path(path.to_path_buf());
-        Ok(Path::new(&canon_path).to_path_buf())
+        match create_path_if_not_exists(path) {
+            Ok(_) => {
+                let canon_path = self.canonicalize_path(path.to_path_buf());
+                Ok(Some(Path::new(&canon_path).to_path_buf()))
+            }
+            Err(err) => {
+                self.get_logger()
+                    .warn(format!("Cache folder cannot be created: {}", err));
+                Ok(None)
+            }
+        }
     }
 
     fn set_cache_path(&mut self, cache_path: String) {

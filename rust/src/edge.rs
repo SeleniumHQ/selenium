@@ -134,7 +134,8 @@ impl SeleniumManager for EdgeManager {
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let mut major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -187,14 +188,14 @@ impl SeleniumManager for EdgeManager {
                     read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
-                if driver_ttl > 0 && !major_browser_version.is_empty() {
+                if cache_path.is_some() && driver_ttl > 0 && !major_browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version.as_str(),
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
                 }
 
                 Ok(driver_version)
@@ -235,7 +236,7 @@ impl SeleniumManager for EdgeManager {
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(compose_driver_path_in_cache(
-            self.get_cache_path()?,
+            self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
             self.get_os(),
             self.get_platform_label(),
