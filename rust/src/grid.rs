@@ -150,14 +150,14 @@ impl SeleniumManager for GridManager {
                     )?;
 
                     let driver_ttl = self.get_ttl();
-                    if cache_path.is_some() && driver_ttl > 0 {
+                    if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
                             major_browser_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
+                        write_metadata(&metadata, self.get_logger(), cache_path);
                     }
 
                     Ok(driver_version)

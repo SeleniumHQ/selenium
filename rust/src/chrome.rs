@@ -319,10 +319,7 @@ impl SeleniumManager for ChromeManager {
                 };
 
                 let driver_ttl = self.get_ttl();
-                if cache_path.is_some()
-                    && driver_ttl > 0
-                    && !major_browser_version.is_empty()
-                    && !driver_version.is_empty()
+                if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
                 {
                     metadata.drivers.push(create_driver_metadata(
                         major_browser_version,
@@ -330,7 +327,7 @@ impl SeleniumManager for ChromeManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
                 Ok(driver_version)
             }
@@ -460,8 +457,7 @@ impl SeleniumManager for ChromeManager {
                 self.set_browser_version(browser_version.clone());
 
                 let browser_ttl = self.get_ttl();
-                if cache_path.is_some()
-                    && browser_ttl > 0
+                if browser_ttl > 0
                     && !self.is_browser_version_empty()
                     && !self.is_browser_version_stable()
                 {
@@ -471,7 +467,7 @@ impl SeleniumManager for ChromeManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
             }
         }

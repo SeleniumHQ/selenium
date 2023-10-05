@@ -747,14 +747,14 @@ pub trait SeleniumManager {
                     };
 
                 let browser_ttl = self.get_ttl();
-                if cache_path.is_some() && browser_ttl > 0 {
+                if browser_ttl > 0 {
                     metadata.browsers.push(create_browser_metadata(
                         browser_name,
                         &major_browser_version,
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), cache_path.unwrap());
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
             }
         }

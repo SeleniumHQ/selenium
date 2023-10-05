@@ -159,20 +159,22 @@ pub fn create_driver_metadata(
     }
 }
 
-pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
-    let metadata_path = get_metadata_path(cache_path.clone());
-    log.trace(format!("Writing metadata to {}", metadata_path.display()));
-    fs::write(
-        metadata_path,
-        serde_json::to_string_pretty(metadata).unwrap(),
-    )
-    .unwrap_or_else(|err| {
-        log.warn(format!(
-            "Metadata cannot be written in cache ({}): {}",
-            cache_path.display(),
-            err
-        ));
-    });
+pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: Option<PathBuf>) {
+    if let Some(cache) = cache_path {
+        let metadata_path = get_metadata_path(cache.clone());
+        log.trace(format!("Writing metadata to {}", metadata_path.display()));
+        fs::write(
+            metadata_path,
+            serde_json::to_string_pretty(metadata).unwrap(),
+        )
+        .unwrap_or_else(|err| {
+            log.warn(format!(
+                "Metadata cannot be written in cache ({}): {}",
+                cache.display(),
+                err
+            ));
+        });
+    }
 }
 
 pub fn clear_metadata(log: &Logger, path: &str) {
