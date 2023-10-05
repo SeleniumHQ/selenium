@@ -553,8 +553,9 @@ pub trait SeleniumManager {
         if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
             // If proper driver version is not the same as the driver in path, display warning
             let major_version = self.get_major_version(version)?;
-            if (self.is_firefox() && !version.eq(self.get_driver_version()))
-                || !major_version.eq(&self.get_major_browser_version())
+            if !self.get_driver_version().is_empty()
+                && (self.is_firefox() && !version.eq(self.get_driver_version()))
+                || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
             {
                 self.get_logger().warn(format!(
                     "The {} version ({}) detected in PATH at {} might not be compatible with \
