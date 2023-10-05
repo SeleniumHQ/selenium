@@ -147,7 +147,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
   }
 
   @Test
@@ -263,7 +263,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map)
         .asInstanceOf(MAP)
@@ -328,7 +328,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map).asInstanceOf(MAP).containsEntry("opt1", "val1");
 
