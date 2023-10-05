@@ -55,6 +55,5 @@ java_library(
         "//java/test/org/openqa/selenium/build",
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
-        artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ] + JUNIT5_DEPS,
 )

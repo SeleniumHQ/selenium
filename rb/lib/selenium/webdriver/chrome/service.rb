@@ -28,7 +28,7 @@ module Selenium
         def log
           return @log unless @log.is_a? String
 
-          @args += ['--log-path', @log]
+          @args << "--log-path=#{@log}"
           @log = nil
         end
       end # Service

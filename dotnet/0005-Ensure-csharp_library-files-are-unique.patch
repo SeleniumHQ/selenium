@@ -1,0 +1,44 @@
+diff --git a/dotnet/private/rules/common/binary.bzl b/dotnet/private/rules/common/binary.bzl
+index 1c48385..fc63f69 100644
+--- a/dotnet/private/rules/common/binary.bzl
++++ b/dotnet/private/rules/common/binary.bzl
+@@ -98,7 +98,7 @@ def build_binary(ctx, compile_action):
+     depsjson = None
+     if is_core_framework(tfm):
+         # Create the runtimeconfig.json for the binary
+-        runtimeconfig = ctx.actions.declare_file("bazelout/%s/%s.runtimeconfig.json" % (tfm, ctx.attr.out or ctx.attr.name))
++        runtimeconfig = ctx.actions.declare_file("bazelout/%s/%s/%s.runtimeconfig.json" % (tfm, ctx.attr.name, ctx.attr.out or ctx.attr.name))
+         runtimeconfig_struct = generate_runtimeconfig(
+             target_framework = tfm,
+             project_sdk = ctx.attr.project_sdk,
+@@ -114,6 +114,8 @@ def build_binary(ctx, compile_action):
+             "./external",
+             "../",
+             "../external",
++            "../../",
++            "../../external",
+             # This one is for when the binary target is used as an tool in e.g. a custom rule
+             "{}.runfiles".format(launcher.path),
+         ]
+@@ -122,7 +124,7 @@ def build_binary(ctx, compile_action):
+             content = json.encode_indent(runtimeconfig_struct),
+         )
+
+-        depsjson = ctx.actions.declare_file("bazelout/%s/%s.deps.json" % (tfm, ctx.attr.out or ctx.attr.name))
++        depsjson = ctx.actions.declare_file("bazelout/%s/%s/%s.deps.json" % (tfm, ctx.attr.name, ctx.attr.out or ctx.attr.name))
+         depsjson_struct = generate_depsjson(
+             ctx,
+             target_framework = tfm,
+diff --git a/dotnet/private/rules/csharp/actions/csharp_assembly.bzl b/dotnet/private/rules/csharp/actions/csharp_assembly.bzl
+index c30cf6a..d031d8b 100644
+--- a/dotnet/private/rules/csharp/actions/csharp_assembly.bzl
++++ b/dotnet/private/rules/csharp/actions/csharp_assembly.bzl
+@@ -145,7 +145,7 @@ def AssemblyAction(
+
+     defines = framework_preprocessor_symbols(target_framework) + defines
+
+-    out_dir = "bazelout/" + target_framework
++    out_dir = "bazelout/%s/%s" % (target_framework, target_name)
+     out_ext = "dll"
+
+     out_dll = actions.declare_file("%s/%s.%s" % (out_dir, assembly_name, out_ext))

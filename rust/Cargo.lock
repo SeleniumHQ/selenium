@@ -1440,7 +1440,7 @@ dependencies = [
 
 [[package]]
 name = "selenium-manager"
-version = "0.4.13"
+version = "0.4.14"
 dependencies = [
  "assert_cmd",
  "bzip2",

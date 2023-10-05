@@ -22,22 +22,17 @@ import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class HistoryNavigationTest extends JupiterTestBase {
 
   @NeedsFreshDriver
   @Test
-  @NotYetImplemented(
-      value = HTMLUNIT,
-      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     ((JavascriptExecutor) driver)

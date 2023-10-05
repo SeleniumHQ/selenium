@@ -23,7 +23,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
@@ -40,7 +39,6 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformance")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(
@@ -50,7 +48,6 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canSilentlyAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value", true);
@@ -59,7 +56,6 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   @Ignore(value = EDGE, reason = "Unstable Chrome behavior")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY, "null", false);
@@ -68,7 +64,6 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canSilentlyDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null", true);

@@ -72,7 +72,7 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path', '/path/to/log.txt']
+            expect(service.args).to eq ['--log-path=/path/to/log.txt']
           end
 
           it 'uses provided args' do
@@ -130,7 +130,7 @@ module Selenium
             service = described_class.chrome(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path', '/path/to/log.txt']
+            expect(service.args).to eq ['--log-path=/path/to/log.txt']
           end
         end
       end

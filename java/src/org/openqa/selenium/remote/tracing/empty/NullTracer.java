@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -30,5 +31,10 @@ public class NullTracer implements Tracer {
   @Override
   public Propagator getPropagator() {
     return new NullPropagator();
+  }
+
+  @Override
+  public AttributeMap createAttributeMap() {
+    return new NullAttributeMap();
   }
 }

@@ -26,8 +26,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
 import java.io.UncheckedIOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -55,10 +53,8 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // If there is already a span attached to this request, then do nothing.
     Object possibleSpan = req.getAttribute("selenium.tracing.span");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(
-        AttributeKey.HTTP_HANDLER_CLASS.getKey(),
-        EventAttribute.setValue(delegate.getClass().getName()));
+    AttributeMap attributeMap = tracer.createAttributeMap();
+    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(), delegate.getClass().getName());
 
     if (possibleSpan instanceof Span) {
       return delegate.execute(req);
@@ -101,8 +97,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
       EXCEPTION.accept(attributeMap, t);
       attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to execute request: " + t.getMessage()));
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), "Unable to execute request: " + t.getMessage());
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);

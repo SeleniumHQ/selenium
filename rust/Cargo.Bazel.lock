@@ -1,5 +1,5 @@
 {
-  "checksum": "437c56863604d3ef83e56701f4a5d8948553a0c963b7c970716fceabcc75ec10",
+  "checksum": "495be0038fd3bd2826baeb0433f22c042c1b03eeeb117631135bc6339799addf",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -7720,9 +7720,9 @@
       },
       "license": "Apache-2.0/ISC/MIT"
     },
-    "selenium-manager 0.4.13": {
+    "selenium-manager 0.4.14": {
       "name": "selenium-manager",
-      "version": "0.4.13",
+      "version": "0.4.14",
       "repository": null,
       "targets": [
         {
@@ -7839,7 +7839,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.4.13"
+        "version": "0.4.14"
       },
       "license": "Apache-2.0"
     },
@@ -12652,7 +12652,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 0.4.13": "rust"
+    "selenium-manager 0.4.14": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [
