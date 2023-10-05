@@ -1058,7 +1058,10 @@ pub trait SeleniumManager {
 
     fn get_cache_path(&self) -> Result<PathBuf, Box<dyn Error>> {
         let path = Path::new(&self.get_config().cache_path);
-        create_path_if_not_exists(path)?;
+        create_path_if_not_exists(path).unwrap_or_else(|err| {
+            self.get_logger()
+                .warn(format!("Cache folder cannot be created: {}", err));
+        });
         let canon_path = self.canonicalize_path(path.to_path_buf());
         Ok(Path::new(&canon_path).to_path_buf())
     }
