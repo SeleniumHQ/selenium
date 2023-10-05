@@ -11,7 +11,7 @@ jobs:
     with:
       name: Build
       cache-key: false
-      os: windows
+      os: ubuntu
       run: bazel build //dotnet/src/webdriver:webdriver-pack //dotnet/src/support:support-pack
 
   integration-tests:
