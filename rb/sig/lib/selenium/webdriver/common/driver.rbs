@@ -9,7 +9,7 @@ module Selenium
 
       def initialize: (?bridge: untyped? bridge, ?listener: untyped? listener, **untyped opts) -> void
 
-      def inspect: () -> untyped
+      def inspect: () -> String
 
       #
       # information about whether a remote end is in a state in which it can create new sessions,
@@ -27,13 +27,13 @@ module Selenium
 
       def action: (**untyped opts) -> ActionBuilder
 
-      def get: (untyped url) -> untyped
+      def get: (String url) -> untyped
 
-      def current_url: () -> untyped
+      def current_url: () -> String
 
-      def title: () -> untyped
+      def title: () -> String
 
-      def page_source: () -> untyped
+      def page_source: () -> String
 
       def quit: () -> untyped
 

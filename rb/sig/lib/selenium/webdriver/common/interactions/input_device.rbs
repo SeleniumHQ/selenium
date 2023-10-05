@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class InputDevice
+        @name: String
+
+        @actions: Array[untyped]
+
+        attr_reader name: String
+
+        attr_reader actions: Array[untyped]
+
+        attr_reader type: String
+
+        def initialize: (?untyped? name) -> void
+
+        def add_action: (untyped action) -> Array[untyped]
+
+        def clear_actions: () -> Array[untyped]
+
+        def create_pause: (Integer duration) -> Array[untyped]
+
+        def encode: () -> ({ type: untyped, id: String, actions: Array[untyped] } | nil)
+      end
+    end
+  end
+end

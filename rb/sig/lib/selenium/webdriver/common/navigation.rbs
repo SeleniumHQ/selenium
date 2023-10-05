@@ -3,13 +3,13 @@ module Selenium
     class Navigation
       def initialize: (untyped bridge) -> void
 
-      def to: (String url) -> void
+      def to: (String url) -> untyped
 
-      def back: () -> void
+      def back: () -> untyped
 
-      def forward: () -> void
+      def forward: () -> untyped
 
-      def refresh: () -> void
+      def refresh: () -> untyped
     end
   end
 end
