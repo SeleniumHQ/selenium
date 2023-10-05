@@ -27,7 +27,6 @@ import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -251,7 +250,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(FIREFOX)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
@@ -430,9 +428,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
   @NeedsFreshDriver
   @Test
-  @NotYetImplemented(
-      value = HTMLUNIT,
-      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(SAFARI)
   public void testShouldBeAbleToExecuteScriptOnNoPage() {
     String text = (String) executeScript("return 'test';");
@@ -525,7 +520,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   @Test
   @Timeout(10)
   @Ignore(value = IE, reason = "returns WebElement")
-  @Ignore(HTMLUNIT)
   public void shouldHandleObjectThatThatHaveToJSONMethod() {
     driver.get(pages.simpleTestPage);
 
@@ -536,7 +530,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
   @Test
   @Timeout(10)
-  @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
 

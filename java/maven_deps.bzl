@@ -98,7 +98,6 @@ def selenium_java_deps():
             "org.mockito:mockito-core:4.11.0",
             "org.mockito:mockito-inline:4.11.0",
             "org.redisson:redisson:3.23.2",
-            "org.seleniumhq.selenium:htmlunit-driver:4.11.0",
             "org.slf4j:slf4j-api:2.0.7",
             "org.slf4j:slf4j-jdk14:2.0.7",
             "org.zeromq:jeromq:0.5.3",
@@ -108,11 +107,6 @@ def selenium_java_deps():
             "org.hamcrest:hamcrest-core",
             "io.netty:netty-all",  # Depend on the actual things you need
         ],
-        override_targets = {
-            "org.seleniumhq.selenium:selenium-api": "@//java/src/org/openqa/selenium:core",
-            "org.seleniumhq.selenium:selenium-remote-driver": "@//java/src/org/openqa/selenium/remote:remote",
-            "org.seleniumhq.selenium:selenium-support": "@//java/src/org/openqa/selenium/support",
-        },
         fail_on_missing_checksum = True,
         fail_if_repin_required = True,
         fetch_sources = True,

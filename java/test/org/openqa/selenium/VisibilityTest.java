@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.List;
@@ -130,7 +129,6 @@ class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages =
         new String[] {
@@ -148,7 +146,6 @@ class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages =
         new String[] {
