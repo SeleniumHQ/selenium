@@ -1066,8 +1066,11 @@ pub trait SeleniumManager {
                 Ok(Some(Path::new(&canon_path).to_path_buf()))
             }
             Err(err) => {
-                self.get_logger()
-                    .warn(format!("Cache folder cannot be created: {}", err));
+                self.get_logger().warn(format!(
+                    "Cache folder {} cannot be created: {}",
+                    path.display(),
+                    err
+                ));
                 Ok(None)
             }
         }
