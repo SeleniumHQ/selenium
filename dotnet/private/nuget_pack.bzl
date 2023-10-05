@@ -98,7 +98,7 @@ def nuget_pack_impl(ctx):
     packages_cmd = "mkdir -p %s " % packages.path
 
     transitive_libs = depset(transitive = [l[DotnetAssemblyInfo].transitive_runtime_deps for l in ctx.attr.libs]).to_list()
-    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs]).to_list()
+    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs if hasattr(lib.nuget_info, "nupkg")]).to_list()
 
     if len(package_files):
         packages_cmd += "&& cp " + " ".join([f.path for f in package_files]) + " " + packages.path
