@@ -22,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -78,7 +78,7 @@ class BiDiSessionCleanUpTest {
     driver.close();
 
     // Closing the last top-level browsing context, closes the WebDriver and BiDi session
-    assertThatExceptionOfType(TimeoutException.class)
+    assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(
             () ->
                 biDi.send(

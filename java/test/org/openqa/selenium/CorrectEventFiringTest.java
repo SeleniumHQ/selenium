@@ -26,7 +26,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -420,7 +419,6 @@ class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(IE)
   @NotYetImplemented(SAFARI)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
@@ -511,7 +509,6 @@ class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     WebElement element = driver.findElement(By.id("under"));
@@ -520,7 +517,6 @@ class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testClickAnElementThatDisappear() {
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));

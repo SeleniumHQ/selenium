@@ -422,6 +422,7 @@ namespace OpenQA.Selenium
          * Side effects: 1) {@link #driver} is configured to use given pageLoadTimeout,
          * 2) test HTTP server still didn't serve the page to browser (some browsers may still
          * be waiting for the page to load despite the fact that driver responded with the timeout).
+         * </p>
          */
         private void TestPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeoutInSeconds)
         {

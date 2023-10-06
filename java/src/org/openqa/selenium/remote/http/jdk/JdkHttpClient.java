@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLContext;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -142,6 +143,11 @@ public class JdkHttpClient implements HttpClient {
             }
           };
       builder = builder.proxy(proxySelector);
+    }
+
+    SSLContext sslContext = config.sslContext();
+    if (sslContext != null) {
+      builder.sslContext(sslContext);
     }
 
     this.client = builder.build();

@@ -52,7 +52,7 @@ function get() {
     emit_headers "${KEYCHAIN}"
   fi
 
-  "{\"headers\":{}"
+  echo "{\"headers\":{}}"
   exit 0
 }
 
