@@ -116,6 +116,7 @@ jobs:
       browser: ${{ matrix.browser }}
       cache-key: rb-remote-${{ matrix.browser }}-test
       os: ${{ matrix.os }}
+      java-version: 11
       run: >
         bazel test
         --define browser=${{ matrix.browser }}
