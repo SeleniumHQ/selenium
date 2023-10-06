@@ -51,7 +51,8 @@ namespace OpenQA.Selenium
             if (executablePath == null)
             {
                 message = $"Unable to locate or obtain {options.BrowserName} driver";
-            } else if (!File.Exists(executablePath))
+            }
+            else if (!File.Exists(executablePath))
             {
                 message = $"{options.BrowserName} driver located at {executablePath}, but invalid";
             }
