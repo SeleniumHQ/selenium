@@ -44,7 +44,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
@@ -94,7 +93,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
     objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
     description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
-  
+
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
