@@ -839,6 +839,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           }
         }
 
+        // 'complete' will return 'true' if the session has not timed out during the creation process: it's still a valid session as it can be used by the client
         boolean isSessionValid = sessionQueue.complete(reqId, response);
         // If the session request has timed out, tell the Node to remove the session, so that does not stall
         if (!isSessionValid && response.isRight()) {

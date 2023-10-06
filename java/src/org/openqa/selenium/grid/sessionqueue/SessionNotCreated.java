@@ -54,6 +54,8 @@ class SessionNotCreated implements HttpHandler {
 
       String message = Contents.fromJson(req, String.class);
       SessionNotCreatedException exception = new SessionNotCreatedException(message);
+
+      // 'complete' will return 'true' if the session has not timed out during the creation process: it's still a valid session as it can be used by the client
       boolean isSessionValid = queue.complete(requestId, Either.left(exception));
 
       HttpResponse res = new HttpResponse().setContent(asJson(singletonMap("value", isSessionValid)));
