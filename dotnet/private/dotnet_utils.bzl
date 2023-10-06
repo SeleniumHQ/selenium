@@ -21,6 +21,9 @@ export CWD=$(pwd)
 export APPDATA="$(pwd)"
 export PROGRAMFILES="$(pwd)"
 
+# Required to make NuGet tool work on non-writable home path like GitHub actions
+export XDG_DATA_HOME=$(mktemp -d)
+
 # Create `global.json` to trick .Net into using the hermetic toolchain
 # https://learn.microsoft.com/en-us/dotnet/core/tools/global-json
 echo '{{"sdk": {{"version": "{version}"}} }}' >$(pwd)/global.json

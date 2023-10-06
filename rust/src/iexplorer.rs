@@ -109,7 +109,8 @@ impl SeleniumManager for IExplorerManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -164,7 +165,7 @@ impl SeleniumManager for IExplorerManager {
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                        write_metadata(&metadata, self.get_logger(), cache_path);
                     }
 
                     Ok(driver_version)
@@ -196,7 +197,7 @@ impl SeleniumManager for IExplorerManager {
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(compose_driver_path_in_cache(
-            self.get_cache_path()?,
+            self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
             "Windows",
             self.get_platform_label(),
