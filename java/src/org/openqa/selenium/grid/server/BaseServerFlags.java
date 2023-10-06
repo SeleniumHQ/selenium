@@ -35,9 +35,10 @@ public class BaseServerFlags implements HasRoles {
 
   @Parameter(
       names = {"--external-url"},
-      description = "External URL where component is generally available. " +
-        "Useful on complex network topologies when components are on different networks " +
-        "and proxy servers are involved.")
+      description =
+          "External URL where component is generally available. "
+              + "Useful on complex network topologies when components are on different networks "
+              + "and proxy servers are involved.")
   @ConfigValue(section = SERVER_SECTION, name = "external-url", example = "http://10.0.1.1:33333")
   private String externalUrl;
 

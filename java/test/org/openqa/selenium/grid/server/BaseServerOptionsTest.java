@@ -50,13 +50,19 @@ class BaseServerOptionsTest {
   @Test
   void externalUriFailsForNonUriStrings() {
     BaseServerOptions options =
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-url", "not a URL"))));
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-url", "not a URL"))));
 
-    Exception exception = assertThrows(RuntimeException.class, () -> {
-      options.getExternalUri();
-    });
+    Exception exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              options.getExternalUri();
+            });
 
-    assertThat(exception.getMessage()).as("External URI must be parseable as URI.").isEqualTo("Supplied external URI is invalid: Illegal character in path at index 3: not a URL");
+    assertThat(exception.getMessage())
+        .as("External URI must be parseable as URI.")
+        .isEqualTo(
+            "Supplied external URI is invalid: Illegal character in path at index 3: not a URL");
   }
 
   @Test
@@ -64,24 +70,29 @@ class BaseServerOptionsTest {
     URI expected = new URI("http://10.0.1.1:33333");
 
     BaseServerOptions options =
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of(
-        "external-url", expected.toString(),
-        "host", "localhost",
-        "port", 5555
-      ))));
+        new BaseServerOptions(
+            new MapConfig(
+                Map.of(
+                    "server",
+                    Map.of(
+                        "external-url", expected.toString(), "host", "localhost", "port", 5555))));
 
     assertThat(options.getExternalUri()).isEqualTo(expected);
   }
 
   @Test
-  void externalUriDefaultsToValueDerivedFromHostnameAndPortWhenNotDefined() throws URISyntaxException {
+  void externalUriDefaultsToValueDerivedFromHostnameAndPortWhenNotDefined()
+      throws URISyntaxException {
     URI expected = new URI("http://localhost:5555");
 
     BaseServerOptions options =
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of(
-        "host", expected.getHost(),
-        "port", expected.getPort()
-      ))));
+        new BaseServerOptions(
+            new MapConfig(
+                Map.of(
+                    "server",
+                    Map.of(
+                        "host", expected.getHost(),
+                        "port", expected.getPort()))));
 
     assertThat(options.getExternalUri()).isEqualTo(expected);
   }
