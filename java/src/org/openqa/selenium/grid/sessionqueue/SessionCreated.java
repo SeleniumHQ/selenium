@@ -53,10 +53,12 @@ class SessionCreated implements HttpHandler {
 
       CreateSessionResponse response = Contents.fromJson(req, CreateSessionResponse.class);
 
-      // 'complete' will return 'true' if the session has not timed out during the creation process: it's still a valid session as it can be used by the client
+      // 'complete' will return 'true' if the session has not timed out during the creation process:
+      // it's still a valid session as it can be used by the client
       boolean isSessionValid = queue.complete(requestId, Either.right(response));
 
-      HttpResponse res = new HttpResponse().setContent(asJson(singletonMap("value", isSessionValid)));
+      HttpResponse res =
+          new HttpResponse().setContent(asJson(singletonMap("value", isSessionValid)));
 
       HTTP_RESPONSE.accept(span, res);
       return res;

@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.sessionqueue.local;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,11 +45,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -201,7 +201,8 @@ class LocalNewSessionQueueTest {
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
 
-              isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse)));
+              isCompleted.set(
+                  queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse)));
               latch.countDown();
             })
         .start();
@@ -211,7 +212,6 @@ class LocalNewSessionQueueTest {
     assertThat(latch.await(1000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isTrue();
   }
-
 
   @ParameterizedTest
   @MethodSource("data")
@@ -248,7 +248,10 @@ class LocalNewSessionQueueTest {
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
 
-              isCompleted.set(queue.complete(sessionRequest.getRequestId(), Either.left(new SessionNotCreatedException("not created"))));
+              isCompleted.set(
+                  queue.complete(
+                      sessionRequest.getRequestId(),
+                      Either.left(new SessionNotCreatedException("not created"))));
               latch.countDown();
             })
         .start();
@@ -302,7 +305,8 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBeAbleToAddToQueueWithTimeoutDoNotCreateSessionAfterTimeout(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueWithTimeoutDoNotCreateSessionAfterTimeout(
+      Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest sessionRequestWithTimeout =
@@ -340,7 +344,6 @@ class LocalNewSessionQueueTest {
               // LocalDistributor could not distribute the session, add it back to queue
               // it should not be re-added to queue and send back error on session creation
               queue.retryAddToQueue(sessionRequestWithTimeout);
-
             })
         .start();
 
@@ -411,7 +414,6 @@ class LocalNewSessionQueueTest {
     assertThat(isPresent.get()).isTrue();
     assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
-  
 
   @ParameterizedTest
   @MethodSource("data")

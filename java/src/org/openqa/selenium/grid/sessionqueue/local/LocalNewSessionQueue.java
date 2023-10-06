@@ -289,14 +289,13 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       try {
         if (!requests.containsKey(request.getRequestId())) {
           return false;
-        } 
+        }
         if (isTimedOut(Instant.now(), requests.get(request.getRequestId()))) {
           // as we try to re-add a session request that has already expired, force session timeout
           failDueToTimeout(request.getRequestId());
           // return true to avoid handleNewSessionRequest to call 'complete' an other time
           return true;
-        } 
-        
+        }
 
         if (queue.contains(request)) {
           // No need to re-add this
@@ -369,9 +368,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
-  /**
-   * Returns true if the session is still valid (not timed out)
-   */
+  /** Returns true if the session is still valid (not timed out) */
   @Override
   public boolean complete(
       RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
@@ -485,6 +482,5 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       complete = true;
       latch.countDown();
     }
-
   }
 }
