@@ -147,7 +147,8 @@ public class CdpVersionFinder {
       LOG.log(
           Level.WARNING,
           "Unable to find an exact match for CDP version {0}, returning the closest version; "
-              + "found: {1}; " + "Please update to a Selenium version that supports CDP version {0}",
+              + "found: {1}; "
+              + "Please update to a Selenium version that supports CDP version {0}",
           new Object[] {version, nearestMatch.getMajorVersion()});
     }
 
