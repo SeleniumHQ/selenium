@@ -110,6 +110,7 @@ build:remote --host_cpu=k8
 
 build:remote --disk_cache=
 
+build:remote --sandbox_default_allow_network=false
 build:remote --incompatible_enable_cc_toolchain_resolution
 build:remote --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 test:remote --test_env=DISPLAY=:99.0
