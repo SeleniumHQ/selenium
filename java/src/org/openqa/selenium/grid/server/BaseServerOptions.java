@@ -84,7 +84,7 @@ public class BaseServerOptions {
 
   @ManagedAttribute(name = "Uri")
   public URI getExternalUri() {
-    return config.get(SERVER_SECTION, "external-uri")
+    return config.get(SERVER_SECTION, "external-url")
       .map(url -> {
         try {
           return new URI(url);

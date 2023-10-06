@@ -50,13 +50,13 @@ class BaseServerOptionsTest {
   @Test
   void externalUriFailsForNonUriStrings() {
     BaseServerOptions options =
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-uri", "not a uri"))));
+      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-url", "not a URL"))));
 
     Exception exception = assertThrows(RuntimeException.class, () -> {
       options.getExternalUri();
     });
 
-    assertThat(exception.getMessage()).as("External URI must be parseable as URI.").isEqualTo("Supplied external URI is invalid: Illegal character in path at index 3: not a uri");
+    assertThat(exception.getMessage()).as("External URI must be parseable as URI.").isEqualTo("Supplied external URI is invalid: Illegal character in path at index 3: not a URL");
   }
 
   @Test
@@ -65,7 +65,7 @@ class BaseServerOptionsTest {
 
     BaseServerOptions options =
       new BaseServerOptions(new MapConfig(Map.of("server", Map.of(
-        "external-uri", expected.toString(),
+        "external-url", expected.toString(),
         "host", "localhost",
         "port", 5555
       ))));
