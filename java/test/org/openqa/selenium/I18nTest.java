@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -77,9 +76,6 @@ class I18nTest extends JupiterTestBase {
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
-    assumeFalse(
-        TestUtilities.isInternetExplorer(driver) && TestUtilities.getIEVersion(driver) < 10,
-        "IE: versions less thank 10 have issue 5069");
     driver.get(pages.chinesePage);
 
     String input = "";
