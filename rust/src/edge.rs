@@ -31,7 +31,7 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, get_binary_extension, path_buf_to_string, Logger, SeleniumManager, BETA,
+    create_http_client, get_binary_extension, path_to_string, Logger, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE,
 };
@@ -448,7 +448,7 @@ impl SeleniumManager for EdgeManager {
                 let parent_path = Path::new(&env_value);
                 full_browser_path = parent_path.join(&browser_path);
             }
-            Ok((&path_buf_to_string(full_browser_path)).into())
+            Ok((&path_to_string(&full_browser_path)).into())
         } else {
             Ok(browser_in_cache.join(format!(
                 "{}{}",

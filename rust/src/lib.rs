@@ -19,7 +19,7 @@ use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_buf_to_string,
+    get_binary_extension, path_to_string,
 };
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
@@ -218,7 +218,8 @@ pub trait SeleniumManager {
 
         let browser_version;
         let original_browser_version = self.get_config().browser_version.clone();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
         let major_browser_version = self.get_major_browser_version();
         let major_browser_version_int = major_browser_version.parse::<i32>().unwrap_or_default();
 
@@ -274,7 +275,7 @@ pub trait SeleniumManager {
                         &browser_version,
                         browser_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
             }
         }
@@ -321,7 +322,7 @@ pub trait SeleniumManager {
             )?;
         }
         if browser_binary_path.exists() {
-            self.set_browser_path(path_buf_to_string(browser_binary_path.clone()));
+            self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))
         } else {
             self.get_logger().warn(format!(

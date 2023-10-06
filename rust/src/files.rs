@@ -290,8 +290,8 @@ pub fn uncompress_deb(
     let mut deb_pkg = debpkg::DebPkg::parse(deb_file)?;
     deb_pkg.data()?.unpack(zip_parent)?;
 
-    let zip_parent_str = path_buf_to_string(zip_parent.to_path_buf());
-    let target_str = path_buf_to_string(target.to_path_buf());
+    let zip_parent_str = path_to_string(zip_parent);
+    let target_str = path_to_string(target);
     let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
     log.trace(format!(
         "Moving extracted files and folders from {} to {}",
