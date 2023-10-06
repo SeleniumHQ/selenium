@@ -26,6 +26,11 @@ on:
         required: false
         type: string
         default: ''
+      offline:
+        description: Whether to set Selenium Manager to offline mode
+        required: false
+        type: string
+        default: ''
       cache-key:
         description: Bazel disk cache key
         required: false
