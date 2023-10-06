@@ -22,13 +22,10 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 /**
@@ -64,16 +61,7 @@ public class EdgeDriver extends ChromiumDriver {
 
   private static EdgeDriverCommandExecutor generateExecutor(
       EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
-    Require.nonNull("Driver service", service);
-    Require.nonNull("Driver options", options);
-    Require.nonNull("Driver clientConfig", clientConfig);
-    if (service.getExecutable() == null) {
-      Result result = DriverFinder.getPath(service, options);
-      service.setExecutable(result.getDriverPath());
-      if (result.getBrowserPath() != null) {
-        options.setBinary(result.getBrowserPath());
-      }
-    }
+    setupServiceAndOptions(service, options, clientConfig);
     return new EdgeDriverCommandExecutor(service, clientConfig);
   }
 

@@ -41,6 +41,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
@@ -48,6 +49,7 @@ import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -66,6 +68,9 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
+import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -350,4 +355,24 @@ public class ChromiumDriver extends RemoteWebDriver
   public void quit() {
     super.quit();
   }
+
+  protected static <T extends DriverService, U> void setupServiceAndOptions(
+    T service, U options, ClientConfig clientConfig) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    Require.nonNull("Driver clientConfig", clientConfig);
+    if (service.getExecutable() == null) {
+      Result result = DriverFinder.getPath(service, (Capabilities) options);
+      service.setExecutable(result.getDriverPath());
+      if (result.getBrowserPath() != null) {
+        if (options instanceof ChromeOptions) {
+          ((ChromeOptions) options).setBinary(result.getBrowserPath());
+        } else if (options instanceof EdgeOptions) {
+          ((EdgeOptions) options).setBinary(result.getBrowserPath());
+        }
+      }
+    }
+  }
 }
+
+
