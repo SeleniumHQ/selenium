@@ -40,7 +40,7 @@ platform(
     exec_properties = {
         "container-image": "docker://docker.io/shs96c/selenium-remote-build@sha256:314b60a3c2b82f512c0f3fdba0aed8983f2b9bfdf2901a4f41511abdfd6dd74a",
         "OSFamily": "Linux",
-        "dockerReuse": "True",
+        "dockerReuse": "False",
         "dockerRunAsRoot": "False",
         "dockerUseEntrypoint": "True",
         "sandboxAllowed": "False",
