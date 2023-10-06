@@ -22,6 +22,7 @@ jobs:
     with:
       # TODO: experiment with turning off caches
       name: All RBE tests
+      offline: true
       cache-key: rbe
       ruby-version: jruby-9.4.2.0
       run: ./scripts/github-actions/ci-build.sh
