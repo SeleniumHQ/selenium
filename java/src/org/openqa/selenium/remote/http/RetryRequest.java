@@ -31,7 +31,6 @@ import dev.failsafe.Fallback;
 import dev.failsafe.RetryPolicy;
 import dev.failsafe.event.ExecutionAttemptedEvent;
 import dev.failsafe.function.CheckedFunction;
-
 import java.net.ConnectException;
 import java.util.logging.Logger;
 import org.openqa.selenium.TimeoutException;
@@ -40,8 +39,10 @@ public class RetryRequest implements Filter {
 
   private static final Logger LOG = Logger.getLogger(RetryRequest.class.getName());
 
-  private static final Fallback<HttpResponse> fallback = Fallback.of(
-    (CheckedFunction<ExecutionAttemptedEvent<? extends HttpResponse>, ? extends HttpResponse>) RetryRequest::getFallback);
+  private static final Fallback<HttpResponse> fallback =
+      Fallback.of(
+          (CheckedFunction<ExecutionAttemptedEvent<? extends HttpResponse>, ? extends HttpResponse>)
+              RetryRequest::getFallback);
 
   // Retry on connection error.
   private static final RetryPolicy<HttpResponse> connectionFailurePolicy =
@@ -106,8 +107,7 @@ public class RetryRequest implements Filter {
             .setStatus(HTTP_GATEWAY_TIMEOUT)
             .setContent(
                 asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Read timeout"))));
-      } else
-        throw exception;
+      } else throw exception;
     } else if (executionAttemptedEvent.getLastResult() != null) {
       HttpResponse response = executionAttemptedEvent.getLastResult();
       if ((response.getStatus() == HTTP_INTERNAL_ERROR
