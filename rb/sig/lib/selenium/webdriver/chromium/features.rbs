@@ -1,0 +1,39 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      module Features
+        CHROMIUM_COMMANDS: { launch_app: ::Array[:post | "session/:session_id/chromium/launch_app"], get_network_conditions: ::Array[:get | "session/:session_id/chromium/network_conditions"], set_network_conditions: ::Array[:post | "session/:session_id/chromium/network_conditions"], delete_network_conditions: ::Array[:delete | "session/:session_id/chromium/network_conditions"], set_permission: ::Array[:post | "session/:session_id/permissions"], get_available_log_types: ::Array[:get | "session/:session_id/se/log/types"], get_log: ::Array[:post | "session/:session_id/se/log"] }
+
+        def commands: (untyped command) -> untyped
+
+        def launch_app: (untyped id) -> untyped
+
+        def cast_sinks: () -> untyped
+
+        def cast_sink_to_use=: (untyped name) -> untyped
+
+        def cast_issue_message: () -> untyped
+
+        def start_cast_tab_mirroring: (untyped name) -> untyped
+
+        def start_cast_desktop_mirroring: (untyped name) -> untyped
+
+        def stop_casting: (untyped name) -> untyped
+
+        def set_permission: (untyped name, untyped value) -> untyped
+
+        def network_conditions: () -> untyped
+
+        def network_conditions=: (untyped conditions) -> untyped
+
+        def delete_network_conditions: () -> untyped
+
+        def send_command: (untyped command_params) -> untyped
+
+        def available_log_types: () -> untyped
+
+        def log: (untyped type) -> untyped
+      end
+    end
+  end
+end
