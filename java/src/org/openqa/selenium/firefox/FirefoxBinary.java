@@ -54,7 +54,7 @@ public class FirefoxBinary {
     DEV("dev"),
     NIGHTLY("nightly");
 
-    private String name;
+    private final String name;
 
     Channel(String name) {
       this.name = name;
