@@ -35,8 +35,8 @@ use zip::ZipArchive;
 use crate::config::OS::WINDOWS;
 use crate::{
     format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
-    CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MV_PAYLOAD_COMMAND,
-    MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
+    CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS,
+    MSIEXEC_INSTALL_COMMAND, MV_PAYLOAD_COMMAND, MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
 };
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -49,6 +49,8 @@ const BZ2: &str = "bz2";
 const PKG: &str = "pkg";
 const DMG: &str = "dmg";
 const EXE: &str = "exe";
+const DEB: &str = "deb";
+const MSI: &str = "msi";
 const SEVEN_ZIP_HEADER: &[u8; 6] = b"7z\xBC\xAF\x27\x1C";
 const UNCOMPRESS_MACOS_ERR_MSG: &str = "{} files are only supported in macOS";
 
@@ -65,6 +67,14 @@ impl BrowserPath {
             channel: channel.to_string(),
         }
     }
+}
+
+pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+    if let Some(p) = path.parent() {
+        create_path_if_not_exists(p)?;
+        fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
+    }
+    Ok(())
 }
 
 pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
@@ -136,6 +146,10 @@ pub fn uncompress(
         uncompress_dmg(compressed_file, target, log, os, volume.unwrap_or_default())?
     } else if extension.eq_ignore_ascii_case(EXE) {
         uncompress_sfx(compressed_file, target, log)?
+    } else if extension.eq_ignore_ascii_case(DEB) {
+        uncompress_deb(compressed_file, target, log, volume.unwrap_or_default())?
+    } else if extension.eq_ignore_ascii_case(MSI) {
+        install_msi(compressed_file, log, os)?
     } else if extension.eq_ignore_ascii_case(XML) || extension.eq_ignore_ascii_case(HTML) {
         log.debug(format!(
             "Wrong downloaded driver: {}",
@@ -177,7 +191,7 @@ pub fn uncompress_sfx(
         "Moving extracted files and folders from {} to {}",
         core_str, target_str
     ));
-    create_parent_path_if_not_exists(target)?;
+    create_empty_parent_path_if_not_exists(target)?;
     fs::rename(&core_str, &target_str)?;
 
     Ok(())
@@ -253,6 +267,53 @@ pub fn uncompress_dmg(
     run_shell_command_by_os(os, command)?;
 
     command = Command::new_single(format_one_arg(HDIUTIL_DETACH_COMMAND, volume));
+    log.trace(format!("Running command: {}", command.display()));
+    run_shell_command_by_os(os, command)?;
+
+    Ok(())
+}
+
+pub fn uncompress_deb(
+    compressed_file: &str,
+    target: &Path,
+    log: &Logger,
+    label: &str,
+) -> Result<(), Box<dyn Error>> {
+    let zip_parent = Path::new(compressed_file).parent().unwrap();
+    log.trace(format!(
+        "Extracting from {} to {}",
+        compressed_file,
+        zip_parent.display()
+    ));
+
+    let deb_file = File::open(compressed_file)?;
+    let mut deb_pkg = debpkg::DebPkg::parse(deb_file)?;
+    deb_pkg.data()?.unpack(zip_parent)?;
+
+    let zip_parent_str = path_to_string(zip_parent);
+    let target_str = path_to_string(target);
+    let opt_edge_str = format!("{}/opt/microsoft/{}", zip_parent_str, label);
+    log.trace(format!(
+        "Moving extracted files and folders from {} to {}",
+        opt_edge_str, target_str
+    ));
+    create_empty_parent_path_if_not_exists(target)?;
+    fs::rename(&opt_edge_str, &target_str)?;
+
+    Ok(())
+}
+
+pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Box<dyn Error>> {
+    let msi_file_name = Path::new(msi_file)
+        .file_name()
+        .unwrap_or_default()
+        .to_os_string();
+    log.debug(format!(
+        "Installing {}",
+        msi_file_name.to_str().unwrap_or_default()
+    ));
+
+    let command = Command::new_single(format_one_arg(MSIEXEC_INSTALL_COMMAND, msi_file));
     log.trace(format!("Running command: {}", command.display()));
     run_shell_command_by_os(os, command)?;
 

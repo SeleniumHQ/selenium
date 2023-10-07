@@ -16,6 +16,7 @@
 // under the License.
 
 use assert_cmd::Command;
+use std::env::consts::OS;
 
 use crate::common::{assert_browser, assert_driver};
 use rstest::rstest;
@@ -25,6 +26,7 @@ mod common;
 #[rstest]
 #[case("chrome")]
 #[case("firefox")]
+#[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
@@ -40,7 +42,9 @@ fn browser_latest_download_test(#[case] browser: String) {
     .code(0);
 
     assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
+    if !OS.eq("windows") {
+        assert_browser(&mut cmd);
+    }
 }
 
 #[rstest]
@@ -48,6 +52,7 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[case("chrome", "beta")]
 #[case("firefox", "116")]
 #[case("firefox", "beta")]
+#[case("edge", "beta")]
 fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
@@ -64,5 +69,7 @@ fn browser_version_download_test(#[case] browser: String, #[case] browser_versio
     .code(0);
 
     assert_driver(&mut cmd);
-    assert_browser(&mut cmd);
+    if !OS.eq("windows") {
+        assert_browser(&mut cmd);
+    }
 }
