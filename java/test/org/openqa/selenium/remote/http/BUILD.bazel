@@ -14,7 +14,7 @@ java_test_suite(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote/http",
-        "//java/src/org/openqa/selenium/remote/http/netty",
+        "//java/src/org/openqa/selenium/remote/http/jdk",
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),

@@ -52,7 +52,7 @@ namespace OpenQA.Selenium
         /// Gets the internal request ID of the network request.
         /// </summary>
         public string RequestId => requestId;
-        
+
         /// <summary>
         /// Gets the URL of the network request.
         /// </summary>

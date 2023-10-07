@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.Remote
         internal ReadOnlyDesiredCapabilities(DesiredCapabilities desiredCapabilities)
         {
             IDictionary<string, object> internalDictionary = desiredCapabilities.CapabilitiesDictionary;
-            foreach(KeyValuePair<string, object> keyValuePair in internalDictionary)
+            foreach (KeyValuePair<string, object> keyValuePair in internalDictionary)
             {
                 this.capabilities[keyValuePair.Key] = keyValuePair.Value;
             }
