@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
         private bool isHttpOnly;
         private bool secure;
         private DateTime? cookieExpiry;
-        private readonly string[] sameSiteValues = {"Strict", "Lax", "None"};
+        private readonly string[] sameSiteValues = { "Strict", "Lax", "None" };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name and value.

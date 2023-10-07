@@ -75,15 +75,6 @@ def selenium_java_deps():
             "org.apache.commons:commons-exec:1.3",
             "org.apache.logging.log4j:log4j-core:2.20.0",
             "org.assertj:assertj-core:3.24.2",
-            maven.artifact(
-                group = "org.asynchttpclient",
-                artifact = "async-http-client",
-                version = "2.12.3",
-                exclusions = [
-                    "io.netty:netty-transport-native-epoll",
-                    "io.netty:netty-transport-native-kqueue",
-                ],
-            ),
             "org.bouncycastle:bcpkix-jdk15on:1.70",
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
