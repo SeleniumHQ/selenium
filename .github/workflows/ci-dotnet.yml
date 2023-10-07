@@ -39,7 +39,4 @@ jobs:
       java-version: 17
       os: windows
       run: |
-        bazel build //dotnet/test/common:${{ matrix.browser }}
-        $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
-        cd dotnet
-        dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
+        bazel test //dotnet/test/common:AllTests
