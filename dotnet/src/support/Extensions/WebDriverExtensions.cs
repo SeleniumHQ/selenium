@@ -1,4 +1,4 @@
-﻿// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
+// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -111,7 +111,7 @@ namespace OpenQA.Selenium.Support.Extensions
                 {
                     result = (T)Convert.ChangeType(value, type);
                 }
-                catch(Exception exp)
+                catch (Exception exp)
                 {
                     throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type", exp);
                 }

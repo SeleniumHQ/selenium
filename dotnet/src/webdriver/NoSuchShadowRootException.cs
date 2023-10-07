@@ -69,5 +69,5 @@ namespace OpenQA.Selenium
             : base(info, context)
         {
         }
-}
+    }
 }
