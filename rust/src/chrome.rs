@@ -200,6 +200,10 @@ impl SeleniumManager for ChromeManager {
         self.browser_name
     }
 
+    fn get_browser_names_in_path(&self) -> Vec<&str> {
+        vec![self.get_browser_name(), "chromium-browser", "chromium"]
+    }
+
     fn get_http_client(&self) -> &Client {
         &self.http_client
     }

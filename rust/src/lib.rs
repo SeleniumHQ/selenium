@@ -118,6 +118,8 @@ pub trait SeleniumManager {
 
     fn get_browser_name(&self) -> &str;
 
+    fn get_browser_names_in_path(&self) -> Vec<&str>;
+
     fn get_http_client(&self) -> &Client;
 
     fn set_http_client(&mut self, http_client: Client);
@@ -384,20 +386,9 @@ pub trait SeleniumManager {
             Some(Path::new(&canon_browser_path).to_path_buf())
         } else {
             // Check browser in PATH
-            let browser_name = self.get_browser_name();
-            self.get_logger()
-                .trace(format!("Checking {} in PATH", browser_name));
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
-                let canon_browser_path = self.canonicalize_path(path.clone());
-                self.get_logger().debug(format!(
-                    "Found {} in PATH: {}",
-                    browser_name, &canon_browser_path
-                ));
-                self.set_browser_path(canon_browser_path);
-            } else {
-                self.get_logger()
-                    .debug(format!("{} not found in PATH", browser_name));
+                self.set_browser_path(path_to_string(path));
             }
             browser_in_path
         }
@@ -552,10 +543,18 @@ pub trait SeleniumManager {
     }
 
     fn find_browser_in_path(&self) -> Option<PathBuf> {
-        let browser_path = self.execute_which_in_shell(self.get_browser_name());
-        if let Some(path) = browser_path {
-            return Some(Path::new(&path).to_path_buf());
+        for browser_name in self.get_browser_names_in_path().iter() {
+            self.get_logger()
+                .trace(format!("Checking {} in PATH", browser_name));
+            let browser_path = self.execute_which_in_shell(browser_name);
+            if let Some(path) = browser_path {
+                self.get_logger()
+                    .debug(format!("Found {} in PATH: {}", browser_name, &path));
+                return Some(Path::new(&path).to_path_buf());
+            }
         }
+        self.get_logger()
+            .debug(format!("{} not found in PATH", self.get_browser_name()));
         None
     }
 
