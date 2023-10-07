@@ -349,51 +349,50 @@ public class NodeOptions {
 
     // get all driver configuration settings
     config
-        .getAll(NODE_SECTION, "driver-configuration")
-        // if settings exist
+        .getArray(NODE_SECTION, "driver-configuration")
+        // if configurations exist
         .ifPresent(
             drivers -> {
-              Map<String, String> configMap = new HashMap<>();
               List<Map<String, String>> configList = new ArrayList<>();
 
-              // iterate over driver settings
-              for (String setting : drivers) {
-                // split this setting into key/value pair
-                String[] values = setting.split("=", 2);
-                // if format is invalid
-                if (values.length != 2) {
-                  throw new ConfigException(
-                      "Driver setting '"
-                          + setting
-                          + "' does not adhere to the required 'key=value' format!");
-                }
-                // if this is a record separator
-                if (values[0].equals(Config.DELIM_KEY)) {
-                  // if config lacks settings
-                  if (configMap.isEmpty()) {
-                    throw new ConfigException("Found config delimiter with no preceding settings!");
-                  }
+              // iterate over driver configurations
+              for (List<String> driver : drivers) {
+                Map<String, String> configMap = new HashMap<>();
 
-                  // if config lacks 'display-name' setting
-                  if (!configMap.containsKey("display-name")) {
+                // iterate over driver settings
+                for (String setting : driver) {
+                  // split this setting into key/value pair
+                  String[] values = setting.split("=", 2);
+                  // if format is invalid
+                  if (values.length != 2) {
                     throw new ConfigException(
-                        "Found config with no 'display-name' setting! " + configMap);
+                        "Driver setting '"
+                            + setting
+                            + "' does not adhere to the required 'key=value' format!");
                   }
-
-                  // if config lacks 'stereotype' setting
-                  if (!configMap.containsKey("stereotype")) {
-                    throw new ConfigException(
-                        "Found config with no 'stereotype' setting! " + configMap);
-                  }
-
-                  // add config to list
-                  configList.add(configMap);
-                  // prepare for next config
-                  configMap = new HashMap<>();
-                } else {
                   // add setting to config
                   configMap.put(values[0], unquote(values[1]));
                 }
+
+                // if config lacks settings
+                if (configMap.isEmpty()) {
+                  throw new ConfigException("Found config delimiter with no preceding settings!");
+                }
+
+                // if config lacks 'display-name' setting
+                if (!configMap.containsKey("display-name")) {
+                  throw new ConfigException(
+                      "Found config with no 'display-name' setting! " + configMap);
+                }
+
+                // if config lacks 'stereotype' setting
+                if (!configMap.containsKey("stereotype")) {
+                  throw new ConfigException(
+                      "Found config with no 'stereotype' setting! " + configMap);
+                }
+
+                // add config to list
+                configList.add(configMap);
               }
 
               // if no configs were found
