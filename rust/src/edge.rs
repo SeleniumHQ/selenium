@@ -17,20 +17,23 @@
 
 use crate::config::ManagerConfig;
 use reqwest::Client;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::env;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::read_version_from_link;
+use crate::downloads::{parse_json_from_url, read_version_from_link};
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, Logger, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
+    create_http_client, get_binary_extension, path_to_string, Logger, SeleniumManager, BETA,
+    DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_VERSION_ARG, STABLE,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -38,6 +41,14 @@ pub const EDGEDRIVER_NAME: &str = "msedgedriver";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
+const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products";
+const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
+const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
+const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
+const EDGE_BETA_MACOS_APP_NAME: &str = "Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta";
+const EDGE_DEV_MACOS_APP_NAME: &str = "Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev";
+const EDGE_CANARY_MACOS_APP_NAME: &str =
+    "Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary";
 
 pub struct EdgeManager {
     pub browser_name: &'static str,
@@ -45,6 +56,7 @@ pub struct EdgeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub browser_url: Option<String>,
 }
 
 impl EdgeManager {
@@ -60,6 +72,7 @@ impl EdgeManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            browser_url: None,
         }))
     }
 }
@@ -67,6 +80,10 @@ impl EdgeManager {
 impl SeleniumManager for EdgeManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
+    }
+
+    fn get_browser_names_in_path(&self) -> Vec<&str> {
+        vec![self.get_browser_name()]
     }
 
     fn get_http_client(&self) -> &Client {
@@ -134,7 +151,8 @@ impl SeleniumManager for EdgeManager {
 
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let mut major_browser_version = self.get_major_browser_version();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -194,7 +212,7 @@ impl SeleniumManager for EdgeManager {
                         &driver_version,
                         driver_ttl,
                     ));
-                    write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                    write_metadata(&metadata, self.get_logger(), cache_path);
                 }
 
                 Ok(driver_version)
@@ -235,7 +253,7 @@ impl SeleniumManager for EdgeManager {
 
     fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
         Ok(compose_driver_path_in_cache(
-            self.get_cache_path()?,
+            self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
             self.get_os(),
             self.get_platform_label(),
@@ -263,10 +281,6 @@ impl SeleniumManager for EdgeManager {
         self.log = log;
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        Ok(None)
-    }
-
     fn get_platform_label(&self) -> &str {
         let os = self.get_os();
         let arch = self.get_arch();
@@ -289,11 +303,230 @@ impl SeleniumManager for EdgeManager {
         }
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        self.unavailable_download()
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        let browser_name = self.browser_name;
+        let is_fixed_browser_version = !self.is_empty(browser_version)
+            && !self.is_stable(browser_version)
+            && !self.is_unstable(browser_version);
+        let edge_updates_url = if is_fixed_browser_version {
+            format!("{}?view=enterprise", BROWSER_URL)
+        } else {
+            BROWSER_URL.to_string()
+        };
+        self.get_logger().debug(format!(
+            "Checking {} releases on {}",
+            browser_name, edge_updates_url
+        ));
+
+        let edge_products =
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), edge_updates_url)?;
+
+        let edge_channel = if self.is_beta(browser_version) {
+            "Beta"
+        } else if self.is_dev(browser_version) {
+            "Dev"
+        } else if self.is_nightly(browser_version) {
+            "Canary"
+        } else {
+            "Stable"
+        };
+        let products: Vec<&EdgeProduct> = edge_products
+            .iter()
+            .filter(|p| p.product.eq_ignore_ascii_case(edge_channel))
+            .collect();
+        self.get_logger().trace(format!("Products: {:?}", products));
+
+        let os = self.get_os();
+        let arch = self.get_arch();
+        let os_label;
+        let arch_label = if WINDOWS.is(os) {
+            os_label = "Windows";
+            if ARM64.is(arch) {
+                "arm64"
+            } else if X32.is(arch) {
+                "x86"
+            } else {
+                "x64"
+            }
+        } else if MACOS.is(os) {
+            os_label = "MacOS";
+            "universal"
+        } else {
+            os_label = "Linux";
+            "x64"
+        };
+        if products.is_empty() {
+            return self.unavailable_discovery();
+        }
+
+        let releases: Vec<&Release> = products
+            .first()
+            .unwrap()
+            .releases
+            .iter()
+            .filter(|r| {
+                let os_arch = r.platform.eq_ignore_ascii_case(os_label)
+                    && r.architecture.eq_ignore_ascii_case(arch_label);
+                if is_fixed_browser_version {
+                    os_arch && r.product_version.starts_with(browser_version)
+                } else {
+                    os_arch
+                }
+            })
+            .collect();
+        self.get_logger().trace(format!("Releases: {:?}", releases));
+
+        let package_label = if WINDOWS.is(os) {
+            "msi"
+        } else if MACOS.is(os) {
+            "pkg"
+        } else {
+            "deb"
+        };
+        if releases.is_empty() {
+            return self.unavailable_discovery();
+        }
+
+        let release = releases.first().unwrap();
+        let artifacts: Vec<&Artifact> = release
+            .artifacts
+            .iter()
+            .filter(|a| a.artifact_name.eq_ignore_ascii_case(package_label))
+            .collect();
+        self.get_logger()
+            .trace(format!("Artifacts: {:?}", artifacts));
+
+        if artifacts.is_empty() {
+            return self.unavailable_discovery();
+        }
+        let artifact = artifacts.first().unwrap();
+        let browser_version = release.product_version.clone();
+        self.browser_url = Some(artifact.location.clone());
+
+        Ok(browser_version)
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
-        self.unavailable_download()
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.request_latest_browser_version_from_online(browser_version)
     }
+
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+        Ok(MIN_EDGE_VERSION_DOWNLOAD)
+    }
+
+    fn get_browser_binary_path(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
+        let browser_in_cache = self.get_browser_path_in_cache()?;
+        if MACOS.is(self.get_os()) {
+            let macos_app_name = if self.is_beta(browser_version) {
+                EDGE_BETA_MACOS_APP_NAME
+            } else if self.is_dev(browser_version) {
+                EDGE_DEV_MACOS_APP_NAME
+            } else if self.is_nightly(browser_version) {
+                EDGE_CANARY_MACOS_APP_NAME
+            } else {
+                EDGE_MACOS_APP_NAME
+            };
+            Ok(browser_in_cache.join(macos_app_name))
+        } else if WINDOWS.is(self.get_os()) {
+            let browser_path = if self.is_unstable(browser_version) {
+                self.get_browser_path_from_version(browser_version)
+                    .to_string()
+            } else {
+                format!(
+                    r#"Microsoft\Edge\Application\{}\msedge.exe"#,
+                    self.get_browser_version()
+                )
+            };
+            let mut full_browser_path = Path::new(&browser_path).to_path_buf();
+            if WINDOWS.is(self.get_os()) {
+                let env_value = env::var(ENV_PROGRAM_FILES_X86).unwrap_or_default();
+                let parent_path = Path::new(&env_value);
+                full_browser_path = parent_path.join(&browser_path);
+            }
+            Ok((&path_to_string(&full_browser_path)).into())
+        } else {
+            Ok(browser_in_cache.join(format!(
+                "{}{}",
+                EDGE_WINDOWS_AND_LINUX_APP_NAME,
+                get_binary_extension(self.get_os())
+            )))
+        }
+    }
+
+    fn get_browser_url_for_download(
+        &mut self,
+        browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        if self.browser_url.is_none() {
+            self.request_latest_browser_version_from_online(browser_version)?;
+        }
+        Ok(self.browser_url.clone().unwrap())
+    }
+
+    fn get_browser_label_for_download(
+        &self,
+        browser_version: &str,
+    ) -> Result<Option<&str>, Box<dyn Error>> {
+        let browser_label = if self.is_beta(browser_version) {
+            "msedge-beta"
+        } else if self.is_dev(browser_version) {
+            "msedge-dev"
+        } else if self.is_nightly(browser_version) {
+            "msedge-canary"
+        } else {
+            "msedge"
+        };
+        Ok(Some(browser_label))
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct EdgeProduct {
+    #[serde(rename = "Product")]
+    pub product: String,
+    #[serde(rename = "Releases")]
+    pub releases: Vec<Release>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Release {
+    #[serde(rename = "ReleaseId")]
+    pub release_id: u32,
+    #[serde(rename = "Platform")]
+    pub platform: String,
+    #[serde(rename = "Architecture")]
+    pub architecture: String,
+    #[serde(rename = "CVEs")]
+    pub cves: Vec<String>,
+    #[serde(rename = "ProductVersion")]
+    pub product_version: String,
+    #[serde(rename = "Artifacts")]
+    pub artifacts: Vec<Artifact>,
+    #[serde(rename = "PublishedTime")]
+    pub published_time: String,
+    #[serde(rename = "ExpectedExpiryDate")]
+    pub expected_expiry_date: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Artifact {
+    #[serde(rename = "ArtifactName")]
+    pub artifact_name: String,
+    #[serde(rename = "Location")]
+    pub location: String,
+    #[serde(rename = "Hash")]
+    pub hash: String,
+    #[serde(rename = "HashAlgorithm")]
+    pub hash_algorithm: String,
+    #[serde(rename = "SizeInBytes")]
+    pub size_in_bytes: u32,
 }

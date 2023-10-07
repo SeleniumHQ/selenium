@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     public class ReturnedCookie : Cookie
     {
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name,
         /// value, domain, path and expiration date.
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Internal
         public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, bool isHttpOnly, string sameSite)
             : base(name, value, domain, path, expiry, isSecure, isHttpOnly, sameSite)
         {
-          
+
         }
 
         /// <summary>

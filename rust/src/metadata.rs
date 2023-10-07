@@ -73,25 +73,26 @@ fn new_metadata(log: &Logger) -> Metadata {
     }
 }
 
-pub fn get_metadata(log: &Logger, cache_path: PathBuf) -> Metadata {
-    let metadata_path = get_metadata_path(cache_path);
-    log.trace(format!("Reading metadata from {}", metadata_path.display()));
+pub fn get_metadata(log: &Logger, cache_path: &Option<PathBuf>) -> Metadata {
+    if let Some(cache) = cache_path {
+        let metadata_path = get_metadata_path(cache.clone());
+        log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
-    if metadata_path.exists() {
-        let metadata_file = File::open(&metadata_path).unwrap();
-        let metadata: Metadata = match serde_json::from_reader(&metadata_file) {
-            Ok::<Metadata, serde_json::Error>(mut meta) => {
-                let now = now_unix_timestamp();
-                meta.browsers.retain(|b| b.browser_ttl > now);
-                meta.drivers.retain(|d| d.driver_ttl > now);
-                meta
-            }
-            Err(_e) => new_metadata(log),
-        };
-        metadata
-    } else {
-        new_metadata(log)
+        if metadata_path.exists() {
+            let metadata_file = File::open(&metadata_path).unwrap();
+            let metadata: Metadata = match serde_json::from_reader(&metadata_file) {
+                Ok::<Metadata, serde_json::Error>(mut meta) => {
+                    let now = now_unix_timestamp();
+                    meta.browsers.retain(|b| b.browser_ttl > now);
+                    meta.drivers.retain(|d| d.driver_ttl > now);
+                    meta
+                }
+                Err(_e) => new_metadata(log), // Empty metadata
+            };
+            return metadata;
+        }
     }
+    new_metadata(log) // Empty metadata
 }
 
 pub fn get_browser_version_from_metadata(
@@ -158,14 +159,22 @@ pub fn create_driver_metadata(
     }
 }
 
-pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: PathBuf) {
-    let metadata_path = get_metadata_path(cache_path);
-    log.trace(format!("Writing metadata to {}", metadata_path.display()));
-    fs::write(
-        metadata_path,
-        serde_json::to_string_pretty(metadata).unwrap(),
-    )
-    .unwrap();
+pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: Option<PathBuf>) {
+    if let Some(cache) = cache_path {
+        let metadata_path = get_metadata_path(cache.clone());
+        log.trace(format!("Writing metadata to {}", metadata_path.display()));
+        fs::write(
+            metadata_path,
+            serde_json::to_string_pretty(metadata).unwrap(),
+        )
+        .unwrap_or_else(|err| {
+            log.warn(format!(
+                "Metadata cannot be written in cache ({}): {}",
+                cache.display(),
+                err
+            ));
+        });
+    }
 }
 
 pub fn clear_metadata(log: &Logger, path: &str) {
