@@ -67,7 +67,6 @@ class StressTest {
             new TomlConfig(
                 new StringReader(
                     "[node]\n"
-                        + "selenium-manager = true\n"
                         + "driver-implementation = "
                         + browser.displayName())));
     tearDowns.add(deployment);
