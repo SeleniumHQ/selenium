@@ -35,19 +35,19 @@ module Selenium
 
       def page_source: () -> String
 
-      def quit: () -> untyped
+      def quit: () -> WebDriver::Remote::Response?
 
-      def close: () -> untyped
+      def close: () -> WebDriver::Remote::Response?
 
-      def window_handles: () -> untyped
+      def window_handles: () -> Array[String]
 
-      def window_handle: () -> untyped
+      def window_handle: () -> String
 
-      def execute_script: (untyped script, *untyped args) -> untyped
+      def execute_script: (String script, *untyped args) -> untyped
 
-      def execute_async_script: (untyped script, *untyped args) -> untyped
+      def execute_async_script: (String script, *untyped args) -> untyped
 
-      def add_virtual_authenticator: (untyped options) -> untyped
+      def add_virtual_authenticator: (untyped options) -> VirtualAuthenticator
 
       alias first find_element
 
@@ -55,7 +55,7 @@ module Selenium
 
       alias script execute_script
 
-      def []: (untyped sel) -> untyped
+      def []: (String | Hash[untyped, untyped] sel) -> Element
 
       def browser: () -> untyped
 
