@@ -259,7 +259,7 @@ public class RemoteWebDriver
     String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
-      if (platformString == null || "".equals(platformString)) {
+      if (platformString == null || platformString.isEmpty()) {
         platform = Platform.ANY;
       } else {
         platform = Platform.fromString(platformString);
@@ -1128,11 +1128,11 @@ public class RemoteWebDriver
       List<WebElement> frameElements =
           RemoteWebDriver.this.findElements(
               By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
-      if (frameElements.size() == 0) {
+      if (frameElements.isEmpty()) {
         frameElements =
             RemoteWebDriver.this.findElements(By.cssSelector("frame#" + name + ",iframe#" + name));
       }
-      if (frameElements.size() == 0) {
+      if (frameElements.isEmpty()) {
         throw new NoSuchFrameException("No frame element found by name or id " + frameName);
       }
       return frame(frameElements.get(0));
