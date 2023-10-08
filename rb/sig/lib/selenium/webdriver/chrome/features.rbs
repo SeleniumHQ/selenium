@@ -6,7 +6,7 @@ module Selenium
 
         CHROME_COMMANDS: { get_cast_sinks: ::Array[:get | "session/:session_id/goog/cast/get_sinks"], set_cast_sink_to_use: ::Array[:post | "session/:session_id/goog/cast/set_sink_to_use"], start_cast_tab_mirroring: ::Array[:post | "session/:session_id/goog/cast/start_tab_mirroring"], start_cast_desktop_mirroring: ::Array[:post | "session/:session_id/goog/cast/start_desktop_mirroring"], get_cast_issue_message: ::Array[:get | "session/:session_id/goog/cast/get_issue_message"], stop_casting: ::Array[:post | "session/:session_id/goog/cast/stop_casting"], send_command: ::Array[:post | "session/:session_id/goog/cdp/execute"] }
 
-        def commands: (untyped command) -> untyped
+        def commands: (Symbol command) -> Array[Symbol | String]
       end
     end
   end

@@ -4,9 +4,9 @@ module Selenium
       module Features
         CHROMIUM_COMMANDS: { launch_app: ::Array[:post | "session/:session_id/chromium/launch_app"], get_network_conditions: ::Array[:get | "session/:session_id/chromium/network_conditions"], set_network_conditions: ::Array[:post | "session/:session_id/chromium/network_conditions"], delete_network_conditions: ::Array[:delete | "session/:session_id/chromium/network_conditions"], set_permission: ::Array[:post | "session/:session_id/permissions"], get_available_log_types: ::Array[:get | "session/:session_id/se/log/types"], get_log: ::Array[:post | "session/:session_id/se/log"] }
 
-        def commands: (untyped command) -> untyped
+        def commands: (Symbol command) -> Array[Symbol | String]
 
-        def launch_app: (untyped id) -> untyped
+        def launch_app: (String id) -> String
 
         def cast_sinks: () -> untyped
 
