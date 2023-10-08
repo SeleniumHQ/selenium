@@ -77,8 +77,7 @@ public interface Capabilities extends Serializable {
   default boolean is(String capabilityName) {
     Object cap = getCapability(capabilityName);
     if (cap == null) {
-      // If it's not set explicitly, javascriptEnabled is true.
-      return "javascriptEnabled".equals(capabilityName);
+      return false;
     }
     return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
   }
