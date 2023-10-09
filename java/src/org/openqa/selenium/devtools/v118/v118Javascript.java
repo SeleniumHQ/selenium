@@ -15,21 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v115;
+package org.openqa.selenium.devtools.v118;
 
 import java.util.Optional;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Javascript;
-import org.openqa.selenium.devtools.v115.page.Page;
-import org.openqa.selenium.devtools.v115.page.model.ScriptIdentifier;
-import org.openqa.selenium.devtools.v115.runtime.Runtime;
-import org.openqa.selenium.devtools.v115.runtime.model.BindingCalled;
+import org.openqa.selenium.devtools.v118.page.Page;
+import org.openqa.selenium.devtools.v118.page.model.ScriptIdentifier;
+import org.openqa.selenium.devtools.v118.runtime.Runtime;
+import org.openqa.selenium.devtools.v118.runtime.model.BindingCalled;
 
-public class v115Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
+public class v118Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 
-  public v115Javascript(DevTools devtools) {
+  public v118Javascript(DevTools devtools) {
     super(devtools);
   }
 
@@ -65,7 +65,8 @@ public class v115Javascript extends Javascript<ScriptIdentifier, BindingCalled> 
 
   @Override
   protected Command<ScriptIdentifier> addScriptToEvaluateOnNewDocument(String script) {
-    return Page.addScriptToEvaluateOnNewDocument(script, Optional.empty(), Optional.empty());
+    return Page.addScriptToEvaluateOnNewDocument(
+        script, Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   @Override
