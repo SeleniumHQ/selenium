@@ -19,9 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -75,6 +73,7 @@ class I18nTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
+  @Ignore(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/2139")
   public void testEnteringSupplementaryCharacters() {
     driver.get(pages.chinesePage);
 
