@@ -87,3 +87,41 @@ dotnet_nunit_test_suite(
         framework("nuget", "NUnit"),
     ],
 )
+
+DOTNET_FRAMEWORK_DEPS = {
+    "net48": [
+        framework("nuget", "System.Runtime"),
+        framework("net48", "Microsoft.NETFramework.ReferenceAssemblies.net48"),
+    ],
+    "net6.0": [
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
+    ],
+}
+
+[dotnet_nunit_test_suite(
+    name = "DotNetValidationTest",
+    size = "large",
+    srcs = [
+        "ElementFindingTest.cs",
+        ":assembly-fixtures",
+    ],
+    browsers = [
+        "chrome",
+        "firefox",
+    ],
+    data = [
+        ":test-data",
+    ],
+    private_deps = DOTNET_FRAMEWORK_DEPS[f],
+    tags = ["manual"],  # Only run by the CI tests Hopefully
+    target_frameworks = [f],
+    test_name_suffix = f,
+    use_apphost_shim = False,
+    deps = [
+        ":fixtures",
+        "//dotnet/src/webdriver",
+        framework("nuget", "BenderProxy"),
+        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "NUnit"),
+    ],
+) for f in DOTNET_FRAMEWORK_DEPS.keys()]

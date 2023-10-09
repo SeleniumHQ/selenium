@@ -146,3 +146,8 @@ build:remote-ci --bes_upload_mode=wait_for_upload_complete
 # Configuration changes suggested by EngFlow
 build:remote --grpc_keepalive_time=30s
 build:remote --nolegacy_important_outputs
+
+# `rules_dotnet` supports remote execution out of the box. The remote runners do need
+# to have the required .Net system dependencies installed though. A common missing system
+# dependency in existing RBE images is `libicu`. Avoid relying on this.
+build:remote --action_env=DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1

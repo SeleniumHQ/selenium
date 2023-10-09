@@ -106,6 +106,7 @@ def _is_test(src, test_suffixes):
 def dotnet_nunit_test_suite(
         name,
         srcs,
+        test_name_suffix = "",
         deps = [],
         target_frameworks = None,
         test_suffixes = ["Test.cs", "Tests.cs"],
@@ -130,6 +131,8 @@ def dotnet_nunit_test_suite(
     for src in test_srcs:
         suffix = src.rfind(".")
         test_name = src[:suffix]
+        if test_name_suffix:
+            test_name += "-" + test_name_suffix
 
         if not browsers or not len(browsers):
             csharp_test(
@@ -167,7 +170,7 @@ def dotnet_nunit_test_suite(
                 tests.append(browser_test_name)
 
     native.test_suite(
-        name = name,
+        name = "%s%s" % (name, "-" + test_name_suffix if test_name_suffix else ""),
         tests = tests,
         tags = ["manual"] + tags,
     )
