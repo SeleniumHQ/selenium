@@ -27,7 +27,7 @@ const edge = require('../edge')
 const { Builder, By, Key, logging, until } = require('..')
 
 logging.installConsoleHandler()
-logging.getLogger('webdriver.http').setLevel(logging.Level.ALL)
+logging.getLogger(`${logging.Type.DRIVER}.http`).setLevel(logging.Level.ALL)
 ;(async function () {
   let driver
   try {
