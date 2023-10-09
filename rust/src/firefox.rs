@@ -110,91 +110,6 @@ impl FirefoxManager {
             .map(|v| v.to_string())
             .collect())
     }
-
-    fn get_browser_url(&mut self, is_browser_version_nightly: bool) -> Result<String, Error> {
-        let arch = self.get_arch();
-        let os = self.get_os();
-        let platform_label;
-        let artifact_name;
-        let artifact_extension;
-        let major_browser_version = self
-            .get_major_browser_version()
-            .parse::<i32>()
-            .unwrap_or_default();
-
-        if WINDOWS.is(os) {
-            artifact_name = "Firefox%20Setup%20";
-            artifact_extension = "exe";
-            // Before Firefox 42, only Windows 32 was supported
-            if X32.is(arch) || major_browser_version < 42 {
-                platform_label = "win32";
-            } else if ARM64.is(arch) {
-                platform_label = "win-aarch64";
-            } else {
-                platform_label = "win64";
-            }
-        } else if MACOS.is(os) {
-            artifact_name = "Firefox%20";
-            // Before Firefox 68, only DMG was released
-            if major_browser_version < 68 {
-                artifact_extension = "dmg";
-            } else {
-                artifact_extension = "pkg";
-            }
-            if is_browser_version_nightly {
-                platform_label = "osx";
-            } else {
-                platform_label = "mac";
-            }
-        } else {
-            // Linux
-            artifact_name = "firefox-";
-            artifact_extension = "tar.bz2";
-            if X32.is(arch) {
-                platform_label = "linux-i686";
-            } else if is_browser_version_nightly {
-                platform_label = "linux64";
-            } else {
-                platform_label = "linux-x86_64";
-            }
-        }
-
-        // A possible future improvement is to allow downloading language-specific releases
-        let language = FIREFOX_DEFAULT_LANG;
-        if is_browser_version_nightly {
-            Ok(format_two_args(
-                FIREFOX_NIGHTLY_URL,
-                platform_label,
-                language,
-            ))
-        } else {
-            let browser_version = self.get_browser_version();
-            Ok(format!(
-                "{}{}/{}/{}/{}{}.{}",
-                BROWSER_URL,
-                browser_version,
-                platform_label,
-                language,
-                artifact_name,
-                browser_version,
-                artifact_extension
-            ))
-        }
-    }
-
-    fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Error> {
-        let browser_in_cache = self.get_browser_path_in_cache()?;
-        if MACOS.is(self.get_os()) {
-            let macos_app_name = if self.is_browser_version_nightly() {
-                FIREFOX_NIGHTLY_MACOS_APP_NAME
-            } else {
-                FIREFOX_MACOS_APP_NAME
-            };
-            Ok(browser_in_cache.join(macos_app_name))
-        } else {
-            Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
-        }
-    }
 }
 
 impl SeleniumManager for FirefoxManager {
@@ -413,7 +328,10 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Error> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         self.get_logger().trace(format!(
             "Using Firefox endpoints to find out latest stable {} version",
@@ -432,7 +350,10 @@ impl SeleniumManager for FirefoxManager {
         Ok(browser_version.to_string())
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Error> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         let browser_version = self.get_browser_version().to_string();
         self.get_logger().trace(format!(
@@ -496,7 +417,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         let os = self.get_os();
         let min_browser_version_for_download = if WINDOWS.is(os) {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
@@ -508,10 +429,7 @@ impl SeleniumManager for FirefoxManager {
         Ok(min_browser_version_for_download)
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, browser_version: &str) -> Result<PathBuf, Error> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             let macos_app_name = if self.is_nightly(browser_version) {
@@ -525,10 +443,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error> {
         let arch = self.get_arch();
         let os = self.get_os();
         let platform_label;
@@ -599,10 +514,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_browser_label_for_download(
-        &self,
-        browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    fn get_browser_label_for_download(&self, browser_version: &str) -> Result<Option<&str>, Error> {
         let browser_label = if self.is_nightly(browser_version) {
             FIREFOX_NIGHTLY_VOLUME
         } else {

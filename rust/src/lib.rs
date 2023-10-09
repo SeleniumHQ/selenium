@@ -166,7 +166,7 @@ pub trait SeleniumManager {
 
     fn get_browser_binary_path(&mut self, browser_version: &str) -> Result<PathBuf, Error>;
 
-    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, dyn Error>;
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error>;
 
     fn get_browser_label_for_download(&self, _browser_version: &str)
         -> Result<Option<&str>, Error>;
@@ -205,13 +205,12 @@ pub trait SeleniumManager {
         }
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
+    fn download_browser(&mut self) -> Result<Option<PathBuf>, Error> {
         if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
-            return Err(format_one_arg(
+            return Err(anyhow!(format_one_arg(
                 NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
                 self.get_browser_name(),
-            )
-            .into());
+            )));
         }
 
         let browser_version;
@@ -228,13 +227,12 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            return Err(format_three_args(
+            return Err(anyhow!(format_three_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
                 &min_browser_version_for_download.to_string(),
-            )
-            .into());
+            )));
         }
 
         // Browser version is checked in the local metadata

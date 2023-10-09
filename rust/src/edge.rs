@@ -16,12 +16,12 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
+use std::env;
+use std::path::Path;
 use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};

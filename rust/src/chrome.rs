@@ -191,15 +191,6 @@ impl ChromeManager {
 
         Ok(driver_version.version.to_string())
     }
-
-    fn get_browser_binary_path_in_cache(&self) -> Result<PathBuf, Error> {
-        let browser_in_cache = self.get_browser_path_in_cache()?;
-        if MACOS.is(self.get_os()) {
-            Ok(browser_in_cache.join(CFT_MACOS_APP_NAME))
-        } else {
-            Ok(browser_in_cache.join(self.get_browser_name_with_extension()))
-        }
-    }
 }
 
 impl SeleniumManager for ChromeManager {
@@ -524,14 +515,11 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         Ok(MIN_CHROME_VERSION_CFT)
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             Ok(browser_in_cache.join(CFT_MACOS_APP_NAME))
@@ -540,10 +528,7 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error> {
         if let Some(browser_url) = self.browser_url.clone() {
             Ok(browser_url)
         } else {
@@ -559,7 +544,7 @@ impl SeleniumManager for ChromeManager {
     fn get_browser_label_for_download(
         &self,
         _browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    ) -> Result<Option<&str>, Error> {
         Ok(None)
     }
 }
