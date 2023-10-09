@@ -281,10 +281,6 @@ impl SeleniumManager for EdgeManager {
         self.log = log;
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Error> {
-        Ok(None)
-    }
-
     fn get_platform_label(&self) -> &str {
         let os = self.get_os();
         let arch = self.get_arch();
