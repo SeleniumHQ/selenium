@@ -16,7 +16,7 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
+use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     get_binary_extension, path_to_string,
@@ -499,6 +499,7 @@ pub trait SeleniumManager {
             && !self.is_iexplorer()
             && !self.is_grid()
             && !self.is_safari()
+            && !self.is_webview2()
         {
             let browser_path = self.download_browser()?;
             if browser_path.is_some() {
@@ -640,6 +641,10 @@ pub trait SeleniumManager {
 
     fn is_edge(&self) -> bool {
         self.get_browser_name().eq(EDGE_NAMES[0])
+    }
+
+    fn is_webview2(&self) -> bool {
+        self.get_browser_name().eq(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
@@ -1144,7 +1149,7 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() {
+        if !browser_path.is_empty() && !self.is_webview2() {
             self.get_config_mut().browser_path = browser_path;
         }
     }
@@ -1307,7 +1312,7 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     } else if browser_name_lower_case.eq(FIREFOX_NAME) {
         Ok(FirefoxManager::new()?)
     } else if EDGE_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(EdgeManager::new()?)
+        Ok(EdgeManager::new_with_name(browser_name)?)
     } else if IE_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(IExplorerManager::new()?)
     } else if browser_name_lower_case.eq(SAFARI_NAME) {

@@ -36,8 +36,14 @@ use crate::{
     REG_VERSION_ARG, STABLE,
 };
 
-pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
+pub const EDGE_NAMES: &[&str] = &[
+    "edge",
+    EDGE_WINDOWS_AND_LINUX_APP_NAME,
+    "microsoftedge",
+    WEBVIEW2_NAME,
+];
 pub const EDGEDRIVER_NAME: &str = "msedgedriver";
+pub const WEBVIEW2_NAME: &str = "webview2";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
@@ -61,13 +67,17 @@ pub struct EdgeManager {
 
 impl EdgeManager {
     pub fn new() -> Result<Box<Self>, Error> {
-        let browser_name = EDGE_NAMES[0];
+        Self::new_with_name(EDGE_NAMES[0].to_string())
+    }
+
+    pub fn new_with_name(browser_name: String) -> Result<Box<Self>, Error> {
+        let static_browser_name: &str = Box::leak(browser_name.into_boxed_str());
         let driver_name = EDGEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let config = ManagerConfig::default(static_browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
         Ok(Box::new(EdgeManager {
-            browser_name,
+            browser_name: static_browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
