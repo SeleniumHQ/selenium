@@ -95,8 +95,13 @@ public class NettyAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
+    int port = 2310;
+    if (args.length > 0) {
+      port = Integer.parseInt(args[0]);
+    }
+
     MemoizedConfig config =
-        new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 2310))));
+        new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", port))));
     BaseServerOptions options = new BaseServerOptions(config);
 
     HttpHandler handler =

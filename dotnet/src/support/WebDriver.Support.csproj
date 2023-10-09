@@ -9,7 +9,16 @@
 
   <PropertyGroup>
     <AssemblyTitle>Selenium WebDriver Support</AssemblyTitle>
-    <Description>Selenium WebDriver .NET Bindings support classes</Description>
+    <Description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains .NET support utilites and classes that users may find
+      useful in using Selenium WebDriver. These support classes are mainly intended
+      to spark ideas of what is possible with Selenium WebDriver, and may not be
+      entirely appropriate for production use.
+    </Description>
     <Company>Selenium Committers</Company>
     <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
@@ -32,8 +41,12 @@
     <None Remove="WebDriver.Support.ruleset" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CsprojIncludePath>..\webdriver</CsprojIncludePath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\webdriver\WebDriver.csproj" />
+    <ProjectReference Include="$(CsprojIncludePath)\WebDriver.csproj" />
   </ItemGroup>
 
 </Project>

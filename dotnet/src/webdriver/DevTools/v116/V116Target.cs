@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.DevTools.V116
             {
                 settings = new GetTargetsCommandSettings();
             }
-            var response = await adapter.GetTargets((GetTargetsCommandSettings) settings).ConfigureAwait(false);
+            var response = await adapter.GetTargets((GetTargetsCommandSettings)settings).ConfigureAwait(false);
             for (int i = 0; i < response.TargetInfos.Length; i++)
             {
                 var targetInfo = response.TargetInfos[i];

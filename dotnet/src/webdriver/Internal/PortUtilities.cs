@@ -1,4 +1,4 @@
-﻿// <copyright file="PortUtilities.cs" company="WebDriver Committers">
+// <copyright file="PortUtilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Encapsulates methods for working with ports.
     /// </summary>
-    internal static class PortUtilities
+    public static class PortUtilities
     {
         /// <summary>
         /// Finds a random, free port to be listened on.

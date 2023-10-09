@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.13" # don't forget to update rust/BUILD.bazel
+version = "0.4.14" # don't forget to update rust/BUILD.bazel
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -32,6 +32,7 @@ toml = "0.7.6"
 bzip2 = "0.4.4"
 sevenz-rust = "0.5.2"
 walkdir = "2.4.0"
+debpkg = "0.6.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

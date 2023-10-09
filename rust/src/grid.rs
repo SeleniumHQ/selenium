@@ -74,6 +74,10 @@ impl SeleniumManager for GridManager {
         self.browser_name
     }
 
+    fn get_browser_names_in_path(&self) -> Vec<&str> {
+        vec![self.get_browser_name()]
+    }
+
     fn get_http_client(&self) -> &Client {
         &self.http_client
     }
@@ -97,7 +101,8 @@ impl SeleniumManager for GridManager {
     fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
-        let mut metadata = get_metadata(self.get_logger(), self.get_cache_path()?);
+        let cache_path = self.get_cache_path()?;
+        let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
@@ -156,7 +161,7 @@ impl SeleniumManager for GridManager {
                             &driver_version,
                             driver_ttl,
                         ));
-                        write_metadata(&metadata, self.get_logger(), self.get_cache_path()?);
+                        write_metadata(&metadata, self.get_logger(), cache_path);
                     }
 
                     Ok(driver_version)
@@ -193,6 +198,7 @@ impl SeleniumManager for GridManager {
         let driver_version = self.get_driver_version();
         Ok(self
             .get_cache_path()?
+            .unwrap_or_default()
             .join(browser_name)
             .join(driver_version)
             .join(format!("{driver_name}-{driver_version}.{GRID_EXTENSION}")))
@@ -218,19 +224,46 @@ impl SeleniumManager for GridManager {
         self.log = log;
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        Ok(None)
-    }
-
     fn get_platform_label(&self) -> &str {
         ""
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         self.unavailable_download()
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_binary_path(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_url_for_download(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_label_for_download(
+        &self,
+        _browser_version: &str,
+    ) -> Result<Option<&str>, Box<dyn Error>> {
         self.unavailable_download()
     }
 }

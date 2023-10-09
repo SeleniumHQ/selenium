@@ -95,11 +95,15 @@
     <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BaseImagePath>..\..\..\common\images</BaseImagePath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
     <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
 
-    <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="\logo.png" Visible="false" />
+    <None Include="$(BaseImagePath)\selenium_logo_small.png" Pack="true" PackagePath="\logo.png" Visible="false" />
 
     <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="\manager\linux" Visible="false" />
     <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="manager\macos" Visible="false" />

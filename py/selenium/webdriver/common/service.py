@@ -21,10 +21,10 @@ import subprocess
 import typing
 from abc import ABC
 from abc import abstractmethod
+from io import IOBase
 from platform import system
 from subprocess import PIPE
 from time import sleep
-from typing import TextIO
 from urllib import request
 from urllib.error import URLError
 
@@ -136,7 +136,7 @@ class Service(ABC):
         """Stops the service."""
 
         if self.log_output != PIPE:
-            if isinstance(self.log_output, TextIO):
+            if isinstance(self.log_output, IOBase):
                 self.log_output.close()
             elif isinstance(self.log_output, int):
                 os.close(self.log_output)
@@ -212,7 +212,7 @@ class Service(ABC):
                 startupinfo=start_info,
                 **self.popen_kw,
             )
-            logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
+            logger.debug("Started executable: `%s` in a child process with pid: %s", self._path, self.process.pid)
         except TypeError:
             raise
         except OSError as err:

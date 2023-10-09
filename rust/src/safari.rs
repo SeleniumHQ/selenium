@@ -62,6 +62,10 @@ impl SeleniumManager for SafariManager {
         self.browser_name
     }
 
+    fn get_browser_names_in_path(&self) -> Vec<&str> {
+        vec![self.get_browser_name()]
+    }
+
     fn get_http_client(&self) -> &Client {
         &self.http_client
     }
@@ -118,19 +122,46 @@ impl SeleniumManager for SafariManager {
         self.log = log;
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        Ok(None)
-    }
-
     fn get_platform_label(&self) -> &str {
         ""
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
         self.unavailable_download()
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_binary_path(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<PathBuf, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_url_for_download(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Box<dyn Error>> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_label_for_download(
+        &self,
+        _browser_version: &str,
+    ) -> Result<Option<&str>, Box<dyn Error>> {
         self.unavailable_download()
     }
 }

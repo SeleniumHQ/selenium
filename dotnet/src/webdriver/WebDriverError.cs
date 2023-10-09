@@ -193,7 +193,7 @@ namespace OpenQA.Selenium
         /// <returns>The converted <see cref="WebDriverResult"/> value.</returns>
         public static WebDriverResult ResultFromError(string error)
         {
-            lock(lockObject)
+            lock (lockObject)
             {
                 if (resultMap == null)
                 {

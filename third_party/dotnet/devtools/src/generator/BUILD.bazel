@@ -1,47 +1,22 @@
-load("//dotnet:defs.bzl", "csharp_executable", "generated_assembly_info")
-load(
-    "//dotnet:selenium-dotnet-version.bzl",
-    "ASSEMBLY_COMPANY",
-    "ASSEMBLY_COPYRIGHT",
-    "ASSEMBLY_INFORMATIONAL_VERSION",
-    "ASSEMBLY_PRODUCT",
-    "ASSEMBLY_VERSION",
-)
+load("//dotnet:defs.bzl", "csharp_binary", "framework")
 
-generated_assembly_info(
-    name = "assembly-info",
-    company = ASSEMBLY_COMPANY,
-    copyright = ASSEMBLY_COPYRIGHT,
-    description = "Selenium DevTools Protocol Code Generator",
-    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
-    product = ASSEMBLY_PRODUCT,
-    title = "Selenium DevTools Protocol Code Generator",
-    version = ASSEMBLY_VERSION,
-)
-
-csharp_executable(
+csharp_binary(
     name = "generator",
-    srcs = glob([
-        "*.cs",
-        "CodeGen/**/*.cs",
-        "Converters/**/*.cs",
-        "ProtocolDefinition/**/*.cs",
-    ]) + [":assembly-info"],
-    out = "DevToolsGenerator",
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    target_frameworks = [
-        "net6.0",
+    srcs = glob(["**/*.cs"]),
+    # Used as a tool in our build, so just target one framework
+    target_frameworks = ["net6.0"],
+    visibility = [
+        "//dotnet:__subpackages__",
     ],
-    visibility = ["//visibility:public"],
     deps = [
-        "@commandlineparser//:CommandLine",
-        "@dependencyinjection//:Microsoft.Extensions.DependencyInjection",
-        "@dependencyinjectionabstractions//:Microsoft.Extensions.DependencyInjection.Abstractions",
-        "@handlebars//:Handlebars",
-        "@humanizer//:Humanizer",
-        "@json.net//:Newtonsoft.Json",
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
+        framework("nuget", "CommandLineParser"),
+        framework("nuget", "Handlebars.Net"),
+        framework("nuget", "Humanizer.Core"),
+        framework("nuget", "Microsoft.CSharp"),
+        framework("nuget", "Microsoft.Extensions.DependencyInjection"),
+        framework("nuget", "Microsoft.Extensions.DependencyInjection.Abstractions"),
+        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "System.Runtime"),
     ],
 )

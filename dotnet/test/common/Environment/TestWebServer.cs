@@ -1,9 +1,11 @@
+using Bazel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Text;
+using OpenQA.Selenium.Internal;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium.Environment
@@ -12,11 +14,12 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"java/test/org/openqa/selenium/environment/appserver_deploy.jar";
+        private string standaloneTestJar = @"selenium/java/test/org/openqa/selenium/environment/appserver";
         private string projectRootPath;
         private bool captureWebServerOutput;
         private bool hideCommandPrompt;
         private string javaHomeDirectory;
+        private string port;
 
         private StringBuilder outputData = new StringBuilder();
 
@@ -26,14 +29,19 @@ namespace OpenQA.Selenium.Environment
             this.captureWebServerOutput = config.CaptureConsoleOutput;
             this.hideCommandPrompt = config.HideCommandPromptWindow;
             this.javaHomeDirectory = config.JavaHomeDirectory;
+            this.port = config.Port;
         }
 
         public void Start()
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
-                standaloneTestJar = standaloneTestJar.Replace('/', Path.DirectorySeparatorChar);
-                if (!File.Exists(Path.Combine(projectRootPath, standaloneTestJar)))
+                var runfiles = Runfiles.Create();
+                standaloneTestJar = runfiles.Rlocation(standaloneTestJar);
+
+                Console.Write("Standalone jar is " + standaloneTestJar);
+
+                if (!File.Exists(standaloneTestJar))
                 {
                     throw new FileNotFoundException(
                         string.Format(
@@ -43,47 +51,39 @@ namespace OpenQA.Selenium.Environment
                             projectRootPath));
                 }
 
-                string javaExecutableName = "java";
-                if (System.Environment.OSVersion.Platform == PlatformID.Win32NT || System.Environment.OSVersion.Platform == PlatformID.Win32Windows)
-                {
-                    javaExecutableName = javaExecutableName + ".exe";
-                }
-
-                string javaExecutablePath = string.Empty;
-                if (!string.IsNullOrEmpty(this.javaHomeDirectory))
-                {
-                    javaExecutablePath = Path.Combine(this.javaHomeDirectory, "bin");
-                }
-
-                List<string> javaSystemProperties = new List<string>();
+                //List<string> javaSystemProperties = new List<string>();
 
                 StringBuilder processArgsBuilder = new StringBuilder();
-                foreach (string systemProperty in javaSystemProperties)
-                {
-                    if (processArgsBuilder.Length > 0)
-                    {
-                        processArgsBuilder.Append(" ");
-                    }
+                // foreach (string systemProperty in javaSystemProperties)
+                // {
+                //     if (processArgsBuilder.Length > 0)
+                //     {
+                //         processArgsBuilder.Append(" ");
+                //     }
+                //
+                //     processArgsBuilder.AppendFormat("-D{0}", systemProperty);
+                // }
+                //
+                // if (processArgsBuilder.Length > 0)
+                // {
+                //     processArgsBuilder.Append(" ");
+                // }
+                //
+                // processArgsBuilder.AppendFormat("-jar {0}", standaloneTestJar);
+                processArgsBuilder.AppendFormat(" {0}", this.port);
 
-                    processArgsBuilder.AppendFormat("-D{0}", systemProperty);
-                }
-
-                if (processArgsBuilder.Length > 0)
-                {
-                    processArgsBuilder.Append(" ");
-                }
-
-                processArgsBuilder.AppendFormat("-jar {0}", standaloneTestJar);
+                Console.Write(processArgsBuilder.ToString());
 
                 webserverProcess = new Process();
-                if (!string.IsNullOrEmpty(javaExecutablePath))
-                {
-                    webserverProcess.StartInfo.FileName = Path.Combine(javaExecutablePath, javaExecutableName);
-                }
-                else
-                {
-                    webserverProcess.StartInfo.FileName = javaExecutableName;
-                }
+                webserverProcess.StartInfo.FileName = standaloneTestJar;
+                // if (!string.IsNullOrEmpty(javaExecutablePath))
+                // {
+                //     webserverProcess.StartInfo.FileName = Path.Combine(javaExecutablePath, javaExecutableName);
+                // }
+                // else
+                // {
+                //     webserverProcess.StartInfo.FileName = javaExecutableName;
+                // }
 
                 webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
@@ -93,6 +93,8 @@ namespace OpenQA.Selenium.Environment
                 {
                     webserverProcess.StartInfo.EnvironmentVariables["JAVA_HOME"] = this.javaHomeDirectory;
                 }
+
+                captureWebServerOutput = true;
 
                 if (captureWebServerOutput)
                 {

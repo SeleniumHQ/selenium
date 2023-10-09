@@ -26,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -454,7 +453,6 @@ class FrameSwitchingTest extends JupiterTestBase {
   @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
   @NotYetImplemented(value = EDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));

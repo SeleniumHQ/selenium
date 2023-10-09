@@ -32,11 +32,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.environment.webserver.Page;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -240,7 +244,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canHandleUserPrompt() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -257,7 +260,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canAcceptUserPrompt() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -274,7 +276,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canDismissUserPrompt() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -291,7 +292,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canPassUserTextToUserPrompt() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -310,7 +310,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canAcceptUserPromptWithUserText() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -329,7 +328,6 @@ class BrowsingContextTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(FIREFOX)
   void canDismissUserPromptWithUserText() {
     BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
@@ -345,6 +343,13 @@ class BrowsingContextTest extends JupiterTestBase {
     assertThat(driver.getPageSource()).doesNotContain(userText);
   }
 
+  // The resulting screenshot should be checked for expected image.
+  // Since, sending wrong command parameters (for viewport or element screenshot), defaults to
+  // capture screenshot functionality.
+  // So it can lead to a false positive if underlying implementation is not doing the right thing.
+  // However, comparing images is a hard problem. Especially when they are different sizes.
+  // TODO: A potential solution can be replicating classic WebDriver screenshot tests.
+  // Meanwhile, trusting the browsers to do the right thing.
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
@@ -354,6 +359,61 @@ class BrowsingContextTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     String screenshot = browsingContext.captureScreenshot();
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  void canCaptureScreenshotOfViewport() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
+    WebElement element = driver.findElement(By.id("box"));
+
+    Rectangle elementRectangle = element.getRect();
+
+    String screenshot =
+        browsingContext.captureBoxScreenshot(
+            elementRectangle.getX(), elementRectangle.getY(), 5, 5);
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  void canCaptureElementScreenshot() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("formPage.html"));
+
+    WebElement element = driver.findElement(By.id("checky"));
+
+    String screenshot =
+        browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId());
+
+    assertThat(screenshot.length()).isPositive();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  void canScrollAndCaptureElementScreenshot() {
+    Dimension dimension = new Dimension(300, 300);
+    driver.manage().window().setSize(dimension);
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("formPage.html"));
+
+    WebElement element = driver.findElement(By.id("checkbox-with-label"));
+
+    String screenshot =
+        browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId(), true);
 
     assertThat(screenshot.length()).isPositive();
   }
