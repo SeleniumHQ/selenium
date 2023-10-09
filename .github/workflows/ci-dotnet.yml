@@ -20,28 +20,9 @@ jobs:
     name: Browser Tests
     needs: build
     uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        driver:
-          - Chrome
-          - Firefox
-        framework:
-          - net48
-          - net6.0
-        include:
-          - driver: Chrome
-            browser: chrome
-          - driver: Firefox
-            browser: chrome
     with:
-      name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
-      browser: ${{ matrix.browser }}
-      cache-key: false
-      java-version: 17
+      name: Browser Tests
+      cache-key: dotnet-test-all
       os: windows
       run: |
-        bazel build //dotnet/test/common:${{ matrix.browser }}
-        $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
-        cd dotnet
-        dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
+        bazel test //dotnet/test/common/... --pin_browsers=true
