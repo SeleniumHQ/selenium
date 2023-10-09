@@ -1034,6 +1034,11 @@ domain Runtime
       # Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.
       optional integer maxDepth
 
+      # Embedder-specific parameters. For example if connected to V8 in Chrome these control DOM
+      # serialization via `maxNodeDepth: integer` and `includeShadowTree: "none" | "open" | "all"`.
+      # Values can be only of type string or integer.
+      optional object additionalParameters
+
   # Represents deep serialized value.
   type DeepSerializedValue extends object
     properties
@@ -1443,7 +1448,7 @@ domain Runtime
       # resulting `objectId` is still provided.
       deprecated optional boolean generateWebDriverValue
       # Specifies the result serialization. If provided, overrides
-      # `returnByValue` and `generateWebDriverValue`.
+      # `generatePreview`, `returnByValue` and `generateWebDriverValue`.
       experimental optional SerializationOptions serializationOptions
 
     returns
@@ -1538,7 +1543,7 @@ domain Runtime
       # resulting `objectId` is still provided.
       deprecated optional boolean generateWebDriverValue
       # Specifies the result serialization. If provided, overrides
-      # `returnByValue` and `generateWebDriverValue`.
+      # `generatePreview`, `returnByValue` and `generateWebDriverValue`.
       experimental optional SerializationOptions serializationOptions
     returns
       # Evaluation result.

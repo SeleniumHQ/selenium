@@ -1,7 +1,6 @@
 load(
     "@contrib_rules_jvm//java:defs.bzl",
     _JUNIT5_DEPS = "JUNIT5_DEPS",
-    _java_test_suite = "java_test_suite",
 )
 load(
     "@rules_java//java:defs.bzl",
@@ -10,6 +9,7 @@ load(
 )
 load("@rules_jvm_external//:defs.bzl", _artifact = "artifact", _javadoc = "javadoc", _maven_bom = "maven_bom")
 load("//java/private:dist_zip.bzl", _java_dist_zip = "java_dist_zip")
+load("//java/private:java_test_suite.bzl", _java_test_suite = "java_test_suite")
 load("//java/private:library.bzl", _java_export = "java_export", _java_library = "java_library", _java_test = "java_test")
 load("//java/private:merge_jars.bzl", _merge_jars = "merge_jars")
 load("//java/private:module.bzl", _java_module = "java_module")

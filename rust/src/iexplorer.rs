@@ -16,9 +16,11 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::error::Error;
+
+use anyhow::anyhow;
 use std::path::PathBuf;
 
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
@@ -56,7 +58,7 @@ pub struct IExplorerManager {
 }
 
 impl IExplorerManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = IE_NAMES[0];
         let driver_name = IEDRIVER_NAME;
         let mut config = ManagerConfig::default(browser_name, driver_name);
@@ -98,7 +100,7 @@ impl SeleniumManager for IExplorerManager {
         )])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
             r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
             REG_VERSION_ARG,
@@ -110,7 +112,7 @@ impl SeleniumManager for IExplorerManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
@@ -174,17 +176,20 @@ impl SeleniumManager for IExplorerManager {
 
                     Ok(driver_version)
                 } else {
-                    Err(format!("{} release not available", self.get_driver_name()).into())
+                    Err(anyhow!(format!(
+                        "{} release not available",
+                        self.get_driver_name()
+                    )))
                 }
             }
         }
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         Ok(None)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Error> {
         if self.driver_url.is_some() {
             return Ok(self.driver_url.as_ref().unwrap().to_string());
         }
@@ -199,7 +204,7 @@ impl SeleniumManager for IExplorerManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
@@ -236,39 +241,33 @@ impl SeleniumManager for IExplorerManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         self.unavailable_download()
     }
 
     fn request_fixed_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         self.unavailable_download()
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         self.unavailable_download()
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {
         self.unavailable_download()
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, _browser_version: &str) -> Result<String, Error> {
         self.unavailable_download()
     }
 
     fn get_browser_label_for_download(
         &self,
         _browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
     }
 }

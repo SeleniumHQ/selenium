@@ -15,9 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
 
+use anyhow::Error;
 use clap::Parser;
 
 use exitcode::DATAERR;
@@ -146,22 +148,22 @@ fn main() {
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
-            log.error(err);
-            flush_and_exit(DATAERR, &log);
+            log.error(&err);
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
-            log.error(err);
-            flush_and_exit(DATAERR, &log);
+            log.error(&err);
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else if grid.is_some() {
         GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
-            log.error(err);
-            flush_and_exit(DATAERR, &log);
+            log.error(&err);
+            flush_and_exit(DATAERR, &log, Some(err));
         })
     } else {
         log.error("You need to specify a browser or driver");
-        flush_and_exit(DATAERR, &log);
+        flush_and_exit(DATAERR, &log, None);
     };
 
     if cli.offline {
@@ -202,7 +204,7 @@ fn main() {
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
             log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
-            flush_and_exit(OK, log);
+            flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
@@ -219,13 +221,13 @@ fn main() {
                     &best_driver_from_cache,
                     selenium_manager.get_browser_path(),
                 );
-                flush_and_exit(OK, log);
+                flush_and_exit(OK, log, Some(err));
             } else if selenium_manager.is_offline() {
                 log.warn(err.to_string());
-                flush_and_exit(OK, log);
+                flush_and_exit(OK, log, Some(err));
             } else {
                 log.error(err.to_string());
-                flush_and_exit(DATAERR, log);
+                flush_and_exit(DATAERR, log, Some(err));
             }
         });
 }
@@ -235,14 +237,21 @@ fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
     } else {
         log.error(format!("Driver unavailable: {}", DRIVER_PATH));
-        flush_and_exit(UNAVAILABLE, log);
+        flush_and_exit(UNAVAILABLE, log, None);
     }
     if !browser_path.is_empty() {
         log.info(format!("{}{}", BROWSER_PATH, browser_path));
     }
 }
 
-fn flush_and_exit(code: i32, log: &Logger) -> ! {
+fn flush_and_exit(code: i32, log: &Logger, err: Option<Error>) -> ! {
+    if let Some(error) = err {
+        let backtrace = Backtrace::capture();
+        let backtrace_status = backtrace.status();
+        if backtrace_status == BacktraceStatus::Captured {
+            log.debug(format!("Backtrace:\n{}", error.backtrace()));
+        }
+    }
     log.set_code(code);
     log.flush();
     exit(code);
