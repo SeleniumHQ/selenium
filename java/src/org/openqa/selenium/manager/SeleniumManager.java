@@ -19,6 +19,7 @@ package org.openqa.selenium.manager;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
@@ -59,18 +59,13 @@ public class SeleniumManager {
 
   private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
 
-
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String DEFAULT_CACHE_PATH = "~/.cache/selenium";
   private static final String BINARY_PATH_FORMAT = "/manager/%s/%s";
   private static final String HOME = "~";
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
   private static final String BETA_PREFIX = "0.";
-
   private static final String EXE = ".exe";
-  private static final String INFO = "INFO";
-  private static final String WARN = "WARN";
-  private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
@@ -290,7 +285,7 @@ public class SeleniumManager {
     return level;
   }
 
-  private Path getBinaryInCache(String binaryName) {
+  private Path getBinaryInCache(String binaryName) throws IOException {
     String cachePath = DEFAULT_CACHE_PATH.replace(HOME, System.getProperty("user.home"));
 
     // Look for cache path as env
@@ -299,6 +294,14 @@ public class SeleniumManager {
       cachePath = cachePathEnv;
     }
 
-    return Paths.get(cachePath + String.format(BINARY_PATH_FORMAT, seleniumManagerVersion, binaryName));
+    // If cache path is not writable, SM will be extracted to a temporal folder
+    Path cacheParent = Paths.get(cachePath);
+    if (!Files.isWritable(cacheParent)) {
+      cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
+    }
+
+    return Paths.get(
+        cacheParent.toString(),
+        String.format(BINARY_PATH_FORMAT, seleniumManagerVersion, binaryName));
   }
 }
