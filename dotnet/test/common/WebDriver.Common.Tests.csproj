@@ -58,6 +58,6 @@
   <PropertyGroup>
     <Selenium_Manager_BinariesRootPath>..\..\..\common\manager</Selenium_Manager_BinariesRootPath>
   </PropertyGroup>
-  <Import Project="..\..\src\webdriver\build\Selenium.WebDriver.targets" />
+  <Import Project="..\..\src\webdriver\assets\Selenium.WebDriver.targets" />
 
 </Project>
