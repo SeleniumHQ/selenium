@@ -16,9 +16,11 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::error::Error;
+
+use anyhow::anyhow;
 use std::path::PathBuf;
 use std::string::ToString;
 
@@ -47,7 +49,7 @@ pub struct SafariTPManager {
 }
 
 impl SafariTPManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = SAFARITP_NAMES[0];
         let driver_name = SAFARITPDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
@@ -84,7 +86,7 @@ impl SeleniumManager for SafariTPManager {
         HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARITP_PATH)])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.discover_safari_version(SAFARITP_FULL_PATH.to_string())
     }
 
@@ -92,19 +94,22 @@ impl SeleniumManager for SafariTPManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         Ok("(local)".to_string())
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         Ok(None)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
-        Err(format!("{} not available for download", self.get_driver_name()).into())
+    fn get_driver_url(&mut self) -> Result<String, Error> {
+        Err(anyhow!(format!(
+            "{} not available for download",
+            self.get_driver_name()
+        )))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(PathBuf::from(
             "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver",
         ))
@@ -137,39 +142,33 @@ impl SeleniumManager for SafariTPManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         self.unavailable_download()
     }
 
     fn request_fixed_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         self.unavailable_download()
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         self.unavailable_download()
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {
         self.unavailable_download()
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, _browser_version: &str) -> Result<String, Error> {
         self.unavailable_download()
     }
 
     fn get_browser_label_for_download(
         &self,
         _browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
     }
 }

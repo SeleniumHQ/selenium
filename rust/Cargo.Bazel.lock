@@ -1,5 +1,5 @@
 {
-  "checksum": "7bb62c0cb24820374fb08c7eb1d2c1661ceb1a296f8cf2cad91579a7d2687eaf",
+  "checksum": "d9d5f22625fe3080b3eef8acfa5d55ae7929945c9570e4d592189d3b69f4149f",
   "crates": {
     "addr2line 0.19.0": {
       "name": "addr2line",
@@ -478,6 +478,71 @@
       },
       "license": "MIT OR Apache-2.0"
     },
+    "anyhow 1.0.75": {
+      "name": "anyhow",
+      "version": "1.0.75",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/anyhow/1.0.75/download",
+          "sha256": "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "anyhow",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "anyhow",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "backtrace",
+            "default",
+            "std"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "anyhow 1.0.75",
+              "target": "build_script_build"
+            },
+            {
+              "id": "backtrace 0.3.67",
+              "target": "backtrace"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "1.0.75"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ]
+      },
+      "license": "MIT OR Apache-2.0"
+    },
     "ar 0.9.0": {
       "name": "ar",
       "version": "0.9.0",
@@ -672,6 +737,13 @@
         "compile_data_glob": [
           "**"
         ],
+        "crate_features": {
+          "common": [
+            "default",
+            "std"
+          ],
+          "selects": {}
+        },
         "deps": {
           "common": [
             {
@@ -3860,6 +3932,13 @@
         "compile_data_glob": [
           "**"
         ],
+        "crate_features": {
+          "common": [
+            "read",
+            "read-core"
+          ],
+          "selects": {}
+        },
         "edition": "2018",
         "version": "0.27.3"
       },
@@ -5965,6 +6044,18 @@
         "compile_data_glob": [
           "**"
         ],
+        "crate_features": {
+          "common": [
+            "archive",
+            "coff",
+            "elf",
+            "macho",
+            "pe",
+            "read_core",
+            "unaligned"
+          ],
+          "selects": {}
+        },
         "deps": {
           "common": [
             {
@@ -8003,6 +8094,10 @@
         ],
         "deps": {
           "common": [
+            {
+              "id": "anyhow 1.0.75",
+              "target": "anyhow"
+            },
             {
               "id": "bzip2 0.4.4",
               "target": "bzip2"

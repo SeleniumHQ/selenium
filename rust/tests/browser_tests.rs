@@ -85,7 +85,7 @@ fn wrong_parameters_test(
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "in PATH", error_code);
+    assert_output(&mut cmd, result, vec!["in PATH"], error_code);
 }
 
 #[rstest]

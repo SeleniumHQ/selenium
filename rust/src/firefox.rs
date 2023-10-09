@@ -17,9 +17,11 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::error::Error;
+
+use anyhow::anyhow;
 use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
@@ -71,7 +73,7 @@ pub struct FirefoxManager {
 }
 
 impl FirefoxManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = FIREFOX_NAME;
         let driver_name = GECKODRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
@@ -90,10 +92,7 @@ impl FirefoxManager {
         format!("{}{}", FIREFOX_DETAILS_URL, endpoint)
     }
 
-    fn request_versions_from_online(
-        &mut self,
-        endpoint: &str,
-    ) -> Result<Vec<String>, Box<dyn Error>> {
+    fn request_versions_from_online(&mut self, endpoint: &str) -> Result<Vec<String>, Error> {
         let browser_version = self.get_browser_version().to_string();
         let firefox_versions_url = self.create_firefox_details_url(endpoint);
         let firefox_versions =
@@ -172,7 +171,7 @@ impl SeleniumManager for FirefoxManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
             r#"HKCU\Software\Mozilla\Mozilla Firefox"#,
             REG_CURRENT_VERSION_ARG,
@@ -184,7 +183,7 @@ impl SeleniumManager for FirefoxManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
@@ -225,11 +224,11 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_request_browser_version(self.browser_name)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Error> {
         let driver_version = self.get_driver_version();
         let os = self.get_os();
         let arch = self.get_arch();
@@ -267,7 +266,7 @@ impl SeleniumManager for FirefoxManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
@@ -332,7 +331,7 @@ impl SeleniumManager for FirefoxManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         self.get_logger().trace(format!(
             "Using Firefox endpoints to find out latest stable {} version",
@@ -354,7 +353,7 @@ impl SeleniumManager for FirefoxManager {
     fn request_fixed_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         let browser_version = self.get_browser_version().to_string();
         self.get_logger().trace(format!(
@@ -387,13 +386,12 @@ impl SeleniumManager for FirefoxManager {
 
             let min_downloadable_version = self.get_min_browser_version_for_download()?;
             if major_browser_version < min_downloadable_version {
-                return Err(format_three_args(
+                return Err(anyhow!(format_three_args(
                     UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
                     browser_name,
                     &browser_version,
                     &min_downloadable_version.to_string(),
-                )
-                .into());
+                )));
             }
 
             let mut firefox_versions =
@@ -419,7 +417,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         let os = self.get_os();
         let min_browser_version_for_download = if WINDOWS.is(os) {
             MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN
@@ -431,10 +429,7 @@ impl SeleniumManager for FirefoxManager {
         Ok(min_browser_version_for_download)
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, browser_version: &str) -> Result<PathBuf, Error> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             let macos_app_name = if self.is_nightly(browser_version) {
@@ -448,10 +443,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error> {
         let arch = self.get_arch();
         let os = self.get_os();
         let platform_label;
@@ -522,10 +514,7 @@ impl SeleniumManager for FirefoxManager {
         }
     }
 
-    fn get_browser_label_for_download(
-        &self,
-        browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    fn get_browser_label_for_download(&self, browser_version: &str) -> Result<Option<&str>, Error> {
         let browser_label = if self.is_nightly(browser_version) {
             FIREFOX_NIGHTLY_VOLUME
         } else {

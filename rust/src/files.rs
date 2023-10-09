@@ -15,12 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::error::Error;
+use anyhow::Error;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::{BufReader, Cursor, Read};
 
+use anyhow::anyhow;
 use bzip2::read::BzDecoder;
 use std::path::{Path, PathBuf};
 
@@ -69,7 +70,7 @@ impl BrowserPath {
     }
 }
 
-pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
         fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
@@ -77,14 +78,14 @@ pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn
     Ok(())
 }
 
-pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
     }
     Ok(())
 }
 
-pub fn create_path_if_not_exists(path: &Path) -> Result<(), Box<dyn Error>> {
+pub fn create_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if !path.exists() {
         fs::create_dir_all(path)?;
     }
@@ -99,7 +100,7 @@ pub fn uncompress(
     single_file: Option<String>,
     volume: Option<&str>,
     major_browser_version: Option<i32>,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Error> {
     let mut extension = match infer::get_from_path(compressed_file)? {
         Some(kind) => kind.extension(),
         _ => {
@@ -107,12 +108,13 @@ pub fn uncompress(
                 if MACOS.is(os) {
                     PKG
                 } else {
-                    return Err(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, PKG).into());
+                    return Err(anyhow!(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, PKG)));
                 }
             } else {
-                return Err(
-                    format!("Format for file {} cannot be inferred", compressed_file).into(),
-                );
+                return Err(anyhow!(format!(
+                    "Format for file {} cannot be inferred",
+                    compressed_file
+                )));
             }
         }
     };
@@ -120,7 +122,7 @@ pub fn uncompress(
         if MACOS.is(os) {
             extension = DMG;
         } else {
-            return Err(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, DMG).into());
+            return Err(anyhow!(format_one_arg(UNCOMPRESS_MACOS_ERR_MSG, DMG)));
         }
     }
     log.trace(format!(
@@ -155,22 +157,17 @@ pub fn uncompress(
             "Wrong downloaded driver: {}",
             fs::read_to_string(compressed_file).unwrap_or_default()
         ));
-        return Err(PARSE_ERROR.into());
+        return Err(anyhow!(PARSE_ERROR));
     } else {
-        return Err(format!(
+        return Err(anyhow!(format!(
             "Downloaded file cannot be uncompressed ({} extension)",
             extension
-        )
-        .into());
+        )));
     }
     Ok(())
 }
 
-pub fn uncompress_sfx(
-    compressed_file: &str,
-    target: &Path,
-    log: &Logger,
-) -> Result<(), Box<dyn Error>> {
+pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     let zip_parent = Path::new(compressed_file).parent().unwrap();
     log.trace(format!(
         "Decompressing {} to {}",
@@ -180,7 +177,7 @@ pub fn uncompress_sfx(
 
     let file_bytes = read_bytes_from_file(compressed_file)?;
     let header = find_bytes(&file_bytes, SEVEN_ZIP_HEADER);
-    let index_7z = header.ok_or("Incorrect SFX (self extracting exe) file")?;
+    let index_7z = header.ok_or(anyhow!("Incorrect SFX (self extracting exe) file"))?;
     let file_reader = Cursor::new(&file_bytes[index_7z..]);
     sevenz_rust::decompress(file_reader, zip_parent).unwrap();
 
@@ -203,7 +200,7 @@ pub fn uncompress_pkg(
     log: &Logger,
     os: &str,
     major_browser_version: i32,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Error> {
     let tmp_dir = Builder::new().prefix(PKG).tempdir()?;
     let out_folder = format!("{}/{}", path_to_string(tmp_dir.path()), PKG);
     let mut command = Command::new_single(format_two_args(
@@ -242,7 +239,7 @@ pub fn uncompress_dmg(
     log: &Logger,
     os: &str,
     volume: &str,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Error> {
     let dmg_file_name = Path::new(compressed_file)
         .file_name()
         .unwrap_or_default()
@@ -278,7 +275,7 @@ pub fn uncompress_deb(
     target: &Path,
     log: &Logger,
     label: &str,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Error> {
     let zip_parent = Path::new(compressed_file).parent().unwrap();
     log.trace(format!(
         "Extracting from {} to {}",
@@ -303,7 +300,7 @@ pub fn uncompress_deb(
     Ok(())
 }
 
-pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Box<dyn Error>> {
+pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Error> {
     let msi_file_name = Path::new(msi_file)
         .file_name()
         .unwrap_or_default()
@@ -320,7 +317,7 @@ pub fn install_msi(msi_file: &str, log: &Logger, os: &str) -> Result<(), Box<dyn
     Ok(())
 }
 
-pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     log.trace(format!(
         "Untargz {} to {}",
         compressed_file,
@@ -331,18 +328,14 @@ pub fn untargz(compressed_file: &str, target: &Path, log: &Logger) -> Result<(),
     let mut archive = Archive::new(tar);
     let parent_path = target
         .parent()
-        .ok_or(format!("Error getting parent of {:?}", file))?;
+        .ok_or(anyhow!(format!("Error getting parent of {:?}", file)))?;
     if !target.exists() {
         archive.unpack(parent_path)?;
     }
     Ok(())
 }
 
-pub fn uncompress_bz2(
-    compressed_file: &str,
-    target: &Path,
-    log: &Logger,
-) -> Result<(), Box<dyn Error>> {
+pub fn uncompress_bz2(compressed_file: &str, target: &Path, log: &Logger) -> Result<(), Error> {
     log.trace(format!(
         "Uncompress {} to {}",
         compressed_file,
@@ -369,7 +362,7 @@ pub fn unzip(
     target: &Path,
     log: &Logger,
     single_file: Option<String>,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), Error> {
     let file = File::open(compressed_file)?;
     let compressed_path = Path::new(compressed_file);
     let tmp_path = compressed_path
@@ -435,11 +428,10 @@ pub fn unzip(
         }
     }
     if unzipped_files == 0 {
-        return Err(format!(
+        return Err(anyhow!(format!(
             "Problem uncompressing zip ({} files extracted)",
             unzipped_files
-        )
-        .into());
+        )));
     }
 
     fs::remove_file(compressed_path)?;
@@ -534,10 +526,10 @@ pub fn get_binary_extension(os: &str) -> &str {
     }
 }
 
-pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<dyn Error>> {
+pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Error> {
     if version_text.to_ascii_lowercase().contains("error") {
         log.debug(format!("Error parsing version: {}", version_text));
-        return Err(PARSE_ERROR.into());
+        return Err(anyhow!(PARSE_ERROR));
     }
     let mut parsed_version = "".to_string();
     let re_numbers_dots = Regex::new(r"[^\d^.]")?;
@@ -561,7 +553,7 @@ pub fn path_to_string(path: &Path) -> String {
         .unwrap_or_default()
 }
 
-pub fn read_bytes_from_file(file_path: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+pub fn read_bytes_from_file(file_path: &str) -> Result<Vec<u8>, Error> {
     let file = File::open(file_path)?;
     let mut reader = BufReader::new(file);
     let mut buffer = Vec::new();
