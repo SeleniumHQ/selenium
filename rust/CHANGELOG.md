@@ -6,6 +6,7 @@
 * Include webview2 in Edge module (#12904)
 * Capture Rust backtrace in case of error (displayed at DEBUG level) (#12852)
 * Automated Edge management (#11681 and #11683) (#12835)
+* Add support for Chromium (#12511) (#12890)
 
 0.4.13
 ======

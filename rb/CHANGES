@@ -1,4 +1,4 @@
-4.14.0 (Unreleased)
+4.14.0 (2023-10-09)
 =========================
 Ruby:
   * allow users to access the full script of the atom directly
