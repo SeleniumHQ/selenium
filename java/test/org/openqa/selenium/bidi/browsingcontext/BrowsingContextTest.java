@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -416,6 +417,49 @@ class BrowsingContextTest extends JupiterTestBase {
         browsingContext.captureElementScreenshot(((RemoteWebElement) element).getId(), true);
 
     assertThat(screenshot.length()).isPositive();
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canSetViewport() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    driver.get(appServer.whereIs("formPage.html"));
+
+    browsingContext.setViewport(250, 300);
+
+    List<Long> newViewportSize =
+        (List<Long>)
+            ((JavascriptExecutor) driver)
+                .executeScript("return [window.innerWidth, window.innerHeight];");
+
+    assertThat(newViewportSize.get(0)).isEqualTo(250);
+    assertThat(newViewportSize.get(1)).isEqualTo(300);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
+  void canSetViewportWithDevicePixelRatio() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    driver.get(appServer.whereIs("formPage.html"));
+
+    browsingContext.setViewport(250, 300, 5);
+
+    List<Long> newViewportSize =
+        (List<Long>)
+            ((JavascriptExecutor) driver)
+                .executeScript("return [window.innerWidth, window.innerHeight];");
+
+    assertThat(newViewportSize.get(0)).isEqualTo(250);
+    assertThat(newViewportSize.get(1)).isEqualTo(300);
+
+    Long newDevicePixelRatio =
+        (Long) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
+
+    assertThat(newDevicePixelRatio).isEqualTo(5);
   }
 
   private String alertPage() {

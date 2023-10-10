@@ -288,6 +288,33 @@ public class BrowsingContext {
             }));
   }
 
+  public void setViewport(double width, double height) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(CONTEXT, id, "viewport", Map.of("width", width, "height", height))));
+  }
+
+  public void setViewport(double width, double height, double devicePixelRatio) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+    Require.positive("Device pixel ratio.", devicePixelRatio);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(
+                CONTEXT,
+                id,
+                "viewport",
+                Map.of("width", width, "height", height),
+                "devicePixelRatio",
+                devicePixelRatio)));
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.
