@@ -25,12 +25,12 @@ import org.openqa.selenium.json.JsonInput;
 
 // @see <a
 // href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
-public class GenericLogEntry extends BaseLogEntry implements LogEntryUtils{
+public class GenericLogEntry extends BaseLogEntry {
 
   private final String type;
 
   public GenericLogEntry(
-      LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
+    LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
     super(level, text, timestamp, stackTrace);
     this.type = type;
   }
@@ -40,7 +40,44 @@ public class GenericLogEntry extends BaseLogEntry implements LogEntryUtils{
   }
 
   public static GenericLogEntry fromJson(JsonInput input) {
-    return LogEntryUtils.fromJson("GenericLogEntry", input, "defaultType");
+    LogLevel level = null;
+    String text = null;
+    long timestamp = 0;
+    String type = null;
+    StackTrace stackTrace = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "level":
+          level = input.read(LogLevel.class);
+          break;
+
+        case "text":
+          text = input.read(String.class);
+          break;
+
+        case "timestamp":
+          timestamp = input.read(Long.class);
+          break;
+
+        case "type":
+          type = input.read(String.class);
+          break;
+
+        case "stackTrace":
+          stackTrace = input.read(StackTrace.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+
+    input.endObject();
+
+    return new GenericLogEntry(level, text, timestamp, type, stackTrace);
   }
 
   private Map<String, Object> toJson() {
