@@ -1,3 +1,11 @@
+4.14.0 (Unreleased)
+=========================
+Ruby:
+  * allow users to access the full script of the atom directly
+
+BiDi:
+  * Released selenium-devtools 0.118.0 (supports CDP v85, v116, v117, v118)
+
 4.13.1 (2023-09-25)
 =========================
 Ruby:

@@ -1,3 +1,14 @@
+v4.14.0
+======
+* Add CDP files for v118 and remove v115
+* Normalize selenium manager path (#12823)
+* Remove IdentityModel nuget from bazel workspace (#12834)
+* Update `rules_dotnet` to the latest version (#12784)
+* Rename strong assembly name (#12861)
+* Fix ci dotnet build on github actions (#12863)
+* Deprecate saving screenshots with different image formats (#12878)
+* Remove tools folder not related to selenium (#12899)
+
 v4.13.1
 ======
 * Fix bug in selenium manager paths to work on mac and linux
