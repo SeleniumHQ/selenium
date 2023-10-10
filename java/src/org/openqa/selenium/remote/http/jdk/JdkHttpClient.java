@@ -29,6 +29,7 @@ import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient.Version;
 import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpTimeoutException;
@@ -148,6 +149,11 @@ public class JdkHttpClient implements HttpClient {
     SSLContext sslContext = config.sslContext();
     if (sslContext != null) {
       builder.sslContext(sslContext);
+    }
+
+    Version version = config.version();
+    if (version != null) {
+      builder.version(version);
     }
 
     this.client = builder.build();
