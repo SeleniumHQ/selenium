@@ -71,6 +71,7 @@ public class SeleniumManager {
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
   private Path binary = managerPath == null ? null : Paths.get(managerPath);
   private String seleniumManagerVersion;
+  private boolean binaryInTemporalFolder = false;
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
@@ -78,6 +79,23 @@ public class SeleniumManager {
     String releaseLabel = info.getReleaseLabel();
     int lastDot = releaseLabel.lastIndexOf(".");
     seleniumManagerVersion = BETA_PREFIX + releaseLabel.substring(0, lastDot);
+    if (managerPath == null) {
+      Runtime.getRuntime()
+          .addShutdownHook(
+              new Thread(
+                  () -> {
+                    if (binaryInTemporalFolder && binary != null && Files.exists(binary)) {
+                      try {
+                        Files.delete(binary);
+                      } catch (IOException e) {
+                        LOG.warning(
+                            String.format(
+                                "%s deleting temporal file: %s",
+                                e.getClass().getSimpleName(), e.getMessage()));
+                      }
+                    }
+                  }));
+    }
   }
 
   public static SeleniumManager getInstance() {
@@ -298,6 +316,7 @@ public class SeleniumManager {
     Path cacheParent = Paths.get(cachePath);
     if (!Files.isWritable(cacheParent)) {
       cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
+      binaryInTemporalFolder = true;
     }
 
     return Paths.get(
