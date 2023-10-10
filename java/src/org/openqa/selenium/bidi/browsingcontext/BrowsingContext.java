@@ -315,6 +315,10 @@ public class BrowsingContext {
                 devicePixelRatio)));
   }
 
+  public void activate() {
+    this.bidi.send(new Command<>("browsingContext.activate", Map.of(CONTEXT, id)));
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.

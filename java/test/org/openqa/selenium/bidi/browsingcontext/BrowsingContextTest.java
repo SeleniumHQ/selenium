@@ -207,6 +207,22 @@ class BrowsingContextTest extends JupiterTestBase {
     assertThatExceptionOfType(BiDiException.class).isThrownBy(tab2::getTree);
   }
 
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canActivateABrowsingContext() {
+    BrowsingContext window1 = new BrowsingContext(driver, driver.getWindowHandle());
+    // 2nd window is focused
+    BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
+
+    // We did not switch the driver, so we are running the script to check focus on 1st window
+    assertThat(getDocumentFocus()).isFalse();
+
+    window1.activate();
+
+    assertThat(getDocumentFocus()).isTrue();
+  }
+
   // TODO: Add a test for closing the last tab once the behavior is finalized
   // Refer: https://github.com/w3c/webdriver-bidi/issues/187
 
@@ -484,6 +500,10 @@ class BrowsingContextTest extends JupiterTestBase {
             .withBody(
                 "<button id='alert' onclick='myFunction()'>Try it</button>",
                 "<p id=\"result\"></p>"));
+  }
+
+  private boolean getDocumentFocus() {
+    return (boolean) ((JavascriptExecutor) driver).executeScript("return document.hasFocus();");
   }
 
   @AfterEach
