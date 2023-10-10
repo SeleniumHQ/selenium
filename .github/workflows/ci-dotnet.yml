@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: false
+      cache-key: dotnet-build
       os: windows
       run: |
         bazel build //dotnet/src/webdriver
