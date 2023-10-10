@@ -78,20 +78,28 @@ impl ChromeManager {
     }
 
     fn create_latest_release_url(&self) -> String {
-        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+        format!(
+            "{}{}",
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            LATEST_RELEASE
+        )
     }
 
     fn create_latest_release_with_version_url(&self) -> String {
         format!(
             "{}{}_{}",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             LATEST_RELEASE,
             self.get_major_browser_version()
         )
     }
 
     fn create_cft_url(&self, endpoint: &str) -> String {
-        format!("{}{}", CFT_URL, endpoint)
+        format!(
+            "{}{}",
+            self.get_browser_mirror_url_or_default(CFT_URL),
+            endpoint
+        )
     }
 
     fn request_driver_version_from_latest(&self, driver_url: String) -> Result<String, Error> {
@@ -365,7 +373,10 @@ impl SeleniumManager for ChromeManager {
         };
         Ok(format!(
             "{}{}/{}_{}.zip",
-            DRIVER_URL, driver_version, self.driver_name, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            self.driver_name,
+            driver_label
         ))
     }
 

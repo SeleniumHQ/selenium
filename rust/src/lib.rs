@@ -1151,6 +1151,47 @@ pub trait SeleniumManager {
         }
     }
 
+    fn get_driver_mirror_url(&self) -> &str {
+        self.get_config().driver_mirror_url.as_str()
+    }
+
+    fn set_driver_mirror_url(&mut self, mirror_url: String) {
+        if !mirror_url.is_empty() {
+            self.get_config_mut().driver_mirror_url = mirror_url;
+        }
+    }
+
+    fn get_browser_mirror_url(&self) -> &str {
+        self.get_config().browser_mirror_url.as_str()
+    }
+
+    fn set_browser_mirror_url(&mut self, mirror_url: String) {
+        if !mirror_url.is_empty() {
+            self.get_config_mut().browser_mirror_url = mirror_url;
+        }
+    }
+
+    fn get_driver_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        self.get_url_or_default(self.get_driver_mirror_url(), default_url)
+    }
+
+    fn get_browser_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        self.get_url_or_default(self.get_browser_mirror_url(), default_url)
+    }
+
+    fn get_url_or_default<'a>(&'a self, value_url: &'a str, default_url: &'a str) -> String {
+        let url = if value_url.is_empty() {
+            default_url
+        } else {
+            value_url
+        };
+        if !url.ends_with('/') {
+            format!("{}/", url)
+        } else {
+            url.to_string()
+        }
+    }
+
     fn canonicalize_path(&self, path_buf: PathBuf) -> String {
         let mut canon_path = path_to_string(&path_buf);
         if WINDOWS.is(self.get_os()) || canon_path.starts_with(UNC_PREFIX) {
