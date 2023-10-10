@@ -23,7 +23,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import java.io.Closeable;
 import java.io.StringReader;
@@ -136,14 +135,15 @@ public class Connection implements Closeable {
               }));
     }
 
-    ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
-    serialized.put("id", id);
-    serialized.put("method", command.getMethod());
-    serialized.put("params", command.getParams());
+    Map<String, Object> serialized =
+        Map.of(
+            "id", id,
+            "method", command.getMethod(),
+            "params", command.getParams());
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
-      out.write(serialized.build());
+      out.write(serialized);
     }
     LOG.log(getDebugLogLevel(), "-> {0}", json);
     socket.sendText(json);
@@ -219,7 +219,7 @@ public class Connection implements Closeable {
       // will throw errors.
       // Ideally, such errors should not prevent freeing up resources.
       if (!underlyingSocketClosed.get()) {
-        send(new Command<>("session.unsubscribe", ImmutableMap.of("events", events)));
+        send(new Command<>("session.unsubscribe", Map.of("events", events)));
       }
 
       eventCallbacks.clear();
