@@ -17,15 +17,14 @@
 
 use assert_cmd::assert::AssertResult;
 use assert_cmd::Command;
-use std::borrow::BorrowMut;
-use std::env::consts::OS;
-use std::path::Path;
-
 use is_executable::is_executable;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
+use std::borrow::BorrowMut;
+use std::env::consts::OS;
+use std::path::Path;
 
 #[allow(dead_code)]
 pub fn assert_driver(cmd: &mut Command) {
@@ -78,13 +77,15 @@ pub fn display_output(cmd: &mut Command) {
 pub fn assert_output(
     cmd: &mut Command,
     assert_result: AssertResult,
-    expected_output: &str,
+    expected_output: Vec<&str>,
     error_code: i32,
 ) {
     if assert_result.is_ok() {
         let stdout = &cmd.unwrap().stdout;
         let output = std::str::from_utf8(stdout).unwrap();
-        assert!(output.contains(expected_output));
+        expected_output
+            .iter()
+            .for_each(|o| assert!(output.contains(o)));
     } else {
         assert!(assert_result
             .err()

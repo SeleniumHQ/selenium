@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    selenium-devtools (0.117.0)
+    selenium-devtools (0.118.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.14.0.nightly)
+    selenium-webdriver (4.15.0.nightly)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)

@@ -78,5 +78,5 @@ fn grid_error_test(#[case] grid_version: &str) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let result = cmd.args(["--grid", grid_version]).assert().try_success();
 
-    assert_output(&mut cmd, result, "There was an error", DATAERR);
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }

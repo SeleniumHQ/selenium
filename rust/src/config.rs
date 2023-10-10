@@ -22,10 +22,11 @@ use crate::{
     UNAME_COMMAND,
 };
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
+use anyhow::anyhow;
+use anyhow::Error;
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
-use std::error::Error;
 use std::fs::read_to_string;
 use std::path::Path;
 use toml::Table;
@@ -129,7 +130,7 @@ impl OS {
     }
 }
 
-pub fn str_to_os(os: &str) -> Result<OS, Box<dyn Error>> {
+pub fn str_to_os(os: &str) -> Result<OS, Error> {
     if WINDOWS.is(os) {
         Ok(WINDOWS)
     } else if MACOS.is(os) {
@@ -137,7 +138,7 @@ pub fn str_to_os(os: &str) -> Result<OS, Box<dyn Error>> {
     } else if LINUX.is(os) {
         Ok(LINUX)
     } else {
-        Err(format!("Invalid operating system: {os}").into())
+        Err(anyhow!(format!("Invalid operating system: {os}")))
     }
 }
 
@@ -232,7 +233,7 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
-fn get_config() -> Result<Table, Box<dyn Error>> {
+fn get_config() -> Result<Table, Error> {
     let cache_path = read_cache_path();
     let config_path = Path::new(&cache_path).to_path_buf().join(CONFIG_FILE);
     Ok(read_to_string(config_path)?.parse()?)
