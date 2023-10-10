@@ -1,3 +1,22 @@
+v4.14.0
+======
+* Supported CDP versions: 85, 116, 117, 118
+* Replace the EventAttribute(Value) with an AttributeMap (#12684)
+* Add browsing context's capture box and element screenshot commands
+* Enable handle user prompt tests for Firefox
+* Delete SM binary only when SE_MANAGER_PATH is not set (#12840)
+* Shutdown executors created for a single tasks
+* Ensure closed socket connection does not prevent freeing up resources
+* Remove the unused htmlunit-driver from the unit tests (#12849)
+* Ensure proper error message gets logged (#12853)
+* Allow setting SSL context in client config for HttpClient (#12874)
+* Improve warning when CDP version not found (#12880)
+* Ensure retry mechanism does not swallow an exception (#12838)
+* Require Java 11 (#12843)
+* Reduce log noise at FINE level (#12866)
+* Refactor frame method to use isEmpty for list check and String check. (#12894)
+* Use new 'getArray' method to extract driver configurations (#12716)
+
 v4.13.0
 ======
 * Supported CDP versions: 85, 115, 116, 117

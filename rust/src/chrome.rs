@@ -16,15 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use anyhow::Error;
-use std::option::Option;
-use std::path::PathBuf;
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -38,6 +29,13 @@ use crate::{
     OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::option::Option;
+use std::path::PathBuf;
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";

@@ -1,3 +1,8 @@
+Selenium 4.14.0
+* add CDP files for v118 and remove v115
+* use lazy string interpolation for logging calls
+* Fix dangling log_output in Service (#12871)
+
 Selenium 4.13.0
 * add CDP files for v117 and remove v114
 * do not send parameters in payload that are used in endpoint (#12685)

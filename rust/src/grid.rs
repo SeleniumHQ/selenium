@@ -16,24 +16,20 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::PathBuf;
-
-use crate::files::BrowserPath;
-
 use crate::downloads::parse_json_from_url;
-use crate::{
-    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT,
-};
-
+use crate::files::BrowserPath;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::mirror::{Assets, SeleniumRelease, MIRROR_URL};
+use crate::{
+    create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG, SNAPSHOT,
+};
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 pub const GRID_NAME: &str = "grid";
 const GRID_RELEASE: &str = "selenium-server";

@@ -16,39 +16,36 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
+use crate::config::OS::{MACOS, WINDOWS};
+use crate::config::{str_to_os, ManagerConfig};
+use crate::downloads::download_to_tmp_folder;
+use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     get_binary_extension, path_to_string,
 };
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
-use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use std::{env, fs};
-
-use crate::config::OS::{MACOS, WINDOWS};
-use crate::config::{str_to_os, ManagerConfig};
-use anyhow::Error;
-use is_executable::IsExecutable;
-use reqwest::{Client, Proxy};
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::{Path, PathBuf};
-use std::time::Duration;
-use walkdir::{DirEntry, WalkDir};
-
-use crate::downloads::download_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
+use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::grid::GRID_NAME;
+use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
+use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use is_executable::IsExecutable;
+use reqwest::{Client, Proxy};
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+use std::{env, fs};
+use walkdir::{DirEntry, WalkDir};
 
 pub mod chrome;
 pub mod config;
@@ -499,6 +496,7 @@ pub trait SeleniumManager {
             && !self.is_iexplorer()
             && !self.is_grid()
             && !self.is_safari()
+            && !self.is_webview2()
         {
             let browser_path = self.download_browser()?;
             if browser_path.is_some() {
@@ -640,6 +638,10 @@ pub trait SeleniumManager {
 
     fn is_edge(&self) -> bool {
         self.get_browser_name().eq(EDGE_NAMES[0])
+    }
+
+    fn is_webview2(&self) -> bool {
+        self.get_browser_name().eq(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
@@ -1144,7 +1146,7 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() {
+        if !browser_path.is_empty() && !self.is_webview2() {
             self.get_config_mut().browser_path = browser_path;
         }
     }
@@ -1307,7 +1309,7 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     } else if browser_name_lower_case.eq(FIREFOX_NAME) {
         Ok(FirefoxManager::new()?)
     } else if EDGE_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(EdgeManager::new()?)
+        Ok(EdgeManager::new_with_name(browser_name)?)
     } else if IE_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(IExplorerManager::new()?)
     } else if browser_name_lower_case.eq(SAFARI_NAME) {
