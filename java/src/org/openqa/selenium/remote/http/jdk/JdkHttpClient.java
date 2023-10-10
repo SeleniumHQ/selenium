@@ -151,9 +151,9 @@ public class JdkHttpClient implements HttpClient {
       builder.sslContext(sslContext);
     }
 
-    Version version = config.version();
+    String version = config.version();
     if (version != null) {
-      builder.version(version);
+      builder.version(Version.valueOf(version));
     }
 
     this.client = builder.build();

@@ -23,7 +23,6 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.http.HttpClient;
 import java.time.Duration;
 import javax.net.ssl.SSLContext;
 import org.openqa.selenium.Credentials;
@@ -40,7 +39,7 @@ public class ClientConfig {
   private final Proxy proxy;
   private final Credentials credentials;
   private final SSLContext sslContext;
-  private HttpClient.Version version;
+  private String version;
 
   protected ClientConfig(
       URI baseUri,
@@ -50,7 +49,7 @@ public class ClientConfig {
       Proxy proxy,
       Credentials credentials,
       SSLContext sslContext,
-      HttpClient.Version version) {
+      String version) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
@@ -214,7 +213,7 @@ public class ClientConfig {
     return sslContext;
   }
 
-  public ClientConfig version(HttpClient.Version version) {
+  public ClientConfig version(String version) {
     return new ClientConfig(
         baseUri,
         connectionTimeout,
@@ -226,7 +225,7 @@ public class ClientConfig {
         Require.nonNull("Version", version));
   }
 
-  public HttpClient.Version version() {
+  public String version() {
     return version;
   }
 
