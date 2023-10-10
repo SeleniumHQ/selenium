@@ -17,13 +17,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::PathBuf;
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{
@@ -37,6 +30,11 @@ use crate::{
     create_http_client, format_three_args, format_two_args, Logger, SeleniumManager, BETA,
     DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";

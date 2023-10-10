@@ -15,26 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::backtrace::{Backtrace, BacktraceStatus};
-use std::path::Path;
-use std::process::exit;
-
 use anyhow::Error;
 use clap::Parser;
-
 use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
+use selenium_manager::metadata::clear_metadata;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
-
-use selenium_manager::metadata::clear_metadata;
+use std::backtrace::{Backtrace, BacktraceStatus};
+use std::path::Path;
+use std::process::exit;
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]

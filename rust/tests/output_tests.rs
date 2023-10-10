@@ -16,9 +16,8 @@
 // under the License.
 
 use assert_cmd::Command;
-use std::path::Path;
-
 use selenium_manager::logger::{JsonOutput, DRIVER_PATH};
+use std::path::Path;
 use std::str;
 
 #[test]

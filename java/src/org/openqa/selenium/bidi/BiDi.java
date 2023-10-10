@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.bidi;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openqa.selenium.internal.Require;
@@ -60,8 +60,7 @@ public class BiDi implements Closeable {
 
     send(
         new Command<>(
-            "session.subscribe",
-            ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+            "session.subscribe", Map.of("events", Collections.singletonList(event.getMethod()))));
 
     connection.addListener(event, handler);
   }
@@ -74,7 +73,7 @@ public class BiDi implements Closeable {
     send(
         new Command<>(
             "session.subscribe",
-            ImmutableMap.of(
+            Map.of(
                 "contexts",
                 Collections.singletonList(browsingContextId),
                 "events",
@@ -91,7 +90,7 @@ public class BiDi implements Closeable {
     send(
         new Command<>(
             "session.subscribe",
-            ImmutableMap.of(
+            Map.of(
                 "contexts",
                 browsingContextIds,
                 "events",
@@ -109,7 +108,7 @@ public class BiDi implements Closeable {
       send(
           new Command<>(
               "session.unsubscribe",
-              ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+              Map.of("events", Collections.singletonList(event.getMethod()))));
 
       connection.clearListener(event);
     }

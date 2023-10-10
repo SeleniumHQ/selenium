@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,46 +109,42 @@ public class BrowsingContext {
   private String create(WindowType type) {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.create",
-            ImmutableMap.of("type", type.toString()),
-            browsingContextIdMapper));
+            "browsingContext.create", Map.of("type", type.toString()), browsingContextIdMapper));
   }
 
   private String create(WindowType type, String referenceContext) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.create",
-            ImmutableMap.of("type", type.toString(), "referenceContext", referenceContext),
+            Map.of("type", type.toString(), "referenceContext", referenceContext),
             browsingContextIdMapper));
   }
 
   public NavigationResult navigate(String url) {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.navigate",
-            ImmutableMap.of(CONTEXT, id, "url", url),
-            navigationInfoMapper));
+            "browsingContext.navigate", Map.of(CONTEXT, id, "url", url), navigationInfoMapper));
   }
 
   public NavigationResult navigate(String url, ReadinessState readinessState) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.navigate",
-            ImmutableMap.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
+            Map.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
             navigationInfoMapper));
   }
 
   public List<BrowsingContextInfo> getTree() {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.getTree", ImmutableMap.of("root", id), browsingContextInfoListMapper));
+            "browsingContext.getTree", Map.of("root", id), browsingContextInfoListMapper));
   }
 
   public List<BrowsingContextInfo> getTree(int maxDepth) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.getTree",
-            ImmutableMap.of(
+            Map.of(
                 "root", id,
                 "maxDepth", maxDepth),
             browsingContextInfoListMapper));
@@ -161,17 +156,14 @@ public class BrowsingContext {
   }
 
   public NavigationResult reload() {
-    return this.bidi.send(
-        new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id), navigationInfoMapper));
+    return this.bidi.send(new Command<>(RELOAD, Map.of(CONTEXT, id), navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
   private NavigationResult reload(boolean ignoreCache) {
     return this.bidi.send(
         new Command<>(
-            RELOAD,
-            ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache),
-            navigationInfoMapper));
+            RELOAD, Map.of(CONTEXT, id, "ignoreCache", ignoreCache), navigationInfoMapper));
   }
 
   // TODO: Handle timeouts in case of Readiness state "interactive" and "complete".
@@ -179,9 +171,7 @@ public class BrowsingContext {
   public NavigationResult reload(ReadinessState readinessState) {
     return this.bidi.send(
         new Command<>(
-            RELOAD,
-            ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString()),
-            navigationInfoMapper));
+            RELOAD, Map.of(CONTEXT, id, "wait", readinessState.toString()), navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
@@ -189,37 +179,33 @@ public class BrowsingContext {
     return this.bidi.send(
         new Command<>(
             RELOAD,
-            ImmutableMap.of(
-                CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString()),
+            Map.of(CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString()),
             navigationInfoMapper));
   }
 
   public void handleUserPrompt() {
-    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id)));
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id)));
   }
 
   public void handleUserPrompt(boolean accept) {
-    this.bidi.send(
-        new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "accept", accept)));
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "accept", accept)));
   }
 
   public void handleUserPrompt(String userText) {
-    this.bidi.send(
-        new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "userText", userText)));
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "userText", userText)));
   }
 
   public void handleUserPrompt(boolean accept, String userText) {
     this.bidi.send(
         new Command<>(
-            HANDLE_USER_PROMPT,
-            ImmutableMap.of(CONTEXT, id, "accept", accept, "userText", userText)));
+            HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "accept", accept, "userText", userText)));
   }
 
   public String captureScreenshot() {
     return this.bidi.send(
         new Command<>(
             "browsingContext.captureScreenshot",
-            ImmutableMap.of(CONTEXT, id),
+            Map.of(CONTEXT, id),
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return (String) result.get("data");
@@ -230,11 +216,11 @@ public class BrowsingContext {
     return this.bidi.send(
         new Command<>(
             "browsingContext.captureScreenshot",
-            ImmutableMap.of(
+            Map.of(
                 CONTEXT,
                 id,
                 "clip",
-                ImmutableMap.of(
+                Map.of(
                     "type", "viewport",
                     "x", x,
                     "y", y,
@@ -250,15 +236,15 @@ public class BrowsingContext {
     return this.bidi.send(
         new Command<>(
             "browsingContext.captureScreenshot",
-            ImmutableMap.of(
+            Map.of(
                 CONTEXT,
                 id,
                 "clip",
-                ImmutableMap.of(
+                Map.of(
                     "type",
                     "element",
                     "element",
-                    ImmutableMap.of("sharedId", elementId),
+                    Map.of("sharedId", elementId),
                     "scrollIntoView",
                     false)),
             jsonInput -> {
@@ -271,15 +257,15 @@ public class BrowsingContext {
     return this.bidi.send(
         new Command<>(
             "browsingContext.captureScreenshot",
-            ImmutableMap.of(
+            Map.of(
                 CONTEXT,
                 id,
                 "clip",
-                ImmutableMap.of(
+                Map.of(
                     "type",
                     "element",
                     "element",
-                    ImmutableMap.of("sharedId", elementId),
+                    Map.of("sharedId", elementId),
                     "scrollIntoView",
                     scrollIntoView)),
             jsonInput -> {
@@ -288,10 +274,41 @@ public class BrowsingContext {
             }));
   }
 
+  public void setViewport(double width, double height) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(CONTEXT, id, "viewport", Map.of("width", width, "height", height))));
+  }
+
+  public void setViewport(double width, double height, double devicePixelRatio) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+    Require.positive("Device pixel ratio.", devicePixelRatio);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(
+                CONTEXT,
+                id,
+                "viewport",
+                Map.of("width", width, "height", height),
+                "devicePixelRatio",
+                devicePixelRatio)));
+  }
+
+  public void activate() {
+    this.bidi.send(new Command<>("browsingContext.activate", Map.of(CONTEXT, id)));
+  }
+
   public void close() {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.
     // Refer: https://github.com/w3c/webdriver-bidi/issues/187
-    this.bidi.send(new Command<>("browsingContext.close", ImmutableMap.of(CONTEXT, id)));
+    this.bidi.send(new Command<>("browsingContext.close", Map.of(CONTEXT, id)));
   }
 }

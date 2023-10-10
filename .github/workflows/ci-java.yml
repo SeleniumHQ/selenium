@@ -5,26 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      cache-key: java
-      run: bazel build grid
-
-  docs:
-    name: Documentation
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Documentation
-      cache-key: java-doc
-      run: ./go --verbose javadocs
-
   browser-tests:
     name: Browser Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -42,7 +24,6 @@ jobs:
 
   remote-tests:
     name: Remote Tests
-    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false

@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::{assert_driver, assert_output};
 use assert_cmd::Command;
 use rstest::rstest;
+use selenium_manager::logger::JsonOutput;
 use std::env::consts::OS;
-
-use crate::common::assert_output;
 
 mod common;
 
@@ -146,4 +146,21 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
         println!("{}", output);
         assert!(!output.contains("WARN"));
     }
+}
+
+#[test]
+fn webview2_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args(["--browser", "webview2", "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
+
+    assert_driver(&mut cmd);
+
+    let stdout = &cmd.unwrap().stdout;
+    let output = std::str::from_utf8(stdout).unwrap();
+    let json: JsonOutput = serde_json::from_str(output).unwrap();
+    let browser_path = json.result.browser_path;
+    assert!(browser_path.is_empty());
 }

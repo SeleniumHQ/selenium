@@ -15,30 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use anyhow::Error;
-use std::fs;
-use std::fs::File;
-use std::io;
-use std::io::{BufReader, Cursor, Read};
-
-use anyhow::anyhow;
-use bzip2::read::BzDecoder;
-use std::path::{Path, PathBuf};
-
 use crate::config::OS;
-use directories::BaseDirs;
-use flate2::read::GzDecoder;
-use regex::Regex;
-use tar::Archive;
-use tempfile::Builder;
-use zip::ZipArchive;
-
 use crate::config::OS::WINDOWS;
 use crate::{
     format_one_arg, format_three_args, format_two_args, run_shell_command_by_os, Command, Logger,
     CP_VOLUME_COMMAND, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS,
     MSIEXEC_INSTALL_COMMAND, MV_PAYLOAD_COMMAND, MV_PAYLOAD_OLD_VERSIONS_COMMAND, PKGUTIL_COMMAND,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use bzip2::read::BzDecoder;
+use directories::BaseDirs;
+use flate2::read::GzDecoder;
+use regex::Regex;
+use std::fs;
+use std::fs::File;
+use std::io;
+use std::io::{BufReader, Cursor, Read};
+use std::path::{Path, PathBuf};
+use tar::Archive;
+use tempfile::Builder;
+use zip::ZipArchive;
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
 const CACHE_FOLDER: &str = ".cache/selenium";

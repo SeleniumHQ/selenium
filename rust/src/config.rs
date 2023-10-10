@@ -22,12 +22,11 @@ use crate::{
     UNAME_COMMAND,
 };
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
+use anyhow::anyhow;
+use anyhow::Error;
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
-
-use anyhow::anyhow;
-use anyhow::Error;
 use std::fs::read_to_string;
 use std::path::Path;
 use toml::Table;

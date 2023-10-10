@@ -16,13 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::env;
-use std::path::{Path, PathBuf};
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -35,9 +28,21 @@ use crate::{
     DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE,
 };
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::env;
+use std::path::{Path, PathBuf};
 
-pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
+pub const EDGE_NAMES: &[&str] = &[
+    "edge",
+    EDGE_WINDOWS_AND_LINUX_APP_NAME,
+    "microsoftedge",
+    WEBVIEW2_NAME,
+];
 pub const EDGEDRIVER_NAME: &str = "msedgedriver";
+pub const WEBVIEW2_NAME: &str = "webview2";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
@@ -61,13 +66,17 @@ pub struct EdgeManager {
 
 impl EdgeManager {
     pub fn new() -> Result<Box<Self>, Error> {
-        let browser_name = EDGE_NAMES[0];
+        Self::new_with_name(EDGE_NAMES[0].to_string())
+    }
+
+    pub fn new_with_name(browser_name: String) -> Result<Box<Self>, Error> {
+        let static_browser_name: &str = Box::leak(browser_name.into_boxed_str());
         let driver_name = EDGEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let config = ManagerConfig::default(static_browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
         Ok(Box::new(EdgeManager {
-            browser_name,
+            browser_name: static_browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
