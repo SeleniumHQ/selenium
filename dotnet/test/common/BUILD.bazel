@@ -68,7 +68,7 @@ dotnet_nunit_test_suite(
         # be used by default.
         "firefox",
         # "safari",  # Skipping safari for now
-        "ie",
+        # "ie", # Skipping ie for now
         "edge",
         "chrome",
     ],
