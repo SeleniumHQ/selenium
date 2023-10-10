@@ -71,7 +71,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.http">org.openqa.selenium.remote.http</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http.netty">org.openqa.selenium.remote.http.netty</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http.jdk">org.openqa.selenium.remote.http.jdk</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.service">org.openqa.selenium.remote.service</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
@@ -246,11 +246,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#readTimeout(java.time.Duration)" class="member-name-link">readTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#withFilter(org.openqa.selenium.remote.http.Filter)" class="member-name-link">withFilter</a><wbr>(<a href="../Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filter)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#sslContext(javax.net.ssl.SSLContext)" class="member-name-link">sslContext</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a>&nbsp;sslContext)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#withRetries()" class="member-name-link">withRetries</a>()</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#withFilter(org.openqa.selenium.remote.http.Filter)" class="member-name-link">withFilter</a><wbr>(<a href="../Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filter)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ClientConfig.</span><code><a href="../ClientConfig.html#withRetries()" class="member-name-link">withRetries</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.openqa.selenium.remote.http</a> with parameters of type <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></span></div>
 <div class="summary-table three-column-summary">
@@ -273,25 +276,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="org.openqa.selenium.remote.http.netty">
-<h2>Uses of <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a> in <a href="../netty/package-summary.html">org.openqa.selenium.remote.http.netty</a></h2>
-<div class="caption"><span>Methods in <a href="../netty/package-summary.html">org.openqa.selenium.remote.http.netty</a> with parameters of type <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></span></div>
+<section class="detail" id="org.openqa.selenium.remote.http.jdk">
+<h2>Uses of <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a> in <a href="../jdk/package-summary.html">org.openqa.selenium.remote.http.jdk</a></h2>
+<div class="caption"><span>Methods in <a href="../jdk/package-summary.html">org.openqa.selenium.remote.http.jdk</a> with parameters of type <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">NettyClient.Factory.</span><code><a href="../netty/NettyClient.Factory.html#createClient(org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createClient</a><wbr>(<a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-</div>
-<div class="caption"><span>Constructors in <a href="../netty/package-summary.html">org.openqa.selenium.remote.http.netty</a> with parameters of type <a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier</div>
-<div class="table-header col-second">Constructor</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../netty/NettyHttpHandler.html#%3Cinit%3E(org.openqa.selenium.remote.http.ClientConfig,org.asynchttpclient.AsyncHttpClient)" class="member-name-link">NettyHttpHandler</a><wbr>(<a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config,
- org.asynchttpclient.AsyncHttpClient&nbsp;client)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">JdkHttpClient.Factory.</span><code><a href="../jdk/JdkHttpClient.Factory.html#createClient(org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createClient</a><wbr>(<a href="../ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

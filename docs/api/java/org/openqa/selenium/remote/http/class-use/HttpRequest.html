@@ -90,7 +90,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.http">org.openqa.selenium.remote.http</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http.netty">org.openqa.selenium.remote.http.netty</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.remote.http.jdk">org.openqa.selenium.remote.http.jdk</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.remote.tracing">org.openqa.selenium.remote.tracing</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
@@ -502,23 +502,20 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="org.openqa.selenium.remote.http.netty">
-<h2>Uses of <a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a> in <a href="../netty/package-summary.html">org.openqa.selenium.remote.http.netty</a></h2>
-<div class="caption"><span>Methods in <a href="../netty/package-summary.html">org.openqa.selenium.remote.http.netty</a> with parameters of type <a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></span></div>
+<section class="detail" id="org.openqa.selenium.remote.http.jdk">
+<h2>Uses of <a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a> in <a href="../jdk/package-summary.html">org.openqa.selenium.remote.http.jdk</a></h2>
+<div class="caption"><span>Methods in <a href="../jdk/package-summary.html">org.openqa.selenium.remote.http.jdk</a> with parameters of type <a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">NettyClient.</span><code><a href="../netty/NettyClient.html#execute(org.openqa.selenium.remote.http.HttpRequest)" class="member-name-link">execute</a><wbr>(<a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">JdkHttpClient.</span><code><a href="../jdk/JdkHttpClient.html#execute(org.openqa.selenium.remote.http.HttpRequest)" class="member-name-link">execute</a><wbr>(<a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">NettyHttpHandler.</span><code><a href="../netty/NettyHttpHandler.html#execute(org.openqa.selenium.remote.http.HttpRequest)" class="member-name-link">execute</a><wbr>(<a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../WebSocket.html" title="interface in org.openqa.selenium.remote.http">WebSocket</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">NettyClient.</span><code><a href="../netty/NettyClient.html#openSocket(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.http.WebSocket.Listener)" class="member-name-link">openSocket</a><wbr>(<a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<div class="col-first odd-row-color"><code><a href="../WebSocket.html" title="interface in org.openqa.selenium.remote.http">WebSocket</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">JdkHttpClient.</span><code><a href="../jdk/JdkHttpClient.html#openSocket(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.http.WebSocket.Listener)" class="member-name-link">openSocket</a><wbr>(<a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
  <a href="../WebSocket.Listener.html" title="interface in org.openqa.selenium.remote.http">WebSocket.Listener</a>&nbsp;listener)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -533,7 +530,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="../../tracing/Span.html" title="interface in org.openqa.selenium.remote.tracing">Span</a>,<wbr><a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Tags.</span><code><a href="../../tracing/Tags.html#HTTP_REQUEST" class="member-name-link">HTTP_REQUEST</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="../../tracing/EventAttributeValue.html" title="class in org.openqa.selenium.remote.tracing">EventAttributeValue</a>&gt;,<wbr><a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="../../tracing/AttributeMap.html" title="interface in org.openqa.selenium.remote.tracing">AttributeMap</a>,<wbr><a href="../HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">Tags.</span><code><a href="../../tracing/Tags.html#HTTP_REQUEST_EVENT" class="member-name-link">HTTP_REQUEST_EVENT</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>

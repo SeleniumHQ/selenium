@@ -82,7 +82,7 @@ org.openqa.selenium.remote.codec
 org.openqa.selenium.remote.codec.w3c
 org.openqa.selenium.remote.html5
 org.openqa.selenium.remote.http
-org.openqa.selenium.remote.http.netty
+org.openqa.selenium.remote.http.jdk
 org.openqa.selenium.remote.internal
 org.openqa.selenium.remote.locators
 org.openqa.selenium.remote.mobile
