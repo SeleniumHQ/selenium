@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
-use std::env::consts::OS;
-
 use crate::common::{assert_browser, assert_driver};
+use assert_cmd::Command;
 use rstest::rstest;
+use std::env::consts::OS;
 
 mod common;
 

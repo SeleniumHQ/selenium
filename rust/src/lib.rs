@@ -16,39 +16,36 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::config::OS::{MACOS, WINDOWS};
+use crate::config::{str_to_os, ManagerConfig};
+use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     get_binary_extension, path_to_string,
 };
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
-use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use std::{env, fs};
-
-use crate::config::OS::{MACOS, WINDOWS};
-use crate::config::{str_to_os, ManagerConfig};
-use anyhow::Error;
-use is_executable::IsExecutable;
-use reqwest::{Client, Proxy};
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::{Path, PathBuf};
-use std::time::Duration;
-use walkdir::{DirEntry, WalkDir};
-
-use crate::downloads::download_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
+use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::grid::GRID_NAME;
+use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
+use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use is_executable::IsExecutable;
+use reqwest::{Client, Proxy};
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+use std::{env, fs};
+use walkdir::{DirEntry, WalkDir};
 
 pub mod chrome;
 pub mod config;

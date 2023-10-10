@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::{assert_driver, assert_output};
 use assert_cmd::Command;
 use rstest::rstest;
 use selenium_manager::logger::JsonOutput;
 use std::env::consts::OS;
-
-use crate::common::{assert_driver, assert_output};
 
 mod common;
 

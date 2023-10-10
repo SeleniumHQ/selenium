@@ -16,13 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::env;
-use std::path::{Path, PathBuf};
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -35,6 +28,12 @@ use crate::{
     DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE,
 };
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::env;
+use std::path::{Path, PathBuf};
 
 pub const EDGE_NAMES: &[&str] = &[
     "edge",

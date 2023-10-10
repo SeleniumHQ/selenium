@@ -16,18 +16,15 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use crate::config::OS::MACOS;
+use crate::files::BrowserPath;
+use crate::{create_http_client, Logger, SeleniumManager, STABLE};
+use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
-
-use anyhow::anyhow;
 use std::path::PathBuf;
 use std::string::ToString;
-
-use crate::files::BrowserPath;
-
-use crate::config::OS::MACOS;
-use crate::{create_http_client, Logger, SeleniumManager, STABLE};
 
 pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
