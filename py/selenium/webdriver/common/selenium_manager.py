@@ -41,8 +41,8 @@ class SeleniumManager:
         :Returns: The Selenium Manager executable location
         """
 
-        if os.getenv("SE_MANAGER_PATH"):
-            path = os.getenv("SE_MANAGER_PATH")
+        if path := os.getenv("SE_MANAGER_PATH") is not None:
+            return Path(path)
         else:
             platform = sys.platform
 
