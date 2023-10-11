@@ -42,7 +42,7 @@ class SeleniumManager:
         """
 
         if os.getenv("SE_MANAGER_PATH"):
-            path = os.getenv("SE_MANAGER_PATH")
+            path = Path(os.getenv("SE_MANAGER_PATH"))
         else:
             platform = sys.platform
 
