@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
@@ -38,7 +39,7 @@ import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExternalProcess;
 import org.openqa.selenium.remote.service.DriverService;
 
 class OutOfProcessSeleniumServer {
@@ -46,7 +47,7 @@ class OutOfProcessSeleniumServer {
   private static final Logger LOG = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 
   private String baseUrl;
-  private CommandLine command;
+  private ExternalProcess process;
 
   @SuppressWarnings("unused")
   private boolean captureLogs = false;
@@ -62,7 +63,7 @@ class OutOfProcessSeleniumServer {
    */
   public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
     LOG.info("Got a request to start a new selenium server");
-    if (command != null) {
+    if (process != null) {
       LOG.info("Server already started");
       throw new RuntimeException("Server already started");
     }
@@ -105,23 +106,25 @@ class OutOfProcessSeleniumServer {
       startupArgs.add("true");
     }
 
-    command =
-        new CommandLine(
-            serverBinary,
-            Stream.concat(
-                    javaFlags,
-                    Stream.concat(
-                        // If the driver is provided, we _don't_ want to use Selenium Manager
-                        startupArgs.stream(), Stream.of(extraFlags)))
-                .toArray(String[]::new));
+    ExternalProcess.Builder builder =
+        ExternalProcess.builder()
+            .command(
+                serverBinary,
+                Stream.concat(
+                        javaFlags,
+                        Stream.concat(
+                            // If the driver is provided, we _don't_ want to use Selenium Manager
+                            startupArgs.stream(), Stream.of(extraFlags)))
+                    .collect(Collectors.toList()))
+            .copyOutputTo(System.err);
+
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
-      command.setWorkingDirectory(workingDir.getAbsolutePath());
+      builder.directory(workingDir.getAbsolutePath());
     }
 
-    command.copyOutputTo(System.err);
-    LOG.info("Starting selenium server: " + command.toString());
-    command.executeAsync();
+    LOG.info("Starting selenium server: " + builder.command());
+    process = builder.start();
 
     try {
       URL url = new URL(baseUrl + "/status");
@@ -130,9 +133,9 @@ class OutOfProcessSeleniumServer {
       LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       LOG.severe("Server failed to start: " + e.getMessage());
-      command.destroy();
-      LOG.severe(command.getStdOut());
-      command = null;
+      process.shutdown();
+      LOG.severe(process.getOutput());
+      process = null;
       throw new RuntimeException(e);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
@@ -152,13 +155,13 @@ class OutOfProcessSeleniumServer {
   }
 
   public void stop() {
-    if (command == null) {
+    if (process == null) {
       return;
     }
     LOG.info("Stopping selenium server");
-    command.destroy();
+    process.shutdown();
     LOG.info("Selenium server stopped");
-    command = null;
+    process = null;
   }
 
   private String buildServerAndClasspath() {
