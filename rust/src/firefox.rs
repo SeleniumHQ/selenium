@@ -202,7 +202,11 @@ impl SeleniumManager for FirefoxManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                let latest_url = format!("{}{}", DRIVER_URL, LATEST_RELEASE);
+                let latest_url = format!(
+                    "{}{}",
+                    self.get_driver_mirror_url_or_default(DRIVER_URL),
+                    LATEST_RELEASE
+                );
                 let driver_version =
                     read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
 
@@ -260,7 +264,11 @@ impl SeleniumManager for FirefoxManager {
         };
         Ok(format!(
             "{}download/v{}/{}-v{}-{}",
-            DRIVER_URL, driver_version, self.driver_name, driver_version, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            self.driver_name,
+            driver_version,
+            driver_label
         ))
     }
 
@@ -403,7 +411,11 @@ impl SeleniumManager for FirefoxManager {
             }
 
             for version in firefox_versions.iter().rev() {
-                let release_url = format_two_args("{}{}/", BROWSER_URL, version);
+                let release_url = format_two_args(
+                    "{}{}/",
+                    &self.get_browser_mirror_url_or_default(BROWSER_URL),
+                    version,
+                );
                 self.get_logger()
                     .trace(format!("Checking release URL: {}", release_url));
                 let content = read_content_from_link(self.get_http_client(), release_url)?;
@@ -501,7 +513,7 @@ impl SeleniumManager for FirefoxManager {
             let browser_version = self.get_browser_version();
             Ok(format!(
                 "{}{}/{}/{}/{}{}.{}",
-                BROWSER_URL,
+                self.get_browser_mirror_url_or_default(BROWSER_URL),
                 browser_version,
                 platform_label,
                 language,

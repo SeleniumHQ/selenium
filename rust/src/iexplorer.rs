@@ -194,7 +194,7 @@ impl SeleniumManager for IExplorerManager {
         let release_version = self.get_selenium_release_version()?;
         Ok(format!(
             "{}download/{}/{}{}.zip",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             release_version,
             IEDRIVER_RELEASE,
             self.get_driver_version()

@@ -37,6 +37,7 @@ pub const CONFIG_FILE: &str = "se-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
+pub const MIRROR_PREFIX: &str = "-mirror-url";
 pub const CACHE_PATH_KEY: &str = "cache-path";
 
 pub struct ManagerConfig {
@@ -44,6 +45,8 @@ pub struct ManagerConfig {
     pub browser_version: String,
     pub driver_version: String,
     pub browser_path: String,
+    pub driver_mirror_url: String,
+    pub browser_mirror_url: String,
     pub os: String,
     pub arch: String,
     pub proxy: String,
@@ -86,6 +89,8 @@ impl ManagerConfig {
         let browser_version_label = concat(browser_name, VERSION_PREFIX);
         let driver_version_label = concat(driver_name, VERSION_PREFIX);
         let browser_path_label = concat(browser_name, PATH_PREFIX);
+        let driver_mirror_label = concat(driver_name, MIRROR_PREFIX);
+        let browser_mirror_label = concat(browser_name, MIRROR_PREFIX);
 
         ManagerConfig {
             cache_path,
@@ -94,6 +99,10 @@ impl ManagerConfig {
             driver_version: StringKey(vec!["driver-version", &driver_version_label], "")
                 .get_value(),
             browser_path: StringKey(vec!["browser-path", &browser_path_label], "").get_value(),
+            driver_mirror_url: StringKey(vec!["driver-mirror-url", &driver_mirror_label], "")
+                .get_value(),
+            browser_mirror_url: StringKey(vec!["browser-mirror-url", &browser_mirror_label], "")
+                .get_value(),
             os: StringKey(vec!["os"], self_os).get_value(),
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),

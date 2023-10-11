@@ -185,7 +185,7 @@ impl SeleniumManager for GridManager {
         let release_version = self.get_selenium_release_version()?;
         Ok(format!(
             "{}download/{}/{}-{}.{}",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             release_version,
             GRID_RELEASE,
             self.get_driver_version(),

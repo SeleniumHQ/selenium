@@ -46,7 +46,7 @@ pub const WEBVIEW2_NAME: &str = "webview2";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
-const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products";
+const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products/";
 const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
 const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
@@ -182,7 +182,11 @@ impl SeleniumManager for EdgeManager {
                     || major_browser_version.is_empty()
                     || self.is_browser_version_unstable()
                 {
-                    let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
+                    let latest_stable_url = format!(
+                        "{}{}",
+                        self.get_driver_mirror_url_or_default(DRIVER_URL),
+                        LATEST_STABLE
+                    );
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
                         &self.driver_name, latest_stable_url
@@ -201,7 +205,7 @@ impl SeleniumManager for EdgeManager {
                 }
                 let driver_url = format!(
                     "{}{}_{}_{}",
-                    DRIVER_URL,
+                    self.get_driver_mirror_url_or_default(DRIVER_URL),
                     LATEST_RELEASE,
                     major_browser_version,
                     self.get_os().to_uppercase()
@@ -256,7 +260,9 @@ impl SeleniumManager for EdgeManager {
         };
         Ok(format!(
             "{}{}/edgedriver_{}.zip",
-            DRIVER_URL, driver_version, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            driver_label
         ))
     }
 
@@ -320,10 +326,11 @@ impl SeleniumManager for EdgeManager {
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);
+        let browser_url = self.get_browser_mirror_url_or_default(BROWSER_URL);
         let edge_updates_url = if is_fixed_browser_version {
-            format!("{}?view=enterprise", BROWSER_URL)
+            format!("{}?view=enterprise", browser_url)
         } else {
-            BROWSER_URL.to_string()
+            browser_url
         };
         self.get_logger().debug(format!(
             "Checking {} releases on {}",

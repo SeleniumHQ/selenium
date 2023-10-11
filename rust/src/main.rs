@@ -67,6 +67,14 @@ struct Cli {
     #[clap(long, value_parser)]
     browser_path: Option<String>,
 
+    /// Mirror for driver repositories (e.g., https://registry.npmmirror.com/-/binary/chromedriver/)
+    #[clap(long, value_parser)]
+    driver_mirror_url: Option<String>,
+
+    /// Mirror for browser repositories
+    #[clap(long, value_parser)]
+    browser_mirror_url: Option<String>,
+
     /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
     #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
@@ -179,6 +187,8 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_driver_mirror_url(cli.driver_mirror_url.unwrap_or_default());
+    selenium_manager.set_browser_mirror_url(cli.browser_mirror_url.unwrap_or_default());
     selenium_manager.set_os(cli.os.unwrap_or_default());
     selenium_manager.set_arch(cli.arch.unwrap_or_default());
     selenium_manager.set_ttl(cli.ttl);
