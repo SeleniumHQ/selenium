@@ -29,7 +29,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -102,7 +101,7 @@ public class CdpClientGenerator {
               JarEntry entry = new JarEntry(devtoolsDir + relative);
               jos.putNextEntry(entry);
               try (InputStream is = Files.newInputStream(file)) {
-                ByteStreams.copy(is, jos);
+                is.transferTo(jos);
               }
               jos.closeEntry();
               return CONTINUE;

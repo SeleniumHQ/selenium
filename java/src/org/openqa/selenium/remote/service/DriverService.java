@@ -22,7 +22,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -460,7 +459,7 @@ public class DriverService implements Closeable {
       }
       try {
         File logFile = getLogFile();
-        return logFile == null ? ByteStreams.nullOutputStream() : new FileOutputStream(logFile);
+        return logFile == null ? OutputStream.nullOutputStream() : new FileOutputStream(logFile);
       } catch (FileNotFoundException e) {
         throw new RuntimeException(e);
       }
@@ -480,7 +479,7 @@ public class DriverService implements Closeable {
           withLogOutput(System.err);
           break;
         case LOG_NULL:
-          withLogOutput(ByteStreams.nullOutputStream());
+          withLogOutput(OutputStream.nullOutputStream());
           break;
         default:
           withLogFile(new File(logLocation));
