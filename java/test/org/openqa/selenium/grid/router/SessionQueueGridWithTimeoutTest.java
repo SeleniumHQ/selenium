@@ -75,6 +75,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
 
 class SessionQueueGridWithTimeoutTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
@@ -82,6 +83,7 @@ class SessionQueueGridWithTimeoutTest {
   private Secret registrationSecret;
   private Server<?> server;
   private EventBus bus;
+  private LocalNode localNode;
 
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
@@ -114,7 +116,7 @@ class SessionQueueGridWithTimeoutTest {
             5);
     handler.addHandler(queue);
 
-    LocalNode localNode =
+    localNode =
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 CAPS,
@@ -167,7 +169,17 @@ class SessionQueueGridWithTimeoutTest {
       for (Future<HttpResponse> future : futureList) {
         HttpResponse httpResponse = future.get(10, SECONDS);
         assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+        // session is creating, so a slot is used
+        assertThat(localNode.getUsedSlots()).isEqualTo(1);
+
+        // session has been destroyed on node as it's not used
+        new FluentWait<>(localNode)
+        .withTimeout(Duration.ofSeconds(7))
+        .until(node -> node.getUsedSlots() == 0);
       }
+
+   
+
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");
     } catch (ExecutionException e) {
