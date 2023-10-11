@@ -103,12 +103,34 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="sessionId">An <see cref="SessionId"/> object containing the session identifier to the already active browser session.</param>
+        public RemoteWebDriver(Uri remoteAddress, DriverOptions options, SessionId sessionId)
+            : this(remoteAddress, ConvertOptionsToCapabilities(options), sessionId)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
         /// </summary>
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities)
             : this(remoteAddress, desiredCapabilities, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="sessionId">An <see cref="SessionId"/> object containing the session identifier to the already active browser session.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, SessionId sessionId)
+            : this(remoteAddress, desiredCapabilities, RemoteWebDriver.DefaultCommandTimeout, sessionId)
         {
         }
 
@@ -124,12 +146,35 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, and command timeout.
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        /// <param name="sessionId">An <see cref="SessionId"/> object containing the session identifier to the already active browser session.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, TimeSpan commandTimeout, SessionId sessionId)
+            : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities, sessionId)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
         /// </summary>
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
             : base(commandExecutor, desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="sessionId">An <see cref="SessionId"/> object containing the session identifier to the already active browser session.</param>
+        public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities, SessionId sessionId)
+            : base(commandExecutor, desiredCapabilities, sessionId)
         {
         }
 

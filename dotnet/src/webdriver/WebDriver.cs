@@ -69,6 +69,29 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="WebDriver"/> class.
+        /// </summary>
+        /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
+        /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configuer the driver session.</param>
+        /// <param name="sessionId">The <see cref="SessionId"/> object used to configuer the driver sessionId.</param>
+        protected WebDriver(ICommandExecutor executor, ICapabilities capabilities, SessionId sessionId)
+        {
+            this.executor = executor;
+            this.sessionId = sessionId;
+            this.elementFactory = new WebElementFactory(this);
+            this.network = new NetworkManager(this);
+            this.registeredCommands.AddRange(DriverCommand.KnownCommands);
+
+            if ((this as ISupportsLogs) != null)
+            {
+                // Only add the legacy log commands if the driver supports
+                // retrieving the logs via the extension end points.
+                this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+                this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
+            }
+        }
+
+        /// <summary>
         /// Gets the <see cref="ICommandExecutor"/> which executes commands for this driver.
         /// </summary>
         public ICommandExecutor CommandExecutor
