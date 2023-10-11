@@ -68,7 +68,7 @@ class UnboundZmqEventBus implements EventBus {
   private final Map<EventName, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
   private final String encodedSecret;
-  private ZMQ.Poller poller;
+  private final ZMQ.Poller poller;
 
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;

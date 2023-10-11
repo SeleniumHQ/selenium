@@ -28,8 +28,8 @@ import java.util.TreeSet;
  * LocalLogs instance.
  */
 class CompositeLocalLogs extends LocalLogs {
-  private LocalLogs predefinedTypeLogger;
-  private LocalLogs allTypesLogger;
+  private final LocalLogs predefinedTypeLogger;
+  private final LocalLogs allTypesLogger;
 
   protected CompositeLocalLogs(LocalLogs predefinedTypeLogger, LocalLogs allTypesLogger) {
     super();

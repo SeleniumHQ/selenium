@@ -561,7 +561,7 @@ class JsonTest {
   }
 
   public static class JsonAware {
-    private String convertedValue;
+    private final String convertedValue;
 
     public JsonAware(String convertedValue) {
       this.convertedValue = convertedValue;
@@ -573,7 +573,7 @@ class JsonTest {
   }
 
   public static class PrivatelyAware {
-    private String convertedValue;
+    private final String convertedValue;
 
     public PrivatelyAware(String convertedValue) {
       this.convertedValue = convertedValue;

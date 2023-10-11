@@ -79,7 +79,7 @@ public class SimpleHttpServer implements Closeable {
 
   private final Channel channel;
 
-  private Map<Map.Entry<HttpMethod, String>, Function<HttpRequest, FullHttpResponse>> endpoints;
+  private final Map<Map.Entry<HttpMethod, String>, Function<HttpRequest, FullHttpResponse>> endpoints;
 
   public SimpleHttpServer() throws InterruptedException, URISyntaxException {
     this(PortProber.findFreePort());
