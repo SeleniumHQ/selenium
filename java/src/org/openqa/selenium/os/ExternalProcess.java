@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.os;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.io.File;
 import java.io.IOException;
@@ -269,11 +269,21 @@ public class ExternalProcess {
    * seconds.
    */
   public void shutdown() {
+    shutdown(Duration.ofSeconds(4));
+  }
+
+  /**
+   * Initiate a normal shutdown of the process or kills it when the process is alive after the given
+   * timeout.
+   *
+   * @param timeout the duration for a process to terminate before destroying it forcibly.
+   */
+  public void shutdown(Duration timeout) {
     if (process.supportsNormalTermination()) {
       process.destroy();
 
       try {
-        if (process.waitFor(4, SECONDS)) {
+        if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
           return;
         }
       } catch (InterruptedException ex) {
