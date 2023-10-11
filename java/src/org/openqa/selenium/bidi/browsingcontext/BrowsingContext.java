@@ -32,6 +32,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.print.PageMargin;
+import org.openqa.selenium.print.PageSize;
+import org.openqa.selenium.print.PrintOptions;
 
 public class BrowsingContext {
 
@@ -308,6 +311,20 @@ public class BrowsingContext {
 
   public void activate() {
     this.bidi.send(new Command<>("browsingContext.activate", Map.of(CONTEXT, id)));
+  }
+
+  public String print(PrintOptions printOptions) {
+    Map<String, Object> printOptionsParams = printOptions.toMap();
+    printOptionsParams.put(CONTEXT, id);
+
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.print",
+            printOptionsParams,
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
   }
 
   public void close() {

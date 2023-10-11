@@ -41,6 +41,7 @@ import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.environment.webserver.Page;
+import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -476,6 +477,25 @@ class BrowsingContextTest extends JupiterTestBase {
         (Long) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
 
     assertThat(newDevicePixelRatio).isEqualTo(5);
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  void canPrintPage() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+
+    driver.get(appServer.whereIs("formPage.html"));
+    PrintOptions printOptions = new PrintOptions();
+
+    String printPage = browsingContext.print(printOptions);
+
+    assertThat(printPage.length()).isPositive();
+    // Comparing expected PDF is a hard problem.
+    // As long as we are sending the parameters correctly it should be fine.
+    // Trusting the browsers to do the right thing.
+    // Hence, just checking if the response is base64 encoded string.
+    assertThat(printPage).contains("JVBER");
   }
 
   private String alertPage() {
