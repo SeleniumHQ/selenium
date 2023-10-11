@@ -96,6 +96,9 @@ public class BrowsingContext {
   public BrowsingContext(WebDriver driver, WindowType type, String referenceContextId) {
     Require.nonNull("WebDriver", driver);
     Require.nonNull("Reference browsing context id", referenceContextId);
+
+    Require.precondition(!referenceContextId.isEmpty(), "Reference Context id cannot be empty");
+
     if (!(driver instanceof HasBiDi)) {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
