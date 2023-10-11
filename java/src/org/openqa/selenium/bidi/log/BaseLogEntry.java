@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.bidi.log;
 
+import java.util.Map;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
+
 // @see <a
 // href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class BaseLogEntry {
@@ -47,5 +52,16 @@ public class BaseLogEntry {
     this.text = text;
     this.timestamp = timestamp;
     this.stackTrace = stackTrace;
+  }
+
+  protected Map<String, Object> JsonMap(String type) {
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("type", type);
+    toReturn.put("level", getLevel());
+    toReturn.put("text", getText());
+    toReturn.put("timestamp", getTimestamp());
+    toReturn.put("stackTrace", getStackTrace());
+
+    return unmodifiableMap(toReturn);
   }
 }
