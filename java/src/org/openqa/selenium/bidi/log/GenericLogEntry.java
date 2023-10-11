@@ -30,7 +30,7 @@ public class GenericLogEntry extends BaseLogEntry {
   private final String type;
 
   public GenericLogEntry(
-    LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
+      LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
     super(level, text, timestamp, stackTrace);
     this.type = type;
   }

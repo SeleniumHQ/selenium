@@ -30,7 +30,7 @@ public class JavascriptLogEntry extends GenericLogEntry {
   private final String type;
 
   public JavascriptLogEntry(
-    LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
+      LogLevel level, String text, long timestamp, String type, StackTrace stackTrace) {
     super(level, text, timestamp, "javascript", stackTrace);
     this.type = "javascript";
   }
