@@ -24,6 +24,13 @@ module Selenium
         DEFAULT_PORT = 9515
         EXECUTABLE = 'msedgedriver'
         SHUTDOWN_SUPPORTED = true
+
+        def log
+          return @log unless @log.is_a? String
+
+          @args << "--log-path=#{@log}"
+          @log = nil
+        end
       end # Service
     end # Edge
   end # WebDriver

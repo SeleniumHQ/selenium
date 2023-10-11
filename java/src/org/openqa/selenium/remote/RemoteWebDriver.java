@@ -259,7 +259,7 @@ public class RemoteWebDriver
     String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
-      if (platformString == null || "".equals(platformString)) {
+      if (platformString == null || platformString.isEmpty()) {
         platform = Platform.ANY;
       } else {
         platform = Platform.fromString(platformString);
@@ -747,15 +747,25 @@ public class RemoteWebDriver
       if (text.length() > 100 && Boolean.getBoolean("webdriver.remote.shorten_log_messages")) {
         text = text.substring(0, 100) + "...";
       }
+    } else if (commandName.equals(DriverCommand.NEW_SESSION) && toLog instanceof Response) {
+      Response responseToLog = (Response) toLog;
+      try {
+        Map<String, Object> value = (Map<String, Object>) responseToLog.getValue();
+        text = new MutableCapabilities(value).toString();
+      } catch (ClassCastException ex) {
+        // keep existing text
+      }
     }
-    // No need to log a screenshot response.
+
+    // No need to log a base64 encoded responses.
     if ((commandName.equals(DriverCommand.SCREENSHOT)
-            || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT))
+            || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT)
+            || commandName.equals(DriverCommand.PRINT_PAGE)
+            || commandName.equals("fullPageScreenshot"))
         && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
       Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
-      copyToLog.setValue("*Screenshot response suppressed*");
-      copyToLog.setStatus(responseToLog.getStatus());
+      copyToLog.setValue(String.format("*%s response suppressed*", commandName));
       copyToLog.setState(responseToLog.getState());
       text = String.valueOf(copyToLog);
     }
@@ -1118,11 +1128,11 @@ public class RemoteWebDriver
       List<WebElement> frameElements =
           RemoteWebDriver.this.findElements(
               By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
-      if (frameElements.size() == 0) {
+      if (frameElements.isEmpty()) {
         frameElements =
             RemoteWebDriver.this.findElements(By.cssSelector("frame#" + name + ",iframe#" + name));
       }
-      if (frameElements.size() == 0) {
+      if (frameElements.isEmpty()) {
         throw new NoSuchFrameException("No frame element found by name or id " + frameName);
       }
       return frame(frameElements.get(0));

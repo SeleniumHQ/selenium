@@ -20,7 +20,6 @@ package org.openqa.selenium.devtools.v116;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.ByteStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -188,7 +187,7 @@ public class v116Network extends Network<AuthRequired, RequestPaused> {
   protected Command<Void> continueRequest(RequestPaused pausedReq, HttpRequest req) {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = req.getContent().get()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
     } catch (IOException e) {
       return continueWithoutModification(pausedReq);
     }
@@ -212,7 +211,7 @@ public class v116Network extends Network<AuthRequired, RequestPaused> {
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = res.getContent().get()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
     } catch (IOException e) {
       bos.reset();
     }

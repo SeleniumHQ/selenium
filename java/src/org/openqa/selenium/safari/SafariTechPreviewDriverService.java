@@ -23,9 +23,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 import com.google.auto.service.AutoService;
-import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,22 +52,6 @@ public class SafariTechPreviewDriverService extends DriverService {
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
       new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
-
-  /**
-   * @param executable The SafariDriver executable.
-   * @param port Which port to start the SafariDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link SafariTechPreviewDriverService#SafariTechPreviewDriverService(File, int,
-   *     Duration, List, Map)}
-   */
-  @Deprecated
-  public SafariTechPreviewDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    this(executable, port, DEFAULT_TIMEOUT, args, environment);
-  }
 
   /**
    * @param executable The SafariDriver executable.
@@ -183,7 +167,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     protected SafariTechPreviewDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        withLogOutput(ByteStreams.nullOutputStream());
+        withLogOutput(OutputStream.nullOutputStream());
         return new SafariTechPreviewDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);

@@ -286,9 +286,12 @@ class RemoteConnection:
         """
         command_info = self._commands[command]
         assert command_info is not None, f"Unrecognised command {command}"
-        path = string.Template(command_info[1]).substitute(params)
-        if isinstance(params, dict) and "sessionId" in params:
-            del params["sessionId"]
+        path_string = command_info[1]
+        path = string.Template(path_string).substitute(params)
+        substitute_params = {word[1:] for word in path_string.split("/") if word.startswith("$")}  # remove dollar sign
+        if isinstance(params, dict) and substitute_params:
+            for word in substitute_params:
+                del params[word]
         data = utils.dump_json(params)
         url = f"{self._url}{path}"
         return self._request(command_info[0], url, body=data)
@@ -304,7 +307,7 @@ class RemoteConnection:
         :Returns:
           A dictionary with the server's parsed JSON response.
         """
-        LOGGER.debug(f"{method} {url} {body}")
+        LOGGER.debug("%s %s %s", method, url, body)
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
         response = None
@@ -320,7 +323,7 @@ class RemoteConnection:
                 response = http.request(method, url, body=body, headers=headers)
             statuscode = response.status
         data = response.data.decode("UTF-8")
-        LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
+        LOGGER.debug("Remote response: status=%s | data=%s | headers=%s", response.status, data, response.headers)
         try:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))

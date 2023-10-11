@@ -20,7 +20,6 @@ package org.openqa.selenium.chrome;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -35,7 +34,7 @@ public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
-    return ImmutableMap.of(
+    return Map.of(
         GET_CAST_SINKS, new CommandInfo("session/:sessionId/goog/cast/get_sinks", HttpMethod.GET),
         SET_CAST_SINK_TO_USE,
             new CommandInfo("session/:sessionId/goog/cast/set_sink_to_use", HttpMethod.POST),

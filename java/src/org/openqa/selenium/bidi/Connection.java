@@ -23,7 +23,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import java.io.Closeable;
 import java.io.StringReader;
@@ -36,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -72,6 +72,7 @@ public class Connection implements Closeable {
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
   private final HttpClient client;
+  private final AtomicBoolean underlyingSocketClosed;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
@@ -79,6 +80,7 @@ public class Connection implements Closeable {
 
     this.client = client;
     socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    underlyingSocketClosed = new AtomicBoolean();
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -133,14 +135,15 @@ public class Connection implements Closeable {
               }));
     }
 
-    ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
-    serialized.put("id", id);
-    serialized.put("method", command.getMethod());
-    serialized.put("params", command.getParams());
+    Map<String, Object> serialized =
+        Map.of(
+            "id", id,
+            "method", command.getMethod(),
+            "params", command.getParams());
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
-      out.write(serialized.build());
+      out.write(serialized);
     }
     LOG.log(getDebugLogLevel(), "-> {0}", json);
     socket.sendText(json);
@@ -210,7 +213,14 @@ public class Connection implements Closeable {
       List<String> events =
           eventCallbacks.keySet().stream().map(Event::getMethod).collect(Collectors.toList());
 
-      send(new Command<>("session.unsubscribe", ImmutableMap.of("events", events)));
+      // If WebDriver close() is called, it closes the session if it is the last browsing context.
+      // It also closes the WebSocket from the remote end.
+      // If we try to now send commands, depending on the underlying web socket implementation, it
+      // will throw errors.
+      // Ideally, such errors should not prevent freeing up resources.
+      if (!underlyingSocketClosed.get()) {
+        send(new Command<>("session.unsubscribe", Map.of("events", events)));
+      }
 
       eventCallbacks.clear();
     } finally {
@@ -236,6 +246,12 @@ public class Connection implements Closeable {
               throw new BiDiException("Unable to process: " + data, e);
             }
           });
+    }
+
+    @Override
+    public void onClose(int code, String reason) {
+      LOG.fine("BiDi connection websocket closed");
+      underlyingSocketClosed.set(true);
     }
   }
 

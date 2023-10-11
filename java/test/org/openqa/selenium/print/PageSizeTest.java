@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 class PageSizeTest {
 
   // Defaults assertion
-  private static final double HEIGHT = 21.59;
-  private static final double WIDTH = 27.94;
+  private static final double HEIGHT = 27.94;
+  private static final double WIDTH = 21.59;
 
   @Test
   void setsDefaultHeightWidth() {

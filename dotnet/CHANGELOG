@@ -1,3 +1,31 @@
+v4.14.0
+======
+* Add CDP files for v118 and remove v115
+* Normalize selenium manager path (#12823)
+* Remove IdentityModel nuget from bazel workspace (#12834)
+* Update `rules_dotnet` to the latest version (#12784)
+* Rename strong assembly name (#12861)
+* Fix ci dotnet build on github actions (#12863)
+* Deprecate saving screenshots with different image formats (#12878)
+* Remove tools folder not related to selenium (#12899)
+
+v4.13.1
+======
+* Fix bug in selenium manager paths to work on mac and linux
+* Don't break devtools processing events thread in case of unexpected exception (#12820)
+
+v4.13.0
+======
+* Add CDP files for v117 and remove v114
+* Stabilize cdp network monitoring via increasing default timeout (#12701)
+* Configure await false to all awaitable invocations (#12664)
+* Update cdp default command timeout in inline docs (#12707)
+* Indicate end of output taken from selenium manager (#12744)
+* Declare selenium manager binaries as content (#12711)
+* Add browsing context methods for reload, screenshot and prompt
+* Allow user to start service before creating driver (#12816)
+* Remove Microsoft.IdentityModel.Tokens as dependency (#12777)
+
 v4.12.4
 ======
 * No code changes; issue with 4.12.3 release
@@ -11,6 +39,7 @@ v4.12.3
 * Show output from selenium manager error stream (#12677)
 * Return Task instead of wait it in generated CDP method invocations (#12672)
 * Invoke console log api called event many times depending on count of args (#12669)
+* Allow users to set Selenium Manager path by environment variable (#12752)
 
 v4.12.2
 ======

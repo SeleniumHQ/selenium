@@ -22,9 +22,9 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
-import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,26 +88,6 @@ public class ChromeDriverService extends DriverService {
    */
   public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK =
       "webdriver.chrome.disableBuildCheck";
-
-  /**
-   * @param executable The ChromeDriver executable.
-   * @param port Which port to start the ChromeDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link ChromeDriverService#ChromeDriverService(File, int, Duration, List, Map)}
-   */
-  @Deprecated
-  public ChromeDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    this(
-        executable,
-        port,
-        DEFAULT_TIMEOUT,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
-  }
 
   /**
    * @param executable The ChromeDriver executable.
@@ -255,20 +235,6 @@ public class ChromeDriverService extends DriverService {
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
-     * @deprecated use {@link #withAllowedListIps(String)}
-     */
-    @Deprecated
-    public Builder withWhitelistedIps(String allowedListIps) {
-      this.allowedListIps = allowedListIps;
-      return this;
-    }
-
-    /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
-     * the driver server.
-     *
-     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
-     * @return A self reference.
      */
     public Builder withAllowedListIps(String allowedListIps) {
       this.allowedListIps = allowedListIps;
@@ -329,7 +295,7 @@ public class ChromeDriverService extends DriverService {
           args.add("--append-log");
         }
         withLogOutput(
-            ByteStreams.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
       }
 
       if (logLevel != null) {

@@ -1,3 +1,20 @@
+## 4.14.0
+
+#### :nail_care: Polish
+
+* Adding CDP v118 and removing v115
+
+## 4.13.0
+
+#### :nail_care: Polish
+
+* Adding CDP v117 and removing v114
+* Added file location to exception message for Selenium Manager 
+
+#### :rocket: New Feature
+
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
 ## 4.12.0
 
 #### :bug: Bug fix

@@ -18,18 +18,8 @@ import os
 import subprocess
 import time
 
-import pytest
-
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service
-
-
-def test_log_path_deprecated() -> None:
-    log_path = "chromedriver.log"
-    msg = "log_path has been deprecated, please use log_output"
-
-    with pytest.warns(match=msg, expected_warning=DeprecationWarning):
-        Service(log_path=log_path)
 
 
 def test_uses_chromedriver_logging() -> None:
@@ -54,6 +44,7 @@ def test_log_output_as_filename() -> None:
     log_file = "chromedriver.log"
     service = Service(log_output=log_file)
     try:
+        assert "--log-path=chromedriver.log" in service.service_args
         driver = Chrome(service=service)
         with open(log_file) as fp:
             assert "Starting ChromeDriver" in fp.readline()

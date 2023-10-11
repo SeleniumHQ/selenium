@@ -55,8 +55,7 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -120,9 +119,8 @@ public class GraphqlHandler implements HttpHandler {
       HttpResponse response;
       Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
 
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
@@ -136,9 +134,7 @@ public class GraphqlHandler implements HttpHandler {
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
-        attributeMap.put(
-            AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue("Unable to find query"));
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), "Unable to find query");
 
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.NOT_FOUND);
@@ -178,9 +174,7 @@ public class GraphqlHandler implements HttpHandler {
       HTTP_RESPONSE.accept(span, response);
       HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
-      attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Error while executing the query"));
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), "Error while executing the query");
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       span.setAttribute(AttributeKey.ERROR.getKey(), true);

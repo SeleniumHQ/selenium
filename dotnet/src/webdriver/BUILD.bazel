@@ -1,12 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
-load(
-    "//dotnet:defs.bzl",
-    "devtools_version_targets",
-    "generated_assembly_info",
-    "nuget_package",
-    "nuget_push",
-)
+load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "nuget_pack")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -16,6 +9,10 @@ load(
     "ASSEMBLY_VERSION",
     "SE_VERSION",
 )
+
+exports_files([
+    "WebDriver.csproj",
+])
 
 generated_assembly_info(
     name = "assembly-info",
@@ -29,25 +26,16 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "webdriver",
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
+    name = "webdriver-lib",
+    srcs = [
         ":assembly-info",
-    ] + devtools_version_targets(),
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
     out = "WebDriver",
+    private_deps = [
+        framework("nuget", "NETStandard.Library"),
+    ],
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -58,37 +46,25 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-        "@system.drawing.common//:System.Drawing.Common",
+        framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "System.Drawing.Common"),
     ],
 )
 
 csharp_library(
-    name = "webdriver-strongnamed",
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
+    name = "webdriver-strongnamed-lib",
+    srcs = [
         ":assembly-info",
-    ] + devtools_version_targets(),
-    out = "strongnamed/WebDriver",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
+    private_deps = [
+        framework("nuget", "NETStandard.Library"),
+    ],
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -99,84 +75,73 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-        "@system.drawing.common//:System.Drawing.Common",
+        framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Newtonsoft.Json"),
+        framework("nuget", "System.Drawing.Common"),
     ],
-)
-
-copy_file(
-    name = "logo",
-    src = "//common/images:selenium_logo_small.png",
-    out = "icon.png",
 )
 
 copy_file(
     name = "props",
-    src = "build/Selenium.WebDriver.targets",
+    src = "//dotnet/src/webdriver/build:Selenium.WebDriver.targets",
     out = "Selenium.WebDriver.targets",
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "manager/linux/selenium-manager",
+    name = "transitive-props",
+    src = "//dotnet/src/webdriver/build:Selenium.WebDriver.targets",
+    out = "transitive.Selenium.WebDriver.targets",
 )
 
-copy_file(
-    name = "manager-macos",
-    src = "//common/manager:selenium-manager-macos",
-    out = "manager/macos/selenium-manager",
-)
-
-copy_file(
-    name = "manager-windows",
-    src = "//common/manager:selenium-manager-windows",
-    out = "manager/windows/selenium-manager.exe",
-)
-
-nuget_package(
-    name = "package",
-    src = "WebDriver.nuspec",
-    create_symbol_package = True,
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.WebDriver",
-    package_version = "{}".format(SE_VERSION),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":logo",
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
-        ":props",
-        ":webdriver",
+nuget_pack(
+    name = "webdriver",
+    files = {
+        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
+        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":props": "build/Selenium.WebDriver.targets",
+        ":transitive-props": "buildTransitive/Selenium.WebDriver.targets",
+    },
+    id = "Selenium.WebDriver",
+    libs = {
+        ":webdriver-lib": "WebDriver",
+    },
+    nuspec_template = "WebDriver.nuspec",
+    tags = [
+        "block-network",
+    ],
+    version = SE_VERSION,
+    visibility = [
+        "//dotnet:__subpackages__",
     ],
 )
 
-nuget_package(
-    name = "package-strongnamed",
-    src = "WebDriver.StrongNamed.nuspec",
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.WebDriver.StrongNamed",
-    package_version = "{}".format(SE_VERSION),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":webdriver-strongnamed",
+nuget_pack(
+    name = "webdriver-strongnamed",
+    files = {
+        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
+        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":props": "build/Selenium.WebDriver.StrongNamed.targets",
+        ":transitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+    },
+    id = "Selenium.WebDriver.StrongNamed",
+    libs = {
+        ":webdriver-strongnamed-lib": "WebDriver.StrongNamed",
+    },
+    nuspec_template = "WebDriver.StrongNamed.nuspec",
+    property_group_vars = {
+        "BaseImagePath": "images",
+        "BaseSeleniumManagerPath": "manager",
+    },
+    tags = [
+        "block-network",
     ],
-)
-
-nuget_push(
-    name = "publish",
-    src = ":package",
-    api_key = "//dotnet:nuget-api-key",
+    version = SE_VERSION,
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )

@@ -255,27 +255,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return setFirefoxOption(Keys.LOG, logLevel.toJson());
   }
 
-  /**
-   * @deprecated Use {@link #addArguments(String...)}. Example: `addArguments("-headless")`.
-   */
-  @Deprecated
-  public FirefoxOptions setHeadless(boolean headless) {
-    Object rawArgs = firefoxOptions.getOrDefault(Keys.ARGS.key(), new ArrayList<>());
-    Require.stateCondition(rawArgs instanceof List, "Arg list of unexpected type: %s", rawArgs);
-
-    List<String> newArgs = new ArrayList<>();
-    ((List<?>) rawArgs)
-        .stream()
-            .map(String::valueOf)
-            .filter(arg -> !"-headless".equals(arg))
-            .forEach(newArgs::add);
-
-    if (headless) {
-      newArgs.add("-headless");
-    }
-    return setFirefoxOption(Keys.ARGS, Collections.unmodifiableList(newArgs));
-  }
-
   public FirefoxOptions setAndroidPackage(String androidPackage) {
     Require.nonNull("Android package", androidPackage);
     return setFirefoxOption("androidPackage", androidPackage);

@@ -316,8 +316,8 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
     assertThat(credential2.isResidentCredential()).isFalse();
     assertThat(credential2.getPrivateKey()).isNotNull();
     // Non resident keys do not store raw RP IDs or user handles.
-    assertThat(credential2.getRpId()).isNull();
-    assertThat(credential2.getUserHandle()).isNull();
+    assertThat(credential2.getRpId()).isEqualTo("localhost");
+    assertThat(credential2.getUserHandle()).isNotNull();
     assertThat(credential2.getSignCount()).isEqualTo(1);
   }
 

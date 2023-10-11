@@ -33,7 +33,7 @@ module Selenium
           after { described_class.driver_path = nil }
 
           it 'uses nil path and default port' do
-            service = described_class.chrome
+            service = described_class.new
 
             expect(service.port).to eq Service::DEFAULT_PORT
             expect(service.host).to eq Platform.localhost
@@ -44,7 +44,7 @@ module Selenium
             path = 'foo'
             port = 5678
 
-            service = described_class.chrome(path: path, port: port)
+            service = described_class.new(path: path, port: port)
 
             expect(service.executable_path).to eq path
             expect(service.port).to eq port
@@ -58,19 +58,26 @@ module Selenium
           end
 
           it 'uses sets log path to stdout' do
-            service = described_class.chrome(log: :stdout)
+            service = described_class.new(log: :stdout)
 
             expect(service.log).to eq $stdout
           end
 
           it 'uses sets log path to stderr' do
-            service = described_class.chrome(log: :stderr)
+            service = described_class.new(log: :stderr)
 
             expect(service.log).to eq $stderr
           end
 
+          it 'setting log output as a file converts to argument' do
+            service = described_class.new(log: '/path/to/log.txt')
+
+            expect(service.log).to be_nil
+            expect(service.args).to eq ['--log-path=/path/to/log.txt']
+          end
+
           it 'uses provided args' do
-            service = described_class.chrome(args: ['--foo', '--bar'])
+            service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
           end

@@ -60,12 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" PrivateAssets="All" /-->
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
@@ -100,11 +95,15 @@
     <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BaseImagePath>..\..\..\common\images</BaseImagePath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
     <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
 
-    <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="\logo.png" Visible="false" />
+    <None Include="$(BaseImagePath)\selenium_logo_small.png" Pack="true" PackagePath="\logo.png" Visible="false" />
 
     <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="\manager\linux" Visible="false" />
     <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="manager\macos" Visible="false" />

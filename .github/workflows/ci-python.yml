@@ -77,18 +77,9 @@ jobs:
         env:
           TOXENV: mypy
 
-  unit-tests:
-    name: Unit Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Unit Tests
-      cache-key: py-unit
-      run: bazel test //py:unit
-
   browser-tests:
     name: Browser Tests
-    needs: unit-tests
+    needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -104,7 +95,7 @@ jobs:
 
   remote-tests:
     name: Remote Tests
-    needs: unit-tests
+    needs: build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests (remote)

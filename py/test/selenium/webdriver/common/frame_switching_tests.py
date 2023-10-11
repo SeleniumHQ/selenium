@@ -229,6 +229,7 @@ def test_should_continue_to_refer_to_the_same_frame_once_it_has_been_selected(dr
 @pytest.mark.xfail_firefox(raises=WebDriverException, reason="https://github.com/mozilla/geckodriver/issues/610")
 @pytest.mark.xfail_remote(raises=WebDriverException, reason="https://github.com/mozilla/geckodriver/issues/610")
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_chrome
 def test_should_focus_on_the_replacement_when_aframe_follows_alink_to_a_top_targeted_page(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(0)

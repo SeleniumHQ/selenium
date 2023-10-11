@@ -25,8 +25,10 @@ import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +44,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExternalProcess;
 
 /**
  * This implementation is still in beta, and may change.
@@ -61,29 +63,31 @@ public class SeleniumManager {
   private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
-  private static final String EXE = ".exe";
 
   private static volatile SeleniumManager manager;
 
-  private Path binary;
+  private final String managerPath = System.getenv("SE_MANAGER_PATH");
+  private Path binary = managerPath == null ? null : Paths.get(managerPath);
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  if (binary != null && Files.exists(binary)) {
-                    try {
-                      Files.delete(binary);
-                    } catch (IOException e) {
-                      LOG.warning(
-                          String.format(
-                              "%s deleting temporal file: %s",
-                              e.getClass().getSimpleName(), e.getMessage()));
+    if (managerPath == null) {
+      Runtime.getRuntime()
+          .addShutdownHook(
+              new Thread(
+                  () -> {
+                    if (binary != null && Files.exists(binary)) {
+                      try {
+                        Files.delete(binary);
+                      } catch (IOException e) {
+                        LOG.warning(
+                            String.format(
+                                "%s deleting temporal file: %s",
+                                e.getClass().getSimpleName(), e.getMessage()));
+                      }
                     }
-                  }
-                }));
+                  }));
+    }
   }
 
   public static SeleniumManager getInstance() {
@@ -109,15 +113,14 @@ public class SeleniumManager {
     String output;
     int code;
     try {
-      CommandLine command =
-          new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
-      command.executeAsync();
-      command.waitFor();
-      if (command.isRunning()) {
-        LOG.warning("Selenium Manager did not exit");
+      ExternalProcess process =
+          ExternalProcess.builder().command(binary.toAbsolutePath().toString(), arguments).start();
+      if (!process.waitFor(Duration.ofHours(1))) {
+        LOG.warning("Selenium Manager did not exit, shutting it down");
+        process.shutdown();
       }
-      code = command.getExitCode();
-      output = command.getStdOut();
+      code = process.exitValue();
+      output = process.getOutput();
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }
@@ -158,30 +161,32 @@ public class SeleniumManager {
    */
   private synchronized Path getBinary() {
     if (binary == null) {
-      try {
-        Platform current = Platform.getCurrent();
-        String folder = "linux";
-        String extension = "";
-        if (current.is(WINDOWS)) {
-          extension = EXE;
-          folder = "windows";
-        } else if (current.is(MAC)) {
-          folder = "macos";
-        }
-        String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-        try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
-          Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
+      Platform current = Platform.getCurrent();
+      String folder = "linux";
+      String extension = "";
+      if (current.is(WINDOWS)) {
+        extension = ".exe";
+        folder = "windows";
+      } else if (current.is(MAC)) {
+        folder = "macos";
+      }
+      String binaryPath = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+      try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPath)) {
+        Path tmpPath = Files.createTempDirectory(SELENIUM_MANAGER + System.nanoTime());
 
-          deleteOnExit(tmpPath);
+        deleteOnExit(tmpPath);
 
-          binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
-          Files.copy(inputStream, binary, REPLACE_EXISTING);
-        }
-        binary.toFile().setExecutable(true);
+        binary = tmpPath.resolve(SELENIUM_MANAGER + extension);
+        Files.copy(inputStream, binary, REPLACE_EXISTING);
       } catch (Exception e) {
         throw new WebDriverException("Unable to obtain Selenium Manager Binary", e);
       }
+    } else if (!Files.exists(binary)) {
+      throw new WebDriverException(
+          String.format("Unable to obtain Selenium Manager Binary at: %s", binary));
     }
+    binary.toFile().setExecutable(true);
+
     LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
 
     return binary;

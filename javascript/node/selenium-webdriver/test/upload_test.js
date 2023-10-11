@@ -29,7 +29,7 @@ const Pages = test.Pages
 test.suite(function (env) {
   var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
   var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
-  var FILE_HTML_2 = '<!DOCTYPE html><div>' + "I love sausages too" + '</div>'
+  var FILE_HTML_2 = '<!DOCTYPE html><div>' + 'I love sausages too' + '</div>'
 
   var _fp
   before(function () {
@@ -109,7 +109,7 @@ test.suite(function (env) {
 
       var frame = await driver.findElement(By.id('upload_target'))
       await driver.switchTo().frame(frame)
-      const txt = await driver.findElement(By.css('body')).getText();
+      const txt = await driver.findElement(By.css('body')).getText()
       assert.strictEqual(
         txt,
         fp.split('/').pop(),

@@ -16,7 +16,6 @@
 // under the License.
 
 use assert_cmd::Command;
-
 use rstest::rstest;
 
 #[rstest]

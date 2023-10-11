@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -38,7 +37,6 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-@Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 class DragAndDropTest extends JupiterTestBase {
 
   private static void sleep(int ms) {

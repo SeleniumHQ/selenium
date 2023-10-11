@@ -679,8 +679,12 @@ class Driver extends webdriver.WebDriver {
    * @param vendorCapabilityKey Either 'goog:chromeOptions' or 'ms:edgeOptions'
    * @return {!Driver} A new driver instance.
    */
-  static createSession(caps, opt_serviceExecutor,
-    vendorPrefix = '', vendorCapabilityKey = '') {
+  static createSession(
+    caps,
+    opt_serviceExecutor,
+    vendorPrefix = '',
+    vendorCapabilityKey = ''
+  ) {
     let executor
     let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
@@ -689,14 +693,14 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
       if (!service.getExecutable()) {
-        const {driverPath, browserPath} = getPath(caps)
+        const { driverPath, browserPath } = getPath(caps)
         service.setExecutable(driverPath)
         const vendorOptions = caps.get(vendorCapabilityKey)
         if (vendorOptions) {
           vendorOptions['binary'] = browserPath
           caps.set(vendorCapabilityKey, vendorOptions)
         } else {
-          caps.set(vendorCapabilityKey, {binary: browserPath})
+          caps.set(vendorCapabilityKey, { binary: browserPath })
         }
       }
       onQuit = () => service.kill()

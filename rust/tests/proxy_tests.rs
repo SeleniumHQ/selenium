@@ -35,7 +35,7 @@ async fn wrong_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "in PATH", DATAERR);
+    assert_output(&mut cmd, result, vec!["in PATH"], DATAERR);
 }
 #[test]
 fn wrong_protocol_proxy_test() {
@@ -45,7 +45,7 @@ fn wrong_protocol_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "There was an error", DATAERR);
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }
 
 #[test]
@@ -61,5 +61,5 @@ fn wrong_port_proxy_test() {
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "There was an error", DATAERR);
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }

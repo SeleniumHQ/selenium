@@ -1,10 +1,9 @@
-load("//common:defs.bzl", "copy_file")
-load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load(
     "//dotnet:defs.bzl",
+    "csharp_library",
+    "framework",
     "generated_assembly_info",
-    "nuget_package",
-    "nuget_push",
+    "nuget_pack",
 )
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -28,7 +27,7 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "webdriver-support",
+    name = "support-lib",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -37,17 +36,37 @@ csharp_library(
         "UI/*.cs",
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
+    private_deps = [
+        framework("nuget", "NETStandard.Library"),
+    ],
     target_frameworks = [
         "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver",
+        framework("nuget", "NETStandard.Library"),
     ],
 )
 
+nuget_pack(
+    name = "support",
+    files = {
+        "//common/images:selenium_logo_small.png": "images/icon.png",
+    },
+    id = "Selenium.Support",
+    libs = {
+        ":support-lib": "WebDriver.Support",
+    },
+    nuspec_template = "WebDriver.Support.nuspec",
+    tags = [
+        "block-network",
+    ],
+    version = SE_VERSION,
+    visibility = ["//visibility:public"],
+)
+
 csharp_library(
-    name = "webdriver-support-strongnamed",
+    name = "support-strongnamed-lib",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -55,56 +74,33 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "strongnamed/WebDriver.Support",
+    out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
+    private_deps = [
+        framework("nuget", "NETStandard.Library"),
+    ],
     target_frameworks = [
         "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:webdriver-strongnamed",
+        framework("nuget", "NETStandard.Library"),
     ],
 )
 
-copy_file(
-    name = "logo",
-    src = "//common/images:selenium_logo_small.png",
-    out = "icon.png",
-)
-
-nuget_package(
-    name = "package",
-    src = "WebDriver.Support.nuspec",
-    create_symbol_package = True,
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.Support",
-    package_version = "{}".format(SE_VERSION),
-    deps = [
-        ":logo",
-        ":webdriver-support",
+nuget_pack(
+    name = "support-strongnamed",
+    files = {
+        "//common/images:selenium_logo_small.png": "images/icon.png",
+    },
+    id = "Selenium.Support.StrongNamed",
+    libs = {
+        ":support-strongnamed-lib": "WebDriver.Support.StrongNamed",
+    },
+    nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
+    tags = [
+        "block-network",
     ],
-)
-
-nuget_package(
-    name = "package-strongnamed",
-    src = "WebDriver.Support.nuspec",
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.Support.StrongNamed",
-    package_version = "{}".format(SE_VERSION),
-    deps = [
-        ":logo",
-        ":webdriver-support-strongnamed",
-    ],
-)
-
-nuget_push(
-    name = "publish",
-    src = ":package",
-    api_key = "//dotnet:nuget-api-key",
+    version = SE_VERSION,
+    visibility = ["//visibility:public"],
 )

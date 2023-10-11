@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +32,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.print.PageMargin;
+import org.openqa.selenium.print.PageSize;
+import org.openqa.selenium.print.PrintOptions;
 
 public class BrowsingContext {
 
@@ -77,6 +79,8 @@ public class BrowsingContext {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
 
+    Require.precondition(!id.isEmpty(), "Browsing Context id cannot be empty");
+
     this.bidi = ((HasBiDi) driver).getBiDi();
     this.id = id;
   }
@@ -95,6 +99,9 @@ public class BrowsingContext {
   public BrowsingContext(WebDriver driver, WindowType type, String referenceContextId) {
     Require.nonNull("WebDriver", driver);
     Require.nonNull("Reference browsing context id", referenceContextId);
+
+    Require.precondition(!referenceContextId.isEmpty(), "Reference Context id cannot be empty");
+
     if (!(driver instanceof HasBiDi)) {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
     }
@@ -110,46 +117,42 @@ public class BrowsingContext {
   private String create(WindowType type) {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.create",
-            ImmutableMap.of("type", type.toString()),
-            browsingContextIdMapper));
+            "browsingContext.create", Map.of("type", type.toString()), browsingContextIdMapper));
   }
 
   private String create(WindowType type, String referenceContext) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.create",
-            ImmutableMap.of("type", type.toString(), "referenceContext", referenceContext),
+            Map.of("type", type.toString(), "referenceContext", referenceContext),
             browsingContextIdMapper));
   }
 
   public NavigationResult navigate(String url) {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.navigate",
-            ImmutableMap.of(CONTEXT, id, "url", url),
-            navigationInfoMapper));
+            "browsingContext.navigate", Map.of(CONTEXT, id, "url", url), navigationInfoMapper));
   }
 
   public NavigationResult navigate(String url, ReadinessState readinessState) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.navigate",
-            ImmutableMap.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
+            Map.of(CONTEXT, id, "url", url, "wait", readinessState.toString()),
             navigationInfoMapper));
   }
 
   public List<BrowsingContextInfo> getTree() {
     return this.bidi.send(
         new Command<>(
-            "browsingContext.getTree", ImmutableMap.of("root", id), browsingContextInfoListMapper));
+            "browsingContext.getTree", Map.of("root", id), browsingContextInfoListMapper));
   }
 
   public List<BrowsingContextInfo> getTree(int maxDepth) {
     return this.bidi.send(
         new Command<>(
             "browsingContext.getTree",
-            ImmutableMap.of(
+            Map.of(
                 "root", id,
                 "maxDepth", maxDepth),
             browsingContextInfoListMapper));
@@ -160,56 +163,164 @@ public class BrowsingContext {
         new Command<>("browsingContext.getTree", new HashMap<>(), browsingContextInfoListMapper));
   }
 
-  // Yet to be implemented by browser vendors
-  private void reload() {
-    this.bidi.send(new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id)));
+  public NavigationResult reload() {
+    return this.bidi.send(new Command<>(RELOAD, Map.of(CONTEXT, id), navigationInfoMapper));
   }
 
   // Yet to be implemented by browser vendors
-  private void reload(boolean ignoreCache) {
-    this.bidi.send(new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id, "ignoreCache", ignoreCache)));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void reload(ReadinessState readinessState) {
-    this.bidi.send(
-        new Command<>(RELOAD, ImmutableMap.of(CONTEXT, id, "wait", readinessState.toString())));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void reload(boolean ignoreCache, ReadinessState readinessState) {
-    this.bidi.send(
-        new Command<>(
-            RELOAD,
-            ImmutableMap.of(
-                CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString())));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt() {
-    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id)));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(String userText) {
-    this.bidi.send(
-        new Command<>(HANDLE_USER_PROMPT, ImmutableMap.of(CONTEXT, id, "userText", userText)));
-  }
-
-  // Yet to be implemented by browser vendors
-  private void handleUserPrompt(boolean accept, String userText) {
-    this.bidi.send(
-        new Command<>(
-            HANDLE_USER_PROMPT,
-            ImmutableMap.of(CONTEXT, id, "accept", accept, "userText", userText)));
-  }
-
-  // Yet to be implemented by browser vendors
-  private String captureScreenshot() {
+  private NavigationResult reload(boolean ignoreCache) {
     return this.bidi.send(
         new Command<>(
-            HANDLE_USER_PROMPT,
-            ImmutableMap.of(CONTEXT, id),
+            RELOAD, Map.of(CONTEXT, id, "ignoreCache", ignoreCache), navigationInfoMapper));
+  }
+
+  // TODO: Handle timeouts in case of Readiness state "interactive" and "complete".
+  // Refer https://github.com/w3c/webdriver-bidi/issues/188
+  public NavigationResult reload(ReadinessState readinessState) {
+    return this.bidi.send(
+        new Command<>(
+            RELOAD, Map.of(CONTEXT, id, "wait", readinessState.toString()), navigationInfoMapper));
+  }
+
+  // Yet to be implemented by browser vendors
+  private NavigationResult reload(boolean ignoreCache, ReadinessState readinessState) {
+    return this.bidi.send(
+        new Command<>(
+            RELOAD,
+            Map.of(CONTEXT, id, "ignoreCache", ignoreCache, "wait", readinessState.toString()),
+            navigationInfoMapper));
+  }
+
+  public void handleUserPrompt() {
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id)));
+  }
+
+  public void handleUserPrompt(boolean accept) {
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "accept", accept)));
+  }
+
+  public void handleUserPrompt(String userText) {
+    this.bidi.send(new Command<>(HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "userText", userText)));
+  }
+
+  public void handleUserPrompt(boolean accept, String userText) {
+    this.bidi.send(
+        new Command<>(
+            HANDLE_USER_PROMPT, Map.of(CONTEXT, id, "accept", accept, "userText", userText)));
+  }
+
+  public String captureScreenshot() {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            Map.of(CONTEXT, id),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
+  public String captureBoxScreenshot(double x, double y, double width, double height) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            Map.of(
+                CONTEXT,
+                id,
+                "clip",
+                Map.of(
+                    "type", "viewport",
+                    "x", x,
+                    "y", y,
+                    "width", width,
+                    "height", height)),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
+  public String captureElementScreenshot(String elementId) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            Map.of(
+                CONTEXT,
+                id,
+                "clip",
+                Map.of(
+                    "type",
+                    "element",
+                    "element",
+                    Map.of("sharedId", elementId),
+                    "scrollIntoView",
+                    false)),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
+  public String captureElementScreenshot(String elementId, boolean scrollIntoView) {
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.captureScreenshot",
+            Map.of(
+                CONTEXT,
+                id,
+                "clip",
+                Map.of(
+                    "type",
+                    "element",
+                    "element",
+                    Map.of("sharedId", elementId),
+                    "scrollIntoView",
+                    scrollIntoView)),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("data");
+            }));
+  }
+
+  public void setViewport(double width, double height) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(CONTEXT, id, "viewport", Map.of("width", width, "height", height))));
+  }
+
+  public void setViewport(double width, double height, double devicePixelRatio) {
+    Require.positive("Viewport width", width);
+    Require.positive("Viewport height", height);
+    Require.positive("Device pixel ratio.", devicePixelRatio);
+
+    this.bidi.send(
+        new Command<>(
+            "browsingContext.setViewport",
+            Map.of(
+                CONTEXT,
+                id,
+                "viewport",
+                Map.of("width", width, "height", height),
+                "devicePixelRatio",
+                devicePixelRatio)));
+  }
+
+  public void activate() {
+    this.bidi.send(new Command<>("browsingContext.activate", Map.of(CONTEXT, id)));
+  }
+
+  public String print(PrintOptions printOptions) {
+    Map<String, Object> printOptionsParams = printOptions.toMap();
+    printOptionsParams.put(CONTEXT, id);
+
+    return this.bidi.send(
+        new Command<>(
+            "browsingContext.print",
+            printOptionsParams,
             jsonInput -> {
               Map<String, Object> result = jsonInput.read(Map.class);
               return (String) result.get("data");
@@ -220,6 +331,6 @@ public class BrowsingContext {
     // This might need more clean up actions once the behavior is defined.
     // Specially when last tab or window is closed.
     // Refer: https://github.com/w3c/webdriver-bidi/issues/187
-    this.bidi.send(new Command<>("browsingContext.close", ImmutableMap.of(CONTEXT, id)));
+    this.bidi.send(new Command<>("browsingContext.close", Map.of(CONTEXT, id)));
   }
 }

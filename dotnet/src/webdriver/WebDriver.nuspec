@@ -27,7 +27,6 @@
     <tags>selenium webdriver browser automation</tags>
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="Microsoft.IdentityModel.Tokens" version="6.19.0" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
         <dependency id="System.Drawing.Common" version="7.0.0" exclude="Build,Analyzers" />
       </group>
@@ -37,12 +36,6 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**\WebDriver.dll" target="lib" />
-    <file src="**\WebDriver.pdb" target="lib" />
-    <file src="**\WebDriver.xml" target="lib" />
-    <file src="..\icon.png" target="images" />
-    <file src="..\manager\**" target="manager" />
-    <file src="..\Selenium.WebDriver.targets" target="build" />
-    <file src="..\Selenium.WebDriver.targets" target="buildTransitive" />
+    <file src="**" target="." exclude="obj\**;*.csproj;*.config"/>
   </files>
 </package>

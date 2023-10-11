@@ -75,29 +75,34 @@ module Selenium
         # @return [String] the path to the correct selenium manager
         def binary
           @binary ||= begin
-            path = File.expand_path(bin_path, __FILE__)
-            path << if Platform.windows?
-                      '/windows/selenium-manager.exe'
-                    elsif Platform.mac?
-                      '/macos/selenium-manager'
-                    elsif Platform.linux?
-                      '/linux/selenium-manager'
-                    end
-            location = File.expand_path(path, __FILE__)
+            location = ENV.fetch('SE_MANAGER_PATH', begin
+              directory = File.expand_path(bin_path, __FILE__)
+              if Platform.windows?
+                "#{directory}/windows/selenium-manager.exe"
+              elsif Platform.mac?
+                "#{directory}/macos/selenium-manager"
+              elsif Platform.linux?
+                "#{directory}/linux/selenium-manager"
+              end
+            end)
 
-            begin
-              Platform.assert_file(location)
-              Platform.assert_executable(location)
-            rescue TypeError
-              raise Error::WebDriverError,
-                    "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
-            rescue Error::WebDriverError => e
-              raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
-            end
-
-            WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
+            validate_location(location)
             location
           end
+        end
+
+        def validate_location(location)
+          begin
+            Platform.assert_file(location)
+            Platform.assert_executable(location)
+          rescue TypeError
+            raise Error::WebDriverError,
+                  "Unable to locate or obtain Selenium Manager binary; #{location} is not a valid file object"
+          rescue Error::WebDriverError => e
+            raise Error::WebDriverError, "Selenium Manager binary located, but #{e.message}"
+          end
+
+          WebDriver.logger.debug("Selenium Manager binary found at #{location}", id: :selenium_manager)
         end
 
         def run(*command)

@@ -455,7 +455,16 @@ namespace OpenQA.Selenium.DevTools
             // in the IEnumerable, meaning the foreach loop will terminate gracefully.
             foreach (string message in this.messageQueue.GetConsumingEnumerable())
             {
-                this.ProcessMessage(message);
+                // Don't breake entire thread in case of unsuccessful message,
+                // and give a chance for the next message in queue to be processed
+                try
+                {
+                    this.ProcessMessage(message);
+                }
+                catch (Exception ex)
+                {
+                    LogError("Unexpected error occured while processing message: {0}", ex);
+                }
             }
         }
 

@@ -16,16 +16,15 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use crate::config::OS::MACOS;
+use crate::files::BrowserPath;
+use crate::{create_http_client, Logger, SeleniumManager, STABLE};
+use anyhow::anyhow;
+use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
-use std::error::Error;
 use std::path::PathBuf;
 use std::string::ToString;
-
-use crate::files::BrowserPath;
-
-use crate::config::OS::MACOS;
-use crate::{create_http_client, Logger, SeleniumManager, STABLE};
 
 pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
@@ -47,7 +46,7 @@ pub struct SafariTPManager {
 }
 
 impl SafariTPManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = SAFARITP_NAMES[0];
         let driver_name = SAFARITPDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
@@ -68,6 +67,10 @@ impl SeleniumManager for SafariTPManager {
         self.browser_name
     }
 
+    fn get_browser_names_in_path(&self) -> Vec<&str> {
+        vec![self.get_browser_name()]
+    }
+
     fn get_http_client(&self) -> &Client {
         &self.http_client
     }
@@ -80,7 +83,7 @@ impl SeleniumManager for SafariTPManager {
         HashMap::from([(BrowserPath::new(MACOS, STABLE), SAFARITP_PATH)])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.discover_safari_version(SAFARITP_FULL_PATH.to_string())
     }
 
@@ -88,19 +91,22 @@ impl SeleniumManager for SafariTPManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         Ok("(local)".to_string())
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         Ok(None)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
-        Err(format!("{} not available for download", self.get_driver_name()).into())
+    fn get_driver_url(&mut self) -> Result<String, Error> {
+        Err(anyhow!(format!(
+            "{} not available for download",
+            self.get_driver_name()
+        )))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(PathBuf::from(
             "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver",
         ))
@@ -126,19 +132,40 @@ impl SeleniumManager for SafariTPManager {
         self.log = log;
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Box<dyn Error>> {
-        Ok(None)
-    }
-
     fn get_platform_label(&self) -> &str {
         ""
     }
 
-    fn request_latest_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Error> {
         self.unavailable_download()
     }
 
-    fn request_fixed_browser_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_fixed_browser_version_from_online(
+        &mut self,
+        _browser_version: &str,
+    ) -> Result<String, Error> {
+        self.unavailable_download()
+    }
+
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_url_for_download(&mut self, _browser_version: &str) -> Result<String, Error> {
+        self.unavailable_download()
+    }
+
+    fn get_browser_label_for_download(
+        &self,
+        _browser_version: &str,
+    ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
     }
 }

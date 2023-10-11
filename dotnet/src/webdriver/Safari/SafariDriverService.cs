@@ -46,6 +46,12 @@ namespace OpenQA.Selenium.Safari
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new SafariOptions();
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether to use the default open-source project
         /// dialect of the protocol instead of the default dialect compliant with the

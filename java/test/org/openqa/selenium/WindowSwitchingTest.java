@@ -26,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -338,7 +337,6 @@ class WindowSwitchingTest extends JupiterTestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void canOpenANewWindow() {
     driver.get(pages.xhtmlTestPage);
 

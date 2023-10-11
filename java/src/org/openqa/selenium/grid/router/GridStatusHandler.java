@@ -29,7 +29,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -43,8 +42,7 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -71,9 +69,8 @@ class GridStatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
 
     try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
@@ -87,8 +84,7 @@ class GridStatusHandler implements HttpHandler {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue(
-                "Error or timeout while getting Distributor " + "status: " + e.getMessage()));
+            "Error or timeout while getting Distributor " + "status: " + e.getMessage());
         HttpResponse response =
             new HttpResponse()
                 .setContent(
@@ -109,8 +105,7 @@ class GridStatusHandler implements HttpHandler {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue(
-                "Interruption while getting distributor status: " + e.getMessage()));
+            "Interruption while getting distributor status: " + e.getMessage());
 
         HttpResponse response =
             new HttpResponse()
@@ -163,7 +158,7 @@ class GridStatusHandler implements HttpHandler {
           new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
       HTTP_RESPONSE_EVENT.accept(attributeMap, res);
-      attributeMap.put("grid.status", EventAttribute.setValue(ready));
+      attributeMap.put("grid.status", ready);
       span.setStatus(Status.OK);
       span.addEvent("Computed grid status", attributeMap);
       return res;

@@ -19,6 +19,7 @@
 
 const path = require('path')
 const cp = require('child_process')
+const logging = require('../lib/logging')
 
 /**
  * returns path to java or 'java' string if JAVA_HOME does not exist in env obj
@@ -37,7 +38,11 @@ function getJavaPath() {
 function isSelenium3x(seleniumStandalonePath) {
   const javaPath = getJavaPath()
 
-  const execRes = cp.execFileSync(javaPath, ['-jar', seleniumStandalonePath, '--version'])
+  const execRes = cp.execFileSync(javaPath, [
+    '-jar',
+    seleniumStandalonePath,
+    '--version',
+  ])
 
   return execRes.toString().trim().startsWith('Selenium server version: 3')
 }
@@ -50,9 +55,11 @@ function isSelenium3x(seleniumStandalonePath) {
  */
 function formatSpawnArgs(seleniumStandalonePath, args) {
   if (isSelenium3x(seleniumStandalonePath)) {
-    console.warn(
-      'Deprecation: Support for Standalone Server 3.x will be removed soon. Please update to version 4.x'
-    )
+    logging
+      .getLogger(logging.Type.SERVER)
+      .warning(
+        'Deprecation: Support for Standalone Server 3.x will be removed soon. Please update to version 4.x',
+      )
     return args
   }
 
