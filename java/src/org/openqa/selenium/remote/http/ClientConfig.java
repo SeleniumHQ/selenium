@@ -39,7 +39,7 @@ public class ClientConfig {
   private final Proxy proxy;
   private final Credentials credentials;
   private final SSLContext sslContext;
-  private String version;
+  private final String version;
 
   protected ClientConfig(
       URI baseUri,
