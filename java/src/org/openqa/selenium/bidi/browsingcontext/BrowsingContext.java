@@ -32,8 +32,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-import org.openqa.selenium.print.PageMargin;
-import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
 
 public class BrowsingContext {
