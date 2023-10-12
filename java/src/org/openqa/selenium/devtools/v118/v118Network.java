@@ -19,7 +19,6 @@ package org.openqa.selenium.devtools.v118;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +65,7 @@ public class v118Network extends Network<AuthRequired, RequestPaused> {
   protected Command<Void> enableFetchForAllPatterns() {
     return Fetch.enable(
         Optional.of(
-            ImmutableList.of(
+            List.of(
                 new RequestPattern(
                     Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
                 new RequestPattern(

@@ -25,8 +25,10 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
 
@@ -419,6 +421,28 @@ public class JsonInput implements Closeable {
     }
 
     return coercer.coerce(this, type, setter);
+  }
+
+  /**
+   * Read an array of elements from the JSON input stream with elements as the specified type.
+   *
+   * @param type data type for deserialization (class or {@link TypeToken})
+   * @return list of objects of the specified type deserialized from the JSON input stream<br>
+   *     <b>NOTE</b>: Returns {@code null} if the input string is exhausted.
+   * @param <T> result type of the item in the list (as specified by [type])
+   * @throws JsonException if coercion of the next element to the specified type fails
+   * @throws UncheckedIOException if an I/O exception is encountered
+   */
+  public <T> List<T> readArray(Type type) {
+    List<T> toReturn = new ArrayList<>();
+
+    beginArray();
+    while (hasNext()) {
+      toReturn.add(coercer.coerce(this, type, setter));
+    }
+    endArray();
+
+    return toReturn;
   }
 
   /**

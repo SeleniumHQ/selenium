@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools.events;
 
-import com.google.common.collect.ImmutableList;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +35,7 @@ public class ConsoleEvent {
     this.type = type;
     this.timestamp = timestamp;
     this.modifiedArgs = modifiedArgs;
-    this.args = ImmutableList.copyOf(args);
+    this.args = List.of(args);
   }
 
   public String getType() {
