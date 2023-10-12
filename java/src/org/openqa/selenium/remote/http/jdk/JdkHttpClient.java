@@ -103,8 +103,13 @@ public class JdkHttpClient implements HttpClient {
           new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-              return new PasswordAuthentication(username, password.toCharArray());
+              if (username != null && password != null) {
+                return new PasswordAuthentication(username, password.toCharArray());
+              } else {
+                return null;
+              }
             }
+
           };
       builder = builder.authenticator(authenticator);
     } else if (credentials != null) {
@@ -129,10 +134,7 @@ public class JdkHttpClient implements HttpClient {
           new ProxySelector() {
             @Override
             public List<Proxy> select(URI uri) {
-              if (proxy == null) {
-                return List.of();
-              }
-              if (uri.getScheme().toLowerCase().startsWith("http")) {
+                if (uri.getScheme().toLowerCase().startsWith("http")) {
                 return List.of(proxy);
               }
               return List.of();
