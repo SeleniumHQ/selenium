@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
+import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.ProtocolException;
 import java.net.Proxy;
@@ -45,6 +46,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -123,28 +125,34 @@ public class JdkHttpClient implements HttpClient {
       builder = builder.authenticator(authenticator);
     }
 
-    Proxy proxy = config.proxy();
-    if (proxy != null) {
-      ProxySelector proxySelector =
-          new ProxySelector() {
-            @Override
-            public List<Proxy> select(URI uri) {
-              if (proxy == null) {
-                return List.of();
-              }
-              if (uri.getScheme().toLowerCase().startsWith("http")) {
-                return List.of(proxy);
-              }
+    String proxyHost = System.getProperty("http.proxyHost");
+    String proxyPort = System.getProperty("http.proxyPort");
+
+    Proxy proxy =
+        (proxyHost != null && proxyPort != null)
+            ? new Proxy(
+                Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)))
+            : config.proxy();
+
+    ProxySelector proxySelector =
+        new ProxySelector() {
+          @Override
+          public List<Proxy> select(URI uri) {
+            if (proxy == null) {
               return List.of();
             }
-
-            @Override
-            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-              // Do nothing
+            if (uri.getScheme().toLowerCase().startsWith("http")) {
+              return List.of(proxy);
             }
-          };
-      builder = builder.proxy(proxySelector);
-    }
+            return List.of();
+          }
+
+          @Override
+          public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            // Do nothing
+          }
+        };
+    builder = builder.proxy(proxySelector);
 
     SSLContext sslContext = config.sslContext();
     if (sslContext != null) {
