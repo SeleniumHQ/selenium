@@ -68,6 +68,7 @@ pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
+pub const ESR: &str = "esr";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_VERSION_ARG: &str = "version";
@@ -202,7 +203,10 @@ pub trait SeleniumManager {
         }
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Error> {
+    fn download_browser(
+        &mut self,
+        original_browser_version: String,
+    ) -> Result<Option<PathBuf>, Error> {
         if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
             return Err(anyhow!(format_one_arg(
                 NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
@@ -211,7 +215,6 @@ pub trait SeleniumManager {
         }
 
         let browser_version;
-        let original_browser_version = self.get_config().browser_version.clone();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
         let major_browser_version = self.get_major_browser_version();
@@ -421,6 +424,7 @@ pub trait SeleniumManager {
     fn discover_driver_version_and_download_browser_if_necessary(
         &mut self,
     ) -> Result<String, Error> {
+        let original_browser_version = self.get_config().browser_version.clone();
         let mut download_browser = self.is_force_browser_download();
         let major_browser_version = self.get_major_browser_version();
 
@@ -498,7 +502,7 @@ pub trait SeleniumManager {
             && !self.is_safari()
             && !self.is_webview2()
         {
-            let browser_path = self.download_browser()?;
+            let browser_path = self.download_browser(original_browser_version)?;
             if browser_path.is_some() {
                 self.get_logger().debug(format!(
                     "{} {} is available at {}",
@@ -669,11 +673,20 @@ pub trait SeleniumManager {
             || browser_version.eq_ignore_ascii_case(CANARY)
     }
 
+    fn is_browser_version_esr(&self) -> bool {
+        self.is_esr(self.get_browser_version())
+    }
+
+    fn is_esr(&self, browser_version: &str) -> bool {
+        browser_version.eq_ignore_ascii_case(ESR)
+    }
+
     fn is_unstable(&self, browser_version: &str) -> bool {
         browser_version.eq_ignore_ascii_case(BETA)
             || browser_version.eq_ignore_ascii_case(DEV)
             || browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
+            || browser_version.eq_ignore_ascii_case(ESR)
     }
 
     fn is_browser_version_unstable(&self) -> bool {
