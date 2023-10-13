@@ -1,3 +1,14 @@
+v4.14.1
+======
+* Add print, activate and set viewport commands to Browsing Context
+* Remove deprecated lift packages (#12917)
+* Add validation for browsing context id (#12920)
+* Fix default values for print options page size
+* Use the java process builder to run external processes (#12898)
+* Allow a custom timeout when shutting down a process
+* Replacing Guava implementations with native Java implementations
+* Allow setting version in Http Client Config (#12919)
+
 v4.14.0
 ======
 * Supported CDP versions: 85, 116, 117, 118
@@ -12,7 +23,7 @@ v4.14.0
 * Allow setting SSL context in client config for HttpClient (#12874)
 * Improve warning when CDP version not found (#12880)
 * Ensure retry mechanism does not swallow an exception (#12838)
-* Require Java 11 (#12843)
+* Require Java 11 and move jdk-http-client into default package (#12843)
 * Reduce log noise at FINE level (#12866)
 * Refactor frame method to use isEmpty for list check and String check. (#12894)
 * Use new 'getArray' method to extract driver configurations (#12716)

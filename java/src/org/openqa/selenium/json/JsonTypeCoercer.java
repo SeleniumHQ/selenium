@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
@@ -127,9 +126,7 @@ class JsonTypeCoercer {
                 (l, r) -> {
                   l.putAll(r);
                   return l;
-                },
-                UNORDERED,
-                CONCURRENT)));
+                })));
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
