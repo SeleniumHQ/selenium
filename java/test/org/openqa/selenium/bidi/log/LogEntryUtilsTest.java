@@ -25,15 +25,15 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonInputFactory;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-
 public class LogEntryUtilsTest extends JupiterTestBase {
 
   @Test
-  public void testFromJsonForGenericLogEntry(){
+  public void testFromJsonForGenericLogEntry() {
     String json = "{ \"level\": \"info\", \"text\": \"Test\", \"timestamp\": 12345 }";
     JsonInput input = JsonInputFactory.createJsonInput(json); // Utiliza JsonInputFactory
 
-    GenericLogEntry entry = (GenericLogEntry) LogEntryUtils.fromJson("GenericLogEntry", input, "defaultType");
+    GenericLogEntry entry =
+        (GenericLogEntry) LogEntryUtils.fromJson("GenericLogEntry", input, "defaultType");
 
     assertEquals("info", entry.getLevel().toString());
     assertEquals("Test", entry.getText());
@@ -42,11 +42,12 @@ public class LogEntryUtilsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testFromJsonForJavascriptLogEntry(){
+  public void testFromJsonForJavascriptLogEntry() {
     String json = "{ \"level\": \"info\", \"text\": \"Test JS\", \"timestamp\": 67890 }";
     JsonInput input = JsonInputFactory.createJsonInput(json); // Utiliza JsonInputFactory
 
-    JavascriptLogEntry entry = (JavascriptLogEntry) LogEntryUtils.fromJson("JavascriptLogEntry", input, "javascript");
+    JavascriptLogEntry entry =
+        (JavascriptLogEntry) LogEntryUtils.fromJson("JavascriptLogEntry", input, "javascript");
 
     assertEquals("info", entry.getLevel().toString());
     assertEquals("Test JS", entry.getText());
@@ -55,7 +56,7 @@ public class LogEntryUtilsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testFromJsonForUnknownType(){
+  public void testFromJsonForUnknownType() {
     String json = "{ \"level\": \"INFO\", \"text\": \"Test\", \"timestamp\": 12345 }";
     JsonInput input = JsonInputFactory.createJsonInput(json); // Utiliza JsonInputFactory
 

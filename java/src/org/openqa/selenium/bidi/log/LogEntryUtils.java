@@ -20,7 +20,7 @@ package org.openqa.selenium.bidi.log;
 import org.openqa.selenium.json.JsonInput;
 
 public interface LogEntryUtils {
-  static GenericLogEntry fromJson(String name,JsonInput input, String type) {
+  static GenericLogEntry fromJson(String name, JsonInput input, String type) {
     LogLevel level = null;
     String text = null;
     long timestamp = 0;
@@ -56,9 +56,5 @@ public interface LogEntryUtils {
       default:
         throw new IllegalArgumentException("Unknown name: " + name);
     }
-
   }
-
-
-
 }
