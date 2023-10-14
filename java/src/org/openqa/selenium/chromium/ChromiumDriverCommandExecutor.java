@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -44,11 +45,12 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
   }
 
   private static Map<String, CommandInfo> getExtraCommands(Map<String, CommandInfo> commands) {
-    return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(commands)
-        .putAll(new AddHasNetworkConditions().getAdditionalCommands())
-        .putAll(new AddHasPermissions().getAdditionalCommands())
-        .putAll(new AddHasLaunchApp().getAdditionalCommands())
-        .build();
+    return Stream.of(
+            commands,
+            new AddHasNetworkConditions().getAdditionalCommands(),
+            new AddHasPermissions().getAdditionalCommands(),
+            new AddHasLaunchApp().getAdditionalCommands())
+        .flatMap((m) -> m.entrySet().stream())
+        .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

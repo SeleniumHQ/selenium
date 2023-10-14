@@ -20,7 +20,6 @@ package org.openqa.selenium.edge;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -34,7 +33,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           GET_CAST_SINKS, new CommandInfo("session/:sessionId/ms/cast/get_sinks", HttpMethod.GET),
           SET_CAST_SINK_TO_USE,
               new CommandInfo("session/:sessionId/ms/cast/set_sink_to_use", HttpMethod.POST),
