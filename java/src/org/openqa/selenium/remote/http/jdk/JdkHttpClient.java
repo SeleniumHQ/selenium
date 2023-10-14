@@ -67,6 +67,8 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import static java.util.Optional.ofNullable;
+
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
@@ -148,15 +150,9 @@ public class JdkHttpClient implements HttpClient {
       builder = builder.proxy(proxySelector);
     }
 
-    SSLContext sslContext = config.sslContext();
-    if (sslContext != null) {
-      builder.sslContext(sslContext);
-    }
+    ofNullable(config.sslContext()).ifPresent(builder::sslContext);
 
-    String version = config.version();
-    if (version != null) {
-      builder.version(Version.valueOf(version));
-    }
+    ofNullable(config.version()).map(Version::valueOf).ifPresent(builder::version);
 
     this.client = builder.build();
   }
