@@ -18,7 +18,6 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -37,7 +36,7 @@ public class AddHasPermissions
   public static final String SET_PERMISSIONS = "setPermissions";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           GET_PERMISSIONS, new CommandInfo("/session/:sessionId/apple/permissions", HttpMethod.GET),
           SET_PERMISSIONS,
               new CommandInfo("/session/:sessionId/apple/permissions", HttpMethod.POST));
@@ -62,8 +61,7 @@ public class AddHasPermissions
     return new HasPermissions() {
       @Override
       public void setPermissions(String permission, boolean value) {
-        executeMethod.execute(
-            SET_PERMISSIONS, ImmutableMap.of("permissions", ImmutableMap.of(permission, value)));
+        executeMethod.execute(SET_PERMISSIONS, Map.of("permissions", Map.of(permission, value)));
       }
 
       @Override

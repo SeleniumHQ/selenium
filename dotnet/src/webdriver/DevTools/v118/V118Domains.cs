@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.DevTools.V118
         private DevToolsSessionDomains domains;
 
         /// <summary>
-        /// Initializes a new instance of the V115Domains class.
+        /// Initializes a new instance of the V118Domains class.
         /// </summary>
         /// <param name="session">The DevToolsSession to use with this set of domains.</param>
         public V118Domains(DevToolsSession session)

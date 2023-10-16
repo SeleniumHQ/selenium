@@ -20,7 +20,6 @@ package org.openqa.selenium.edge;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -34,8 +33,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
-          EXECUTE_CDP, new CommandInfo("session/:sessionId/ms/cdp/execute", HttpMethod.POST));
+      Map.of(EXECUTE_CDP, new CommandInfo("session/:sessionId/ms/cdp/execute", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
