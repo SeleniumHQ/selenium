@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -39,7 +38,7 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
   public static final String GET_CONTEXT = "getContext";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           SET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST),
           GET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.GET));
 
@@ -65,7 +64,7 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
       public void setContext(FirefoxCommandContext context) {
         Require.nonNull("Firefox Command Context", context);
 
-        executeMethod.execute(SET_CONTEXT, ImmutableMap.of("context", context));
+        executeMethod.execute(SET_CONTEXT, Map.of("context", context));
       }
 
       @Override
