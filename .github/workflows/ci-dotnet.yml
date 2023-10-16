@@ -13,7 +13,8 @@ jobs:
       cache-key: false
       os: windows
       run: |
-        bazel build //dotnet:all
+        bazel build //dotnet/src/webdriver --stamp
+        bazel build //dotnet/src/support --stamp
 
   integration-tests:
     name: Browser Tests
@@ -24,4 +25,4 @@ jobs:
       java-version: 17
       os: windows
       run: |
-        bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome
+        bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome --pin_browsers=true --stamp
