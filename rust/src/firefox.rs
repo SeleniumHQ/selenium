@@ -28,7 +28,7 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, format_three_args, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
+    DASH_VERSION, DEV, ESR, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
 };
 use anyhow::anyhow;
 use anyhow::Error;
@@ -49,6 +49,7 @@ const FIREFOX_STABLE_LABEL: &str = "LATEST_FIREFOX_VERSION";
 const FIREFOX_BETA_LABEL: &str = "LATEST_FIREFOX_RELEASED_DEVEL_VERSION";
 const FIREFOX_DEV_LABEL: &str = "FIREFOX_DEVEDITION";
 const FIREFOX_CANARY_LABEL: &str = "FIREFOX_NIGHTLY";
+const FIREFOX_ESR_LABEL: &str = "FIREFOX_ESR";
 const FIREFOX_VERSIONS_ENDPOINT: &str = "firefox_versions.json";
 const FIREFOX_HISTORY_ENDPOINT: &str = "firefox_history_stability_releases.json";
 const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases.json";
@@ -147,6 +148,10 @@ impl SeleniumManager for FirefoxManager {
                 r#"Firefox Nightly\firefox.exe"#,
             ),
             (
+                BrowserPath::new(WINDOWS, ESR),
+                r#"Mozilla Firefox\firefox.exe"#,
+            ),
+            (
                 BrowserPath::new(MACOS, STABLE),
                 r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
             ),
@@ -162,10 +167,15 @@ impl SeleniumManager for FirefoxManager {
                 BrowserPath::new(MACOS, NIGHTLY),
                 r#"/Applications/Firefox Nightly.app/Contents/MacOS/firefox"#,
             ),
+            (
+                BrowserPath::new(MACOS, ESR),
+                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+            ),
             (BrowserPath::new(LINUX, STABLE), "/usr/bin/firefox"),
             (BrowserPath::new(LINUX, BETA), "/usr/bin/firefox"),
             (BrowserPath::new(LINUX, DEV), "/usr/bin/firefox"),
             (BrowserPath::new(LINUX, NIGHTLY), "/usr/bin/firefox-trunk"),
+            (BrowserPath::new(LINUX, ESR), "/usr/bin/firefox"),
         ])
     }
 
@@ -358,32 +368,33 @@ impl SeleniumManager for FirefoxManager {
 
     fn request_fixed_browser_version_from_online(
         &mut self,
-        _browser_version: &str,
+        browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
-        let browser_version = self.get_browser_version().to_string();
         self.get_logger().trace(format!(
             "Using Firefox endpoints to find out {} {}",
             browser_name, browser_version
         ));
 
-        if self.is_browser_version_unstable() {
+        if self.is_unstable(browser_version) {
             let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
             let firefox_versions =
                 parse_generic_json_from_url(self.get_http_client(), firefox_versions_url)?;
-            let version_label = if browser_version.eq_ignore_ascii_case(BETA) {
+            let version_label = if self.is_beta(browser_version) {
                 FIREFOX_BETA_LABEL
-            } else if browser_version.eq_ignore_ascii_case(DEV) {
+            } else if self.is_dev(browser_version) {
                 FIREFOX_DEV_LABEL
+            } else if self.is_esr(browser_version) {
+                FIREFOX_ESR_LABEL
             } else {
                 FIREFOX_CANARY_LABEL
             };
-            let browser_version = firefox_versions
+            let discovered_browser_version = firefox_versions
                 .get(version_label)
                 .unwrap()
                 .as_str()
                 .unwrap();
-            Ok(browser_version.to_string())
+            Ok(discovered_browser_version.to_string())
         } else {
             let major_browser_version = self
                 .get_major_browser_version()
@@ -395,7 +406,7 @@ impl SeleniumManager for FirefoxManager {
                 return Err(anyhow!(format_three_args(
                     UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE,
                     browser_name,
-                    &browser_version,
+                    browser_version,
                     &min_downloadable_version.to_string(),
                 )));
             }

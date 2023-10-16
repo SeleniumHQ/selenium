@@ -20,9 +20,8 @@ package org.openqa.selenium.devtools.events;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.io.Resources;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -68,13 +67,14 @@ public class CdpEventTypes {
   public static EventType<Void> domMutation(Consumer<DomMutationEvent> handler) {
     Require.nonNull("Handler", handler);
 
-    URL url = CdpEventTypes.class.getResource("/org/openqa/selenium/devtools/mutation-listener.js");
-    if (url == null) {
-      throw new IllegalStateException("Unable to find helper script");
-    }
     String script;
-    try {
-      script = Resources.toString(url, UTF_8);
+    try (InputStream stream =
+        CdpEventTypes.class.getResourceAsStream(
+            "/org/openqa/selenium/devtools/mutation-listener.js")) {
+      if (stream == null) {
+        throw new IllegalStateException("Unable to find helper script");
+      }
+      script = new String(stream.readAllBytes(), UTF_8);
     } catch (IOException e) {
       throw new IllegalStateException("Unable to read helper script");
     }
