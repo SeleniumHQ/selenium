@@ -16,8 +16,9 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
@@ -88,10 +89,10 @@ public class EdgeDriver extends ChromiumDriver {
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
-      return ImmutableMap.<String, CommandInfo>builder()
-          .putAll(new AddHasCasting().getAdditionalCommands())
-          .putAll(new AddHasCdp().getAdditionalCommands())
-          .build();
+      return Stream.of(
+              new AddHasCasting().getAdditionalCommands(), new AddHasCdp().getAdditionalCommands())
+          .flatMap((m) -> m.entrySet().stream())
+          .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }
 }

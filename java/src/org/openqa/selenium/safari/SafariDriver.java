@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -133,10 +134,11 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
-      return ImmutableMap.<String, CommandInfo>builder()
-          .putAll(new AddHasPermissions().getAdditionalCommands())
-          .putAll(new AddHasDebugger().getAdditionalCommands())
-          .build();
+      return Stream.of(
+              new AddHasPermissions().getAdditionalCommands(),
+              new AddHasDebugger().getAdditionalCommands())
+          .flatMap((m) -> m.entrySet().stream())
+          .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }
 }
