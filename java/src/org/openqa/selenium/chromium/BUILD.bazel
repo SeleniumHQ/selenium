@@ -1,4 +1,3 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -17,6 +16,5 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        artifact("com.google.guava:guava"),
     ],
 )

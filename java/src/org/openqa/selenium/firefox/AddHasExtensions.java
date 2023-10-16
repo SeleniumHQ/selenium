@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -51,7 +50,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
   public static final String UNINSTALL_EXTENSION = "uninstallExtension";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           INSTALL_EXTENSION,
               new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
           UNINSTALL_EXTENSION,
@@ -98,7 +97,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
 
         return (String)
             executeMethod.execute(
-                INSTALL_EXTENSION, ImmutableMap.of("addon", encoded, "temporary", temporary));
+                INSTALL_EXTENSION, Map.of("addon", encoded, "temporary", temporary));
       }
 
       private Path zipDirectory(Path path) throws IOException {
@@ -124,7 +123,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
       public void uninstallExtension(String extensionId) {
         Require.nonNull("Extension ID", extensionId);
 
-        executeMethod.execute(UNINSTALL_EXTENSION, ImmutableMap.of("id", extensionId));
+        executeMethod.execute(UNINSTALL_EXTENSION, Map.of("id", extensionId));
       }
     };
   }
