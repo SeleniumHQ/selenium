@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -229,6 +230,17 @@ class JsonInputTest {
       HasFromJsonWithJsonInputParameter obj = in.read(HasFromJsonWithJsonInputParameter.class);
 
       assertThat(obj.getMessage()).isEqualTo("Cheese!");
+    }
+  }
+
+  @Test
+  void canReadListOfType() {
+    String raw = " [ 1 , 2 , 3 , 4 ] ";
+
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
+      List<Integer> array = in.readArray(Integer.class);
+
+      assertThat(array).isEqualTo(List.of(1, 2, 3, 4));
     }
   }
 
