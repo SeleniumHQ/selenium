@@ -31,7 +31,7 @@ async def test_check_console_messages(driver, pages):
         pages.load("javascriptPage.html")
         from selenium.webdriver.common.bidi.console import Console
 
-        async with log.add_listener(Console.ALL) as messages:
+        async with log.add_listener(Console.LOG) as messages:
             driver.execute_script("console.log('I love cheese')")
         assert messages["message"] == "I love cheese"
 
@@ -46,8 +46,8 @@ async def test_check_error_console_messages(driver, pages):
         from selenium.webdriver.common.bidi.console import Console
 
         async with log.add_listener(Console.ERROR) as messages:
-            driver.execute_script('console.error("I don\'t cheese")')
             driver.execute_script("console.log('I love cheese')")
+            driver.execute_script('console.error("I don\'t cheese")')
         assert messages["message"] == "I don't cheese"
 
 
