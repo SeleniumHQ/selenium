@@ -16,10 +16,9 @@
 // under the License.
 
 use crate::common::{assert_browser, assert_driver, exec_driver};
-use std::env::consts::OS;
-
 use assert_cmd::Command;
 use rstest::rstest;
+use std::env::consts::OS;
 
 mod common;
 

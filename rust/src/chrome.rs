@@ -16,13 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::error::Error;
-use std::option::Option;
-use std::path::PathBuf;
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -36,6 +29,13 @@ use crate::{
     OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::option::Option;
+use std::path::PathBuf;
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
@@ -60,7 +60,7 @@ pub struct ChromeManager {
 }
 
 impl ChromeManager {
-    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new() -> Result<Box<Self>, Error> {
         let browser_name = CHROME_NAME;
         let driver_name = CHROMEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
@@ -78,26 +78,31 @@ impl ChromeManager {
     }
 
     fn create_latest_release_url(&self) -> String {
-        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+        format!(
+            "{}{}",
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            LATEST_RELEASE
+        )
     }
 
     fn create_latest_release_with_version_url(&self) -> String {
         format!(
             "{}{}_{}",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             LATEST_RELEASE,
             self.get_major_browser_version()
         )
     }
 
     fn create_cft_url(&self, endpoint: &str) -> String {
-        format!("{}{}", CFT_URL, endpoint)
+        format!(
+            "{}{}",
+            self.get_browser_mirror_url_or_default(CFT_URL),
+            endpoint
+        )
     }
 
-    fn request_driver_version_from_latest(
-        &self,
-        driver_url: String,
-    ) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version_from_latest(&self, driver_url: String) -> Result<String, Error> {
         self.log.debug(format!(
             "Reading {} version from {}",
             &self.driver_name, driver_url
@@ -105,7 +110,7 @@ impl ChromeManager {
         read_version_from_link(self.get_http_client(), driver_url, self.get_logger())
     }
 
-    fn request_versions_from_online<T>(&self, driver_url: String) -> Result<T, Box<dyn Error>>
+    fn request_versions_from_online<T>(&self, driver_url: String) -> Result<T, Error>
     where
         T: Serialize + for<'a> Deserialize<'a>,
     {
@@ -114,7 +119,7 @@ impl ChromeManager {
         parse_json_from_url::<T>(self.get_http_client(), driver_url)
     }
 
-    fn request_latest_driver_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_latest_driver_version_from_online(&mut self) -> Result<String, Error> {
         let driver_name = self.driver_name;
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
@@ -150,7 +155,7 @@ impl ChromeManager {
         Ok(stable_channel.version)
     }
 
-    fn request_good_driver_version_from_online(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_good_driver_version_from_online(&mut self) -> Result<String, Error> {
         let browser_or_driver_version = if self.get_driver_version().is_empty() {
             self.get_browser_version()
         } else {
@@ -170,13 +175,12 @@ impl ChromeManager {
             .filter(|r| r.version.starts_with(version_for_filtering.as_str()))
             .collect();
         if filtered_versions.is_empty() {
-            return Err(format_three_args(
+            return Err(anyhow!(format_three_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_driver_name(),
                 &version_for_filtering,
                 &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
-            )
-            .into());
+            )));
         }
 
         let driver_version = filtered_versions.last().unwrap();
@@ -255,7 +259,7 @@ impl SeleniumManager for ChromeManager {
         ])
     }
 
-    fn discover_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
             r#"HKCU\Software\Google\Chrome\BLBeacon"#,
             REG_VERSION_ARG,
@@ -267,7 +271,7 @@ impl SeleniumManager for ChromeManager {
         self.driver_name
     }
 
-    fn request_driver_version(&mut self) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&mut self) -> Result<String, Error> {
         let major_browser_version_binding = self.get_major_browser_version();
         let major_browser_version = major_browser_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
@@ -327,11 +331,11 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn request_browser_version(&mut self) -> Result<Option<String>, Box<dyn Error>> {
+    fn request_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_request_browser_version(self.browser_name)
     }
 
-    fn get_driver_url(&mut self) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&mut self) -> Result<String, Error> {
         let major_driver_version = self
             .get_major_driver_version()
             .parse::<i32>()
@@ -369,11 +373,14 @@ impl SeleniumManager for ChromeManager {
         };
         Ok(format!(
             "{}{}/{}_{}.zip",
-            DRIVER_URL, driver_version, self.driver_name, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            self.driver_name,
+            driver_label
         ))
     }
 
-    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_driver_path_in_cache(&self) -> Result<PathBuf, Error> {
         Ok(compose_driver_path_in_cache(
             self.get_cache_path()?.unwrap_or_default(),
             self.driver_name,
@@ -426,7 +433,7 @@ impl SeleniumManager for ChromeManager {
     fn request_latest_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
@@ -457,7 +464,7 @@ impl SeleniumManager for ChromeManager {
     fn request_fixed_browser_version_from_online(
         &mut self,
         _browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, Error> {
         let browser_name = self.browser_name;
         let mut browser_version = self.get_browser_version().to_string();
         let major_browser_version = self.get_major_browser_version();
@@ -497,13 +504,12 @@ impl SeleniumManager for ChromeManager {
                 .filter(|r| r.version.starts_with(major_browser_version.as_str()))
                 .collect();
             if filtered_versions.is_empty() {
-                return Err(format_three_args(
+                return Err(anyhow!(format_three_args(
                     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                     browser_name,
                     &major_browser_version,
                     &MIN_CHROME_VERSION_CFT.to_string(),
-                )
-                .into());
+                )));
             }
             let last_browser = filtered_versions.last().unwrap();
             let platform_url: Vec<&PlatformUrl> = last_browser
@@ -518,14 +524,11 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn get_min_browser_version_for_download(&self) -> Result<i32, Box<dyn Error>> {
+    fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
         Ok(MIN_CHROME_VERSION_CFT)
     }
 
-    fn get_browser_binary_path(
-        &mut self,
-        _browser_version: &str,
-    ) -> Result<PathBuf, Box<dyn Error>> {
+    fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {
         let browser_in_cache = self.get_browser_path_in_cache()?;
         if MACOS.is(self.get_os()) {
             Ok(browser_in_cache.join(CFT_MACOS_APP_NAME))
@@ -534,10 +537,7 @@ impl SeleniumManager for ChromeManager {
         }
     }
 
-    fn get_browser_url_for_download(
-        &mut self,
-        browser_version: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error> {
         if let Some(browser_url) = self.browser_url.clone() {
             Ok(browser_url)
         } else {
@@ -553,7 +553,7 @@ impl SeleniumManager for ChromeManager {
     fn get_browser_label_for_download(
         &self,
         _browser_version: &str,
-    ) -> Result<Option<&str>, Box<dyn Error>> {
+    ) -> Result<Option<&str>, Error> {
         Ok(None)
     }
 }

@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -27,6 +26,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -140,7 +141,7 @@ public class FirefoxDriver extends RemoteWebDriver
     if (service.getExecutable() == null) {
       Result result = DriverFinder.getPath(service, options);
       service.setExecutable(result.getDriverPath());
-      if (result.getBrowserPath() != null) {
+      if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
         options.setBinary(result.getBrowserPath());
       }
     }
@@ -416,11 +417,12 @@ public class FirefoxDriver extends RemoteWebDriver
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
-      return ImmutableMap.<String, CommandInfo>builder()
-          .putAll(new AddHasContext().getAdditionalCommands())
-          .putAll(new AddHasExtensions().getAdditionalCommands())
-          .putAll(new AddHasFullPageScreenshot().getAdditionalCommands())
-          .build();
+      return Stream.of(
+              new AddHasContext().getAdditionalCommands(),
+              new AddHasExtensions().getAdditionalCommands(),
+              new AddHasFullPageScreenshot<>().getAdditionalCommands())
+          .flatMap((m) -> m.entrySet().stream())
+          .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }
 }

@@ -4,9 +4,9 @@ load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v115",
     "v116",
     "v117",
+    "v118",
 ]
 
 SRC_FILES = [

@@ -22,10 +22,11 @@ use crate::{
     UNAME_COMMAND,
 };
 use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
+use anyhow::anyhow;
+use anyhow::Error;
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
-use std::error::Error;
 use std::fs::read_to_string;
 use std::path::Path;
 use toml::Table;
@@ -36,6 +37,7 @@ pub const CONFIG_FILE: &str = "se-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
 pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
+pub const MIRROR_PREFIX: &str = "-mirror-url";
 pub const CACHE_PATH_KEY: &str = "cache-path";
 
 pub struct ManagerConfig {
@@ -43,6 +45,8 @@ pub struct ManagerConfig {
     pub browser_version: String,
     pub driver_version: String,
     pub browser_path: String,
+    pub driver_mirror_url: String,
+    pub browser_mirror_url: String,
     pub os: String,
     pub arch: String,
     pub proxy: String,
@@ -85,6 +89,8 @@ impl ManagerConfig {
         let browser_version_label = concat(browser_name, VERSION_PREFIX);
         let driver_version_label = concat(driver_name, VERSION_PREFIX);
         let browser_path_label = concat(browser_name, PATH_PREFIX);
+        let driver_mirror_label = concat(driver_name, MIRROR_PREFIX);
+        let browser_mirror_label = concat(browser_name, MIRROR_PREFIX);
 
         ManagerConfig {
             cache_path,
@@ -93,6 +99,10 @@ impl ManagerConfig {
             driver_version: StringKey(vec!["driver-version", &driver_version_label], "")
                 .get_value(),
             browser_path: StringKey(vec!["browser-path", &browser_path_label], "").get_value(),
+            driver_mirror_url: StringKey(vec!["driver-mirror-url", &driver_mirror_label], "")
+                .get_value(),
+            browser_mirror_url: StringKey(vec!["browser-mirror-url", &browser_mirror_label], "")
+                .get_value(),
             os: StringKey(vec!["os"], self_os).get_value(),
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),
@@ -129,7 +139,7 @@ impl OS {
     }
 }
 
-pub fn str_to_os(os: &str) -> Result<OS, Box<dyn Error>> {
+pub fn str_to_os(os: &str) -> Result<OS, Error> {
     if WINDOWS.is(os) {
         Ok(WINDOWS)
     } else if MACOS.is(os) {
@@ -137,7 +147,7 @@ pub fn str_to_os(os: &str) -> Result<OS, Box<dyn Error>> {
     } else if LINUX.is(os) {
         Ok(LINUX)
     } else {
-        Err(format!("Invalid operating system: {os}").into())
+        Err(anyhow!(format!("Invalid operating system: {os}")))
     }
 }
 
@@ -232,7 +242,7 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
-fn get_config() -> Result<Table, Box<dyn Error>> {
+fn get_config() -> Result<Table, Error> {
     let cache_path = read_cache_path();
     let config_path = Path::new(&cache_path).to_path_buf().join(CONFIG_FILE);
     Ok(read_to_string(config_path)?.parse()?)

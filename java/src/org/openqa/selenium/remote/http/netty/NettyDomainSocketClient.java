@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
-import com.google.common.io.ByteStreams;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
@@ -197,7 +196,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
                                 try (InputStream is = new ByteBufInputStream(msg.content());
                                     ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-                                  ByteStreams.copy(is, bos);
+                                  is.transferTo(bos);
                                   res.setContent(bytes(bos.toByteArray()));
                                   outRef.set(res);
                                   latch.countDown();

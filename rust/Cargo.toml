@@ -33,6 +33,7 @@ bzip2 = "0.4.4"
 sevenz-rust = "0.5.2"
 walkdir = "2.4.0"
 debpkg = "0.6.0"
+anyhow = { version = "1.0.75", features = ["backtrace"] }
 
 [dev-dependencies]
 assert_cmd = "2.0.12"
