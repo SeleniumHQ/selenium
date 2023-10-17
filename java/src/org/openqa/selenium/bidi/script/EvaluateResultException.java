@@ -24,9 +24,7 @@ public class EvaluateResultException implements EvaluateResult {
   private ExceptionDetails exceptionDetails;
 
   public EvaluateResultException(
-    EvaluateResultType type,
-    String realmId,
-    ExceptionDetails exceptionDetails) {
+      EvaluateResultType type, String realmId, ExceptionDetails exceptionDetails) {
     this.type = type;
     this.realmId = realmId;
     this.exceptionDetails = exceptionDetails;

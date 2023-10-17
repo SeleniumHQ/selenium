@@ -24,11 +24,11 @@ public class WindowRealmInfo extends RealmInfo {
   private final Optional<String> sandbox;
 
   public WindowRealmInfo(
-    String realmId,
-    String origin,
-    RealmType realmType,
-    String browsingContext,
-    Optional<String> sandbox) {
+      String realmId,
+      String origin,
+      RealmType realmType,
+      String browsingContext,
+      Optional<String> sandbox) {
     super(realmId, origin, realmType);
     this.browsingContext = browsingContext;
     this.sandbox = sandbox;

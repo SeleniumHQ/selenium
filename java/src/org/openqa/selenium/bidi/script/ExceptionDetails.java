@@ -17,11 +17,12 @@ public class ExceptionDetails {
   private final StackTrace stacktrace;
   private final String text;
 
-  public ExceptionDetails(long columnNumber,
-                          RemoteValue exception,
-                          long lineNumber,
-                          StackTrace stacktrace,
-                          String text) {
+  public ExceptionDetails(
+      long columnNumber,
+      RemoteValue exception,
+      long lineNumber,
+      StackTrace stacktrace,
+      String text) {
     this.columnNumber = columnNumber;
     this.exception = exception;
     this.lineNumber = lineNumber;

@@ -40,9 +40,9 @@ public class LocalValue {
 
   private LocalValue(PrimitiveType type) {
     Require.precondition(
-      type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL),
-      "Only null and defined do not require values. "
-      + "Rest all type require a corresponding value.");
+        type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL),
+        "Only null and defined do not require values. "
+            + "Rest all type require a corresponding value.");
     this.type = type;
   }
 
@@ -89,12 +89,13 @@ public class LocalValue {
   public static LocalValue createMapValue(Map<Object, LocalValue> map) {
     List<List<Object>> value = new ArrayList<>();
 
-    map.forEach((k, v) -> {
-      List<Object> entry = new ArrayList<>();
-      entry.add(k);
-      entry.add(v);
-      value.add(entry);
-    });
+    map.forEach(
+        (k, v) -> {
+          List<Object> entry = new ArrayList<>();
+          entry.add(k);
+          entry.add(v);
+          value.add(entry);
+        });
 
     return new LocalValue(NonPrimitiveType.MAP, value);
   }
@@ -102,12 +103,13 @@ public class LocalValue {
   public static LocalValue createObjectValue(Map<Object, LocalValue> map) {
     List<List<Object>> value = new ArrayList<>();
 
-    map.forEach((k, v) -> {
-      List<Object> entry = new ArrayList<>();
-      entry.add(k);
-      entry.add(v);
-      value.add(entry);
-    });
+    map.forEach(
+        (k, v) -> {
+          List<Object> entry = new ArrayList<>();
+          entry.add(k);
+          entry.add(v);
+          value.add(entry);
+        });
 
     return new LocalValue(NonPrimitiveType.OBJECT, value);
   }
@@ -132,12 +134,10 @@ public class LocalValue {
     Map<String, Object> toReturn = new TreeMap<>();
     toReturn.put(TYPE_CONSTANT, this.type.toString());
 
-    if (!(this.type.equals(PrimitiveType.NULL) ||
-          this.type.equals(PrimitiveType.UNDEFINED))) {
+    if (!(this.type.equals(PrimitiveType.NULL) || this.type.equals(PrimitiveType.UNDEFINED))) {
       toReturn.put(VALUE_CONSTANT, this.value);
     }
 
     return unmodifiableMap(toReturn);
   }
-
 }

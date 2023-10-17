@@ -45,11 +45,11 @@ public class RemoteValue {
   private final Optional<String> sharedId;
 
   public RemoteValue(
-    RemoteValueType type,
-    Optional<String> handle,
-    Optional<Long> internalId,
-    Optional<Object> value,
-    Optional<String> sharedId) {
+      RemoteValueType type,
+      Optional<String> handle,
+      Optional<Long> internalId,
+      Optional<Object> value,
+      Optional<String> sharedId) {
     this.type = type;
     this.handle = handle;
     this.internalId = internalId;
@@ -148,13 +148,10 @@ public class RemoteValue {
 
   private static Object deserializeValue(Object value, RemoteValueType type) {
 
-    if (NonPrimitiveType.ARRAY.equals(type) ||
-        NonPrimitiveType.SET.equals(type)) {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(value));
-        JsonInput input = JSON.newInput(reader)) {
-        value = input.read(new TypeToken<List<RemoteValue>>() {
-        }.getType());
+    if (NonPrimitiveType.ARRAY.equals(type) || NonPrimitiveType.SET.equals(type)) {
+      try (StringReader reader = new StringReader(JSON.toJson(value));
+          JsonInput input = JSON.newInput(reader)) {
+        value = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
       }
     } else if (NonPrimitiveType.MAP.equals(type) || NonPrimitiveType.OBJECT.equals(type)) {
       List<List<Object>> result = (List<List<Object>>) value;
@@ -163,24 +160,21 @@ public class RemoteValue {
       for (List<Object> list : result) {
         Object key = list.get(0);
         if (!(key instanceof String)) {
-          try (
-            StringReader reader = new StringReader(JSON.toJson(key));
-            JsonInput keyInput = JSON.newInput(reader)) {
+          try (StringReader reader = new StringReader(JSON.toJson(key));
+              JsonInput keyInput = JSON.newInput(reader)) {
             key = keyInput.read(RemoteValue.class);
           }
         }
-        try (
-          StringReader reader = new StringReader(JSON.toJson(list.get(1)));
-          JsonInput valueInput = JSON.newInput(reader)) {
+        try (StringReader reader = new StringReader(JSON.toJson(list.get(1)));
+            JsonInput valueInput = JSON.newInput(reader)) {
           RemoteValue value1 = valueInput.read(RemoteValue.class);
           map.put(key, value1);
         }
       }
       value = map;
     } else if (NonPrimitiveType.REGULAR_EXPRESSION.equals(type)) {
-      try (
-        StringReader reader = new StringReader(JSON.toJson(value));
-        JsonInput input = JSON.newInput(reader)) {
+      try (StringReader reader = new StringReader(JSON.toJson(value));
+          JsonInput input = JSON.newInput(reader)) {
         value = input.read(RegExpValue.class);
       }
     }

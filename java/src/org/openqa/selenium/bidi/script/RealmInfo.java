@@ -75,10 +75,10 @@ public class RealmInfo {
     }
 
     input.endObject();
-    
+
     if (realmType.equals(RealmType.WINDOW)) {
       return new WindowRealmInfo(
-        realmId, origin, realmType, browsingContext, Optional.ofNullable(sandbox));
+          realmId, origin, realmType, browsingContext, Optional.ofNullable(sandbox));
     }
 
     return new RealmInfo(realmId, origin, realmType);

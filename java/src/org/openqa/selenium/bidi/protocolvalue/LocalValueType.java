@@ -17,5 +17,4 @@
 
 package org.openqa.selenium.bidi.protocolvalue;
 
-public interface LocalValueType {
-}
+public interface LocalValueType {}

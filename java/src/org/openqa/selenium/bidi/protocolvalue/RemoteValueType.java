@@ -17,6 +17,4 @@
 
 package org.openqa.selenium.bidi.protocolvalue;
 
-public interface RemoteValueType {
-
-}
+public interface RemoteValueType {}

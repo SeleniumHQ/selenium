@@ -48,19 +48,17 @@ public class ScriptManager {
 
   private final BiDi bidi;
 
-  private final Function<JsonInput, EvaluateResult>
-    evaluateResultMapper =
-    jsonInput -> createEvaluateResult(jsonInput.read(Map.class));
+  private final Function<JsonInput, EvaluateResult> evaluateResultMapper =
+      jsonInput -> createEvaluateResult(jsonInput.read(Map.class));
 
-  private final Function<JsonInput, List<RealmInfo>>
-    realmInfoMapper = jsonInput -> {
-    Map<String, Object> response = jsonInput.read(Map.class);
-    try (StringReader reader = new StringReader(JSON.toJson(response.get("realms")));
-         JsonInput input = JSON.newInput(reader)) {
-      return input.read(new TypeToken<List<RealmInfo>>() {
-      }.getType());
-    }
-  };
+  private final Function<JsonInput, List<RealmInfo>> realmInfoMapper =
+      jsonInput -> {
+        Map<String, Object> response = jsonInput.read(Map.class);
+        try (StringReader reader = new StringReader(JSON.toJson(response.get("realms")));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(new TypeToken<List<RealmInfo>>() {}.getType());
+        }
+      };
 
   public ScriptManager(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -83,132 +81,137 @@ public class ScriptManager {
   }
 
   public void disownRealmScript(String realmId, List<String> handles) {
-    this.bidi.send(new Command<>(
-      "script.disown",
-      ImmutableMap.of("handles", handles,
-                      "target", ImmutableMap.of("realm", realmId))));
+    this.bidi.send(
+        new Command<>(
+            "script.disown",
+            ImmutableMap.of("handles", handles, "target", ImmutableMap.of("realm", realmId))));
   }
 
   public void disownBrowsingContextScript(String browsingContextId, List<String> handles) {
-    this.bidi.send(new Command<>(
-      "script.disown",
-      ImmutableMap.of("handles", handles,
-                      "target", ImmutableMap.of("context", browsingContextId))));
+    this.bidi.send(
+        new Command<>(
+            "script.disown",
+            ImmutableMap.of(
+                "handles", handles, "target", ImmutableMap.of("context", browsingContextId))));
   }
 
-  public void disownBrowsingContextScript(String browsingContextId,
-                                          String sandbox,
-                                          List<String> handles) {
-    this.bidi.send(new Command<>(
-      "script.disown",
-      ImmutableMap.of("handles", handles,
-                      "target", ImmutableMap.of("context", browsingContextId,
-                                                "sandbox", sandbox))));
+  public void disownBrowsingContextScript(
+      String browsingContextId, String sandbox, List<String> handles) {
+    this.bidi.send(
+        new Command<>(
+            "script.disown",
+            ImmutableMap.of(
+                "handles",
+                handles,
+                "target",
+                ImmutableMap.of(
+                    "context", browsingContextId,
+                    "sandbox", sandbox))));
   }
 
-  public EvaluateResult callFunctionInRealm(String realmId,
-                                            String functionDeclaration,
-                                            boolean awaitPromise,
-                                            Optional<List<ArgumentValue>> argumentValueList,
-                                            Optional<ArgumentValue> thisParameter,
-                                            Optional<ResultOwnership> resultOwnership) {
-    Map<String, Object> params = getCallFunctionParams(
-      "realm",
-      realmId,
-      null,
-      functionDeclaration, awaitPromise,
-      argumentValueList,
-      thisParameter,
-      resultOwnership);
+  public EvaluateResult callFunctionInRealm(
+      String realmId,
+      String functionDeclaration,
+      boolean awaitPromise,
+      Optional<List<ArgumentValue>> argumentValueList,
+      Optional<ArgumentValue> thisParameter,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params =
+        getCallFunctionParams(
+            "realm",
+            realmId,
+            null,
+            functionDeclaration,
+            awaitPromise,
+            argumentValueList,
+            thisParameter,
+            resultOwnership);
 
-    return this.bidi.send(new Command<>(
-      "script.callFunction", params, evaluateResultMapper));
+    return this.bidi.send(new Command<>("script.callFunction", params, evaluateResultMapper));
   }
 
-  public EvaluateResult callFunctionInBrowsingContext(String browsingContextId,
-                                                      String functionDeclaration,
-                                                      boolean awaitPromise,
-                                                      Optional<List<ArgumentValue>> argumentValueList,
-                                                      Optional<ArgumentValue> thisParameter,
-                                                      Optional<ResultOwnership> resultOwnership) {
-    return this.callFunctionInBrowsingContext(browsingContextId,
-                                              null,
-                                              functionDeclaration, awaitPromise,
-                                              argumentValueList,
-                                              thisParameter,
-                                              resultOwnership);
+  public EvaluateResult callFunctionInBrowsingContext(
+      String browsingContextId,
+      String functionDeclaration,
+      boolean awaitPromise,
+      Optional<List<ArgumentValue>> argumentValueList,
+      Optional<ArgumentValue> thisParameter,
+      Optional<ResultOwnership> resultOwnership) {
+    return this.callFunctionInBrowsingContext(
+        browsingContextId,
+        null,
+        functionDeclaration,
+        awaitPromise,
+        argumentValueList,
+        thisParameter,
+        resultOwnership);
   }
 
-  public EvaluateResult callFunctionInBrowsingContext(String browsingContextId,
-                                                      String sandbox,
-                                                      String functionDeclaration,
-                                                      boolean awaitPromise,
-                                                      Optional<List<ArgumentValue>> argumentValueList,
-                                                      Optional<ArgumentValue> thisParameter,
-                                                      Optional<ResultOwnership> resultOwnership) {
+  public EvaluateResult callFunctionInBrowsingContext(
+      String browsingContextId,
+      String sandbox,
+      String functionDeclaration,
+      boolean awaitPromise,
+      Optional<List<ArgumentValue>> argumentValueList,
+      Optional<ArgumentValue> thisParameter,
+      Optional<ResultOwnership> resultOwnership) {
 
-    Map<String, Object> params = getCallFunctionParams(
-      "contextTarget",
-      browsingContextId,
-      sandbox,
-      functionDeclaration, awaitPromise,
-      argumentValueList,
-      thisParameter,
-      resultOwnership);
+    Map<String, Object> params =
+        getCallFunctionParams(
+            "contextTarget",
+            browsingContextId,
+            sandbox,
+            functionDeclaration,
+            awaitPromise,
+            argumentValueList,
+            thisParameter,
+            resultOwnership);
 
-    return this.bidi.send(new Command<>(
-      "script.callFunction", params, evaluateResultMapper));
+    return this.bidi.send(new Command<>("script.callFunction", params, evaluateResultMapper));
   }
 
-  public EvaluateResult evaluateFunctionInRealm(String realmId,
-                                                String expression,
-                                                boolean awaitPromise,
-                                                Optional<ResultOwnership> resultOwnership) {
-    Map<String, Object> params = getEvaluateParams(
-      "realm",
-      realmId,
-      null,
-      expression,
-      awaitPromise,
-      resultOwnership);
+  public EvaluateResult evaluateFunctionInRealm(
+      String realmId,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params =
+        getEvaluateParams("realm", realmId, null, expression, awaitPromise, resultOwnership);
 
-    return this.bidi.send(new Command<>(
-      "script.evaluate", params, evaluateResultMapper));
+    return this.bidi.send(new Command<>("script.evaluate", params, evaluateResultMapper));
   }
 
-  public EvaluateResult evaluateFunctionInBrowsingContext(String browsingContextId,
-                                                          String expression,
-                                                          boolean awaitPromise,
-                                                          Optional<ResultOwnership> resultOwnership) {
+  public EvaluateResult evaluateFunctionInBrowsingContext(
+      String browsingContextId,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
     return this.evaluateFunctionInBrowsingContext(
-      browsingContextId, null, expression, awaitPromise, resultOwnership);
+        browsingContextId, null, expression, awaitPromise, resultOwnership);
   }
 
-  public EvaluateResult evaluateFunctionInBrowsingContext(String browsingContextId,
-                                                          String sandbox,
-                                                          String expression,
-                                                          boolean awaitPromise,
-                                                          Optional<ResultOwnership> resultOwnership) {
-    Map<String, Object> params = getEvaluateParams(
-      "contextTarget",
-      browsingContextId,
-      sandbox,
-      expression,
-      awaitPromise,
-      resultOwnership);
+  public EvaluateResult evaluateFunctionInBrowsingContext(
+      String browsingContextId,
+      String sandbox,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params =
+        getEvaluateParams(
+            "contextTarget", browsingContextId, sandbox, expression, awaitPromise, resultOwnership);
 
-    return this.bidi.send(new Command<>(
-      "script.evaluate", params, evaluateResultMapper));
+    return this.bidi.send(new Command<>("script.evaluate", params, evaluateResultMapper));
   }
 
-  private Map<String, Object> getCallFunctionParams(String targetType,
-                                                    String id,
-                                                    String sandbox,
-                                                    String functionDeclaration,
-                                                    boolean awaitPromise,
-                                                    Optional<List<ArgumentValue>> argumentValueList,
-                                                    Optional<ArgumentValue> thisParameter,
-                                                    Optional<ResultOwnership> resultOwnership) {
+  private Map<String, Object> getCallFunctionParams(
+      String targetType,
+      String id,
+      String sandbox,
+      String functionDeclaration,
+      boolean awaitPromise,
+      Optional<List<ArgumentValue>> argumentValueList,
+      Optional<ArgumentValue> thisParameter,
+      Optional<ResultOwnership> resultOwnership) {
     Map<String, Object> params = new HashMap<>();
     params.put("functionDeclaration", functionDeclaration);
     params.put("awaitPromise", awaitPromise);
@@ -222,11 +225,12 @@ public class ScriptManager {
       params.put("target", ImmutableMap.of("realm", id));
     }
 
-    argumentValueList.ifPresent(argumentValues -> {
-      List<Map<String, Object>> argumentParams = new ArrayList<>();
-      argumentValues.forEach(argumentValue -> argumentParams.add(argumentValue.asMap()));
-      params.put("arguments", argumentParams);
-    });
+    argumentValueList.ifPresent(
+        argumentValues -> {
+          List<Map<String, Object>> argumentParams = new ArrayList<>();
+          argumentValues.forEach(argumentValue -> argumentParams.add(argumentValue.asMap()));
+          params.put("arguments", argumentParams);
+        });
 
     thisParameter.ifPresent(value -> params.put("this", value));
 
@@ -235,12 +239,13 @@ public class ScriptManager {
     return params;
   }
 
-  private Map<String, Object> getEvaluateParams(String targetType,
-                                                String id,
-                                                String sandbox,
-                                                String expression,
-                                                boolean awaitPromise,
-                                                Optional<ResultOwnership> resultOwnership) {
+  private Map<String, Object> getEvaluateParams(
+      String targetType,
+      String id,
+      String sandbox,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
     Map<String, Object> params = new HashMap<>();
     params.put("expression", expression);
     params.put("awaitPromise", awaitPromise);
@@ -266,57 +271,50 @@ public class ScriptManager {
 
     if (type.equals(EvaluateResult.EvaluateResultType.SUCCESS.toString())) {
       RemoteValue remoteValue;
-      try (
-        StringReader reader = new StringReader(
-          JSON.toJson(response.get("result")));
-        JsonInput input = JSON.newInput(reader)) {
+      try (StringReader reader = new StringReader(JSON.toJson(response.get("result")));
+          JsonInput input = JSON.newInput(reader)) {
         remoteValue = input.read(RemoteValue.class);
       }
 
       evaluateResult =
-        new EvaluateResultSuccess(EvaluateResult.EvaluateResultType.SUCCESS, realmId,
-                                  remoteValue);
+          new EvaluateResultSuccess(
+              EvaluateResult.EvaluateResultType.SUCCESS, realmId, remoteValue);
     } else {
       ExceptionDetails exceptionDetails;
-      try (
-        StringReader reader = new StringReader(JSON.toJson(response.get("exceptionDetails")));
-        JsonInput input = JSON.newInput(reader)) {
+      try (StringReader reader = new StringReader(JSON.toJson(response.get("exceptionDetails")));
+          JsonInput input = JSON.newInput(reader)) {
         exceptionDetails = input.read(ExceptionDetails.class);
       }
 
       evaluateResult =
-        new EvaluateResultException(EvaluateResult.EvaluateResultType.EXCEPTION, realmId,
-                                    exceptionDetails);
+          new EvaluateResultException(
+              EvaluateResult.EvaluateResultType.EXCEPTION, realmId, exceptionDetails);
     }
 
     return evaluateResult;
   }
 
   public List<RealmInfo> getAllRealms() {
-    return this.bidi.send(new Command<>(
-      "script.getRealms",
-      new HashMap<>(), realmInfoMapper));
+    return this.bidi.send(new Command<>("script.getRealms", new HashMap<>(), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsByType(RealmType type) {
-    return this.bidi.send(new Command<>(
-      "script.getRealms",
-      ImmutableMap.of("type", type.toString()),
-      realmInfoMapper));
+    return this.bidi.send(
+        new Command<>(
+            "script.getRealms", ImmutableMap.of("type", type.toString()), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsInBrowsingContext(String browsingContext) {
-    return this.bidi.send(new Command<>(
-      "script.getRealms",
-      ImmutableMap.of("context", browsingContext),
-      realmInfoMapper));
+    return this.bidi.send(
+        new Command<>(
+            "script.getRealms", ImmutableMap.of("context", browsingContext), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsInBrowsingContextByType(String browsingContext, RealmType type) {
-    return this.bidi.send(new Command<>(
-      "script.getRealms",
-      ImmutableMap.of("context", browsingContext,
-                      "type", type.toString()),
-      realmInfoMapper));
+    return this.bidi.send(
+        new Command<>(
+            "script.getRealms",
+            ImmutableMap.of("context", browsingContext, "type", type.toString()),
+            realmInfoMapper));
   }
 }
