@@ -26,6 +26,9 @@
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Drawing" />
+    </frameworkAssemblies>
   </metadata>
   <files>
     <file src="**" target="." exclude="obj\**;*.csproj;*.config"/>
