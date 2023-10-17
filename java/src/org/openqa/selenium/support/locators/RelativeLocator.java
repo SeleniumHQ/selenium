@@ -20,10 +20,10 @@ package org.openqa.selenium.support.locators;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
@@ -82,7 +82,7 @@ public class RelativeLocator {
     private final List<Map<String, Object>> filters;
 
     private RelativeBy(Object rootLocator) {
-      this(rootLocator, ImmutableList.of());
+      this(rootLocator, List.of());
     }
 
     private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
@@ -100,7 +100,7 @@ public class RelativeLocator {
       }
 
       this.root = Require.nonNull("Root locator", rootLocator);
-      this.filters = ImmutableList.copyOf(Require.nonNull("Filters", filters));
+      this.filters = List.copyOf(Require.nonNull("Filters", filters));
     }
 
     public RelativeBy above(WebElement element) {
@@ -178,11 +178,11 @@ public class RelativeLocator {
       return new RelativeBy(
           root,
           amend(
-              ImmutableMap.of(
+              Map.of(
                   "kind",
                   "near",
                   "args",
-                  ImmutableList.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
+                  List.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
     }
 
     @Override
@@ -200,24 +200,21 @@ public class RelativeLocator {
       Require.nonNull("Locator", locator);
 
       return new RelativeBy(
-          root,
-          amend(
-              ImmutableMap.of(
-                  "kind", direction, "args", ImmutableList.of(asAtomLocatorParameter(locator)))));
+          root, amend(Map.of("kind", direction, "args", List.of(asAtomLocatorParameter(locator)))));
     }
 
     private List<Map<String, Object>> amend(Map<String, Object> toAdd) {
-      return ImmutableList.<Map<String, Object>>builder().addAll(filters).add(toAdd).build();
+      return Stream.concat(filters.stream(), Stream.of(toAdd))
+          .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public Parameters getRemoteParameters() {
-      return new Parameters("relative", ImmutableMap.of("root", root, "filters", filters));
+      return new Parameters("relative", Map.of("root", root, "filters", filters));
     }
 
     private Map<String, Object> toJson() {
-      return ImmutableMap.of(
-          "using", "relative", "value", ImmutableMap.of("root", root, "filters", filters));
+      return Map.of("using", "relative", "value", Map.of("root", root, "filters", filters));
     }
   }
 
@@ -244,7 +241,7 @@ public class RelativeLocator {
           "Expected JSON encoded form of locator to have a 'value' field: " + raw);
     }
 
-    return ImmutableMap.of((String) raw.get("using"), raw.get("value"));
+    return Map.of((String) raw.get("using"), raw.get("value"));
   }
 
   private static void assertLocatorCanBeSerialized(Object locator) {

@@ -24,10 +24,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
@@ -126,7 +125,7 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   void canListenToNavigationStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -143,7 +142,7 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   void canListenToFragmentNavigatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -164,7 +163,7 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   void canListenToUserPromptOpenedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
@@ -184,7 +183,7 @@ class BrowsingContextInspectorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   void canListenToUserPromptClosedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
