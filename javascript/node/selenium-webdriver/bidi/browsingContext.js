@@ -181,16 +181,6 @@ class BrowsingContext {
   }
 
   async captureBoxScreenshot(x, y, width, height) {
-    if (width < 0) {
-      x = x + width
-      width = -width
-    }
-
-    if (height < 0) {
-      y = y + height
-      height = -height
-    }
-
     let params = {
       method: 'browsingContext.captureScreenshot',
       params: {
@@ -211,7 +201,7 @@ class BrowsingContext {
   }
 
   async captureElementScreenshot(
-    shareId,
+    sharedId,
     handle = undefined,
     scrollIntoView = undefined
   ) {
@@ -222,7 +212,7 @@ class BrowsingContext {
         clip: {
           type: 'element',
           element: {
-            shareId: shareId,
+            sharedId: sharedId,
             handle: handle,
           },
           scrollIntoView: scrollIntoView,
@@ -237,12 +227,14 @@ class BrowsingContext {
 
   checkErrorInScreenshot(response) {
     if ('error' in response) {
-      const error = response['error']
-      const msg = response['message']
-      if (error == 'invalid argument') {
-        throw new InvalidArgumentError(msg)
-      } else if (error == 'no such frame') {
-        throw new NoSuchFrameError(msg)
+      const { error, msg } = response
+
+      switch (error) {
+        case 'invalid argument':
+          throw new InvalidArgumentError(msg)
+
+        case 'no such frame':
+          throw new NoSuchFrameError(msg)
       }
     }
   }

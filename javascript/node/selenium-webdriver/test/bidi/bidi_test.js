@@ -20,7 +20,7 @@
 // Imports for LogInspector and BrowsingContext
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser } = require('../../')
+const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
@@ -477,11 +477,30 @@ suite(
           browsingContextId: id,
         })
 
-        await driver.switchTo().newWindow('window')
-        await driver.get(Pages.logEntryAdded)
-        const windowHandle = await driver.getWindowHandle()
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checky'))
+        const elementId = await element.getId()
         const response = await browsingContext.captureElementScreenshot(
-          windowHandle
+          elementId
+        )
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can scroll and take element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checkbox-with-label'))
+        const elementId = await element.getId()
+        const response = await browsingContext.captureElementScreenshot(
+          elementId,
+          undefined,
+          true
         )
 
         const base64code = response.slice(startIndex, endIndex)
