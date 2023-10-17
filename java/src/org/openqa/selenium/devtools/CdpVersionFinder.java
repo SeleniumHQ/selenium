@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -53,7 +52,7 @@ public class CdpVersionFinder {
 
     Require.nonNull("CDP versions", infos);
 
-    this.infos = ImmutableSet.copyOf(infos);
+    this.infos = Set.copyOf(infos);
   }
 
   /**

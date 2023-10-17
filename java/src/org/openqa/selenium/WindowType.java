@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-/** Represents the type of a new browser window that may be created. */
+/** Represents the type of new browser window that may be created. */
 public enum WindowType {
   WINDOW("window"),
   TAB("tab"),

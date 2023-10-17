@@ -15,20 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::files::parse_version;
+use crate::Logger;
+use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-
-use anyhow::anyhow;
 use std::fs::File;
 use std::io::copy;
 use std::io::Cursor;
-
 use tempfile::{Builder, TempDir};
-
-use crate::files::parse_version;
-use crate::Logger;
 
 #[tokio::main]
 pub async fn download_to_tmp_folder(

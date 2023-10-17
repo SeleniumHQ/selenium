@@ -17,15 +17,14 @@
 
 use assert_cmd::assert::AssertResult;
 use assert_cmd::Command;
-use std::borrow::BorrowMut;
-use std::env::consts::OS;
-use std::path::Path;
-
 use is_executable::is_executable;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
+use std::borrow::BorrowMut;
+use std::env::consts::OS;
+use std::path::Path;
 
 #[allow(dead_code)]
 pub fn assert_driver(cmd: &mut Command) {

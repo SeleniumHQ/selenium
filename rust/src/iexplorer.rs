@@ -16,20 +16,17 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::PathBuf;
-
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
-
 use crate::downloads::parse_json_from_url;
+use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::{
     create_http_client, parse_version, Logger, SeleniumManager, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE, WINDOWS,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -197,7 +194,7 @@ impl SeleniumManager for IExplorerManager {
         let release_version = self.get_selenium_release_version()?;
         Ok(format!(
             "{}download/{}/{}{}.zip",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             release_version,
             IEDRIVER_RELEASE,
             self.get_driver_version()

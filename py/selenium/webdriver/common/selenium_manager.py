@@ -41,8 +41,8 @@ class SeleniumManager:
         :Returns: The Selenium Manager executable location
         """
 
-        if os.getenv("SE_MANAGER_PATH"):
-            path = os.getenv("SE_MANAGER_PATH")
+        if path := os.getenv("SE_MANAGER_PATH") is not None:
+            return Path(path)
         else:
             platform = sys.platform
 
@@ -101,7 +101,7 @@ class SeleniumManager:
         driver_path = output["driver_path"]
         logger.debug("Using driver at: %s", driver_path)
 
-        if hasattr(options.__class__, "binary_location"):
+        if hasattr(options.__class__, "binary_location") and browser_path:
             options.binary_location = browser_path
             options.browser_version = None  # if we have the binary location we no longer need the version
 

@@ -15,26 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::backtrace::{Backtrace, BacktraceStatus};
-use std::path::Path;
-use std::process::exit;
-
 use anyhow::Error;
 use clap::Parser;
-
 use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::config::{BooleanKey, StringKey, CACHE_PATH_KEY};
 use selenium_manager::grid::GridManager;
 use selenium_manager::logger::{Logger, BROWSER_PATH, DRIVER_PATH};
+use selenium_manager::metadata::clear_metadata;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
-
-use selenium_manager::metadata::clear_metadata;
+use std::backtrace::{Backtrace, BacktraceStatus};
+use std::path::Path;
+use std::process::exit;
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
@@ -69,6 +66,14 @@ struct Cli {
     /// "C:\Program Files\Google\Chrome\Application\chrome.exe")
     #[clap(long, value_parser)]
     browser_path: Option<String>,
+
+    /// Mirror for driver repositories (e.g., https://registry.npmmirror.com/-/binary/chromedriver/)
+    #[clap(long, value_parser)]
+    driver_mirror_url: Option<String>,
+
+    /// Mirror for browser repositories
+    #[clap(long, value_parser)]
+    browser_mirror_url: Option<String>,
 
     /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
     #[clap(long, value_parser, default_value = "LOGGER")]
@@ -182,6 +187,8 @@ fn main() {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_driver_mirror_url(cli.driver_mirror_url.unwrap_or_default());
+    selenium_manager.set_browser_mirror_url(cli.browser_mirror_url.unwrap_or_default());
     selenium_manager.set_os(cli.os.unwrap_or_default());
     selenium_manager.set_arch(cli.arch.unwrap_or_default());
     selenium_manager.set_ttl(cli.ttl);

@@ -16,15 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use anyhow::Error;
-use std::option::Option;
-use std::path::PathBuf;
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -38,6 +29,13 @@ use crate::{
     OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::option::Option;
+use std::path::PathBuf;
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
@@ -80,20 +78,28 @@ impl ChromeManager {
     }
 
     fn create_latest_release_url(&self) -> String {
-        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+        format!(
+            "{}{}",
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            LATEST_RELEASE
+        )
     }
 
     fn create_latest_release_with_version_url(&self) -> String {
         format!(
             "{}{}_{}",
-            DRIVER_URL,
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
             LATEST_RELEASE,
             self.get_major_browser_version()
         )
     }
 
     fn create_cft_url(&self, endpoint: &str) -> String {
-        format!("{}{}", CFT_URL, endpoint)
+        format!(
+            "{}{}",
+            self.get_browser_mirror_url_or_default(CFT_URL),
+            endpoint
+        )
     }
 
     fn request_driver_version_from_latest(&self, driver_url: String) -> Result<String, Error> {
@@ -367,7 +373,10 @@ impl SeleniumManager for ChromeManager {
         };
         Ok(format!(
             "{}{}/{}_{}.zip",
-            DRIVER_URL, driver_version, self.driver_name, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            self.driver_name,
+            driver_label
         ))
     }
 

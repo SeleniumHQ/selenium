@@ -121,11 +121,11 @@ public class BrowsingContextInspector implements AutoCloseable {
     }
   }
 
-  private void onNavigationStarted(Consumer<NavigationInfo> consumer) {
+  public void onNavigationStarted(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationStarted", consumer);
   }
 
-  private void onFragmentNavigated(Consumer<NavigationInfo> consumer) {
+  public void onFragmentNavigated(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.fragmentNavigated", consumer);
   }
 
@@ -149,7 +149,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     addNavigationEventListener("browsingContext.navigationFailed", consumer);
   }
 
-  private void onUserPromptClosed(Consumer<UserPromptClosed> consumer) {
+  public void onUserPromptClosed(Consumer<UserPromptClosed> consumer) {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(userPromptClosed, consumer);
     } else {
@@ -157,7 +157,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     }
   }
 
-  private void onUserPromptOpened(Consumer<UserPromptOpened> consumer) {
+  public void onUserPromptOpened(Consumer<UserPromptOpened> consumer) {
     if (browsingContextIds.isEmpty()) {
       this.bidi.addListener(userPromptOpened, consumer);
     } else {

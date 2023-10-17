@@ -16,39 +16,36 @@
 // under the License.
 
 use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
+use crate::config::OS::{MACOS, WINDOWS};
+use crate::config::{str_to_os, ManagerConfig};
+use crate::downloads::download_to_tmp_folder;
+use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
     create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     get_binary_extension, path_to_string,
 };
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
-use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use std::{env, fs};
-
-use crate::config::OS::{MACOS, WINDOWS};
-use crate::config::{str_to_os, ManagerConfig};
-use anyhow::Error;
-use is_executable::IsExecutable;
-use reqwest::{Client, Proxy};
-use std::collections::HashMap;
-
-use anyhow::anyhow;
-use std::path::{Path, PathBuf};
-use std::time::Duration;
-use walkdir::{DirEntry, WalkDir};
-
-use crate::downloads::download_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
+use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
 use crate::grid::GRID_NAME;
+use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
+use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use anyhow::anyhow;
+use anyhow::Error;
+use is_executable::IsExecutable;
+use reqwest::{Client, Proxy};
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
+use std::{env, fs};
+use walkdir::{DirEntry, WalkDir};
 
 pub mod chrome;
 pub mod config;
@@ -71,6 +68,7 @@ pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
+pub const ESR: &str = "esr";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_VERSION_ARG: &str = "version";
@@ -205,7 +203,10 @@ pub trait SeleniumManager {
         }
     }
 
-    fn download_browser(&mut self) -> Result<Option<PathBuf>, Error> {
+    fn download_browser(
+        &mut self,
+        original_browser_version: String,
+    ) -> Result<Option<PathBuf>, Error> {
         if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
             return Err(anyhow!(format_one_arg(
                 NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
@@ -214,7 +215,6 @@ pub trait SeleniumManager {
         }
 
         let browser_version;
-        let original_browser_version = self.get_config().browser_version.clone();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
         let major_browser_version = self.get_major_browser_version();
@@ -424,6 +424,7 @@ pub trait SeleniumManager {
     fn discover_driver_version_and_download_browser_if_necessary(
         &mut self,
     ) -> Result<String, Error> {
+        let original_browser_version = self.get_config().browser_version.clone();
         let mut download_browser = self.is_force_browser_download();
         let major_browser_version = self.get_major_browser_version();
 
@@ -499,8 +500,9 @@ pub trait SeleniumManager {
             && !self.is_iexplorer()
             && !self.is_grid()
             && !self.is_safari()
+            && !self.is_webview2()
         {
-            let browser_path = self.download_browser()?;
+            let browser_path = self.download_browser(original_browser_version)?;
             if browser_path.is_some() {
                 self.get_logger().debug(format!(
                     "{} {} is available at {}",
@@ -642,6 +644,10 @@ pub trait SeleniumManager {
         self.get_browser_name().eq(EDGE_NAMES[0])
     }
 
+    fn is_webview2(&self) -> bool {
+        self.get_browser_name().eq(WEBVIEW2_NAME)
+    }
+
     fn is_browser_version_beta(&self) -> bool {
         self.is_beta(self.get_browser_version())
     }
@@ -667,11 +673,20 @@ pub trait SeleniumManager {
             || browser_version.eq_ignore_ascii_case(CANARY)
     }
 
+    fn is_browser_version_esr(&self) -> bool {
+        self.is_esr(self.get_browser_version())
+    }
+
+    fn is_esr(&self, browser_version: &str) -> bool {
+        browser_version.eq_ignore_ascii_case(ESR)
+    }
+
     fn is_unstable(&self, browser_version: &str) -> bool {
         browser_version.eq_ignore_ascii_case(BETA)
             || browser_version.eq_ignore_ascii_case(DEV)
             || browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
+            || browser_version.eq_ignore_ascii_case(ESR)
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -1144,8 +1159,49 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() {
+        if !browser_path.is_empty() && !self.is_webview2() {
             self.get_config_mut().browser_path = browser_path;
+        }
+    }
+
+    fn get_driver_mirror_url(&self) -> &str {
+        self.get_config().driver_mirror_url.as_str()
+    }
+
+    fn set_driver_mirror_url(&mut self, mirror_url: String) {
+        if !mirror_url.is_empty() {
+            self.get_config_mut().driver_mirror_url = mirror_url;
+        }
+    }
+
+    fn get_browser_mirror_url(&self) -> &str {
+        self.get_config().browser_mirror_url.as_str()
+    }
+
+    fn set_browser_mirror_url(&mut self, mirror_url: String) {
+        if !mirror_url.is_empty() {
+            self.get_config_mut().browser_mirror_url = mirror_url;
+        }
+    }
+
+    fn get_driver_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        self.get_url_or_default(self.get_driver_mirror_url(), default_url)
+    }
+
+    fn get_browser_mirror_url_or_default<'a>(&'a self, default_url: &'a str) -> String {
+        self.get_url_or_default(self.get_browser_mirror_url(), default_url)
+    }
+
+    fn get_url_or_default<'a>(&'a self, value_url: &'a str, default_url: &'a str) -> String {
+        let url = if value_url.is_empty() {
+            default_url
+        } else {
+            value_url
+        };
+        if !url.ends_with('/') {
+            format!("{}/", url)
+        } else {
+            url.to_string()
         }
     }
 
@@ -1307,7 +1363,7 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     } else if browser_name_lower_case.eq(FIREFOX_NAME) {
         Ok(FirefoxManager::new()?)
     } else if EDGE_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(EdgeManager::new()?)
+        Ok(EdgeManager::new_with_name(browser_name)?)
     } else if IE_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(IExplorerManager::new()?)
     } else if browser_name_lower_case.eq(SAFARI_NAME) {

@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
-use std::env::consts::OS;
-
 use crate::common::{assert_browser, assert_driver};
+use assert_cmd::Command;
 use rstest::rstest;
+use std::env::consts::OS;
 
 mod common;
 
@@ -52,6 +51,7 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[case("chrome", "beta")]
 #[case("firefox", "116")]
 #[case("firefox", "beta")]
+#[case("firefox", "esr")]
 #[case("edge", "beta")]
 fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));

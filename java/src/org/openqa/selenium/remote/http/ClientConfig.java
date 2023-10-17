@@ -38,8 +38,8 @@ public class ClientConfig {
   private final Filter filters;
   private final Proxy proxy;
   private final Credentials credentials;
-
   private final SSLContext sslContext;
+  private final String version;
 
   protected ClientConfig(
       URI baseUri,
@@ -48,7 +48,8 @@ public class ClientConfig {
       Filter filters,
       Proxy proxy,
       Credentials credentials,
-      SSLContext sslContext) {
+      SSLContext sslContext,
+      String version) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
@@ -56,11 +57,19 @@ public class ClientConfig {
     this.proxy = proxy;
     this.credentials = credentials;
     this.sslContext = sslContext;
+    this.version = version;
   }
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
-        null, Duration.ofSeconds(10), Duration.ofMinutes(3), DEFAULT_FILTER, null, null, null);
+        null,
+        Duration.ofSeconds(10),
+        Duration.ofMinutes(3),
+        DEFAULT_FILTER,
+        null,
+        null,
+        null,
+        null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
@@ -71,7 +80,8 @@ public class ClientConfig {
         filters,
         proxy,
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public ClientConfig baseUrl(URL baseUrl) {
@@ -102,7 +112,8 @@ public class ClientConfig {
         filters,
         proxy,
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public Duration connectionTimeout() {
@@ -117,7 +128,8 @@ public class ClientConfig {
         filters,
         proxy,
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public Duration readTimeout() {
@@ -133,7 +145,8 @@ public class ClientConfig {
         filter.andThen(DEFAULT_FILTER),
         proxy,
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public ClientConfig withRetries() {
@@ -144,7 +157,8 @@ public class ClientConfig {
         filters.andThen(RETRY_FILTER),
         proxy,
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public Filter filter() {
@@ -159,7 +173,8 @@ public class ClientConfig {
         filters,
         Require.nonNull("Proxy", proxy),
         credentials,
-        sslContext);
+        sslContext,
+        version);
   }
 
   public Proxy proxy() {
@@ -174,7 +189,8 @@ public class ClientConfig {
         filters,
         proxy,
         Require.nonNull("Credentials", credentials),
-        sslContext);
+        sslContext,
+        version);
   }
 
   public Credentials credentials() {
@@ -189,11 +205,28 @@ public class ClientConfig {
         filters,
         proxy,
         credentials,
-        Require.nonNull("SSL Context", sslContext));
+        Require.nonNull("SSL Context", sslContext),
+        version);
   }
 
   public SSLContext sslContext() {
     return sslContext;
+  }
+
+  public ClientConfig version(String version) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        Require.nonNull("Version", version));
+  }
+
+  public String version() {
+    return version;
   }
 
   @Override
@@ -213,6 +246,8 @@ public class ClientConfig {
         + credentials
         + ", sslcontext="
         + sslContext
+        + ", version="
+        + version
         + '}';
   }
 }

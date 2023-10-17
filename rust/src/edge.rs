@@ -16,13 +16,6 @@
 // under the License.
 
 use crate::config::ManagerConfig;
-use anyhow::Error;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::env;
-use std::path::{Path, PathBuf};
-
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
@@ -35,13 +28,25 @@ use crate::{
     DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
     REG_VERSION_ARG, STABLE,
 };
+use anyhow::Error;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::env;
+use std::path::{Path, PathBuf};
 
-pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
+pub const EDGE_NAMES: &[&str] = &[
+    "edge",
+    EDGE_WINDOWS_AND_LINUX_APP_NAME,
+    "microsoftedge",
+    WEBVIEW2_NAME,
+];
 pub const EDGEDRIVER_NAME: &str = "msedgedriver";
+pub const WEBVIEW2_NAME: &str = "webview2";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
-const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products";
+const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products/";
 const MIN_EDGE_VERSION_DOWNLOAD: i32 = 113;
 const EDGE_WINDOWS_AND_LINUX_APP_NAME: &str = "msedge";
 const EDGE_MACOS_APP_NAME: &str = "Microsoft Edge.app/Contents/MacOS/Microsoft Edge";
@@ -61,13 +66,17 @@ pub struct EdgeManager {
 
 impl EdgeManager {
     pub fn new() -> Result<Box<Self>, Error> {
-        let browser_name = EDGE_NAMES[0];
+        Self::new_with_name(EDGE_NAMES[0].to_string())
+    }
+
+    pub fn new_with_name(browser_name: String) -> Result<Box<Self>, Error> {
+        let static_browser_name: &str = Box::leak(browser_name.into_boxed_str());
         let driver_name = EDGEDRIVER_NAME;
-        let config = ManagerConfig::default(browser_name, driver_name);
+        let config = ManagerConfig::default(static_browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
         Ok(Box::new(EdgeManager {
-            browser_name,
+            browser_name: static_browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
@@ -173,7 +182,11 @@ impl SeleniumManager for EdgeManager {
                     || major_browser_version.is_empty()
                     || self.is_browser_version_unstable()
                 {
-                    let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
+                    let latest_stable_url = format!(
+                        "{}{}",
+                        self.get_driver_mirror_url_or_default(DRIVER_URL),
+                        LATEST_STABLE
+                    );
                     self.log.debug(format!(
                         "Reading {} latest version from {}",
                         &self.driver_name, latest_stable_url
@@ -192,7 +205,7 @@ impl SeleniumManager for EdgeManager {
                 }
                 let driver_url = format!(
                     "{}{}_{}_{}",
-                    DRIVER_URL,
+                    self.get_driver_mirror_url_or_default(DRIVER_URL),
                     LATEST_RELEASE,
                     major_browser_version,
                     self.get_os().to_uppercase()
@@ -247,7 +260,9 @@ impl SeleniumManager for EdgeManager {
         };
         Ok(format!(
             "{}{}/edgedriver_{}.zip",
-            DRIVER_URL, driver_version, driver_label
+            self.get_driver_mirror_url_or_default(DRIVER_URL),
+            driver_version,
+            driver_label
         ))
     }
 
@@ -311,10 +326,11 @@ impl SeleniumManager for EdgeManager {
         let is_fixed_browser_version = !self.is_empty(browser_version)
             && !self.is_stable(browser_version)
             && !self.is_unstable(browser_version);
+        let browser_url = self.get_browser_mirror_url_or_default(BROWSER_URL);
         let edge_updates_url = if is_fixed_browser_version {
-            format!("{}?view=enterprise", BROWSER_URL)
+            format!("{}?view=enterprise", browser_url)
         } else {
-            BROWSER_URL.to_string()
+            browser_url
         };
         self.get_logger().debug(format!(
             "Checking {} releases on {}",

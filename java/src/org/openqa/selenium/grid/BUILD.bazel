@@ -108,7 +108,6 @@ maven_bom(
         "//java/src/org/openqa/selenium/grid:grid",
         "//java/src/org/openqa/selenium/ie:ie",
         "//java/src/org/openqa/selenium/json:json",
-        "//java/src/org/openqa/selenium/lift:lift",
         "//java/src/org/openqa/selenium/manager:manager",
         "//java/src/org/openqa/selenium/remote/http:http",
         "//java/src/org/openqa/selenium/remote:remote",

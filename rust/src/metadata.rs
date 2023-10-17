@@ -15,15 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::Logger;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
-
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
-
-use serde::{Deserialize, Serialize};
-
-use crate::Logger;
 
 const METADATA_FILE_OLD: &str = "selenium-manager.json";
 const METADATA_FILE: &str = "se-metadata.json";
