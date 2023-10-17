@@ -89,7 +89,7 @@ csharp_library(
 )
 
 nuget_pack(
-    name = "support-strongnamed-pack",
+    name = "support-strongnamed",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
     },

@@ -16,7 +16,7 @@ pkg_zip(
 pkg_zip(
     name = "release",
     srcs = [
-        "//dotnet/src/support:support",
-        "//dotnet/src/webdriver:webdriver",
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver",
     ],
 )
