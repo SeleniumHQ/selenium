@@ -1802,7 +1802,7 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(beforeRequestEvent.request.cookies[0].value, 'biryani')
+        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 
@@ -1813,7 +1813,7 @@ suite(
         await driver.navigate().refresh()
 
         assert.equal(beforeRequestEvent.request.cookies[1].name, 'south')
-        assert.equal(beforeRequestEvent.request.cookies[1].value, 'dosa')
+        assert.equal(beforeRequestEvent.request.cookies[1].value.value, 'dosa')
       })
 
       it('can redirect http equiv', async function () {
