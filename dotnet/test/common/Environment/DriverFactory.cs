@@ -5,18 +5,33 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Safari;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using NUnit.Framework;
 using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Environment
 {
     public class DriverFactory
     {
+        string driverPath;
+        string browserBinaryLocation;
         private Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
         private Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
 
-        public DriverFactory()
+        public DriverFactory(string driverPath, string browserBinaryLocation)
         {
+            if (string.IsNullOrEmpty(driverPath))
+            {
+                this.driverPath = TestContext.CurrentContext.TestDirectory;
+            }
+            else
+            {
+                this.driverPath = driverPath;
+            }
+
+            this.browserBinaryLocation = browserBinaryLocation;
+
             this.PopulateServiceTypes();
             this.PopulateOptionsTypes();
         }
@@ -59,7 +74,16 @@ namespace OpenQA.Selenium.Environment
             {
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
+                options.UseWebSocketUrl = true;
+
+                var chromeOptions = (ChromeOptions)options;
+                chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+
                 service = CreateService<ChromeDriverService>();
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    ((ChromeOptions)options).BinaryLocation = this.browserBinaryLocation;
+                }
                 if (enableLogging)
                 {
                     ((ChromiumDriverService)service).EnableVerboseLogging = true;
@@ -70,6 +94,10 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Edge;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
                 service = CreateService<EdgeDriverService>();
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    ((EdgeOptions)options).BinaryLocation = this.browserBinaryLocation;
+                }
                 if (enableLogging)
                 {
                     ((ChromiumDriverService)service).EnableVerboseLogging = true;
@@ -90,6 +118,10 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Firefox;
                 options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
                 service = CreateService<FirefoxDriverService>();
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    ((FirefoxOptions)options).BrowserExecutableLocation = this.browserBinaryLocation;
+                }
                 if (enableLogging)
                 {
                     ((FirefoxDriverService)service).LogLevel = FirefoxDriverLogLevel.Trace;
@@ -100,6 +132,12 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.Safari;
                 options = GetDriverOptions<SafariOptions>(driverType, driverOptions);
                 service = CreateService<SafariDriverService>();
+            }
+
+            if (!String.IsNullOrEmpty(this.driverPath) && service != null)
+            {
+                service.DriverServicePath = Path.GetDirectoryName(this.driverPath);
+                service.DriverServiceExecutableName = Path.GetFileName(this.driverPath);
             }
 
             this.OnDriverLaunching(service, options);

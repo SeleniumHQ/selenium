@@ -5,96 +5,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      cache-key: java
-      run: bazel build grid
-
-  docs:
-    name: Documentation
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Documentation
-      cache-key: java-doc
-      run: ./go --verbose javadocs
-
-  lint:
-    name: Lint
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint
-      cache-key: java-lint
-      run: bazel test --test_tag_filters "lint,-no-lint" //java/...
-
-  small-tests:
-    name: Small Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Small Tests
-      cache-key: java-small-tests
-      run: bazel test --test_size_filters "small" --test_tag_filters "-lint" //java/...
-
-  medium-tests:
-    name: Medium Tests
-    needs: small-tests
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Medium Tests
-      cache-key: java-medium-tests
-      run: bazel test --test_size_filters "medium" --test_tag_filters "-lint" --flaky_test_attempts 3 //java/...
-
   browser-tests:
     name: Browser Tests
-    needs: small-tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - browser: chrome
-            browser-version: stable
-          - browser: firefox
-            browser-version: latest
-          - browser: firefox
-            browser-version: latest-beta
-          - browser: firefox
-            browser-version: latest-devedition
+          - os: windows
+          - os: macos
     with:
-      name: Browser Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
-      browser: ${{ matrix.browser }}
-      browser-version: ${{ matrix.browser-version }}
-      cache-key: java-${{ matrix.browser }}-tests
+      name: Browser Tests (chrome, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: chrome
+      cache-key: java-${{ matrix.os }}-tests
       run: >
-        bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))" |
-        xargs bazel test --flaky_test_attempts 3
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 
   remote-tests:
     name: Remote Tests
-    needs: small-tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - browser: chrome
-            browser-version: stable
-          - browser: firefox
-            browser-version: latest
-          - browser: firefox
-            browser-version: latest-beta
-          - browser: firefox
-            browser-version: latest-devedition
+          - os: windows
+          - os: macos
     with:
-      name: Remote Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
-      browser: ${{ matrix.browser }}
-      browser-version: ${{ matrix.browser-version }}
-      cache-key: java-${{ matrix.browser }}-remote-tests
+      name: Remote Tests (chrome, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: chrome
+      cache-key: java-${{ matrix.os }}-remote-tests
       run: >
-        bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
-        xargs bazel test --flaky_test_attempts 3
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

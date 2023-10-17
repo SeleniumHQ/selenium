@@ -144,9 +144,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "548f0583192ff79c317789b03b882a7be9b1325eb5d3da5d7fdcc4b7ca69d543",
-    strip_prefix = "rules_jvm-0.9.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/refs/tags/v0.9.0.tar.gz",
+    sha256 = "4d62589dc6a55e74bbe33930b826d593367fc777449a410604b2ad7c6c625ef7",
+    strip_prefix = "rules_jvm-0.19.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/releases/download/v0.19.0/rules_jvm-v0.19.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
@@ -166,17 +166,41 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 pinned_maven_install()
 
 http_archive(
-    name = "d2l_rules_csharp",
-    sha256 = "c0152befb1fd0e08527b38e41ef00b6627f9f0c2be6f2d23a4950f41701fa48a",
-    strip_prefix = "rules_csharp-50e2f6c79e7a53e50b4518239b5ebcc61279759e",
-    urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/50e2f6c79e7a53e50b4518239b5ebcc61279759e.tar.gz",
+    name = "rules_dotnet",
+    patch_args = ["-p1"],
+    patches = [
+        "//dotnet:0001-Include-more-of-the-SDK.patch",
+        "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
+        "//dotnet:0003-Make-Runfiles-library-compatible-with-net-standard-2-0.patch",
+        "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
+        "//dotnet:0005-Ensure-csharp_library-files-are-unique.patch",
     ],
+    sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
+    strip_prefix = "rules_dotnet-0.10.7",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
 )
 
-load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+load(
+    "@rules_dotnet//dotnet:repositories.bzl",
+    "dotnet_register_toolchains",
+    "rules_dotnet_dependencies",
+)
 
-selenium_register_dotnet()
+rules_dotnet_dependencies()
+
+dotnet_register_toolchains("dotnet", "7.0.400")
+
+load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
+
+rules_dotnet_nuget_packages()
+
+load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
+
+paket2bazel_dependencies()
+
+load("//dotnet:paket.bzl", "paket")
+
+paket()
 
 http_archive(
     name = "rules_rust",

@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExternalProcess;
 
 /**
  * This implementation is still in beta, and may change.
@@ -112,15 +113,14 @@ public class SeleniumManager {
     String output;
     int code;
     try {
-      CommandLine command =
-          new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
-      command.executeAsync();
-      command.waitFor();
-      if (command.isRunning()) {
-        LOG.warning("Selenium Manager did not exit");
+      ExternalProcess process =
+          ExternalProcess.builder().command(binary.toAbsolutePath().toString(), arguments).start();
+      if (!process.waitFor(Duration.ofHours(1))) {
+        LOG.warning("Selenium Manager did not exit, shutting it down");
+        process.shutdown();
       }
-      code = command.getExitCode();
-      output = command.getStdOut();
+      code = process.exitValue();
+      output = process.getOutput();
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }

@@ -41,8 +41,8 @@ class SeleniumManager:
         :Returns: The Selenium Manager executable location
         """
 
-        if os.getenv("SE_MANAGER_PATH"):
-            path = os.getenv("SE_MANAGER_PATH")
+        if path := os.getenv("SE_MANAGER_PATH") is not None:
+            return Path(path)
         else:
             platform = sys.platform
 
@@ -60,11 +60,11 @@ class SeleniumManager:
         if not path.is_file() and os.environ["CONDA_PREFIX"]:
             # conda has a separate package selenium-manager, installs in bin
             path = Path(os.path.join(os.environ["CONDA_PREFIX"], "bin", file))
-            logger.debug(f"Conda environment detected, using `{path}`")
+            logger.debug("Conda environment detected, using `%s`", path)
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
-        logger.debug(f"Selenium Manager binary found at: {path}")
+        logger.debug("Selenium Manager binary found at: %s", path)
 
         return path
 
@@ -99,9 +99,9 @@ class SeleniumManager:
 
         browser_path = output["browser_path"]
         driver_path = output["driver_path"]
-        logger.debug(f"Using driver at: {driver_path}")
+        logger.debug("Using driver at: %s", driver_path)
 
-        if hasattr(options.__class__, "binary_location"):
+        if hasattr(options.__class__, "binary_location") and browser_path:
             options.binary_location = browser_path
             options.browser_version = None  # if we have the binary location we no longer need the version
 
@@ -121,7 +121,7 @@ class SeleniumManager:
         args.append("json")
 
         command = " ".join(args)
-        logger.debug(f"Executing process: {command}")
+        logger.debug("Executing process: %s", command)
         try:
             if sys.platform == "win32":
                 completed_proc = subprocess.run(args, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)

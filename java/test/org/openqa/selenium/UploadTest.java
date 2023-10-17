@@ -24,7 +24,6 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.io.File;
@@ -121,7 +120,6 @@ class UploadTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   public void testClickFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
@@ -147,7 +145,6 @@ class UploadTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Hangs forever in sendKeys")
-  @Ignore(HTMLUNIT)
   @NeedsFreshDriver
   public void testUploadingWithInvisibleFileInput() {
     driver.get(appServer.whereIs("upload_invisible.html"));
@@ -165,7 +162,6 @@ class UploadTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {

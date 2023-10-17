@@ -20,7 +20,6 @@ package org.openqa.selenium.chromium;
 import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -42,7 +41,7 @@ public class AddHasNetworkConditions
   public static final String DELETE_NETWORK_CONDITIONS = "deleteNetworkConditions";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           GET_NETWORK_CONDITIONS,
               new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
           SET_NETWORK_CONDITIONS,
@@ -94,7 +93,7 @@ public class AddHasNetworkConditions
         Require.nonNull("Network Conditions", networkConditions);
 
         Map<String, Object> conditions =
-            ImmutableMap.of(
+            Map.of(
                 ChromiumNetworkConditions.OFFLINE,
                 networkConditions.getOffline(),
                 ChromiumNetworkConditions.LATENCY,
@@ -103,8 +102,7 @@ public class AddHasNetworkConditions
                 networkConditions.getDownloadThroughput(),
                 ChromiumNetworkConditions.UPLOAD_THROUGHPUT,
                 networkConditions.getUploadThroughput());
-        executeMethod.execute(
-            SET_NETWORK_CONDITIONS, ImmutableMap.of("network_conditions", conditions));
+        executeMethod.execute(SET_NETWORK_CONDITIONS, Map.of("network_conditions", conditions));
       }
 
       @Override

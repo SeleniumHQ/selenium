@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
@@ -49,7 +48,7 @@ public class Command<X> {
       Function<JsonInput, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
-    this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
+    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
 
     this.sendsResponse = sendsResponse;

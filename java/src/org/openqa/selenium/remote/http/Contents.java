@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,7 +74,7 @@ public class Contents {
 
     try (InputStream is = supplier.get();
         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
       return bos.toByteArray();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -171,7 +170,7 @@ public class Contents {
           if (!initialized) {
             try (InputStream is = delegate.get()) {
               this.fos = new FileBackedOutputStream(3 * 1024 * 1024, true);
-              ByteStreams.copy(is, fos);
+              is.transferTo(fos);
               initialized = true;
             } catch (IOException e) {
               throw new UncheckedIOException(e);

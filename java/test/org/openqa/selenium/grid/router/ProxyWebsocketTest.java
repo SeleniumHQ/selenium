@@ -23,7 +23,12 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.net.Socket;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
@@ -32,6 +37,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,6 +58,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -181,7 +191,10 @@ class ProxyWebsocketTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldBeAbleToSendMessagesOverSecureWebSocket(Supplier<String> values)
-      throws URISyntaxException, InterruptedException {
+      throws URISyntaxException,
+          InterruptedException,
+          NoSuchAlgorithmException,
+          KeyManagementException {
     setFields(values);
     Config secureConfig =
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("https-self-signed", true)));
@@ -207,11 +220,46 @@ class ProxyWebsocketTest {
             new ImmutableCapabilities(),
             Instant.now()));
 
+    final TrustManager trustManager =
+        new X509ExtendedTrustManager() {
+          @Override
+          public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {}
+
+          @Override
+          public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) {}
+
+          @Override
+          public void checkClientTrusted(
+              X509Certificate[] chain, String authType, SSLEngine engine) {}
+
+          @Override
+          public void checkServerTrusted(
+              X509Certificate[] chain, String authType, SSLEngine engine) {}
+
+          @Override
+          public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[0];
+          }
+
+          @Override
+          public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+
+          @Override
+          public void checkServerTrusted(
+              java.security.cert.X509Certificate[] chain, String authType) {}
+        };
+
+    SSLContext sslContext = SSLContext.getInstance("SSL");
+    sslContext.init(null, new TrustManager[] {trustManager}, new SecureRandom());
+
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
     try (WebSocket socket =
         clientFactory
-            .createClient(secureProxyServer.getUrl())
+            .createClient(
+                ClientConfig.defaultConfig()
+                    .baseUrl(secureProxyServer.getUrl())
+                    .sslContext(sslContext))
             .openSocket(
                 new HttpRequest(GET, String.format("/session/%s/" + protocol, id)),
                 new WebSocket.Listener() {

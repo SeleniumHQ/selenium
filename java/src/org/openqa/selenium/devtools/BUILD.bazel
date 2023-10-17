@@ -22,7 +22,6 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
-        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -76,7 +75,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
-        artifact("com.google.guava:guava"),
     ],
 )
 

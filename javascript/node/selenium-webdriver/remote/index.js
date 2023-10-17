@@ -120,7 +120,7 @@ class DriverService {
    */
   constructor(executable, options) {
     /** @private @const */
-    this.log_ = logging.getLogger('webdriver.DriverService')
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.DriverService`)
     /** @private {string} */
     this.executable_ = executable
 

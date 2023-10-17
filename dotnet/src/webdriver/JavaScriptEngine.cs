@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OpenQA.Selenium.DevTools;
@@ -75,7 +76,7 @@ namespace OpenQA.Selenium
         public event EventHandler<JavaScriptExceptionThrownEventArgs> JavaScriptExceptionThrown;
 
         /// <summary>
-        /// Occurs when methods on the JavaScript console are called. 
+        /// Occurs when methods on the JavaScript console are called.
         /// </summary>
         public event EventHandler<JavaScriptConsoleApiCalledEventArgs> JavaScriptConsoleApiCalled;
 
@@ -380,6 +381,9 @@ namespace OpenQA.Selenium
             if (e.Name == MonitorBindingName)
             {
                 DomMutationData valueChangeData = JsonConvert.DeserializeObject<DomMutationData>(e.Payload);
+                var locator = By.CssSelector($"*[data-__webdriver_id='{valueChangeData.TargetId}']");
+                valueChangeData.Element = driver.FindElements(locator).FirstOrDefault();
+
                 if (this.DomMutated != null)
                 {
                     this.DomMutated(this, new DomMutatedEventArgs()

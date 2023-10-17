@@ -44,6 +44,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
 
+@Deprecated
 class OsProcess {
   private static final Logger LOG = Logger.getLogger(OsProcess.class.getName());
 
