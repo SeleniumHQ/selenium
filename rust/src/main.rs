@@ -147,6 +147,14 @@ struct Cli {
     /// Avoid sends usage statistics to plausible.io
     #[clap(long)]
     avoid_stats: bool,
+
+    /// Not using drivers found in the PATH
+    #[clap(long)]
+    skip_driver_in_path: bool,
+
+    /// Not using browsers found in the PATH
+    #[clap(long)]
+    skip_browser_in_path: bool,
 }
 
 fn main() {
@@ -218,6 +226,8 @@ fn main() {
     let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
     selenium_manager.set_selenium_version(selenium_version.to_string());
     selenium_manager.set_avoid_stats(cli.avoid_stats);
+    selenium_manager.set_skip_driver_in_path(cli.skip_driver_in_path);
+    selenium_manager.set_skip_browser_in_path(cli.skip_browser_in_path);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);

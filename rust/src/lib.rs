@@ -386,7 +386,16 @@ pub trait SeleniumManager {
             // Check browser in PATH
             let browser_in_path = self.find_browser_in_path();
             if let Some(path) = &browser_in_path {
-                self.set_browser_path(path_to_string(path));
+                if self.is_skip_browser_in_path() {
+                    self.get_logger().debug(format!(
+                        "Skipping {} in path: {}",
+                        self.get_browser_name(),
+                        path.display()
+                    ));
+                    return None;
+                } else {
+                    self.set_browser_path(path_to_string(path));
+                }
             }
             browser_in_path
         }
@@ -780,8 +789,16 @@ pub trait SeleniumManager {
                     self.get_major_browser_version()
                 ));
             }
-            self.set_driver_version(version.to_string());
-            return Ok(PathBuf::from(path));
+            if self.is_skip_driver_in_path() {
+                self.get_logger().debug(format!(
+                    "Skipping {} in path: {}",
+                    self.get_driver_name(),
+                    path
+                ));
+            } else {
+                self.set_driver_version(version.to_string());
+                return Ok(PathBuf::from(path));
+            }
         }
 
         // If driver was not in the PATH, try to find it in the cache
@@ -1410,6 +1427,26 @@ pub trait SeleniumManager {
     fn set_avoid_browser_download(&mut self, avoid_browser_download: bool) {
         if avoid_browser_download {
             self.get_config_mut().avoid_browser_download = true;
+        }
+    }
+
+    fn is_skip_driver_in_path(&self) -> bool {
+        self.get_config().skip_driver_in_path
+    }
+
+    fn set_skip_driver_in_path(&mut self, skip_driver_in_path: bool) {
+        if skip_driver_in_path {
+            self.get_config_mut().skip_driver_in_path = true;
+        }
+    }
+
+    fn is_skip_browser_in_path(&self) -> bool {
+        self.get_config().skip_browser_in_path
+    }
+
+    fn set_skip_browser_in_path(&mut self, skip_browser_in_path: bool) {
+        if skip_browser_in_path {
+            self.get_config_mut().skip_browser_in_path = true;
         }
     }
 
