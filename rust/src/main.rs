@@ -131,6 +131,14 @@ struct Cli {
     /// Avoid to download browser (even when browser-version is specified)
     #[clap(long)]
     avoid_browser_download: bool,
+
+    /// Not using drivers found in the PATH
+    #[clap(long)]
+    skip_driver_in_path: bool,
+
+    /// Not using browsers found in the PATH
+    #[clap(long)]
+    skip_browser_in_path: bool,
 }
 
 fn main() {
@@ -196,6 +204,8 @@ fn main() {
     selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
     selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_skip_driver_in_path(cli.skip_driver_in_path);
+    selenium_manager.set_skip_browser_in_path(cli.skip_browser_in_path);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);

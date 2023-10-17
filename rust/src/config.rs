@@ -55,6 +55,8 @@ pub struct ManagerConfig {
     pub offline: bool,
     pub force_browser_download: bool,
     pub avoid_browser_download: bool,
+    pub skip_driver_in_path: bool,
+    pub skip_browser_in_path: bool,
 }
 
 impl ManagerConfig {
@@ -111,6 +113,8 @@ impl ManagerConfig {
             offline: BooleanKey("offline", false).get_value(),
             force_browser_download: BooleanKey("force-browser-download", false).get_value(),
             avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
+            skip_driver_in_path: BooleanKey("skip-driver-in-path", false).get_value(),
+            skip_browser_in_path: BooleanKey("skip-browser-in-path", false).get_value(),
         }
     }
 }
