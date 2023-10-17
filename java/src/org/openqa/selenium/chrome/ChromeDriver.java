@@ -99,7 +99,7 @@ public class ChromeDriver extends ChromiumDriver {
     if (service.getExecutable() == null) {
       Result result = DriverFinder.getPath(service, options);
       service.setExecutable(result.getDriverPath());
-      if (result.getBrowserPath() != null) {
+      if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
         options.setBinary(result.getBrowserPath());
       }
     }

@@ -104,12 +104,10 @@ namespace OpenQA.Selenium
             }
 
             Dictionary<string, object> output = RunCommand(BinaryFullPath, argsBuilder.ToString());
-            string browserPath = (string)output["browser_path"];
-            string driverPath = (string)output["driver_path"];
 
             try
             {
-                options.BinaryLocation = browserPath;
+                options.BinaryLocation = (string)output["browser_path"] == "" ? null : (string)output["browser_path"];
                 options.BrowserVersion = null;
             }
             catch (NotImplementedException)
@@ -117,7 +115,7 @@ namespace OpenQA.Selenium
                 // Cannot set Browser Location for this driver and that is ok
             }
 
-            return driverPath;
+            return (string)output["driver_path"];
         }
 
         /// <summary>

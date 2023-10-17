@@ -45,7 +45,7 @@ module Selenium
           driver_path = output['driver_path']
           Platform.assert_executable driver_path
 
-          if options.respond_to? :binary
+          if options.respond_to?(:binary) && browser_path && !browser_path.empty?
             options.binary = browser_path
             options.browser_version = nil
           end
