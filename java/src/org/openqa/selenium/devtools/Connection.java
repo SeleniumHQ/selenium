@@ -272,7 +272,7 @@ public class Connection implements Closeable {
       LOG.log(
           getDebugLogLevel(),
           "Method {0} called with {1} callbacks available",
-          new Object[] {raw.get("method"), eventCallbacks.keySet().size()});
+          new Object[] {raw.get("method"), eventCallbacks.size()});
       Lock lock = callbacksLock.readLock();
       // A waiting writer will block a reader to enter the lock, even if there are currently other
       // readers holding the lock. TryLock will bypass the waiting writers and acquire the read
