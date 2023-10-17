@@ -18,12 +18,10 @@
 package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
@@ -55,7 +53,6 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -122,11 +119,13 @@ class SessionQueueGridWithTimeoutTest {
                 CAPS,
                 new TestSessionFactory(
                     (id, caps) -> {
-                        try {
-                          Thread.sleep(6000); // simulate a session that takes long to create
-                        } catch (Exception e) {}
-                        return new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now());
-  }))
+                      try {
+                        Thread.sleep(6000); // simulate a session that takes long to create
+                      } catch (Exception e) {
+                      }
+                      return new Session(
+                          id, nodeUri, new ImmutableCapabilities(), caps, Instant.now());
+                    }))
             .maximumConcurrentSessions(1)
             .build();
     handler.addHandler(localNode);
@@ -174,11 +173,9 @@ class SessionQueueGridWithTimeoutTest {
 
         // session has been destroyed on node as it's not used
         new FluentWait<>(localNode)
-        .withTimeout(Duration.ofSeconds(7))
-        .until(node -> node.getUsedSlots() == 0);
+            .withTimeout(Duration.ofSeconds(7))
+            .until(node -> node.getUsedSlots() == 0);
       }
-
-   
 
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");
