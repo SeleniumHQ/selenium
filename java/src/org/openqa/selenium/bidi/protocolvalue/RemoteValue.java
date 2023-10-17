@@ -19,16 +19,15 @@ package org.openqa.selenium.bidi.protocolvalue;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
-
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class RemoteValue {
 

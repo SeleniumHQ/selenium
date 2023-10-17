@@ -19,11 +19,10 @@ package org.openqa.selenium.bidi.protocolvalue;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.openqa.selenium.json.JsonInput;
 
 public class RegExpValue {
 

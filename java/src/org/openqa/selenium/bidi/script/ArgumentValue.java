@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.bidi.script;
 
+import java.util.Map;
 import org.openqa.selenium.bidi.protocolvalue.LocalValue;
 import org.openqa.selenium.bidi.protocolvalue.ReferenceValue;
-
-import java.util.Map;
 
 public class ArgumentValue {
 

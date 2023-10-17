@@ -19,13 +19,12 @@ package org.openqa.selenium.bidi.protocolvalue;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.openqa.selenium.internal.Require;
 
 public class LocalValue {
   private static final String TYPE_CONSTANT = "type";

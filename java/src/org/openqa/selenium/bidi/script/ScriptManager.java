@@ -18,17 +18,6 @@
 package org.openqa.selenium.bidi.script;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.Command;
-import org.openqa.selenium.bidi.HasBiDi;
-import org.openqa.selenium.bidi.protocolvalue.RemoteValue;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +28,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.protocolvalue.RemoteValue;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class ScriptManager {
 
