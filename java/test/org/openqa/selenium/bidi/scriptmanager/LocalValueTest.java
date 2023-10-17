@@ -63,16 +63,18 @@ class LocalValueTest {
     ArgumentValue value = new ArgumentValue(LocalValue.createUndefinedValue());
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==undefined)\n"
-                                                                  + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==undefined)\n"
+                + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -91,16 +93,18 @@ class LocalValueTest {
     ArgumentValue value = new ArgumentValue(LocalValue.createNullValue());
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==null)\n"
-                                                                  + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==null)\n"
+                + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -116,19 +120,22 @@ class LocalValueTest {
 
     List<ArgumentValue> arguments = new ArrayList<>();
 
-    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_ZERO));
+    ArgumentValue value =
+        new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_ZERO));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==-0)\n"
-                                                                  + "                throw Error(\"Argument should be -0, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==-0)\n"
+                + "                throw Error(\"Argument should be -0, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -136,7 +143,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("-0");
+    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("-0");
   }
 
   @Test
@@ -146,19 +153,22 @@ class LocalValueTest {
 
     List<ArgumentValue> arguments = new ArrayList<>();
 
-    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.INFINITY));
+    ArgumentValue value =
+        new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.INFINITY));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==Infinity)\n"
-                                                                  + "                throw Error(\"Argument should be Infinity, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==Infinity)\n"
+                + "                throw Error(\"Argument should be Infinity, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -166,7 +176,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("Infinity");
+    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("Infinity");
   }
 
   @Test
@@ -176,19 +186,22 @@ class LocalValueTest {
 
     List<ArgumentValue> arguments = new ArrayList<>();
 
-    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_INFINITY));
+    ArgumentValue value =
+        new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_INFINITY));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==-Infinity)\n"
-                                                                  + "                throw Error(\"Argument should be -Infinity, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==-Infinity)\n"
+                + "                throw Error(\"Argument should be -Infinity, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -196,7 +209,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("-Infinity");
+    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("-Infinity");
   }
 
   @Test
@@ -209,16 +222,18 @@ class LocalValueTest {
     ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(1.4));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==1.4)\n"
-                                                                  + "                throw Error(\"Argument should be 1.4, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==1.4)\n"
+                + "                throw Error(\"Argument should be 1.4, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -226,7 +241,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((double)successResult.getResult().getValue().get()).isEqualTo(1.4);
+    assertThat((double) successResult.getResult().getValue().get()).isEqualTo(1.4);
   }
 
   @Test
@@ -239,16 +254,18 @@ class LocalValueTest {
     ArgumentValue value = new ArgumentValue(LocalValue.createBooleanValue(true));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==true)\n"
-                                                                  + "                throw Error(\"Argument should be true, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==true)\n"
+                + "                throw Error(\"Argument should be true, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -256,7 +273,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("boolean");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((boolean)successResult.getResult().getValue().get()).isEqualTo(true);
+    assertThat((boolean) successResult.getResult().getValue().get()).isEqualTo(true);
   }
 
   @Test
@@ -269,16 +286,18 @@ class LocalValueTest {
     ArgumentValue value = new ArgumentValue(LocalValue.createBigIntValue("42"));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(arg!==42n)\n"
-                                                                  + "                throw Error(\"Argument should be 42n, but was \"+arg);\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(arg!==42n)\n"
+                + "                throw Error(\"Argument should be 42n, but was \"+arg);\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -286,7 +305,7 @@ class LocalValueTest {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("bigint");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("42");
+    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("42");
   }
 
   @Test
@@ -298,21 +317,22 @@ class LocalValueTest {
 
     List<LocalValue> arrayValue = new ArrayList<>();
     arrayValue.add(LocalValue.createStringValue("foobar"));
-    ArgumentValue value =
-      new ArgumentValue(LocalValue.createArrayValue(arrayValue));
+    ArgumentValue value = new ArgumentValue(LocalValue.createArrayValue(arrayValue));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof Array))\n"
-                                                                  + "                throw Error(\"Argument type should be Array, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof Array))\n"
+                + "                throw Error(\"Argument type should be Array, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -335,21 +355,22 @@ class LocalValueTest {
 
     Set<LocalValue> setValue = new HashSet<>();
     setValue.add(LocalValue.createStringValue("foobar"));
-    ArgumentValue value =
-      new ArgumentValue(LocalValue.createSetValue(setValue));
+    ArgumentValue value = new ArgumentValue(LocalValue.createSetValue(setValue));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof Set))\n"
-                                                                  + "                throw Error(\"Argument type should be Set, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof Set))\n"
+                + "                throw Error(\"Argument type should be Set, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -370,21 +391,22 @@ class LocalValueTest {
 
     List<ArgumentValue> arguments = new ArrayList<>();
 
-    ArgumentValue value =
-      new ArgumentValue(LocalValue.createDateValue("2022-05-31T13:47:29.000Z"));
+    ArgumentValue value = new ArgumentValue(LocalValue.createDateValue("2022-05-31T13:47:29.000Z"));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof Date))\n"
-                                                                  + "                throw Error(\"Argument type should be Date, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof Date))\n"
+                + "                throw Error(\"Argument type should be Date, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -405,21 +427,22 @@ class LocalValueTest {
     Map<Object, LocalValue> mapValue = new HashMap<>();
     mapValue.put("foobar", LocalValue.createStringValue("foobar"));
 
-    ArgumentValue value =
-      new ArgumentValue(LocalValue.createMapValue(mapValue));
+    ArgumentValue value = new ArgumentValue(LocalValue.createMapValue(mapValue));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof Map))\n"
-                                                                  + "                throw Error(\"Argument type should be Map, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof Map))\n"
+                + "                throw Error(\"Argument type should be Map, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -428,9 +451,8 @@ class LocalValueTest {
     assertThat(successResult.getResult().getType()).isEqualTo("map");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
 
-    Map<Object, RemoteValue>
-      resultValue =
-      (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
+    Map<Object, RemoteValue> resultValue =
+        (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
     assertThat(resultValue.size()).isEqualTo(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
@@ -445,21 +467,22 @@ class LocalValueTest {
     Map<Object, LocalValue> mapValue = new HashMap<>();
     mapValue.put("foobar", LocalValue.createStringValue("foobar"));
 
-    ArgumentValue value =
-      new ArgumentValue(LocalValue.createObjectValue(mapValue));
+    ArgumentValue value = new ArgumentValue(LocalValue.createObjectValue(mapValue));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof Object))\n"
-                                                                  + "                throw Error(\"Argument type should be Object, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof Object))\n"
+                + "                throw Error(\"Argument type should be Object, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
@@ -468,9 +491,8 @@ class LocalValueTest {
     assertThat(successResult.getResult().getType()).isEqualTo("object");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
 
-    Map<Object, RemoteValue>
-      resultValue =
-      (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
+    Map<Object, RemoteValue> resultValue =
+        (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
     assertThat(resultValue.size()).isEqualTo(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
@@ -483,21 +505,23 @@ class LocalValueTest {
     List<ArgumentValue> arguments = new ArrayList<>();
 
     ArgumentValue value =
-      new ArgumentValue(LocalValue.createRegularExpressionValue(new RegExpValue("foo",
-                                                                                Optional.of("g"))));
+        new ArgumentValue(
+            LocalValue.createRegularExpressionValue(new RegExpValue("foo", Optional.of("g"))));
     arguments.add(value);
 
-    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
-                                                                  "(arg) => {{\n"
-                                                                  + "            if(! (arg instanceof RegExp))\n"
-                                                                  + "                throw Error(\"Argument type should be RegExp, but was \"+\n"
-                                                                  + "                    Object.prototype.toString.call(arg));\n"
-                                                                  + "            return arg;\n"
-                                                                  + "        }}",
-                                                                  false,
-                                                                  Optional.of(arguments),
-                                                                  Optional.empty(),
-                                                                  Optional.empty());
+    EvaluateResult result =
+        manager.callFunctionInBrowsingContext(
+            id,
+            "(arg) => {{\n"
+                + "            if(! (arg instanceof RegExp))\n"
+                + "                throw Error(\"Argument type should be RegExp, but was \"+\n"
+                + "                    Object.prototype.toString.call(arg));\n"
+                + "            return arg;\n"
+                + "        }}",
+            false,
+            Optional.of(arguments),
+            Optional.empty(),
+            Optional.empty());
 
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
