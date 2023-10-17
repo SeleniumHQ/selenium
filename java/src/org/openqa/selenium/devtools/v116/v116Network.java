@@ -196,7 +196,7 @@ public class v116Network extends Network<AuthRequired, RequestPaused> {
 
     return Fetch.continueRequest(
         pausedReq.getRequestId(),
-        Optional.empty(),
+        Optional.of(req.getUri()),
         Optional.of(req.getMethod().toString()),
         Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
         Optional.of(headers),
