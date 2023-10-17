@@ -135,3 +135,4 @@ bazel-testlogs
 # Engflow
 *.crt
 *.key
+javascript/node/selenium-webdriver/.vscode/settings.json
