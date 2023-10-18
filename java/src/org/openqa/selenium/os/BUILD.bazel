@@ -12,6 +12,5 @@ java_export(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/io",
         artifact("org.apache.commons:commons-exec"),
-        artifact("com.google.guava:guava"),
     ],
 )

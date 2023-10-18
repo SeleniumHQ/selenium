@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
@@ -65,9 +64,7 @@ public class Actions {
    * either <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i> must be called to release the
    * modifier.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
-   *     IllegalArgumentException} is thrown.
+   * @param key
    * @return A self reference.
    */
   public Actions keyDown(CharSequence key) {
@@ -79,9 +76,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    *
    * @see #keyDown(CharSequence)
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
-   *     IllegalArgumentException} is thrown.
+   * @param key
    * @param target WebElement to perform the action
    * @return A self reference.
    */
@@ -94,8 +89,7 @@ public class Actions {
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}.
+   * @param key
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
@@ -107,8 +101,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    *
    * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}.
+   * @param key
    * @param target WebElement to perform the action on
    * @return A self reference.
    */
