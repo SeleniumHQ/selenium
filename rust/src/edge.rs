@@ -25,7 +25,7 @@ use crate::metadata::{
 };
 use crate::{
     create_http_client, get_binary_extension, path_to_string, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG,
     REG_VERSION_ARG, STABLE,
 };
 use anyhow::Error;
@@ -104,54 +104,79 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
-        HashMap::from([
-            (
+        if self.is_webview2() {
+            HashMap::from([(
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Microsoft\Edge\Application\msedge.exe"#,
-            ),
-            (
-                BrowserPath::new(WINDOWS, BETA),
-                r#"Microsoft\Edge Beta\Application\msedge.exe"#,
-            ),
-            (
-                BrowserPath::new(WINDOWS, DEV),
-                r#"Microsoft\Edge Dev\Application\msedge.exe"#,
-            ),
-            (
-                BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"Microsoft\Edge SxS\Application\msedge.exe"#,
-            ),
-            (
-                BrowserPath::new(MACOS, STABLE),
-                r#"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"#,
-            ),
-            (
-                BrowserPath::new(MACOS, BETA),
-                r#"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta"#,
-            ),
-            (
-                BrowserPath::new(MACOS, DEV),
-                r#"/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev"#,
-            ),
-            (
-                BrowserPath::new(MACOS, NIGHTLY),
-                r#"/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary"#,
-            ),
-            (BrowserPath::new(LINUX, STABLE), "/usr/bin/microsoft-edge"),
-            (
-                BrowserPath::new(LINUX, BETA),
-                "/usr/bin/microsoft-edge-beta",
-            ),
-            (BrowserPath::new(LINUX, DEV), "/usr/bin/microsoft-edge-dev"),
-        ])
+                r#"Microsoft\EdgeWebView\Application"#,
+            )])
+        } else {
+            HashMap::from([
+                (
+                    BrowserPath::new(WINDOWS, STABLE),
+                    r#"Microsoft\Edge\Application\msedge.exe"#,
+                ),
+                (
+                    BrowserPath::new(WINDOWS, BETA),
+                    r#"Microsoft\Edge Beta\Application\msedge.exe"#,
+                ),
+                (
+                    BrowserPath::new(WINDOWS, DEV),
+                    r#"Microsoft\Edge Dev\Application\msedge.exe"#,
+                ),
+                (
+                    BrowserPath::new(WINDOWS, NIGHTLY),
+                    r#"Microsoft\Edge SxS\Application\msedge.exe"#,
+                ),
+                (
+                    BrowserPath::new(MACOS, STABLE),
+                    r#"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"#,
+                ),
+                (
+                    BrowserPath::new(MACOS, BETA),
+                    r#"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta"#,
+                ),
+                (
+                    BrowserPath::new(MACOS, DEV),
+                    r#"/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev"#,
+                ),
+                (
+                    BrowserPath::new(MACOS, NIGHTLY),
+                    r#"/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary"#,
+                ),
+                (BrowserPath::new(LINUX, STABLE), "/usr/bin/microsoft-edge"),
+                (
+                    BrowserPath::new(LINUX, BETA),
+                    "/usr/bin/microsoft-edge-beta",
+                ),
+                (BrowserPath::new(LINUX, DEV), "/usr/bin/microsoft-edge-dev"),
+            ])
+        }
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
-        self.general_discover_browser_version(
-            r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
-            REG_VERSION_ARG,
-            DASH_DASH_VERSION,
-        )
+        let (reg_key, reg_version_arg, cmd_version_arg) = if self.is_webview2() {
+            let arch = self.get_arch();
+            if X32.is(arch) {
+                (
+                    r#"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    REG_PV_ARG,
+                    "",
+                )
+            } else {
+                (
+                    r#"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    REG_PV_ARG,
+                    "",
+                )
+            }
+        } else {
+            (
+                r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+                REG_VERSION_ARG,
+                DASH_DASH_VERSION,
+            )
+        };
+        self.general_discover_browser_version(reg_key, reg_version_arg, cmd_version_arg)
     }
 
     fn get_driver_name(&self) -> &str {
