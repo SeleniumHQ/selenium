@@ -73,6 +73,7 @@ pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /val
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
+pub const REG_PV_ARG: &str = "pv";
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const PKGUTIL_COMMAND: &str = "pkgutil --expand-full {} {}";
@@ -482,6 +483,15 @@ pub trait SeleniumManager {
                         download_browser = true;
                     } else {
                         self.set_browser_version(discovered_version);
+                    }
+                    if self.is_webview2() {
+                        let browser_path = format!(
+                            r#"{}\{}\msedge{}"#,
+                            self.get_browser_path(),
+                            &self.get_browser_version(),
+                            get_binary_extension(self.get_os())
+                        );
+                        self.set_browser_path(browser_path);
                     }
                 }
                 None => {
@@ -984,7 +994,7 @@ pub trait SeleniumManager {
         let mut commands = Vec::new();
 
         if WINDOWS.is(self.get_os()) {
-            if !escaped_browser_path.is_empty() {
+            if !escaped_browser_path.is_empty() && !self.is_webview2() {
                 let wmic_command =
                     Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
                 commands.push(wmic_command);
@@ -1159,7 +1169,7 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() && !self.is_webview2() {
+        if !browser_path.is_empty() {
             self.get_config_mut().browser_path = browser_path;
         }
     }
