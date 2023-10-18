@@ -27,7 +27,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import java.io.Closeable;
-import java.net.URL;
+import java.net.URI;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
@@ -99,7 +99,7 @@ class HandleSession implements HttpHandler {
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final ConcurrentMap<URL, CacheEntry> httpClients;
+  private final ConcurrentMap<URI, CacheEntry> httpClients;
 
   HandleSession(Tracer tracer, HttpClient.Factory httpClientFactory, SessionMap sessions) {
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -221,15 +221,17 @@ class HandleSession implements HttpHandler {
         () -> {
           CacheEntry cacheEntry =
               httpClients.compute(
-                  Urls.fromUri(sessions.getUri(id)),
-                  (sessionUrl, entry) -> {
+                  sessions.getUri(id),
+                  (sessionUri, entry) -> {
                     if (entry != null) {
                       entry.inUse.incrementAndGet();
                       return entry;
                     }
 
                     ClientConfig config =
-                        ClientConfig.defaultConfig().baseUrl(sessionUrl).withRetries();
+                        ClientConfig.defaultConfig()
+                            .baseUri(sessionUri)
+                            .withRetries();
                     HttpClient httpClient = httpClientFactory.createClient(config);
 
                     return new CacheEntry(httpClient, 1);
