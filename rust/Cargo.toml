@@ -47,12 +47,4 @@ panic = 'abort'     # Abort on panic
 strip = true        # Strip symbols from binary
 
 [profile.dev]
-opt-level = 0
-debug = true
-debug-assertions = true
-overflow-checks = true
-lto = false
-panic = 'unwind'
-incremental = true
-codegen-units = 256
-rpath = false
+debug = true        # Full debug info
