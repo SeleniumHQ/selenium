@@ -11,48 +11,39 @@ on:
 jobs:
   win32:
     name: "[Windows x32] Build selenium-manager"
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
+          rustup toolchain install stable-i686-pc-windows-msvc
+          rustup default stable-i686-pc-windows-msvc
           rustc -vV
-      - name: "Install cross"
-        run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
-      - name: "Install cross toolchains"
-        run: |
-          git clone https://github.com/cross-rs/cross
-          cd cross
-          git submodule update --init --remote
-          cargo xtask configure-crosstool
-          cargo build-docker-image i686-pc-windows-msvc-cross --tag local
       - name: "Build release binary"
         if: ${{ inputs.debug == false }}
         run: |
           cd rust
-          cross build --target i686-pc-windows-msvc --release
+          cargo build --release
       - name: "Upload release binary"
         if: ${{ inputs.debug == false }}
         uses: actions/upload-artifact@v3
         with:
           name: selenium-manager_windows-x32
-          path: rust/target/i686-pc-windows-msvc/release/selenium-manager.exe
+          path: rust/target/release/selenium-manager.exe
           retention-days: 6
       - name: "Build debug binary"
         if: ${{ inputs.debug == true }}
         run: |
           cd rust
-          cross build --target i686-pc-windows-msvc --profile dev
+          cargo build --profile dev
       - name: "Upload debug binary"
         if: ${{ inputs.debug == true }}
         uses: actions/upload-artifact@v3
         with:
           name: selenium-manager_windows-x32-debug
-          path: rust/target/i686-pc-windows-msvc/debug/selenium-manager.exe
+          path: rust/target/debug/selenium-manager.exe
           retention-days: 6
 
   linux64:
@@ -100,36 +91,21 @@ jobs:
 
   macos64:
     name: "[macOS x64/arm64] Build selenium-manager"
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add aarch64-apple-darwin
           rustc -vV
-      - name: "Install cross"
-        run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-          cross -V
-      - name: "Install cross toolchains"
-        run: |
-          git clone https://github.com/cross-rs/cross
-          cd cross
-          git submodule update --init --remote
-          cargo xtask configure-crosstool
-          cargo build-docker-image x86_64-apple-darwin-cross --tag local
-          cargo build-docker-image aarch64-apple-darwin-cross --tag local
       - name: "Build release binary"
         if: ${{ inputs.debug == false }}
         run: |
           cd rust
-          cross build --target x86_64-apple-darwin --release
-          cross build --target aarch64-apple-darwin --release
+          cargo build --target x86_64-apple-darwin --release
+          cargo build --target aarch64-apple-darwin --release
           lipo -create -output target/selenium-manager \
             target/aarch64-apple-darwin/release/selenium-manager \
             target/x86_64-apple-darwin/release/selenium-manager
@@ -146,8 +122,8 @@ jobs:
         if: ${{ inputs.debug == true }}
         run: |
           cd rust
-          cross build --target x86_64-apple-darwin --profile dev
-          cross build --target aarch64-apple-darwin --profile dev
+          cargo build --target x86_64-apple-darwin --profile dev
+          cargo build --target aarch64-apple-darwin --profile dev
           lipo -create -output target/selenium-manager \
             target/aarch64-apple-darwin/debug/selenium-manager \
             target/x86_64-apple-darwin/debug/selenium-manager
