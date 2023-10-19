@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.script;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,16 +80,14 @@ public class ScriptManager {
   public void disownRealmScript(String realmId, List<String> handles) {
     this.bidi.send(
         new Command<>(
-            "script.disown",
-            ImmutableMap.of("handles", handles, "target", ImmutableMap.of("realm", realmId))));
+            "script.disown", Map.of("handles", handles, "target", Map.of("realm", realmId))));
   }
 
   public void disownBrowsingContextScript(String browsingContextId, List<String> handles) {
     this.bidi.send(
         new Command<>(
             "script.disown",
-            ImmutableMap.of(
-                "handles", handles, "target", ImmutableMap.of("context", browsingContextId))));
+            Map.of("handles", handles, "target", Map.of("context", browsingContextId))));
   }
 
   public void disownBrowsingContextScript(
@@ -98,11 +95,11 @@ public class ScriptManager {
     this.bidi.send(
         new Command<>(
             "script.disown",
-            ImmutableMap.of(
+            Map.of(
                 "handles",
                 handles,
                 "target",
-                ImmutableMap.of(
+                Map.of(
                     "context", browsingContextId,
                     "sandbox", sandbox))));
   }
@@ -215,12 +212,12 @@ public class ScriptManager {
     params.put("awaitPromise", awaitPromise);
     if (targetType.equals("contextTarget")) {
       if (sandbox != null) {
-        params.put("target", ImmutableMap.of("context", id, "sandbox", sandbox));
+        params.put("target", Map.of("context", id, "sandbox", sandbox));
       } else {
-        params.put("target", ImmutableMap.of("context", id));
+        params.put("target", Map.of("context", id));
       }
     } else {
-      params.put("target", ImmutableMap.of("realm", id));
+      params.put("target", Map.of("realm", id));
     }
 
     argumentValueList.ifPresent(
@@ -249,12 +246,12 @@ public class ScriptManager {
     params.put("awaitPromise", awaitPromise);
     if (targetType.equals("contextTarget")) {
       if (sandbox != null) {
-        params.put("target", ImmutableMap.of("context", id, "sandbox", sandbox));
+        params.put("target", Map.of("context", id, "sandbox", sandbox));
       } else {
-        params.put("target", ImmutableMap.of("context", id));
+        params.put("target", Map.of("context", id));
       }
     } else {
-      params.put("target", ImmutableMap.of("realm", id));
+      params.put("target", Map.of("realm", id));
     }
 
     resultOwnership.ifPresent(value -> params.put("resultOwnership", value.toString()));
@@ -298,21 +295,19 @@ public class ScriptManager {
 
   public List<RealmInfo> getRealmsByType(RealmType type) {
     return this.bidi.send(
-        new Command<>(
-            "script.getRealms", ImmutableMap.of("type", type.toString()), realmInfoMapper));
+        new Command<>("script.getRealms", Map.of("type", type.toString()), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsInBrowsingContext(String browsingContext) {
     return this.bidi.send(
-        new Command<>(
-            "script.getRealms", ImmutableMap.of("context", browsingContext), realmInfoMapper));
+        new Command<>("script.getRealms", Map.of("context", browsingContext), realmInfoMapper));
   }
 
   public List<RealmInfo> getRealmsInBrowsingContextByType(String browsingContext, RealmType type) {
     return this.bidi.send(
         new Command<>(
             "script.getRealms",
-            ImmutableMap.of("context", browsingContext, "type", type.toString()),
+            Map.of("context", browsingContext, "type", type.toString()),
             realmInfoMapper));
   }
 }
