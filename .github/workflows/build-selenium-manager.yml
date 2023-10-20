@@ -12,8 +12,6 @@ jobs:
   win32:
     name: "[Windows x32] Build selenium-manager"
     runs-on: windows-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
@@ -94,8 +92,6 @@ jobs:
   macos64:
     name: "[macOS x64/arm64] Build selenium-manager"
     runs-on: macos-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
