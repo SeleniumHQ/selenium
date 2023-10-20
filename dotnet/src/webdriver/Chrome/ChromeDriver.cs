@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chromium;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -59,6 +60,8 @@ namespace OpenQA.Selenium.Chrome
     /// </example>
     public class ChromeDriver : ChromiumDriver
     {
+        private static readonly ILogger _logger = Log.GetLogger(typeof(ChromeDriver));
+
         private static Dictionary<string, CommandInfo> chromeCustomCommands = new Dictionary<string, CommandInfo>()
         {
             { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cdp/execute") },
@@ -76,6 +79,7 @@ namespace OpenQA.Selenium.Chrome
         public ChromeDriver()
             : this(new ChromeOptions())
         {
+            _logger.Info("ChromeDriver with default options.");
         }
 
         /// <summary>
