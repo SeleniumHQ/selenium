@@ -45,7 +45,6 @@ import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -229,9 +228,7 @@ class HandleSession implements HttpHandler {
                     }
 
                     ClientConfig config =
-                        ClientConfig.defaultConfig()
-                            .baseUri(sessionUri)
-                            .withRetries();
+                        ClientConfig.defaultConfig().baseUri(sessionUri).withRetries();
                     HttpClient httpClient = httpClientFactory.createClient(config);
 
                     return new CacheEntry(httpClient, 1);
