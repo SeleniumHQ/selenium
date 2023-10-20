@@ -47,13 +47,5 @@ panic = 'abort'     # Abort on panic
 strip = true        # Strip symbols from binary
 
 [profile.dev]
-opt-level = 0
-debug = true
-split-debuginfo = 'off'
-debug-assertions = true
-overflow-checks = true
-lto = false
-panic = 'unwind'
-incremental = true
-codegen-units = 256
-rpath = false
+debug = true             # Full debug info
+split-debuginfo = 'off'  # Debug info in the final artifact
