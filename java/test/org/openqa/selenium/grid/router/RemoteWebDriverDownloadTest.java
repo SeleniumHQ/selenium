@@ -18,15 +18,9 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -44,18 +38,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasDownloads;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
@@ -116,12 +108,13 @@ class RemoteWebDriverDownloadTest {
     // Waiting for the file to be remotely downloaded
     TimeUnit.SECONDS.sleep(3);
 
-    try (HttpClient client = HttpClient.Factory.createDefault().createClient(gridUrl)) {
-      List<String> names = getDownloadedFilesList(client, sessionId);
-      assertThat(names).contains("file_1.txt", "file_2.jpg");
-    } finally {
-      driver.quit();
-    }
+    driver = (RemoteWebDriver) new Augmenter().augment(driver);
+    Map<String, List<String>> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
+
+    List<String> names = downloadableFiles.get("names");
+    assertThat(names).contains("file_1.txt", "file_2.jpg");
+
+    driver.quit();
   }
 
   @Test
@@ -132,26 +125,20 @@ class RemoteWebDriverDownloadTest {
     RemoteWebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
-    SessionId sessionId = driver.getSessionId();
 
     // Waiting for the file to be remotely downloaded
     TimeUnit.SECONDS.sleep(3);
 
-    HttpRequest request = new HttpRequest(POST, String.format("/session/%s/se/files", sessionId));
-    request.setContent(asJson(ImmutableMap.of("name", "file_1.txt")));
-    try (HttpClient client = HttpClient.Factory.createDefault().createClient(gridUrl)) {
-      HttpResponse response = client.execute(request);
-      Map<String, Object> jsonResponse = new Json().toType(string(response), Json.MAP_TYPE);
-      @SuppressWarnings("unchecked")
-      Map<String, Object> value = (Map<String, Object>) jsonResponse.get("value");
-      String zippedContents = value.get("contents").toString();
-      File downloadDir = Zip.unzipToTempDir(zippedContents, "download", "");
-      File downloadedFile = Optional.ofNullable(downloadDir.listFiles()).orElse(new File[] {})[0];
-      String fileContent = String.join("", Files.readAllLines(downloadedFile.toPath()));
-      assertThat(fileContent).isEqualTo("Hello, World!");
-    } finally {
-      driver.quit();
-    }
+    driver = (RemoteWebDriver) new Augmenter().augment(driver);
+    Map<String, String> output = ((HasDownloads) driver).downloadFile("file_1.txt");
+
+    String zippedContents = output.get("contents");
+    File downloadDir = Zip.unzipToTempDir(zippedContents, "download", "");
+    File downloadedFile = Optional.ofNullable(downloadDir.listFiles()).orElse(new File[] {})[0];
+    String fileContent = String.join("", Files.readAllLines(downloadedFile.toPath()));
+    assertThat(fileContent).isEqualTo("Hello, World!");
+
+    driver.quit();
   }
 
   @Test
@@ -162,35 +149,22 @@ class RemoteWebDriverDownloadTest {
     RemoteWebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
-    SessionId sessionId = driver.getSessionId();
 
     // Waiting for the file to be remotely downloaded
     TimeUnit.SECONDS.sleep(3);
 
-    try (HttpClient client = HttpClient.Factory.createDefault().createClient(gridUrl)) {
-      List<String> names = getDownloadedFilesList(client, sessionId);
-      assertThat(names).contains("file_1.txt");
+    driver = (RemoteWebDriver) new Augmenter().augment(driver);
+    Map<String, List<String>> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
+    List<String> names = downloadableFiles.get("names");
 
-      HttpRequest deleteRequest =
-          new HttpRequest(DELETE, String.format("/session/%s/se/files", sessionId));
-      HttpResponse deleteResponse = client.execute(deleteRequest);
-      assertThat(deleteResponse.isSuccessful()).isTrue();
+    assertThat(names).contains("file_1.txt");
 
-      List<String> afterDeleteNames = getDownloadedFilesList(client, sessionId);
-      assertThat(afterDeleteNames.isEmpty()).isTrue();
-    } finally {
-      driver.quit();
-    }
-  }
+    ((HasDownloads) driver).deleteDownloadableFiles();
 
-  private static List<String> getDownloadedFilesList(HttpClient client, SessionId sessionId) {
-    HttpRequest request = new HttpRequest(GET, String.format("/session/%s/se/files", sessionId));
-    HttpResponse response = client.execute(request);
-    Map<String, Object> jsonResponse = new Json().toType(string(response), Json.MAP_TYPE);
-    @SuppressWarnings("unchecked")
-    Map<String, Object> value = (Map<String, Object>) jsonResponse.get("value");
-    @SuppressWarnings("unchecked")
-    List<String> names = (List<String>) value.get("names");
-    return names;
+    downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
+    List<String> afterDeleteNames = downloadableFiles.get("names");
+    assertThat(afterDeleteNames.isEmpty()).isTrue();
+
+    driver.quit();
   }
 }

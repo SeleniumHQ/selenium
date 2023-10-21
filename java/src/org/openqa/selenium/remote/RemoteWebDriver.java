@@ -51,6 +51,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.HasDownloads;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -105,6 +106,7 @@ public class RemoteWebDriver
     implements WebDriver,
         JavascriptExecutor,
         HasCapabilities,
+        HasDownloads,
         HasFederatedCredentialManagement,
         HasVirtualAuthenticator,
         Interactive,
@@ -705,6 +707,46 @@ public class RemoteWebDriver
     execute(
         DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
         ImmutableMap.of("authenticatorId", authenticator.getId()));
+  }
+
+  /**
+   * Retrieves the downloadable files as a map of file names and their corresponding URLs.
+   *
+   * @throws WebDriverException if capability to enable downloads is not set
+   * @return A map containing file names as keys and URLs as values.
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public Map<String, List<String>> getDownloadableFiles() {
+    requireDownloadsEnabled(capabilities);
+    Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
+    return (Map<String, List<String>>) response.getValue();
+  }
+
+  /**
+   * Downloads a file with the specified file name.
+   *
+   * @param fileName the name of the file to be downloaded
+   * @throws WebDriverException if capability to enable downloads is not set
+   * @return a map of file names to file paths for the downloaded file
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public Map<String, String> downloadFile(String fileName) {
+    requireDownloadsEnabled(capabilities);
+    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
+    return (Map<String, String>) response.getValue();
+  }
+
+  /**
+   * Deletes all downloadable files.
+   *
+   * @throws WebDriverException capability to enable downloads must be set
+   */
+  @Override
+  public void deleteDownloadableFiles() {
+    requireDownloadsEnabled(capabilities);
+    execute(DriverCommand.DELETE_DOWNLOADABLE_FILES);
   }
 
   @Override
