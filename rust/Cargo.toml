@@ -30,7 +30,7 @@ exitcode = "1.1.2"
 is_executable = "1.0.1"
 toml = "0.7.6"
 bzip2 = "0.4.4"
-sevenz-rust = "0.5.2"
+sevenz-rust = "0.5.3"
 walkdir = "2.4.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.75", features = ["backtrace"] }
