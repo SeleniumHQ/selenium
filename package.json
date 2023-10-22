@@ -46,7 +46,7 @@
     "graphql": "^16.7.1",
     "graphql.macro": "^1.4.2",
     "jszip": "^3.7.1",
-    "pretty-ms": "^7.0.1",
+    "pretty-ms": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
