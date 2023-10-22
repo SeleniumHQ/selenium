@@ -20,7 +20,7 @@ pycparser==2.21
 pyOpenSSL==22.0.0
 pyparsing==3.0.8
 PySocks==1.7.1
-pytest==7.2.0
+pytest==7.4.2
 pytest-instafail==0.4.2
 pytest-mock==3.10.0
 pytest-trio==0.8.0
