@@ -120,6 +120,8 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
             options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            options.set_capability("moz:firefoxOptions", {})
+            options.enable_downloads = True
         if driver_class == "WebKitGTK":
             options = get_options(driver_class, request.config)
         if driver_class == "Edge":
@@ -246,7 +248,18 @@ def server(request):
     except Exception:
         print("Starting the Selenium server")
         process = subprocess.Popen(
-            ["java", "-jar", _path, "standalone", "--port", "4444", "--selenium-manager", "true"]
+            [
+                "java",
+                "-jar",
+                _path,
+                "standalone",
+                "--port",
+                "4444",
+                "--selenium-manager",
+                "true",
+                "--enable-managed-downloads",
+                "true"
+            ]
         )
         print(f"Selenium server running as process: {process.pid}")
         assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"

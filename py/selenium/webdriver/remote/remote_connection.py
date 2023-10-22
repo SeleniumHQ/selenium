@@ -122,6 +122,9 @@ remote_commands = {
         "/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials",
     ),
     Command.SET_USER_VERIFIED: ("POST", "/session/$sessionId/webauthn/authenticator/$authenticatorId/uv"),
+    Command.GET_DOWNLOADABLE_FILES: ("GET", "/session/$sessionId/se/files"),
+    Command.DOWNLOAD_FILE: ("POST", "/session/$sessionId/se/files"),
+    Command.DELETE_DOWNLOADABLE_FILES: ("DELETE", "/session/$sessionId/se/files"),
 }
 
 
