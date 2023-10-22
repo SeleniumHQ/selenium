@@ -12,7 +12,7 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.3.23", features = ["derive"] }
+clap = { version = "4.4.6", features = ["derive"] }
 log = "0.4.20"
 env_logger = "0.10.0"
 regex = "1.9.3"
