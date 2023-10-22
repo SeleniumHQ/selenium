@@ -17,16 +17,16 @@ module Selenium
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
       #
-      def initialize: (?::String progname, ?default_level: untyped? default_level, ?ignored: untyped? ignored, ?allowed: untyped? allowed) -> void
+      def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: bool? ignored, ?allowed: bool? allowed) -> void
 
-      def level=: (untyped level) -> untyped
+      def level=: (Symbol level) -> untyped
 
       #
       # Changes logger output to a new IO.
       #
       # @param [String] io
       #
-      def output=: (untyped io) -> untyped
+      def output=: (String io) -> IO
 
       #
       # Returns IO object used by logger internally.
@@ -39,58 +39,58 @@ module Selenium
       #
       # @api private
       #
-      def io: () -> untyped
+      def io: () -> IO
 
       #
       # Will not log the provided ID.
       #
       # @param [Array, Symbol] ids
       #
-      def ignore: (*untyped ids) -> untyped
+      def ignore: (*Symbol ids) -> untyped
 
       #
       # Will only log the provided ID.
       #
       # @param [Array, Symbol] ids
       #
-      def allow: (untyped ids) -> untyped
+      def allow: (*Symbol ids) -> untyped
 
       #
       # Used to supply information of interest for debugging a problem
       # Overrides default #debug to skip ignored messages by provided id
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
-      def debug: (untyped message, ?id: untyped id) { () -> untyped } -> untyped
+      def debug: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
 
       #
       # Used to supply information of general interest
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
-      def info: (untyped message, ?id: untyped id) { () -> untyped } -> untyped
+      def info: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
 
       #
       # Used to supply information that suggests an error occurred
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
-      def error: (untyped message, ?id: untyped id) { () -> untyped } -> untyped
+      def error: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
 
       #
       # Used to supply information that suggests action be taken by user
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
-      def warn: (untyped message, ?id: untyped id) { () -> untyped } -> untyped
+      def warn: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
 
       #
       # Marks code as deprecated with/without replacement.
@@ -101,13 +101,13 @@ module Selenium
       # @param [String] reference
       # @yield appends additional message to end of provided template
       #
-      def deprecate: (untyped old, ?untyped? new, ?id: untyped id, ?reference: ::String reference) { () -> untyped } -> (nil | untyped)
+      def deprecate: (String old, ?String? new, ?id: Symbol | Array[Symbol] id, ?reference: ::String reference) { () -> untyped } -> (nil | untyped)
 
       private
 
-      def create_logger: (untyped name, level: untyped level) -> untyped
+      def create_logger: (String name, level: Symbol level) -> untyped
 
-      def discard_or_log: (untyped level, untyped message, untyped id) { () -> untyped } -> (nil | untyped)
+      def discard_or_log: (Symbol level, String message, Symbol | Array[Symbol] id) { () -> untyped } -> (nil | untyped)
     end
   end
 end

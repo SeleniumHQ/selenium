@@ -18,7 +18,7 @@ module Selenium
 
         include Atoms
 
-        PORT: 4444
+        PORT: Integer
 
         attr_accessor http: untyped
 
@@ -26,7 +26,7 @@ module Selenium
 
         attr_reader capabilities: untyped
 
-        def initialize: (url: untyped, ?http_client: untyped?) -> void
+        def initialize: (url: String | URI, ?http_client: untyped?) -> void
 
         def create_session: (untyped capabilities) -> untyped
 

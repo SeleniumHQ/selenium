@@ -4,25 +4,25 @@ module Selenium
       class ScrollOrigin
         @origin: untyped
 
-        @x_offset: untyped
+        @x_offset: Integer
 
-        @y_offset: untyped
+        @y_offset: Integer
 
-        def self.element: (untyped element, ?::Integer x_offset, ?::Integer y_offset) -> untyped
+        def self.element: (Element element, ?::Integer x_offset, ?::Integer y_offset) -> untyped
 
-        def self.viewport: (?::Integer x_offset, ?::Integer y_offset) -> untyped
+        def self.viewport: (?::Integer x_offset, ?::Integer y_offset) -> ScrollOrigin
 
         attr_reader origin: untyped
 
-        attr_reader x_offset: untyped
+        attr_reader x_offset: Integer
 
-        attr_reader y_offset: untyped
+        attr_reader y_offset: Integer
 
         #
         # Use a static method to access
         # @api private
         #
-        def initialize: (untyped origin, untyped x_offset, untyped y_offset) -> void
+        def initialize: (untyped origin, Integer x_offset, Integer y_offset) -> void
       end
     end
   end

@@ -7,59 +7,59 @@ module Selenium
 
       include TakesScreenshot
 
-      def initialize: (untyped bridge, untyped id) -> void
+      def initialize: (Remote::Bridge bridge, String id) -> void
 
       def inspect: () -> untyped
 
-      def ==: (untyped other) -> untyped
+      def ==: (untyped other) -> bool
 
       alias eql? ==
 
-      def hash: () -> untyped
+      def hash: () -> Integer
 
       def click: () -> untyped
 
       def tag_name: () -> untyped
 
-      def attribute: (untyped name) -> untyped
+      def attribute: (String name) -> String?
 
-      def dom_attribute: (untyped name) -> untyped
+      def dom_attribute: (String name) -> String?
 
-      def property: (untyped name) -> untyped
+      def property: (String name) -> String?
 
-      def aria_role: () -> untyped
+      def aria_role: () -> String
 
-      def accessible_name: () -> untyped
+      def accessible_name: () -> String
 
-      def text: () -> untyped
+      def text: () -> String
 
       def send_keys: (*untyped args) -> untyped
 
       alias send_key send_keys
 
-      def clear: () -> untyped
+      def clear: () -> bool
 
-      def enabled?: () -> untyped
+      def enabled?: () -> bool
 
-      def selected?: () -> untyped
+      def selected?: () -> bool
 
-      def displayed?: () -> untyped
+      def displayed?: () -> bool
 
       def submit: () -> untyped
 
-      def css_value: (untyped prop) -> untyped
+      def css_value: (String prop) -> untyped
 
       alias style css_value
 
-      def location: () -> untyped
+      def location: () -> WebDriver::Point
 
-      def rect: () -> untyped
+      def rect: () -> WebDriver::Rectangle
 
-      def location_once_scrolled_into_view: () -> untyped
+      def location_once_scrolled_into_view: () -> WebDriver::Point
 
-      def size: () -> untyped
+      def size: () -> WebDriver::Dimension
 
-      def shadow_root: () -> untyped
+      def shadow_root: () -> WebDriver::ShadowRoot
 
       alias first find_element
 
@@ -78,9 +78,9 @@ module Selenium
 
       private
 
-      attr_reader bridge: untyped
+      attr_reader bridge: Remote::Bridge
 
-      def selectable?: () -> untyped
+      def selectable?: () -> bool
 
       def screenshot: () -> untyped
     end

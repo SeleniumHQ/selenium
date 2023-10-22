@@ -12,7 +12,7 @@ module Selenium
 
         def cast_issue_message: () -> String
 
-        def stop_casting: (String name) -> void
+        def stop_casting: (String name) -> untyped
       end
     end
   end

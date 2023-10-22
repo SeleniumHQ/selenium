@@ -1,0 +1,23 @@
+module Selenium
+  module WebDriver
+    module Firefox
+      self.@path: untyped
+
+      DEFAULT_PORT: Integer
+
+      DEFAULT_SECURE_SSL: false
+
+      DEFAULT_ASSUME_UNTRUSTED_ISSUER: true
+
+      DEFAULT_LOAD_NO_FOCUS_LIB: false
+
+      # Mozilla Automation Team asked to only support 85
+      # until WebDriver Bidi is available.
+      DEVTOOLS_VERSION: Integer
+
+      def self.path=: (untyped path) -> untyped
+
+      def self.path: () -> untyped
+    end
+  end
+end

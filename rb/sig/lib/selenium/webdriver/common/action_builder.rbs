@@ -1,13 +1,13 @@
 module Selenium
   module WebDriver
     class ActionBuilder
-      @bridge: untyped
+      @bridge: Remote::Bridge
 
-      @duration: untyped
+      @duration: Integer
 
-      @async: untyped
+      @async: bool
 
-      @devices: untyped
+      @devices: Array[Interactions::InputDevice]
 
       include KeyActions
 
@@ -15,39 +15,39 @@ module Selenium
 
       include WheelActions
 
-      attr_reader devices: untyped
+      attr_reader devices: Array[Interactions::InputDevice]
 
-      def initialize: (untyped bridge, ?devices: untyped, ?async: bool, ?duration: ::Integer) -> void
+      def initialize: (Remote::Bridge bridge, ?devices: Array[Interactions::InputDevice], ?async: bool, ?duration: ::Integer) -> void
 
-      def add_pointer_input: (untyped kind, untyped name) -> untyped
+      def add_pointer_input: (Symbol kind, String name) -> Interactions::PointerInput
 
-      def add_key_input: (untyped name) -> untyped
+      def add_key_input: (String name) -> Interactions::KeyInput
 
-      def add_wheel_input: (untyped name) -> untyped
+      def add_wheel_input: (String name) -> Interactions::WheelInput
 
-      def device: (?name: untyped?, ?type: untyped?) -> untyped
+      def device: (?name: String?, ?type: String?) -> Selenium::WebDriver::Interactions::InputDevice?
 
-      def pointer_inputs: () -> untyped
+      def pointer_inputs: () -> Array[Interactions::InputDevice]
 
-      def key_inputs: () -> untyped
+      def key_inputs: () -> Array[Interactions::InputDevice]
 
-      def wheel_inputs: () -> untyped
+      def wheel_inputs: () -> Array[Interactions::InputDevice]
 
-      def pause: (?device: untyped?, ?duration: ::Integer) -> self
+      def pause: (?device: Interactions::InputDevice?, ?duration: Float) -> self
 
-      def pauses: (?device: untyped?, ?number: untyped?, ?duration: ::Integer) -> self
+      def pauses: (?device: Interactions::InputDevice?, ?number: Integer?, ?duration: Float) -> self
 
       def perform: () -> nil
 
-      def clear_all_actions: () -> untyped
+      def clear_all_actions: () -> []
 
       def release_actions: () -> untyped
 
       private
 
-      def tick: (*untyped action_devices) -> (nil | untyped)
+      def tick: (*Interactions::InputDevice action_devices) -> (nil | Array[Interactions::InputDevice])
 
-      def add_input: (untyped device) -> untyped
+      def add_input: (Interactions::InputDevice | Symbol device) -> Interactions::InputDevice
     end
   end
 end

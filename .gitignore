@@ -108,6 +108,7 @@ GTAGS
 /rb/.idea
 rb/bin/
 rb/lib/selenium/devtools/v1*
+rb/.gem_rbs_collection/
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml

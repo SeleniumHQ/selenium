@@ -1,0 +1,82 @@
+---
+sources:
+- type: git
+  name: ruby/gem_rbs_collection
+  revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+  remote: https://github.com/ruby/gem_rbs_collection.git
+  repo_dir: gems
+path: ".gem_rbs_collection"
+gems:
+- name: ast
+  version: '2.4'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: base64
+  version: '0'
+  source:
+    type: stdlib
+- name: cgi
+  version: '0'
+  source:
+    type: stdlib
+- name: json
+  version: '0'
+  source:
+    type: stdlib
+- name: logger
+  version: '0'
+  source:
+    type: stdlib
+- name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: optparse
+  version: '0'
+  source:
+    type: stdlib
+- name: parallel
+  version: '1.20'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rack
+  version: '2.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rainbow
+  version: '3.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: tempfile
+  version: '0'
+  source:
+    type: stdlib
+- name: uri
+  version: '0'
+  source:
+    type: stdlib
+- name: yard
+  version: '0.9'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 8149bc3fc0f720d935dc0592dc8886e03052f65f
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+gemfile_lock_path: Gemfile.lock

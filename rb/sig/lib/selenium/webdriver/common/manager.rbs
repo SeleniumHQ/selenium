@@ -3,19 +3,19 @@ module Selenium
     class Manager
       attr_reader bridge: untyped
 
-      @timeouts: untyped
+      @timeouts: Timeouts
 
-      @window: untyped
+      @window: Window
 
-      def initialize: (untyped bridge) -> void
+      def initialize: (Remote::Bridge bridge) -> void
 
-      def add_cookie: (?Hash[Symbol, untyped] opts) -> void
+      def add_cookie: (?Hash[Symbol, untyped] opts) -> untyped
 
       def cookie_named: (String name) -> Hash[untyped, untyped]?
 
-      def delete_cookie: (String name) -> void
+      def delete_cookie: (String name) -> String
 
-      def delete_all_cookies: () -> void
+      def delete_all_cookies: () -> untyped
 
       def all_cookies: () -> Array[Hash[untyped, untyped]]
 
@@ -27,11 +27,11 @@ module Selenium
 
       SECONDS_PER_DAY: ::Float
 
-      def datetime_at: (untyped int) -> untyped
+      def datetime_at: (Integer int) -> Date
 
-      def seconds_from: (untyped obj) -> untyped
+      def seconds_from: (Time | DateTime | Numeric obj) -> (Time | Date | Numeric)
 
-      def strip_port: (untyped str) -> untyped
+      def strip_port: (String str) -> (Array[String] | nil)
 
       def convert_cookie: (untyped cookie) -> { name: untyped, value: untyped, path: untyped, domain: untyped, expires: untyped, same_site: untyped, http_only: untyped, secure: untyped }
     end

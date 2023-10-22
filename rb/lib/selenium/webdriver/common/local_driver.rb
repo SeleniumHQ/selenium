@@ -25,7 +25,7 @@ module Selenium
 
         service ||= Service.send(browser)
         caps = process_options(options, service)
-        url = service_url(service)
+        url = ecwservice_url(service)
 
         [caps, url]
       end
