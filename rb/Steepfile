@@ -1,4 +1,4 @@
 target :lib do
-  signature 'sig'
+  signature 'sig' # Signature directory
   check 'lib' # Directory name
 end
