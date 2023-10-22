@@ -551,9 +551,12 @@ public class LocalNode extends Node {
   @SuppressWarnings("unchecked")
   private Capabilities appendPrefs(
       Capabilities caps, String optionsKey, Map<String, Serializable> map) {
-    Map<String, Object> currentOptions =
-        (Map<String, Object>)
-            Optional.ofNullable(caps.getCapability(optionsKey)).orElse(new HashMap<>());
+    if (caps.getCapability(optionsKey) == null) {
+      MutableCapabilities mutableCaps = new MutableCapabilities();
+      mutableCaps.setCapability(optionsKey, new HashMap<>());
+      caps = caps.merge(mutableCaps);
+    }
+    Map<String, Object> currentOptions = (Map<String, Object>) caps.getCapability(optionsKey);
 
     ((Map<String, Serializable>) currentOptions.computeIfAbsent("prefs", k -> new HashMap<>()))
         .putAll(map);
