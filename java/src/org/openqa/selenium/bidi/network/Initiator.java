@@ -81,15 +81,24 @@ public class Initiator {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "type" -> {
+        case "type":
           String initiatorType = input.read(String.class);
           type = Type.findByName(initiatorType);
-        }
-        case "columnNumber" -> columnNumber = Optional.of(input.read(Long.class));
-        case "lineNumber" -> lineNumber = Optional.of(input.read(Long.class));
-        case "stackTrace" -> stackTrace = Optional.of(input.read(StackTrace.class));
-        case "requestId" -> requestId = Optional.of(input.read(String.class));
-        default -> input.skipValue();
+          break;
+        case "columnNumber":
+          columnNumber = Optional.of(input.read(Long.class));
+          break;
+        case "lineNumber":
+          lineNumber = Optional.of(input.read(Long.class));
+          break;
+        case "stackTrace":
+          stackTrace = Optional.of(input.read(StackTrace.class));
+          break;
+        case "requestId":
+          requestId = Optional.of(input.read(String.class));
+          break;
+        default:
+          input.skipValue();
       }
     }
 

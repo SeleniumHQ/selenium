@@ -53,12 +53,15 @@ public class BytesValue {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "type" -> {
+        case "type":
           String bytesValue = input.read(String.class);
           type = bytesValue.equals(Type.BASE64.toString()) ? Type.BASE64 : Type.STRING;
-        }
-        case "value" -> value = input.read(String.class);
-        default -> input.skipValue();
+          break;
+        case "value":
+          value = input.read(String.class);
+          break;
+        default:
+          input.skipValue();
       }
     }
 

@@ -36,9 +36,14 @@ public class AuthChallenge {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "scheme" -> scheme = input.read(String.class);
-        case "realm" -> realm = input.read(String.class);
-        default -> input.skipValue();
+        case "scheme":
+          scheme = input.read(String.class);
+          break;
+        case "realm":
+          realm = input.read(String.class);
+          break;
+        default:
+          input.skipValue();
       }
     }
 

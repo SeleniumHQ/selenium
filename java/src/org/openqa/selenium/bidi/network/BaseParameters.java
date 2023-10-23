@@ -73,14 +73,29 @@ public class BaseParameters {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "context" -> browsingContextId = input.read(String.class);
-        case "isBlocked" -> isBlocked = input.read(Boolean.class);
-        case "navigation" -> navigationId = input.read(String.class);
-        case "redirectCount" -> redirectCount = input.read(Long.class);
-        case "request" -> request = input.read(RequestData.class);
-        case "timestamp" -> timestamp = input.read(Long.class);
-        case "intercepts" -> intercepts = input.read(new TypeToken<List<String>>() {}.getType());
-        default -> input.skipValue();
+        case "context":
+          browsingContextId = input.read(String.class);
+          break;
+        case "isBlocked":
+          isBlocked = input.read(Boolean.class);
+          break;
+        case "navigation":
+          navigationId = input.read(String.class);
+          break;
+        case "redirectCount":
+          redirectCount = input.read(Long.class);
+          break;
+        case "request":
+          request = input.read(RequestData.class);
+          break;
+        case "timestamp":
+          timestamp = input.read(Long.class);
+          break;
+        case "intercepts":
+          intercepts = input.read(new TypeToken<List<String>>() {}.getType());
+          break;
+        default:
+          input.skipValue();
       }
     }
 
