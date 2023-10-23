@@ -38,7 +38,7 @@ public class BaseParameters {
 
   private final List<String> intercepts;
 
-  private BaseParameters(
+  BaseParameters(
       String browsingContextId,
       boolean isBlocked,
       String navigation,

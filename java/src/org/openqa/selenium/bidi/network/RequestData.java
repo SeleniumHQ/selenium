@@ -68,7 +68,7 @@ public class RequestData {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "requestId":
+        case "request":
           requestId = input.read(String.class);
           break;
         case "url":
