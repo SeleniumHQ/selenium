@@ -19,9 +19,6 @@ import io
 import zipfile
 from time import sleep
 
-import pytest
-
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 
@@ -45,7 +42,7 @@ def test_download_file(driver, pages):
     file_byte_data = base64.b64decode(file_contents)
     zip_memory = io.BytesIO(file_byte_data)
 
-    with zipfile.ZipFile(zip_memory, 'r') as zip_ref:
+    with zipfile.ZipFile(zip_memory, "r") as zip_ref:
         for name in zip_ref.namelist():
             with zip_ref.open(name) as file:
                 file_content = file.read()

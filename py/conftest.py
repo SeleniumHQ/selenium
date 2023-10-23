@@ -258,7 +258,7 @@ def server(request):
                 "--selenium-manager",
                 "true",
                 "--enable-managed-downloads",
-                "true"
+                "true",
             ]
         )
         print(f"Selenium server running as process: {process.pid}")
