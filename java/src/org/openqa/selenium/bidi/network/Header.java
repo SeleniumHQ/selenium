@@ -35,9 +35,14 @@ public class Header {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "name" -> name = input.read(String.class);
-        case "value" -> value = input.read(BytesValue.class);
-        default -> input.skipValue();
+        case "name":
+          name = input.read(String.class);
+          break;
+        case "value":
+          value = input.read(BytesValue.class);
+          break;
+        default:
+          input.skipValue();
       }
     }
 

@@ -19,46 +19,28 @@ package org.openqa.selenium.bidi.network;
 
 import org.openqa.selenium.json.JsonInput;
 
-public class BytesValue {
+public class AuthChallenge {
 
-  enum Type {
-    STRING("string"),
-    BASE64("base64");
+  private final String scheme;
+  private final String realm;
 
-    private final String bytesValueType;
-
-    Type(String type) {
-      this.bytesValueType = type;
-    }
-
-    @Override
-    public String toString() {
-      return bytesValueType;
-    }
+  private AuthChallenge(String scheme, String realm) {
+    this.scheme = scheme;
+    this.realm = realm;
   }
 
-  private final Type type;
-
-  private final String value;
-
-  private BytesValue(Type type, String value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  public static BytesValue fromJson(JsonInput input) {
-    Type type = null;
-    String value = null;
+  public static AuthChallenge fromJson(JsonInput input) {
+    String scheme = null;
+    String realm = null;
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "type":
-          String bytesValue = input.read(String.class);
-          type = bytesValue.equals(Type.BASE64.toString()) ? Type.BASE64 : Type.STRING;
+        case "scheme":
+          scheme = input.read(String.class);
           break;
-        case "value":
-          value = input.read(String.class);
+        case "realm":
+          realm = input.read(String.class);
           break;
         default:
           input.skipValue();
@@ -67,14 +49,14 @@ public class BytesValue {
 
     input.endObject();
 
-    return new BytesValue(type, value);
+    return new AuthChallenge(scheme, realm);
   }
 
-  public Type getType() {
-    return type;
+  public String getScheme() {
+    return scheme;
   }
 
-  public String getValue() {
-    return value;
+  public String getRealm() {
+    return realm;
   }
 }

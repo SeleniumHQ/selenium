@@ -68,14 +68,29 @@ public class RequestData {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "requestId" -> requestId = input.read(String.class);
-        case "url" -> url = input.read(String.class);
-        case "method" -> method = input.read(String.class);
-        case "headers" -> headers = input.read(new TypeToken<List<Header>>() {}.getType());
-        case "cookies" -> cookies = input.read(new TypeToken<List<Cookie>>() {}.getType());
-        case "headersSize" -> headersSize = input.read(Long.class);
-        case "timings" -> timings = input.read(FetchTimingInfo.class);
-        default -> input.skipValue();
+        case "request":
+          requestId = input.read(String.class);
+          break;
+        case "url":
+          url = input.read(String.class);
+          break;
+        case "method":
+          method = input.read(String.class);
+          break;
+        case "headers":
+          headers = input.read(new TypeToken<List<Header>>() {}.getType());
+          break;
+        case "cookies":
+          cookies = input.read(new TypeToken<List<Cookie>>() {}.getType());
+          break;
+        case "headersSize":
+          headersSize = input.read(Long.class);
+          break;
+        case "timings":
+          timings = input.read(FetchTimingInfo.class);
+          break;
+        default:
+          input.skipValue();
       }
     }
 

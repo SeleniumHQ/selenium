@@ -12,25 +12,25 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.3.23", features = ["derive"] }
+clap = { version = "4.4.6", features = ["derive"] }
 log = "0.4.20"
 env_logger = "0.10.0"
-regex = "1.9.3"
-tokio = { version = "1.32.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+regex = "1.10.2"
+tokio = { version = "1.33.0", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.8.0"
-reqwest = { version = "0.11.19", default-features = false, features = [ "rustls-tls" ] }
+reqwest = { version = "0.11.22", default-features = false, features = [ "rustls-tls" ] }
 zip = "0.6.6"
 directories = "5.0.1"
-serde = { version = "1.0.185", features = ["derive"] }
-serde_json = "1.0.103"
-flate2 = "1.0.27"
+serde = { version = "1.0.189", features = ["derive"] }
+serde_json = "1.0.107"
+flate2 = "1.0.28"
 tar = "0.4.40"
 infer = "0.15.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
-toml = "0.7.6"
+toml = "0.8.2"
 bzip2 = "0.4.4"
-sevenz-rust = "0.5.2"
+sevenz-rust = "0.5.3"
 walkdir = "2.4.0"
 debpkg = "0.6.0"
 anyhow = { version = "1.0.75", features = ["backtrace"] }
@@ -44,4 +44,8 @@ opt-level = 'z'     # Optimize for size
 lto = true          # Enable Link Time Optimization
 codegen-units = 1   # Reduce number of codegen units to increase optimizations
 panic = 'abort'     # Abort on panic
-strip = true        # Strip symbols from binary*
+strip = true        # Strip symbols from binary
+
+[profile.dev]
+debug = true             # Full debug info
+split-debuginfo = 'off'  # Debug info in the final artifact

@@ -22,7 +22,7 @@ import java.util.List;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
-public class NetworkBaseParameters {
+public class BaseParameters {
 
   private final String browsingContextId;
 
@@ -38,7 +38,7 @@ public class NetworkBaseParameters {
 
   private final List<String> intercepts;
 
-  private NetworkBaseParameters(
+  BaseParameters(
       String browsingContextId,
       boolean isBlocked,
       String navigation,
@@ -55,7 +55,7 @@ public class NetworkBaseParameters {
     this.intercepts = intercepts;
   }
 
-  public static NetworkBaseParameters fromJson(JsonInput input) {
+  public static BaseParameters fromJson(JsonInput input) {
     String browsingContextId = null;
 
     boolean isBlocked = false;
@@ -73,20 +73,35 @@ public class NetworkBaseParameters {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "context" -> browsingContextId = input.read(String.class);
-        case "isBlocked" -> isBlocked = input.read(Boolean.class);
-        case "navigation" -> navigationId = input.read(String.class);
-        case "redirectCount" -> redirectCount = input.read(Long.class);
-        case "request" -> request = input.read(RequestData.class);
-        case "timestamp" -> timestamp = input.read(Long.class);
-        case "intercepts" -> intercepts = input.read(new TypeToken<List<String>>() {}.getType());
-        default -> input.skipValue();
+        case "context":
+          browsingContextId = input.read(String.class);
+          break;
+        case "isBlocked":
+          isBlocked = input.read(Boolean.class);
+          break;
+        case "navigation":
+          navigationId = input.read(String.class);
+          break;
+        case "redirectCount":
+          redirectCount = input.read(Long.class);
+          break;
+        case "request":
+          request = input.read(RequestData.class);
+          break;
+        case "timestamp":
+          timestamp = input.read(Long.class);
+          break;
+        case "intercepts":
+          intercepts = input.read(new TypeToken<List<String>>() {}.getType());
+          break;
+        default:
+          input.skipValue();
       }
     }
 
     input.endObject();
 
-    return new NetworkBaseParameters(
+    return new BaseParameters(
         browsingContextId, isBlocked, navigationId, redirectCount, request, timestamp, intercepts);
   }
 
