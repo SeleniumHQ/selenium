@@ -50,7 +50,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
-    "react-router-dom": "^6.15.0",
+    "react-router-dom": "^6.17.0",
     "rimraf": "^2.7.1",
     "source-map-explorer": "^2.5.3",
     "tmp": "^0.2.1",
