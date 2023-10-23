@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.openqa.selenium.bidi.log.StackTrace;
 import org.openqa.selenium.json.JsonInput;
 
-public class NetworkInitiator {
+public class Initiator {
 
   enum Type {
     PARSER("parser"),
@@ -58,7 +58,7 @@ public class NetworkInitiator {
   private final Optional<StackTrace> stackTrace;
   private final Optional<String> requestId;
 
-  private NetworkInitiator(
+  private Initiator(
       Type type,
       Optional<Long> columnNumber,
       Optional<Long> lineNumber,
@@ -71,7 +71,7 @@ public class NetworkInitiator {
     this.requestId = requestId;
   }
 
-  public static NetworkInitiator fromJson(JsonInput input) {
+  public static Initiator fromJson(JsonInput input) {
     Type type = null;
     Optional<Long> columnNumber = Optional.empty();
     Optional<Long> lineNumber = Optional.empty();
@@ -95,7 +95,7 @@ public class NetworkInitiator {
 
     input.endObject();
 
-    return new NetworkInitiator(type, columnNumber, lineNumber, stackTrace, requestId);
+    return new Initiator(type, columnNumber, lineNumber, stackTrace, requestId);
   }
 
   public Type getType() {

@@ -22,7 +22,7 @@ import java.util.List;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
-public class NetworkBaseParameters {
+public class BaseParameters {
 
   private final String browsingContextId;
 
@@ -38,7 +38,7 @@ public class NetworkBaseParameters {
 
   private final List<String> intercepts;
 
-  private NetworkBaseParameters(
+  private BaseParameters(
       String browsingContextId,
       boolean isBlocked,
       String navigation,
@@ -55,7 +55,7 @@ public class NetworkBaseParameters {
     this.intercepts = intercepts;
   }
 
-  public static NetworkBaseParameters fromJson(JsonInput input) {
+  public static BaseParameters fromJson(JsonInput input) {
     String browsingContextId = null;
 
     boolean isBlocked = false;
@@ -86,7 +86,7 @@ public class NetworkBaseParameters {
 
     input.endObject();
 
-    return new NetworkBaseParameters(
+    return new BaseParameters(
         browsingContextId, isBlocked, navigationId, redirectCount, request, timestamp, intercepts);
   }
 
