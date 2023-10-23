@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -49,6 +50,8 @@ namespace OpenQA.Selenium.Remote
         private IWebProxy proxy;
         private CommandInfoRepository commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
         private HttpClient client;
+
+        private static readonly ILogger _logger = Log.Context.GetLogger<HttpCommandExecutor>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
@@ -161,6 +164,8 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
             }
+
+            _logger.Trace($"Executing http command: {commandToExecute}");
 
             HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
             if (info == null)
