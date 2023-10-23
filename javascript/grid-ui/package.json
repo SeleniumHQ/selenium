@@ -12,7 +12,7 @@
     "@mui/material": "^5.14.4",
     "@novnc/novnc": "^1.4.0",
     "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.9",
+    "@types/node": "^20.8.7",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/react-modal": "^3.16.0",
