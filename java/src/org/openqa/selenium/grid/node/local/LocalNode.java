@@ -668,7 +668,9 @@ public class LocalNode extends Node {
       for (File file : files) {
         FileHandler.delete(file);
       }
-      return new HttpResponse();
+      Map<String, Object> toReturn = new HashMap<>();
+      toReturn.put("value", null);
+      return new HttpResponse().setContent(asJson(toReturn));
     }
     String raw = string(req);
     if (raw.isEmpty()) {
