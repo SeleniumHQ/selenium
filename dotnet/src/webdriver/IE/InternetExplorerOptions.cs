@@ -128,7 +128,6 @@ namespace OpenQA.Selenium.IE
             this.AddKnownCapabilityName(CapabilityType.HasNativeEvents, "EnableNativeEvents property");
             this.AddKnownCapabilityName(InitialBrowserUrlCapability, "InitialBrowserUrl property");
             this.AddKnownCapabilityName(ElementScrollBehaviorCapability, "ElementScrollBehavior property");
-            this.AddKnownCapabilityName(CapabilityType.UnexpectedAlertBehavior, "UnhandledPromptBehavior property");
             this.AddKnownCapabilityName(EnablePersistentHoverCapability, "EnablePersistentHover property");
             this.AddKnownCapabilityName(RequireWindowFocusCapability, "RequireWindowFocus property");
             this.AddKnownCapabilityName(BrowserAttachTimeoutCapability, "BrowserAttachTimeout property");

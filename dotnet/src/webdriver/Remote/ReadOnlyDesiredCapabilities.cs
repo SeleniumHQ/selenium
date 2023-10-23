@@ -69,23 +69,23 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the platform
         /// </summary>
-        public Platform Platform
+        public Platform PlatformName
         {
             get
             {
-                return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
+                return this.GetCapability(CapabilityType.PlatformName) as Platform ?? new Platform(PlatformType.Any);
             }
         }
 
         /// <summary>
         /// Gets the browser version
         /// </summary>
-        public string Version
+        public string BrowserVersion
         {
             get
             {
                 string browserVersion = string.Empty;
-                object capabilityValue = this.GetCapability(CapabilityType.Version);
+                object capabilityValue = this.GetCapability(CapabilityType.BrowserVersion);
                 if (capabilityValue != null)
                 {
                     browserVersion = capabilityValue.ToString();
@@ -173,7 +173,7 @@ namespace OpenQA.Selenium.Remote
             {
                 capabilityValue = this.capabilities[capability];
                 string capabilityValueString = capabilityValue as string;
-                if (capability == CapabilityType.Platform && capabilityValueString != null)
+                if (capability == CapabilityType.PlatformName && capabilityValueString != null)
                 {
                     capabilityValue = Platform.FromString(capabilityValue.ToString());
                 }
@@ -199,8 +199,8 @@ namespace OpenQA.Selenium.Remote
         {
             int result;
             result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
-            result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
-            result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+            result = (31 * result) + (this.BrowserVersion != null ? this.BrowserVersion.GetHashCode() : 0);
+            result = (31 * result) + (this.PlatformName != null ? this.PlatformName.GetHashCode() : 0);
             return result;
         }
 
@@ -236,12 +236,12 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
-            if (!this.Platform.IsPlatformType(other.Platform.PlatformType))
+            if (!this.PlatformName.IsPlatformType(other.PlatformName.PlatformType))
             {
                 return false;
             }
 
-            if (this.Version != null ? this.Version != other.Version : other.Version != null)
+            if (this.BrowserVersion != null ? this.BrowserVersion != other.BrowserVersion : other.BrowserVersion != null)
             {
                 return false;
             }

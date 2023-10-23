@@ -46,11 +46,6 @@ namespace OpenQA.Selenium.Support.Extensions
                     throw new WebDriverException("Driver does not implement ITakesScreenshot or IHasCapabilities");
                 }
 
-                if (!capabilitiesDriver.Capabilities.HasCapability(CapabilityType.TakesScreenshot) || !(bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.TakesScreenshot))
-                {
-                    throw new WebDriverException("Driver capabilities do not support taking screenshots");
-                }
-
                 MethodInfo executeMethod = driver.GetType().GetMethod("Execute", BindingFlags.Instance | BindingFlags.NonPublic);
                 Response screenshotResponse = executeMethod.Invoke(driver, new object[] { DriverCommand.Screenshot, null }) as Response;
                 if (screenshotResponse == null)

@@ -34,19 +34,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
-        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
-        /// <param name="version">Version of the browser</param>
-        /// <param name="platform">The platform it works on</param>
-        public DesiredCapabilities(string browser, string version, Platform platform)
-        {
-            this.SetCapability(CapabilityType.BrowserName, browser);
-            this.SetCapability(CapabilityType.Version, version);
-            this.SetCapability(CapabilityType.Platform, platform);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
-        /// </summary>
         public DesiredCapabilities()
         {
         }
@@ -66,41 +53,9 @@ namespace OpenQA.Selenium.Remote
             {
                 foreach (string key in rawMap.Keys)
                 {
-                    if (key == CapabilityType.Platform)
-                    {
-                        object raw = rawMap[CapabilityType.Platform];
-                        string rawAsString = raw as string;
-                        Platform rawAsPlatform = raw as Platform;
-                        if (rawAsString != null)
-                        {
-                            this.SetCapability(CapabilityType.Platform, Platform.FromString(rawAsString));
-                        }
-                        else if (rawAsPlatform != null)
-                        {
-                            this.SetCapability(CapabilityType.Platform, rawAsPlatform);
-                        }
-                    }
-                    else
-                    {
-                        this.SetCapability(key, rawMap[key]);
-                    }
+                    this.SetCapability(key, rawMap[key]);
                 }
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
-        /// </summary>
-        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
-        /// <param name="version">Version of the browser</param>
-        /// <param name="platform">The platform it works on</param>
-        /// <param name="isSpecCompliant">Sets a value indicating whether the capabilities are
-        /// compliant with the W3C WebDriver specification.</param>
-        internal DesiredCapabilities(string browser, string version, Platform platform, bool isSpecCompliant)
-        {
-            this.SetCapability(CapabilityType.BrowserName, browser);
-            this.SetCapability(CapabilityType.Version, version);
-            this.SetCapability(CapabilityType.Platform, platform);
         }
 
         /// <summary>
@@ -124,28 +79,28 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the platform
         /// </summary>
-        public Platform Platform
+        public Platform PlatformName
         {
             get
             {
-                return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
+                return this.GetCapability(CapabilityType.PlatformName) as Platform ?? new Platform(PlatformType.Any);
             }
 
             set
             {
-                this.SetCapability(CapabilityType.Platform, value);
+                this.SetCapability(CapabilityType.PlatformName, value);
             }
         }
 
         /// <summary>
         /// Gets the browser version
         /// </summary>
-        public string Version
+        public string BrowserVersion
         {
             get
             {
                 string browserVersion = string.Empty;
-                object capabilityValue = this.GetCapability(CapabilityType.Version);
+                object capabilityValue = this.GetCapability(CapabilityType.BrowserVersion);
                 if (capabilityValue != null)
                 {
                     browserVersion = capabilityValue.ToString();
@@ -238,7 +193,7 @@ namespace OpenQA.Selenium.Remote
             {
                 capabilityValue = this.capabilities[capability];
                 string capabilityValueString = capabilityValue as string;
-                if (capability == CapabilityType.Platform && capabilityValueString != null)
+                if (capability == CapabilityType.PlatformName && capabilityValueString != null)
                 {
                     capabilityValue = Platform.FromString(capabilityValue.ToString());
                 }
@@ -276,8 +231,8 @@ namespace OpenQA.Selenium.Remote
         {
             int result;
             result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
-            result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
-            result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+            result = (31 * result) + (this.BrowserVersion != null ? this.BrowserVersion.GetHashCode() : 0);
+            result = (31 * result) + (this.PlatformName != null ? this.PlatformName.GetHashCode() : 0);
             return result;
         }
 
@@ -287,7 +242,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>String of capabilities being used</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.Platform.PlatformType.ToString(), this.Version);
+            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.PlatformName.PlatformType.ToString(), this.BrowserVersion);
         }
 
         /// <summary>
@@ -313,12 +268,12 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
-            if (!this.Platform.IsPlatformType(other.Platform.PlatformType))
+            if (!this.PlatformName.IsPlatformType(other.PlatformName.PlatformType))
             {
                 return false;
             }
 
-            if (this.Version != null ? this.Version != other.Version : other.Version != null)
+            if (this.BrowserVersion != null ? this.BrowserVersion != other.BrowserVersion : other.BrowserVersion != null)
             {
                 return false;
             }

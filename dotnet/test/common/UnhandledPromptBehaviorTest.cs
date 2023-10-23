@@ -6,7 +6,7 @@ using System;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    public class UnexpectedAlertBehaviorTest : DriverTestFixture
+    public class UnhandledPromptBehaviorTest : DriverTestFixture
     {
         private IWebDriver localDriver;
 
