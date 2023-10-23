@@ -1134,11 +1134,12 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
 
     def get_downloadable_files(self) -> dict:
-        """Retrieves the downloadable files as a map of file names and their corresponding URLs."""
+        """Retrieves the downloadable files as a map of file names and their
+        corresponding URLs."""
         return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]
 
     def download_file(self, file_name: str) -> str:
-        """Downloads a file with the specified file name
+        """Downloads a file with the specified file name.
 
         file_name: The name of the file to download.
         """
