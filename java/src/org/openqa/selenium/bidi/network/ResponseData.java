@@ -82,23 +82,46 @@ public class ResponseData {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "url" -> url = input.read(String.class);
-        case "protocol" -> protocol = input.read(String.class);
-        case "status" -> status = input.read(Long.class);
-        case "statusText" -> statusText = input.read(String.class);
-        case "fromCache" -> fromCache = input.read(Boolean.class);
-        case "headers" -> headers = input.read(String.class);
-        case "mimeType" -> mimeType = input.read(String.class);
-        case "bytesReceived" -> bytesReceived = input.read(Long.class);
-        case "headersSize" -> headersSize = input.read(Long.class);
-        case "bodySize" -> bodySize = input.read(Long.class);
-        case "content" -> {
+        case "url":
+          url = input.read(String.class);
+          break;
+        case "protocol":
+          protocol = input.read(String.class);
+          break;
+        case "status":
+          status = input.read(Long.class);
+          break;
+        case "statusText":
+          statusText = input.read(String.class);
+          break;
+        case "fromCache":
+          fromCache = input.read(Boolean.class);
+          break;
+        case "headers":
+          headers = input.read(String.class);
+          break;
+        case "mimeType":
+          mimeType = input.read(String.class);
+          break;
+        case "bytesReceived":
+          bytesReceived = input.read(Long.class);
+          break;
+        case "headersSize":
+          headersSize = input.read(Long.class);
+          break;
+        case "bodySize":
+          bodySize = input.read(Long.class);
+          break;
+        case "content":
           Map<String, Long> responseContent =
               input.read(new TypeToken<Map<String, Long>>() {}.getType());
           content = responseContent.get("size");
-        }
-        case "authChallenge" -> authChallenge = Optional.of(input.read(AuthChallenge.class));
-        default -> input.skipValue();
+          break;
+        case "authChallenge":
+          authChallenge = Optional.of(input.read(AuthChallenge.class));
+          break;
+        default:
+          input.skipValue();
       }
     }
 
