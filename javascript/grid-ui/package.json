@@ -8,7 +8,7 @@
     "@bazel/typescript": "^5.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.14.3",
+    "@mui/icons-material": "^5.14.14",
     "@mui/material": "^5.14.14",
     "@novnc/novnc": "^1.4.0",
     "@types/jest": "^29.5.3",
