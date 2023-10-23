@@ -1,9 +1,9 @@
 package org.openqa.selenium.bidi.network;
 
+import java.io.StringReader;
+import java.util.Map;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-
-import java.io.StringReader;
 
 public class BeforeRequestSent extends BaseParameters {
   private static final Json JSON = new Json();
@@ -22,12 +22,11 @@ public class BeforeRequestSent extends BaseParameters {
     this.initiator = initiator;
   }
 
-  public static BeforeRequestSent fromJsonString(String jsonString) {
-    try (StringReader baseParameterReader = new StringReader(jsonString);
-        StringReader initiatorReader = new StringReader(jsonString);
+  public static BeforeRequestSent fromJsonMap(Map<String, Object> jsonMap) {
+    try (StringReader baseParameterReader = new StringReader(JSON.toJson(jsonMap));
+        StringReader initiatorReader = new StringReader(JSON.toJson(jsonMap.get("initiator")));
         JsonInput baseParamsInput = JSON.newInput(baseParameterReader);
         JsonInput initiatorInput = JSON.newInput(initiatorReader)) {
-
       return new BeforeRequestSent(
           BaseParameters.fromJson(baseParamsInput), Initiator.fromJson(initiatorInput));
     }
