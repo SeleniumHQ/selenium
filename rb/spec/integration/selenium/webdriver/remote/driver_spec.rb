@@ -65,6 +65,23 @@ module Selenium
             expect(File.exist?("#{dir}/#{file_name}")).to be true
           end
         end
+
+        it 'deletes downloadable files' do
+          reset_driver!(enable_downloads: true) do |driver|
+            driver.navigate.to url_for('downloads/download.html')
+            driver.find_element(id: 'file-1').click
+            file_name = 'file_1.txt'
+
+            loop do
+              @files = driver.downloadable_files
+              break if @files.include?(file_name)
+            end
+
+            driver.delete_downloadable_files
+
+            expect(driver.downloadable_files).to be_empty
+          end
+        end
       end
     end # Remote
   end # WebDriver

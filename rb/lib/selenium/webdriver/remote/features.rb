@@ -24,7 +24,8 @@ module Selenium
         REMOTE_COMMANDS = {
           upload_file: [:post, 'session/:session_id/se/file'],
           get_downloadable_files: [:get, 'session/:session_id/se/files'],
-          download_file: [:post, 'session/:session_id/se/files']
+          download_file: [:post, 'session/:session_id/se/files'],
+          delete_downloadable_files: [:delete, 'session/:session_id/se/files']
         }.freeze
 
         def add_commands(commands)
@@ -63,6 +64,10 @@ module Selenium
 
         def download_file(name)
           execute :download_file, {}, {name: name}
+        end
+
+        def delete_downloadable_files
+          execute :delete_downloadable_files
         end
       end
     end # Remote

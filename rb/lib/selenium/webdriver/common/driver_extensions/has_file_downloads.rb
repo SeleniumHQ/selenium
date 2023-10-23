@@ -40,6 +40,10 @@ module Selenium
             FileUtils.rm_f("#{file_name}.zip")
           end
         end
+
+        def delete_downloadable_files
+          @bridge.delete_downloadable_files
+        end
       end # HasFileDownloads
     end # DriverExtensions
   end # WebDriver
