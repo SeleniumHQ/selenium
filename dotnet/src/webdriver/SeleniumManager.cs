@@ -35,7 +35,7 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
-        private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
+        private static readonly ILogger _logger = Log.Context.GetLogger(typeof(SeleniumManager));
 
         private static readonly string BinaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
 

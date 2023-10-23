@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             if (level >= _level)
             {
-                Log.Instance.LogMessage(level, message);
+                Log.Context.LogMessage(level, message);
             }
         }
     }

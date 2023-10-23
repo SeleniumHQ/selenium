@@ -1,22 +1,33 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
-    internal class LogManager : ILogManager
+    internal class LogContext : ILogContext
     {
-        private readonly ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
+        protected readonly ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
 
-        private readonly IList<ILogHandler> _handlers = new List<ILogHandler>();
+        protected readonly ConcurrentBag<ILogHandler> _handlers = new ConcurrentBag<ILogHandler>();
 
-        private LogLevel _level;
+        protected LogLevel _level;
 
-        public LogManager(LogLevel level, IList<ILogHandler> handlers)
+        public LogContext(LogLevel level, IList<ILogHandler> handlers)
         {
             _level = level;
 
-            _handlers = handlers ?? new List<ILogHandler>();
+            _handlers = new ConcurrentBag<ILogHandler>(handlers);
+        }
+
+        public ILogger GetLogger<T>()
+        {
+            return GetLogger(typeof(T));
+        }
+
+        public ILogger GetLogger(Type type)
+        {
+            return GetLogger(type.FullName);
         }
 
         public ILogger GetLogger(string name)
@@ -40,14 +51,14 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public ILogManager SetLevel(LogLevel level)
+        public virtual ILogContext SetLevel(LogLevel level)
         {
             _level = level;
 
             return this;
         }
 
-        public ILogManager AddHandler(ILogHandler handler)
+        public virtual ILogContext AddHandler(ILogHandler handler)
         {
             if (handler is null)
             {
@@ -57,6 +68,11 @@ namespace OpenQA.Selenium.Internal.Logging
             _handlers.Add(handler);
 
             return this;
+        }
+
+        public object Clone()
+        {
+            return new LogContext(_level, _handlers.ToList());
         }
     }
 }
