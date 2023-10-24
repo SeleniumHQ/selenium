@@ -45,6 +45,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             if (level >= _level)
             {
+                // always route message to contextual log
                 Log.Context.LogMessage(level, message);
             }
         }

@@ -32,17 +32,12 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public static ILogger GetLogger<T>()
         {
-            return GetLogger(typeof(T));
+            return _globalLogContext.GetLogger(typeof(T));
         }
 
         public static ILogger GetLogger(Type type)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            return GetLogger(type.FullName);
+            return _globalLogContext.GetLogger(type);
         }
 
         public static ILogger GetLogger(string name)

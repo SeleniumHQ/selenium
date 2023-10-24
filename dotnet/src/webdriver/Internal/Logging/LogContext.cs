@@ -7,9 +7,9 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     internal class LogContext : ILogContext
     {
-        protected readonly ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
+        protected readonly ConcurrentDictionary<Type, ILogger> _loggers = new ConcurrentDictionary<Type, ILogger>();
 
-        protected readonly ConcurrentBag<ILogHandler> _handlers = new ConcurrentBag<ILogHandler>();
+        protected readonly IList<ILogHandler> _handlers;
 
         protected LogLevel _level;
 
@@ -17,7 +17,10 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             _level = level;
 
-            _handlers = new ConcurrentBag<ILogHandler>(handlers);
+            if (handlers != null)
+            {
+                _handlers = new List<ILogHandler>(handlers);
+            }
         }
 
         public ILogger GetLogger<T>()
@@ -27,19 +30,24 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public ILogger GetLogger(Type type)
         {
-            return GetLogger(type.FullName);
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return _loggers.GetOrAdd(type, _ => new Logger(_level));
         }
 
         public ILogger GetLogger(string name)
         {
-            return _loggers.GetOrAdd(name, _ => new Logger(_level));
+            return GetLogger(Type.GetType(name));
         }
 
         public void LogMessage(LogLevel level, string message)
         {
-            if (level >= _level)
+            if (_handlers != null)
             {
-                if (_handlers.Count > 0)
+                if (level >= _level)
                 {
                     var logMessage = new LogMessage(DateTime.Now, level, message);
 
@@ -72,7 +80,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public object Clone()
         {
-            return new LogContext(_level, _handlers.ToList());
+            return new LogContext(_level, _handlers?.ToList());
         }
     }
 }
