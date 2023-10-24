@@ -245,8 +245,8 @@ node_repositories(
 
 npm_install(
     name = "npm",
-    package_json = "//:package.json",
-    package_lock_json = "//:package-lock.json",
+    package_json = "//javascript:package.json",
+    package_lock_json = "//javascript:package-lock.json",
     symlink_node_modules = False,
 )
 

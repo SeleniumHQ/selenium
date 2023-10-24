@@ -18,6 +18,7 @@ dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
+javascript/node_modules
 javascript/node/selenium-webdriver/node_modules/
 javascript/node/selenium-webdriver/lib/atoms/find-elements.js
 javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
