@@ -1,0 +1,135 @@
+diff --git a/dotnet/private/providers.bzl b/dotnet/private/providers.bzl
+index df00a25..0b06638 100644
+--- a/dotnet/private/providers.bzl
++++ b/dotnet/private/providers.bzl
+@@ -44,6 +44,7 @@ NuGetInfo = provider(
+     fields = {
+         "targeting_pack_overrides": "map[string, string]: Targeting packs like e.g. Microsoft.NETCore.App.Ref have a PackageOverride.txt that includes a list of NuGet packages that should be omitted in a compiliation because they are included in the targeting pack",
+         "sha512": "string: the SHA512 SRI string for the package",
++        "nupkg": "File: the underlying `.nupkg` file which provides this package",
+     },
+ )
+
+diff --git a/dotnet/private/rules/nuget/imports.bzl b/dotnet/private/rules/nuget/imports.bzl
+index a41bc70..79ebc94 100644
+--- a/dotnet/private/rules/nuget/imports.bzl
++++ b/dotnet/private/rules/nuget/imports.bzl
+@@ -59,6 +59,7 @@ def _import_library(ctx):
+     ), NuGetInfo(
+         targeting_pack_overrides = ctx.attr.targeting_pack_overrides,
+         sha512 = ctx.attr.sha512,
++        nupkg = ctx.file.nupkg,
+     )]
+
+ import_library = rule(
+@@ -107,6 +108,10 @@ import_library = rule(
+         "sha512": attr.string(
+             doc = "The SHA512 sum of the NuGet package",
+         ),
++        "nupkg": attr.label(
++            doc = "The `.nupkg` file providing this import",
++            allow_single_file = True,
++        ),
+     },
+     toolchains = [
+         "@rules_dotnet//dotnet:toolchain_type",
+diff --git a/dotnet/private/rules/nuget/nuget_archive.bzl b/dotnet/private/rules/nuget/nuget_archive.bzl
+index 38a9473..683abdd 100644
+--- a/dotnet/private/rules/nuget/nuget_archive.bzl
++++ b/dotnet/private/rules/nuget/nuget_archive.bzl
+@@ -19,6 +19,8 @@ load(
+     "RUNTIME_GRAPH",
+ )
+
++GLOBAL_NUGET_PREFIX = "nuget"
++
+ def _is_windows(repository_ctx):
+     """Returns true if the host operating system is windows."""
+     os_name = repository_ctx.os.name.lower()
+@@ -321,7 +323,17 @@ def _nuget_archive_impl(ctx):
+
+     # Then get the auth dict for the package base urls
+     auth = _get_auth_dict(ctx, ctx.attr.netrc, urls)
+-    ctx.download_and_extract(urls, type = "zip", integrity = ctx.attr.sha512, auth = auth)
++    file_name = "%s.zip" % ctx.name
++    nupkg_name = "%s.%s.nupkg" % (ctx.attr.id, ctx.attr.version)
++    names = [nupkg_name]
++    if nupkg_name.startswith(GLOBAL_NUGET_PREFIX):
++        nupkg_name = nupkg_name[len(GLOBAL_NUGET_PREFIX) + 1:]
++        names.append(nupkg_name)
++
++    ctx.download(urls, output = file_name, integrity = ctx.attr.sha512, auth = auth)
++    ctx.extract(archive = file_name)
++    for name in names:
++        ctx.symlink(file_name, name)
+
+     files = _read_dir(ctx, ".").replace(str(ctx.path(".")) + "/", "").splitlines()
+
+@@ -447,6 +459,7 @@ load("@rules_dotnet//dotnet/private/rules/nuget:nuget_archive.bzl", "tfm_filegro
+         "filegroup(name = \"data\", srcs = [])",
+         _create_rid_native_select("native", native) or "filegroup(name = \"native\", srcs = [])",
+         "filegroup(name = \"content_files\", srcs = [%s])" % ",".join(["\n  \"%s\"" % a for a in groups.get("contentFiles")["any"]]),
++        "exports_files([\"%s\"])" % nupkg_name,
+     ]))
+
+ nuget_archive = repository_rule(
+diff --git a/dotnet/private/rules/nuget/nuget_repo.bzl b/dotnet/private/rules/nuget/nuget_repo.bzl
+index 77c2a67..c5cc56d 100644
+--- a/dotnet/private/rules/nuget/nuget_repo.bzl
++++ b/dotnet/private/rules/nuget/nuget_repo.bzl
+@@ -1,9 +1,7 @@
+ "NuGet Repo"
+
+ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+-load("@rules_dotnet//dotnet/private/rules/nuget:nuget_archive.bzl", "nuget_archive")
+-
+-_GLOBAL_NUGET_PREFIX = "nuget"
++load("@rules_dotnet//dotnet/private/rules/nuget:nuget_archive.bzl", "GLOBAL_NUGET_PREFIX", "nuget_archive")
+
+ def _nuget_repo_impl(ctx):
+     for package in ctx.attr.packages:
+@@ -22,8 +20,15 @@ def _nuget_repo_impl(ctx):
+         targeting_pack_overrides = ctx.attr.targeting_pack_overrides[name.lower()]
+         template = Label("@rules_dotnet//dotnet/private/rules/nuget:template.BUILD")
+
++        nupkg_path = "@{PREFIX}.{NAME_LOWER}.v{VERSION}//:{NAME_LOWER}.{VERSION}.nupkg".format(
++            PREFIX = GLOBAL_NUGET_PREFIX,
++            NAME = name,
++            NAME_LOWER = name.lower(),
++            VERSION = version,
++        )
++
+         ctx.template("{}/{}/BUILD.bazel".format(name.lower(), version), template, {
+-            "{PREFIX}": _GLOBAL_NUGET_PREFIX,
++            "{PREFIX}": GLOBAL_NUGET_PREFIX,
+             "{NAME}": name,
+             "{NAME_LOWER}": name.lower(),
+             "{VERSION}": version,
+@@ -36,7 +41,7 @@ def _nuget_repo_impl(ctx):
+         ctx.file("{}/BUILD.bazel".format(name.lower()), r"""package(default_visibility = ["//visibility:public"])
+ alias(name = "{name}", actual = "//{name}/{version}")
+ alias(name = "content_files", actual = "@{prefix}.{name}.v{version}//:content_files")
+-""".format(prefix = _GLOBAL_NUGET_PREFIX, name = name.lower(), version = version))
++""".format(prefix = GLOBAL_NUGET_PREFIX, name = name.lower(), version = version))
+
+ _nuget_repo = repository_rule(
+     _nuget_repo_impl,
+@@ -63,7 +68,7 @@ def nuget_repo(name, packages):
+         # maybe another nuget_repo has the same nuget package dependency
+         maybe(
+             nuget_archive,
+-            name = "{}.{}.v{}".format(_GLOBAL_NUGET_PREFIX, package_name, version),
++            name = "{}.{}.v{}".format(GLOBAL_NUGET_PREFIX, package_name, version),
+             sources = package["sources"],
+             netrc = package.get("netrc", None),
+             id = package_name,
+diff --git a/dotnet/private/rules/nuget/template.BUILD b/dotnet/private/rules/nuget/template.BUILD
+index 783f025..b62bce2 100644
+--- a/dotnet/private/rules/nuget/template.BUILD
++++ b/dotnet/private/rules/nuget/template.BUILD
+@@ -16,4 +16,5 @@ import_library(
+     deps = select({
+         {DEPS},
+     }),
++    nupkg = "@{PREFIX}.{NAME_LOWER}.v{VERSION}//:{NAME_LOWER}.{VERSION}.nupkg"
+ )

@@ -24,6 +24,7 @@ import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import java.util.logging.Logger;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
@@ -111,5 +112,10 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   public void setOpenTelemetryContext(Context context) {
     this.context = context;
+  }
+
+  @Override
+  public AttributeMap createAttributeMap() {
+    return new OpenTelemetryAttributeMap();
   }
 }

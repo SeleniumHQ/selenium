@@ -26,7 +26,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BrowsingContextInspector;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -119,6 +121,88 @@ class BrowsingContextInspectorTest {
       NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @Disabled
+  void canListenToNavigationStartedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+      inspector.onNavigationStarted(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(server.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @Disabled
+  void canListenToFragmentNavigatedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(server.whereIs("/linked_image.html"), ReadinessState.COMPLETE);
+
+      inspector.onFragmentNavigated(future::complete);
+
+      context.navigate(
+          server.whereIs("/linked_image.html#linkToAnchorOnThisPage"), ReadinessState.COMPLETE);
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl()).contains("linkToAnchorOnThisPage");
+    }
+  }
+
+  @Test
+  @Disabled
+  void canListenToUserPromptOpenedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<UserPromptOpened> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      inspector.onUserPromptOpened(future::complete);
+
+      driver.get(server.whereIs("/alerts.html"));
+
+      driver.findElement(By.id("alert")).click();
+
+      UserPromptOpened userPromptOpened = future.get(5, TimeUnit.SECONDS);
+      assertThat(userPromptOpened.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(userPromptOpened.getType()).isEqualTo(UserPromptType.ALERT);
+    }
+  }
+
+  @Test
+  @Disabled
+  void canListenToUserPromptClosedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<UserPromptClosed> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      inspector.onUserPromptClosed(future::complete);
+
+      driver.get(server.whereIs("/alerts.html"));
+
+      driver.findElement(By.id("prompt")).click();
+
+      context.handleUserPrompt(true, "selenium");
+
+      UserPromptClosed userPromptClosed = future.get(5, TimeUnit.SECONDS);
+      assertThat(userPromptClosed.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(userPromptClosed.getUserText().isPresent()).isTrue();
+      assertThat(userPromptClosed.getUserText().get()).isEqualTo("selenium");
+      assertThat(userPromptClosed.getAccepted()).isTrue();
     }
   }
 

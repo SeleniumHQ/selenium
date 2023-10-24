@@ -1,9 +1,9 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//dotnet/private:copy_files.bzl", "copy_files")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "SUPPORTED_NET_STANDARD_VERSIONS",
 )
+load("//dotnet/private:copy_files.bzl", "copy_files")
 
 def _nuget_push_impl(ctx):
     args = [

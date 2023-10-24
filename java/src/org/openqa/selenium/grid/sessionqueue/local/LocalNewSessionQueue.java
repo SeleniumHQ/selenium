@@ -214,9 +214,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       try {
 
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
-        if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
-          sessionCreated = data.latch.await(5000, MILLISECONDS);
-        }
 
         if (sessionCreated) {
           result = data.result;
@@ -293,6 +290,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         if (!requests.containsKey(request.getRequestId())) {
           return false;
         }
+        if (isTimedOut(Instant.now(), requests.get(request.getRequestId()))) {
+          // as we try to re-add a session request that has already expired, force session timeout
+          failDueToTimeout(request.getRequestId());
+          // return true to avoid handleNewSessionRequest to call 'complete' an other time
+          return true;
+        }
 
         if (queue.contains(request)) {
           // No need to re-add this
@@ -327,19 +330,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       return Optional.empty();
     } finally {
       writeLock.unlock();
-    }
-  }
-
-  private boolean isRequestInQueue(RequestId requestId) {
-    Lock readLock = lock.readLock();
-    readLock.lock();
-
-    try {
-      Optional<SessionRequest> result =
-          queue.stream().filter(req -> req.getRequestId().equals(requestId)).findAny();
-      return result.isPresent();
-    } finally {
-      readLock.unlock();
     }
   }
 
@@ -378,8 +368,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     }
   }
 
+  /** Returns true if the session is still valid (not timed out) */
   @Override
-  public void complete(
+  public boolean complete(
       RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
@@ -388,6 +379,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock readLock = lock.readLock();
       readLock.lock();
       Data data;
+      boolean isSessionTimedOut = false;
       try {
         data = requests.get(reqId);
       } finally {
@@ -395,7 +387,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       }
 
       if (data == null) {
-        return;
+        return false;
+      } else {
+        isSessionTimedOut = isTimedOut(Instant.now(), data);
       }
 
       Lock writeLock = lock.writeLock();
@@ -409,6 +403,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       }
 
       data.setResult(result);
+
+      return !isSessionTimedOut;
     }
   }
 

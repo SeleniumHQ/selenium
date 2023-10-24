@@ -5,7 +5,6 @@ java_library(
     name = "test-lib",
     testonly = True,
     srcs = [
-        "DomainSocketsTestBase.java",
         "HttpClientTestBase.java",
         "WebSocketTestBase.java",
     ],
@@ -29,13 +28,6 @@ java_library(
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-handler"),
         artifact("io.netty:netty-transport"),
-        artifact("io.netty:netty-transport-classes-epoll"),
-        artifact("io.netty:netty-transport-classes-kqueue"),
-        artifact("io.netty:netty-transport-native-epoll"),
-        artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
-        artifact("io.netty:netty-transport-native-kqueue"),
-        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
-        artifact("io.netty:netty-transport-native-unix-common"),
     ] + JUNIT5_DEPS,
 )
 

@@ -1,3 +1,33 @@
+v4.14.1
+======
+* Add print, activate and set viewport commands to Browsing Context
+* Remove deprecated lift packages (#12917)
+* Add validation for browsing context id (#12920)
+* Fix default values for print options page size
+* Use the java process builder to run external processes (#12898)
+* Allow a custom timeout when shutting down a process
+* Replacing Guava implementations with native Java implementations
+* Allow setting version in Http Client Config (#12919)
+
+v4.14.0
+======
+* Supported CDP versions: 85, 116, 117, 118
+* Replace the EventAttribute(Value) with an AttributeMap (#12684)
+* Add browsing context's capture box and element screenshot commands
+* Enable handle user prompt tests for Firefox
+* Delete SM binary only when SE_MANAGER_PATH is not set (#12840)
+* Shutdown executors created for a single tasks
+* Ensure closed socket connection does not prevent freeing up resources
+* Remove the unused htmlunit-driver from the unit tests (#12849)
+* Ensure proper error message gets logged (#12853)
+* Allow setting SSL context in client config for HttpClient (#12874)
+* Improve warning when CDP version not found (#12880)
+* Ensure retry mechanism does not swallow an exception (#12838)
+* Require Java 11 and move jdk-http-client into default package (#12843)
+* Reduce log noise at FINE level (#12866)
+* Refactor frame method to use isEmpty for list check and String check. (#12894)
+* Use new 'getArray' method to extract driver configurations (#12716)
+
 v4.13.0
 ======
 * Supported CDP versions: 85, 115, 116, 117
@@ -13,6 +43,10 @@ v4.13.0
 * Update pinned browser versions
 * Improve stability with final variables (#12733)
 * Fix bug for Appium subclass that sets neither log file nor output (#12696)
+* Remove deprecated headless methods from Options classes
+* Remove deprecated driver service constructors and methods
+* Remove deprecated log_file methods
+* Allow users to set Selenium Manager path by environment variable (#12752)
 
 v4.12.1
 ======

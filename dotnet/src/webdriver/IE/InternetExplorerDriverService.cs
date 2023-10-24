@@ -48,6 +48,12 @@ namespace OpenQA.Selenium.IE
         {
         }
 
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new InternetExplorerOptions();
+        }
+
         /// <summary>
         /// Gets or sets the value of the host adapter on which the IEDriverServer should listen for connections.
         /// </summary>

@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.12.0",
+  "version": "4.14.0",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -25,10 +25,10 @@
   "dependencies": {
     "jszip": "^3.10.1",
     "tmp": "^0.2.1",
-    "ws": ">=8.13.0"
+    "ws": ">=8.14.2"
   },
   "devDependencies": {
-    "eslint": "^8.46.0",
+    "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
@@ -36,9 +36,9 @@
     "express": "^4.18.2",
     "mocha": "^10.2.0",
     "multer": "^1.4.5-lts.1",
-    "prettier": "^3.0.1",
+    "prettier": "^3.0.3",
     "serve-index": "^1.9.1",
-    "sinon": "^15.2.0"
+    "sinon": "^16.1.0"
   },
   "scripts": {
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",

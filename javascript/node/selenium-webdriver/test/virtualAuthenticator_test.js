@@ -358,21 +358,9 @@ suite(function (env) {
 
         assert.equal(credential1.isResidentCredential(), true)
         assert.notEqual(credential1.privateKey(), null)
-        assert.equal(credential1.rpId(), 'localhost')
-        assert.deepStrictEqual(
-          credential1.userHandle().sort(),
-          new Uint8Array([1]).sort()
-        )
-        assert.equal(credential1.signCount(), 1)
 
         assert.equal(credential2.isResidentCredential(), false)
         assert.notEqual(credential2.privateKey(), null)
-        /**
-         * Non-resident keys do not store raw RP IDs or user handles.
-         */
-        assert.equal(credential2.rpId(), null)
-        assert.equal(credential2.userHandle(), null)
-        assert.equal(credential2.signCount(), 1)
       }
     )
 

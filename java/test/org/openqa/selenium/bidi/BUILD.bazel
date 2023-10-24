@@ -25,6 +25,5 @@ java_selenium_test_suite(
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
-        artifact("org.hamcrest:hamcrest"),
     ] + JUNIT5_DEPS,
 )

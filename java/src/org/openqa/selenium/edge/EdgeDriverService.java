@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.edge;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
-import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
@@ -101,12 +98,7 @@ public class EdgeDriverService extends DriverService {
       List<String> args,
       Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
   }
 
   public String getDriverName() {
@@ -297,7 +289,7 @@ public class EdgeDriverService extends DriverService {
           args.add("--append-log");
         }
         withLogOutput(
-            ByteStreams.nullOutputStream()); // Do not overwrite log file in getLogOutput()
+            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
       }
 
       if (logLevel != null) {
@@ -316,7 +308,7 @@ public class EdgeDriverService extends DriverService {
         args.add("--disable-build-check");
       }
 
-      return unmodifiableList(args);
+      return List.copyOf(args);
     }
 
     @Override

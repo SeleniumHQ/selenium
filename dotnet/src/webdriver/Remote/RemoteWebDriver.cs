@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
-            :base(commandExecutor, desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
         {
         }
 

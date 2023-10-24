@@ -34,7 +34,6 @@ def _generate_devtools_impl(ctx):
             ctx.file.browser_protocol,
             ctx.file.js_protocol,
         ] + template_files,
-        use_default_shell_env = True,
     )
 
     return DefaultInfo(files = depset([

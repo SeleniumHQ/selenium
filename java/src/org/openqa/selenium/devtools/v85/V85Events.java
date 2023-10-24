@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.devtools.v85;
 
-import com.google.common.collect.ImmutableList;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -67,7 +67,7 @@ public class V85Events extends Events<ConsoleAPICalled, ExceptionThrown> {
     List<Object> modifiedArgs =
         event.getArgs().stream()
             .map(obj -> new RemoteObject(obj.getType().toString(), obj.getValue().orElse(null)))
-            .collect(ImmutableList.toImmutableList());
+            .collect(Collectors.toUnmodifiableList());
 
     return new ConsoleEvent(
         event.getType().toString(), Instant.ofEpochMilli(ts), modifiedArgs, event.getArgs());

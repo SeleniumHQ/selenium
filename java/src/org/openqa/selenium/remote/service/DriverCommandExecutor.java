@@ -145,7 +145,11 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
       CompletableFuture<Response> processFinished =
           CompletableFuture.supplyAsync(
               () -> {
-                service.process.waitFor(service.getTimeout().toMillis());
+                try {
+                  service.process.waitFor(service.getTimeout());
+                } catch (InterruptedException ex) {
+                  Thread.currentThread().interrupt();
+                }
                 return null;
               },
               executorService);

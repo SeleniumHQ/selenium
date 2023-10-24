@@ -23,9 +23,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 import com.google.auto.service.AutoService;
-import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,7 +167,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     protected SafariTechPreviewDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        withLogOutput(ByteStreams.nullOutputStream());
+        withLogOutput(OutputStream.nullOutputStream());
         return new SafariTechPreviewDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);

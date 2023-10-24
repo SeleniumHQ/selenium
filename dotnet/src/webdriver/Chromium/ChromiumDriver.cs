@@ -149,7 +149,8 @@ namespace OpenQA.Selenium.Chromium
         /// <returns></returns>
         private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
         {
-            if (service.DriverServicePath == null) {
+            if (service.DriverServicePath == null)
+            {
                 string fullServicePath = DriverFinder.FullPath(options);
                 service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
                 service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);

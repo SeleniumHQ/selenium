@@ -20,6 +20,11 @@
 module Selenium
   module WebDriver
     module Atoms
+      def atom_script(function_name)
+        format("/* #{function_name} */return (%<atom>s).apply(null, arguments)",
+               atom: read_atom(function_name))
+      end
+
       private
 
       def read_atom(function)
@@ -27,9 +32,7 @@ module Selenium
       end
 
       def execute_atom(function_name, *arguments)
-        script = format("/* #{function_name} */return (%<atom>s).apply(null, arguments)",
-                        atom: read_atom(function_name))
-        execute_script(script, *arguments)
+        execute_script(atom_script(function_name), *arguments)
       end
     end # Atoms
   end # WebDriver

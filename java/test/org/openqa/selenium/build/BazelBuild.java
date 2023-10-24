@@ -22,9 +22,10 @@ import static org.openqa.selenium.build.DevMode.isInDevMode;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.logging.Logger;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExternalProcess;
 
 public class BazelBuild {
   private static final Logger LOG = Logger.getLogger(BazelBuild.class.getName());
@@ -58,13 +59,23 @@ public class BazelBuild {
     }
     LOG.info("\nBuilding " + target + " ...");
 
-    CommandLine commandLine = new CommandLine("bazel", "build", target);
-    commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
-    commandLine.copyOutputTo(System.err);
-    commandLine.execute();
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("bazel", "build", target)
+            .directory(projectRoot.toAbsolutePath().toString())
+            .copyOutputTo(System.err)
+            .start();
 
-    if (!commandLine.isSuccessful()) {
-      throw new WebDriverException("Build failed! " + target + "\n" + commandLine.getStdOut());
+    try {
+      if (process.waitFor(Duration.ofHours(1))) {
+        if (process.exitValue() != 0)
+          throw new WebDriverException("Build failed! " + target + "\n" + process.getOutput());
+      } else {
+        throw new WebDriverException("Build timed out! " + target + "\n" + process.getOutput());
+      }
+    } catch (InterruptedException ex) {
+      process.shutdown();
+      throw new WebDriverException("Build interrupted! " + target + "\n" + process.getOutput());
     }
   }
 }

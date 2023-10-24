@@ -24,7 +24,6 @@ using System.Globalization;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.VirtualAuth;
-using Microsoft.IdentityModel.Tokens;
 
 namespace OpenQA.Selenium
 {

@@ -26,7 +26,9 @@ const path = require('path')
 const fs = require('fs')
 const spawnSync = require('child_process').spawnSync
 const { Capability } = require('../lib/capabilities')
+const logging = require('../lib/logging')
 
+const log_ = logging.getLogger(logging.Type.DRIVER)
 let debugMessagePrinted = false
 
 /**
@@ -46,14 +48,14 @@ function getBinary() {
 
   let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
 
-  const filePath = path.join(seleniumManagerBasePath, directory, file)
+  const filePath = process.env.SE_MANAGER_PATH || path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager at ${filePath}`)
   }
 
   if (!debugMessagePrinted) {
-    console.debug(`Selenium Manager binary found at ${filePath}`)
+    log_.debug(`Selenium Manager binary found at ${filePath}`)
     debugMessagePrinted = true // Set the flag to true after printing the debug message
   }
 
@@ -140,10 +142,10 @@ function driverLocation(options) {
 function logOutput(output) {
   for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
-      console.warn(`${output.logs[key].message}`)
+      log_.warning(`${output.logs[key].message}`)
     }
     if (['DEBUG', 'INFO'].includes(output.logs[key].level)) {
-      console.debug(`${output.logs[key].message}`)
+      log_.debug(`${output.logs[key].message}`)
     }
   }
 }

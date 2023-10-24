@@ -1,5 +1,4 @@
 load("@bazel_skylib//rules:select_file.bzl", "select_file")
-load("//common:defs.bzl", "copy_file")
 load(
     "@rules_ruby//ruby:defs.bzl",
     "rb_binary",
@@ -7,6 +6,7 @@ load(
     "rb_gem_push",
     "rb_test",
 )
+load("//common:defs.bzl", "copy_file")
 
 package(default_visibility = ["//:__subpackages__"])
 

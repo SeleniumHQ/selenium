@@ -1,3 +1,13 @@
+0.4.14
+======
+* Use original browser version in Firefox management logic
+* Clean logic for checking driver version
+* Avoids resolving symbolic links and consider the cache might not be writable (#12877)
+* Include webview2 in Edge module (#12904)
+* Capture Rust backtrace in case of error (displayed at DEBUG level) (#12852)
+* Automated Edge management (#11681 and #11683) (#12835)
+* Add support for Chromium (#12511) (#12890)
+
 0.4.13
 ======
 * Ensure logger is set first so other setters can use it (#12720)
@@ -6,6 +16,7 @@
 * Do not log a warning for defaults (#12754)
 * Search better driver possible in the cache (#12753)
 * Use original path when unwrap fails in canonicalize function (#12699)
+* Fix config setup in Selenium Manager (#12807)
 
 0.4.12
 ======
