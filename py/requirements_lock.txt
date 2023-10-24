@@ -227,9 +227,9 @@ multidict==6.0.2 \
     --hash=sha256:feba80698173761cddd814fa22e88b0661e98cb810f9f986c54aa34d281e4937 \
     --hash=sha256:feea820722e69451743a3d56ad74948b68bf456984d63c1a92e8347b7b88452d
     # via -r py/requirements.txt
-outcome==1.1.0 \
-    --hash=sha256:c7dd9375cfd3c12db9801d080a3b63d4b0a261aa996c4c13152380587288d958 \
-    --hash=sha256:e862f01d4e626e63e8f92c38d1f8d5546d3f9cce989263c521b2e7990d186967
+outcome==1.3.0 \
+    --hash=sha256:588ef4dc10b64e8df160d8d1310c44e1927129a66d6d2ef86845cef512c5f24c \
+    --hash=sha256:7b688fd82db72f4b0bc9e883a00359d4d4179cd97d27f09c9644d0c842ba7786
     # via
     #   -r py/requirements.txt
     #   pytest-trio
