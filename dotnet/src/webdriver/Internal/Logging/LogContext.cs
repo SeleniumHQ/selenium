@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return _loggers.GetOrAdd(type, _ => new Logger(_level));
+            return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
         public ILogger GetLogger(string name)
@@ -43,17 +43,15 @@ namespace OpenQA.Selenium.Internal.Logging
             return GetLogger(Type.GetType(name));
         }
 
-        public void LogMessage(LogLevel level, string message)
+        public void LogMessage(LogMessage message)
         {
             if (_handlers != null)
             {
-                if (level >= _level)
+                if (message.Level >= _level)
                 {
-                    var logMessage = new LogMessage(DateTime.Now, level, message);
-
                     foreach (var handler in _handlers)
                     {
-                        handler.Handle(logMessage);
+                        handler.Handle(message);
                     }
                 }
             }
