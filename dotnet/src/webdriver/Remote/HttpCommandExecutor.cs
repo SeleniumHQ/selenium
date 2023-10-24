@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Remote
         private CommandInfoRepository commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
         private HttpClient client;
 
-        private static readonly ILogger _logger = Log.Context.GetLogger<HttpCommandExecutor>();
+        private readonly ILogger _logger = Log.Context.GetLogger<HttpCommandExecutor>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
