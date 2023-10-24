@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OpenQA.Selenium.Internal.Logging
@@ -28,21 +30,6 @@ namespace OpenQA.Selenium.Internal.Logging
 
                 return _ambientLogContext.Value;
             }
-        }
-
-        public static ILogger GetLogger<T>()
-        {
-            return _globalLogContext.GetLogger(typeof(T));
-        }
-
-        public static ILogger GetLogger(Type type)
-        {
-            return _globalLogContext.GetLogger(type);
-        }
-
-        public static ILogger GetLogger(string name)
-        {
-            return _globalLogContext.GetLogger(name);
         }
 
         public static ILogContext SetLevel(LogLevel level)

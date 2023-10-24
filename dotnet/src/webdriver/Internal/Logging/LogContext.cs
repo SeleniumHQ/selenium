@@ -38,11 +38,6 @@ namespace OpenQA.Selenium.Internal.Logging
             return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
-        public ILogger GetLogger(string name)
-        {
-            return GetLogger(Type.GetType(name));
-        }
-
         public void LogMessage(LogMessage message)
         {
             if (_handlers != null)
@@ -57,14 +52,14 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public virtual ILogContext SetLevel(LogLevel level)
+        public ILogContext SetLevel(LogLevel level)
         {
             _level = level;
 
             return this;
         }
 
-        public virtual ILogContext AddHandler(ILogHandler handler)
+        public ILogContext AddHandler(ILogHandler handler)
         {
             if (handler is null)
             {
