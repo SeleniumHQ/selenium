@@ -6,7 +6,7 @@ cryptography==41.0.3
 dataclasses==0.6
 debugpy==1.6.0
 h11==0.13.0
-idna==3.3
+idna==3.4
 importlib-metadata==4.11.3
 inflection==0.5.1
 iniconfig==1.1.1
