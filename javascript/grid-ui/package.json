@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.8.1",
+    "@apollo/client": "^3.8.6",
     "@bazel/typescript": "^5.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
