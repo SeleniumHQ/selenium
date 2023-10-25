@@ -9,7 +9,7 @@ h11==0.13.0
 idna==3.4
 importlib-metadata==6.8.0
 inflection==0.5.1
-iniconfig==1.1.1
+iniconfig==2.0.0
 more-itertools==8.13.0
 multidict==6.0.2
 outcome==1.3.0
