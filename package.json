@@ -5,7 +5,7 @@
     "@bazel/typescript": "^5.8.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
+    "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.8.7",
     "enzyme": "^3.11.0",
