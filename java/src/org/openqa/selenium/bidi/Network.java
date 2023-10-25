@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
+import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
 
 public class Network implements AutoCloseable {
@@ -33,6 +34,12 @@ public class Network implements AutoCloseable {
 
   private final Event<BeforeRequestSent> beforeRequestSentEvent =
       new Event<>("network.beforeRequestSent", BeforeRequestSent::fromJsonMap);
+
+  private final Event<ResponseDetails> responseStarted =
+      new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
+
+  private final Event<ResponseDetails> responseCompleted =
+      new Event<>("network.responseStarted", ResponseDetails::fromJsonMap);
 
   public Network(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -62,8 +69,26 @@ public class Network implements AutoCloseable {
     }
   }
 
+  public void onResponseStarted(Consumer<ResponseDetails> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(responseStarted, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, responseStarted, consumer);
+    }
+  }
+
+  public void onResponseCompleted(Consumer<ResponseDetails> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(responseCompleted, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, responseStarted, consumer);
+    }
+  }
+
   @Override
   public void close() {
     this.bidi.clearListener(beforeRequestSentEvent);
+    this.bidi.clearListener(responseStarted);
+    this.bidi.clearListener(responseCompleted);
   }
 }

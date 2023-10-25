@@ -70,6 +70,48 @@ class NetworkEventsTest {
     }
   }
 
+  @Test
+  void canListenToResponseStartedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Network network = new Network(driver)) {
+      CompletableFuture<ResponseDetails> future = new CompletableFuture<>();
+      network.onResponseStarted(future::complete);
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+
+      ResponseDetails response = future.get(5, TimeUnit.SECONDS);
+      String windowHandle = driver.getWindowHandle();
+      assertThat(response.getBrowsingContextId()).isEqualTo(windowHandle);
+      assertThat(response.getRequest().getRequestId()).isNotNull();
+      assertThat(response.getRequest().getMethod()).isEqualToIgnoringCase("get");
+      assertThat(response.getRequest().getUrl()).isNotNull();
+      assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
+      assertThat(response.getResponseData().getUrl()).contains("/bidi/logEntryAdded.html");
+      assertThat(response.getResponseData().getStatus()).isEqualTo(200L);
+    }
+  }
+
+  @Test
+  void canListenToResponseCompletedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Network network = new Network(driver)) {
+      CompletableFuture<ResponseDetails> future = new CompletableFuture<>();
+      network.onResponseCompleted(future::complete);
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+
+      ResponseDetails response = future.get(5, TimeUnit.SECONDS);
+      String windowHandle = driver.getWindowHandle();
+      assertThat(response.getBrowsingContextId()).isEqualTo(windowHandle);
+      assertThat(response.getRequest().getRequestId()).isNotNull();
+      assertThat(response.getRequest().getMethod()).isEqualToIgnoringCase("get");
+      assertThat(response.getRequest().getUrl()).isNotNull();
+      assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
+      assertThat(response.getResponseData().getUrl()).contains("/bidi/logEntryAdded.html");
+      assertThat(response.getResponseData().getStatus()).isEqualTo(200L);
+    }
+  }
+
   @AfterEach
   public void quitDriver() {
     if (driver != null) {
