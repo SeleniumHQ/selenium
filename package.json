@@ -10,7 +10,7 @@
     "@types/node": "^20.8.7",
     "enzyme": "^3.11.0",
     "enzyme-to-json": "^3.6.1",
-    "eslint": "^7.23.0",
+    "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "eslint-plugin-node": "^11.1.0",
