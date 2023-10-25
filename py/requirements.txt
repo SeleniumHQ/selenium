@@ -4,7 +4,7 @@ certifi==2023.7.22
 cffi==1.16.0
 cryptography==41.0.3
 dataclasses==0.6
-debugpy==1.6.0
+debugpy==1.8.0
 h11==0.13.0
 idna==3.4
 importlib-metadata==6.8.0
