@@ -35,7 +35,7 @@ test.suite(
 
       it('can start msedgedriver', async function () {
         service = new edge.ServiceBuilder().build()
-        service.setExecutable(getPath(service, new edge.Options()))
+        service.setExecutable(getPath(new edge.Options()).driverPath)
         let url = await service.start()
         assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
       })

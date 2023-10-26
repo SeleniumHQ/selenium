@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.11'
+  '4.15'
 end
 
 def version
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v112:v112.publish
-  //java/src/org/openqa/selenium/devtools/v113:v113.publish
-  //java/src/org/openqa/selenium/devtools/v114:v114.publish
+  //java/src/org/openqa/selenium/devtools/v116:v116.publish
+  //java/src/org/openqa/selenium/devtools/v117:v117.publish
+  //java/src/org/openqa/selenium/devtools/v118:v118.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -111,9 +111,8 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/grid:grid.publish
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
-  //java/src/org/openqa/selenium/lift:lift.publish
   //java/src/org/openqa/selenium/manager:manager.publish
-  //java/src/org/openqa/selenium/remote/http/jdk:jdk.publish
+  //java/src/org/openqa/selenium/os:os.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish
   //java/src/org/openqa/selenium/safari:safari.publish
@@ -153,7 +152,6 @@ task remote_server: ['//java/src/org/openqa/selenium/remote/server']
 task safari: ['//java/src/org/openqa/selenium/safari']
 task selenium: ['//java/src/org/openqa/selenium:core']
 task support: [
-  '//java/src/org/openqa/selenium/lift',
   '//java/src/org/openqa/selenium/support'
 ]
 
@@ -202,7 +200,6 @@ task test_remote: [
 ]
 task test_safari: ['//java/test/org/openqa/selenium/safari:safari:run']
 task test_support: [
-  '//java/test/org/openqa/selenium/lift:lift:run',
   '//java/test/org/openqa/selenium/support:small-tests:run',
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
@@ -344,11 +341,11 @@ task 'prep-release-zip': [
 
   mkdir_p 'build/dist'
   File.delete
-  cp Rake::Task['//java/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
-  cp Rake::Task['//java/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp Rake::Task['//java/src/org/openqa/selenium/grid:executable-grid'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.jar"
 end
 

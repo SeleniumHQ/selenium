@@ -40,10 +40,8 @@ import io.opentelemetry.sdk.trace.export.SpanExporter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -61,8 +59,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
@@ -213,8 +210,8 @@ class TracerTest {
     attributes.put(attribute, false);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(attribute, EventAttribute.setValue(false));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(attribute, false);
       span.addEvent(event, attributeMap);
     }
 
@@ -238,9 +235,9 @@ class TracerTest {
     attributes.put(varArgsKey, true, false, true);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(arrayKey, EventAttribute.setValue(booleanArray));
-      attributeMap.put(varArgsKey, EventAttribute.setValue(true, false, true));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(arrayKey, booleanArray);
+      attributeMap.put(varArgsKey, true, false, true);
       span.addEvent(event, attributeMap);
     }
 
@@ -262,8 +259,8 @@ class TracerTest {
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(attribute, EventAttribute.setValue(attributeValue));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(attribute, attributeValue);
       span.addEvent(event, attributeMap);
     }
 
@@ -287,9 +284,9 @@ class TracerTest {
     attributes.put(varArgsKey, 2.2, 5.3);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(arrayKey, EventAttribute.setValue(doubleArray));
-      attributeMap.put(varArgsKey, EventAttribute.setValue(2.2, 5.3));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(arrayKey, doubleArray);
+      attributeMap.put(varArgsKey, 2.2, 5.3);
       span.addEvent(event, attributeMap);
     }
 
@@ -311,8 +308,8 @@ class TracerTest {
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(attribute, EventAttribute.setValue(attributeValue));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(attribute, attributeValue);
       span.addEvent(event, attributeMap);
     }
 
@@ -336,9 +333,9 @@ class TracerTest {
     attributes.put(varArgsKey, 250L, 5L);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(arrayKey, EventAttribute.setValue(longArray));
-      attributeMap.put(varArgsKey, EventAttribute.setValue(250L, 5L));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(arrayKey, longArray);
+      attributeMap.put(varArgsKey, 250L, 5L);
       span.addEvent(event, attributeMap);
     }
 
@@ -360,8 +357,8 @@ class TracerTest {
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(attribute, EventAttribute.setValue(attributeValue));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(attribute, attributeValue);
       span.addEvent(event, attributeMap);
     }
 
@@ -385,9 +382,9 @@ class TracerTest {
     attributes.put(varArgsKey, "hi", "hola");
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(arrayKey, EventAttribute.setValue(strArray));
-      attributeMap.put(varArgsKey, EventAttribute.setValue("hi", "hola"));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(arrayKey, strArray);
+      attributeMap.put(varArgsKey, "hi", "hola");
       span.addEvent(event, attributeMap);
     }
 
@@ -410,9 +407,9 @@ class TracerTest {
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(attribute, EventAttribute.setValue(attributeValue));
-      attributeMap.put(attribute, EventAttribute.setValue(attributeValue));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(attribute, attributeValue);
+      attributeMap.put(attribute, attributeValue);
       span.addEvent(event, attributeMap);
     }
 
@@ -438,11 +435,11 @@ class TracerTest {
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
 
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put("testFloat", EventAttribute.setValue(5.5f));
-      attributeMap.put("testInt", EventAttribute.setValue(10));
-      attributeMap.put("testStringArray", EventAttribute.setValue(stringArray));
-      attributeMap.put("testBooleanArray", EventAttribute.setValue(booleanArray));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put("testFloat", 5.5f);
+      attributeMap.put("testInt", 10);
+      attributeMap.put("testStringArray", stringArray);
+      attributeMap.put("testBooleanArray", booleanArray);
 
       span.addEvent(event, attributeMap);
     }
@@ -618,7 +615,7 @@ class TracerTest {
   @Test
   void shouldBeAbleToSetExternalContextAndCreatedSpansAreItsChildren() {
     List<SpanData> allSpans = new ArrayList<>();
-    Tracer tracer = createTracer(allSpans);
+    OpenTelemetryTracer tracer = createTracer(allSpans);
 
     OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder().build();
     io.opentelemetry.api.trace.Span externalSpan =
@@ -638,7 +635,7 @@ class TracerTest {
         .isEqualTo(externalSpan.getSpanContext().getSpanId());
   }
 
-  private Tracer createTracer(List<SpanData> exportTo) {
+  private OpenTelemetryTracer createTracer(List<SpanData> exportTo) {
     ContextPropagators propagators =
         ContextPropagators.create((W3CTraceContextPropagator.getInstance()));
     SdkTracerProvider sdkTracerProvider =

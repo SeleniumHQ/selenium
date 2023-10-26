@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
@@ -59,8 +60,6 @@ import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -78,8 +77,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -102,7 +100,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final DockerAssetsPath assetsPath;
   private final String networkName;
   private final boolean runningInDocker;
-  private final SlotMatcher slotMatcher;
+  private final Predicate<Capabilities> predicate;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -116,7 +114,8 @@ public class DockerSessionFactory implements SessionFactory {
       Image videoImage,
       DockerAssetsPath assetsPath,
       String networkName,
-      boolean runningInDocker) {
+      boolean runningInDocker,
+      Predicate<Capabilities> predicate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -129,7 +128,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
-    this.slotMatcher = new DefaultSlotMatcher();
+    this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
   }
 
   @Override
@@ -139,7 +138,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   @Override
   public boolean test(Capabilities capabilities) {
-    return slotMatcher.matches(stereotype, capabilities);
+    return predicate.test(capabilities);
   }
 
   @Override
@@ -148,9 +147,8 @@ public class DockerSessionFactory implements SessionFactory {
 
     int port = runningInDocker ? 4444 : PortProber.findFreePort();
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
       String logMessage =
           runningInDocker
               ? "Creating container..."
@@ -166,11 +164,11 @@ public class DockerSessionFactory implements SessionFactory {
           ClientConfig.defaultConfig().baseUrl(remoteAddress).readTimeout(sessionTimeout);
       HttpClient client = clientFactory.createClient(clientConfig);
 
-      attributeMap.put("docker.browser.image", EventAttribute.setValue(browserImage.toString()));
-      attributeMap.put("container.port", EventAttribute.setValue(port));
-      attributeMap.put("container.id", EventAttribute.setValue(container.getId().toString()));
-      attributeMap.put("container.ip", EventAttribute.setValue(containerIp));
-      attributeMap.put("docker.server.url", EventAttribute.setValue(remoteAddress.toString()));
+      attributeMap.put("docker.browser.image", browserImage.toString());
+      attributeMap.put("container.port", port);
+      attributeMap.put("container.id", container.getId().toString());
+      attributeMap.put("container.ip", containerIp);
+      attributeMap.put("docker.server.url", remoteAddress.toString());
 
       LOG.info(
           String.format(
@@ -185,8 +183,7 @@ public class DockerSessionFactory implements SessionFactory {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue(
-                "Unable to connect to docker server. Stopping container: " + e.getMessage()));
+            "Unable to connect to docker server. Stopping container: " + e.getMessage());
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
@@ -205,8 +202,7 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         result = new ProtocolHandshake().createSession(client, command);
         response = result.createResponse();
-        attributeMap.put(
-            AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), response.toString());
       } catch (IOException | RuntimeException e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
@@ -214,8 +210,7 @@ public class DockerSessionFactory implements SessionFactory {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(
             AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue(
-                "Unable to create session. Stopping and  container: " + e.getMessage()));
+            "Unable to create session. Stopping and  container: " + e.getMessage());
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
@@ -244,10 +239,8 @@ public class DockerSessionFactory implements SessionFactory {
           sessionRequest.getDownstreamDialects().contains(result.getDialect())
               ? result.getDialect()
               : W3C;
-      attributeMap.put(
-          AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
-      attributeMap.put(
-          AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream.toString());
+      attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), response.toString());
 
       span.addEvent("Docker driver service created session", attributeMap);
       LOG.fine(

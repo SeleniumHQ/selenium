@@ -23,8 +23,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
+import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
+import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
@@ -43,6 +43,7 @@ import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.testing.TestUtilities;
 
 @Tag("UnitTests")
@@ -69,8 +70,8 @@ class ChromeOptionsTest {
 
   @Test
   void canBuildLogLevelFromStringRepresentation() {
-    assertThat(ChromeDriverLogLevel.fromString("off")).isEqualTo(OFF);
-    assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
+    assertThat(ChromiumDriverLogLevel.fromString("off")).isEqualTo(OFF);
+    assertThat(ChromiumDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
   }
 
   @Test
@@ -146,7 +147,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
   }
 
   @Test
@@ -262,7 +263,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map)
         .asInstanceOf(MAP)
@@ -327,7 +328,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map).asInstanceOf(MAP).containsEntry("opt1", "val1");
 
@@ -360,11 +361,7 @@ class ChromeOptionsTest {
   @Test
   void isW3CSafe() {
     Map<String, Object> converted =
-        new ChromeOptions()
-            .setBinary("some/path")
-            .addArguments("--headless")
-            .setLogLevel(ChromeDriverLogLevel.INFO)
-            .asMap();
+        new ChromeOptions().setBinary("some/path").addArguments("--headless").asMap();
 
     Predicate<String> badKeys = new AcceptedW3CCapabilityKeys().negate();
     Set<String> seen = converted.keySet().stream().filter(badKeys).collect(toSet());

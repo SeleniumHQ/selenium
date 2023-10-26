@@ -1,8 +1,10 @@
+using Bazel;
 using System;
 using System.Reflection;
 using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -20,24 +22,32 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
+            var runfiles = Runfiles.Create();
+            var dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
             string currentDirectory = this.CurrentDirectory;
-            string defaultConfigFile = Path.Combine(currentDirectory, "appconfig.json");
-            string configFile = TestContext.Parameters.Get<string>("ConfigFile", defaultConfigFile).Replace('/', Path.DirectorySeparatorChar);
 
-            string content = File.ReadAllText(configFile);
+            string content = File.ReadAllText(dataFilePath);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
             string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
+
+            string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
+
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
+
+            int port = PortUtilities.FindFreePort();
+            websiteConfig.Port = port.ToString();
+
             TestWebServerConfig webServerConfig = env.TestWebServerConfig;
             webServerConfig.CaptureConsoleOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.TestWebServerConfig.CaptureConsoleOutput);
             webServerConfig.HideCommandPromptWindow = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.TestWebServerConfig.HideCommandPromptWindow);
             webServerConfig.JavaHomeDirectory = TestContext.Parameters.Get("WebServerJavaHome", env.TestWebServerConfig.JavaHomeDirectory);
+            webServerConfig.Port = websiteConfig.Port;
 
-            this.driverFactory = new DriverFactory(driverServiceLocation);
+            this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
             Assembly driverAssembly = null;
@@ -139,10 +149,7 @@ namespace OpenQA.Selenium.Environment
             {
                 webServer.Stop();
             }
-            if (driver != null)
-            {
-                driver.Quit();
-            }
+            CloseCurrentDriver();
         }
 
         public event EventHandler<DriverStartingEventArgs> DriverStarting;
@@ -163,11 +170,6 @@ namespace OpenQA.Selenium.Environment
         public Browser Browser
         {
             get { return browser; }
-        }
-
-        public string DriverServiceDirectory
-        {
-            get { return this.driverFactory.DriverServicePath; }
         }
 
         public string CurrentDirectory

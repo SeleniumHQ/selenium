@@ -91,6 +91,12 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
+  public boolean peekEmpty() {
+    // we have no fast-path, assume we might be not empty
+    return false;
+  }
+
+  @Override
   public HttpResponse addToQueue(SessionRequest request) {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
@@ -148,7 +154,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public void complete(
+  public boolean complete(
       RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("Request ID", reqId);
     Require.nonNull("Result", result);
@@ -165,7 +171,8 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     }
 
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    client.with(addSecret).execute(upstream);
+    HttpResponse response = client.with(addSecret).execute(upstream);
+    return Values.get(response, Boolean.class);
   }
 
   @Override

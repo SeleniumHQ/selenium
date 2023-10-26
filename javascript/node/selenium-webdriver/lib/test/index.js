@@ -55,7 +55,7 @@ process.on('unhandledRejection', (reason) => {
 
 if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
   logging.installConsoleHandler()
-  logging.getLogger('webdriver.http').setLevel(logging.Level.ALL)
+  logging.getLogger(`${logging.Type.DRIVER}.http`).setLevel(logging.Level.ALL)
 }
 
 testing.init()

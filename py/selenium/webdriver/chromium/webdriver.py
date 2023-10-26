@@ -16,6 +16,7 @@
 # under the License.
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -46,7 +47,8 @@ class ChromiumDriver(RemoteWebDriver):
         self.vendor_prefix = vendor_prefix
 
         self.service = service
-        self.options = options
+
+        self.service.path = DriverFinder.get_path(self.service, options)
 
         self.service.start()
 
@@ -57,9 +59,9 @@ class ChromiumDriver(RemoteWebDriver):
                     browser_name=browser_name,
                     vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive,
-                    ignore_proxy=self.options._ignore_local_proxy,
+                    ignore_proxy=options._ignore_local_proxy,
                 ),
-                options=self.options,
+                options=options,
             )
         except Exception:
             self.quit()
@@ -73,10 +75,9 @@ class ChromiumDriver(RemoteWebDriver):
     def get_network_conditions(self):
         """Gets Chromium network emulation settings.
 
-        :Returns:
-            A dict. For example:
-            {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
-            'offline': False}
+        :Returns:     A dict. For example:     {'latency': 4,
+        'download_throughput': 2, 'upload_throughput': 2,     'offline':
+        False}
         """
         return self.execute("getNetworkConditions")["value"]
 
@@ -138,15 +139,12 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def get_sinks(self) -> list:
-        """
-        :Returns: A list of sinks available for Cast.
-        """
+        """:Returns: A list of sinks available for Cast."""
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """
-        :Returns: An error message when there is any issue in a Cast session.
-        """
+        """:Returns: An error message when there is any issue in a Cast
+        session."""
         return self.execute("getIssueMessage")["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:

@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 import com.google.auto.service.AutoService;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -72,26 +70,6 @@ public class GeckoDriverService extends FirefoxDriverService {
    * {@link Builder#withProfileRoot(File)}
    */
   public static final String GECKO_DRIVER_PROFILE_ROOT = "webdriver.firefox.profileRoot";
-
-  /**
-   * @param executable The GeckoDriver executable.
-   * @param port Which port to start the GeckoDriver on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   * @deprecated use {@link GeckoDriverService#GeckoDriverService(File, int, Duration, List, Map)}
-   */
-  @Deprecated
-  public GeckoDriverService(
-      File executable, int port, List<String> args, Map<String, String> environment)
-      throws IOException {
-    super(
-        executable,
-        port,
-        DEFAULT_TIMEOUT,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
-  }
 
   /**
    * @param executable The GeckoDriver executable.
@@ -141,26 +119,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the GeckoDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(GECKO_DRIVER_NAME, GECKO_DRIVER_EXE_PROPERTY) != null;
-  }
-
-  /**
-   * @param caps Capabilities instance - this is not used
-   * @return default GeckoDriverService
-   * @deprecated use {@link GeckoDriverService#createDefaultService()}
-   */
-  @Deprecated
-  static GeckoDriverService createDefaultService(Capabilities caps) {
-    return createDefaultService();
-  }
-
   @Override
   protected void waitUntilAvailable() {
     PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
@@ -172,6 +130,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /** Builder used to configure new {@link GeckoDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder
       extends FirefoxDriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> {
@@ -195,20 +154,6 @@ public class GeckoDriverService extends FirefoxDriverService {
       }
 
       return score;
-    }
-
-    /**
-     * Sets which browser executable the builder will use.
-     *
-     * @param firefoxBinary The browser executable to use.
-     * @return A self reference.
-     * @deprecated use {@link FirefoxOptions#setBinary(Path)}
-     */
-    @Deprecated
-    public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
-      Require.nonNull("Firefox binary", firefoxBinary);
-      this.firefoxBinary = firefoxBinary;
-      return this;
     }
 
     /**
@@ -254,6 +199,7 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected void loadSystemProperties() {
+      parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
       if (logLevel == null) {
         String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
         if (logFilePath != null) {
@@ -296,12 +242,6 @@ public class GeckoDriverService extends FirefoxDriverService {
         args.add(profileRoot.getAbsolutePath());
       }
 
-      // deprecated
-      if (firefoxBinary != null) {
-        args.add("--binary");
-        args.add(firefoxBinary.getPath());
-      }
-
       if (allowHosts != null) {
         args.add("--allow-hosts");
         args.addAll(Arrays.asList(allowHosts.split(" ")));
@@ -313,9 +253,7 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected GeckoDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
-        service.sendOutputTo(getLogOutput(GECKO_DRIVER_LOG_PROPERTY));
-        return service;
+        return new GeckoDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

@@ -64,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResources()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -85,7 +84,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResourcesOnRefresh()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -111,7 +109,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldWaitForDocumentToBeLoaded()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -425,6 +422,7 @@ namespace OpenQA.Selenium
          * Side effects: 1) {@link #driver} is configured to use given pageLoadTimeout,
          * 2) test HTTP server still didn't serve the page to browser (some browsers may still
          * be waiting for the page to load despite the fact that driver responded with the timeout).
+         * </p>
          */
         private void TestPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeoutInSeconds)
         {

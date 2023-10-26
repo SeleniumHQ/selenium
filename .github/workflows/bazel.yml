@@ -42,7 +42,7 @@ on:
         type: string
         default: ''
       nightly-release-files:
-        description: Files to upload to the Nightly release tah
+        description: Files to upload to the Nightly release tag
         required: false
         type: string
         default: ''
@@ -50,15 +50,14 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    # Use windows-latest once https://github.com/actions/runner-images/issues/7662 is fixed.
-    runs-on: ${{ inputs.os == 'windows' && 'windows-2019' || format('{0}-latest', inputs.os) }}
+    runs-on: ${{ inputs.os }}-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
@@ -120,6 +119,9 @@ jobs:
         uses: browser-actions/setup-edge@latest
         with:
           edge-version: ${{ inputs.browser-version || 'stable' }}
+      - name: Setup Safari
+        if: inputs.browser == 'safari'
+        run: sudo safaridriver --enable
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session

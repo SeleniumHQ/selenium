@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.util.Map;
-
 public interface Span extends AutoCloseable, TraceContext {
 
   Span setName(String name);
@@ -31,7 +29,7 @@ public interface Span extends AutoCloseable, TraceContext {
 
   Span addEvent(String name);
 
-  Span addEvent(String name, Map<String, EventAttributeValue> attributeMap);
+  Span addEvent(String name, AttributeMap attributeMap);
 
   Span setStatus(Status status);
 

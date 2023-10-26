@@ -20,8 +20,6 @@ import warnings
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
-DEFAULT_EXECUTABLE_PATH = "msedgedriver"
-
 
 class Service(service.ChromiumService):
     """A Service class that is responsible for the starting and stopping of
@@ -31,17 +29,16 @@ class Service(service.ChromiumService):
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param verbose: (Deprecated) Whether to make the webdriver more verbose (passes the --verbose option to the binary).
         Defaults to False.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         verbose: bool = False,
-        log_path: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
@@ -61,9 +58,7 @@ class Service(service.ChromiumService):
             executable_path=executable_path,
             port=port,
             service_args=service_args,
-            log_path=log_path,
             log_output=log_output,
             env=env,
-            start_error_message="Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
             **kwargs,
         )

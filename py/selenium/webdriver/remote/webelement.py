@@ -25,7 +25,6 @@ from base64 import b64decode
 from base64 import encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
-from typing import List
 
 from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import WebDriverException
@@ -109,8 +108,8 @@ class WebElement(BaseWebElement):
 
         try:
             self._parent.execute_script(script, self)
-        except JavascriptException:
-            raise WebDriverException("To submit an element, it must be nested inside a form element")
+        except JavascriptException as exc:
+            raise WebDriverException("To submit an element, it must be nested inside a form element") from exc
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
@@ -341,7 +340,7 @@ class WebElement(BaseWebElement):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.screenshot_as_png
@@ -416,7 +415,7 @@ class WebElement(BaseWebElement):
 
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         :Usage:

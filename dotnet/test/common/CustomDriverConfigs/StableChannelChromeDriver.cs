@@ -1,12 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OpenQA.Selenium.Chrome
 {
     public class StableChannelChromeDriver : ChromeDriver
     {
+        public StableChannelChromeDriver()
+            : base(DefaultOptions)
+        {
+        }
+
+        // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+        public StableChannelChromeDriver(ChromeOptions options)
+            : base(options)
+        {
+        }
+
         public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
             : base(service, options)
         {
@@ -14,7 +20,7 @@ namespace OpenQA.Selenium.Chrome
 
         public static ChromeOptions DefaultOptions
         {
-            get { return new ChromeOptions() { AcceptInsecureCertificates = true }; }
+            get { return new ChromeOptions() { BrowserVersion = "118" }; }
         }
     }
 }

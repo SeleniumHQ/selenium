@@ -39,16 +39,14 @@ module Selenium
           expect(cookie[:secure]).to be(false)
         end
 
-        it 'sets samesite property of Default by default',
-           except: [{browser: %i[chrome edge],
-                     reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732'},
-                    {browser: :firefox,
-                     reason: 'https://github.com/mozilla/geckodriver/issues/1841'}],
+        it 'sets samesite property of Lax by default',
+           except: {browser: :firefox,
+                    reason: 'https://github.com/mozilla/geckodriver/issues/1841'},
            only: {browser: %i[chrome edge firefox]} do
           driver.manage.add_cookie name: 'samesite',
                                    value: 'default'
 
-          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Default')
+          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Lax')
         end
 
         it 'respects path' do
@@ -90,10 +88,8 @@ module Selenium
         end
 
         it 'does not allow setting on a subdomain from parent domain',
-           except: {browser: :chrome,
-                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3734'},
            exclusive: {driver: :none,
-                       reason: 'Can only be tested on site with subdomains'} do
+                       reason: 'Can not run on our test server; needs subdomains'} do
           driver.get('https://saucelabs.com')
 
           expect {
@@ -113,10 +109,11 @@ module Selenium
         end
 
         it 'does not add secure cookie when http',
-           except: [{browser: :firefox,
-                     reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
-                    {browser: %i[chrome edge],
-                     reason: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1177877#c7'}] do
+           except: {browser: :firefox,
+                    reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
+           exclusive: {driver: :none,
+                       reason: 'Cannot be tested on localhost'} do
+          driver.get 'http://watir.com'
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
                                    secure: true
@@ -137,7 +134,7 @@ module Selenium
         end
 
         describe 'sameSite' do
-          it 'allows adding with value Strict', only: {browser: %i[chrome edge firefox]} do
+          it 'allows adding with value Strict' do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'strict',
                                      same_site: 'Strict'
@@ -145,7 +142,7 @@ module Selenium
             expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
           end
 
-          it 'allows adding with value Lax', only: {browser: %i[chrome edge firefox]} do
+          it 'allows adding with value Lax' do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'lax',
                                      same_site: 'Lax'

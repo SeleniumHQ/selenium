@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -53,6 +55,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
@@ -81,6 +84,7 @@ public class NodeOptions {
   static final int DEFAULT_REGISTER_PERIOD = 120;
   static final String DEFAULT_NODE_IMPLEMENTATION =
       "org.openqa.selenium.grid.node.local.LocalNodeFactory";
+  static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
@@ -170,6 +174,10 @@ public class NodeOptions {
     return Duration.ofSeconds(seconds);
   }
 
+  public SlotMatcher getSlotMatcher() {
+    return config.getClass("distributor", "slot-matcher", SlotMatcher.class, DEFAULT_SLOT_MATCHER);
+  }
+
   public Duration getRegisterPeriod() {
     // If the user sets 0 or less, we default to 1s.
     int seconds =
@@ -188,7 +196,7 @@ public class NodeOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
       /* Danger! Java stereotype ahead! */
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
     boolean overrideMaxSessions =
@@ -334,107 +342,109 @@ public class NodeOptions {
   }
 
   private void addDriverConfigs(
-      Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
       ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
+
+    // get all driver configuration settings
     config
-        .getAll(NODE_SECTION, "driver-configuration")
+        .getArray(NODE_SECTION, "driver-configuration")
+        // if configurations exist
         .ifPresent(
             drivers -> {
-              /*
-               The four accepted keys are: display-name, max-sessions, stereotype, webdriver-executable.
-               The mandatory keys are display-name and stereotype. When configs are read, they keys always
-               come alphabetically ordered. This means that we know a new config is present when we find
-               the "display-name" key again.
-              */
+              List<Map<String, String>> configList = new ArrayList<>();
 
-              if (drivers.size() == 0) {
+              // iterate over driver configurations
+              for (List<String> driver : drivers) {
+                Map<String, String> configMap = new HashMap<>();
+
+                // iterate over driver settings
+                for (String setting : driver) {
+                  // split this setting into key/value pair
+                  String[] values = setting.split("=", 2);
+                  // if format is invalid
+                  if (values.length != 2) {
+                    throw new ConfigException(
+                        "Driver setting '"
+                            + setting
+                            + "' does not adhere to the required 'key=value' format!");
+                  }
+                  // add setting to config
+                  configMap.put(values[0], unquote(values[1]));
+                }
+
+                // if config lacks settings
+                if (configMap.isEmpty()) {
+                  throw new ConfigException("Found config delimiter with no preceding settings!");
+                }
+
+                // if config lacks 'display-name' setting
+                if (!configMap.containsKey("display-name")) {
+                  throw new ConfigException(
+                      "Found config with no 'display-name' setting! " + configMap);
+                }
+
+                // if config lacks 'stereotype' setting
+                if (!configMap.containsKey("stereotype")) {
+                  throw new ConfigException(
+                      "Found config with no 'stereotype' setting! " + configMap);
+                }
+
+                // add config to list
+                configList.add(configMap);
+              }
+
+              // if no configs were found
+              if (configList.isEmpty()) {
                 throw new ConfigException("No driver configs were found!");
               }
 
-              drivers.stream()
-                  .filter(driver -> !driver.contains("="))
-                  .peek(
-                      driver ->
-                          LOG.warning(
-                              driver
-                                  + " does not have the required 'key=value' "
-                                  + "structure for the configuration"))
-                  .findFirst()
-                  .ifPresent(
-                      ignore -> {
-                        throw new ConfigException(
-                            "One or more driver configs does not have the "
-                                + "required 'key=value' structure");
-                      });
+              List<DriverService.Builder<?, ?>> builderList = new ArrayList<>();
+              ServiceLoader.load(DriverService.Builder.class).forEach(builderList::add);
 
-              // Find all indexes where "display-name" is present, as it marks the start of a config
-              int[] configIndexes =
-                  IntStream.range(0, drivers.size())
-                      .filter(index -> drivers.get(index).startsWith("display-name"))
-                      .toArray();
+              List<WebDriverInfo> infoList = new ArrayList<>();
+              ServiceLoader.load(WebDriverInfo.class).forEach(infoList::add);
 
-              if (configIndexes.length == 0) {
-                throw new ConfigException(
-                    "No 'display-name' keyword was found in the provided configs!");
-              }
-
-              List<Map<String, String>> driversMap = new ArrayList<>();
-              for (int i = 0; i < configIndexes.length; i++) {
-                int fromIndex = configIndexes[i];
-                int toIndex =
-                    (i + 1) >= configIndexes.length ? drivers.size() : configIndexes[i + 1];
-                Map<String, String> configMap = new HashMap<>();
-                drivers
-                    .subList(fromIndex, toIndex)
-                    .forEach(
-                        keyValue -> {
-                          String[] values = keyValue.split("=", 2);
-                          configMap.put(values[0], values[1]);
-                        });
-                driversMap.add(configMap);
-              }
-
-              List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
-              ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
-
-              List<WebDriverInfo> infos = new ArrayList<>();
-              ServiceLoader.load(WebDriverInfo.class).forEach(infos::add);
-
-              driversMap.forEach(
-                  configMap -> {
-                    if (!configMap.containsKey("stereotype")) {
-                      throw new ConfigException(
-                          "Driver config is missing stereotype value. " + configMap);
-                    }
-
+              // iterate over driver configs
+              configList.forEach(
+                  thisConfig -> {
+                    // create Capabilities object from stereotype of this config
                     Capabilities confStereotype =
-                        JSON.toType(configMap.get("stereotype"), Capabilities.class);
-                    if (configMap.containsKey("webdriver-executable")) {
-                      String webDriverExecutablePath =
-                          configMap.getOrDefault("webdriver-executable", "");
+                        JSON.toType(thisConfig.get("stereotype"), Capabilities.class);
+
+                    // extract driver executable path from this config
+                    String webDriverExecutablePath = thisConfig.get("webdriver-executable");
+                    // if executable path is specified
+                    if (null != webDriverExecutablePath) {
+                      // create File object from executable path string
                       File webDriverExecutable = new File(webDriverExecutablePath);
+                      // if specified path isn't a file
                       if (!webDriverExecutable.isFile()) {
                         LOG.warning(
                             "Driver executable does not seem to be a file! "
                                 + webDriverExecutablePath);
                       }
+
+                      // if specified path isn't executable
                       if (!webDriverExecutable.canExecute()) {
                         LOG.warning(
                             "Driver file exists but does not seem to be a executable! "
                                 + webDriverExecutablePath);
                       }
+
+                      // add specified driver executable path to capabilities
                       confStereotype =
                           new PersistentCapabilities(confStereotype)
                               .setCapability("se:webDriverExecutable", webDriverExecutablePath);
                     }
-                    Capabilities stereotype = enhanceStereotype(confStereotype);
 
+                    Capabilities stereotype = enhanceStereotype(confStereotype);
                     String configName =
-                        configMap.getOrDefault("display-name", "Custom Slot Config");
+                        thisConfig.getOrDefault("display-name", "Custom Slot Config");
 
                     WebDriverInfo info =
-                        infos.stream()
+                        infoList.stream()
                             .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
                             .findFirst()
                             .orElseThrow(
@@ -444,7 +454,7 @@ public class NodeOptions {
 
                     int driverMaxSessions =
                         Integer.parseInt(
-                            configMap.getOrDefault(
+                            thisConfig.getOrDefault(
                                 "max-sessions",
                                 String.valueOf(info.getMaximumSimultaneousSessions())));
                     Require.positive("Driver max sessions", driverMaxSessions);
@@ -452,19 +462,22 @@ public class NodeOptions {
                     WebDriverInfo driverInfoConfig =
                         createConfiguredDriverInfo(info, stereotype, configName);
 
-                    builders.stream()
+                    builderList.stream()
                         .filter(builder -> builder.score(stereotype) > 0)
                         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
                         .ifPresent(
                             builder -> {
+                              ImmutableCapabilities immutable =
+                                  new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
                                 driverConfigs.putAll(
-                                    driverInfoConfig, factoryFactory.apply(stereotype));
+                                    driverInfoConfig, factoryFactory.apply(immutable));
                               }
                             });
                   });
             });
+
     driverConfigs.asMap().entrySet().stream()
         .peek(this::report)
         .forEach(
@@ -552,32 +565,32 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-      int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
+      int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();
     }
 
     // We don't expect duplicates, but they're fine
-    List<WebDriverInfo> infos =
-        StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-            .filter(WebDriverInfo::isPresent)
-            .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
-            .collect(Collectors.toList());
-
-    LOG.log(Level.INFO, "Driver(s) already present on the host: {0}", infos.size());
-
+    List<WebDriverInfo> infos = new ArrayList<>();
     if (config.getBool(NODE_SECTION, "selenium-manager").orElse(DEFAULT_USE_SELENIUM_MANAGER)) {
-      List<String> present =
-          infos.stream().map(WebDriverInfo::getDisplayName).collect(Collectors.toList());
       List<WebDriverInfo> driversSM =
           StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
               .filter(WebDriverInfo::isAvailable)
-              .filter(info -> !present.contains(info.getDisplayName()))
               .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
               .collect(Collectors.toList());
-      LOG.log(Level.INFO, "Driver(s) available through Selenium Manager: {0}", driversSM.size());
       infos.addAll(driversSM);
+    } else {
+      LOG.log(Level.INFO, "Looking for existing drivers on the PATH.");
+      LOG.log(
+          Level.INFO,
+          "Add '--selenium-manager true' to the startup command to setup drivers automatically.");
+      List<WebDriverInfo> localDrivers =
+          StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+              .filter(WebDriverInfo::isPresent)
+              .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
+              .collect(Collectors.toList());
+      infos.addAll(localDrivers);
     }
 
     // Same
@@ -593,9 +606,10 @@ public class NodeOptions {
               .max(Comparator.comparingInt(builder -> builder.score(caps)))
               .ifPresent(
                   builder -> {
+                    ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
                     int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
                     for (int i = 0; i < maxDriverSessions; i++) {
-                      toReturn.putAll(info, factoryFactory.apply(caps));
+                      toReturn.putAll(info, factoryFactory.apply(immutable));
                     }
                   });
         });
@@ -710,10 +724,17 @@ public class NodeOptions {
 
     LOG.info(
         String.format(
-            "Adding %s for %s %d times (%s)",
+            "Adding %s for %s %d times",
             entry.getKey().getDisplayName(),
             caps.toString().replaceAll("\\s+", " "),
-            entry.getValue().size(),
-            entry.getKey().isPresent() ? "Host" : "SM"));
+            entry.getValue().size()));
+  }
+
+  private String unquote(String input) {
+    int len = input.length();
+    if ((input.charAt(0) == '"') && (input.charAt(len - 1) == '"')) {
+      return new Json().newInput(new StringReader(input)).read(Json.OBJECT_TYPE);
+    }
+    return input;
   }
 }

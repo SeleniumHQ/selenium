@@ -416,7 +416,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <returns>The value returned by the script.</returns>
         /// <remarks>
         /// <para>
-        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
+        /// The ExecuteScript method executes JavaScript in the context of
         /// the currently selected frame or window. This means that "document" will refer
         /// to the current document. If the script has a return value, then the following
         /// steps will be taken:
@@ -478,7 +478,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <returns>The value returned by the script.</returns>
         /// <remarks>
         /// <para>
-        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
+        /// The ExecuteScript method executes JavaScript in the context of
         /// the currently selected frame or window. This means that "document" will refer
         /// to the current document. If the script has a return value, then the following
         /// steps will be taken:

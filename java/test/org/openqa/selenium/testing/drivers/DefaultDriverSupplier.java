@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 class DefaultDriverSupplier implements Supplier<WebDriver> {
 
@@ -40,14 +39,10 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
     Function<Capabilities, WebDriver> driverConstructor;
 
     if (capabilities != null) {
-      if (org.openqa.selenium.remote.Browser.HTMLUNIT.is(capabilities)) {
-        return new HtmlUnitDriver();
-      }
-
       return ServiceLoader.load(WebDriverInfo.class).stream()
           .map(ServiceLoader.Provider::get)
-          .filter(WebDriverInfo::isAvailable)
           .filter(info -> info.isSupporting(capabilities))
+          .filter(WebDriverInfo::isAvailable)
           .findFirst()
           .orElseThrow(
               () ->

@@ -89,28 +89,12 @@ public class PointerInput implements InputSource, Encodable {
     return new PointerPress(this, PointerPress.Direction.DOWN, button);
   }
 
-  /**
-   * @deprecated always use the method with the button
-   */
-  @Deprecated
-  public Interaction createPointerDown(PointerEventProperties eventProperties) {
-    return createPointerDown(0, eventProperties);
-  }
-
   public Interaction createPointerDown(int button, PointerEventProperties eventProperties) {
     return new PointerPress(this, PointerPress.Direction.DOWN, button, eventProperties);
   }
 
   public Interaction createPointerUp(int button) {
     return new PointerPress(this, PointerPress.Direction.UP, button);
-  }
-
-  /**
-   * @deprecated always use the method with the button
-   */
-  @Deprecated
-  public Interaction createPointerUp(PointerEventProperties eventProperties) {
-    return createPointerUp(0, eventProperties);
   }
 
   public Interaction createPointerUp(int button, PointerEventProperties eventProperties) {

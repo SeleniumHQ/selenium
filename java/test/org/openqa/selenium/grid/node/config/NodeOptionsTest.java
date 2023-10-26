@@ -55,8 +55,10 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.data.YesSlotMatcher;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
@@ -69,6 +71,7 @@ class NodeOptionsTest {
   @SuppressWarnings("ReturnValueIgnored")
   @Test
   void canConfigureNodeWithDriverDetection() {
+
     // If the driver isn't on the path, we should skip the test
     assumeTrue(new ChromeDriverInfo().isPresent(), "ChromeDriver needs to be available");
 
@@ -668,6 +671,30 @@ class NodeOptionsTest {
     NodeOptions nodeOptions = new NodeOptions(config);
     assertThat(nodeOptions.getPublicGridUri())
         .isEqualTo(Optional.of(URI.create(nonLoopbackAddressUrl)));
+  }
+
+  @Test
+  void notSettingSlotMatcherAvailable() {
+    String[] rawConfig =
+        new String[] {
+          "[distributor]", "slot-matcher = \"org.openqa.selenium.grid.data.DefaultSlotMatcher\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getSlotMatcher()).isExactlyInstanceOf(DefaultSlotMatcher.class);
+  }
+
+  @Test
+  void settingSlotMatcherAvailable() {
+    String[] rawConfig =
+        new String[] {
+          "[distributor]", "slot-matcher = \"org.openqa.selenium.grid.node.data.YesSlotMatcher\"",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getSlotMatcher()).isExactlyInstanceOf(YesSlotMatcher.class);
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {

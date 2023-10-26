@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -414,6 +415,8 @@ public abstract class By {
   }
 
   private abstract static class PreW3CLocator extends By implements Remotable {
+    private static final Pattern CSS_ESCAPE =
+        Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
@@ -442,7 +445,7 @@ public abstract class By {
     }
 
     private String cssEscape(String using) {
-      using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+      using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
       if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
         using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
       }

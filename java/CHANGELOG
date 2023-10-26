@@ -1,3 +1,129 @@
+v4.14.1
+======
+* Add print, activate and set viewport commands to Browsing Context
+* Remove deprecated lift packages (#12917)
+* Add validation for browsing context id (#12920)
+* Fix default values for print options page size
+* Use the java process builder to run external processes (#12898)
+* Allow a custom timeout when shutting down a process
+* Replacing Guava implementations with native Java implementations
+* Allow setting version in Http Client Config (#12919)
+
+v4.14.0
+======
+* Supported CDP versions: 85, 116, 117, 118
+* Replace the EventAttribute(Value) with an AttributeMap (#12684)
+* Add browsing context's capture box and element screenshot commands
+* Enable handle user prompt tests for Firefox
+* Delete SM binary only when SE_MANAGER_PATH is not set (#12840)
+* Shutdown executors created for a single tasks
+* Ensure closed socket connection does not prevent freeing up resources
+* Remove the unused htmlunit-driver from the unit tests (#12849)
+* Ensure proper error message gets logged (#12853)
+* Allow setting SSL context in client config for HttpClient (#12874)
+* Improve warning when CDP version not found (#12880)
+* Ensure retry mechanism does not swallow an exception (#12838)
+* Require Java 11 and move jdk-http-client into default package (#12843)
+* Reduce log noise at FINE level (#12866)
+* Refactor frame method to use isEmpty for list check and String check. (#12894)
+* Use new 'getArray' method to extract driver configurations (#12716)
+
+v4.13.0
+======
+* Supported CDP versions: 85, 115, 116, 117
+* Deprecate setScriptTimeout(), use scriptTimeout()
+* Remove deprecated method move on Point class
+* Remove deprecated method GeckoDriverService usingFirefoxBinary, use setBinary
+* Remove deprecated method GeckoDriverService createDefaultService with capabilities
+* Remove deprecated onConsoleLog in BiDi LogInspector
+* Fix NewSession Runner (#12700)
+* Add 'getArray' method for array values (#12703)
+* Ensure HttpClients not closed while waiting for responses
+* Fix bug for overwriting driver log output stream passed in by user
+* Update pinned browser versions
+* Improve stability with final variables (#12733)
+* Fix bug for Appium subclass that sets neither log file nor output (#12696)
+* Remove deprecated headless methods from Options classes
+* Remove deprecated driver service constructors and methods
+* Remove deprecated log_file methods
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
+v4.12.1
+======
+* Supported CDP versions: 85, 114, 115, 116
+* Safari driver service system properties should be public
+* [grid] Removing browserVersion before sending payload to driver
+* Selenium Manager don't log file paths by default (#12673)
+* Parse log output to support streams and file location in system properties (#12674)
+* Fixing default service for drivers #12682
+
+v4.12.0
+======
+* Supported CDP versions: 85, 114, 115, 116
+* Update Selenium Manager to use io for executing command line
+* Improve logic for deleting Selenium Manager binary on exit
+* Remove deprecated BROWSER_LOGFILE
+* Ensure grid maps exceptions to the correct error
+* Allow deleting remote downloaded files from grid (#12501)
+* Deprecate the Remote Response status field
+* Remove deprecated UNEXPECTED_ALERT_BEHAVIOR capability in IE Options
+* Deprecate disableNativeEvents method in IE Options
+* Remove deprecated createPointerDown and createPointerUp methods
+* use devtools script pinning mechanism by default (#11622)
+* ensure all headers are removed or replaced
+* Remove deprecated /file JWP endpoint (#12354)
+* Increase maximum depth of generated JSON (see #12581)
+* Do not register multiple listeners
+* Improve synchronization for network event listeners
+* Fix bug for null hashCode in element subclasses (#12442)
+* Fix potential deadlock in processing events (#12576)
+* Fix proxy breaking in RemoteWebDriver (#12607)
+* Grid detects Safari and Safari Technology Preview only on macOS
+* Grid avoids using Selenium Manager offline mode when it is enabled in arguments
+* Batch copy input to multiple streams
+* Remove browserVersion from options in Selenium Manager (#12639)
+
+v4.11.0
+======
+* Supported CDP versions: 85, 113, 114, 115
+* Add Missing W3C Exceptions (#12175)
+* Increased the max depth of new session payload (#12205)
+* Create less HttpClient instances while creating a CDP connection (#12216)
+* Raise a ConnectionFailedException when openSocket failed (#12215)
+* Ack the log file argument without need to combine it. Fixes #12225
+* Improved the exit code and error handling (#12219)
+* No need to have the auto-service dependency in the client bindings (#12244)
+* Deprecate all 'lift style' code (#12263)
+* Minor spelling Fix (#12258)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* Extract original driver from decorated driver when Augmenting a driver (#12248)
+* BidiException instead of DevToolsException in getBiDi (#12284)
+* [grid] Switching to fine log level when clearing caches in LocalNode
+* Removing deprecated methods (findElement & findElements)
+* less memory allocation (#12320)
+* Add move to location method to Actions (#11509)
+* [grid] Add supports for list-of-table options (#12363)
+* [grid] reject requests only if it has been in the queue before trying… (#12336)
+* [grid] do not rely on .hashCode for .equals (#12361)
+* Use Selenium Manager to locate drivers on PATH (#12352)
+* [grid] Improved the new session handling when the queue is empty (#12385)
+* [grid] Using SM to find drivers on PATH
+* Using same variable for log output, fixes #12406
+* UnreachableBrowserException logs the command parameter details only in debug mode (#11328)
+* Filter related fixed in the NettyClient and the JdkHttpClient
+* Removing deprecated `createServiceWithConfig` in ChromeDriverService
+* Removing deprecated `webdriver.chrome.whitelistedIps` in ChromeDriverService
+* Removing deprecated ChromeDriverLogLevel
+* Add browser output from Selenium Manager to options (#12424)
+* [grid] Make user defined SlotMatcher used everywhere in grid code (#12240)
+* Add support for FedCM commands (#12096)
+* [grid] Returning se:bidi when the user sends `webSocketUrl`. Fixes #12314
+* [grid] Covering use case where a Node is UP after being marked DOWN. Fixes #12116
+* Make external modules static (#12294)
+* Use double-checked locking to initialise the Selenium Manager instance
+* Making sure browser path is not null before setting the binary when value is returned from SM
+* Showing SM error when the exception is thrown
+
 v4.10.0
 ======
 * Supported CDP versions: 85, 112, 113, 114

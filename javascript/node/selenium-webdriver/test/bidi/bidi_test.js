@@ -20,7 +20,7 @@
 // Imports for LogInspector and BrowsingContext
 const assert = require('assert')
 const firefox = require('../../firefox')
-const { Browser } = require('../../')
+const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
@@ -301,6 +301,7 @@ suite(
       let startIndex = 0
       let endIndex = 5
       let pdfMagicNumber = 'JVBER'
+      let pngMagicNumber = 'iVBOR'
 
       it('can create a browsing context for given id', async function () {
         const id = await driver.getWindowHandle()
@@ -348,7 +349,7 @@ suite(
         let info = await browsingContext.navigate(Pages.logEntryAdded)
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
       })
 
@@ -363,7 +364,7 @@ suite(
         )
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
       })
 
@@ -440,6 +441,70 @@ suite(
 
         let base64Code = result.data.slice(startIndex, endIndex)
         assert.strictEqual(base64Code, pdfMagicNumber)
+      })
+
+      it('can take screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const response = await browsingContext.captureScreenshot()
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can take box screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const response = await browsingContext.captureBoxScreenshot(
+          5,
+          5,
+          10,
+          10
+        )
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can take element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checky'))
+        const elementId = await element.getId()
+        const response = await browsingContext.captureElementScreenshot(
+          elementId
+        )
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
+      })
+
+      it('can scroll and take element screenshot', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.formPage)
+        const element = await driver.findElement(By.id('checkbox-with-label'))
+        const elementId = await element.getId()
+        const response = await browsingContext.captureElementScreenshot(
+          elementId,
+          undefined,
+          true
+        )
+
+        const base64code = response.slice(startIndex, endIndex)
+        assert.equal(base64code, pngMagicNumber)
       })
     })
 
@@ -1265,7 +1330,6 @@ suite(
       it('can evaluate in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const secondTab = await driver.getWindowHandle()
         const manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()
@@ -1803,7 +1867,7 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(beforeRequestEvent.request.cookies[0].value, 'biryani')
+        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 
@@ -1814,7 +1878,7 @@ suite(
         await driver.navigate().refresh()
 
         assert.equal(beforeRequestEvent.request.cookies[1].name, 'south')
-        assert.equal(beforeRequestEvent.request.cookies[1].value, 'dosa')
+        assert.equal(beforeRequestEvent.request.cookies[1].value.value, 'dosa')
       })
 
       it('can redirect http equiv', async function () {
@@ -1962,7 +2026,7 @@ suite(
         const info = await browsingContext.navigate(Pages.logEntryAdded)
 
         assert.notEqual(browsingContext.id, null)
-        assert.equal(info.navigationId, null)
+        assert.notEqual(info.navigationId, null)
         assert(info.url.includes('/bidi/logEntryAdded.html'))
 
         await driver.wait(until.urlIs(Pages.logEntryAdded))

@@ -154,7 +154,7 @@ class RemoteWebDriverBiDiTest {
     NavigationResult info = browsingContext.navigate(url);
 
     assertThat(browsingContext.getId()).isNotEmpty();
-    assertThat(info.getNavigationId()).isNull();
+    assertThat(info.getNavigationId()).isNotNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 

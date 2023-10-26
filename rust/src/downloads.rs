@@ -15,24 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use reqwest::Client;
+use crate::files::parse_version;
+use crate::Logger;
+use anyhow::anyhow;
+use anyhow::Error;
+use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
-use std::error::Error;
+use serde_json::Value;
 use std::fs::File;
 use std::io::copy;
 use std::io::Cursor;
-
 use tempfile::{Builder, TempDir};
 
-use crate::files::parse_version;
-use crate::Logger;
-
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(
+pub async fn download_to_tmp_folder(
     http_client: &Client,
     url: String,
     log: &Logger,
-) -> Result<(TempDir, String), Box<dyn Error>> {
+) -> Result<(TempDir, String), Error> {
     let tmp_dir = Builder::new().prefix("selenium-manager").tempdir()?;
     log.trace(format!(
         "Downloading {} to temporal folder {:?}",
@@ -40,7 +40,15 @@ pub async fn download_driver_to_tmp_folder(
         tmp_dir.path()
     ));
 
-    let response = http_client.get(url).send().await?;
+    let response = http_client.get(&url).send().await?;
+    let status_code = response.status();
+    if status_code != StatusCode::OK {
+        return Err(anyhow!(format!(
+            "Unsuccessful response ({}) for URL {}",
+            status_code, url
+        )));
+    }
+
     let target_path;
     let mut tmp_file = {
         let target_name = response
@@ -55,7 +63,7 @@ pub async fn download_driver_to_tmp_folder(
         target_path = String::from(target_name.to_str().unwrap());
 
         log.trace(format!(
-            "Temporal folder for driver package: {}",
+            "File downloaded to temporal folder: {}",
             target_path
         ));
         File::create(target_name)?
@@ -70,15 +78,12 @@ pub fn read_version_from_link(
     http_client: &Client,
     url: String,
     log: &Logger,
-) -> Result<String, Box<dyn Error>> {
+) -> Result<String, Error> {
     parse_version(read_content_from_link(http_client, url)?, log)
 }
 
 #[tokio::main]
-pub async fn read_content_from_link(
-    http_client: &Client,
-    url: String,
-) -> Result<String, Box<dyn Error>> {
+pub async fn read_content_from_link(http_client: &Client, url: String) -> Result<String, Error> {
     Ok(http_client.get(url).send().await?.text().await?)
 }
 
@@ -87,18 +92,24 @@ pub async fn read_redirect_from_link(
     http_client: &Client,
     url: String,
     log: &Logger,
-) -> Result<String, Box<dyn Error>> {
+) -> Result<String, Error> {
     parse_version(
         http_client.get(&url).send().await?.url().path().to_string(),
         log,
     )
 }
 
-pub fn parse_json_from_url<T>(http_client: &Client, url: String) -> Result<T, Box<dyn Error>>
+pub fn parse_json_from_url<T>(http_client: &Client, url: String) -> Result<T, Error>
 where
     T: Serialize + for<'a> Deserialize<'a>,
 {
     let content = read_content_from_link(http_client, url)?;
     let response: T = serde_json::from_str(&content)?;
+    Ok(response)
+}
+
+pub fn parse_generic_json_from_url(http_client: &Client, url: String) -> Result<Value, Error> {
+    let content = read_content_from_link(http_client, url)?;
+    let response: Value = serde_json::from_str(&content)?;
     Ok(response)
 }

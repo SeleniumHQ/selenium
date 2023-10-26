@@ -61,7 +61,6 @@ rb_library(
         "//rb/spec/unit/selenium/webdriver/common:action_builder",
         "//rb/spec/unit/selenium/webdriver/common:credentials",
         "//rb/spec/unit/selenium/webdriver/common:logger",
-        "//rb/spec/unit/selenium/webdriver/common:options",
         "//rb/spec/unit/selenium/webdriver/common:selenium_manager",
         "//rb/spec/unit/selenium/webdriver/common:service",
         "//rb/spec/unit/selenium/webdriver/common:virtual_authenticator_options",

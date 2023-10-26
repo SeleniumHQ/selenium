@@ -19,8 +19,6 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
-import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
@@ -29,7 +27,7 @@ import io.opentelemetry.context.Scope;
 import java.util.Map;
 import java.util.Objects;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
@@ -88,54 +86,11 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   }
 
   @Override
-  public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
+  public Span addEvent(String name, AttributeMap attributeMap) {
     Require.nonNull("Name", name);
     Require.nonNull("Event Attribute Map", attributeMap);
-    AttributesBuilder otAttributes = Attributes.builder();
 
-    attributeMap.forEach(
-        (key, value) -> {
-          Require.nonNull("Event Attribute Value", value);
-          switch (value.getAttributeType()) {
-            case BOOLEAN:
-              otAttributes.put(key, value.getBooleanValue());
-              break;
-
-            case BOOLEAN_ARRAY:
-              otAttributes.put(key, value.getBooleanArrayValue());
-              break;
-
-            case DOUBLE:
-              otAttributes.put(key, value.getNumberValue().doubleValue());
-              break;
-
-            case DOUBLE_ARRAY:
-              otAttributes.put(key, value.getDoubleArrayValue());
-              break;
-
-            case LONG:
-              otAttributes.put(key, value.getNumberValue().longValue());
-              break;
-
-            case LONG_ARRAY:
-              otAttributes.put(key, value.getLongArrayValue());
-              break;
-
-            case STRING:
-              otAttributes.put(key, value.getStringValue());
-              break;
-
-            case STRING_ARRAY:
-              otAttributes.put(key, value.getStringArrayValue());
-              break;
-
-            default:
-              throw new IllegalArgumentException(
-                  "Unrecognized event attribute value type: " + value.getAttributeType());
-          }
-        });
-
-    span.addEvent(name, otAttributes.build());
+    span.addEvent(name, ((OpenTelemetryAttributeMap) attributeMap).build());
     return this;
   }
 

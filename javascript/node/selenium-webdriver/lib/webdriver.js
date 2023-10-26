@@ -1238,8 +1238,8 @@ class WebDriver {
     } else {
       const seCdp = caps['map_'].get('se:cdp')
       const vendorInfo =
-        caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
-        caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
+        caps['map_'].get('goog:chromeOptions') ||
+        caps['map_'].get('ms:edgeOptions') ||
         caps['map_'].get('moz:debuggerAddress') ||
         new Map()
       debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
@@ -2158,6 +2158,8 @@ class Window {
   constructor(driver) {
     /** @private {!WebDriver} */
     this.driver_ = driver
+    /** @private {!Logger} */
+    this.log_ = logging.getLogger(logging.Type.DRIVER)
   }
 
   /**
@@ -2252,7 +2254,7 @@ class Window {
    */
   async getSize(windowHandle = 'current') {
     if (windowHandle !== 'current') {
-      console.warn(
+      this.log_.warning(
         `Only 'current' window is supported for W3C compatible browsers.`
       )
     }
@@ -2275,7 +2277,7 @@ class Window {
     windowHandle = 'current'
   ) {
     if (windowHandle !== 'current') {
-      console.warn(
+      this.log_.warning(
         `Only 'current' window is supported for W3C compatible browsers.`
       )
     }
@@ -2547,6 +2549,9 @@ class WebElement {
 
     /** @private {!Promise<string>} */
     this.id_ = Promise.resolve(id)
+
+    /** @private {!Logger} */
+    this.log_ = logging.getLogger(logging.Type.DRIVER)
   }
 
   /**
@@ -2794,7 +2799,7 @@ class WebElement {
         keys.join('')
       )
     } catch (ex) {
-      console.log(
+      this.log_.error(
         'Error trying parse string as a file with file detector; sending keys instead' +
           ex
       )

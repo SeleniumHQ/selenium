@@ -20,7 +20,6 @@ package org.openqa.selenium.chrome;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -29,12 +28,13 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
-    return ImmutableMap.of(
+    return Map.of(
         EXECUTE_CDP, new CommandInfo("session/:sessionId/goog/cdp/execute", HttpMethod.POST));
   }
 

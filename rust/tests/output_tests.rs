@@ -16,9 +16,8 @@
 // under the License.
 
 use assert_cmd::Command;
+use selenium_manager::logger::{JsonOutput, DRIVER_PATH};
 use std::path::Path;
-
-use selenium_manager::logger::JsonOutput;
 use std::str;
 
 #[test]
@@ -54,7 +53,5 @@ fn shell_output_test() {
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
-
-    let driver = Path::new(output);
-    assert!(driver.exists());
+    assert!(output.contains(DRIVER_PATH));
 }

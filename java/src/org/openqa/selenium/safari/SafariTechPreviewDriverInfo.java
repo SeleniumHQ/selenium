@@ -24,6 +24,7 @@ import com.google.auto.service.AutoService;
 import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -50,10 +51,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().parallelStream()
-        .map(key -> key.startsWith("safari:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+    return capabilities.asMap().keySet().stream().anyMatch(key -> key.startsWith("safari:"));
   }
 
   @Override
@@ -69,9 +67,12 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      DriverFinder.getPath(
-          SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities());
-      return true;
+      if (Platform.getCurrent().is(Platform.MAC)) {
+        DriverFinder.getPath(
+            SafariTechPreviewDriverService.createDefaultService(), getCanonicalCapabilities());
+        return true;
+      }
+      return false;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
@@ -79,7 +80,18 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isPresent() {
-    return SafariTechPreviewDriverService.isPresent();
+    try {
+      if (Platform.getCurrent().is(Platform.MAC)) {
+        DriverFinder.getPath(
+            SafariTechPreviewDriverService.createDefaultService(),
+            getCanonicalCapabilities(),
+            true);
+        return true;
+      }
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
   }
 
   @Override

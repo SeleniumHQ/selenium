@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -45,6 +46,7 @@ import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.NetworkInterceptor;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -57,22 +59,37 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   private static final Logger LOG = Logger.getLogger(Network.class.getName());
 
+  private static final HttpResponse STOP_PROCESSING =
+      new HttpResponse()
+          .addHeader("Selenium-Interceptor", "Stop")
+          .setContent(Contents.utf8String("Interception is stopped"));
+
   private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
   private final Filter defaultFilter = next -> next::execute;
-  private Filter filter = defaultFilter;
+  private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
-  private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
+  private final AtomicBoolean fetchEnabled = new AtomicBoolean();
+  private final Map<String, CompletableFuture<HttpResponse>> pendingResponses =
+      new ConcurrentHashMap<>();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
   }
 
   public void disable() {
-    devTools.send(disableFetch());
-    devTools.send(enableNetworkCaching());
+    fetchEnabled.set(false);
+    try {
+      devTools.send(disableFetch());
+      devTools.send(enableNetworkCaching());
+    } finally {
+      // we stopped the fetch we will not receive any pending responses
+      pendingResponses.values().forEach(cf -> cf.cancel(false));
+    }
 
-    authHandlers.clear();
+    synchronized (authHandlers) {
+      authHandlers.clear();
+    }
     filter = defaultFilter;
   }
 
@@ -127,7 +144,9 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
 
-    authHandlers.put(whenThisMatches, useTheseCredentials);
+    synchronized (authHandlers) {
+      authHandlers.put(whenThisMatches, useTheseCredentials);
+    }
 
     prepareToInterceptTraffic();
   }
@@ -135,10 +154,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   @SuppressWarnings("SuspiciousMethodCalls")
   public void resetNetworkFilter() {
     filter = defaultFilter;
-  }
-
-  public void markNetworkInterceptorClosed() {
-    networkInterceptorClosed.set(true);
   }
 
   public void interceptTrafficWith(Filter filter) {
@@ -149,6 +164,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
+    if (fetchEnabled.getAndSet(true)) {
+      // ensure we do not register the listeners multiple times, otherwise the events are handled
+      // multiple times
+      return;
+    }
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
@@ -177,8 +197,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
           devTools.send(cancelAuth(authRequired));
         });
 
-    Map<String, CompletableFuture<HttpResponse>> responses = new ConcurrentHashMap<>();
-
     devTools.addListener(
         requestPausedEvent(),
         pausedRequest -> {
@@ -188,7 +206,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
             if (message.isRight()) {
               HttpResponse res = message.right();
-              CompletableFuture<HttpResponse> future = responses.remove(id);
+              CompletableFuture<HttpResponse> future = pendingResponses.remove(id);
 
               if (future == null) {
                 devTools.send(continueWithoutModification(pausedRequest));
@@ -204,11 +222,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
                     .andFinally(
                         req -> {
                           // Convert the selenium request to a CDP one and fulfill.
-
-                          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
-                          responses.put(id, res);
-
                           devTools.send(continueRequest(pausedRequest, req));
+                          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
+                          // Save the future after the browser accepted the continueRequest
+                          pendingResponses.put(id, res);
 
                           // Wait for the CDP response and send that back.
                           try {
@@ -216,8 +233,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
                           } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             throw new WebDriverException(e);
+                          } catch (CancellationException e) {
+                            // The interception was intentionally stopped, network().disable() has
+                            // been called
+                            pendingResponses.remove(id);
+                            return STOP_PROCESSING;
                           } catch (ExecutionException e) {
-                            if (!networkInterceptorClosed.get()) {
+                            if (fetchEnabled.get()) {
                               LOG.log(WARNING, e, () -> "Unable to process request");
                             }
                             return new HttpResponse();
@@ -225,15 +247,18 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
                         })
                     .execute(message.left());
 
-            if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
+            if (forBrowser == NetworkInterceptor.PROCEED_WITH_REQUEST) {
               devTools.send(continueWithoutModification(pausedRequest));
+              return;
+            } else if (forBrowser == STOP_PROCESSING) {
+              // The interception was intentionally stopped, network().disable() has been called
               return;
             }
 
             devTools.send(fulfillRequest(pausedRequest, forBrowser));
           } catch (TimeoutException e) {
-            if (!networkInterceptorClosed.get()) {
-              throw new WebDriverException(e);
+            if (fetchEnabled.get()) {
+              throw e;
             }
           }
         });
@@ -244,11 +269,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected Optional<Credentials> getAuthCredentials(URI uri) {
     Require.nonNull("URI", uri);
 
-    return authHandlers.entrySet().stream()
-        .filter(entry -> entry.getKey().test(uri))
-        .map(Map.Entry::getValue)
-        .map(Supplier::get)
-        .findFirst();
+    synchronized (authHandlers) {
+      return authHandlers.entrySet().stream()
+          .filter(entry -> entry.getKey().test(uri))
+          .map(Map.Entry::getValue)
+          .map(Supplier::get)
+          .findFirst();
+    }
   }
 
   protected HttpMethod convertFromCdpHttpMethod(String method) {

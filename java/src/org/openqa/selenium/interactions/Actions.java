@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
@@ -65,9 +64,7 @@ public class Actions {
    * either <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i> must be called to release the
    * modifier.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
-   *     IllegalArgumentException} is thrown.
+   * @param key
    * @return A self reference.
    */
   public Actions keyDown(CharSequence key) {
@@ -79,9 +76,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    *
    * @see #keyDown(CharSequence)
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}. If the provided key is none of those, {@link
-   *     IllegalArgumentException} is thrown.
+   * @param key
    * @param target WebElement to perform the action
    * @return A self reference.
    */
@@ -94,8 +89,7 @@ public class Actions {
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}.
+   * @param key
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
@@ -107,8 +101,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    *
    * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT}
-   *     or {@link Keys#CONTROL}.
+   * @param key
    * @param target WebElement to perform the action on
    * @return A self reference.
    */
@@ -352,9 +345,9 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
-   * provided are outside the viewport (the mouse will end up outside the browser window) then the
-   * viewport is scrolled to match.
+   * Moves the mouse from its current position (or 0,0) by the given offset. If the final
+   * coordinates of the move are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
    *
    * @param xOffset horizontal offset. A negative value means moving the mouse left.
    * @param yOffset vertical offset. A negative value means moving the mouse up.
@@ -366,6 +359,26 @@ public class Actions {
     return tick(
         getActivePointer()
             .createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
+  }
+
+  /**
+   * Moves the mouse to provided coordinates on screen regardless of starting position of the mouse.
+   * If the coordinates provided are outside the viewport (the mouse will end up outside the browser
+   * window), an exception is raised.
+   *
+   * @param xCoordinate positive pixel value along horizontal axis in viewport. Numbers increase
+   *     going right.
+   * @param yCoordinate positive pixel value along vertical axis in viewport. Numbers increase going
+   *     down.
+   * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
+   *     boundaries.
+   */
+  public Actions moveToLocation(int xCoordinate, int yCoordinate) {
+    return tick(
+        getActivePointer()
+            .createPointerMove(
+                Duration.ofMillis(250), Origin.viewport(), xCoordinate, yCoordinate));
   }
 
   /**

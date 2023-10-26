@@ -24,18 +24,6 @@ module Selenium
         DEFAULT_PORT = 4444
         EXECUTABLE = 'geckodriver'
         SHUTDOWN_SUPPORTED = false
-
-        private
-
-        def extract_service_args(driver_opts)
-          driver_args = super
-          driver_opts = driver_opts.dup
-          driver_args << "--binary=#{driver_opts[:binary]}" if driver_opts.key?(:binary)
-          driver_args << "--log=#{driver_opts[:log]}" if driver_opts.key?(:log)
-          driver_args << "--marionette-port=#{driver_opts[:marionette_port]}" if driver_opts.key?(:marionette_port)
-          driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
-          driver_args
-        end
       end # Service
     end # Firefox
   end # WebDriver

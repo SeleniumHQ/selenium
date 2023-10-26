@@ -8,6 +8,9 @@ AllCops:
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
 
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec
+
 Layout/LineLength:
   AllowedPatterns:
     - '^\s*#'

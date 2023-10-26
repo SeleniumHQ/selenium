@@ -27,15 +27,12 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
-
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.netty.server.SimpleHttpServer;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -85,19 +82,18 @@ class ProxySettingTest extends JupiterTestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureProxyThroughPACFile() throws URISyntaxException, InterruptedException {
-    try (SimpleHttpServer helloServer = createSimpleHttpServer(
-          appServer.whereElseIs("mouseOver.html"),
-          "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>"
-        );
+    try (SimpleHttpServer helloServer =
+            createSimpleHttpServer(
+                appServer.whereElseIs("mouseOver.html"),
+                "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
         SimpleHttpServer pacFileServer =
-           createPacfileServer(
-             "/proxy.pac",
-             Joiner.on('\n')
-               .join(
-                 "function FindProxyForURL(url, host) {",
-                 "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-                 "}"));
-    ) {
+            createPacfileServer(
+                "/proxy.pac",
+                Joiner.on('\n')
+                    .join(
+                        "function FindProxyForURL(url, host) {",
+                        "  return 'PROXY " + getHostAndPort(helloServer) + "';",
+                        "}")); ) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -116,26 +112,25 @@ class ProxySettingTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts()
-    throws URISyntaxException, InterruptedException {
-    try (SimpleHttpServer helloServer = createSimpleHttpServer(
-          "/index.html",
-          "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>"
-        );
-        SimpleHttpServer goodbyeServer = createSimpleHttpServer(
-          helloServer.baseUri().resolve("/index.html").toString(),
-          "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>"
-        );
-        SimpleHttpServer pacFileServer = createPacfileServer(
-          "/proxy.pac",
-            Joiner.on('\n')
-                .join(
-                    "function FindProxyForURL(url, host) {",
-                    "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
-                    "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
-                    "  }",
-                    "  return 'DIRECT';",
-                    "}")
-        );) {
+      throws URISyntaxException, InterruptedException {
+    try (SimpleHttpServer helloServer =
+            createSimpleHttpServer(
+                "/index.html", "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
+        SimpleHttpServer goodbyeServer =
+            createSimpleHttpServer(
+                helloServer.baseUri().resolve("/index.html").toString(),
+                "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
+        SimpleHttpServer pacFileServer =
+            createPacfileServer(
+                "/proxy.pac",
+                Joiner.on('\n')
+                    .join(
+                        "function FindProxyForURL(url, host) {",
+                        "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
+                        "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
+                        "  }",
+                        "  return 'DIRECT';",
+                        "}")); ) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -151,7 +146,7 @@ class ProxySettingTest extends JupiterTestBase {
   }
 
   private SimpleHttpServer createSimpleHttpServer(String requestPath, String responseHtml)
-    throws URISyntaxException, InterruptedException {
+      throws URISyntaxException, InterruptedException {
     SimpleHttpServer server = new SimpleHttpServer();
     byte[] bytes = responseHtml.getBytes(UTF_8);
 
@@ -161,11 +156,12 @@ class ProxySettingTest extends JupiterTestBase {
   }
 
   private SimpleHttpServer createPacfileServer(String requestPath, String responsePac)
-    throws URISyntaxException, InterruptedException {
-      SimpleHttpServer server = new SimpleHttpServer();
+      throws URISyntaxException, InterruptedException {
+    SimpleHttpServer server = new SimpleHttpServer();
     byte[] bytes = responsePac.getBytes(US_ASCII);
 
-    server.registerEndpoint(HttpMethod.GET, requestPath, "application/x-ns-proxy-autoconfig", bytes);
+    server.registerEndpoint(
+        HttpMethod.GET, requestPath, "application/x-ns-proxy-autoconfig", bytes);
 
     return server;
   }
@@ -178,9 +174,7 @@ class ProxySettingTest extends JupiterTestBase {
   public static class FakeProxyServer extends SimpleHttpServer {
     private final Set<String> resources = new HashSet<>();
 
-    public FakeProxyServer() throws URISyntaxException, InterruptedException {
-
-    }
+    public FakeProxyServer() throws URISyntaxException, InterruptedException {}
 
     @Override
     protected FullHttpResponse handleRequest(HttpRequest requested) {

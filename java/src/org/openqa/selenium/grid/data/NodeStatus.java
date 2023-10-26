@@ -122,8 +122,8 @@ public class NodeStatus {
         nodeId, externalUri, maxSessions, slots, availability, heartbeatPeriod, version, osInfo);
   }
 
-  public boolean hasCapability(Capabilities caps) {
-    return slots.stream().anyMatch(slot -> slot.isSupporting(caps));
+  public boolean hasCapability(Capabilities caps, SlotMatcher slotMatcher) {
+    return slots.stream().anyMatch(slot -> slot.isSupporting(caps, slotMatcher));
   }
 
   public boolean hasCapacity() {
@@ -132,9 +132,10 @@ public class NodeStatus {
 
   // Check if the Node's max session limit is not exceeded and has a free slot that supports the
   // capability.
-  public boolean hasCapacity(Capabilities caps) {
+  public boolean hasCapacity(Capabilities caps, SlotMatcher slotMatcher) {
     return slots.stream().filter(slot -> slot.getSession() != null).count() < maxSessionCount
-        && slots.stream().anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps));
+        && slots.stream()
+            .anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps, slotMatcher));
   }
 
   public int getMaxSessionCount() {

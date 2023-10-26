@@ -20,7 +20,6 @@ package org.openqa.selenium.chromium;
 import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -31,6 +30,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasPermissions
     implements AugmenterProvider<HasPermissions>, AdditionalHttpCommands {
@@ -38,8 +38,7 @@ public class AddHasPermissions
   public static final String SET_PERMISSION = "setPermission";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
-          SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
+      Map.of(SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -65,8 +64,7 @@ public class AddHasPermissions
         Require.nonNull("Permission value", value);
 
         executeMethod.execute(
-            SET_PERMISSION,
-            ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
+            SET_PERMISSION, Map.of("descriptor", Map.of("name", name), "state", value));
       }
     };
   }

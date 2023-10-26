@@ -26,7 +26,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -48,6 +50,7 @@ import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -58,10 +61,10 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -117,29 +120,40 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    AttributeMap attributeMap = tracer.createAttributeMap();
     try {
 
       Capabilities capabilities =
           sessionCapabilitiesMutator.apply(sessionRequest.getDesiredCapabilities());
 
-      Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
-      if (platformName.isPresent()) {
-        capabilities = removePlatform(capabilities);
-      }
-
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
 
       DriverService service = builder.build();
+      if (service.getExecutable() == null) {
+        Result result = DriverFinder.getPath(service, capabilities);
+        service.setExecutable(result.getDriverPath());
+        if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
+          capabilities = setBrowserBinary(capabilities, result.getBrowserPath());
+        }
+      }
+
+      Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
+      if (platformName.isPresent()) {
+        capabilities = removeCapability(capabilities, "platformName");
+      }
+
+      Optional<String> browserVersion = Optional.ofNullable(capabilities.getBrowserVersion());
+      if (browserVersion.isPresent()) {
+        capabilities = removeCapability(capabilities, "browserVersion");
+      }
+
       try {
         service.start();
 
         URL serviceURL = service.getUrl();
-        attributeMap.put(
-            AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
+        attributeMap.put(AttributeKey.DRIVER_URL.getKey(), serviceURL.toString());
 
         ClientConfig clientConfig =
             ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceURL);
@@ -158,17 +172,19 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Response response = result.createResponse();
 
-        attributeMap.put(
-            AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
-        attributeMap.put(
-            AttributeKey.DOWNSTREAM_DIALECT.getKey(),
-            EventAttribute.setValue(downstream.toString()));
-        attributeMap.put(
-            AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), upstream.toString());
+        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream.toString());
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), response.toString());
 
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
         if (platformName.isPresent()) {
-          caps = setInitialPlatform(caps, platformName.get());
+          caps = setInitialCapabilityValue(caps, "platformName", platformName.get());
+        }
+
+        if (caps.getBrowserVersion().isEmpty()
+            && browserVersion.isPresent()
+            && !browserVersion.get().isEmpty()) {
+          caps = setInitialCapabilityValue(caps, "browserVersion", browserVersion.get());
         }
 
         caps = readDevToolsEndpointAndVersion(caps);
@@ -203,8 +219,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
                 + e.getMessage();
         LOG.warning(errorMessage);
 
-        attributeMap.put(
-            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         service.stop();
         return Either.left(new SessionNotCreatedException(errorMessage));
@@ -217,8 +232,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
           "Error while creating session with the driver service. " + e.getMessage();
       LOG.warning(errorMessage);
 
-      attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), errorMessage);
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage()));
@@ -308,16 +322,17 @@ public class DriverServiceSessionFactory implements SessionFactory {
     return returnedCaps;
   }
 
-  // We remove the platform before sending the caps to the driver because some drivers will
-  // reject session requests when they cannot parse the platform.
-  private Capabilities removePlatform(Capabilities caps) {
+  // We remove a capability before sending the caps to the driver because some drivers will
+  // reject session requests when they cannot parse the specific capabilities (like platform or
+  // browser version).
+  private Capabilities removeCapability(Capabilities caps, String capability) {
     MutableCapabilities noPlatformName = new MutableCapabilities(new HashMap<>(caps.asMap()));
-    noPlatformName.setCapability("platformName", (String) null);
+    noPlatformName.setCapability(capability, (String) null);
     return new PersistentCapabilities(noPlatformName);
   }
 
-  private Capabilities setInitialPlatform(Capabilities caps, Platform platform) {
-    return new PersistentCapabilities(caps).setCapability("platformName", platform);
+  private Capabilities setInitialCapabilityValue(Capabilities caps, String key, Object value) {
+    return new PersistentCapabilities(caps).setCapability(key, value);
   }
 
   private String getHost() {
@@ -326,5 +341,28 @@ public class DriverServiceSessionFactory implements SessionFactory {
     } catch (WebDriverException e) {
       return HostIdentifier.getHostName();
     }
+  }
+
+  private Capabilities setBrowserBinary(Capabilities options, String browserPath) {
+    List<String> vendorOptionsCapabilities =
+        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+    for (String vendorOptionsCapability : vendorOptionsCapabilities) {
+      if (options.asMap().containsKey(vendorOptionsCapability)) {
+        try {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> vendorOptions =
+              (Map<String, Object>) options.getCapability(vendorOptionsCapability);
+          vendorOptions.put("binary", browserPath);
+          return new PersistentCapabilities(options)
+              .setCapability(vendorOptionsCapability, vendorOptions);
+        } catch (Exception e) {
+          LOG.warning(
+              String.format(
+                  "Exception while setting the browser binary path. %s: %s",
+                  options, e.getMessage()));
+        }
+      }
+    }
+    return options;
   }
 }

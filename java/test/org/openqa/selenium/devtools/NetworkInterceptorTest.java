@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
 import com.google.common.net.MediaType;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,12 +38,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-class NetworkInterceptorTest {
+class NetworkInterceptorTest extends JupiterTestBase {
 
   private NettyAppServer appServer;
   private WebDriver driver;
@@ -57,7 +62,7 @@ class NetworkInterceptorTest {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get();
+    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
@@ -75,6 +80,17 @@ class NetworkInterceptorTest {
                                     utf8String(
                                         "<html><head><title>Hello,"
                                             + " World!</title></head><body/></html>"))),
+            Route.matching(req -> req.getUri().contains("london"))
+                .to(
+                    () ->
+                        req ->
+                            new HttpResponse()
+                                .setStatus(200)
+                                .addHeader("Content-Type", XHTML_UTF_8.toString())
+                                .setContent(
+                                    utf8String(
+                                        "<html><head><title>Hello,"
+                                            + " London!</title></head><body/></html>"))),
             Route.get("/redirect")
                 .to(
                     () ->
@@ -94,6 +110,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldProceedAsNormalIfRequestIsNotIntercepted() {
     interceptor =
         new NetworkInterceptor(
@@ -107,6 +124,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldAllowTheInterceptorToChangeTheResponse() {
     interceptor =
         new NetworkInterceptor(
@@ -128,6 +146,27 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
+  void shouldAllowTheInterceptorToChangeTheRequest() {
+    interceptor =
+        new NetworkInterceptor(
+            driver,
+            (Filter)
+                next ->
+                    req -> {
+                      req = new HttpRequest(HttpMethod.GET, appServer.whereIs("/london"));
+                      return next.execute(req);
+                    });
+
+    driver.get(appServer.whereIs("/cheese"));
+
+    String source = driver.getPageSource();
+
+    assertThat(source).contains("London");
+  }
+
+  @Test
+  @NoDriverBeforeTest
   void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
@@ -151,6 +190,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldClearListenersWhenNetworkInterceptorIsClosed() {
     try (NetworkInterceptor interceptor =
         new NetworkInterceptor(
@@ -176,6 +216,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldBeAbleToInterceptAResponse() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(
@@ -184,7 +225,7 @@ class NetworkInterceptorTest {
                 next ->
                     req -> {
                       HttpResponse res = next.execute(req);
-                      res.addHeader("Content-Type", MediaType.HTML_UTF_8.toString());
+                      res.setHeader("Content-Type", MediaType.HTML_UTF_8.toString());
                       res.setContent(Contents.utf8String("Sausages"));
                       return res;
                     })) {
@@ -197,6 +238,7 @@ class NetworkInterceptorTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldHandleRedirects() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(driver, (Filter) next -> next)) {

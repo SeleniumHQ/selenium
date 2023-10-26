@@ -16,8 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
-using Microsoft.IdentityModel.Tokens;
 
 namespace OpenQA.Selenium.VirtualAuth
 {
@@ -34,13 +34,7 @@ namespace OpenQA.Selenium.VirtualAuth
         private readonly byte[] userHandle;
         private readonly int signCount;
 
-        private Credential(
-        byte[] id,
-        bool isResidentCredential,
-        string rpId,
-        string privateKey,
-        byte[] userHandle,
-        int signCount)
+        private Credential(byte[] id, bool isResidentCredential, string rpId, string privateKey, byte[] userHandle, int signCount)
         {
             this.id = id;
             this.isResidentCredential = isResidentCredential;
@@ -50,60 +44,86 @@ namespace OpenQA.Selenium.VirtualAuth
             this.signCount = signCount;
         }
 
-        public static Credential CreateNonResidentCredential(
-            byte[] id,
-            string rpId,
-            string privateKey,
-            int signCount)
+        /// <summary>
+        /// Creates a credential for use with a virtual authenticator.
+        /// </summary>
+        /// <param name="id">A byte array representing the ID of the credentials.</param>
+        /// <param name="rpId">The ID of the relying party to which the credential is scoped.</param>
+        /// <param name="privateKey">The private Key for the credentials.</param>
+        /// <param name="signCount">The signature counter for the credentials.</param>
+        /// <returns>The created instance of the Credential class.</returns>
+        public static Credential CreateNonResidentCredential(byte[] id, string rpId, string privateKey, int signCount)
         {
             return new Credential(id, false, rpId, privateKey, null, signCount);
         }
 
-        public static Credential CreateResidentCredential(
-            byte[] id,
-            string rpId,
-            string privateKey,
-            byte[] userHandle,
-            int signCount)
+        /// <summary>
+        /// Creates a credential for use with a virtual authenticator.
+        /// </summary>
+        /// <param name="id">A byte array representing the ID of the credentials.</param>
+        /// <param name="rpId">The ID of the relying party to which the credential is scoped.</param>
+        /// <param name="privateKey">The private Key for the credentials.</param>
+        /// <param name="userHandle">The user handle associated to the credential.</param>
+        /// <param name="signCount">The signature counter for the credentials.</param>
+        /// <returns>The created instance of the Credential class.</returns>
+        public static Credential CreateResidentCredential(byte[] id, string rpId, string privateKey, byte[] userHandle, int signCount)
         {
-            return new Credential(
-              id,
-              true,
-              rpId,
-              privateKey,
-              userHandle,
-              signCount);
+            return new Credential(id, true, rpId, privateKey, userHandle, signCount);
         }
 
+        /// <summary>
+        /// Gets the byte array of the ID of the credential.
+        /// </summary>
         public byte[] Id
         {
             get { return (byte[])id.Clone(); }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this Credential is a resident credential.
+        /// </summary>
         public bool IsResidentCredential
         {
             get { return this.isResidentCredential; }
         }
+
+        /// <summary>
+        /// Gets the ID of the relying party of this credential.
+        /// </summary>
         public string RpId
         {
             get { return this.rpId; }
         }
 
+        /// <summary>
+        /// Gets the private key of the credential.
+        /// </summary>
         public string PrivateKey
         {
             get { return this.privateKey; }
         }
 
+        /// <summary>
+        /// Gets the user handle of the credential.
+        /// </summary>
         public byte[] UserHandle
         {
             get { return userHandle == null ? null : (byte[])userHandle.Clone(); }
         }
 
+        /// <summary>
+        /// Gets the signature counter associated to the public key credential source.
+        /// </summary>
         public int SignCount
         {
             get { return this.signCount; }
         }
 
+        /// <summary>
+        /// Creates a Credential instance from a dictionary of values.
+        /// </summary>
+        /// <param name="dictionary">The dictionary of values to use to create the Credential instance.</param>
+        /// <returns>The created instance of the Credential.</returns>
         public static Credential FromDictionary(Dictionary<string, object> dictionary)
         {
             return new Credential(
@@ -115,6 +135,10 @@ namespace OpenQA.Selenium.VirtualAuth
                 (int)((long)dictionary["signCount"]));
         }
 
+        /// <summary>
+        /// Serializes this Credential instance to a dictionary.
+        /// </summary>
+        /// <returns>The dictionary containing the values for this Credential.</returns>
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> toReturn = new Dictionary<string, object>();

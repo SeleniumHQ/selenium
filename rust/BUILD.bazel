@@ -1,5 +1,9 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_test")
+load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite", "rustfmt_config")
+
+rustfmt_config(
+    name = "enable-rustfmt",
+)
 
 # We want the release versions of Selenium to include the prebuilt
 # binaries, but if we're doing day-to-day dev work, then we should
@@ -73,6 +77,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     edition = "2021",
+    version = "0.4.15",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
@@ -98,18 +103,21 @@ rust_test(
     tags = ["no-sandbox"],
 )
 
-[
-    rust_test(
-        name = file[:-3],
-        size = "small",
-        srcs = [file],
-        data = [":selenium-manager"],
-        edition = "2021",
-        tags = ["no-sandbox"],
-        deps = [":selenium_manager"] + all_crate_deps(
-            normal = True,
-            normal_dev = True,
-        ),
-    )
-    for file in glob(["tests/**/*.rs"])
-]
+rust_test_suite(
+    name = "integration",
+    size = "small",
+    srcs = glob(["tests/**/*_tests.rs"]),
+    data = [
+        "tests/common.rs",
+        ":selenium-manager",
+    ],
+    edition = "2021",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [":selenium_manager"] + all_crate_deps(
+        normal = True,
+        normal_dev = True,
+    ),
+)

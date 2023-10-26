@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(EdgeOptions options)
-            : this(EdgeDriverService.CreateDefaultService(options), options)
+            : this(EdgeDriverService.CreateDefaultService(), options)
         {
         }
 

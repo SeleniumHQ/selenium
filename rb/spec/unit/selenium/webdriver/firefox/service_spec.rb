@@ -49,30 +49,33 @@ module Selenium
           end
 
           it 'does not create args by default' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new
 
             expect(service.extra_args).to be_empty
           end
 
-          it 'uses provided args' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
+          it 'uses sets log path to stdout' do
+            service = described_class.new(log: :stdout)
 
+            expect(service.log).to eq $stdout
+          end
+
+          it 'uses sets log path to stderr' do
+            service = described_class.new(log: :stderr)
+
+            expect(service.log).to eq $stderr
+          end
+
+          it 'sets log path as file location' do
+            service = described_class.new(log: '/path/to/log.txt')
+
+            expect(service.log).to eq '/path/to/log.txt'
+          end
+
+          it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
             expect(service.extra_args).to eq ['--foo', '--bar']
-          end
-
-          it 'uses args when passed in as a Hash' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
-            expect {
-              service = described_class.new(args: {log: '/path/to/log',
-                                                   marionette_port: 4})
-
-              expect(service.extra_args).to eq ['--log=/path/to/log', '--marionette-port=4']
-            }.to have_deprecated(:driver_opts)
           end
         end
 
@@ -97,7 +100,7 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
@@ -108,7 +111,7 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)

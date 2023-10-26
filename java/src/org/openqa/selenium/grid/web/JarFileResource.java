@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,7 +112,7 @@ public class JarFileResource implements Resource {
 
     try (InputStream is = jarFile.getInputStream(entry);
         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
       return Optional.of(bos.toByteArray());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

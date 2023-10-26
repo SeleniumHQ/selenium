@@ -20,6 +20,7 @@ load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
 # Add your linters here.
 lint_setup({
     "java-spotbugs": "//java:spotbugs-config",
+    "rust-rustfmt": "//rust:enable-rustfmt",
 })
 
 http_archive(
@@ -37,12 +38,14 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "84aec9e21cc56fbc7f1335035a71c850d1b9b5cc6ff497306f84cced9a769841",
-    strip_prefix = "rules_python-0.23.1",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.23.1/rules_python-0.23.1.tar.gz",
+    sha256 = "5868e73107a8e85d8f323806e60cad7283f34b32163ea6ff1020cf27abef6036",
+    strip_prefix = "rules_python-0.25.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.25.0/rules_python-0.25.0.tar.gz",
 )
 
-load("@rules_python//python:repositories.bzl", "python_register_multi_toolchains")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_multi_toolchains")
+
+py_repositories()
 
 default_python_version = "3.8"
 
@@ -59,10 +62,10 @@ python_register_multi_toolchains(
 )
 
 load("@python//:pip.bzl", "multi_pip_parse")
-load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
 load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
-load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
+load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
 load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
+load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 
 multi_pip_parse(
     name = "py_dev_requirements",
@@ -141,9 +144,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "548f0583192ff79c317789b03b882a7be9b1325eb5d3da5d7fdcc4b7ca69d543",
-    strip_prefix = "rules_jvm-0.9.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/refs/tags/v0.9.0.tar.gz",
+    sha256 = "4d62589dc6a55e74bbe33930b826d593367fc777449a410604b2ad7c6c625ef7",
+    strip_prefix = "rules_jvm-0.19.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/releases/download/v0.19.0/rules_jvm-v0.19.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
@@ -163,17 +166,41 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 pinned_maven_install()
 
 http_archive(
-    name = "d2l_rules_csharp",
-    sha256 = "c0152befb1fd0e08527b38e41ef00b6627f9f0c2be6f2d23a4950f41701fa48a",
-    strip_prefix = "rules_csharp-50e2f6c79e7a53e50b4518239b5ebcc61279759e",
-    urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/50e2f6c79e7a53e50b4518239b5ebcc61279759e.tar.gz",
+    name = "rules_dotnet",
+    patch_args = ["-p1"],
+    patches = [
+        "//dotnet:0001-Include-more-of-the-SDK.patch",
+        "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
+        "//dotnet:0003-Make-Runfiles-library-compatible-with-net-standard-2-0.patch",
+        "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
+        "//dotnet:0005-Ensure-csharp_library-files-are-unique.patch",
     ],
+    sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
+    strip_prefix = "rules_dotnet-0.10.7",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
 )
 
-load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+load(
+    "@rules_dotnet//dotnet:repositories.bzl",
+    "dotnet_register_toolchains",
+    "rules_dotnet_dependencies",
+)
 
-selenium_register_dotnet()
+rules_dotnet_dependencies()
+
+dotnet_register_toolchains("dotnet", "7.0.400")
+
+load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
+
+rules_dotnet_nuget_packages()
+
+load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
+
+paket2bazel_dependencies()
+
+load("//dotnet:paket.bzl", "paket")
+
+paket()
 
 http_archive(
     name = "rules_rust",
@@ -202,8 +229,8 @@ crate_repositories()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "5dd1e5dea1322174c57d3ca7b899da381d516220793d0adef3ba03b9d23baa8e",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.3/rules_nodejs-5.8.3.tar.gz"],
+    sha256 = "709cc0dcb51cf9028dd57c268066e5bc8f03a119ded410a13b5c3925d6e43c48",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.4/rules_nodejs-5.8.4.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -308,19 +335,19 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "e0f83095d484b7585ee16ac83d1fb90315a1f177ab244629eab3c2e40473574e",
-    strip_prefix = "rules_ruby-e5088fb04e8afc397b62ef08552409f8ff98b520",
-    url = "https://github.com/p0deje/rules_ruby/archive/e5088fb04e8afc397b62ef08552409f8ff98b520.zip",
+    sha256 = "34296f8cad46ec10b7eea59f3399feabcfbc33935b7d8bec880ea0ecfadc23b5",
+    strip_prefix = "rules_ruby-9550503e1c1702375e87837d43eb137030edd28a",
+    url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
 )
 
-load("//rb:ruby_version.bzl", "RUBY_VERSION")
 load(
     "@rules_ruby//ruby:deps.bzl",
     "rb_bundle",
-    "rb_download",
+    "rb_register_toolchains",
 )
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 
-rb_download(version = RUBY_VERSION)
+rb_register_toolchains(version = RUBY_VERSION)
 
 rb_bundle(
     name = "bundle",

@@ -17,17 +17,15 @@
 
 package org.openqa.selenium.edge;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.edge.EdgeOptions.WEBVIEW2_BROWSER_NAME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 import com.google.auto.service.AutoService;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
@@ -100,12 +98,7 @@ public class EdgeDriverService extends DriverService {
       List<String> args,
       Map<String, String> environment)
       throws IOException {
-    super(
-        executable,
-        port,
-        timeout,
-        unmodifiableList(new ArrayList<>(args)),
-        unmodifiableMap(new HashMap<>(environment)));
+    super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
   }
 
   public String getDriverName() {
@@ -133,17 +126,8 @@ public class EdgeDriverService extends DriverService {
     return new Builder().build();
   }
 
-  /**
-   * Checks if the MSEdgeDriver binary is already present. Grid uses this method to show the
-   * available browsers and drivers, hence its visibility.
-   *
-   * @return Whether the browser driver path was found.
-   */
-  static boolean isPresent() {
-    return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
-  }
-
   /** Builder used to configure new {@link EdgeDriverService} instances. */
+  @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
@@ -195,19 +179,6 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withBuildCheckDisabled(boolean noBuildCheck) {
       this.disableBuildCheck = noBuildCheck;
-      return this;
-    }
-
-    /**
-     * Configures the driver server log level.
-     *
-     * @deprecated Use {@link #withLoglevel(ChromiumDriverLogLevel)} instead.
-     */
-    @Deprecated
-    public Builder withLoglevel(String logLevel) {
-      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel);
-      this.silent = false;
-      this.verbose = false;
       return this;
     }
 
@@ -277,12 +248,7 @@ public class EdgeDriverService extends DriverService {
 
     @Override
     protected void loadSystemProperties() {
-      if (getLogFile() == null) {
-        String logFilePath = System.getProperty(EDGE_DRIVER_LOG_PROPERTY);
-        if (logFilePath != null) {
-          withLogFile(new File(logFilePath));
-        }
-      }
+      parseLogOutput(EDGE_DRIVER_LOG_PROPERTY);
       if (disableBuildCheck == null) {
         this.disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
       }
@@ -312,45 +278,44 @@ public class EdgeDriverService extends DriverService {
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
 
-      // Readable timestamp and append logs only work if a file is specified
-      // Can only get readable logs via arguments; otherwise send service output as directed
+      // Readable timestamp and append logs only work if log path is specified in args
+      // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
+        if (Boolean.TRUE.equals(readableTimestamp)) {
           args.add("--readable-timestamp");
         }
-        if (appendLog != null && appendLog.equals(Boolean.TRUE)) {
+        if (Boolean.TRUE.equals(appendLog)) {
           args.add("--append-log");
         }
-        withLogFile(null); // Do not overwrite in sendOutputTo()
+        withLogOutput(
+            OutputStream.nullOutputStream()); // Do not overwrite log file in getLogOutput()
       }
 
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
-      if (silent != null && silent.equals(Boolean.TRUE)) {
+      if (Boolean.TRUE.equals(silent)) {
         args.add("--silent");
       }
-      if (verbose != null && verbose.equals(Boolean.TRUE)) {
+      if (Boolean.TRUE.equals(verbose)) {
         args.add("--verbose");
       }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
-      if (disableBuildCheck != null && disableBuildCheck.equals(Boolean.TRUE)) {
+      if (Boolean.TRUE.equals(disableBuildCheck)) {
         args.add("--disable-build-check");
       }
 
-      return unmodifiableList(args);
+      return List.copyOf(args);
     }
 
     @Override
     protected EdgeDriverService createDriverService(
         File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
       try {
-        EdgeDriverService service = new EdgeDriverService(exe, port, timeout, args, environment);
-        service.sendOutputTo(getLogOutput(EDGE_DRIVER_LOG_PROPERTY));
-        return service;
+        return new EdgeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

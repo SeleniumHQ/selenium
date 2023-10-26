@@ -1,20 +1,16 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
 
-java_library(
+java_export(
     name = "os",
     srcs = glob(["*.java"]),
-    visibility = [
-        "//java/src/org/openqa/selenium:__pkg__",
-        "//java/src/org/openqa/selenium/remote:__pkg__",
-        "//java/test/org/openqa/selenium:__subpackages__",
-        "//java/test/org/openqa/selenium/build:__pkg__",
-        "//java/test/org/openqa/selenium/testing/drivers:__pkg__",
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-os:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = ["//visibility:public"],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/io",
         artifact("org.apache.commons:commons-exec"),
-        artifact("com.google.guava:guava"),
     ],
 )

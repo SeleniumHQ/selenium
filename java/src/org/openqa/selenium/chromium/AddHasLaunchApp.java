@@ -20,7 +20,6 @@ package org.openqa.selenium.chromium;
 import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -31,13 +30,14 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, AdditionalHttpCommands {
 
   public static final String LAUNCH_APP = "launchApp";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
 
   @Override
@@ -62,7 +62,7 @@ public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, Additio
       public void launchApp(String id) {
         Require.nonNull("id of Chromium App", id);
 
-        executeMethod.execute(LAUNCH_APP, ImmutableMap.of("id", id));
+        executeMethod.execute(LAUNCH_APP, Map.of("id", id));
       }
     };
   }

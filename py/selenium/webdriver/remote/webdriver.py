@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 """The WebDriver implementation."""
 import contextlib
 import copy
@@ -146,12 +145,12 @@ class BaseWebDriver(metaclass=ABCMeta):
 class WebDriver(BaseWebDriver):
     """Controls a browser by sending commands to a remote server. This server
     is expected to be running the WebDriver wire protocol as defined at
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
+    https://www.selenium.dev/documentation/legacy/json_wire_protocol/.
 
     :Attributes:
      - session_id - String ID of the browser session started and controlled by this WebDriver.
      - capabilities - Dictionary of effective capabilities of this browser session as returned
-         by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
+         by the remote server. See https://www.selenium.dev/documentation/legacy/desired_capabilities/
      - command_executor - remote_connection.RemoteConnection object used to execute commands.
      - error_handler - errorhandler.ErrorHandler object used to handle errors.
     """
@@ -770,13 +769,13 @@ class WebDriver(BaseWebDriver):
 
     @property
     def desired_capabilities(self) -> dict:
-        """returns the drivers current desired capabilities being used."""
+        """Returns the drivers current desired capabilities being used."""
         warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
         return self.caps
 
     @property
     def capabilities(self) -> dict:
-        """returns the drivers current capabilities being used."""
+        """Returns the drivers current capabilities being used."""
         return self.caps
 
     def get_screenshot_as_file(self, filename) -> bool:
@@ -795,8 +794,9 @@ class WebDriver(BaseWebDriver):
         """
         if not str(filename).lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.get_screenshot_as_png()
         try:
@@ -857,8 +857,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_size(800,600)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle: str = "current") -> dict:
@@ -870,8 +869,7 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_size()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
         if size.get("value", None):
@@ -891,8 +889,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_position(0,0)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle="current") -> dict:
@@ -904,11 +901,15 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_position()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
         return {k: position[k] for k in ("x", "y")}
+
+    def _check_if_window_handle_is_current(self, windowHandle: str) -> None:
+        """Warns if the window handle is not equal to `current`."""
+        if windowHandle != "current":
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
 
     def get_window_rect(self) -> dict:
         """Gets the x, y coordinates of the window as well as height and width
@@ -1053,9 +1054,9 @@ class WebDriver(BaseWebDriver):
         http = urllib3.PoolManager()
         _firefox = False
         if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get(
-                "debuggerAddress"
-            )
+            debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
+        elif self.caps.get("browserName") == "msedge":
+            debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")

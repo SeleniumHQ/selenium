@@ -26,7 +26,6 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_MESSAGE;
 import static org.openqa.selenium.remote.tracing.AttributeKey.LOGGER_CLASS;
 import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
-import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import java.net.MalformedURLException;
@@ -34,7 +33,6 @@ import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -64,7 +62,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -144,16 +142,16 @@ public class RelaySessionFactory implements SessionFactory {
           new SessionNotCreatedException(
               "New session request capabilities do not " + "match the stereotype."));
     }
-
+    capabilities = capabilities.merge(stereotype);
     LOG.info("Starting session for " + capabilities);
 
     try (Span span = tracer.getCurrentContext().createSpan("relay_session_factory.apply")) {
 
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
-      attributeMap.put(LOGGER_CLASS.getKey(), setValue(this.getClass().getName()));
-      attributeMap.put(DRIVER_URL.getKey(), setValue(serviceUrl.toString()));
+      attributeMap.put(LOGGER_CLASS.getKey(), this.getClass().getName());
+      attributeMap.put(DRIVER_URL.getKey(), serviceUrl.toString());
 
       ClientConfig clientConfig =
           ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceUrl);
@@ -170,9 +168,9 @@ public class RelaySessionFactory implements SessionFactory {
                 : downstreamDialects.iterator().next();
 
         Response response = result.createResponse();
-        attributeMap.put(UPSTREAM_DIALECT.getKey(), setValue(upstream.toString()));
-        attributeMap.put(DOWNSTREAM_DIALECT.getKey(), setValue(downstream.toString()));
-        attributeMap.put(DRIVER_RESPONSE.getKey(), setValue(response.toString()));
+        attributeMap.put(UPSTREAM_DIALECT.getKey(), upstream.toString());
+        attributeMap.put(DOWNSTREAM_DIALECT.getKey(), downstream.toString());
+        attributeMap.put(DRIVER_RESPONSE.getKey(), response.toString());
 
         Capabilities responseCaps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
         Capabilities mergedCapabilities = capabilities.merge(responseCaps);
@@ -202,7 +200,7 @@ public class RelaySessionFactory implements SessionFactory {
         String errorMessage =
             String.format(
                 "Error while creating session with the service %s. %s", serviceUrl, e.getMessage());
-        attributeMap.put(EXCEPTION_MESSAGE.getKey(), setValue(errorMessage));
+        attributeMap.put(EXCEPTION_MESSAGE.getKey(), errorMessage);
         span.addEvent(EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(new SessionNotCreatedException(errorMessage));
       }
@@ -220,7 +218,7 @@ public class RelaySessionFactory implements SessionFactory {
       HttpClient client = clientFactory.createClient(serviceStatusUrl);
       HttpResponse response =
           client.execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
-      LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
+      LOG.log(Debug.getDebugLogLevel(), () -> Contents.string(response));
       return response.getStatus() == 200;
     } catch (Exception e) {
       LOG.log(

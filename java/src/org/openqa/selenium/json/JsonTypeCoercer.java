@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
@@ -42,6 +41,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.internal.Require;
 
+/**
+ * The <b>JsonTypeCoercer</b> class manages a collection of type coercers, providing a single source
+ * for obtaining functions to convert JSON strings into instances of their corresponding Java types.
+ */
 class JsonTypeCoercer {
 
   private final Set<TypeCoercer<?>> additionalCoercers;
@@ -123,9 +126,7 @@ class JsonTypeCoercer {
                 (l, r) -> {
                   l.putAll(r);
                   return l;
-                },
-                UNORDERED,
-                CONCURRENT)));
+                })));
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
@@ -147,6 +148,13 @@ class JsonTypeCoercer {
     return result;
   }
 
+  /**
+   * Extract the coercer that supports the specified type from the collection managed by this {@code
+   * JsonTypeCoercer}, returning a coercion function for the client to use.
+   *
+   * @param type data type for deserialization (class or {@link TypeToken})
+   * @return {@link BiFunction} object to deserialize the specified Java type
+   */
   private BiFunction<JsonInput, PropertySetting, Object> buildCoercer(Type type) {
     return coercers.stream()
         .filter(coercer -> coercer.test(narrow(type)))

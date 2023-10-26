@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 class BrowsingContext {
   constructor(driver) {
@@ -26,13 +27,13 @@ class BrowsingContext {
       throw Error('WebDriver instance must support BiDi protocol')
     }
 
-    if (type != undefined && !['window', 'tab'].includes(type)) {
+    if (type !== undefined && !['window', 'tab'].includes(type)) {
       throw Error(`Valid types are 'window' & 'tab'. Received: ${type}`)
     }
 
     this.bidi = await this._driver.getBidi()
     this._id =
-      browsingContextId == undefined
+      browsingContextId === undefined
         ? (await this.create(type, referenceContext))['result']['context']
         : browsingContextId
   }
@@ -65,7 +66,7 @@ class BrowsingContext {
    */
   async navigate(url, readinessState = undefined) {
     if (
-      readinessState != undefined &&
+      readinessState !== undefined &&
       !['none', 'interactive', 'complete'].includes(readinessState)
     ) {
       throw Error(
@@ -117,7 +118,7 @@ class BrowsingContext {
   }
 
   /**
-   * Closes the browing context
+   * Closes the browsing context
    * @returns {Promise<void>}
    */
   async close() {
@@ -164,6 +165,78 @@ class BrowsingContext {
 
     const response = await this.bidi.send(params)
     return new PrintResult(response.result.data)
+  }
+
+  async captureScreenshot() {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  async captureBoxScreenshot(x, y, width, height) {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'viewport',
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  async captureElementScreenshot(
+    sharedId,
+    handle = undefined,
+    scrollIntoView = undefined
+  ) {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'element',
+          element: {
+            sharedId: sharedId,
+            handle: handle,
+          },
+          scrollIntoView: scrollIntoView,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  checkErrorInScreenshot(response) {
+    if ('error' in response) {
+      const { error, msg } = response
+
+      switch (error) {
+        case 'invalid argument':
+          throw new InvalidArgumentError(msg)
+
+        case 'no such frame':
+          throw new NoSuchFrameError(msg)
+      }
+    }
   }
 }
 

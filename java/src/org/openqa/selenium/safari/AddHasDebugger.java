@@ -18,7 +18,6 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -28,13 +27,14 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasDebugger implements AugmenterProvider<HasDebugger>, AdditionalHttpCommands {
 
   public static final String ATTACH_DEBUGGER = "attachDebugger";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           ATTACH_DEBUGGER,
           new CommandInfo("/session/:sessionId/apple/attach_debugger", HttpMethod.POST));
 

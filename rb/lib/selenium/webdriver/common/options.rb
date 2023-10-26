@@ -86,12 +86,6 @@ module Selenium
 
       def add_option(name, value = nil)
         name, value = name.first if value.nil? && name.is_a?(Hash)
-
-        unless name.to_s.include?(':')
-          WebDriver.logger.deprecate('Options#add_option for w3c or browser specific capabilities',
-                                     'applicable attribute accessors or pass into constructor',
-                                     id: :add_option)
-        end
         @options[name] = value
       end
 
@@ -113,24 +107,11 @@ module Selenium
         w3c_options = process_w3c_options(options)
 
         browser_options = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
-          from_name = options.delete(capability_name)
-          from_alias = options.delete(capability_alias)
-          capability_value = if !from_name.nil? && capability_alias != capability_name
-                               WebDriver.logger.deprecate("#{capability_name} as option",
-                                                          capability_alias.to_s, id: :option_symbols)
-                               from_name
-                             elsif !from_alias.nil?
-                               from_alias
-                             end
-
+          capability_value = options.delete(capability_alias)
           hash[capability_name] = capability_value unless capability_value.nil?
         end
 
-        unless options.empty?
-          msg = 'These options are not w3c compliant and will result in failures in a future release'
-          WebDriver.logger.warn("#{msg}: #{options}", id: :w3c_options)
-          browser_options.merge!(options)
-        end
+        raise Error::WebDriverError, "These options are not w3c compliant: #{options}" unless options.empty?
 
         browser_options = {self.class::KEY => browser_options} if defined?(self.class::KEY)
 
@@ -145,7 +126,7 @@ module Selenium
       end
 
       def process_w3c_options(options)
-        w3c_options = options.select { |key, _val| w3c?(key) }
+        w3c_options = options.select { |key, val| w3c?(key) && !val.nil? }
         w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
         options.delete_if { |key, _val| w3c?(key) }
         w3c_options

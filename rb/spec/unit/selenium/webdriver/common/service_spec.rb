@@ -31,8 +31,6 @@ module Selenium
       end
 
       describe 'browser shortcuts' do
-        before { allow(Platform).to receive(:find_binary).and_return(service_path) }
-
         let(:args) { %w[--foo --bar] }
 
         it 'creates Chrome instance' do

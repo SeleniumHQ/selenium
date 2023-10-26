@@ -240,6 +240,9 @@ namespace OpenQA.Selenium
             return pageRangePartValue;
         }
 
+        /// <summary>
+        /// An object representing the page size of the print options.
+        /// </summary>
         public class PageSize
         {
             private double height = DefaultPageHeight;
@@ -298,6 +301,9 @@ namespace OpenQA.Selenium
             }
         }
 
+        /// <summary>
+        /// An object representing the margins for printing.
+        /// </summary>
         public class Margins
         {
             private double top = DefaultMarginSize;
@@ -305,6 +311,9 @@ namespace OpenQA.Selenium
             private double left = DefaultMarginSize;
             private double right = DefaultMarginSize;
 
+            /// <summary>
+            /// Gets or sets the top margin of the print options.
+            /// </summary>
             public double Top
             {
                 get { return top; }
@@ -319,6 +328,9 @@ namespace OpenQA.Selenium
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the bottom margin of the print options.
+            /// </summary>
             public double Bottom
             {
                 get { return bottom; }
@@ -333,6 +345,9 @@ namespace OpenQA.Selenium
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the left margin of the print options.
+            /// </summary>
             public double Left
             {
                 get { return left; }
@@ -347,6 +362,9 @@ namespace OpenQA.Selenium
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the right margin of the print options.
+            /// </summary>
             public double Right
             {
                 get { return right; }

@@ -51,7 +51,10 @@ from selenium.common.exceptions import WebDriverException
 
 
 class ExceptionMapping:
-    """Maps each errorcode in ErrorCode object to corresponding exception."""
+    """
+    :Maps each errorcode in ErrorCode object to corresponding exception
+    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification
+    """
 
     NO_SUCH_ELEMENT = NoSuchElementException
     NO_SUCH_FRAME = NoSuchFrameException

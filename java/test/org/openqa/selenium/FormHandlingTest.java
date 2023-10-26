@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -184,6 +185,10 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
+    // Apparently on chrome we need to wait for the element to be gone if we're loading the same
+    // page again
+    wait.until(d -> d.findElements(By.id("upload")).isEmpty());
+
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
     assertThat(uploadElement.getAttribute("value")).isEmpty();
@@ -211,7 +216,7 @@ class FormHandlingTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
-    WebElement element = driver.findElement(By.id("inputWithText"));
+    WebElement element = wait.until(presenceOfElementLocated(By.id("inputWithText")));
     element.sendKeys(". Some text");
     String value = element.getAttribute("value");
 

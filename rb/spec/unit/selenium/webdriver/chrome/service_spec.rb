@@ -33,7 +33,7 @@ module Selenium
           after { described_class.driver_path = nil }
 
           it 'uses nil path and default port' do
-            service = described_class.chrome
+            service = described_class.new
 
             expect(service.port).to eq Service::DEFAULT_PORT
             expect(service.host).to eq Platform.localhost
@@ -44,7 +44,7 @@ module Selenium
             path = 'foo'
             port = 5678
 
-            service = described_class.chrome(path: path, port: port)
+            service = described_class.new(path: path, port: port)
 
             expect(service.executable_path).to eq path
             expect(service.port).to eq port
@@ -52,42 +52,34 @@ module Selenium
           end
 
           it 'does not create args by default' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
-
             service = described_class.new
 
             expect(service.extra_args).to be_empty
           end
 
           it 'uses sets log path to stdout' do
-            service = described_class.chrome(log: :stdout)
+            service = described_class.new(log: :stdout)
 
             expect(service.log).to eq $stdout
           end
 
           it 'uses sets log path to stderr' do
-            service = described_class.chrome(log: :stderr)
+            service = described_class.new(log: :stderr)
 
             expect(service.log).to eq $stderr
           end
 
-          it 'uses provided args' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
+          it 'setting log output as a file converts to argument' do
+            service = described_class.new(log: '/path/to/log.txt')
 
-            service = described_class.chrome(args: ['--foo', '--bar'])
-
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.log).to be_nil
+            expect(service.args).to eq ['--log-path=/path/to/log.txt']
           end
 
-          it 'uses args when passed in as a Hash' do
-            allow(Platform).to receive(:find_binary).and_return(service_path)
+          it 'uses provided args' do
+            service = described_class.new(args: ['--foo', '--bar'])
 
-            expect {
-              service = described_class.new(args: {log_path: '/path/to/log',
-                                                   verbose: true})
-
-              expect(service.extra_args).to eq ['--log-path=/path/to/log', '--verbose']
-            }.to have_deprecated(:driver_opts)
+            expect(service.extra_args).to eq ['--foo', '--bar']
           end
         end
 
@@ -112,7 +104,7 @@ module Selenium
           end
 
           it 'is created when :url is not provided' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new).and_return(service)
@@ -122,7 +114,7 @@ module Selenium
           end
 
           it 'accepts :service without creating a new instance' do
-            allow(SeleniumManager).to receive(:driver_path).and_return('path')
+            allow(DriverFinder).to receive(:path).and_return('path')
             allow(Platform).to receive(:assert_file)
             allow(Platform).to receive(:assert_executable)
             allow(described_class).to receive(:new)

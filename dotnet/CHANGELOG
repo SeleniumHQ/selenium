@@ -1,3 +1,92 @@
+v4.14.1
+======
+* Fix add CDP files for v118 and remove v115
+
+v4.14.0
+======
+* Add CDP files for v118 and remove v115
+* Normalize selenium manager path (#12823)
+* Remove IdentityModel nuget from bazel workspace (#12834)
+* Update `rules_dotnet` to the latest version (#12784)
+* Rename strong assembly name (#12861)
+* Fix ci dotnet build on github actions (#12863)
+* Deprecate saving screenshots with different image formats (#12878)
+* Remove tools folder not related to selenium (#12899)
+
+v4.13.1
+======
+* Fix bug in selenium manager paths to work on mac and linux
+* Don't break devtools processing events thread in case of unexpected exception (#12820)
+
+v4.13.0
+======
+* Add CDP files for v117 and remove v114
+* Stabilize cdp network monitoring via increasing default timeout (#12701)
+* Configure await false to all awaitable invocations (#12664)
+* Update cdp default command timeout in inline docs (#12707)
+* Indicate end of output taken from selenium manager (#12744)
+* Declare selenium manager binaries as content (#12711)
+* Add browsing context methods for reload, screenshot and prompt
+* Allow user to start service before creating driver (#12816)
+* Remove Microsoft.IdentityModel.Tokens as dependency (#12777)
+
+v4.12.4
+======
+* No code changes; issue with 4.12.3 release
+
+v4.12.3
+======
+* Fix saving png screenshot as file (#12654)
+* Correcting failures in CDP Network event tests
+* Close dev tools session safely (#12660)
+* Send data over cdp consecutively (#12666)
+* Show output from selenium manager error stream (#12677)
+* Return Task instead of wait it in generated CDP method invocations (#12672)
+* Invoke console log api called event many times depending on count of args (#12669)
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
+v4.12.2
+======
+* No code changes; issue with 4.12.1 release
+
+v4.12.1
+======
+* Only target Netstandard 2.0 for release
+* Fix bug for disposal of ClientWebSocket
+
+v4.12.0
+======
+* Add CDP files for v116 and remove v113
+* Fix bug with driver location parsing as a file when no trailing slash (#12473)
+* Improve performance in DriverFactory (#12497)
+* Avoid async void events in CDP Network session (#12486)
+* Rename methods in Actions class to follow .NET convention (#12439)
+* Fix bug with Selenium Manager executing in new window (#12593)
+* Simplify to only target .NET Standard 2.0 (#12608)
+* DriverFinder executed in Driver constructor not Service constructor (#12534)
+* Refactor WebScocket communication for BiDi (#12614)
+* Avoid potential deadlocks for new dev tools sessions (#12592)
+* Send data over cdp consecutively (#12591)
+
+v4.11.0
+======
+* Add CDP files for v115 and remove v112
+* Improving .NET API docs
+* Implementation of event wrapped shadow root element (#12073)
+* Include generation of support project (#12193)
+* Make WebDriver.csproj file more friendly with native pack command (#12235)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* netcoreapp3.1 is deprecated
+* Allow setting a different pointer, keyboard, or wheel on input device (#11513)
+* Add move to location method to Actions (#11509)
+* Add support for Safari Technology Preview (#12342)
+* Use Selenium Manager to locate drivers on PATH (#12344)
+* Allow running tests with Edge
+* Add browser output from selenium manager to options (#12405)
+* Fix error when we send non-base64 data for fetch command (#12431)
+* Fix continueResponse method in CDP (#12445)
+
+
 v4.10.0
 ======
 * Add CDP files for v114 and remove v111

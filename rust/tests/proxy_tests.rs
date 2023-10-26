@@ -15,44 +15,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::assert_output;
 use assert_cmd::Command;
-
 use exitcode::DATAERR;
+
+mod common;
 
 #[tokio::test]
 async fn wrong_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--proxy",
-        "http://localhost:12345",
-        "--clear-cache",
-    ])
-    .assert()
-    .failure()
-    .code(DATAERR);
-}
+    let result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            "chrome",
+            "--proxy",
+            "http://localhost:12345",
+        ])
+        .assert()
+        .try_success();
 
+    assert_output(&mut cmd, result, vec!["in PATH"], DATAERR);
+}
 #[test]
 fn wrong_protocol_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
+    let result = cmd
+        .args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
-        .failure()
-        .code(DATAERR);
+        .try_success();
+
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }
 
 #[test]
 fn wrong_port_proxy_test() {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--proxy",
-        "https:://localhost:1234567",
-    ])
-    .assert()
-    .failure()
-    .code(DATAERR);
+    let result = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--proxy",
+            "https:://localhost:1234567",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }

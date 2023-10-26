@@ -11,14 +11,14 @@ build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
 
-build --java_language_version=11
-build --java_runtime_version=remotejdk_11
-build --tool_java_language_version=11
-build --tool_java_runtime_version=remotejdk_11
+build --java_language_version=17
+build --java_runtime_version=remotejdk_17
+build --tool_java_language_version=17
+build --tool_java_runtime_version=remotejdk_17
 
-# We target java 8 by default
+# We target java 11 by default
 
-build --javacopt="--release 8"
+build --javacopt="--release 11"
 
 # Require java dependencies to be used and first-order
 
@@ -114,8 +114,6 @@ build:remote --incompatible_enable_cc_toolchain_resolution
 build:remote --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 test:remote --test_env=DISPLAY=:99.0
 test:remote --test_tag_filters=-edge,-safari,-remote
-# Skip tests that we mark specifically as being unable to run on the rbe
-test:remote --test_tag_filters=-no-rbe
 
 # Env vars we can hard code
 build:remote --action_env=HOME=/home/dev
@@ -123,7 +121,7 @@ build:remote --action_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=HOME=/home/dev
 
 # Make sure we sniff credentials properly
-build:remote --experimental_credential_helper=%workspace%/scripts/credential-helper.sh
+build:remote --credential_helper=%workspace%/scripts/credential-helper.sh
 
 # Use pinned browsers when running remotely
 build:remote --//common:pin_browsers
@@ -144,3 +142,7 @@ test:remote --test_timeout=600
 build:remote-ci --config=remote
 build:remote-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
 build:remote-ci --bes_upload_mode=wait_for_upload_complete
+
+# Configuration changes suggested by EngFlow
+build:remote --grpc_keepalive_time=30s
+build:remote --nolegacy_important_outputs

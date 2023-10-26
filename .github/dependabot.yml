@@ -5,4 +5,52 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 99
+    open-pull-requests-limit: 5
+    labels:
+      - "C-build"
+      - "dependencies"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: '08:00'
+    open-pull-requests-limit: 10
+    labels:
+      - "C-nodejs"
+      - "dependencies"
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: '08:00'
+    open-pull-requests-limit: 10
+    labels:
+      - "C-rb"
+      - "dependencies"
+  - package-ecosystem: "cargo"
+    directory: "/rust"
+    schedule:
+      interval: daily
+      time: '08:00'
+    open-pull-requests-limit: 10
+    labels:
+      - "C-rust"
+      - "dependencies"
+  - package-ecosystem: "pip"
+    directory: "/py"
+    schedule:
+      interval: daily
+      time: '08:00'
+    open-pull-requests-limit: 10
+    labels:
+      - "C-py"
+      - "dependencies"
+  - package-ecosystem: "nuget"
+    directory: "/dotnet"
+    schedule:
+      interval: daily
+      time: '08:00'
+    open-pull-requests-limit: 0
+    labels:
+      - "C-dotnet"
+      - "dependencies"

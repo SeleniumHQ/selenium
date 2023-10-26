@@ -15,13 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 import typing
 import warnings
 
 from selenium.webdriver.common import service
-
-DEFAULT_EXECUTABLE_PATH: str = "/usr/bin/safaridriver"
 
 
 class Service(service.Service):
@@ -37,7 +34,7 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         quiet: bool = None,
         service_args: typing.Optional[typing.List[str]] = None,
@@ -45,7 +42,6 @@ class Service(service.Service):
         reuse_service=False,
         **kwargs,
     ) -> None:
-        self._check_executable(executable_path)
         self.service_args = service_args or []
         if quiet is not None:
             warnings.warn("quiet is no longer needed to supress output", DeprecationWarning, stacklevel=2)
@@ -57,15 +53,6 @@ class Service(service.Service):
             env=env,
             **kwargs,
         )
-
-    @staticmethod
-    def _check_executable(executable_path) -> None:
-        if not os.path.exists(executable_path):
-            if "Safari Technology Preview" in executable_path:
-                message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
-            else:
-                message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
-            raise Exception(message)
 
     def command_line_args(self) -> typing.List[str]:
         return ["-p", f"{self.port}"] + self.service_args
@@ -81,4 +68,6 @@ class Service(service.Service):
 
     @reuse_service.setter
     def reuse_service(self, reuse: bool) -> None:
+        if not isinstance(reuse, bool):
+            raise TypeError("reuse must be a boolean")
         self._reuse_service = reuse

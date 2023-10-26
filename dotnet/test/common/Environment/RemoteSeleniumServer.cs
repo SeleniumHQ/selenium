@@ -32,23 +32,9 @@ namespace OpenQA.Selenium.Environment
                             "go //java/src/org/openqa/grid/selenium:selenium"));
                 }
 
-                string serviceDirectory = EnvironmentManager.Instance.DriverServiceDirectory;
-                if (string.IsNullOrEmpty(serviceDirectory))
-                {
-                    serviceDirectory = EnvironmentManager.Instance.CurrentDirectory;
-                }
-
-                string ieDriverExe = System.IO.Path.Combine(serviceDirectory, "IEDriverServer.exe");
-                string chromeDriverExe = System.IO.Path.Combine(serviceDirectory, "chromedriver.exe");
-                string geckoDriverExe = System.IO.Path.Combine(serviceDirectory, "geckodriver.exe");
-                string edgeDriverExe = System.IO.Path.Combine(serviceDirectory, "msedgedriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe
-                                                     + " -Dwebdriver.gecko.driver=" + geckoDriverExe
-                                                     + " -Dwebdriver.chrome.driver=" + chromeDriverExe
-                                                     + " -Dwebdriver.edge.driver=" + edgeDriverExe
-                                                     + " -jar " + serverJarName + " standalone --port 6000";
+                webserverProcess.StartInfo.Arguments = " -jar " + serverJarName + " standalone --port 6000 --selenium-manager true";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));

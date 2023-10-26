@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderTha
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,11 +34,15 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-class NetworkInterceptorRestTest {
+class NetworkInterceptorRestTest extends JupiterTestBase {
 
   private NettyAppServer appServer;
   private WebDriver driver;
@@ -52,7 +57,7 @@ class NetworkInterceptorRestTest {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get();
+    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
@@ -77,6 +82,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -113,6 +119,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -149,6 +156,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptPostRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -185,6 +193,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptDeleteRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
@@ -221,6 +230,7 @@ class NetworkInterceptorRestTest {
   }
 
   @Test
+  @NoDriverBeforeTest
   void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =

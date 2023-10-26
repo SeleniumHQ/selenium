@@ -22,7 +22,6 @@ import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
 import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-import com.google.common.io.ByteStreams;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,6 +39,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private static final int CHUNK_SIZE = 1024 * 1024;
+  private static final ThreadLocal<byte[]> CHUNK_CACHE =
+      ThreadLocal.withInitial(() -> new byte[CHUNK_SIZE]);
   private final boolean allowCors;
 
   public ResponseConverter(boolean allowCors) {
@@ -57,9 +58,9 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     HttpResponse seResponse = (HttpResponse) msg;
 
     // We may not know how large the response is, but figure it out if we can.
-    byte[] ary = new byte[CHUNK_SIZE];
+    byte[] ary = CHUNK_CACHE.get();
     InputStream is = seResponse.getContent().get();
-    int byteCount = ByteStreams.read(is, ary, 0, ary.length);
+    int byteCount = is.readNBytes(ary, 0, ary.length);
     // If there are no bytes left to read, then -1 is returned by read, and this is bad.
     byteCount = byteCount == -1 ? 0 : byteCount;
 
@@ -70,7 +71,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
           new DefaultFullHttpResponse(
               HTTP_1_1,
               HttpResponseStatus.valueOf(seResponse.getStatus()),
-              Unpooled.wrappedBuffer(ary, 0, byteCount));
+              Unpooled.copiedBuffer(ary, 0, byteCount));
       first.headers().addInt(CONTENT_LENGTH, byteCount);
       copyHeaders(seResponse, first);
       ctx.write(first);
@@ -81,7 +82,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
       ctx.write(first);
 
       // We need to write the first response.
-      ctx.write(new DefaultHttpContent(Unpooled.wrappedBuffer(ary)));
+      ctx.write(new DefaultHttpContent(Unpooled.copiedBuffer(ary)));
 
       HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is, CHUNK_SIZE));
       ChannelFuture future = ctx.write(writer);
@@ -94,18 +95,16 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
   }
 
   private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
-    for (String name : seResponse.getHeaderNames()) {
-      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name)
-          || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
-        continue;
-      }
-      for (String value : seResponse.getHeaders(name)) {
-        if (value == null) {
-          continue;
-        }
-        first.headers().add(name, value);
-      }
-    }
+    seResponse.forEachHeader(
+        (name, value) -> {
+          if (CONTENT_LENGTH.contentEqualsIgnoreCase(name)
+              || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
+            return;
+          } else if (value == null) {
+            return;
+          }
+          first.headers().add(name, value);
+        });
 
     if (allowCors) {
       first.headers().add("Access-Control-Allow-Origin", "*");

@@ -28,6 +28,10 @@ namespace OpenQA.Selenium.DevTools.V85
     {
         private DevToolsSessionDomains domains;
 
+        /// <summary>
+        /// Initializes a new instance of the V85Domains class.
+        /// </summary>
+        /// <param name="session">The DevToolsSession to use with this set of domains.</param>
         public V85Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);

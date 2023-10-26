@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -32,6 +31,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasFullPageScreenshot<X>
     implements AugmenterProvider<HasFullPageScreenshot>, AdditionalHttpCommands {
@@ -39,7 +39,7 @@ public class AddHasFullPageScreenshot<X>
   public static final String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";
 
   private static final Map<String, CommandInfo> COMMANDS =
-      ImmutableMap.of(
+      Map.of(
           FULL_PAGE_SCREENSHOT,
           new CommandInfo("/session/:sessionId/moz/screenshot/full", HttpMethod.GET));
 

@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.netty.server.SimpleHttpServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -38,14 +37,12 @@ class ReverseProxyHandlerTest {
 
   @Test
   void shouldForwardRequestsToEndPoint()
-    throws MalformedURLException, URISyntaxException, InterruptedException {
-    try (SimpleHttpServer server = new SimpleHttpServer()){
-      server.registerEndpoint(HttpMethod.GET, "/ok",
-                              SimpleHttpServer.ECHO_HEADERS_HANDLER);
+      throws MalformedURLException, URISyntaxException, InterruptedException {
+    try (SimpleHttpServer server = new SimpleHttpServer()) {
+      server.registerEndpoint(HttpMethod.GET, "/ok", SimpleHttpServer.ECHO_HEADERS_HANDLER);
 
-      HttpHandler
-        handler =
-        new ReverseProxyHandler(tracer, factory.createClient(server.baseUri().toURL()));
+      HttpHandler handler =
+          new ReverseProxyHandler(tracer, factory.createClient(server.baseUri().toURL()));
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
       req.addHeader("X-Cheese", "Cake");
       HttpResponse response = handler.execute(req);

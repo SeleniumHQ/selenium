@@ -50,7 +50,7 @@ class NetworkOptionsTest {
    */
   @Test
   void triggerFailureInTracing()
-    throws URISyntaxException, InterruptedException, MalformedURLException {
+      throws URISyntaxException, InterruptedException, MalformedURLException {
     // I better explain this. The only hint that we have that our use of
     // OpenTelemetry is wrong is found in the log message that the
     // io.grpc.Context generates when `Context.detach` is called in an

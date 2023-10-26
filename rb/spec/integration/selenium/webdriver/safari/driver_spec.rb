@@ -36,13 +36,13 @@ module Selenium
             Safari.use_technology_preview = nil
           end
 
-          it 'sets before options', exclusive: {browser: :safari} do
+          it 'sets before options', exclusive: {browser: :safari_preview} do
             Safari.technology_preview!
             local_driver = WebDriver.for :safari
             expect(local_driver.capabilities.browser_name).to eq 'Safari Technology Preview'
           end
 
-          it 'sets after options' do
+          it 'sets after options', exclusive: {browser: :safari_preview} do
             options = Options.safari
             Safari.technology_preview!
             local_driver = WebDriver.for :safari, options: options
