@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionqueue.local;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -35,6 +36,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -168,6 +171,98 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
+  void testCompleteWithCreatedSession(Supplier<TestData> supplier) throws InterruptedException {
+    setup(supplier);
+
+    AtomicBoolean isCompleted = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    new Thread(
+            () -> {
+              waitUntilAddedToQueue(sessionRequest);
+
+              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+              SessionId sessionId = new SessionId("123");
+              Session session =
+                  new Session(
+                      sessionId,
+                      URI.create("https://example.com"),
+                      CAPS,
+                      capabilities,
+                      Instant.now());
+              CreateSessionResponse sessionResponse =
+                  new CreateSessionResponse(
+                      session,
+                      JSON.toJson(
+                              ImmutableMap.of(
+                                  "value",
+                                  ImmutableMap.of(
+                                      "sessionId", sessionId,
+                                      "capabilities", capabilities)))
+                          .getBytes(UTF_8));
+
+              isCompleted.set(
+                  queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse)));
+              latch.countDown();
+            })
+        .start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequest);
+
+    assertThat(latch.await(1000, MILLISECONDS)).isTrue();
+    assertThat(isCompleted.get()).isTrue();
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void testCompleteWithSessionInTimeout(Supplier<TestData> supplier) throws InterruptedException {
+    setup(supplier);
+
+    AtomicBoolean isCompleted = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    new Thread(
+            () -> {
+              waitUntilAddedToQueue(sessionRequest);
+              try {
+                Thread.sleep(5500); // simulate session long to create
+              } catch (InterruptedException ignore) {
+              }
+              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+              SessionId sessionId = new SessionId("123");
+              Session session =
+                  new Session(
+                      sessionId,
+                      URI.create("https://example.com"),
+                      CAPS,
+                      capabilities,
+                      Instant.now());
+              CreateSessionResponse sessionResponse =
+                  new CreateSessionResponse(
+                      session,
+                      JSON.toJson(
+                              ImmutableMap.of(
+                                  "value",
+                                  ImmutableMap.of(
+                                      "sessionId", sessionId,
+                                      "capabilities", capabilities)))
+                          .getBytes(UTF_8));
+
+              isCompleted.set(
+                  queue.complete(
+                      sessionRequest.getRequestId(),
+                      Either.left(new SessionNotCreatedException("not created"))));
+              latch.countDown();
+            })
+        .start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequest);
+    assertThat(latch.await(1000, MILLISECONDS)).isTrue();
+    assertThat(isCompleted.get()).isFalse();
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
   void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
@@ -210,7 +305,8 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBeAbleToAddToQueueWithTimeoutAndGetValidResponse(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueWithTimeoutDoNotCreateSessionAfterTimeout(
+      Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest sessionRequestWithTimeout =
@@ -240,39 +336,25 @@ class LocalNewSessionQueueTest {
               Map<Capabilities, Long> stereotypes = new HashMap<>();
               stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
               queue.getNextAvailable(stereotypes);
-
-              SessionId sessionId = new SessionId("123");
-              Session session =
-                  new Session(
-                      sessionId,
-                      URI.create("https://example.com"),
-                      CAPS,
-                      capabilities,
-                      Instant.now());
-              CreateSessionResponse sessionResponse =
-                  new CreateSessionResponse(
-                      session,
-                      JSON.toJson(
-                              ImmutableMap.of(
-                                  "value",
-                                  ImmutableMap.of(
-                                      "sessionId", sessionId,
-                                      "capabilities", capabilities)))
-                          .getBytes(UTF_8));
-
               try {
-                Thread.sleep(2000); // simulate session creation delay
+                Thread.sleep(2000); // wait to go past the request session timeout
               } catch (InterruptedException ignore) {
               }
-              queue.complete(
-                  sessionRequestWithTimeout.getRequestId(), Either.right(sessionResponse));
+
+              // LocalDistributor could not distribute the session, add it back to queue
+              // it should not be re-added to queue and send back error on session creation
+              queue.retryAddToQueue(sessionRequestWithTimeout);
             })
         .start();
 
+    LocalDateTime start = LocalDateTime.now();
     HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
 
+    // check we do not wait more than necessary
+    assertThat(LocalDateTime.now().minusSeconds(10).isBefore(start)).isTrue();
+
     assertThat(isPresent.get()).isTrue();
-    assertEquals(HTTP_OK, httpResponse.getStatus());
+    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
 
   @ParameterizedTest

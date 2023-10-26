@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -838,8 +839,42 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           }
         }
 
-        sessionQueue.complete(reqId, response);
+        // 'complete' will return 'true' if the session has not timed out during the creation
+        // process: it's still a valid session as it can be used by the client
+        boolean isSessionValid = sessionQueue.complete(reqId, response);
+        // If the session request has timed out, tell the Node to remove the session, so that does
+        // not stall
+        if (!isSessionValid && response.isRight()) {
+          LOG.log(
+              Debug.getDebugLogLevel(),
+              "Session for request {0} has been created but it has timed out, stopping it to avoid"
+                  + " stalled browser",
+              reqId.toString());
+          URI nodeURI = response.right().getSession().getUri();
+          Node node = getNodeFromURI(nodeURI);
+          if (node != null) {
+            node.stop(response.right().getSession().getId());
+          }
+        }
       }
+    }
+  }
+
+  protected Node getNodeFromURI(URI uri) {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      Optional<NodeStatus> nodeStatus =
+          model.getSnapshot().stream()
+              .filter(node -> node.getExternalUri().equals(uri))
+              .findFirst();
+      if (nodeStatus.isPresent()) {
+        return nodes.get(nodeStatus.get().getNodeId());
+      } else {
+        return null;
+      }
+    } finally {
+      readLock.unlock();
     }
   }
 }

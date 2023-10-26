@@ -262,13 +262,17 @@ namespace OpenQA.Selenium
                 return;
             }
 
-            if (this.driverServicePath == null)
+            this.driverServiceProcess = new Process();
+
+            if (this.driverServicePath != null)
             {
-                DriverFinder.FullPath(this.GetDefaultDriverOptions());
+                this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
+            }
+            else
+            {
+                this.driverServiceProcess.StartInfo.FileName = DriverFinder.FullPath(this.GetDefaultDriverOptions());
             }
 
-            this.driverServiceProcess = new Process();
-            this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;

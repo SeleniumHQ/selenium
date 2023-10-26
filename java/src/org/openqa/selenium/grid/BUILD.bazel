@@ -154,9 +154,10 @@ java_export(
         "//java/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
         "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/safari",
         "//javascript/grid-ui:react_jar",
-    ] + CDP_DEPS,
+    ],
     deps = [
         ":base-command",
         "//java/src/org/openqa/selenium/cli",
