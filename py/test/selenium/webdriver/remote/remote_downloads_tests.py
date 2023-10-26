@@ -24,7 +24,6 @@ import pytest
 from selenium.webdriver.common.by import By
 
 
-@pytest.mark.skipif(True, reason="Needs to be remote with se:downloadsEnabled set")
 def test_get_downloadable_files(driver, pages):
     pages.load("downloads/download.html")
     driver.find_element(By.ID, "file-1").click()
@@ -36,7 +35,6 @@ def test_get_downloadable_files(driver, pages):
     assert "file_2.jpg" in file_names
 
 
-@pytest.mark.skipif(True, reason="Needs to be remote with se:downloadsEnabled set")
 def test_download_file(driver, pages):
     pages.load("downloads/download.html")
     driver.find_element(By.ID, "file-1").click()
@@ -53,7 +51,6 @@ def test_download_file(driver, pages):
                 assert "Hello, World!" in file_content.decode("utf-8")
 
 
-@pytest.mark.skipif(True, reason="Needs to be remote with se:downloadsEnabled set")
 def test_delete_downloadable_files(driver, pages):
     pages.load("downloads/download.html")
     driver.find_element(By.ID, "file-1").click()
