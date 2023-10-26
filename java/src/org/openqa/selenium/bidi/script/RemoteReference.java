@@ -40,6 +40,7 @@ public class RemoteReference extends LocalValue {
     }
   }
 
+  @Override
   public Map<String, Object> asMap() {
     Map<String, String> toReturn = new TreeMap<>();
     if (handle != null) {
