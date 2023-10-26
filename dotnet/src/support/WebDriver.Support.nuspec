@@ -19,7 +19,7 @@
     <icon>icon.png</icon>
     <tags>selenium webdriver support browser automation</tags>
     <releaseNotes>
-      See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/selenium-$version$/dotnet/CHANGELOG.
+      See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG.
     </releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.0">
