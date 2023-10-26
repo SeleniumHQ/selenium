@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
@@ -61,38 +60,35 @@ public class ErrorCodec {
   // there is no guarantee a Set will keep the order (and we have no .equals / .hashCode
   // implementation too).
   private static final List<W3CError> ERRORS =
-      ImmutableList.<W3CError>builder()
-          .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
-          .add(new W3CError("detached shadow root", DetachedShadowRootException.class, 404))
-          .add(
-              new W3CError(
-                  "element click intercepted", ElementClickInterceptedException.class, 400))
-          .add(new W3CError("element not interactable", ElementNotInteractableException.class, 400))
-          .add(new W3CError("invalid argument", InvalidArgumentException.class, 400))
-          .add(new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400))
-          .add(new W3CError("invalid element state", InvalidElementStateException.class, 400))
-          .add(new W3CError("invalid selector", InvalidSelectorException.class, 400))
-          .add(new W3CError("invalid session id", NoSuchSessionException.class, 404))
-          .add(new W3CError("insecure certificate", InsecureCertificateException.class, 400))
-          .add(new W3CError("javascript error", JavascriptException.class, 500))
-          .add(new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500))
-          .add(new W3CError("no such alert", NoAlertPresentException.class, 404))
-          .add(new W3CError("no such cookie", NoSuchCookieException.class, 404))
-          .add(new W3CError("no such element", NoSuchElementException.class, 404))
-          .add(new W3CError("no such frame", NoSuchFrameException.class, 404))
-          .add(new W3CError("no such shadow root", NoSuchShadowRootException.class, 404))
-          .add(new W3CError("no such window", NoSuchWindowException.class, 404))
-          .add(new W3CError("session not created", SessionNotCreatedException.class, 500))
-          .add(new W3CError("stale element reference", StaleElementReferenceException.class, 404))
-          .add(new W3CError("timeout", TimeoutException.class, 500))
-          .add(new W3CError("unable to capture screen", ScreenshotException.class, 500))
-          .add(new W3CError("unable to set cookie", UnableToSetCookieException.class, 500))
-          .add(new W3CError("unexpected alert open", UnhandledAlertException.class, 500))
-          .add(new W3CError("unsupported operation", UnsupportedCommandException.class, 404))
-          .add(new W3CError("unknown command", UnsupportedCommandException.class, 404))
-          .add(new W3CError("unknown method", UnsupportedCommandException.class, 405))
-          .add(new W3CError("unknown error", WebDriverException.class, 500))
-          .build();
+      List.of(
+          new W3CError("script timeout", ScriptTimeoutException.class, 500),
+          new W3CError("detached shadow root", DetachedShadowRootException.class, 404),
+          new W3CError("element click intercepted", ElementClickInterceptedException.class, 400),
+          new W3CError("element not interactable", ElementNotInteractableException.class, 400),
+          new W3CError("invalid argument", InvalidArgumentException.class, 400),
+          new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400),
+          new W3CError("invalid element state", InvalidElementStateException.class, 400),
+          new W3CError("invalid selector", InvalidSelectorException.class, 400),
+          new W3CError("invalid session id", NoSuchSessionException.class, 404),
+          new W3CError("insecure certificate", InsecureCertificateException.class, 400),
+          new W3CError("javascript error", JavascriptException.class, 500),
+          new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500),
+          new W3CError("no such alert", NoAlertPresentException.class, 404),
+          new W3CError("no such cookie", NoSuchCookieException.class, 404),
+          new W3CError("no such element", NoSuchElementException.class, 404),
+          new W3CError("no such frame", NoSuchFrameException.class, 404),
+          new W3CError("no such shadow root", NoSuchShadowRootException.class, 404),
+          new W3CError("no such window", NoSuchWindowException.class, 404),
+          new W3CError("session not created", SessionNotCreatedException.class, 500),
+          new W3CError("stale element reference", StaleElementReferenceException.class, 404),
+          new W3CError("timeout", TimeoutException.class, 500),
+          new W3CError("unable to capture screen", ScreenshotException.class, 500),
+          new W3CError("unable to set cookie", UnableToSetCookieException.class, 500),
+          new W3CError("unexpected alert open", UnhandledAlertException.class, 500),
+          new W3CError("unsupported operation", UnsupportedCommandException.class, 404),
+          new W3CError("unknown command", UnsupportedCommandException.class, 404),
+          new W3CError("unknown method", UnsupportedCommandException.class, 405),
+          new W3CError("unknown error", WebDriverException.class, 500));
 
   private ErrorCodec() {
     // This will switch to being an interface at some point. Use `createDefault`
@@ -112,15 +108,15 @@ public class ErrorCodec {
             ? "<no message present in throwable>"
             : throwable.getMessage();
 
-    return ImmutableMap.of(
+    StringWriter stacktrace = new StringWriter();
+    try (PrintWriter printWriter = new PrintWriter(stacktrace)) {
+      throwable.printStackTrace(printWriter);
+    }
+
+    return Map.of(
         "value",
-        ImmutableMap.of(
-            "error",
-            err.w3cErrorString,
-            "message",
-            message,
-            "stacktrace",
-            Throwables.getStackTraceAsString(throwable)));
+        Map.of(
+            "error", err.w3cErrorString, "message", message, "stacktrace", stacktrace.toString()));
   }
 
   public int getHttpStatusCode(Throwable throwable) {
