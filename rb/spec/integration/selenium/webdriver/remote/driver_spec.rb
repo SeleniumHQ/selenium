@@ -45,21 +45,35 @@ module Selenium
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
         end
 
-        it 'downloads a file' do
+        it 'lists downloads' do
           reset_driver!(enable_downloads: true) do |driver|
             driver.navigate.to url_for('downloads/download.html')
             driver.find_element(id: 'file-1').click
-            file_name = 'file_1.txt'
+            driver.find_element(id: 'file-2').click
+            file_names = %w[file_1.txt file_2.jpg]
 
             loop do
               @files = driver.downloadable_files
-              break if @files.include?(file_name)
+              break if @files == file_names
+            end
+          end
+        end
+
+        it 'downloads a file' do
+          dir = Dir.mktmpdir 'se_download'
+          at_exit { FileUtils.rm_f(dir) }
+
+          reset_driver!(enable_downloads: true) do |driver|
+            driver.navigate.to url_for('downloads/download.html')
+            driver.find_element(id: 'file-1').click
+
+            loop do
+              @files = driver.downloadable_files
+              break unless @files.empty?
             end
 
             expect(@files.size).to eq 1
-
-            dir = Dir.mktmpdir 'se_download'
-            at_exit { FileUtils.rm_f(dir) }
+            file_name = @files.first
 
             driver.download_file(file_name, dir)
             expect(File.exist?("#{dir}/#{file_name}")).to be true
@@ -70,11 +84,10 @@ module Selenium
           reset_driver!(enable_downloads: true) do |driver|
             driver.navigate.to url_for('downloads/download.html')
             driver.find_element(id: 'file-1').click
-            file_name = 'file_1.txt'
 
             loop do
               @files = driver.downloadable_files
-              break if @files.include?(file_name)
+              break unless @files.empty?
             end
 
             driver.delete_downloadable_files
