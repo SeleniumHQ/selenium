@@ -21,7 +21,7 @@ tempfile = "3.8.0"
 reqwest = { version = "0.11.22", default-features = false, features = [ "rustls-tls" ] }
 zip = "0.6.6"
 directories = "5.0.1"
-serde = { version = "1.0.189", features = ["derive"] }
+serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
 flate2 = "1.0.28"
 tar = "0.4.40"
