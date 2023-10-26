@@ -28,7 +28,7 @@ public class ArrayLocalValue extends LocalValue {
   }
 
   @Override
-  public Map<String, Object> asMap() {
+  public Map<String, Object> toJson() {
     return Map.of("type", "array", "value", value);
   }
 }

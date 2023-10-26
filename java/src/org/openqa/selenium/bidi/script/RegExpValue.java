@@ -62,7 +62,7 @@ public class RegExpValue extends LocalValue {
   }
 
   @Override
-  public Map<String, Object> asMap() {
+  public Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
 
     toReturn.put("pattern", this.pattern);

@@ -19,5 +19,5 @@ package org.openqa.selenium.bidi.script;
 import java.util.Map;
 
 public abstract class LocalValue {
-  public abstract Map<String, Object> asMap();
+  public abstract Map<String, Object> toJson();
 }

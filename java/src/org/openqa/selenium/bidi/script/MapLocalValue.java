@@ -29,7 +29,7 @@ public class MapLocalValue extends LocalValue {
   }
 
   @Override
-  public Map<String, Object> asMap() {
+  public Map<String, Object> toJson() {
     List<List<Object>> value = new ArrayList<>();
 
     map.forEach(

@@ -27,7 +27,7 @@ public class DateLocalValue extends LocalValue {
   }
 
   @Override
-  public Map<String, Object> asMap() {
+  public Map<String, Object> toJson() {
     return Map.of("type", "date", "value", value);
   }
 }

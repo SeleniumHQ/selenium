@@ -41,7 +41,7 @@ public class RemoteReference extends LocalValue {
   }
 
   @Override
-  public Map<String, Object> asMap() {
+  public Map<String, Object> toJson() {
     Map<String, String> toReturn = new TreeMap<>();
     if (handle != null) {
       toReturn.put(HANDLE.toString(), this.handle);
