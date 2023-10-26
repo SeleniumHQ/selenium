@@ -16,7 +16,6 @@
 // under the License
 package org.openqa.selenium.bidi.script;
 
-
 import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.json.JsonInput;
