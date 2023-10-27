@@ -162,9 +162,9 @@ iniconfig==2.0.0 \
     # via
     #   -r py/requirements.txt
     #   pytest
-more-itertools==8.13.0 \
-    --hash=sha256:a42901a0a5b169d925f6f217cd5a190e32ef54360905b9c39ee7db5313bfec0f \
-    --hash=sha256:c5122bffc5f104d37c1626b8615b511f3427aa5389b94d61e5ef8236bfbc3ddb
+more-itertools==10.1.0 \
+    --hash=sha256:626c369fa0eb37bac0291bce8259b332fd59ac792fa5497b59837309cd5b114a \
+    --hash=sha256:64e0735fcfdc6f3464ea133afe8ea4483b1c5fe3a3d69852e6503b43a0b222e6
     # via -r py/requirements.txt
 multidict==6.0.2 \
     --hash=sha256:0327292e745a880459ef71be14e709aaea2f783f3537588fb4ed09b6c01bca60 \
