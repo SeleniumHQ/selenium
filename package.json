@@ -14,7 +14,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.2.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "express": "^4.17.1",
     "identity-obj-proxy": "^3.0.0",
     "jasmine": "4.1.0",
