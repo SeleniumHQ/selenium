@@ -18,28 +18,28 @@ package org.openqa.selenium.bidi.script;
 
 public class EvaluateResultException implements EvaluateResult {
 
-    private final EvaluateResultType type;
-    private final String realmId;
-    private final ExceptionDetails exceptionDetails;
+  private final EvaluateResultType type;
+  private final String realmId;
+  private final ExceptionDetails exceptionDetails;
 
-    public EvaluateResultException(
+  public EvaluateResultException(
       EvaluateResultType type, String realmId, ExceptionDetails exceptionDetails) {
-      this.type = type;
-      this.realmId = realmId;
-      this.exceptionDetails = exceptionDetails;
-    }
-
-    @Override
-    public EvaluateResultType getResultType() {
-      return type;
-    }
-
-    public ExceptionDetails getExceptionDetails() {
-      return this.exceptionDetails;
-    }
-
-    @Override
-    public String getRealmId() {
-      return realmId;
-    }
+    this.type = type;
+    this.realmId = realmId;
+    this.exceptionDetails = exceptionDetails;
   }
+
+  @Override
+  public EvaluateResultType getResultType() {
+    return type;
+  }
+
+  public ExceptionDetails getExceptionDetails() {
+    return this.exceptionDetails;
+  }
+
+  @Override
+  public String getRealmId() {
+    return realmId;
+  }
+}
