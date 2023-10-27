@@ -18,6 +18,10 @@
 package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,24 +29,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.Script;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-public class ScriptCommandsTest {
-  private FirefoxDriver driver;
-
-  @BeforeEach
-  public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-  }
+public class ScriptCommandsTest extends JupiterTestBase {
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithDeclaration() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -61,6 +59,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithArguments() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -90,6 +92,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithAwaitPromise() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -117,6 +123,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithAwaitPromiseFalse() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -142,6 +152,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithThisParameter() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -169,6 +183,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithOwnershipRoot() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -191,6 +209,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithOwnershipNone() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -213,6 +235,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionThatThrowsException() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -239,6 +265,10 @@ public class ScriptCommandsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionInASandBox() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);

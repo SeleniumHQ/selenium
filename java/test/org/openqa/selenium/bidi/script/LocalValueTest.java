@@ -18,6 +18,10 @@
 package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,25 +31,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.Script;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-class LocalValueTest {
-
-  private FirefoxDriver driver;
-
-  @BeforeEach
-  public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-  }
+class LocalValueTest extends JupiterTestBase {
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithUndefinedArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -76,6 +73,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithNullArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -106,6 +107,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithMinusZeroArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -138,6 +143,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithInfinityArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -170,6 +179,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithMinusInfinityArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -203,6 +216,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithNumberArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -235,6 +252,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithBooleanArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -267,6 +288,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithBigIntArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -299,6 +324,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithArrayArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -337,6 +366,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithSetArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -375,6 +408,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithDateArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -408,6 +445,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithMapArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -448,6 +489,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithObjectArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -488,6 +533,10 @@ class LocalValueTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   void canCallFunctionWithRegExpArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
