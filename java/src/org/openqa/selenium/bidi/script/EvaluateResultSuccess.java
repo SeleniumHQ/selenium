@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.script;
 
-
 public class EvaluateResultSuccess implements EvaluateResult {
 
   private final EvaluateResultType type;
