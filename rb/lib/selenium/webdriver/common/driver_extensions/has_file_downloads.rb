@@ -25,16 +25,15 @@ module Selenium
           @bridge.downloadable_files['names']
         end
 
-        def download_file(file_name, path = '')
+        def download_file(file_name, target_directory)
           response = @bridge.download_file(file_name)
           contents = response['contents']
 
           File.open("#{file_name}.zip", 'wb') { |f| f << Base64.decode64(contents) }
-
           begin
-            path = "#{path}/" if !path.empty? && path[-1] != '/'
+            target_directory += '/' unless target_directory.end_with?('/')
             Zip::File.open("#{file_name}.zip") do |zip|
-              zip.each { |entry| zip.extract(entry, "#{path}#{file_name}") }
+              zip.each { |entry| zip.extract(entry, "#{target_directory}#{file_name}") }
             end
           ensure
             FileUtils.rm_f("#{file_name}.zip")

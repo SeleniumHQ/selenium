@@ -52,16 +52,15 @@ module Selenium
             driver.find_element(id: 'file-2').click
             file_names = %w[file_1.txt file_2.jpg]
 
-            loop do
-              @files = driver.downloadable_files
-              break if @files == file_names
-            end
+            expect {
+              wait.until { driver.downloadable_files == file_names }
+            }.not_to raise_exception
           end
         end
 
         it 'downloads a file' do
-          dir = Dir.mktmpdir 'se_download'
-          at_exit { FileUtils.rm_f(dir) }
+          target_directory = Dir.mktmpdir 'se_download'
+          at_exit { FileUtils.rm_f(target_directory) }
 
           reset_driver!(enable_downloads: true) do |driver|
             driver.navigate.to url_for('downloads/download.html')
@@ -72,11 +71,11 @@ module Selenium
               break unless @files.empty?
             end
 
-            expect(@files.size).to eq 1
             file_name = @files.first
+            driver.download_file(file_name, target_directory)
 
-            driver.download_file(file_name, dir)
-            expect(File.exist?("#{dir}/#{file_name}")).to be true
+            file_content = File.read("#{target_directory}/#{file_name}").strip
+            expect(file_content).to eq('Hello, World!')
           end
         end
 
@@ -84,11 +83,7 @@ module Selenium
           reset_driver!(enable_downloads: true) do |driver|
             driver.navigate.to url_for('downloads/download.html')
             driver.find_element(id: 'file-1').click
-
-            loop do
-              @files = driver.downloadable_files
-              break unless @files.empty?
-            end
+            wait.until { !driver.downloadable_files.empty? }
 
             driver.delete_downloadable_files
 
