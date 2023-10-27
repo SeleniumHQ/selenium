@@ -56,7 +56,6 @@ class BiDiTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   void canNavigateAndListenToErrors()
       throws ExecutionException, InterruptedException, TimeoutException {
