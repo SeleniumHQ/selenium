@@ -24,8 +24,10 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -83,6 +85,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -712,30 +715,43 @@ public class RemoteWebDriver
   /**
    * Retrieves the downloadable files as a map of file names and their corresponding URLs.
    *
-   * @throws WebDriverException if capability to enable downloads is not set
    * @return A map containing file names as keys and URLs as values.
+   * @throws WebDriverException if capability to enable downloads is not set
    */
   @Override
   @SuppressWarnings("unchecked")
-  public Map<String, List<String>> getDownloadableFiles() {
+  public List<String> getDownloadableFiles() {
     requireDownloadsEnabled(capabilities);
     Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
-    return (Map<String, List<String>>) response.getValue();
+    Map<String, List<String>> value = (Map<String, List<String>>) response.getValue();
+    return value.get("names");
   }
 
   /**
    * Downloads a file with the specified file name.
    *
    * @param fileName the name of the file to be downloaded
+   * @return string representation of the Base64 zipped content
    * @throws WebDriverException if capability to enable downloads is not set
-   * @return a map of file names to file paths for the downloaded file
    */
   @Override
   @SuppressWarnings("unchecked")
-  public Map<String, String> downloadFile(String fileName) {
+  public String downloadFile(String fileName) {
     requireDownloadsEnabled(capabilities);
     Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
-    return (Map<String, String>) response.getValue();
+    return ((Map<String, String>) response.getValue()).get("contents");
+  }
+
+  /**
+   * Downloads a file from the specified location.
+   *
+   * @param fileName the name of the file to download
+   * @param downloadLocation the location where the file should be downloaded
+   * @throws IOException if an I/O error occurs during the file download
+   */
+  @Override
+  public void downloadFile(String fileName, Path downloadLocation) throws IOException {
+    Zip.unzip(downloadFile(fileName), downloadLocation.toFile());
   }
 
   /**

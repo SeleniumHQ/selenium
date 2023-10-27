@@ -17,8 +17,9 @@
 
 package org.openqa.selenium;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 /** Indicates that a driver supports downloading remote files. */
 public interface HasDownloads {
@@ -42,17 +43,25 @@ public interface HasDownloads {
   /**
    * Gets the downloadable files.
    *
-   * @return a map containing a list of downloadable files for each key
+   * @return a list of downloadable files for each key
    */
-  Map<String, List<String>> getDownloadableFiles();
+  List<String> getDownloadableFiles();
 
   /**
    * Downloads a file with the given file name.
    *
    * @param fileName the name of the file to be downloaded
-   * @return a map containing the downloaded file's data
+   * @return a String representing a base64 encoded zip file
    */
-  Map<String, String> downloadFile(String fileName);
+  String downloadFile(String fileName);
+
+  /**
+   * Downloads a file to a given location.
+   *
+   * @param  fileName          the name of the file to be downloaded
+   * @param  downloadLocation  the location where the file will be downloaded to
+   * @throws IOException       if an I/O error occurs while downloading the file
+   */void downloadFile(String fileName, Path downloadLocation) throws IOException;
 
   /** Deletes the downloadable files. */
   void deleteDownloadableFiles();
