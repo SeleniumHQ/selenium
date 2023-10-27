@@ -55,7 +55,7 @@ def selenium_java_deps():
             "org.apache.commons:commons-exec:1.3",
             "org.apache.logging.log4j:log4j-core:2.20.0",
             "org.assertj:assertj-core:3.24.2",
-            "org.bouncycastle:bcpkix-jdk15on:1.70",
+            "org.bouncycastle:bcpkix-jdk18on:1.76",
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hsqldb:hsqldb:2.7.2",
             "org.junit.jupiter:junit-jupiter-api:%s" % junit_jupiter_version,
