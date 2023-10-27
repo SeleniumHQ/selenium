@@ -284,9 +284,7 @@ pub trait SeleniumManager {
 
         // Checking if browser version is in the cache
         let browser_binary_path = self.get_browser_binary_path(&original_browser_version)?;
-        if (browser_binary_path.exists() && !self.is_edge())
-            || (browser_binary_path.exists() && self.is_edge() && !WINDOWS.is(self.get_os()))
-        {
+        if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} already exists",
                 self.get_browser_name(),
