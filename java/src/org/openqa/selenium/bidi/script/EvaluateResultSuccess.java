@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.bidi.RemoteValue;
 
 public class EvaluateResultSuccess implements EvaluateResult {
 
