@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ObjectLocalValue extends LocalValue {
+class ObjectLocalValue extends LocalValue {
 
   private final Map<Object, LocalValue> map;
 
-  public ObjectLocalValue(Map<Object, LocalValue> map) {
+  ObjectLocalValue(Map<Object, LocalValue> map) {
     this.map = map;
   }
 

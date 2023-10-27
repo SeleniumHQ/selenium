@@ -1,20 +1,20 @@
 package org.openqa.selenium.bidi.script;
 
 import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.bidi.script.RemoteReference.RemoteReferenceType.HANDLE;
-import static org.openqa.selenium.bidi.script.RemoteReference.RemoteReferenceType.SHARED_ID;
+import static org.openqa.selenium.bidi.script.RemoteReference.Type.HANDLE;
+import static org.openqa.selenium.bidi.script.RemoteReference.Type.SHARED_ID;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 public class RemoteReference extends LocalValue {
-  public enum RemoteReferenceType {
+  public enum Type {
     HANDLE("handle"),
     SHARED_ID("sharedId");
 
     private final String type;
 
-    RemoteReferenceType(String type) {
+    Type(String type) {
       this.type = type;
     }
 
@@ -32,7 +32,7 @@ public class RemoteReference extends LocalValue {
     this.sharedId = sharedId;
   }
 
-  public RemoteReference(RemoteReferenceType type, String value) {
+  public RemoteReference(Type type, String value) {
     if (HANDLE.equals(type)) {
       this.handle = value;
     } else {

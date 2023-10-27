@@ -19,11 +19,11 @@ package org.openqa.selenium.bidi.script;
 import java.util.List;
 import java.util.Map;
 
-public class ArrayLocalValue extends LocalValue {
+class ArrayLocalValue extends LocalValue {
 
   private final List<LocalValue> value;
 
-  public ArrayLocalValue(List<LocalValue> value) {
+  ArrayLocalValue(List<LocalValue> value) {
     this.value = value;
   }
 
