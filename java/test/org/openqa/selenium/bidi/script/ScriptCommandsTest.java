@@ -229,7 +229,7 @@ public class ScriptCommandsTest {
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.EXCEPTION);
     assertThat(result.getRealmId()).isNotNull();
 
-    EvaluateResultException exception = (EvaluateResultException) result;
+    EvaluateResultExceptionValue exception = (EvaluateResultExceptionValue) result;
     assertThat(exception.getExceptionDetails().getException().getType()).isEqualTo("error");
     assertThat(exception.getExceptionDetails().getText())
         .isEqualTo("SyntaxError: expected expression, got ')'");

@@ -16,13 +16,13 @@
 
 package org.openqa.selenium.bidi.script;
 
-public class EvaluateResultException implements EvaluateResult {
+public class EvaluateResultExceptionValue implements EvaluateResult {
 
   private final EvaluateResultType type;
   private final String realmId;
   private final ExceptionDetails exceptionDetails;
 
-  public EvaluateResultException(
+  public EvaluateResultExceptionValue(
       EvaluateResultType type, String realmId, ExceptionDetails exceptionDetails) {
     this.type = type;
     this.realmId = realmId;

@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.script.EvaluateResult;
-import org.openqa.selenium.bidi.script.EvaluateResultException;
+import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.bidi.script.ExceptionDetails;
 import org.openqa.selenium.bidi.script.LocalValue;
@@ -183,7 +183,7 @@ public class Script {
       }
 
       evaluateResult =
-          new EvaluateResultException(
+          new EvaluateResultExceptionValue(
               EvaluateResult.EvaluateResultType.EXCEPTION, realmId, exceptionDetails);
     }
 
