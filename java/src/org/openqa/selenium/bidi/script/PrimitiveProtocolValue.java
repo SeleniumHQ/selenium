@@ -22,72 +22,22 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.internal.Require;
 
-public class PrimitiveProtocolValue extends LocalValue {
-
-  public enum SpecialNumberType {
-    NAN("NaN"),
-    MINUS_ZERO("-0"),
-    INFINITY("Infinity"),
-    MINUS_INFINITY("-Infinity");
-
-    private final String type;
-
-    SpecialNumberType(String type) {
-      this.type = type;
-    }
-
-    @Override
-    public String toString() {
-      return type;
-    }
-  }
+class PrimitiveProtocolValue extends LocalValue {
 
   private final PrimitiveType type;
   private Object value;
 
-  private PrimitiveProtocolValue(PrimitiveType type, Object value) {
+  PrimitiveProtocolValue(PrimitiveType type, Object value) {
     this.type = type;
     this.value = value;
   }
 
-  private PrimitiveProtocolValue(PrimitiveType type) {
+  PrimitiveProtocolValue(PrimitiveType type) {
     Require.precondition(
         type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL),
         "Only null and defined do not require values. "
             + "Rest all type require a corresponding value.");
     this.type = type;
-  }
-
-  public static LocalValue stringValue(String value) {
-    return new PrimitiveProtocolValue(PrimitiveType.STRING, value);
-  }
-
-  public static LocalValue numberValue(long value) {
-    return new PrimitiveProtocolValue(PrimitiveType.NUMBER, value);
-  }
-
-  public static LocalValue numberValue(double value) {
-    return new PrimitiveProtocolValue(PrimitiveType.NUMBER, value);
-  }
-
-  public static LocalValue numberValue(SpecialNumberType specialNumber) {
-    return new PrimitiveProtocolValue(PrimitiveType.SPECIAL_NUMBER, specialNumber.toString());
-  }
-
-  public static LocalValue undefinedValue() {
-    return new PrimitiveProtocolValue(PrimitiveType.UNDEFINED);
-  }
-
-  public static LocalValue nullValue() {
-    return new PrimitiveProtocolValue(PrimitiveType.NULL);
-  }
-
-  public static LocalValue booleanValue(boolean value) {
-    return new PrimitiveProtocolValue(PrimitiveType.BOOLEAN, value);
-  }
-
-  public static LocalValue bigIntValue(String value) {
-    return new PrimitiveProtocolValue(PrimitiveType.BIGINT, value);
   }
 
   @Override
