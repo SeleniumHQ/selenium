@@ -722,36 +722,27 @@ public class RemoteWebDriver
   @SuppressWarnings("unchecked")
   public List<String> getDownloadableFiles() {
     requireDownloadsEnabled(capabilities);
+
     Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
     Map<String, List<String>> value = (Map<String, List<String>>) response.getValue();
     return value.get("names");
   }
 
   /**
-   * Downloads a file with the specified file name.
-   *
-   * @param fileName the name of the file to be downloaded
-   * @return string representation of the Base64 zipped content
-   * @throws WebDriverException if capability to enable downloads is not set
-   */
-  @Override
-  @SuppressWarnings("unchecked")
-  public String downloadFile(String fileName) {
-    requireDownloadsEnabled(capabilities);
-    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
-    return ((Map<String, String>) response.getValue()).get("contents");
-  }
-
-  /**
    * Downloads a file from the specified location.
    *
    * @param fileName the name of the file to download
-   * @param downloadLocation the location where the file should be downloaded
+   * @param targetLocation the location where the file should be downloaded
    * @throws IOException if an I/O error occurs during the file download
    */
+  @SuppressWarnings("unchecked")
   @Override
-  public void downloadFile(String fileName, Path downloadLocation) throws IOException {
-    Zip.unzip(downloadFile(fileName), downloadLocation.toFile());
+  public void downloadFile(String fileName, Path targetLocation) throws IOException {
+    requireDownloadsEnabled(capabilities);
+
+    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
+    String contents = ((Map<String, String>) response.getValue()).get("contents");
+    Zip.unzip(contents, targetLocation.toFile());
   }
 
   /**
@@ -762,6 +753,7 @@ public class RemoteWebDriver
   @Override
   public void deleteDownloadableFiles() {
     requireDownloadsEnabled(capabilities);
+
     execute(DriverCommand.DELETE_DOWNLOADABLE_FILES);
   }
 

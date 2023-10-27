@@ -48,20 +48,13 @@ public interface HasDownloads {
   List<String> getDownloadableFiles();
 
   /**
-   * Downloads a file with the given file name.
-   *
-   * @param fileName the name of the file to be downloaded
-   * @return a String representing a base64 encoded zip file
-   */
-  String downloadFile(String fileName);
-
-  /**
    * Downloads a file to a given location.
    *
-   * @param  fileName          the name of the file to be downloaded
-   * @param  downloadLocation  the location where the file will be downloaded to
-   * @throws IOException       if an I/O error occurs while downloading the file
-   */void downloadFile(String fileName, Path downloadLocation) throws IOException;
+   * @param fileName the name of the file to be downloaded
+   * @param targetLocation the location where the file will be downloaded to
+   * @throws IOException if an I/O error occurs while downloading the file
+   */
+  void downloadFile(String fileName, Path targetLocation) throws IOException;
 
   /** Deletes the downloadable files. */
   void deleteDownloadableFiles();

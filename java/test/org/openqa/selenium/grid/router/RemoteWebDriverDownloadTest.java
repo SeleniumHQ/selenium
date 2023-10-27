@@ -21,23 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.zip.ZipInputStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -138,38 +132,13 @@ class RemoteWebDriverDownloadTest {
 
     String fileName = ((HasDownloads) driver).getDownloadableFiles().get(0);
 
-    Path downloadLocation = Files.createTempDirectory("download");
-    ((HasDownloads) driver).downloadFile(fileName, downloadLocation);
+    Path targetLocation = Files.createTempDirectory("download");
+    ((HasDownloads) driver).downloadFile(fileName, targetLocation);
 
-    String fileContent = String.join("", Files.readAllLines(downloadLocation.resolve(fileName)));
+    String fileContent = String.join("", Files.readAllLines(targetLocation.resolve(fileName)));
     assertThat(fileContent).isEqualTo("Hello, World!");
 
     driver.quit();
-  }
-
-  @Test
-  void canUseDownloadedContent() throws IOException {
-    URL gridUrl = server.getUrl();
-    WebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
-    driver = new Augmenter().augment(driver);
-
-    driver.get(appServer.whereIs("downloads/download.html"));
-    driver.findElement(By.id("file-1")).click();
-
-    new WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(d -> !((HasDownloads) d).getDownloadableFiles().isEmpty());
-
-    String fileName = ((HasDownloads) driver).getDownloadableFiles().get(0);
-
-    String base64Zip = ((HasDownloads) driver).downloadFile(fileName);
-    byte[] decodedBytes = Base64.getDecoder().decode(base64Zip);
-    ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
-    try (ZipInputStream zis = new ZipInputStream(bais)) {
-      zis.getNextEntry();
-      BufferedReader reader =
-          new BufferedReader(new InputStreamReader(zis, StandardCharsets.UTF_8));
-      assertThat(reader.readLine()).isEqualTo("Hello, World!");
-    }
   }
 
   @Test
