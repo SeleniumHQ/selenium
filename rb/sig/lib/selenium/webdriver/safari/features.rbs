@@ -2,7 +2,6 @@ module Selenium
   module WebDriver
     module Safari
       module Features
-        # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
         SAFARI_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
         def commands: (untyped command) -> untyped

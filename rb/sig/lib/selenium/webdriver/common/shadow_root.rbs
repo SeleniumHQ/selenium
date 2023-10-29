@@ -5,7 +5,7 @@ module Selenium
 
       @id: untyped
 
-      ROOT_KEY: "shadow-6066-11e4-a52e-4f735466cecf"
+      ROOT_KEY: String
 
       include SearchContext
 

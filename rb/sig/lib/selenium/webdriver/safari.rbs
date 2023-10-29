@@ -7,7 +7,7 @@ module Selenium
 
       attr_accessor self.use_technology_preview: untyped
 
-      def self.technology_preview: () -> "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver"
+      def self.technology_preview: () -> String
 
       def self.technology_preview!: () -> untyped
 

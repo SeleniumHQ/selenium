@@ -18,10 +18,6 @@ module Selenium
 
         attr_reader y_offset: Integer
 
-        #
-        # Use a static method to access
-        # @api private
-        #
         def initialize: (untyped origin, Integer x_offset, Integer y_offset) -> void
       end
     end

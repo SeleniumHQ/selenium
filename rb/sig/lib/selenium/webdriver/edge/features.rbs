@@ -4,7 +4,7 @@ module Selenium
       module Features
         include WebDriver::Chromium::Features
 
-        EDGE_COMMANDS: { get_cast_sinks: ::Array[:get | "session/:session_id/ms/cast/get_sinks"], set_cast_sink_to_use: ::Array[:post | "session/:session_id/ms/cast/set_sink_to_use"], start_cast_tab_mirroring: ::Array[:post | "session/:session_id/ms/cast/start_tab_mirroring"], start_cast_desktop_mirroring: ::Array[:post | "session/:session_id/ms/cast/start_desktop_mirroring"], get_cast_issue_message: ::Array[:get | "session/:session_id/ms/cast/get_issue_message"], stop_casting: ::Array[:post | "session/:session_id/ms/cast/stop_casting"], send_command: ::Array[:post | "session/:session_id/ms/cdp/execute"] }
+        EDGE_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
         def commands: (untyped command) -> untyped
       end

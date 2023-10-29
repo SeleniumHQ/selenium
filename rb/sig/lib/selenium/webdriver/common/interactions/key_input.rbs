@@ -12,7 +12,6 @@ module Selenium
 
         def create_key_up: (untyped key) -> untyped
 
-        # Backward compatibility in case anyone called this directly
         class TypingInteraction < Interactions::TypingInteraction
         end
       end
