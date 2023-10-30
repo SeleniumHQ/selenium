@@ -1144,7 +1144,8 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]["names"]
 
     def download_file(self, file_name: str, target_directory: str) -> None:
-        """Downloads a file with the specified file name to the target directory
+        """Downloads a file with the specified file name to the target
+        directory.
 
         file_name: The name of the file to download.
         target_directory: The path to the directory to save the downloaded file.
