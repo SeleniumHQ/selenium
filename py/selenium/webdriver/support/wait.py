@@ -18,13 +18,13 @@
 import time
 import typing
 from typing import Callable
-from typing import Union
 from typing import Literal
+from typing import Union
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.types import WaitExcTypes
+from selenium.webdriver.remote.webdriver import WebDriver
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS: typing.Tuple[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.

@@ -34,7 +34,6 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webdriver import WebElement
 
-
 T = TypeVar("T")
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
@@ -311,7 +310,7 @@ def invisibility_of_element_located(
     locator used to find the element
     """
 
-    def _predicate(driver :WebDriver):
+    def _predicate(driver: WebDriver):
         try:
             target = locator
             if not isinstance(target, WebElement):
@@ -339,7 +338,9 @@ def invisibility_of_element(
     return invisibility_of_element_located(element)
 
 
-def element_to_be_clickable(mark: Union[WebElement, Tuple[str, str]]) -> Callable[[WebDriver], Union[Literal[False], WebElement]]:
+def element_to_be_clickable(
+    mark: Union[WebElement, Tuple[str, str]]
+) -> Callable[[WebDriver], Union[Literal[False], WebElement]]:
     """An Expectation for checking an element is visible and enabled such that
     you can click it.
 
@@ -500,7 +501,9 @@ def any_of(*expected_conditions: Callable[[WebDriver], T]) -> Callable[[WebDrive
     return any_of_condition
 
 
-def all_of(*expected_conditions: Callable[[WebDriver], Union[T, Literal[False]]]) -> Callable[[WebDriver], Union[List[T], Literal[False]]]:
+def all_of(
+    *expected_conditions: Callable[[WebDriver], Union[T, Literal[False]]]
+) -> Callable[[WebDriver], Union[List[T], Literal[False]]]:
     """An expectation that all of multiple expected conditions is true.
 
     Equivalent to a logical 'AND'.
