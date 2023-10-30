@@ -57,7 +57,7 @@ class SeleniumManager:
 
             path = Path(__file__).parent.joinpath(directory, file)
 
-        if not path.is_file() and os.environ["CONDA_PREFIX"]:
+        if not path.is_file() and "CONDA_PREFIX" in os.environ:
             # conda has a separate package selenium-manager, installs in bin
             path = Path(os.path.join(os.environ["CONDA_PREFIX"], "bin", file))
             logger.debug("Conda environment detected, using `%s`", path)
