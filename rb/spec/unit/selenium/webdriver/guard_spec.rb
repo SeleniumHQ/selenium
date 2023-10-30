@@ -26,7 +26,7 @@ module Selenium
       describe Guards do
         describe '#new' do
           it 'collects guards from example only for known guard types',
-             except: {}, exclude: {}, exclusive: {}, ignored: {}, only: {}, flaky: {} do |example|
+             except: {}, exclude: {}, exclusive: {}, flaky: {}, ignored: {}, only: {} do |example|
             guards = described_class.new(example)
             types = guards.instance_variable_get(:@guards).map { |g| g.instance_variable_get(:@type) }
             expect(types).to include :except, :only, :exclusive, :exclude, :flaky
