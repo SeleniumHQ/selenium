@@ -1,3 +1,4 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The SFC licenses this file
@@ -13,33 +14,31 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.bidi.script;
 
-public class EvaluateResultException implements EvaluateResult {
+import java.util.Optional;
 
-  private final EvaluateResultType type;
-  private final String realmId;
-  private final ExceptionDetails exceptionDetails;
+public class WindowRealmInfo extends RealmInfo {
 
-  public EvaluateResultException(
-      EvaluateResultType type, String realmId, ExceptionDetails exceptionDetails) {
-    this.type = type;
-    this.realmId = realmId;
-    this.exceptionDetails = exceptionDetails;
+  private final String browsingContext;
+  private final Optional<String> sandbox;
+
+  public WindowRealmInfo(
+      String realmId,
+      String origin,
+      RealmType realmType,
+      String browsingContext,
+      Optional<String> sandbox) {
+    super(realmId, origin, realmType);
+    this.browsingContext = browsingContext;
+    this.sandbox = sandbox;
   }
 
-  @Override
-  public EvaluateResultType getResultType() {
-    return type;
+  public String getBrowsingContext() {
+    return browsingContext;
   }
 
-  public ExceptionDetails getExceptionDetails() {
-    return this.exceptionDetails;
-  }
-
-  @Override
-  public String getRealmId() {
-    return realmId;
+  public Optional<String> getSandbox() {
+    return sandbox;
   }
 }

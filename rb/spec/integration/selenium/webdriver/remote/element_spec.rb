@@ -35,11 +35,11 @@ module Selenium
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys('element_spec.rb')
-          driver.find_element(id: 'go').submit
+          driver.find_element(id: 'go').click
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
-          wait.until { driver.find_element(xpath: '//body') }
+          wait.until { !driver.find_element(xpath: '//body').text.empty? }
 
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(3)
@@ -51,11 +51,11 @@ module Selenium
           driver.navigate.to url_for('upload_multiple.html')
 
           driver.find_element(id: 'upload').send_keys("driver_spec.rb\nelement_spec.rb")
-          driver.find_element(id: 'go').submit
+          driver.find_element(id: 'go').click
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
-          wait.until { driver.find_element(xpath: '//body') }
+          wait.until { !driver.find_element(xpath: '//body').text.empty? }
 
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(5)
