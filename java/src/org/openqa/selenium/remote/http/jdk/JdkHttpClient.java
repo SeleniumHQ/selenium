@@ -48,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.ssl.SSLContext;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -105,13 +104,11 @@ public class JdkHttpClient implements HttpClient {
           new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-              if (username != null && password != null) {
-                return new PasswordAuthentication(username, password.toCharArray());
-              } else {
+              if (username == null || password == null) {
                 return null;
               }
-            }
-
+              return new PasswordAuthentication(username, password.toCharArray());
+              }
           };
       builder = builder.authenticator(authenticator);
     } else if (credentials != null) {
