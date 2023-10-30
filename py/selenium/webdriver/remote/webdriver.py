@@ -1138,6 +1138,9 @@ class WebDriver(BaseWebDriver):
     def get_downloadable_files(self) -> dict:
         """Retrieves the downloadable files as a map of file names and their
         corresponding URLs."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
         return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]["names"]
 
     def download_file(self, file_name: str, target_directory: str) -> None:
@@ -1146,6 +1149,9 @@ class WebDriver(BaseWebDriver):
         file_name: The name of the file to download.
         target_directory: The path to the directory to save the downloaded file.
         """
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
         if not os.path.exists(target_directory):
             os.makedirs(target_directory)
 
@@ -1157,4 +1163,7 @@ class WebDriver(BaseWebDriver):
 
     def delete_downloadable_files(self) -> None:
         """Deletes all downloadable files."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
         self.execute(Command.DELETE_DOWNLOADABLE_FILES)
