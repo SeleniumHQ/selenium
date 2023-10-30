@@ -42,6 +42,7 @@ import org.openqa.selenium.HasDownloads;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
@@ -67,6 +68,9 @@ class RemoteWebDriverDownloadTest {
   public void setupServers() {
     Browser browser = Browser.detect();
     assert browser != null;
+    ChromeOptions options = new ChromeOptions();
+    options.setEnableDownloads(true);
+
     capabilities =
         new PersistentCapabilities(browser.getCapabilities())
             .setCapability("se:downloadsEnabled", true);
