@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -28,8 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -422,6 +425,118 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
     assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
     assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+  }
+
+  @Test
+  void canDisownHandles() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    EvaluateResult evaluateResult =
+        script.evaluateFunctionInBrowsingContext(
+            id, "({a:1})", false, Optional.of(ResultOwnership.ROOT));
+
+    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(evaluateResult.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
+    assertThat(successEvaluateResult.getResult().getHandle().isPresent()).isTrue();
+
+    List<LocalValue> arguments = new ArrayList<>();
+
+    Map<Object, RemoteValue> valueMap =
+        (Map<Object, RemoteValue>) successEvaluateResult.getResult().getValue().get();
+
+    RemoteValue value = valueMap.get("a");
+
+    AtomicReference<LocalValue> localValue = new AtomicReference<>();
+    value.getValue().ifPresent(v -> localValue.set(LocalValue.numberValue((long) v)));
+
+    Map<Object, LocalValue> localValueMap = new HashMap<>();
+    localValueMap.put("a", localValue.get());
+
+    LocalValue value1 = LocalValue.objectValue(localValueMap);
+    LocalValue value2 =
+        LocalValue.remoteReference(
+            RemoteReference.Type.HANDLE, successEvaluateResult.getResult().getHandle().get());
+    arguments.add(value1);
+    arguments.add(value2);
+
+    script.callFunctionInBrowsingContext(
+        id, "arg => arg.a", false, Optional.of(arguments), Optional.empty(), Optional.empty());
+
+    assertThat(successEvaluateResult.getResult().getValue().isPresent()).isTrue();
+
+    List<String> handles = new ArrayList<>();
+    handles.add(successEvaluateResult.getResult().getHandle().get());
+    script.disownBrowsingContextScript(id, handles);
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(
+            () ->
+                script.callFunctionInBrowsingContext(
+                    id,
+                    "arg => arg.a",
+                    false,
+                    Optional.of(arguments),
+                    Optional.empty(),
+                    Optional.empty()));
+  }
+
+  @Test
+  void canDisownHandlesInRealm() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    EvaluateResult evaluateResult =
+        script.evaluateFunctionInBrowsingContext(
+            id, "({a:1})", false, Optional.of(ResultOwnership.ROOT));
+
+    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(evaluateResult.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
+    assertThat(successEvaluateResult.getResult().getHandle().isPresent()).isTrue();
+
+    List<LocalValue> arguments = new ArrayList<>();
+
+    Map<Object, RemoteValue> valueMap =
+        (Map<Object, RemoteValue>) successEvaluateResult.getResult().getValue().get();
+
+    RemoteValue value = valueMap.get("a");
+
+    AtomicReference<LocalValue> localValue = new AtomicReference<>();
+    value.getValue().ifPresent(v -> localValue.set(LocalValue.numberValue((long) v)));
+
+    Map<Object, LocalValue> localValueMap = new HashMap<>();
+    localValueMap.put("a", localValue.get());
+
+    LocalValue value1 = LocalValue.objectValue(localValueMap);
+    LocalValue value2 =
+        LocalValue.remoteReference(
+            RemoteReference.Type.HANDLE, successEvaluateResult.getResult().getHandle().get());
+    arguments.add(value1);
+    arguments.add(value2);
+
+    script.callFunctionInBrowsingContext(
+        id, "arg => arg.a", false, Optional.of(arguments), Optional.empty(), Optional.empty());
+
+    assertThat(successEvaluateResult.getResult().getValue().isPresent()).isTrue();
+
+    List<String> handles = new ArrayList<>();
+    handles.add(successEvaluateResult.getResult().getHandle().get());
+    script.disownRealmScript(evaluateResult.getRealmId(), handles);
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(
+            () ->
+                script.callFunctionInBrowsingContext(
+                    id,
+                    "arg => arg.a",
+                    false,
+                    Optional.of(arguments),
+                    Optional.empty(),
+                    Optional.empty()));
   }
 
   @AfterEach

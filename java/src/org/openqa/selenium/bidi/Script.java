@@ -162,6 +162,33 @@ public class Script {
     return this.bidi.send(new Command<>("script.evaluate", params, evaluateResultMapper));
   }
 
+  public void disownRealmScript(String realmId, List<String> handles) {
+    this.bidi.send(
+        new Command<>(
+            "script.disown", Map.of("handles", handles, "target", Map.of("realm", realmId))));
+  }
+
+  public void disownBrowsingContextScript(String browsingContextId, List<String> handles) {
+    this.bidi.send(
+        new Command<>(
+            "script.disown",
+            Map.of("handles", handles, "target", Map.of("context", browsingContextId))));
+  }
+
+  public void disownBrowsingContextScript(
+      String browsingContextId, String sandbox, List<String> handles) {
+    this.bidi.send(
+        new Command<>(
+            "script.disown",
+            Map.of(
+                "handles",
+                handles,
+                "target",
+                Map.of(
+                    "context", browsingContextId,
+                    "sandbox", sandbox))));
+  }
+
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
