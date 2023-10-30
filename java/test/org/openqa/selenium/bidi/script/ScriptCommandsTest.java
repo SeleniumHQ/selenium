@@ -330,6 +330,100 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
   }
 
+  @Test
+  void canEvaluateScript() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(id, "1 + 2", true, Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("number");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(3L);
+  }
+
+  @Test
+  void canEvaluateScriptThatThrowsException() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(
+            id, "))) !!@@## some invalid JS script (((", false, Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.EXCEPTION);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultExceptionValue exception = (EvaluateResultExceptionValue) result;
+    assertThat(exception.getExceptionDetails().getException().getType()).isEqualTo("error");
+    assertThat(exception.getExceptionDetails().getText())
+        .isEqualTo("SyntaxError: expected expression, got ')'");
+    assertThat(exception.getExceptionDetails().getLineNumber()).isPositive();
+    assertThat(exception.getExceptionDetails().getColumnNumber()).isPositive();
+    assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size()).isEqualTo(0);
+  }
+
+  @Test
+  void canEvaluateScriptWithResulWithOwnership() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(
+            id, "Promise.resolve({a:1})", true, Optional.of(ResultOwnership.ROOT));
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("object");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getHandle().isPresent()).isTrue();
+  }
+
+  @Test
+  void canEvaluateInASandBox() {
+    String id = driver.getWindowHandle();
+    Script script = new Script(id, driver);
+
+    // Make changes without sandbox
+    script.evaluateFunctionInBrowsingContext(id, "window.foo = 1", true, Optional.empty());
+
+    // Check changes are not present in the sandbox
+    EvaluateResult resultNotInSandbox =
+        script.evaluateFunctionInBrowsingContext(
+            id, "sandbox", "window.foo", true, Optional.empty());
+
+    assertThat(resultNotInSandbox.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+
+    EvaluateResultSuccess result = (EvaluateResultSuccess) resultNotInSandbox;
+    assertThat(result.getResult().getType()).isEqualTo("undefined");
+
+    // Make changes in the sandbox
+    script.evaluateFunctionInBrowsingContext(
+        id, "sandbox", "window.foo = 2", true, Optional.empty());
+
+    // Check if the changes are present in the sandbox
+    EvaluateResult resultInSandbox =
+        script.evaluateFunctionInBrowsingContext(
+            id, "sandbox", "window.foo", true, Optional.empty());
+
+    assertThat(resultInSandbox.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(resultInSandbox.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
+    assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
+    assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+  }
+
   @AfterEach
   public void quitDriver() {
     if (driver != null) {

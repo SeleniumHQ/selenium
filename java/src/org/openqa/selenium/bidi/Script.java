@@ -129,6 +129,39 @@ public class Script {
     return this.bidi.send(new Command<>("script.callFunction", params, evaluateResultMapper));
   }
 
+  public EvaluateResult evaluateFunctionInRealm(
+      String realmId,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params =
+        getEvaluateParams("realm", realmId, null, expression, awaitPromise, resultOwnership);
+
+    return this.bidi.send(new Command<>("script.evaluate", params, evaluateResultMapper));
+  }
+
+  public EvaluateResult evaluateFunctionInBrowsingContext(
+      String browsingContextId,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    return this.evaluateFunctionInBrowsingContext(
+        browsingContextId, null, expression, awaitPromise, resultOwnership);
+  }
+
+  public EvaluateResult evaluateFunctionInBrowsingContext(
+      String browsingContextId,
+      String sandbox,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params =
+        getEvaluateParams(
+            "contextTarget", browsingContextId, sandbox, expression, awaitPromise, resultOwnership);
+
+    return this.bidi.send(new Command<>("script.evaluate", params, evaluateResultMapper));
+  }
+
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
@@ -154,6 +187,31 @@ public class Script {
     argumentValueList.ifPresent(argumentValues -> params.put("arguments", argumentValues));
 
     thisParameter.ifPresent(value -> params.put("this", value));
+
+    resultOwnership.ifPresent(value -> params.put("resultOwnership", value.toString()));
+
+    return params;
+  }
+
+  private Map<String, Object> getEvaluateParams(
+      String targetType,
+      String id,
+      String sandbox,
+      String expression,
+      boolean awaitPromise,
+      Optional<ResultOwnership> resultOwnership) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("expression", expression);
+    params.put("awaitPromise", awaitPromise);
+    if (targetType.equals("contextTarget")) {
+      if (sandbox != null) {
+        params.put("target", Map.of("context", id, "sandbox", sandbox));
+      } else {
+        params.put("target", Map.of("context", id));
+      }
+    } else {
+      params.put("target", Map.of("realm", id));
+    }
 
     resultOwnership.ifPresent(value -> params.put("resultOwnership", value.toString()));
 
