@@ -32,11 +32,14 @@ import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.bidi.script.ExceptionDetails;
 import org.openqa.selenium.bidi.script.LocalValue;
+import org.openqa.selenium.bidi.script.RealmInfo;
+import org.openqa.selenium.bidi.script.RealmType;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.ResultOwnership;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class Script {
   private final Set<String> browsingContextIds;
@@ -47,6 +50,15 @@ public class Script {
 
   private final Function<JsonInput, EvaluateResult> evaluateResultMapper =
       jsonInput -> createEvaluateResult(jsonInput.read(Map.class));
+
+  private final Function<JsonInput, List<RealmInfo>> realmInfoMapper =
+      jsonInput -> {
+        Map<String, Object> response = jsonInput.read(Map.class);
+        try (StringReader reader = new StringReader(JSON.toJson(response.get("realms")));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(new TypeToken<List<RealmInfo>>() {}.getType());
+        }
+      };
 
   public Script(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -187,6 +199,28 @@ public class Script {
                 Map.of(
                     "context", browsingContextId,
                     "sandbox", sandbox))));
+  }
+
+  public List<RealmInfo> getAllRealms() {
+    return this.bidi.send(new Command<>("script.getRealms", new HashMap<>(), realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsByType(RealmType type) {
+    return this.bidi.send(
+        new Command<>("script.getRealms", Map.of("type", type.toString()), realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsInBrowsingContext(String browsingContext) {
+    return this.bidi.send(
+        new Command<>("script.getRealms", Map.of("context", browsingContext), realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsInBrowsingContextByType(String browsingContext, RealmType type) {
+    return this.bidi.send(
+        new Command<>(
+            "script.getRealms",
+            Map.of("context", browsingContext, "type", type.toString()),
+            realmInfoMapper));
   }
 
   private Map<String, Object> getCallFunctionParams(

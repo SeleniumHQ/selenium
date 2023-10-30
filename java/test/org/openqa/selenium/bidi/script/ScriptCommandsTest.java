@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -334,6 +335,68 @@ public class ScriptCommandsTest extends JupiterTestBase {
   }
 
   @Test
+  void canCallFunctionInARealm() {
+    String firstTab = driver.getWindowHandle();
+    String secondTab = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+    Script script = new Script(firstTab, driver);
+
+    List<RealmInfo> realms = script.getAllRealms();
+
+    String firstTabRealmId = realms.get(0).getRealmId();
+    String secondTabRealmId = realms.get(1).getRealmId();
+
+    script.callFunctionInRealm(
+        firstTabRealmId,
+        "() => { window.foo = 3; }",
+        true,
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty());
+
+    script.callFunctionInRealm(
+        secondTabRealmId,
+        "() => { window.foo = 5; }",
+        true,
+        Optional.empty(),
+        Optional.empty(),
+        Optional.empty());
+
+    EvaluateResult firstContextResult =
+        script.callFunctionInRealm(
+            firstTabRealmId,
+            "() => window.foo",
+            true,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty());
+
+    assertThat(firstContextResult.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+
+    EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
+    assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
+    assertThat(successFirstContextresult.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) successFirstContextresult.getResult().getValue().get()).isEqualTo(3L);
+
+    EvaluateResult secondContextResult =
+        script.callFunctionInRealm(
+            secondTabRealmId,
+            "() => window.foo",
+            true,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty());
+
+    assertThat(secondContextResult.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+
+    EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
+    assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
+    assertThat(successSecondContextresult.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) successSecondContextresult.getResult().getValue().get()).isEqualTo(5L);
+  }
+
+  @Test
   void canEvaluateScript() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -425,6 +488,44 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
     assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
     assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+  }
+
+  @Test
+  void canEvaluateInARealm() {
+    String firstTab = driver.getWindowHandle();
+    String secondTab = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+    Script script = new Script(firstTab, driver);
+
+    List<RealmInfo> realms = script.getAllRealms();
+
+    String firstTabRealmId = realms.get(0).getRealmId();
+    String secondTabRealmId = realms.get(1).getRealmId();
+
+    script.evaluateFunctionInRealm(firstTabRealmId, "window.foo = 3", true, Optional.empty());
+
+    script.evaluateFunctionInRealm(secondTabRealmId, "window.foo = 5", true, Optional.empty());
+
+    EvaluateResult firstContextResult =
+        script.evaluateFunctionInRealm(firstTabRealmId, "window.foo", true, Optional.empty());
+
+    assertThat(firstContextResult.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+
+    EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
+    assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
+    assertThat(successFirstContextresult.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) successFirstContextresult.getResult().getValue().get()).isEqualTo(3L);
+
+    EvaluateResult secondContextResult =
+        script.evaluateFunctionInRealm(secondTabRealmId, "window.foo", true, Optional.empty());
+
+    assertThat(secondContextResult.getResultType())
+        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+
+    EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
+    assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
+    assertThat(successSecondContextresult.getResult().getValue().isPresent()).isTrue();
+    assertThat((Long) successSecondContextresult.getResult().getValue().get()).isEqualTo(5L);
   }
 
   @Test
@@ -537,6 +638,87 @@ public class ScriptCommandsTest extends JupiterTestBase {
                     Optional.of(arguments),
                     Optional.empty(),
                     Optional.empty()));
+  }
+
+  @Test
+  void canGetAllRealms() {
+    String firstWindow = driver.getWindowHandle();
+    String secondWindow = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
+    Script script = new Script(firstWindow, driver);
+    List<RealmInfo> realms = script.getAllRealms();
+
+    assertThat(realms.size()).isEqualTo(2);
+
+    RealmInfo firstWindowRealm = realms.get(0);
+    assertThat(firstWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(firstWindowRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo firstWindowRealmInfo = (WindowRealmInfo) firstWindowRealm;
+    assertThat(firstWindowRealmInfo.getBrowsingContext()).isEqualTo(firstWindow);
+
+    RealmInfo secondWindowRealm = realms.get(1);
+    assertThat(secondWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(secondWindowRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo secondWindowRealmInfo = (WindowRealmInfo) secondWindowRealm;
+    assertThat(secondWindowRealmInfo.getBrowsingContext()).isEqualTo(secondWindow);
+  }
+
+  @Test
+  void canGetRealmByType() {
+    String firstWindow = driver.getWindowHandle();
+    String secondWindow = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
+    Script script = new Script(firstWindow, driver);
+    List<RealmInfo> realms = script.getRealmsByType(RealmType.WINDOW);
+
+    assertThat(realms.size()).isEqualTo(2);
+
+    RealmInfo firstWindowRealm = realms.get(0);
+    assertThat(firstWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(firstWindowRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo firstWindowRealmInfo = (WindowRealmInfo) firstWindowRealm;
+    assertThat(firstWindowRealmInfo.getBrowsingContext()).isEqualTo(firstWindow);
+
+    RealmInfo secondWindowRealm = realms.get(1);
+    assertThat(secondWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(secondWindowRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo secondWindowRealmInfo = (WindowRealmInfo) secondWindowRealm;
+    assertThat(secondWindowRealmInfo.getBrowsingContext()).isEqualTo(secondWindow);
+  }
+
+  @Test
+  void canGetRealmInBrowsingContext() {
+    String windowId = driver.getWindowHandle();
+    String tabId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+
+    Script script = new Script(windowId, driver);
+    List<RealmInfo> realms = script.getRealmsInBrowsingContext(tabId);
+
+    RealmInfo tabRealm = realms.get(0);
+    assertThat(tabRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(tabRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo firstWindowRealmInfo = (WindowRealmInfo) tabRealm;
+    assertThat(firstWindowRealmInfo.getBrowsingContext()).isEqualTo(tabId);
+  }
+
+  @Test
+  void canGetRealmInBrowsingContextByType() {
+    String windowId = driver.getWindowHandle();
+    driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+
+    Script script = new Script(windowId, driver);
+    List<RealmInfo> windowRealms =
+        script.getRealmsInBrowsingContextByType(windowId, RealmType.WINDOW);
+
+    RealmInfo windowRealm = windowRealms.get(0);
+    assertThat(windowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
+    assertThat(windowRealm.getRealmId()).isNotNull();
+
+    WindowRealmInfo firstWindowRealmInfo = (WindowRealmInfo) windowRealm;
+    assertThat(firstWindowRealmInfo.getBrowsingContext()).isEqualTo(windowId);
   }
 
   @AfterEach
