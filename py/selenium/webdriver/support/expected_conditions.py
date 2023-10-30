@@ -16,6 +16,7 @@
 # under the License.
 
 import re
+from collections.abc import Iterable
 from typing import Any
 from typing import Callable
 from typing import List
@@ -290,7 +291,7 @@ def frame_to_be_available_and_switch_to_it(locator: Union[Tuple[str, str], str])
 
     def _predicate(driver: WebDriver):
         try:
-            if hasattr(locator, "__iter__") and not isinstance(locator, str):
+            if isinstance(locator, Iterable) and not isinstance(locator, str):
                 driver.switch_to.frame(driver.find_element(*locator))
             else:
                 driver.switch_to.frame(locator)
@@ -351,9 +352,9 @@ def element_to_be_clickable(mark: Union[WebElement, Tuple[str, str]]) -> Callabl
         target = mark
         if not isinstance(target, WebElement):  # if given locator instead of WebElement
             target = driver.find_element(*target)  # grab element at locator
-        target = visibility_of(target)(driver)
-        if target and target.is_enabled():
-            return target
+        element = visibility_of(target)(driver)
+        if element and element.is_enabled():
+            return element
         return False
 
     return _predicate
