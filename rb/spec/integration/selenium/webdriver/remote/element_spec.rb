@@ -32,7 +32,9 @@ module Selenium
 
       context 'when uploading one file' do
         it 'uses the provided file detector', exclusive: {driver: :remote},
-                                              flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
+                                              flaky: {browser: :safari,
+                                                      ci: :github,
+                                                      reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys('element_spec.rb')
@@ -49,7 +51,9 @@ module Selenium
 
       context 'when uploading multiple files' do
         it 'uses the provided file detector', exclusive: {driver: :remote},
-                                              flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
+                                              flaky: {browser: :safari,
+                                                      ci: :github,
+                                                      reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload_multiple.html')
 
           driver.find_element(id: 'upload').send_keys("driver_spec.rb\nelement_spec.rb")
