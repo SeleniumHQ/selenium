@@ -90,6 +90,13 @@ module Selenium
             expect(driver.downloadable_files).to be_empty
           end
         end
+
+        it 'errors when not set', except: {browser: :firefox} do
+          expect {
+            driver.downloadable_files
+          }.to raise_exception(Error::WebDriverError,
+                               'You must enable downloads in order to work with downloadable files.')
+        end
       end
     end # Remote
   end # WebDriver

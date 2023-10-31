@@ -107,7 +107,7 @@ module Selenium
         options = @options.dup
 
         downloads = options.delete(:enable_downloads)
-        options['se:downloadsEnabled'] = downloads if downloads
+        options['se:downloadsEnabled'] = downloads unless downloads.nil?
         w3c_options = process_w3c_options(options)
 
         browser_options = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|

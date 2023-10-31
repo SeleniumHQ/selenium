@@ -22,10 +22,14 @@ module Selenium
     module DriverExtensions
       module HasFileDownloads
         def downloadable_files
+          verify_enabled
+
           @bridge.downloadable_files['names']
         end
 
         def download_file(file_name, target_directory)
+          verify_enabled
+
           response = @bridge.download_file(file_name)
           contents = response['contents']
 
@@ -41,7 +45,17 @@ module Selenium
         end
 
         def delete_downloadable_files
+          verify_enabled
+
           @bridge.delete_downloadable_files
+        end
+
+        private
+
+        def verify_enabled
+          return if capabilities['se:downloadsEnabled']
+
+          raise Error::WebDriverError, 'You must enable downloads in order to work with downloadable files.'
         end
       end # HasFileDownloads
     end # DriverExtensions
