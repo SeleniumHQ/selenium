@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -29,16 +30,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.LogInspector;
 import org.openqa.selenium.bidi.Script;
+import org.openqa.selenium.bidi.log.ConsoleLogEntry;
+import org.openqa.selenium.bidi.log.LogLevel;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.Pages;
 
 public class ScriptCommandsTest extends JupiterTestBase {
+  private AppServer server;
+
+  @BeforeEach
+  public void setUp() {
+    server = new NettyAppServer();
+    server.start();
+  }
 
   @Test
   @NotYetImplemented(SAFARI)
@@ -53,7 +72,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.callFunctionInBrowsingContext(
             id, "()=>{return 1+2;}", false, Optional.empty(), Optional.empty(), Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -86,7 +105,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -116,7 +135,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -147,7 +166,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -177,7 +196,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.of(thisParameter),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -204,7 +223,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.of(ResultOwnership.ROOT));
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -230,7 +249,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.of(ResultOwnership.NONE));
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -256,7 +275,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.EXCEPTION);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.EXCEPTION);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultExceptionValue exception = (EvaluateResultExceptionValue) result;
@@ -297,8 +316,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(resultNotInSandbox.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(resultNotInSandbox.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess result = (EvaluateResultSuccess) resultNotInSandbox;
     assertThat(result.getResult().getType()).isEqualTo("undefined");
@@ -324,8 +342,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(resultInSandbox.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(resultInSandbox.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(resultInSandbox.getRealmId()).isNotNull();
 
     EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
@@ -370,8 +387,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(firstContextResult.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(firstContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
     assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
@@ -387,8 +403,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(secondContextResult.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(secondContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
     assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
@@ -404,7 +419,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     EvaluateResult result =
         script.evaluateFunctionInBrowsingContext(id, "1 + 2", true, Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -422,7 +437,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "))) !!@@## some invalid JS script (((", false, Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.EXCEPTION);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.EXCEPTION);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultExceptionValue exception = (EvaluateResultExceptionValue) result;
@@ -443,7 +458,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "Promise.resolve({a:1})", true, Optional.of(ResultOwnership.ROOT));
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -465,8 +480,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "sandbox", "window.foo", true, Optional.empty());
 
-    assertThat(resultNotInSandbox.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(resultNotInSandbox.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess result = (EvaluateResultSuccess) resultNotInSandbox;
     assertThat(result.getResult().getType()).isEqualTo("undefined");
@@ -480,8 +494,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "sandbox", "window.foo", true, Optional.empty());
 
-    assertThat(resultInSandbox.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(resultInSandbox.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(resultInSandbox.getRealmId()).isNotNull();
 
     EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
@@ -508,8 +521,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     EvaluateResult firstContextResult =
         script.evaluateFunctionInRealm(firstTabRealmId, "window.foo", true, Optional.empty());
 
-    assertThat(firstContextResult.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(firstContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
     assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
@@ -519,8 +531,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     EvaluateResult secondContextResult =
         script.evaluateFunctionInRealm(secondTabRealmId, "window.foo", true, Optional.empty());
 
-    assertThat(secondContextResult.getResultType())
-        .isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(secondContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
     EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
     assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
@@ -537,7 +548,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "({a:1})", false, Optional.of(ResultOwnership.ROOT));
 
-    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(evaluateResult.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
@@ -593,7 +604,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             id, "({a:1})", false, Optional.of(ResultOwnership.ROOT));
 
-    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(evaluateResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(evaluateResult.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
@@ -721,10 +732,73 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(firstWindowRealmInfo.getBrowsingContext()).isEqualTo(windowId);
   }
 
+  @Test
+  void canAddPreloadScript() throws ExecutionException, InterruptedException, TimeoutException {
+    Script script = new Script(driver);
+    String id = script.addPreloadScript("() => {{ console.log('{preload_script_console_text}') }}");
+
+    assertThat(id).isNotNull();
+    assertThat(id).isNotEmpty();
+
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
+      logInspector.onConsoleEntry(future::complete);
+
+      driver.get(new Pages(server).blankPage);
+
+      ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(logEntry.getText()).isEqualTo("{preload_script_console_text}");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
+      assertThat(logEntry.getMethod()).isEqualTo("log");
+    }
+  }
+
+  @Test
+  void canAddPreloadScriptWithArguments() {
+    Script script = new Script(driver);
+    String id =
+        script.addPreloadScript(
+            "(channel) => channel('will_be_send', 'will_be_ignored')",
+            List.of(new ChannelValue("channel_name")));
+    assertThat(id).isNotNull();
+    assertThat(id).isNotEmpty();
+  }
+
+  @Test
+  void canAddPreloadScriptWithChannelOptions() {
+    Script script = new Script(driver);
+    SerializationOptions serializationOptions = new SerializationOptions();
+    serializationOptions.setMaxDomDepth(0);
+    String id =
+        script.addPreloadScript(
+            "(channel) => channel('will_be_send', 'will_be_ignored')",
+            List.of(new ChannelValue("channel_name", serializationOptions, ResultOwnership.ROOT)));
+    assertThat(id).isNotNull();
+    assertThat(id).isNotEmpty();
+  }
+
+  @Test
+  void canAddPreloadScriptInASandbox() {
+    Script script = new Script(driver);
+    String id = script.addPreloadScript("() => { window.bar=2; }");
+    assertThat(id).isNotNull();
+    assertThat(id).isNotEmpty();
+
+    driver.get(new Pages(server).blankPage);
+
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(
+            driver.getWindowHandle(), "window.bar", true, Optional.empty());
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+    assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
+  }
+
   @AfterEach
   public void quitDriver() {
     if (driver != null) {
       driver.quit();
     }
+    safelyCall(server::stop);
   }
 }
