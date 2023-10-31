@@ -794,6 +794,31 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
   }
 
+  @Test
+  void canRemovePreloadedScript() {
+    Script script = new Script(driver.getWindowHandle(), driver);
+    String id = script.addPreloadScript("() => { window.bar=2; }");
+    assertThat(id).isNotNull();
+    assertThat(id).isNotEmpty();
+
+    driver.get(new Pages(server).blankPage);
+
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(
+            driver.getWindowHandle(), "window.bar", true, Optional.empty());
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+    assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
+
+    script.removePreloadScript(id);
+
+    EvaluateResult resultAfterRemoval =
+        script.evaluateFunctionInBrowsingContext(
+            driver.getWindowHandle(), "sandbox", "window.bar", true, Optional.empty());
+    assertThat(resultAfterRemoval.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
+    assertThat(((EvaluateResultSuccess) resultAfterRemoval).getResult().getValue().isPresent())
+        .isFalse();
+  }
+
   @AfterEach
   public void quitDriver() {
     if (driver != null) {

@@ -289,6 +289,10 @@ public class Script {
             }));
   }
 
+  public void removePreloadScript(String id) {
+    this.bidi.send(new Command<>("script.removePreloadScript", Map.of("script", id)));
+  }
+
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
