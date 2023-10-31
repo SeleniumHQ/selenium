@@ -260,9 +260,9 @@ pyopenssl==22.0.0 \
     --hash=sha256:660b1b1425aac4a1bea1d94168a85d99f0b3144c869dd4390d27629d0087f1bf \
     --hash=sha256:ea252b38c87425b64116f808355e8da644ef9b07e429398bfece610f893ee2e0
     # via -r py/requirements.txt
-pyparsing==3.0.8 \
-    --hash=sha256:7bf433498c016c4314268d95df76c81b842a4cb2b276fa3312cfb1e1d85f6954 \
-    --hash=sha256:ef7b523f6356f763771559412c0d7134753f037822dad1b16945b7b846f7ad06
+pyparsing==3.1.1 \
+    --hash=sha256:32c7c0b711493c72ff18a981d24f28aaf9c1fb7ed5e9667c9e84e3db623bdbfb \
+    --hash=sha256:ede28a1a32462f5a9705e07aea48001a08f7cf81a021585011deba701581a0db
     # via
     #   -r py/requirements.txt
     #   packaging
