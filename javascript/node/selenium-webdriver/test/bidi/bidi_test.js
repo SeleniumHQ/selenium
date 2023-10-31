@@ -528,6 +528,123 @@ suite(
 
         assert.equal(result2, true)
       })
+
+      it('can handle user prompt', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.alertsPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        await browsingContext.handleUserPrompt()
+
+        const result = await driver.getTitle()
+
+        assert.equal(result, 'Testing Alerts')
+      })
+
+      it('can accept user prompt', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.alertsPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        await browsingContext.handleUserPrompt(true)
+
+        const result = await driver.getTitle()
+
+        assert.equal(result, 'Testing Alerts')
+      })
+
+      it('can dismiss user prompt', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.alertsPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        await browsingContext.handleUserPrompt(false)
+
+        const result = await driver.getTitle()
+
+        assert.equal(result, 'Testing Alerts')
+      })
+
+      it('can pass user text to user prompt', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.userpromptPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        const userText = 'Selenium automates browsers'
+
+        await browsingContext.handleUserPrompt(undefined, userText)
+
+        const result = await driver.getPageSource()
+        assert.equal(result.includes(userText), true)
+      })
+
+      it('can accept user prompt with user text', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.userpromptPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        const userText = 'Selenium automates browsers'
+
+        await browsingContext.handleUserPrompt(true, userText)
+
+        const result = await driver.getPageSource()
+        assert.equal(result.includes(userText), true)
+      })
+
+      it('can dismiss user prompt with user text', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.userpromptPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        const userText = 'Selenium automates browsers'
+
+        await browsingContext.handleUserPrompt(false, userText)
+
+        const result = await driver.getPageSource()
+        assert.equal(result.includes(userText), false)
+      })
     })
 
     describe('Browsing Context Inspector', function () {

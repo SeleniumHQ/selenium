@@ -252,6 +252,22 @@ class BrowsingContext {
       throw Error(result['error'])
     }
   }
+
+  async handleUserPrompt(accept = undefined, userText = undefined) {
+    const params = {
+      method: 'browsingContext.handleUserPrompt',
+      params: {
+        context: this._id,
+        accept: accept,
+        userText: userText,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
 }
 
 class NavigateResult {
