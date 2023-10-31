@@ -313,9 +313,9 @@ tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
     # via pytest
-trio==0.22.0 \
-    --hash=sha256:ce68f1c5400a47b137c5a4de72c7c901bd4e7a24fbdebfe9b41de8c6c04eaacf \
-    --hash=sha256:f1dd0780a89bfc880c7c7994519cb53f62aacb2c25ff487001c0052bd721cdf0
+trio==0.22.2 \
+    --hash=sha256:3887cf18c8bcc894433420305468388dac76932e9668afa1c49aa3806b6accb3 \
+    --hash=sha256:f43da357620e5872b3d940a2e3589aa251fd3f881b65a608d742e00809b1ec38
     # via
     #   -r py/requirements.txt
     #   pytest-trio
