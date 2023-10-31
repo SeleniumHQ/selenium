@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     labels:
       - "C-build"
       - "dependencies"
@@ -14,7 +14,7 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     labels:
       - "C-nodejs"
       - "dependencies"
@@ -23,7 +23,7 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     labels:
       - "C-rb"
       - "dependencies"
@@ -32,7 +32,7 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     labels:
       - "C-rust"
       - "dependencies"
@@ -41,7 +41,7 @@ updates:
     schedule:
       interval: daily
       time: '08:00'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     labels:
       - "C-py"
       - "dependencies"

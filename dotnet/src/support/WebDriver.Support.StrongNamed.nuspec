@@ -4,27 +4,23 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2023 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver Support</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Provides support classes for Selenium WebDriver</summary>
     <description>
-      Selenium is a set of different software tools each with a different approach
-      to supporting browser automation. These tools are highly flexible, allowing
-      many options for locating and manipulating elements within a browser, and one
-      of its key features is the support for automating multiple browser platforms.
-      This package contains .NET support utilites and classes that users may find
-      useful in using Selenium WebDriver. These support classes are mainly intended
-      to spark ideas of what is possible with Selenium WebDriver, and may not be
-      entirely appropriate for production use.
+      Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.
     </description>
     <projectUrl>https://selenium.dev</projectUrl>
-    <repository url="https://github.com/SeleniumHQ/selenium" />
+    <repository type="GitHub" url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
     <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
-    <icon>images\icon.png</icon>
+    <icon>icon.png</icon>
     <tags>selenium webdriver support browser automation</tags>
+    <releaseNotes>
+      See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG.
+    </releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />

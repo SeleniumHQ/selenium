@@ -51,7 +51,7 @@ csharp_library(
 nuget_pack(
     name = "support",
     files = {
-        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support",
     libs = {
@@ -91,7 +91,7 @@ csharp_library(
 nuget_pack(
     name = "support-strongnamed",
     files = {
-        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support.StrongNamed",
     libs = {

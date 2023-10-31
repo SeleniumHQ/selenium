@@ -65,7 +65,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -99,7 +99,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -133,7 +133,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -169,7 +169,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -206,7 +206,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -242,7 +242,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -278,7 +278,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -314,7 +314,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -353,7 +353,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -395,7 +395,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -435,7 +435,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -475,7 +475,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -519,7 +519,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
@@ -560,7 +560,7 @@ class LocalValueTest extends JupiterTestBase {
             Optional.empty(),
             Optional.empty());
 
-    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;

@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.script.ChannelValue;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
@@ -223,6 +224,75 @@ public class Script {
             realmInfoMapper));
   }
 
+  public String addPreloadScript(String functionDeclaration) {
+    return this.bidi.send(
+        new Command<>(
+            "script.addPreloadScript",
+            Map.of("functionDeclaration", functionDeclaration, "contexts", this.browsingContextIds),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return result.get("script").toString();
+            }));
+  }
+
+  public String addPreloadScript(String functionDeclaration, List<ChannelValue> arguments) {
+    return this.bidi.send(
+        new Command<>(
+            "script.addPreloadScript",
+            Map.of(
+                "functionDeclaration",
+                functionDeclaration,
+                "contexts",
+                this.browsingContextIds,
+                "arguments",
+                arguments),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return result.get("script").toString();
+            }));
+  }
+
+  public String addPreloadScript(String functionDeclaration, String sandbox) {
+    return this.bidi.send(
+        new Command<>(
+            "script.addPreloadScript",
+            Map.of(
+                "functionDeclaration",
+                functionDeclaration,
+                "contexts",
+                this.browsingContextIds,
+                "sandbox",
+                sandbox),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return result.get("script").toString();
+            }));
+  }
+
+  public String addPreloadScript(
+      String functionDeclaration, List<ChannelValue> arguments, String sandbox) {
+    return this.bidi.send(
+        new Command<>(
+            "script.addPreloadScript",
+            Map.of(
+                "functionDeclaration",
+                functionDeclaration,
+                "contexts",
+                this.browsingContextIds,
+                "arguments",
+                arguments,
+                "sandbox",
+                sandbox),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return result.get("script").toString();
+            }));
+  }
+
+  public void removePreloadScript(String id) {
+    this.bidi.send(new Command<>("script.removePreloadScript", Map.of("script", id)));
+  }
+
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
@@ -284,16 +354,14 @@ public class Script {
     EvaluateResult evaluateResult;
     String realmId = (String) response.get("realm");
 
-    if (type.equals(EvaluateResult.EvaluateResultType.SUCCESS.toString())) {
+    if (type.equals(EvaluateResult.Type.SUCCESS.toString())) {
       RemoteValue remoteValue;
       try (StringReader reader = new StringReader(JSON.toJson(response.get("result")));
           JsonInput input = JSON.newInput(reader)) {
         remoteValue = input.read(RemoteValue.class);
       }
 
-      evaluateResult =
-          new EvaluateResultSuccess(
-              EvaluateResult.EvaluateResultType.SUCCESS, realmId, remoteValue);
+      evaluateResult = new EvaluateResultSuccess(EvaluateResult.Type.SUCCESS, realmId, remoteValue);
     } else {
       ExceptionDetails exceptionDetails;
       try (StringReader reader = new StringReader(JSON.toJson(response.get("exceptionDetails")));
@@ -303,7 +371,7 @@ public class Script {
 
       evaluateResult =
           new EvaluateResultExceptionValue(
-              EvaluateResult.EvaluateResultType.EXCEPTION, realmId, exceptionDetails);
+              EvaluateResult.Type.EXCEPTION, realmId, exceptionDetails);
     }
 
     return evaluateResult;
