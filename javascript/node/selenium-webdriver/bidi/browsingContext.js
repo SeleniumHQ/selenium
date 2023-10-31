@@ -268,6 +268,32 @@ class BrowsingContext {
       throw Error(result['error'])
     }
   }
+
+  async reload(ignoreCache = undefined, readinessState = undefined) {
+    if (
+      readinessState !== undefined &&
+      !['none', 'interactive', 'complete'].includes(readinessState)
+    ) {
+      throw Error(
+        `Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`
+      )
+    }
+
+    const params = {
+      method: 'browsingContext.reload',
+      params: {
+        context: this._id,
+        ignoreCache: ignoreCache,
+        wait: readinessState,
+      },
+    }
+    const navigateResult = (await this.bidi.send(params))['result']
+
+    return new NavigateResult(
+      navigateResult['url'],
+      navigateResult['navigation']
+    )
+  }
 }
 
 class NavigateResult {

@@ -645,6 +645,38 @@ suite(
         const result = await driver.getPageSource()
         assert.equal(result.includes(userText), false)
       })
+
+      it.skip('can reload a browsing context', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const result = await browsingContext.navigate(
+          Pages.logEntryAdded,
+          'complete'
+        )
+
+        await browsingContext.reload()
+        assert.equal(result.navigationId, null)
+        assert(result.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      it.skip('can reload with readiness state', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        const result = await browsingContext.navigate(
+          Pages.logEntryAdded,
+          'complete'
+        )
+
+        await browsingContext.reload(undefined, 'complete')
+        assert.notEqual(result.navigationId, null)
+        assert(result.url.includes('/bidi/logEntryAdded.html'))
+      })
     })
 
     describe('Browsing Context Inspector', function () {
