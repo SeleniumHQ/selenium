@@ -162,9 +162,9 @@ iniconfig==2.0.0 \
     # via
     #   -r py/requirements.txt
     #   pytest
-more-itertools==8.13.0 \
-    --hash=sha256:a42901a0a5b169d925f6f217cd5a190e32ef54360905b9c39ee7db5313bfec0f \
-    --hash=sha256:c5122bffc5f104d37c1626b8615b511f3427aa5389b94d61e5ef8236bfbc3ddb
+more-itertools==10.1.0 \
+    --hash=sha256:626c369fa0eb37bac0291bce8259b332fd59ac792fa5497b59837309cd5b114a \
+    --hash=sha256:64e0735fcfdc6f3464ea133afe8ea4483b1c5fe3a3d69852e6503b43a0b222e6
     # via -r py/requirements.txt
 multidict==6.0.2 \
     --hash=sha256:0327292e745a880459ef71be14e709aaea2f783f3537588fb4ed09b6c01bca60 \
@@ -260,9 +260,9 @@ pyopenssl==22.0.0 \
     --hash=sha256:660b1b1425aac4a1bea1d94168a85d99f0b3144c869dd4390d27629d0087f1bf \
     --hash=sha256:ea252b38c87425b64116f808355e8da644ef9b07e429398bfece610f893ee2e0
     # via -r py/requirements.txt
-pyparsing==3.0.8 \
-    --hash=sha256:7bf433498c016c4314268d95df76c81b842a4cb2b276fa3312cfb1e1d85f6954 \
-    --hash=sha256:ef7b523f6356f763771559412c0d7134753f037822dad1b16945b7b846f7ad06
+pyparsing==3.1.1 \
+    --hash=sha256:32c7c0b711493c72ff18a981d24f28aaf9c1fb7ed5e9667c9e84e3db623bdbfb \
+    --hash=sha256:ede28a1a32462f5a9705e07aea48001a08f7cf81a021585011deba701581a0db
     # via
     #   -r py/requirements.txt
     #   packaging
@@ -328,15 +328,15 @@ urllib3[socks]==2.0.7 \
     --hash=sha256:c97dfde1f7bd43a71c8d2a58e369e9b2bf692d1334ea9f9cae55add7d0dd0f84 \
     --hash=sha256:fdb6d215c776278489906c2f8916e6e7d4f5a9b602ccbcfdf7f016fc8da0596e
     # via -r py/requirements.txt
-wsproto==1.1.0 \
-    --hash=sha256:2218cb57952d90b9fca325c0dcfb08c3bda93e8fd8070b0a17f048e2e47a521b \
-    --hash=sha256:a2e56bfd5c7cd83c1369d83b5feccd6d37798b74872866e62616e0ecf111bda8
+wsproto==1.2.0 \
+    --hash=sha256:ad565f26ecb92588a3e43bc3d96164de84cd9902482b130d0ddbaa9664a85065 \
+    --hash=sha256:b9acddd652b585d75b20477888c56642fdade28bdfd3579aa24a4d2c037dd736
     # via
     #   -r py/requirements.txt
     #   trio-websocket
-zipp==3.8.0 \
-    --hash=sha256:56bf8aadb83c24db6c4b577e13de374ccfb67da2078beba1d037c17980bf43ad \
-    --hash=sha256:c4f6e5bbf48e74f7a38e7cc5b0480ff42b0ae5178957d564d18932525d5cf099
+zipp==3.17.0 \
+    --hash=sha256:0e923e726174922dce09c53c59ad483ff7bbb8e572e00c7f7c46b88556409f31 \
+    --hash=sha256:84e64a1c28cf7e91ed2078bb8cc8c259cb19b76942096c8d7b84947690cabaf0
     # via
     #   -r py/requirements.txt
     #   importlib-metadata

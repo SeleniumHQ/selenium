@@ -31,7 +31,8 @@ module Selenium
           expect(driver.status).to be_a(Hash)
         end
 
-        it 'uses a default file detector' do
+        it 'uses a default file detector',
+           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys(__FILE__)

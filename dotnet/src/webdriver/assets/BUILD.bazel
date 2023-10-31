@@ -1,3 +1,4 @@
 exports_files([
+    "README.md",
     "Selenium.WebDriver.targets",
 ])
