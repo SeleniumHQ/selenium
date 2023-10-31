@@ -238,6 +238,20 @@ class BrowsingContext {
       }
     }
   }
+
+  async activate() {
+    const params = {
+      method: 'browsingContext.activate',
+      params: {
+        context: this._id,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
 }
 
 class NavigateResult {

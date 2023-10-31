@@ -506,6 +506,28 @@ suite(
         const base64code = response.slice(startIndex, endIndex)
         assert.equal(base64code, pngMagicNumber)
       })
+
+      it('can activate a browsing context', async function () {
+        const id = await driver.getWindowHandle()
+        const window1 = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await BrowsingContext(driver, {
+          type: 'window',
+        })
+
+        const result = await driver.executeScript('return document.hasFocus();')
+
+        assert.equal(result, false)
+
+        await window1.activate()
+        const result2 = await driver.executeScript(
+          'return document.hasFocus();'
+        )
+
+        assert.equal(result2, true)
+      })
     })
 
     describe('Browsing Context Inspector', function () {
