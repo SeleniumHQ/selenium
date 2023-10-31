@@ -285,9 +285,9 @@ pytest-instafail==0.5.0 \
     --hash=sha256:33a606f7e0c8e646dc3bfee0d5e3a4b7b78ef7c36168cfa1f3d93af7ca706c9e \
     --hash=sha256:6855414487e9e4bb76a118ce952c3c27d3866af15487506c4ded92eb72387819
     # via -r py/requirements.txt
-pytest-mock==3.10.0 \
-    --hash=sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b \
-    --hash=sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f
+pytest-mock==3.12.0 \
+    --hash=sha256:0972719a7263072da3a21c7f4773069bcc7486027d7e8e1f81d98a47e701bc4f \
+    --hash=sha256:31a40f038c22cad32287bb43932054451ff5583ff094bca6f675df2f8bc1a6e9
     # via -r py/requirements.txt
 pytest-trio==0.8.0 \
     --hash=sha256:8363db6336a79e6c53375a2123a41ddbeccc4aa93f93788651641789a56fb52e \
