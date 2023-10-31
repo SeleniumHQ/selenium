@@ -20,23 +20,23 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-class ChannelValue extends LocalValue {
+public class ChannelValue extends LocalValue {
 
   private final String channelId;
   private SerializationOptions options;
 
   private ResultOwnership resultOwnership;
 
-  ChannelValue(String channelId) {
+  public ChannelValue(String channelId) {
     this.channelId = channelId;
   }
 
-  ChannelValue(String channelId, SerializationOptions options) {
+  public ChannelValue(String channelId, SerializationOptions options) {
     this.channelId = channelId;
     this.options = options;
   }
 
-  ChannelValue(String channelId, ResultOwnership resultOwnership) {
+  public ChannelValue(String channelId, ResultOwnership resultOwnership) {
     this.channelId = channelId;
     this.resultOwnership = resultOwnership;
   }

@@ -652,7 +652,11 @@ public class LocalNode extends Node {
     }
     TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
     if (tempFS == null) {
-      throw new WebDriverException("Cannot find downloads file system for session id: " + id);
+      String msg =
+          "Cannot find downloads file system for session id: "
+              + id
+              + " — ensure downloads are enabled in the options class when requesting a session.";
+      throw new WebDriverException(msg);
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];

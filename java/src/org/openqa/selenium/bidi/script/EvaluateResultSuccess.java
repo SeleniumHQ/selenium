@@ -19,18 +19,18 @@ package org.openqa.selenium.bidi.script;
 
 public class EvaluateResultSuccess implements EvaluateResult {
 
-  private final EvaluateResultType type;
+  private final Type type;
   private final String realmId;
   private final RemoteValue value;
 
-  public EvaluateResultSuccess(EvaluateResultType type, String realmId, RemoteValue value) {
+  public EvaluateResultSuccess(Type type, String realmId, RemoteValue value) {
     this.type = type;
     this.realmId = realmId;
     this.value = value;
   }
 
   @Override
-  public EvaluateResultType getResultType() {
+  public Type getResultType() {
     return this.type;
   }
 

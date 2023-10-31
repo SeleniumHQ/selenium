@@ -18,17 +18,17 @@
 package org.openqa.selenium.bidi.script;
 
 public interface EvaluateResult {
-  EvaluateResultType getResultType();
+  Type getResultType();
 
   String getRealmId();
 
-  public enum EvaluateResultType {
+  public enum Type {
     SUCCESS("success"),
     EXCEPTION("exception");
 
     private final String type;
 
-    EvaluateResultType(String type) {
+    Type(String type) {
       this.type = type;
     }
 
