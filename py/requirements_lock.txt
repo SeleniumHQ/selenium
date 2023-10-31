@@ -293,9 +293,9 @@ pytest-trio==0.8.0 \
     --hash=sha256:8363db6336a79e6c53375a2123a41ddbeccc4aa93f93788651641789a56fb52e \
     --hash=sha256:e6a7e7351ae3e8ec3f4564d30ee77d1ec66e1df611226e5618dbb32f9545c841
     # via -r py/requirements.txt
-sniffio==1.2.0 \
-    --hash=sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663 \
-    --hash=sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de
+sniffio==1.3.0 \
+    --hash=sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101 \
+    --hash=sha256:eecefdce1e5bbfb7ad2eeaabf7c1eeb404d7757c379bd1f7e5cce9d8bf425384
     # via
     #   -r py/requirements.txt
     #   trio
