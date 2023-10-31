@@ -45,33 +45,24 @@ module Selenium
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
         end
 
-        it 'lists downloads' do
+        it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: true) do |driver|
-            driver.navigate.to url_for('downloads/download.html')
-            driver.find_element(id: 'file-1').click
-            driver.find_element(id: 'file-2').click
+            browser_downloads(driver)
+
             file_names = %w[file_1.txt file_2.jpg]
 
-            expect {
-              wait.until { driver.downloadable_files == file_names }
-            }.not_to raise_exception
+            expect(driver.downloadable_files).to eq file_names
           end
         end
 
-        it 'downloads a file' do
-          target_directory = Dir.mktmpdir 'se_download'
+        it 'downloads a file', exclude: {browser: :safari, reason: 'grid hangs'} do
+          target_directory = File.join(Dir.tmpdir, SecureRandom.uuid)
           at_exit { FileUtils.rm_f(target_directory) }
 
           reset_driver!(enable_downloads: true) do |driver|
-            driver.navigate.to url_for('downloads/download.html')
-            driver.find_element(id: 'file-1').click
+            browser_downloads(driver)
 
-            loop do
-              @files = driver.downloadable_files
-              break unless @files.empty?
-            end
-
-            file_name = @files.first
+            file_name = driver.downloadable_files.first
             driver.download_file(file_name, target_directory)
 
             file_content = File.read("#{target_directory}/#{file_name}").strip
@@ -79,11 +70,9 @@ module Selenium
           end
         end
 
-        it 'deletes downloadable files' do
+        it 'deletes downloadable files', exclude: {browser: :safari, reason: 'grid hangs'} do
           reset_driver!(enable_downloads: true) do |driver|
-            driver.navigate.to url_for('downloads/download.html')
-            driver.find_element(id: 'file-1').click
-            wait.until { !driver.downloadable_files.empty? }
+            browser_downloads(driver)
 
             driver.delete_downloadable_files
 
@@ -91,11 +80,22 @@ module Selenium
           end
         end
 
-        it 'errors when not set', except: {browser: :firefox} do
+        it 'errors when not set', {except: {browser: :firefox, reason: 'grid always sets true and firefox returns it'},
+                                   exclude: {browser: :safari, reason: 'grid hangs'}} do
           expect {
             driver.downloadable_files
           }.to raise_exception(Error::WebDriverError,
                                'You must enable downloads in order to work with downloadable files.')
+        end
+
+        private
+
+        def browser_downloads(driver)
+          driver.navigate.to url_for('downloads/download.html')
+          driver.find_element(id: 'file-1').click
+          driver.find_element(id: 'file-2').click
+
+          wait.until { driver.downloadable_files.include? 'file_2.jpg' }
         end
       end
     end # Remote

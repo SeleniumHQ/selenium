@@ -34,8 +34,10 @@ module Selenium
           contents = response['contents']
 
           File.open("#{file_name}.zip", 'wb') { |f| f << Base64.decode64(contents) }
+          target_directory += '/' unless target_directory.end_with?('/')
+          FileUtils.mkdir_p(target_directory)
+
           begin
-            target_directory += '/' unless target_directory.end_with?('/')
             Zip::File.open("#{file_name}.zip") do |zip|
               zip.each { |entry| zip.extract(entry, "#{target_directory}#{file_name}") }
             end
