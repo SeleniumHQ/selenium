@@ -22,10 +22,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def test_get_downloadable_files(driver, pages):
-    pages.load("downloads/download.html")
-    driver.find_element(By.ID, "file-1").click()
-    driver.find_element(By.ID, "file-2").click()
-    WebDriverWait(driver, 3).until(lambda d: len(d.get_downloadable_files()) == 2)
+    _browser_downloads(driver, pages)
 
     file_names = driver.get_downloadable_files()
 
@@ -34,9 +31,7 @@ def test_get_downloadable_files(driver, pages):
 
 
 def test_download_file(driver, pages):
-    pages.load("downloads/download.html")
-    driver.find_element(By.ID, "file-1").click()
-    WebDriverWait(driver, 3).until(lambda d: d.get_downloadable_files())
+    _browser_downloads(driver, pages)
 
     file_name = driver.get_downloadable_files()[0]
     with tempfile.TemporaryDirectory() as target_directory:
@@ -48,9 +43,14 @@ def test_download_file(driver, pages):
 
 
 def test_delete_downloadable_files(driver, pages):
-    pages.load("downloads/download.html")
-    driver.find_element(By.ID, "file-1").click()
-    WebDriverWait(driver, 3).until(lambda d: d.get_downloadable_files())
+    _browser_downloads(driver, pages)
 
     driver.delete_downloadable_files()
     assert not driver.get_downloadable_files()
+
+
+def _browser_downloads(driver, pages):
+    pages.load("downloads/download.html")
+    driver.find_element(By.ID, "file-1").click()
+    driver.find_element(By.ID, "file-2").click()
+    WebDriverWait(driver, 3).until(lambda d: "file_2.jpg" in d.get_downloadable_files())
