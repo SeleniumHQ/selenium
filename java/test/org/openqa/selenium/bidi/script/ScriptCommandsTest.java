@@ -781,7 +781,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
   @Test
   void canAddPreloadScriptInASandbox() {
     Script script = new Script(driver);
-    String id = script.addPreloadScript("() => { window.bar=2; }");
+    String id = script.addPreloadScript("() => { window.bar=2; }", "sandbox");
     assertThat(id).isNotNull();
     assertThat(id).isNotEmpty();
 
@@ -789,7 +789,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResult result =
         script.evaluateFunctionInBrowsingContext(
-            driver.getWindowHandle(), "window.bar", true, Optional.empty());
+            driver.getWindowHandle(), "sandbox", "window.bar", true, Optional.empty());
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
     assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
   }
