@@ -72,7 +72,7 @@ experimental domain Accessibility
       optional AXValue attributeValue
       # Whether this source is superseded by a higher priority source.
       optional boolean superseded
-      # The native markup source for this value, e.g. a <label> element.
+      # The native markup source for this value, e.g. a `<label>` element.
       optional AXValueNativeSourceType nativeSource
       # The value, such as a node or node list, of the native source.
       optional AXValue nativeSourceValue
@@ -483,6 +483,7 @@ experimental domain Audits
       ExcludeSamePartyCrossPartyContext
       ExcludeDomainNonASCII
       ExcludeThirdPartyCookieBlockedInFirstPartySet
+      ExcludeThirdPartyPhaseout
 
   type CookieWarningReason extends string
     enum
@@ -496,6 +497,7 @@ experimental domain Audits
       WarnSameSiteLaxCrossDowngradeLax
       WarnAttributeValueExceedsMaxSize
       WarnDomainNonASCII
+      WarnThirdPartyPhaseout
 
   type CookieOperation extends string
     enum
@@ -697,6 +699,7 @@ experimental domain Audits
       InvalidRegisterOsTriggerHeader
       WebAndOsHeaders
       NoWebOrOsSupport
+      NavigationRegistrationWithoutTransientUserActivation
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
@@ -719,7 +722,7 @@ experimental domain Audits
       Page.FrameId frameId
       Network.LoaderId loaderId
 
-  type NavigatorUserAgentIssueDetails extends object
+  deprecated type NavigatorUserAgentIssueDetails extends object
     properties
       string url
       optional SourceCodeLocation location
@@ -737,6 +740,7 @@ experimental domain Audits
       FormLabelHasNeitherForNorNestedInput
       FormLabelForMatchesNonExistingIdError
       FormInputHasWrongButWellIntendedAutocompleteValueError
+      ResponseWasBlockedByORB
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -746,6 +750,7 @@ experimental domain Audits
       optional Page.FrameId frameId
       optional DOM.BackendNodeId violatingNodeId
       optional string violatingNodeAttribute
+      optional AffectedRequest request
 
   # This issue tracks information needed to print a deprecation message.
   # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
@@ -869,6 +874,24 @@ experimental domain Audits
       # Contains additional info when the failure was due to a request.
       optional FailedRequestInfo failedRequestInfo
 
+  type PropertyRuleIssueReason extends string
+    enum
+      InvalidSyntax
+      InvalidInitialValue
+      InvalidInherits
+      InvalidName
+
+  # This issue warns about errors in property rules that lead to property
+  # registrations being ignored.
+  type PropertyRuleIssueDetails extends object
+    properties
+      # Source code position of the property rule.
+      SourceCodeLocation sourceCodeLocation
+      # Reason why the property rule was discarded.
+      PropertyRuleIssueReason propertyRuleIssueReason
+      # The value of the property rule property that failed to parse
+      optional string propertyValue
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -884,6 +907,7 @@ experimental domain Audits
       CorsIssue
       AttributionReportingIssue
       QuirksModeIssue
+      # Deprecated
       NavigatorUserAgentIssue
       GenericIssue
       DeprecationIssue
@@ -892,6 +916,7 @@ experimental domain Audits
       BounceTrackingIssue
       StylesheetLoadingIssue
       FederatedAuthUserInfoRequestIssue
+      PropertyRuleIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -908,13 +933,14 @@ experimental domain Audits
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
-      optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
+      deprecated optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
       optional GenericIssueDetails genericIssueDetails
       optional DeprecationIssueDetails deprecationIssueDetails
       optional ClientHintIssueDetails clientHintIssueDetails
       optional FederatedAuthRequestIssueDetails federatedAuthRequestIssueDetails
       optional BounceTrackingIssueDetails bounceTrackingIssueDetails
       optional StylesheetLoadingIssueDetails stylesheetLoadingIssueDetails
+      optional PropertyRuleIssueDetails propertyRuleIssueDetails
       optional FederatedAuthUserInfoRequestIssueDetails federatedAuthUserInfoRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -996,13 +1022,60 @@ experimental domain Autofill
     properties
       # address field name, for example GIVEN_NAME.
       string name
-      # address field name, for example Jon Doe.
+      # address field value, for example Jon Doe.
       string value
+
+  # A list of address fields.
+  type AddressFields extends object
+    properties
+      array of AddressField fields
 
   type Address extends object
     properties
-      # fields and values defining a test address.
+      # fields and values defining an address.
       array of AddressField fields
+
+  # Defines how an address can be displayed like in chrome://settings/addresses.
+  # Address UI is a two dimensional array, each inner array is an "address information line", and when rendered in a UI surface should be displayed as such.
+  # The following address UI for instance:
+  # [[{name: "GIVE_NAME", value: "Jon"}, {name: "FAMILY_NAME", value: "Doe"}], [{name: "CITY", value: "Munich"}, {name: "ZIP", value: "81456"}]]
+  # should allow the receiver to render:
+  # Jon Doe
+  # Munich 81456
+  type AddressUI extends object
+    properties
+      # A two dimension array containing the repesentation of values from an address profile.
+      array of AddressFields addressFields
+
+  # Specified whether a filled field was done so by using the html autocomplete attribute or autofill heuristics.
+  type FillingStrategy extends string
+    enum
+      autocompleteAttribute
+      autofillInferred
+
+  type FilledField extends object
+    properties
+      # The type of the field, e.g text, password etc.
+      string htmlType
+      # the html id
+      string id
+      # the html name
+      string name
+      # the field value
+      string value
+      # The actual field type, e.g FAMILY_NAME
+      string autofillType
+      # The filling strategy
+      FillingStrategy fillingStrategy
+
+  # Emitted when an address form is filled.
+  event addressFormFilled
+    parameters
+      # Information about the fields that were filled
+      array of FilledField filledFields
+      # An UI representation of the address used to fill the form.
+      # Consists of a 2D array where each child represents an address/profile line.
+      AddressUI addressUi
 
   # Trigger autofill on a form identified by the fieldId.
   # If the field and related form cannot be autofilled, returns an error.
@@ -1021,6 +1094,11 @@ experimental domain Autofill
     parameters
       array of Address addresses
 
+  # Disables autofill domain notifications.
+  command disable
+
+  # Enables autofill domain notifications.
+  command enable
 
 # Defines events for background web platform features.
 experimental domain BackgroundService
@@ -1499,7 +1577,7 @@ experimental domain CSS
       boolean isInline
       # Whether this stylesheet is mutable. Inline stylesheets become mutable
       # after they have been modified via CSSOM API.
-      # <link> element's stylesheets become mutable only if DevTools modifies them.
+      # `<link>` element's stylesheets become mutable only if DevTools modifies them.
       # Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
       boolean isMutable
       # True if this stylesheet is created through new CSSStyleSheet() or imported as a
@@ -1547,6 +1625,19 @@ experimental domain CSS
       # @scope CSS at-rule array.
       # The array enumerates @scope at-rules starting with the innermost one, going outwards.
       experimental optional array of CSSScope scopes
+      # The array keeps the types of ancestor CSSRules from the innermost going outwards.
+      experimental optional array of CSSRuleType ruleTypes
+
+  # Enum indicating the type of a CSS rule, used to represent the order of a style rule's ancestors.
+  # This list only contains rule types that are collected during the ancestor rule collection.
+  experimental type CSSRuleType extends string
+    enum
+      MediaRule
+      SupportsRule
+      ContainerRule
+      LayerRule
+      ScopeRule
+      StyleRule
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1811,6 +1902,28 @@ experimental domain CSS
       # List of keyframes.
       array of CSSKeyframeRule keyframes
 
+  # Representation of a custom property registration through CSS.registerProperty
+  type CSSPropertyRegistration extends object
+    properties
+      string propertyName
+      optional Value initialValue
+      boolean inherits
+      string syntax
+
+
+  # CSS property at-rule representation.
+  type CSSPropertyRule extends object
+    properties
+      # The css style sheet identifier (absent for user agent stylesheet and user-specified
+      # stylesheet rules) this rule came from.
+      optional StyleSheetId styleSheetId
+      # Parent stylesheet's origin.
+      StyleSheetOrigin origin
+      # Associated property name.
+      Value propertyName
+      # Associated style declaration.
+      CSSStyle style
+
   # CSS keyframe rule representation.
   type CSSKeyframeRule extends object
     properties
@@ -1938,6 +2051,10 @@ experimental domain CSS
       optional array of CSSKeyframesRule cssKeyframesRules
       # A list of CSS position fallbacks matching this node.
       optional array of CSSPositionFallbackRule cssPositionFallbackRules
+      # A list of CSS at-property rules matching this node.
+      optional array of CSSPropertyRule cssPropertyRules
+      # A list of CSS property registrations matching this node.
+      optional array of CSSPropertyRegistration cssPropertyRegistrations
       # Id of the first parent element that does not have display: contents.
       experimental optional DOM.NodeId parentLayoutNodeId
 
@@ -1997,6 +2114,16 @@ experimental domain CSS
       DOM.NodeId nodeId
       string propertyName
       string value
+
+  # Modifies the property rule property name.
+  command setPropertyRulePropertyName
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string propertyName
+    returns
+      # The resulting key text after modification.
+      Value propertyName
 
   # Modifies the keyframe rule key text.
   command setKeyframeKey
@@ -2309,8 +2436,8 @@ experimental domain Cast
 # the JavaScript object wrapper, etc. It is important that client receives DOM events only for the
 # nodes that are known to the client. Backend keeps track of the nodes that were sent to the client
 # and never sends the same node twice. It is client's responsibility to collect information about
-# the nodes that were sent to the client.<p>Note that `iframe` owner elements will return
-# corresponding document elements as their child nodes.</p>
+# the nodes that were sent to the client. Note that `iframe` owner elements will return
+# corresponding document elements as their child nodes.
 domain DOM
   depends on Runtime
 
@@ -4090,8 +4217,8 @@ experimental domain HeadlessExperimental
 # Input/Output operations for streams produced by DevTools.
 domain IO
 
-  # This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
-  # `&lt;uuid&gt` is an UUID of a Blob.
+  # This is either obtained from another method or specified as `blob:<uuid>` where
+  # `<uuid>` is an UUID of a Blob.
   type StreamHandle extends string
 
   # Close the stream, discard any temporary backing storage.
@@ -4569,6 +4696,9 @@ domain Input
       optional integer modifiers
       # Time at which the event occurred.
       optional TimeSinceEpoch timestamp
+
+  # Cancels any active dragging in the page.
+  command cancelDragging
 
   # Emulates touch event from the mouse event parameters.
   experimental command emulateTouchFromMouseEvent
@@ -5368,6 +5498,21 @@ domain Network
       # address space.
       UnexpectedPrivateNetworkAccess
       NoCorsRedirectModeNotFollow
+      # Request was a private network request and needed user permission yet did
+      # not carry `Private-Network-Access-Id` in the preflight response.
+      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
+      PreflightMissingPrivateNetworkAccessId
+      # Request was a private network request and needed user permission yet did
+      # not carry `Private-Network-Access-Name` in the preflight response.
+      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
+      PreflightMissingPrivateNetworkAccessName
+      # Request was a private network request and needed user permission yet not
+      # able to request for permission.
+      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
+      PrivateNetworkAccessPermissionUnavailable
+      # Request was a private network request and is denied by user permission.
+      # https://github.com/WICG/private-network-access/blob/main/permission_prompt/explainer.md
+      PrivateNetworkAccessPermissionDenied
 
   type CorsErrorStatus extends object
     properties
@@ -5611,6 +5756,8 @@ domain Network
       SameSiteNoneInsecure
       # The cookie was not stored due to user preferences.
       UserPreferences
+      # The cookie was blocked due to third-party cookie phaseout.
+      ThirdPartyPhaseout
       # The cookie was blocked by third-party cookie blocking between sites in
       # the same First-Party Set.
       ThirdPartyBlockedInFirstPartySet
@@ -5652,6 +5799,12 @@ domain Network
       # The cookie's name/value pair size exceeded the size limit defined in
       # RFC6265bis.
       NameValuePairExceedsMaxSize
+      # The cookie contained a forbidden ASCII control character, or the tab
+      # character if it appears in the middle of the cookie name, value, an
+      # attribute name, or an attribute value.
+      DisallowedCharacter
+      # Cookie contains no content or only whitespace.
+      NoCookieContent
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -5678,6 +5831,8 @@ domain Network
       SameSiteNoneInsecure
       # The cookie was not sent due to user preferences.
       UserPreferences
+      # The cookie was blocked due to third-party cookie phaseout.
+      ThirdPartyPhaseout
       # The cookie was blocked by third-party cookie blocking between sites in
       # the same First-Party Set.
       ThirdPartyBlockedInFirstPartySet
@@ -5845,7 +6000,7 @@ domain Network
       Headers responseHeaders
       # Signed exchange response signature.
       array of SignedExchangeSignature signatures
-      # Signed exchange header integrity hash in the form of "sha256-<base64-hash-value>".
+      # Signed exchange header integrity hash in the form of `sha256-<base64-hash-value>`.
       string headerIntegrity
 
   # Field type for a signed exchange related error.
@@ -5886,6 +6041,7 @@ domain Network
       deflate
       gzip
       br
+      zstd
 
   # Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
   experimental command setAcceptedEncodings
@@ -6232,9 +6388,6 @@ domain Network
       MonotonicTime timestamp
       # Total number of bytes received for this request.
       number encodedDataLength
-      # Set when 1) response was blocked by Cross-Origin Read Blocking and also
-      # 2) this needs to be reported to the DevTools console.
-      optional boolean shouldReportCorbBlocking
 
   # Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
   # mocked.
@@ -7313,6 +7466,7 @@ domain Page
       ch-ect
       ch-prefers-color-scheme
       ch-prefers-reduced-motion
+      ch-prefers-reduced-transparency
       ch-rtt
       ch-save-data
       ch-ua
@@ -7321,6 +7475,7 @@ domain Page
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
+      ch-ua-form-factor
       ch-ua-full-version
       ch-ua-full-version-list
       ch-ua-platform-version
@@ -7757,6 +7912,9 @@ domain Page
       # Specifies whether command line API should be available to the script, defaults
       # to false.
       experimental optional boolean includeCommandLineAPI
+      # If true, runs the script immediately on existing execution contexts or worlds.
+      # Default: false.
+      experimental optional boolean runImmediately
     returns
       # Identifier of the added script.
       ScriptIdentifier identifier
@@ -8028,6 +8186,8 @@ domain Page
       experimental optional enum transferMode
         ReturnAsBase64
         ReturnAsStream
+      # Whether or not to generate tagged (accessible) PDF. Defaults to embedder choice.
+      experimental optional boolean generateTaggedPDF
     returns
       # Base64-encoded pdf data. Empty if |returnAsStream| is specified.
       binary data
@@ -8322,7 +8482,7 @@ domain Page
       enum mode
         selectSingle
         selectMultiple
-      # Input node id. Only present for file choosers opened via an <input type="file"> element.
+      # Input node id. Only present for file choosers opened via an `<input type="file">` element.
       experimental optional DOM.BackendNodeId backendNodeId
 
   # Fired when frame has been attached to its parent.
@@ -8541,6 +8701,7 @@ domain Page
       FencedFramesEmbedder
       CookieDisabled
       HTTPAuthRequired
+      CookieFlushed
       #Blocklisted features
       WebSocket
       WebTransport
@@ -8553,14 +8714,12 @@ domain Page
       DocumentLoaded
       DedicatedWorkerOrWorklet
       OutstandingNetworkRequestOthers
-      OutstandingIndexedDBTransaction
       RequestedMIDIPermission
       RequestedAudioCapturePermission
       RequestedVideoCapturePermission
       RequestedBackForwardCacheBlockedSensors
       RequestedBackgroundWorkPermission
       BroadcastChannel
-      IndexedDBConnection
       WebXR
       SharedWorker
       WebLocks
@@ -9198,11 +9357,14 @@ experimental domain Storage
       loaded
       bid
       win
+      additionalBid
+      additionalBidWin
+      clear
 
   # Ad advertising element inside an interest group.
   type InterestGroupAd extends object
     properties
-      string renderUrl
+      string renderURL
       optional string metadata
 
   # The full details of an interest group.
@@ -9212,10 +9374,10 @@ experimental domain Storage
       string name
       Network.TimeSinceEpoch expirationTime
       string joiningOrigin
-      optional string biddingUrl
-      optional string biddingWasmHelperUrl
-      optional string updateUrl
-      optional string trustedBiddingSignalsUrl
+      optional string biddingLogicURL
+      optional string biddingWasmHelperURL
+      optional string updateURL
+      optional string trustedBiddingSignalsURL
       array of string trustedBiddingSignalsKeys
       optional string userBiddingSignals
       array of InterestGroupAd ads
@@ -9616,6 +9778,86 @@ experimental domain Storage
   event storageBucketDeleted
     parameters
       string bucketId
+
+  # https://wicg.github.io/attribution-reporting-api/
+  experimental command setAttributionReportingLocalTestingMode
+    parameters
+      # If enabled, noise is suppressed and reports are sent immediately.
+      boolean enabled
+
+  # Enables/disables issuing of Attribution Reporting events.
+  experimental command setAttributionReportingTracking
+    parameters
+      boolean enable
+
+  experimental type AttributionReportingSourceType extends string
+    enum
+      navigation
+      event
+
+  experimental type UnsignedInt64AsBase10 extends string
+  experimental type UnsignedInt128AsBase16 extends string
+  experimental type SignedInt64AsBase10 extends string
+
+  experimental type AttributionReportingFilterDataEntry extends object
+    properties
+      string key
+      array of string values
+
+  experimental type AttributionReportingAggregationKeysEntry extends object
+    properties
+      string key
+      UnsignedInt128AsBase16 value
+
+  experimental type AttributionReportingEventReportWindows extends object
+    properties
+      # duration in seconds
+      integer start
+      # duration in seconds
+      array of integer ends
+
+  experimental type AttributionReportingSourceRegistration extends object
+    properties
+      Network.TimeSinceEpoch time
+      # duration in seconds
+      optional integer expiry
+      # eventReportWindow and eventReportWindows are mutually exclusive
+      # duration in seconds
+      optional integer eventReportWindow
+      optional AttributionReportingEventReportWindows eventReportWindows
+      # duration in seconds
+      optional integer aggregatableReportWindow
+      AttributionReportingSourceType type
+      string sourceOrigin
+      string reportingOrigin
+      array of string destinationSites
+      UnsignedInt64AsBase10 eventId
+      SignedInt64AsBase10 priority
+      array of AttributionReportingFilterDataEntry filterData
+      array of AttributionReportingAggregationKeysEntry aggregationKeys
+      optional UnsignedInt64AsBase10 debugKey
+
+  experimental type AttributionReportingSourceRegistrationResult extends string
+    enum
+      success
+      internalError
+      insufficientSourceCapacity
+      insufficientUniqueDestinationCapacity
+      excessiveReportingOrigins
+      prohibitedByBrowserPolicy
+      successNoised
+      destinationReportingLimitReached
+      destinationGlobalLimitReached
+      destinationBothLimitsReached
+      reportingOriginsPerSiteLimitReached
+      exceedsMaxChannelCapacity
+
+  # TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
+  # trigger registration.
+  experimental event attributionReportingSourceRegistered
+    parameters
+      AttributionReportingSourceRegistration registration
+      AttributionReportingSourceRegistrationResult result
 
 # The SystemInfo domain defines methods and events for querying low-level system information.
 experimental domain SystemInfo
@@ -10379,6 +10621,10 @@ domain Fetch
   # takeResponseBodyForInterceptionAsStream. Calling other methods that
   # affect the request or disabling fetch domain before body is received
   # results in an undefined behavior.
+  # Note that the response body is not available for redirects. Requests
+  # paused in the _redirect received_ state may be differentiated by
+  # `responseCode` and presence of `location` response header, see
+  # comments to `requestPaused` for details.
   command getResponseBody
     parameters
       # Identifier for the intercepted request to get body for.
@@ -10411,6 +10657,11 @@ domain Fetch
   # The stage of the request can be determined by presence of responseErrorReason
   # and responseStatusCode -- the request is at the response stage if either
   # of these fields is present and in the request stage otherwise.
+  # Redirect responses and subsequent requests are reported similarly to regular
+  # responses and requests. Redirect responses may be distinguished by the value
+  # of `responseStatusCode` (which is one of 301, 302, 303, 307, 308) along with
+  # presence of the `location` header. Requests resulting from a redirect will
+  # have `redirectedRequestId` field set.
   event requestPaused
     parameters
       # Each request the page makes will have a unique id.
@@ -11072,7 +11323,6 @@ experimental domain Preload
       LowEndDevice
       InvalidSchemeRedirect
       InvalidSchemeNavigation
-      InProgressNavigation
       NavigationRequestBlockedByCsp
       MainFrameNavigation
       MojoBinderPolicy
@@ -11084,7 +11334,6 @@ experimental domain Preload
       NavigationBadHttpStatus
       ClientCertRequested
       NavigationRequestNetworkError
-      MaxNumOfRunningPrerendersExceeded
       CancelAllHostsForTesting
       DidFailLoad
       Stop
@@ -11095,13 +11344,9 @@ experimental domain Preload
       AudioOutputDeviceRequested
       MixedContent
       TriggerBackgrounded
-      EmbedderTriggeredAndCrossOriginRedirected
       MemoryLimitExceeded
-      # Prerenders can be cancelled when Chrome uses excessive memory. This is
-      # recorded when it fails to get the memory usage.
-      FailToGetMemoryUsage
       DataSaverEnabled
-      HasEffectiveUrl
+      TriggerUrlHasEffectiveUrl
       ActivatedBeforeStarted
       InactivePageRestriction
       StartFailed
@@ -11131,18 +11376,14 @@ experimental domain Preload
       MemoryPressureAfterTriggered
       PrerenderingDisabledByDevTools
       ResourceLoadBlockedByClient
-
-  # Fired when a prerender attempt is completed.
-  event prerenderAttemptCompleted
-    parameters
-      PreloadingAttemptKey key
-      # The frame id of the frame initiating prerendering.
-      Page.FrameId initiatingFrameId
-      string prerenderingUrl
-      PrerenderFinalStatus finalStatus
-      # This is used to give users more information about the name of the API call
-      # that is incompatible with prerender and has caused the cancellation of the attempt
-      optional string disallowedApiMethod
+      SpeculationRuleRemoved
+      ActivatedWithAuxiliaryBrowsingContexts
+      MaxNumOfRunningEagerPrerendersExceeded
+      MaxNumOfRunningNonEagerPrerendersExceeded
+      MaxNumOfRunningEmbedderPrerendersExceeded
+      PrerenderingUrlHasEffectiveUrl
+      RedirectedPrerenderingUrlHasEffectiveUrl
+      ActivationUrlHasEffectiveUrl
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated
@@ -11150,6 +11391,8 @@ experimental domain Preload
       boolean disabledByPreference
       boolean disabledByDataSaver
       boolean disabledByBatterySaver
+      boolean disabledByHoldbackPrefetchSpeculationRules
+      boolean disabledByHoldbackPrerenderSpeculationRules
 
   # Preloading status values, see also PreloadingTriggeringOutcome. This
   # status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
@@ -11213,6 +11456,7 @@ experimental domain Preload
       string prefetchUrl
       PreloadingStatus status
       PrefetchStatus prefetchStatus
+      Network.RequestId requestId
 
   # Fired when a prerender attempt is updated.
   event prerenderStatusUpdated
@@ -11220,6 +11464,9 @@ experimental domain Preload
       PreloadingAttemptKey key
       PreloadingStatus status
       optional PrerenderFinalStatus prerenderStatus
+      # This is used to give users more information about the name of Mojo interface
+      # that is incompatible with prerender and has caused the cancellation of the attempt.
+      optional string disallowedMojoInterface
 
   # Send a list of sources for all preloading attempts in a document.
   event preloadingAttemptSourcesUpdated
@@ -11241,6 +11488,7 @@ experimental domain FedCm
     enum
       AccountChooser
       AutoReauthn
+      ConfirmIdpLogin
 
   # Corresponds to IdentityRequestAccount
   type Account extends object
@@ -11251,7 +11499,7 @@ experimental domain FedCm
       string givenName
       string pictureUrl
       string idpConfigUrl
-      string idpSigninUrl
+      string idpLoginUrl
       LoginState loginState
       # These two are only set if the loginState is signUp
       optional string termsOfServiceUrl
@@ -11280,6 +11528,12 @@ experimental domain FedCm
     parameters
       string dialogId
       integer accountIndex
+
+  # Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
+  # clicked the continue button.
+  command confirmIdpLogin
+    parameters
+      string dialogId
 
   command dismissDialog
     parameters
