@@ -183,9 +183,14 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Read the next element from the JSON input stream as the specified type.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#skipValue()" class="member-name-link">skipValue</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#readArray(java.lang.reflect.Type)" class="member-name-link">readArray</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;type)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Read an array of elements from the JSON input stream with elements as the specified type.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#skipValue()" class="member-name-link">skipValue</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Discard the pending JSON property value.</div>
 </div>
 </div>
@@ -442,6 +447,25 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <dd><code>type</code> - data type for deserialization (class or <a href="TypeToken.html" title="class in org.openqa.selenium.json"><code>TypeToken</code></a>)</dd>
 <dt>Returns:</dt>
 <dd>object of the specified type deserialized from the JSON input stream<br>
+     <b>NOTE</b>: Returns <code>null</code> if the input string is exhausted.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></code> - if coercion of the next element to the specified type fails</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/UncheckedIOException.html" title="class or interface in java.io" class="external-link">UncheckedIOException</a></code> - if an I/O exception is encountered</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="readArray(java.lang.reflect.Type)">
+<h3>readArray</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">readArray</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;type)</span></div>
+<div class="block">Read an array of elements from the JSON input stream with elements as the specified type.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - result type of the item in the list (as specified by [type])</dd>
+<dt>Parameters:</dt>
+<dd><code>type</code> - data type for deserialization (class or <a href="TypeToken.html" title="class in org.openqa.selenium.json"><code>TypeToken</code></a>)</dd>
+<dt>Returns:</dt>
+<dd>list of objects of the specified type deserialized from the JSON input stream<br>
      <b>NOTE</b>: Returns <code>null</code> if the input string is exhausted.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></code> - if coercion of the next element to the specified type fails</dd>

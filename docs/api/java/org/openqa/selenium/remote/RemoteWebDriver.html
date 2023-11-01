@@ -78,7 +78,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
+<dd><code><a href="../federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 </dl>
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
@@ -87,7 +87,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">RemoteWebDriver</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a>, <a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a>, <a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a>, <a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></span></div>
+implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a>, <a href="../federatedcredentialmanagement/HasFederatedCredentialManagement.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">HasFederatedCredentialManagement</a>, <a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a>, <a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a>, <a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -174,6 +174,17 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Close the current window, quitting the browser if it's the last window currently open.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteDownloadableFiles()" class="member-name-link">deleteDownloadableFiles</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Deletes all downloadable files.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#downloadFile(java.lang.String,java.nio.file.Path)" class="member-name-link">downloadFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html" title="class or interface in java.nio.file" class="external-link">Path</a>&nbsp;targetLocation)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Downloads a file from the specified location.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(java.lang.String)" class="member-name-link">execute</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -234,149 +245,154 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get a string representing the current URL that the browser is looking at.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getElementConverter()" class="member-name-link">getElementConverter</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getErrorHandler()" class="member-name-link">getErrorHandler</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDownloadableFiles()" class="member-name-link">getDownloadableFiles</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Retrieves the downloadable files as a map of file names and their corresponding URLs.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getElementConverter()" class="member-name-link">getElementConverter</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExecuteMethod()" class="member-name-link">getExecuteMethod</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getErrorHandler()" class="member-name-link">getErrorHandler</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFederatedCredentialManagementDialog()" class="member-name-link">getFederatedCredentialManagementDialog</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExecuteMethod()" class="member-name-link">getExecuteMethod</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../federatedcredentialmanagement/FederatedCredentialManagementDialog.html" title="interface in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementDialog</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFederatedCredentialManagementDialog()" class="member-name-link">getFederatedCredentialManagementDialog</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the currently open FedCM dialog, or null if there is no dialog.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFileDetector()" class="member-name-link">getFileDetector</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPageSource()" class="member-name-link">getPageSource</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Get the source of the last loaded page.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getScreenshotAs(org.openqa.selenium.OutputType)" class="member-name-link">getScreenshotAs</a><wbr>(<a href="../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;outputType)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Capture the screenshot and store it in the specified location.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFileDetector()" class="member-name-link">getFileDetector</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTitle()" class="member-name-link">getTitle</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPageSource()" class="member-name-link">getPageSource</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Get the source of the last loaded page.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getScreenshotAs(org.openqa.selenium.OutputType)" class="member-name-link">getScreenshotAs</a><wbr>(<a href="../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;outputType)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Capture the screenshot and store it in the specified location.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTitle()" class="member-name-link">getTitle</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get the title of the current page.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getWindowHandle()" class="member-name-link">getWindowHandle</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getWindowHandle()" class="member-name-link">getWindowHandle</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getWindowHandles()" class="member-name-link">getWindowHandles</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getWindowHandles()" class="member-name-link">getWindowHandles</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="../WebDriver.html#switchTo()"><code>WebDriver.switchTo()</code></a>.<a href="../WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(<a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)" class="member-name-link">log</a><wbr>(<a href="SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toLog,
  <a href="RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a>&nbsp;when)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Override this to be notified at key points in the execution of a command.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#manage()" class="member-name-link">manage</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#manage()" class="member-name-link">manage</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the Option interface</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#navigate()" class="member-name-link">navigate</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#navigate()" class="member-name-link">navigate</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">An abstraction allowing the driver to access the browser's history and to navigate to a given
  URL.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#perform(java.util.Collection)" class="member-name-link">perform</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScriptKey.html" title="class in org.openqa.selenium">ScriptKey</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pin(java.lang.String)" class="member-name-link">pin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#perform(java.util.Collection)" class="member-name-link">perform</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../ScriptKey.html" title="class in org.openqa.selenium">ScriptKey</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pin(java.lang.String)" class="member-name-link">pin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Commonly used scripts may be "pinned" to the WebDriver session, allowing them to be called
  efficiently by their handle rather than sending the entire script across the wire for every
  call.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Pdf.html" title="class in org.openqa.selenium">Pdf</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#print(org.openqa.selenium.print.PrintOptions)" class="member-name-link">print</a><wbr>(<a href="../print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a>&nbsp;printOptions)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#quit()" class="member-name-link">quit</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Pdf.html" title="class in org.openqa.selenium">Pdf</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#print(org.openqa.selenium.print.PrintOptions)" class="member-name-link">print</a><wbr>(<a href="../print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a>&nbsp;printOptions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#quit()" class="member-name-link">quit</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Quits this driver, closing every associated window.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)" class="member-name-link">removeVirtualAuthenticator</a><wbr>(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)" class="member-name-link">removeVirtualAuthenticator</a><wbr>(<a href="../virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a>&nbsp;authenticator)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Removes a previously added virtual authenticator.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetCooldown()" class="member-name-link">resetCooldown</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetCooldown()" class="member-name-link">resetCooldown</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Resets the FedCM dialog cooldown.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetInputState()" class="member-name-link">resetInputState</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)" class="member-name-link">setCommandExecutor</a><wbr>(<a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;executor)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetInputState()" class="member-name-link">resetInputState</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDelayEnabled(boolean)" class="member-name-link">setDelayEnabled</a><wbr>(boolean&nbsp;enabled)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Disables the promise rejection delay.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)" class="member-name-link">setElementConverter</a><wbr>(<a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a>&nbsp;converter)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)" class="member-name-link">setErrorHandler</a><wbr>(<a href="ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a>&nbsp;handler)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)" class="member-name-link">setCommandExecutor</a><wbr>(<a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;executor)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)" class="member-name-link">setFileDetector</a><wbr>(<a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDelayEnabled(boolean)" class="member-name-link">setDelayEnabled</a><wbr>(boolean&nbsp;enabled)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Set the file detector to be used when sending keyboard input.</div>
+<div class="block">Disables the promise rejection delay.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">setFoundBy</a><wbr>(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)" class="member-name-link">setElementConverter</a><wbr>(<a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a>&nbsp;converter)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)" class="member-name-link">setErrorHandler</a><wbr>(<a href="ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a>&nbsp;handler)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)" class="member-name-link">setFileDetector</a><wbr>(<a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Set the file detector to be used when sending keyboard input.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">setFoundBy</a><wbr>(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
  <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;by,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;using)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLogLevel(java.util.logging.Level)" class="member-name-link">setLogLevel</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html" title="class or interface in java.util.logging" class="external-link">Level</a>&nbsp;level)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the RemoteWebDriver's client log level.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSessionId(java.lang.String)" class="member-name-link">setSessionId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;opaqueKey)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSession(org.openqa.selenium.Capabilities)" class="member-name-link">startSession</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#switchTo()" class="member-name-link">switchTo</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Send future commands to a different frame or window.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#unpin(org.openqa.selenium.ScriptKey)" class="member-name-link">unpin</a><wbr>(<a href="../ScriptKey.html" title="class in org.openqa.selenium">ScriptKey</a>&nbsp;scriptKey)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLogLevel(java.util.logging.Level)" class="member-name-link">setLogLevel</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html" title="class or interface in java.util.logging" class="external-link">Level</a>&nbsp;level)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the RemoteWebDriver's client log level.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSessionId(java.lang.String)" class="member-name-link">setSessionId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;opaqueKey)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startSession(org.openqa.selenium.Capabilities)" class="member-name-link">startSession</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#switchTo()" class="member-name-link">switchTo</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Send future commands to a different frame or window.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#unpin(org.openqa.selenium.ScriptKey)" class="member-name-link">unpin</a><wbr>(<a href="../ScriptKey.html" title="class in org.openqa.selenium">ScriptKey</a>&nbsp;scriptKey)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deletes the reference to a script that has previously been pinned.</div>
 </div>
 </div>
@@ -385,6 +401,9 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.openqa.selenium.HasDownloads">Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></h3>
+<code><a href="../HasDownloads.html#requireDownloadsEnabled(org.openqa.selenium.Capabilities)">requireDownloadsEnabled</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.openqa.selenium.JavascriptExecutor">Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></h3>
 <code><a href="../JavascriptExecutor.html#getPinnedScripts()">getPinnedScripts</a></code></div>
@@ -1131,6 +1150,52 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../virtualauthenticator/HasVirtualAuthenticator.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a></code>&nbsp;in interface&nbsp;<code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getDownloadableFiles()">
+<h3>getDownloadableFiles</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getDownloadableFiles</span>()</div>
+<div class="block">Retrieves the downloadable files as a map of file names and their corresponding URLs.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../HasDownloads.html#getDownloadableFiles()">getDownloadableFiles</a></code>&nbsp;in interface&nbsp;<code><a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></code></dd>
+<dt>Returns:</dt>
+<dd>A map containing file names as keys and URLs as values.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - if capability to enable downloads is not set</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="downloadFile(java.lang.String,java.nio.file.Path)">
+<h3>downloadFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">downloadFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Path.html" title="class or interface in java.nio.file" class="external-link">Path</a>&nbsp;targetLocation)</span>
+                  throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Downloads a file from the specified location.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../HasDownloads.html#downloadFile(java.lang.String,java.nio.file.Path)">downloadFile</a></code>&nbsp;in interface&nbsp;<code><a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>fileName</code> - the name of the file to download</dd>
+<dd><code>targetLocation</code> - the location where the file should be downloaded</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if an I/O error occurs during the file download</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="deleteDownloadableFiles()">
+<h3>deleteDownloadableFiles</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteDownloadableFiles</span>()</div>
+<div class="block">Deletes all downloadable files.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../HasDownloads.html#deleteDownloadableFiles()">deleteDownloadableFiles</a></code>&nbsp;in interface&nbsp;<code><a href="../HasDownloads.html" title="interface in org.openqa.selenium">HasDownloads</a></code></dd>
+<dt>Throws:</dt>
+<dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - capability to enable downloads must be set</dd>
 </dl>
 </section>
 </li>

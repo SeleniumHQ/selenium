@@ -242,7 +242,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>abstract void</code></div>
+<div class="col-first even-row-color"><code>abstract boolean</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">NewSessionQueue.</span><code><a href="../../grid/sessionqueue/NewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)" class="member-name-link">complete</a><wbr>(<a href="../../grid/data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
  <a href="../Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
@@ -257,10 +257,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code>boolean</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalNewSessionQueue.</span><code><a href="../../grid/sessionqueue/local/LocalNewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)" class="member-name-link">complete</a><wbr>(<a href="../../grid/data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
  <a href="../Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Returns true if the session is still valid (not timed out)</div>
+</div>
 </div>
 </section>
 </li>
@@ -272,7 +274,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code>boolean</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">RemoteNewSessionQueue.</span><code><a href="../../grid/sessionqueue/remote/RemoteNewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)" class="member-name-link">complete</a><wbr>(<a href="../../grid/data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
  <a href="../Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,<wbr><a href="../../grid/data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>

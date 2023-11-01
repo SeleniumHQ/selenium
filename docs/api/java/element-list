@@ -2,6 +2,8 @@ org.openqa.selenium
 org.openqa.selenium.bidi
 org.openqa.selenium.bidi.browsingcontext
 org.openqa.selenium.bidi.log
+org.openqa.selenium.bidi.network
+org.openqa.selenium.bidi.script
 org.openqa.selenium.chrome
 org.openqa.selenium.chromium
 org.openqa.selenium.cli
