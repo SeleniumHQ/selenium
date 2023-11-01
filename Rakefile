@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.15'
+  '4.16'
 end
 
 def version
-  "#{release_version}.0"
+  "#{release_version}.0-SNAPSHOT"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
