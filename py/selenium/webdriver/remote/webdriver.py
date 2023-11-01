@@ -15,8 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 """The WebDriver implementation."""
+import base64
 import contextlib
 import copy
+import os
 import pkgutil
 import types
 import typing
@@ -1132,3 +1134,37 @@ class WebDriver(BaseWebDriver):
         verified: True if the authenticator will pass user verification, False otherwise.
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
+
+    def get_downloadable_files(self) -> dict:
+        """Retrieves the downloadable files as a map of file names and their
+        corresponding URLs."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]["names"]
+
+    def download_file(self, file_name: str, target_directory: str) -> None:
+        """Downloads a file with the specified file name to the target
+        directory.
+
+        file_name: The name of the file to download.
+        target_directory: The path to the directory to save the downloaded file.
+        """
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        if not os.path.exists(target_directory):
+            os.makedirs(target_directory)
+
+        contents = self.execute(Command.DOWNLOAD_FILE, {"name": file_name})["value"]["contents"]
+
+        target_file = os.path.join(target_directory, file_name)
+        with open(target_file, "wb") as file:
+            file.write(base64.b64decode(contents))
+
+    def delete_downloadable_files(self) -> None:
+        """Deletes all downloadable files."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        self.execute(Command.DELETE_DOWNLOADABLE_FILES)
