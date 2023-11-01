@@ -4,7 +4,7 @@ import hashlib
 import json
 import urllib3
 
-from packaging.version import LegacyVersion
+from packaging.version import parse
 
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
@@ -30,7 +30,7 @@ def get_chrome_milestone():
 
     return sorted(
         filter(lambda v: v['version'].split('.')[0] == str(milestone), versions),
-        key=lambda v: LegacyVersion(v['version'])
+        key=lambda v: parse(v['version'])
     )[-1]
 
 def chromedriver():
