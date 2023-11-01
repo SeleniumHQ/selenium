@@ -145,12 +145,6 @@ module Selenium
           take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'],
 
           #
-          # server extensions
-          #
-
-          upload_file: [:post, 'session/:session_id/se/file'],
-
-          #
           # virtual-authenticator
           #
 

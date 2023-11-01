@@ -20,10 +20,15 @@
 module Selenium
   module WebDriver
     module IE
-      autoload :Features, 'selenium/webdriver/ie/features'
-      autoload :Driver,   'selenium/webdriver/ie/driver'
-      autoload :Options,  'selenium/webdriver/ie/options'
-      autoload :Service,  'selenium/webdriver/ie/service'
-    end # IE
+      module Features
+        def command_list
+          self.class::COMMANDS
+        end
+
+        def commands(command)
+          command_list[command]
+        end
+      end # Bridge
+    end # Ie
   end # WebDriver
 end # Selenium

@@ -91,7 +91,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
-            args: %w[--selenium-manager true]
+            args: %w[--selenium-manager true --enable-managed-downloads true]
           )
         end
 
