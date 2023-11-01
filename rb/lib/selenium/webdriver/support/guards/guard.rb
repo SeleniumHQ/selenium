@@ -53,7 +53,9 @@ module Selenium
 
             case @type
             when :exclude
-              "Test not guarded because it breaks test run; #{details}"
+              "Test skipped because it breaks test run; #{details}"
+            when :flaky
+              "Test skipped because it is unreliable in this configuration; #{details}"
             when :exclusive
               "Test does not apply to this configuration; #{details}"
             else
@@ -71,9 +73,10 @@ module Selenium
             @type == :only
           end
 
-          # Bug is present on all configurations specified, but test can not be run because it breaks other tests
+          # Bug is present on all configurations specified, but test can not be run because it breaks other tests,
+          # or it is flaky and unreliable
           def exclude?
-            @type == :exclude
+            @type == :exclude || @type == :flaky
           end
 
           # Test only applies to configurations specified

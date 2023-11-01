@@ -16,39 +16,39 @@
 // under the License
 package org.openqa.selenium.bidi.script;
 
-import static java.util.Collections.unmodifiableMap;
-
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
-import org.openqa.selenium.internal.Require;
 
-class PrimitiveProtocolValue extends LocalValue {
-
-  private final PrimitiveType type;
-  private Object value;
-
-  PrimitiveProtocolValue(PrimitiveType type, Object value) {
-    this.type = type;
-    this.value = value;
+public class SerializationOptions {
+  public enum IncludeShadowTree {
+    NONE,
+    OPEN,
+    ALL;
   }
 
-  PrimitiveProtocolValue(PrimitiveType type) {
-    Require.precondition(
-        type.equals(PrimitiveType.UNDEFINED) || type.equals(PrimitiveType.NULL),
-        "Only null and defined do not require values. "
-            + "Rest all type require a corresponding value.");
-    this.type = type;
+  private Optional<Long> maxDomDepth = Optional.empty();
+  private Optional<Long> maxObjectDepth = Optional.empty();
+  private Optional<IncludeShadowTree> includeShadowTree = Optional.empty();
+
+  public void setMaxDomDepth(long value) {
+    maxDomDepth = Optional.of(value);
   }
 
-  @Override
+  public void setMaxObjectDepth(long value) {
+    maxObjectDepth = Optional.of(value);
+  }
+
+  public void setIncludeShadowTree(IncludeShadowTree value) {
+    includeShadowTree = Optional.of(value);
+  }
+
   public Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("type", this.type.toString());
-
-    if (!(this.type.equals(PrimitiveType.NULL) || this.type.equals(PrimitiveType.UNDEFINED))) {
-      toReturn.put("value", this.value);
-    }
-
-    return unmodifiableMap(toReturn);
+    maxDomDepth.ifPresent(value -> toReturn.put("maxDomDepth", value));
+    maxObjectDepth.ifPresent(value -> toReturn.put("maxObjectDepth", value));
+    includeShadowTree.ifPresent(value -> toReturn.put("includeShadowTree", value.toString()));
+    return Collections.unmodifiableMap(toReturn);
   }
 }

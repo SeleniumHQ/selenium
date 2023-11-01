@@ -13,22 +13,39 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the Licensepackage org.openqa.selenium.bidi.script;
+
 package org.openqa.selenium.bidi.script;
 
-import java.util.List;
-import java.util.Map;
+public enum RealmType {
+  AUDIO_WORKLET("audio-worklet"),
+  DEDICATED_WORKER("dedicated-worker"),
+  PAINT_WORKLET("paint-worklet"),
+  SERVICE_WORKED("service-worker"),
+  SHARED_WORKED("shared-worker"),
+  WINDOW("window"),
+  WORKER("worker"),
+  WORKLET("worklet");
 
-class ArrayLocalValue extends LocalValue {
+  private final String type;
 
-  private final List<LocalValue> value;
-
-  ArrayLocalValue(List<LocalValue> value) {
-    this.value = value;
+  RealmType(String type) {
+    this.type = type;
   }
 
   @Override
-  public Map<String, Object> toJson() {
-    return Map.of("type", "array", "value", value);
+  public String toString() {
+    return type;
+  }
+
+  public static RealmType findByName(String name) {
+    RealmType result = null;
+    for (RealmType type : values()) {
+      if (type.toString().equalsIgnoreCase(name)) {
+        result = type;
+        break;
+      }
+    }
+    return result;
   }
 }

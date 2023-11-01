@@ -13,22 +13,33 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
+
 package org.openqa.selenium.bidi.script;
 
-import java.util.List;
-import java.util.Map;
+public class EvaluateResultSuccess implements EvaluateResult {
 
-class ArrayLocalValue extends LocalValue {
+  private final Type type;
+  private final String realmId;
+  private final RemoteValue value;
 
-  private final List<LocalValue> value;
-
-  ArrayLocalValue(List<LocalValue> value) {
+  public EvaluateResultSuccess(Type type, String realmId, RemoteValue value) {
+    this.type = type;
+    this.realmId = realmId;
     this.value = value;
   }
 
   @Override
-  public Map<String, Object> toJson() {
-    return Map.of("type", "array", "value", value);
+  public Type getResultType() {
+    return this.type;
+  }
+
+  @Override
+  public String getRealmId() {
+    return this.realmId;
+  }
+
+  public RemoteValue getResult() {
+    return this.value;
   }
 }

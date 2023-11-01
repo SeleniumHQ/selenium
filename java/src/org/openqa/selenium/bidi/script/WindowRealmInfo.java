@@ -13,22 +13,32 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
 package org.openqa.selenium.bidi.script;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-class ArrayLocalValue extends LocalValue {
+public class WindowRealmInfo extends RealmInfo {
 
-  private final List<LocalValue> value;
+  private final String browsingContext;
+  private final Optional<String> sandbox;
 
-  ArrayLocalValue(List<LocalValue> value) {
-    this.value = value;
+  public WindowRealmInfo(
+      String realmId,
+      String origin,
+      RealmType realmType,
+      String browsingContext,
+      Optional<String> sandbox) {
+    super(realmId, origin, realmType);
+    this.browsingContext = browsingContext;
+    this.sandbox = sandbox;
   }
 
-  @Override
-  public Map<String, Object> toJson() {
-    return Map.of("type", "array", "value", value);
+  public String getBrowsingContext() {
+    return browsingContext;
+  }
+
+  public Optional<String> getSandbox() {
+    return sandbox;
   }
 }

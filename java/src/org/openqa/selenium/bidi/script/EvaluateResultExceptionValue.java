@@ -1,4 +1,3 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The SFC licenses this file
@@ -13,22 +12,34 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License
+// under the License.
+
 package org.openqa.selenium.bidi.script;
 
-import java.util.List;
-import java.util.Map;
+public class EvaluateResultExceptionValue implements EvaluateResult {
 
-class ArrayLocalValue extends LocalValue {
+  private final Type type;
+  private final String realmId;
+  private final ExceptionDetails exceptionDetails;
 
-  private final List<LocalValue> value;
-
-  ArrayLocalValue(List<LocalValue> value) {
-    this.value = value;
+  public EvaluateResultExceptionValue(
+      Type type, String realmId, ExceptionDetails exceptionDetails) {
+    this.type = type;
+    this.realmId = realmId;
+    this.exceptionDetails = exceptionDetails;
   }
 
   @Override
-  public Map<String, Object> toJson() {
-    return Map.of("type", "array", "value", value);
+  public Type getResultType() {
+    return type;
+  }
+
+  public ExceptionDetails getExceptionDetails() {
+    return this.exceptionDetails;
+  }
+
+  @Override
+  public String getRealmId() {
+    return realmId;
   }
 }
