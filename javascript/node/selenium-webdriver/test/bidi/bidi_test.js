@@ -677,6 +677,45 @@ suite(
         assert.notEqual(result.navigationId, null)
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
+
+      it('can set viewport', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.blankPage)
+
+        await browsingContext.setViewport(250, 300)
+
+        const result = await driver.executeScript(
+          'return [window.innerWidth, window.innerHeight];'
+        )
+        assert.equal(result[0], 250)
+        assert.equal(result[1], 300)
+      })
+
+      xit('can set viewport with device pixel ratio', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.blankPage)
+
+        await browsingContext.setViewport(250, 300, 5)
+
+        const result = await driver.executeScript(
+          'return [window.innerWidth, window.innerHeight];'
+        )
+        assert.equal(result[0], 250)
+        assert.equal(result[1], 300)
+
+        const devicePixelRatio = await driver.executeScript(
+          'return window.devicePixelRatio;'
+        )
+        assert.equal(devicePixelRatio, 5)
+      })
     })
 
     describe('Browsing Context Inspector', function () {
@@ -2038,7 +2077,10 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
+        assert.equal(
+          beforeRequestEvent.request.cookies[0].value.value,
+          'biryani'
+        )
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 
