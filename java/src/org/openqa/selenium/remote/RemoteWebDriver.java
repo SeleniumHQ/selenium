@@ -24,8 +24,10 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -51,6 +53,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.HasDownloads;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -82,6 +85,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -105,6 +109,7 @@ public class RemoteWebDriver
     implements WebDriver,
         JavascriptExecutor,
         HasCapabilities,
+        HasDownloads,
         HasFederatedCredentialManagement,
         HasVirtualAuthenticator,
         Interactive,
@@ -705,6 +710,51 @@ public class RemoteWebDriver
     execute(
         DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
         ImmutableMap.of("authenticatorId", authenticator.getId()));
+  }
+
+  /**
+   * Retrieves the downloadable files as a map of file names and their corresponding URLs.
+   *
+   * @return A map containing file names as keys and URLs as values.
+   * @throws WebDriverException if capability to enable downloads is not set
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<String> getDownloadableFiles() {
+    requireDownloadsEnabled(capabilities);
+
+    Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
+    Map<String, List<String>> value = (Map<String, List<String>>) response.getValue();
+    return value.get("names");
+  }
+
+  /**
+   * Downloads a file from the specified location.
+   *
+   * @param fileName the name of the file to download
+   * @param targetLocation the location where the file should be downloaded
+   * @throws IOException if an I/O error occurs during the file download
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public void downloadFile(String fileName, Path targetLocation) throws IOException {
+    requireDownloadsEnabled(capabilities);
+
+    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
+    String contents = ((Map<String, String>) response.getValue()).get("contents");
+    Zip.unzip(contents, targetLocation.toFile());
+  }
+
+  /**
+   * Deletes all downloadable files.
+   *
+   * @throws WebDriverException capability to enable downloads must be set
+   */
+  @Override
+  public void deleteDownloadableFiles() {
+    requireDownloadsEnabled(capabilities);
+
+    execute(DriverCommand.DELETE_DOWNLOADABLE_FILES);
   }
 
   @Override
