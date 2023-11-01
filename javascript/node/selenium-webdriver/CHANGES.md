@@ -1,3 +1,18 @@
+## 4.15.0
+
+#### :bug: Bug fix
+
+* Replace calls to console.log with managed loggers (#12909)
+
+#### :nail_care: Polish
+
+* Add CDP v119 and remove v116
+
+#### :rocket: New Feature
+
+* Add BiDi captureScreenshot command (#12510)
+* Add BiDi browsing context activate command, handle user prompt command and reload command
+
 ## 4.14.0
 
 #### :nail_care: Polish
