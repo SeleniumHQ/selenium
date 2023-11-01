@@ -24,7 +24,7 @@ const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
-const BrowsingConextInspector = require('../../bidi/browsingContextInspector')
+const BrowsingContextInspector = require('../../bidi/browsingContextInspector')
 const NetworkInspector = require('../../bidi/networkInspector')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
@@ -682,7 +682,7 @@ suite(
     describe('Browsing Context Inspector', function () {
       it('can listen to window browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingConextInspector = await BrowsingContextInspector(driver)
         await browsingConextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
@@ -697,7 +697,7 @@ suite(
 
       it('can listen to tab browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingConextInspector = await BrowsingContextInspector(driver)
         await browsingConextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
@@ -712,7 +712,7 @@ suite(
       })
 
       it('can listen to dom content loaded event', async function () {
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingConextInspector = await BrowsingContextInspector(driver)
         let navigationInfo = null
         await browsingConextInspector.onDomContentLoaded((entry) => {
           navigationInfo = entry
@@ -729,7 +729,7 @@ suite(
 
       it('can listen to browsing context loaded event', async function () {
         let navigationInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingConextInspector = await BrowsingContextInspector(driver)
 
         await browsingConextInspector.onBrowsingContextLoaded((entry) => {
           navigationInfo = entry
