@@ -12,6 +12,7 @@
 
 * Add BiDi captureScreenshot command (#12510)
 * Add BiDi browsing context activate command, handle user prompt command and reload command
+* Add BiDi browsing context commands and events (#13078)
 
 ## 4.14.0
 
