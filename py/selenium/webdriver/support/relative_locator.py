@@ -130,16 +130,19 @@ class RelativeBy:
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
-    def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
+    def near(self, element_or_locator: Union[WebElement, Dict, None] = None, distance: int = 50) -> "RelativeBy":
         """Add a filter to look for elements near.
 
         :Args:
-            - element_or_locator_distance: Element to look near by the element or within a distance
+            - element_or_locator: Element to look near by the element or within a distance
+            - distance: distance in pixel
         """
-        if not element_or_locator_distance:
-            raise WebDriverException("Element or locator or distance must be given when calling near method")
+        if not element_or_locator:
+            raise WebDriverException("Element or locator must be given when calling near method")
+        if distance <= 0:
+            raise WebDriverException("Distance must be positive")
 
-        self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
+        self.filters.append({"kind": "near", "args": [element_or_locator, distance]})
         return self
 
     def to_dict(self) -> Dict:
