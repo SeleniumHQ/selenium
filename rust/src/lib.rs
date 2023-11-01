@@ -208,13 +208,6 @@ pub trait SeleniumManager {
         &mut self,
         original_browser_version: String,
     ) -> Result<Option<PathBuf>, Error> {
-        if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
-            return Err(anyhow!(format_one_arg(
-                NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
-                self.get_browser_name(),
-            )));
-        }
-
         let browser_version;
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
@@ -284,7 +277,7 @@ pub trait SeleniumManager {
 
         // Checking if browser version is in the cache
         let browser_binary_path = self.get_browser_binary_path(&original_browser_version)?;
-        if browser_binary_path.exists() && !self.is_edge() {
+        if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} already exists",
                 self.get_browser_name(),
@@ -292,6 +285,13 @@ pub trait SeleniumManager {
             ));
         } else {
             // If browser is not available, download it
+            if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
+                return Err(anyhow!(format_one_arg(
+                    NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
+                    self.get_browser_name(),
+                )));
+            }
+
             let browser_url = self.get_browser_url_for_download(&original_browser_version)?;
             self.get_logger().debug(format!(
                 "Downloading {} {} from {}",
