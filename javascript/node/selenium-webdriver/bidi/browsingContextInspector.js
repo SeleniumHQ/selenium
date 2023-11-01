@@ -37,6 +37,34 @@ class BrowsingContextInspector {
     )
   }
 
+  async onNavigationStarted(callback) {
+    await this.subscribeAndHandleEvent(
+      'browsingContext.navigationStarted',
+      callback
+    )
+  }
+
+  async onFragmentNavigated(callback) {
+    await this.subscribeAndHandleEvent(
+      'browsingContext.fragmentNavigated',
+      callback
+    )
+  }
+
+  async onUserPromptClosed(callback) {
+    await this.subscribeAndHandleEvent(
+      'browsingContext.userPromptClosed',
+      callback
+    )
+  }
+
+  async onUserPromptOpened(callback) {
+    await this.subscribeAndHandleEvent(
+      'browsingContext.userPromptOpened',
+      callback
+    )
+  }
+
   async onDomContentLoaded(callback) {
     await this.subscribeAndHandleEvent(
       'browsingContext.domContentLoaded',
