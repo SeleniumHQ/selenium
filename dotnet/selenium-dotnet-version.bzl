@@ -6,7 +6,7 @@ SUPPORTED_NET_STANDARD_VERSIONS = ["netstandard2.0"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v85",
-    "v116",
+    "v119",
     "v117",
     "v118",
 ]
