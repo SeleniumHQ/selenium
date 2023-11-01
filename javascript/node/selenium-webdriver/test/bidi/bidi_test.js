@@ -682,8 +682,8 @@ suite(
     describe('Browsing Context Inspector', function () {
       it('can listen to window browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingContextInspector(driver)
-        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
 
@@ -697,8 +697,8 @@ suite(
 
       it('can listen to tab browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingContextInspector(driver)
-        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
 
@@ -712,9 +712,9 @@ suite(
       })
 
       it('can listen to dom content loaded event', async function () {
-        const browsingConextInspector = await BrowsingContextInspector(driver)
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
         let navigationInfo = null
-        await browsingConextInspector.onDomContentLoaded((entry) => {
+        await browsingcontextInspector.onDomContentLoaded((entry) => {
           navigationInfo = entry
         })
 
@@ -729,9 +729,9 @@ suite(
 
       it('can listen to browsing context loaded event', async function () {
         let navigationInfo = null
-        const browsingConextInspector = await BrowsingContextInspector(driver)
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
 
-        await browsingConextInspector.onBrowsingContextLoaded((entry) => {
+        await browsingcontextInspector.onBrowsingContextLoaded((entry) => {
           navigationInfo = entry
         })
         const browsingContext = await BrowsingContext(driver, {
