@@ -646,7 +646,7 @@ suite(
         assert.equal(result.includes(userText), false)
       })
 
-      it.skip('can reload a browsing context', async function () {
+      xit('can reload a browsing context', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -662,7 +662,7 @@ suite(
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
 
-      it.skip('can reload with readiness state', async function () {
+      xit('can reload with readiness state', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
