@@ -218,28 +218,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#commands-instance_method" title="#commands (instance method)">#<strong>commands</strong>(command)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#delete_network_conditions-instance_method" title="#delete_network_conditions (instance method)">#<strong>delete_network_conditions</strong>  &#x21d2; Object </a>
     
 
@@ -481,13 +459,13 @@
       <pre class="lines">
 
 
-86
-87
-88
-89</pre>
+82
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_available_log_types'>available_log_types</span>
   <span class='id identifier rubyid_types'>types</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_available_log_types</span>
@@ -513,12 +491,12 @@
       <pre class="lines">
 
 
-50
-51
-52</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cast_issue_message'>cast_issue_message</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:cast_issue_message</span>
@@ -543,12 +521,12 @@
       <pre class="lines">
 
 
-46
-47
-48</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cast_sink_to_use='>cast_sink_to_use=</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_cast_sink_to_use</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -573,45 +551,15 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cast_sinks'>cast_sinks</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_cast_sinks</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="commands-instance_method">
-  
-    #<strong>commands</strong>(command)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-34
-35
-36</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 34</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
-  <span class='const'>CHROME_COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -633,12 +581,12 @@
       <pre class="lines">
 
 
-78
-79
-80</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_network_conditions'>delete_network_conditions</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_network_conditions</span>
@@ -663,12 +611,12 @@
       <pre class="lines">
 
 
-38
-39
-40</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch_app'>launch_app</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:launch_app</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
@@ -693,18 +641,18 @@
       <pre class="lines">
 
 
+87
+88
+89
+90
 91
 92
 93
 94
-95
-96
-97
-98
-99</pre>
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_log</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span>
@@ -735,12 +683,12 @@
       <pre class="lines">
 
 
-70
-71
-72</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions'>network_conditions</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_network_conditions</span>
@@ -765,12 +713,12 @@
       <pre class="lines">
 
 
-74
-75
-76</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions='>network_conditions=</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_network_conditions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>network_conditions:</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='rbrace'>}</span>
@@ -795,12 +743,12 @@
       <pre class="lines">
 
 
-82
-83
-84</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_command'>send_command</span><span class='lparen'>(</span><span class='id identifier rubyid_command_params'>command_params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_command</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_command_params'>command_params</span>
@@ -825,12 +773,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_permission'>set_permission</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_permission</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>descriptor:</span> <span class='lbrace'>{</span><span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='id identifier rubyid_value'>value</span><span class='rbrace'>}</span>
@@ -855,12 +803,12 @@
       <pre class="lines">
 
 
-58
-59
-60</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_cast_desktop_mirroring'>start_cast_desktop_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:start_cast_desktop_mirroring</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -885,12 +833,12 @@
       <pre class="lines">
 
 
-54
-55
-56</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_cast_tab_mirroring'>start_cast_tab_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:start_cast_tab_mirroring</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -915,12 +863,12 @@
       <pre class="lines">
 
 
-62
-63
-64</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chromium/features.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop_casting'>stop_casting</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:stop_casting</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -935,7 +883,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Oct  9 23:44:47 2023 by
+  Generated on Wed Nov  1 09:32:27 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>

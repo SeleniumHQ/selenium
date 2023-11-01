@@ -284,7 +284,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Bug is present on all configurations specified, but test can not be run because it breaks other tests.</p>
+<p>Bug is present on all configurations specified, but test can not be run because it breaks other tests, or it is flaky and unreliable.</p>
 </div></span>
   
 </li>
@@ -684,12 +684,12 @@
       <pre class="lines">
 
 
-65
-66
-67</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_except?'>except?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:except</span>
@@ -715,7 +715,7 @@
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>Bug is present on all configurations specified, but test can not be run because it breaks other tests</p>
+<p>Bug is present on all configurations specified, but test can not be run because it breaks other tests, or it is flaky and unreliable</p>
 
 
   </div>
@@ -742,15 +742,15 @@
       <pre class="lines">
 
 
-75
-76
-77</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclude?'>exclude?</span>
-  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span>
+  <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span> <span class='op'>||</span> <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:flaky</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -800,12 +800,12 @@
       <pre class="lines">
 
 
-80
-81
-82</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclusive?'>exclusive?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclusive</span>
@@ -863,7 +863,9 @@
 59
 60
 61
-62</pre>
+62
+63
+64</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 42</span>
@@ -882,7 +884,9 @@
 
   <span class='kw'>case</span> <span class='ivar'>@type</span>
   <span class='kw'>when</span> <span class='symbol'>:exclude</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test not guarded because it breaks test run; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test skipped because it breaks test run; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>when</span> <span class='symbol'>:flaky</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test skipped because it is unreliable in this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>when</span> <span class='symbol'>:exclusive</span>
     <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Test does not apply to this configuration; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_details'>details</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>else</span>
@@ -937,12 +941,12 @@
       <pre class="lines">
 
 
-70
-71
-72</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_only?'>only?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:only</span>
@@ -957,7 +961,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Oct  9 23:44:52 2023 by
+  Generated on Wed Nov  1 09:32:35 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>

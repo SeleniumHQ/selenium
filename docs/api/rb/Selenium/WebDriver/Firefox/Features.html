@@ -123,6 +123,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#command_list-instance_method" title="#command_list (instance method)">#<strong>command_list</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#commands-instance_method" title="#commands (instance method)">#<strong>commands</strong>(command)  &#x21d2; Object </a>
     
 
@@ -262,9 +284,9 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="commands-instance_method">
+  <h3 class="signature first" id="command_list-instance_method">
   
-    #<strong>commands</strong>(command)  &#x21d2; <tt>Object</tt> 
+    #<strong>command_list</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -283,8 +305,38 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 32</span>
 
+<span class='kw'>def</span> <span class='id identifier rubyid_command_list'>command_list</span>
+  <span class='const'><span class='object_link'><a href="#FIREFOX_COMMANDS-constant" title="Selenium::WebDriver::Firefox::Features::FIREFOX_COMMANDS (constant)">FIREFOX_COMMANDS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="commands-instance_method">
+  
+    #<strong>commands</strong>(command)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 36</span>
+
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="#FIREFOX_COMMANDS-constant" title="Selenium::WebDriver::Firefox::Features::FIREFOX_COMMANDS (constant)">FIREFOX_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_command_list'>command_list</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -306,12 +358,12 @@
       <pre class="lines">
 
 
-60
-61
-62</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context'>context</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_context</span>
@@ -336,12 +388,12 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context='>context=</span><span class='lparen'>(</span><span class='id identifier rubyid_context'>context</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_context</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='rbrace'>}</span>
@@ -366,12 +418,12 @@
       <pre class="lines">
 
 
-52
-53
-54</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_full_screenshot'>full_screenshot</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:full_page_screenshot</span>
@@ -396,20 +448,20 @@
       <pre class="lines">
 
 
-36
-37
-38
-39
 40
 41
 42
 43
 44
 45
-46</pre>
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_install_addon'>install_addon</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_temporary'>temporary</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_addon'>addon</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_directory?'>directory?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -442,12 +494,12 @@
       <pre class="lines">
 
 
-48
-49
-50</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/features.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uninstall_addon'>uninstall_addon</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:uninstall_addon</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
@@ -462,7 +514,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Oct  9 23:44:47 2023 by
+  Generated on Wed Nov  1 09:32:26 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>
