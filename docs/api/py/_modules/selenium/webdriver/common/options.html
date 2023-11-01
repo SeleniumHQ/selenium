@@ -67,7 +67,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span> <span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">,</span> <span class="s2">&quot;setWindowRect&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">,</span> <span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">,</span> <span class="s2">&quot;setWindowRect&quot;</span><span class="p">,</span> <span class="s2">&quot;se:downloadsEnabled&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
@@ -162,7 +162,6 @@
 <div class="viewcode-block" id="BaseOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions">[docs]</a><span class="k">class</span> <span class="nc">BaseOptions</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for individual browser options.&quot;&quot;&quot;</span>
 
-    <span class="c1"># Creating _BaseOptions descriptors</span>
     <span class="n">browser_version</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;browserVersion&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets the version of the browser.</span>
 
@@ -206,8 +205,9 @@
 <span class="sd">    - Set</span>
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">accept_insecure_certs</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Set wheather the session accepts insecure certificates.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Set whether the session accepts insecure certificates.</span>
 
 <span class="sd">    Usage</span>
 <span class="sd">    -----</span>
@@ -229,7 +229,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">strict_file_interactability</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;strictFileInteractability&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets wheather session is about file interactiability.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets whether session is about file interactability.</span>
 
 <span class="sd">    Usage</span>
 <span class="sd">    -----</span>
@@ -271,7 +271,7 @@
 <span class="sd">    - Set</span>
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Creating _PageLoadStrategy descriptor</span>
+
     <span class="n">page_load_strategy</span> <span class="o">=</span> <span class="n">_PageLoadStrategyDescriptor</span><span class="p">(</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:Gets and Sets page load strategy, the default is &quot;normal&quot;.</span>
 
@@ -293,7 +293,7 @@
 <span class="sd">    - Set</span>
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Creating _UnHandledPromptBehavior descriptor</span>
+
     <span class="n">unhandled_prompt_behavior</span> <span class="o">=</span> <span class="n">_UnHandledPromptBehaviorDescriptor</span><span class="p">(</span><span class="s2">&quot;unhandledPromptBehavior&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:Gets and Sets unhandled prompt behavior, the default is &quot;dismiss and</span>
 <span class="sd">    notify&quot;.</span>
@@ -317,7 +317,6 @@
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Creating _Timeouts descriptor</span>
     <span class="n">timeouts</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;timeouts&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:Gets and Sets implicit timeout, pageLoad timeout and script timeout if</span>
 <span class="sd">    set (in milliseconds)</span>
@@ -341,7 +340,6 @@
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Creating _Proxy descriptor</span>
     <span class="n">proxy</span> <span class="o">=</span> <span class="n">_ProxyDescriptor</span><span class="p">(</span><span class="s2">&quot;proxy&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets and Gets Proxy.</span>
 
@@ -360,6 +358,28 @@
 <span class="sd">    -------</span>
 <span class="sd">    - Get</span>
 <span class="sd">        - `Proxy`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `None`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">enable_downloads</span> <span class="o">=</span> <span class="n">_BaseOptionsDescriptor</span><span class="p">(</span><span class="s2">&quot;se:downloadsEnabled&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets whether session can download files.</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `self.enable_downloads`</span>
+<span class="sd">    - Set</span>
+<span class="sd">        - `self.enable_downloads` = `value`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    `value`: `bool`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Get</span>
+<span class="sd">        - `bool`</span>
 <span class="sd">    - Set</span>
 <span class="sd">        - `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>

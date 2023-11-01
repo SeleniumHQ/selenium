@@ -55,8 +55,10 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 <span class="sd">&quot;&quot;&quot;The WebDriver implementation.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">typing</span>
@@ -1171,7 +1173,41 @@
 
 <span class="sd">        verified: True if the authenticator will pass user verification, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_USER_VERIFIED</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;authenticatorId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">,</span> <span class="s2">&quot;isUserVerified&quot;</span><span class="p">:</span> <span class="n">verified</span><span class="p">})</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_USER_VERIFIED</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;authenticatorId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">,</span> <span class="s2">&quot;isUserVerified&quot;</span><span class="p">:</span> <span class="n">verified</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="WebDriver.get_downloadable_files"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_downloadable_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the downloadable files as a map of file names and their</span>
+<span class="sd">        corresponding URLs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;se:downloadsEnabled&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;You must enable downloads in order to work with downloadable files.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_DOWNLOADABLE_FILES</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="WebDriver.download_file"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.download_file">[docs]</a>    <span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Downloads a file with the specified file name to the target</span>
+<span class="sd">        directory.</span>
+
+<span class="sd">        file_name: The name of the file to download.</span>
+<span class="sd">        target_directory: The path to the directory to save the downloaded file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;se:downloadsEnabled&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;You must enable downloads in order to work with downloadable files.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span>
+
+        <span class="n">contents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">DOWNLOAD_FILE</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">file_name</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;contents&quot;</span><span class="p">]</span>
+
+        <span class="n">target_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">contents</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="WebDriver.delete_downloadable_files"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_downloadable_files">[docs]</a>    <span class="k">def</span> <span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deletes all downloadable files.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;se:downloadsEnabled&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;You must enable downloads in order to work with downloadable files.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">DELETE_DOWNLOADABLE_FILES</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

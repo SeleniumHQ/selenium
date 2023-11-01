@@ -240,6 +240,12 @@ cache.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_downloadable_files">
+<code class="descname">delete_downloadable_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_downloadable_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all downloadable files.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions">
 <code class="descname">delete_network_conditions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.delete_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets Chromium network emulation settings.</p>
@@ -249,6 +255,15 @@ cache.</p>
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.desired_capabilities">
 <code class="descname">desired_capabilities</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.desired_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the drivers current desired capabilities being used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.download_file">
+<code class="descname">download_file</code><span class="sig-paren">(</span><em>file_name: str</em>, <em>target_directory: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.download_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a file with the specified file name to the target
+directory.</p>
+<p>file_name: The name of the file to download.
+target_directory: The path to the directory to save the downloaded file.</p>
 </dd></dl>
 
 <dl class="method">
@@ -499,6 +514,13 @@ the current session.</p>
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials">
 <code class="descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.common.virtual_authenticator.Credential]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of credentials owned by the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files">
+<code class="descname">get_downloadable_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the downloadable files as a map of file names and their
+corresponding URLs.</p>
 </dd></dl>
 
 <dl class="method">
