@@ -33,8 +33,6 @@ module Selenium
       # correctly when using asynchronous.
       #
       # @param [Selenium::WebDriver::Remote::Bridge] bridge the bridge for the current driver instance.
-      # @param [Selenium::WebDriver::Interactions::PointerInput] deprecated_mouse PointerInput for the mouse.
-      # @param [Selenium::WebDriver::Interactions::KeyInput] deprecated_keyboard KeyInput for the keyboard.
       # @param [Boolean] deprecated_async Whether to perform the actions asynchronously per device.
       #   Defaults to false for backwards compatibility.
       # @param [Array<Selenium::WebDriver::Interactions::InputDevices>] devices list of valid sources of input.

@@ -591,7 +591,7 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
       if (!opt_executor.getExecutable()) {
-        const {driverPath, browserPath} = getPath(caps)
+        const { driverPath, browserPath } = getPath(caps)
         opt_executor.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -600,7 +600,7 @@ class Driver extends webdriver.WebDriver {
     } else {
       let service = new ServiceBuilder().build()
       if (!service.getExecutable()) {
-        const {driverPath, browserPath} = getPath(caps)
+        const { driverPath, browserPath } = getPath(caps)
         service.setExecutable(driverPath)
         firefoxBrowserPath = browserPath
       }
@@ -614,7 +614,7 @@ class Driver extends webdriver.WebDriver {
         vendorOptions['binary'] = firefoxBrowserPath
         caps.set(FIREFOX_CAPABILITY_KEY, vendorOptions)
       } else {
-        caps.set(FIREFOX_CAPABILITY_KEY, {binary: firefoxBrowserPath})
+        caps.set(FIREFOX_CAPABILITY_KEY, { binary: firefoxBrowserPath })
       }
     }
 

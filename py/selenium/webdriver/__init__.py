@@ -45,6 +45,7 @@ from .wpewebkit.service import Service as WPEWebKitService  # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 from ...version import SE_VERSION
 
+
 __version__ = SE_VERSION
 
 # We need an explicit __all__ because the above won't otherwise be exported.

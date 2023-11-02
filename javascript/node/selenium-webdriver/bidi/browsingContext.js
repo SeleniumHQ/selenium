@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { InvalidArgumentError, NoSuchFrameError } = require('../lib/error')
 const { BrowsingContextInfo } = require('./browsingContextTypes')
 class BrowsingContext {
   constructor(driver) {
@@ -164,6 +165,149 @@ class BrowsingContext {
 
     const response = await this.bidi.send(params)
     return new PrintResult(response.result.data)
+  }
+
+  async captureScreenshot() {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  async captureBoxScreenshot(x, y, width, height) {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'viewport',
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  async captureElementScreenshot(
+    sharedId,
+    handle = undefined,
+    scrollIntoView = undefined
+  ) {
+    let params = {
+      method: 'browsingContext.captureScreenshot',
+      params: {
+        context: this._id,
+        clip: {
+          type: 'element',
+          element: {
+            sharedId: sharedId,
+            handle: handle,
+          },
+          scrollIntoView: scrollIntoView,
+        },
+      },
+    }
+
+    const response = await this.bidi.send(params)
+    this.checkErrorInScreenshot(response)
+    return response['result']['data']
+  }
+
+  checkErrorInScreenshot(response) {
+    if ('error' in response) {
+      const { error, msg } = response
+
+      switch (error) {
+        case 'invalid argument':
+          throw new InvalidArgumentError(msg)
+
+        case 'no such frame':
+          throw new NoSuchFrameError(msg)
+      }
+    }
+  }
+
+  async activate() {
+    const params = {
+      method: 'browsingContext.activate',
+      params: {
+        context: this._id,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
+
+  async handleUserPrompt(accept = undefined, userText = undefined) {
+    const params = {
+      method: 'browsingContext.handleUserPrompt',
+      params: {
+        context: this._id,
+        accept: accept,
+        userText: userText,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
+
+  async reload(ignoreCache = undefined, readinessState = undefined) {
+    if (
+      readinessState !== undefined &&
+      !['none', 'interactive', 'complete'].includes(readinessState)
+    ) {
+      throw Error(
+        `Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`
+      )
+    }
+
+    const params = {
+      method: 'browsingContext.reload',
+      params: {
+        context: this._id,
+        ignoreCache: ignoreCache,
+        wait: readinessState,
+      },
+    }
+    const navigateResult = (await this.bidi.send(params))['result']
+
+    return new NavigateResult(
+      navigateResult['url'],
+      navigateResult['navigation']
+    )
+  }
+
+  async setViewport(width, height, devicePixelRatio = undefined) {
+    const params = {
+      method: 'browsingContext.setViewport',
+      params: {
+        context: this._id,
+        viewport: { width: width, height: height },
+        devicePixelRatio: devicePixelRatio,
+      },
+    }
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
   }
 }
 

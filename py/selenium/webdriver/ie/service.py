@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from typing import List
 
 from selenium.types import SubprocessStdAlias
@@ -33,7 +32,6 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         log_level: typing.Optional[str] = None,
         log_output: SubprocessStdAlias = None,
-        log_file: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
@@ -44,7 +42,7 @@ class Service(service.Service):
          - host : IP address the service port is bound
          - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
            Default is "FATAL".
-         - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
+         - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
            Default is "stdout".
         """
         self.service_args = service_args or []
@@ -52,9 +50,6 @@ class Service(service.Service):
             self.service_args.append(f"--host={host}")
         if log_level:
             self.service_args.append(f"--log-level={log_level}")
-        if log_file:
-            warnings.warn("log_file has been deprecated, please use log_output", DeprecationWarning, stacklevel=2)
-            self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(
             executable_path,

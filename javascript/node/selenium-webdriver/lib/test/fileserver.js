@@ -107,6 +107,7 @@ const Pages = (function () {
   addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
+  addPage('userpromptPage', 'userprompt.html')
   addPage('virtualAuthenticator', 'virtual-authenticator.html')
   addPage('logEntryAdded', 'bidi/logEntryAdded.html')
   addPage('scriptTestAccessProperty', 'bidi/scriptTestAccessProperty.html')
@@ -264,7 +265,7 @@ function handleUpload(request, response) {
         .contentType('html')
         .send(
           files.join('\n') +
-          '\n<script>window.top.window.onUploadDone();</script>'
+            '\n<script>window.top.window.onUploadDone();</script>'
         )
     }
   })

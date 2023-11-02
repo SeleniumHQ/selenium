@@ -4,7 +4,14 @@ require 'rspec/core/rake_task'
 
 desc 'Setup everything to run tests in RubyMine'
 task :update do
-  system 'bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver'
+  cmd = [
+    'bazel build @bundle//:bundle',
+    '//rb:selenium-devtools',
+    '//rb:selenium-webdriver',
+    '//java/src/org/openqa/selenium/grid:executable-grid'
+  ].join(' ')
+
+  system cmd
 end
 
 desc 'Run unit tests'

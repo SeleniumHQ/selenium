@@ -28,7 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         gem:
-          - selenium-devtools
           - selenium-webdriver
     with:
       name: Release

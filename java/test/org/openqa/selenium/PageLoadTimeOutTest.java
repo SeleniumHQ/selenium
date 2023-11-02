@@ -24,7 +24,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.time.Duration;
@@ -70,7 +69,6 @@ public class PageLoadTimeOutTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(value = SAFARI, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
@@ -136,7 +134,6 @@ public class PageLoadTimeOutTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(value = SAFARI)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldNotStopLoadingPageAfterTimeout() {
     try {
       testPageLoadTimeoutIsEnforced(1);

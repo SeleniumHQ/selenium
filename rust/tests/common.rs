@@ -15,16 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use assert_cmd::assert::AssertResult;
 use assert_cmd::Command;
-use std::borrow::BorrowMut;
-use std::env::consts::OS;
-use std::path::Path;
-
 use is_executable::is_executable;
-use selenium_manager::files::path_buf_to_string;
+use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
+use std::borrow::BorrowMut;
+use std::env::consts::OS;
+use std::path::Path;
 
 #[allow(dead_code)]
 pub fn assert_driver(cmd: &mut Command) {
@@ -53,7 +53,7 @@ pub fn get_driver_path(cmd: &mut Command) -> String {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     let json: JsonOutput = serde_json::from_str(output).unwrap();
-    path_buf_to_string(Path::new(&json.result.driver_path).to_path_buf())
+    path_to_string(Path::new(&json.result.driver_path))
 }
 
 #[allow(dead_code)]
@@ -71,4 +71,26 @@ pub fn display_output(cmd: &mut Command) {
     let stdout = &cmd.unwrap().stdout;
     let output = std::str::from_utf8(stdout).unwrap();
     println!("{}", output);
+}
+
+#[allow(dead_code)]
+pub fn assert_output(
+    cmd: &mut Command,
+    assert_result: AssertResult,
+    expected_output: Vec<&str>,
+    error_code: i32,
+) {
+    if assert_result.is_ok() {
+        let stdout = &cmd.unwrap().stdout;
+        let output = std::str::from_utf8(stdout).unwrap();
+        expected_output
+            .iter()
+            .for_each(|o| assert!(output.contains(o)));
+    } else {
+        assert!(assert_result
+            .err()
+            .unwrap()
+            .to_string()
+            .contains(&error_code.to_string()));
+    }
 }

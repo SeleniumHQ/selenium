@@ -30,4 +30,5 @@ public interface CapabilityType {
   String TIMEOUTS = "timeouts";
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
   String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
+  String ENABLE_DOWNLOADS = "se:downloadsEnabled";
 }

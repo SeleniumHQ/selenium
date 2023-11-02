@@ -16,9 +16,9 @@ build --java_runtime_version=remotejdk_17
 build --tool_java_language_version=17
 build --tool_java_runtime_version=remotejdk_17
 
-# We target java 8 by default
+# We target java 11 by default
 
-build --javacopt="--release 8"
+build --javacopt="--release 11"
 
 # Require java dependencies to be used and first-order
 

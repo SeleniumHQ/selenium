@@ -1,3 +1,30 @@
+Selenium 4.15.1
+* Fix bug in using SE_MANAGER_PATH
+* Fix inadvertent code change in mutation_event
+
+Selenium 4.15.0
+* Return a `pathlib.Path` when `SE_MANAGER_PATH` is set. closes #12929
+* Do not set browser binary in selenium manager if it is an empty string (#12738)
+* Add CDP v119 and remove v116
+* Remove selenium manager accommodation for Conda
+* Implement file downloads (#12979)
+* Add some type hints to selenium.webdriver.support (#13070)
+
+Selenium 4.14.0
+* add CDP files for v118 and remove v115
+* use lazy string interpolation for logging calls
+* Fix dangling log_output in Service (#12871)
+
+Selenium 4.13.0
+* add CDP files for v117 and remove v114
+* do not send parameters in payload that are used in endpoint (#12685)
+* close out driver logging on quit (#12637)
+* disable console appearing on windows when running in pythonw (#12715)
+* remove deprecated headless methods
+* fix bug preventing using performance logging in chromium
+* remove deprecation notice from Firefox profiles
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
 Selenium 4.12.0
 * Add CDP files for v116 and remove v113
 * fix bug in ElementScrollBehavior in IE Options (#12462)
@@ -52,9 +79,6 @@ Selenium 4.11.0
 * Added type checks in `setter` methods of different browser options (#12328)
 * Add creation flag for windows in selenium_manager (#12435)
 * Fix checking window handles for current
-
-
-
 
 Selenium 4.10.0
 * Add CDP files for v114 and remove v111

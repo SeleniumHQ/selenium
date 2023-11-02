@@ -19,8 +19,6 @@ package org.openqa.selenium.devtools.v85;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.ByteStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,7 +75,7 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   protected Command<Void> enableFetchForAllPatterns() {
     return Fetch.enable(
         Optional.of(
-            ImmutableList.of(
+            List.of(
                 new RequestPattern(
                     Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
                 new RequestPattern(
@@ -192,7 +190,7 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
   protected Command<Void> continueRequest(RequestPaused pausedReq, HttpRequest req) {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = req.getContent().get()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
     } catch (IOException e) {
       return continueWithoutModification(pausedReq);
     }
@@ -202,7 +200,7 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
 
     return Fetch.continueRequest(
         pausedReq.getRequestId(),
-        Optional.empty(),
+        Optional.of(req.getUri()),
         Optional.of(req.getMethod().toString()),
         Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
         Optional.of(headers));
@@ -215,7 +213,7 @@ public class V85Network extends Network<AuthRequired, RequestPaused> {
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = res.getContent().get()) {
-      ByteStreams.copy(is, bos);
+      is.transferTo(bos);
     } catch (IOException e) {
       bos.reset();
     }

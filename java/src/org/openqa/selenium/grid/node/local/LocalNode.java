@@ -105,8 +105,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -404,24 +403,21 @@ public class LocalNode extends Node {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
       attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+          "session.request.capabilities", sessionRequest.getDesiredCapabilities().toString());
       attributeMap.put(
-          "session.request.capabilities",
-          EventAttribute.setValue(sessionRequest.getDesiredCapabilities().toString()));
-      attributeMap.put(
-          "session.request.downstreamdialect",
-          EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+          "session.request.downstreamdialect", sessionRequest.getDownstreamDialects().toString());
 
       int currentSessionCount = getCurrentSessionCount();
       span.setAttribute("current.session.count", currentSessionCount);
-      attributeMap.put("current.session.count", EventAttribute.setValue(currentSessionCount));
+      attributeMap.put("current.session.count", currentSessionCount);
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.RESOURCE_EXHAUSTED);
-        attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
+        attributeMap.put("max.session.count", maxSessionCount);
         span.addEvent("Max session count reached", attributeMap);
         return Either.left(new RetrySessionRequestException("Max session count reached."));
       }
@@ -555,9 +551,12 @@ public class LocalNode extends Node {
   @SuppressWarnings("unchecked")
   private Capabilities appendPrefs(
       Capabilities caps, String optionsKey, Map<String, Serializable> map) {
-    Map<String, Object> currentOptions =
-        (Map<String, Object>)
-            Optional.ofNullable(caps.getCapability(optionsKey)).orElse(new HashMap<>());
+    if (caps.getCapability(optionsKey) == null) {
+      MutableCapabilities mutableCaps = new MutableCapabilities();
+      mutableCaps.setCapability(optionsKey, new HashMap<>());
+      caps = caps.merge(mutableCaps);
+    }
+    Map<String, Object> currentOptions = (Map<String, Object>) caps.getCapability(optionsKey);
 
     ((Map<String, Serializable>) currentOptions.computeIfAbsent("prefs", k -> new HashMap<>()))
         .putAll(map);
@@ -653,7 +652,11 @@ public class LocalNode extends Node {
     }
     TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
     if (tempFS == null) {
-      throw new WebDriverException("Cannot find downloads file system for session id: " + id);
+      String msg =
+          "Cannot find downloads file system for session id: "
+              + id
+              + " — ensure downloads are enabled in the options class when requesting a session.";
+      throw new WebDriverException(msg);
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
@@ -672,7 +675,9 @@ public class LocalNode extends Node {
       for (File file : files) {
         FileHandler.delete(file);
       }
-      return new HttpResponse();
+      Map<String, Object> toReturn = new HashMap<>();
+      toReturn.put("value", null);
+      return new HttpResponse().setContent(asJson(toReturn));
     }
     String raw = string(req);
     if (raw.isEmpty()) {

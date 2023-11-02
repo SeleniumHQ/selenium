@@ -1,28 +1,31 @@
+load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
-load("@py_dev_requirements//:requirements.bzl", "requirement")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:import.bzl", "py_import")
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
     requirements_in = ":requirements.txt",
     requirements_txt = ":requirements_lock.txt",
+    tags = [
+        "skip-remote",  # This test won't run on the RBE because of a lack of network connectivity
+    ],
 )
 
-SE_VERSION = "4.12.0"
+SE_VERSION = "4.15.1"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v114",
-    "v115",
-    "v116",
+    "v119",
+    "v117",
+    "v118",
 ]
 
 TEST_DEPS = [

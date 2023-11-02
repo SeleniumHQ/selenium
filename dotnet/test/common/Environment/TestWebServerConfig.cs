@@ -14,5 +14,7 @@ namespace OpenQA.Selenium.Environment
 
         [JsonProperty]
         public string JavaHomeDirectory { get; set; }
+
+        public string Port { get; set; }
     }
 }

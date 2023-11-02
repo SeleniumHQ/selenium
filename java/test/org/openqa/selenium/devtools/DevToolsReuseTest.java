@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
@@ -26,6 +27,7 @@ import org.openqa.selenium.remote.Augmenter;
 class DevToolsReuseTest extends DevToolsTestBase {
 
   @Test
+  @Disabled("JDK HTTP Client cannot get reused")
   public void shouldBeAbleToCloseDevToolsAndCreateNewInstance() {
     WebDriver driver = new Augmenter().augment(this.driver);
 

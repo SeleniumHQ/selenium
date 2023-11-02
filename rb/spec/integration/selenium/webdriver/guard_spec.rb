@@ -33,6 +33,12 @@ module Selenium
           end
         end
 
+        describe '#flaky' do
+          it 'skips without running', flaky: {browser: :chrome} do
+            raise 'This code will not get executed so it will not fail'
+          end
+        end
+
         describe '#exclusive' do
           it 'skips without running if it does not match', exclusive: {browser: :not_chrome} do
             raise 'This code will not get executed so it will not fail'

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -62,22 +61,21 @@ public abstract class AddHasCasting
       public void selectCastSink(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(SET_CAST_SINK_TO_USE, Map.of("sinkName", deviceName));
       }
 
       @Override
       public void startDesktopMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(
-            START_CAST_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(START_CAST_DESKTOP_MIRRORING, Map.of("sinkName", deviceName));
       }
 
       @Override
       public void startTabMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(START_CAST_TAB_MIRRORING, Map.of("sinkName", deviceName));
       }
 
       @Override
@@ -89,7 +87,7 @@ public abstract class AddHasCasting
       public void stopCasting(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(STOP_CASTING, Map.of("sinkName", deviceName));
       }
     };
   }

@@ -45,7 +45,9 @@ class MessageOutboundConverter extends ChannelOutboundHandlerAdapter {
     Message seMessage = (Message) msg;
 
     if (seMessage instanceof CloseMessage) {
-      ctx.writeAndFlush(new CloseWebSocketFrame(true, 0));
+      CloseMessage closeMessage = (CloseMessage) seMessage;
+      ctx.writeAndFlush(
+          new CloseWebSocketFrame(true, 0, closeMessage.code(), closeMessage.reason()));
     } else if (seMessage instanceof BinaryMessage) {
       ctx.writeAndFlush(
           new BinaryWebSocketFrame(

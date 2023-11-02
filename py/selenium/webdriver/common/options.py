@@ -27,7 +27,7 @@ class _BaseOptionsDescriptor:
         self.name = name
 
     def __get__(self, obj, cls):
-        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect"):
+        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect", "se:downloadsEnabled"):
             return obj._caps.get(self.name, False)
         return obj._caps.get(self.name)
 
@@ -122,7 +122,6 @@ class _ProxyDescriptor:
 class BaseOptions(metaclass=ABCMeta):
     """Base class for individual browser options."""
 
-    # Creating _BaseOptions descriptors
     browser_version = _BaseOptionsDescriptor("browserVersion")
     """Gets and Sets the version of the browser.
 
@@ -166,8 +165,9 @@ class BaseOptions(metaclass=ABCMeta):
     - Set
         - `None`
     """
+
     accept_insecure_certs = _BaseOptionsDescriptor("acceptInsecureCerts")
-    """Gets and Set wheather the session accepts insecure certificates.
+    """Gets and Set whether the session accepts insecure certificates.
 
     Usage
     -----
@@ -189,7 +189,7 @@ class BaseOptions(metaclass=ABCMeta):
     """
 
     strict_file_interactability = _BaseOptionsDescriptor("strictFileInteractability")
-    """Gets and Sets wheather session is about file interactiability.
+    """Gets and Sets whether session is about file interactability.
 
     Usage
     -----
@@ -231,7 +231,7 @@ class BaseOptions(metaclass=ABCMeta):
     - Set
         - `None`
     """
-    # Creating _PageLoadStrategy descriptor
+
     page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy")
     """:Gets and Sets page load strategy, the default is "normal".
 
@@ -253,7 +253,7 @@ class BaseOptions(metaclass=ABCMeta):
     - Set
         - `None`
     """
-    # Creating _UnHandledPromptBehavior descriptor
+
     unhandled_prompt_behavior = _UnHandledPromptBehaviorDescriptor("unhandledPromptBehavior")
     """:Gets and Sets unhandled prompt behavior, the default is "dismiss and
     notify".
@@ -277,7 +277,6 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
-    # Creating _Timeouts descriptor
     timeouts = _TimeoutsDescriptor("timeouts")
     """:Gets and Sets implicit timeout, pageLoad timeout and script timeout if
     set (in milliseconds)
@@ -301,7 +300,6 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
-    # Creating _Proxy descriptor
     proxy = _ProxyDescriptor("proxy")
     """Sets and Gets Proxy.
 
@@ -320,6 +318,28 @@ class BaseOptions(metaclass=ABCMeta):
     -------
     - Get
         - `Proxy`
+    - Set
+        - `None`
+    """
+
+    enable_downloads = _BaseOptionsDescriptor("se:downloadsEnabled")
+    """Gets and Sets whether session can download files.
+
+    Usage
+    -----
+    - Get
+        - `self.enable_downloads`
+    - Set
+        - `self.enable_downloads` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
     - Set
         - `None`
     """

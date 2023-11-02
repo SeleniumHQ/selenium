@@ -1,0 +1,18 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
+
+dotnet_nunit_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*.cs"]),
+    private_deps = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    target_frameworks = ["net7.0"],
+    deps = [
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver",
+        "//dotnet/test/common:fixtures",
+        framework("nuget", "Moq"),
+        framework("nuget", "NUnit"),
+    ],
+)

@@ -15,9 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::{assert_driver, assert_output};
 use assert_cmd::Command;
 use rstest::rstest;
 use std::env::consts::OS;
+
+mod common;
 
 #[rstest]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
@@ -68,7 +71,7 @@ fn wrong_parameters_test(
     #[case] error_code: i32,
 ) {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let assert_result = cmd
+    let result = cmd
         .args([
             "--debug",
             "--browser",
@@ -81,17 +84,7 @@ fn wrong_parameters_test(
         .assert()
         .try_success();
 
-    if assert_result.is_ok() {
-        let stdout = &cmd.unwrap().stdout;
-        let output = std::str::from_utf8(stdout).unwrap();
-        assert!(output.contains("in PATH"));
-    } else {
-        assert!(assert_result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(&error_code.to_string()));
-    }
+    assert_output(&mut cmd, result, vec!["in PATH"], error_code);
 }
 
 #[rstest]
@@ -152,4 +145,15 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
         println!("{}", output);
         assert!(!output.contains("WARN"));
     }
+}
+
+#[test]
+fn webview2_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args(["--browser", "webview2", "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
+
+    assert_driver(&mut cmd);
 }

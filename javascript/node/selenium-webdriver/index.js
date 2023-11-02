@@ -194,7 +194,7 @@ function createDriver(ctor, ...args) {
 class Builder {
   constructor() {
     /** @private @const */
-    this.log_ = logging.getLogger('webdriver.Builder')
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.Builder`)
 
     /** @private {string} */
     this.url_ = ''

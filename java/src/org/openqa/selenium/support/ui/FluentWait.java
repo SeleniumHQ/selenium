@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -163,7 +162,7 @@ public class FluentWait<T> implements Wait<T> {
    * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
-    return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
+    return this.ignoreAll(List.<Class<? extends Throwable>>of(exceptionType));
   }
 
   /**
@@ -175,7 +174,7 @@ public class FluentWait<T> implements Wait<T> {
   public FluentWait<T> ignoring(
       Class<? extends Throwable> firstType, Class<? extends Throwable> secondType) {
 
-    return this.ignoreAll(ImmutableList.of(firstType, secondType));
+    return this.ignoreAll(List.of(firstType, secondType));
   }
 
   /**

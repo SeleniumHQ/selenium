@@ -17,19 +17,25 @@
 
 import time
 import typing
+from typing import Callable
+from typing import Literal
+from typing import Union
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
+from selenium.webdriver.remote.webdriver import WebDriver
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS: typing.Tuple[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
+
+T = typing.TypeVar("T")
 
 
 class WebDriverWait:
     def __init__(
         self,
-        driver,
+        driver: WebDriver,
         timeout: float,
         poll_frequency: float = POLL_FREQUENCY,
         ignored_exceptions: typing.Optional[WaitExcTypes] = None,
@@ -68,7 +74,7 @@ class WebDriverWait:
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self._driver.session_id}")>'
 
-    def until(self, method, message: str = ""):
+    def until(self, method: Callable[[WebDriver], Union[Literal[False], T]], message: str = "") -> T:
         """Calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
@@ -94,7 +100,7 @@ class WebDriverWait:
                 break
         raise TimeoutException(message, screen, stacktrace)
 
-    def until_not(self, method, message: str = ""):
+    def until_not(self, method: Callable[[WebDriver], T], message: str = "") -> Union[T, Literal[True]]:
         """Calls the method provided with the driver as an argument until the \
         return value evaluates to ``False``.
 

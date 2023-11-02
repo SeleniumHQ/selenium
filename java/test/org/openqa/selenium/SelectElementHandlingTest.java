@@ -18,12 +18,10 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class SelectElementHandlingTest extends JupiterTestBase {
 
@@ -135,7 +133,6 @@ class SelectElementHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testCanSetHiddenOption() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.cssSelector("#visibility .hidden"));
@@ -144,7 +141,6 @@ class SelectElementHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testCanSetInvisibleOption() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.cssSelector("#visibility .invisible"));

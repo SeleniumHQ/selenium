@@ -22,12 +22,11 @@ import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -36,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -70,8 +70,9 @@ public class Connection implements Closeable {
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
+  private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
+  private final AtomicBoolean underlyingSocketClosed;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
@@ -79,6 +80,7 @@ public class Connection implements Closeable {
 
     this.client = client;
     socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    underlyingSocketClosed = new AtomicBoolean();
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -133,14 +135,15 @@ public class Connection implements Closeable {
               }));
     }
 
-    ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
-    serialized.put("id", id);
-    serialized.put("method", command.getMethod());
-    serialized.put("params", command.getParams());
+    Map<String, Object> serialized =
+        Map.of(
+            "id", id,
+            "method", command.getMethod(),
+            "params", command.getParams());
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
-      out.write(serialized.build());
+      out.write(serialized);
     }
     LOG.log(getDebugLogLevel(), "-> {0}", json);
     socket.sendText(json);
@@ -177,7 +180,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.put(event, handler);
+      eventCallbacks.computeIfAbsent(event, (key) -> new ArrayList<>()).add(handler);
     } finally {
       lock.unlock();
     }
@@ -187,7 +190,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.removeAll(event);
+      eventCallbacks.remove(event);
     } finally {
       lock.unlock();
     }
@@ -210,7 +213,14 @@ public class Connection implements Closeable {
       List<String> events =
           eventCallbacks.keySet().stream().map(Event::getMethod).collect(Collectors.toList());
 
-      send(new Command<>("session.unsubscribe", ImmutableMap.of("events", events)));
+      // If WebDriver close() is called, it closes the session if it is the last browsing context.
+      // It also closes the WebSocket from the remote end.
+      // If we try to now send commands, depending on the underlying web socket implementation, it
+      // will throw errors.
+      // Ideally, such errors should not prevent freeing up resources.
+      if (!underlyingSocketClosed.get()) {
+        send(new Command<>("session.unsubscribe", Map.of("events", events)));
+      }
 
       eventCallbacks.clear();
     } finally {
@@ -236,6 +246,12 @@ public class Connection implements Closeable {
               throw new BiDiException("Unable to process: " + data, e);
             }
           });
+    }
+
+    @Override
+    public void onClose(int code, String reason) {
+      LOG.fine("BiDi connection websocket closed");
+      underlyingSocketClosed.set(true);
     }
   }
 
@@ -294,7 +310,7 @@ public class Connection implements Closeable {
             "Method"
                 + rawDataMap.get("method")
                 + "called with"
-                + eventCallbacks.keySet().size()
+                + eventCallbacks.size()
                 + "callbacks available");
     Lock lock = callbacksLock.readLock();
     // A waiting writer will block a reader to enter the lock, even if there are currently other
@@ -306,21 +322,21 @@ public class Connection implements Closeable {
       lock.lock();
     }
     try {
-      eventCallbacks.keySet().stream()
+      eventCallbacks.entrySet().stream()
           .filter(
               event -> {
                 LOG.log(
                     getDebugLogLevel(),
                     "Matching {0} with {1}",
-                    new Object[] {rawDataMap.get("method"), event.getMethod()});
-                return rawDataMap.get("method").equals(event.getMethod());
+                    new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
+                return rawDataMap.get("method").equals(event.getKey().getMethod());
               })
           .forEach(
               event -> {
                 Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
                 Object value = null;
                 if (params != null) {
-                  value = event.getMapper().apply(params);
+                  value = event.getKey().getMapper().apply(params);
                 }
                 if (value == null) {
                   return;
@@ -328,13 +344,13 @@ public class Connection implements Closeable {
 
                 final Object finalValue = value;
 
-                for (Consumer<?> action : eventCallbacks.get(event)) {
+                for (Consumer<?> action : event.getValue()) {
                   @SuppressWarnings("unchecked")
                   Consumer<Object> obj = (Consumer<Object>) action;
                   LOG.log(
                       getDebugLogLevel(),
                       "Calling callback for {0} using {1} being passed {2}",
-                      new Object[] {event, obj, finalValue});
+                      new Object[] {event.getKey(), obj, finalValue});
                   obj.accept(finalValue);
                 }
               });

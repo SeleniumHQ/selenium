@@ -19,13 +19,11 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.CharStreams;
-import com.google.common.io.Closeables;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -82,15 +80,10 @@ class Preferences {
 
   public Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
-    try {
+    try (reader) {
       readPreferences(reader);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    } finally {
-      try {
-        Closeables.close(reader, true);
-      } catch (IOException ignored) {
-      }
     }
   }
 
@@ -104,7 +97,11 @@ class Preferences {
 
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
-      String rawJson = CharStreams.toString(defaultsReader);
+      String rawJson;
+      try (StringWriter writer = new StringWriter()) {
+        defaultsReader.transferTo(writer);
+        rawJson = writer.getBuffer().toString();
+      }
       Map<String, Object> map = new Json().toType(rawJson, MAP_TYPE);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
@@ -191,8 +188,7 @@ class Preferences {
     }
   }
 
-  @VisibleForTesting
-  protected Object getPreference(String key) {
+  Object getPreference(String key) {
     return allPrefs.get(key);
   }
 

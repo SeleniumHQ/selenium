@@ -86,7 +86,7 @@ public class WebDriverException extends RuntimeException {
             getBuildInformation().toString(),
             getSystemInformation(),
             getAdditionalInformation())
-        .filter(s -> !(s == null || s.equals("")))
+        .filter(s -> !(s == null || s.isEmpty()))
         .collect(Collectors.joining("\n"));
   }
 

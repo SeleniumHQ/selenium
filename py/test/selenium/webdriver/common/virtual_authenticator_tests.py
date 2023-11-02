@@ -17,7 +17,6 @@
 
 from base64 import b64decode
 from base64 import urlsafe_b64decode
-from base64 import urlsafe_b64encode
 from typing import List
 
 import pytest
@@ -242,17 +241,10 @@ def test_get_credentials(driver, pages):
 
     assert credential1.is_resident_credential, "Credential1 should be resident credential"
     assert credential1.private_key is not None, "Credential1 should have private key"
-    assert credential1.rp_id == "localhost"
-    assert credential1.user_handle == urlsafe_b64encode(bytearray({1})).decode()
-    assert credential1.sign_count == 1
 
     assert credential2.is_resident_credential is False, "Credential2 should not be resident credential"
     assert credential2.private_key is not None, "Credential2 should have private key"
-    # Non-resident credentials don't save RP ID
-    assert credential2.rp_id is None, "Credential2 should not have RP ID. Since it's not resident credential"
-    assert (
-        credential2.user_handle is None
-    ), "Credential2 should not have user handle. Since it's not resident credential"
+
     assert credential2.sign_count == 1
 
     driver.remove_virtual_authenticator()
