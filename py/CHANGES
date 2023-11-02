@@ -1,3 +1,7 @@
+Selenium 4.15.1
+* Fix bug in using SE_MANAGER_PATH
+* Fix inadvertent code change in mutation_event
+
 Selenium 4.15.0
 * Return a `pathlib.Path` when `SE_MANAGER_PATH` is set. closes #12929
 * Do not set browser binary in selenium manager if it is an empty string (#12738)
