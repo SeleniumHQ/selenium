@@ -128,6 +128,9 @@ namespace OpenQA.Selenium.Firefox
             set { this.logLevel = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to enable the DevTools protocol for the launched browser.
+        /// </summary>
         public bool EnableDevToolsProtocol
         {
             get { return this.enableDevToolsProtocol; }

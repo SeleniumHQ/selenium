@@ -346,7 +346,7 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
-     * @deprecated Use {@link #setScriptTimeout(Duration)}
+     * @deprecated Use {@link #scriptTimeout(Duration)}
      *     <p>Sets the amount of time to wait for an asynchronous script to finish execution before
      *     throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
      *     error code with invalid argument will be returned.

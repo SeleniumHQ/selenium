@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -61,9 +62,6 @@ public class SeleniumManager {
 
   private static final String SELENIUM_MANAGER = "selenium-manager";
   private static final String EXE = ".exe";
-  private static final String INFO = "INFO";
-  private static final String WARN = "WARN";
-  private static final String DEBUG = "DEBUG";
 
   private static volatile SeleniumManager manager;
 
@@ -114,7 +112,7 @@ public class SeleniumManager {
       CommandLine command =
           new CommandLine(binary.toAbsolutePath().toString(), arguments.toArray(new String[0]));
       command.executeAsync();
-      command.waitFor(10000); // A generous timeout
+      command.waitFor();
       if (command.isRunning()) {
         LOG.warning("Selenium Manager did not exit");
       }
@@ -129,7 +127,14 @@ public class SeleniumManager {
     if (!output.isEmpty()) {
       try {
         jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
-        jsonOutput.getLogs().forEach(logged -> LOG.log(logged.getLevel(), logged.getMessage()));
+        jsonOutput
+            .getLogs()
+            .forEach(
+                logged -> {
+                  Level currentLevel =
+                      logged.getLevel() == Level.INFO ? Level.FINE : logged.getLevel();
+                  LOG.log(currentLevel, logged.getMessage());
+                });
         dump = jsonOutput.getResult().getMessage();
       } catch (JsonException e) {
         failedToParse = e;
@@ -259,6 +264,11 @@ public class SeleniumManager {
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
       arguments.add(options.getBrowserVersion());
+      // We know the browser binary path, we don't need the browserVersion.
+      // Useful when "beta" is specified as browserVersion, but the browser driver cannot match it.
+      if (options instanceof MutableCapabilities) {
+        ((MutableCapabilities) options).setCapability("browserVersion", (String) null);
+      }
     }
 
     String browserBinary = getBrowserBinary(options);
@@ -275,7 +285,7 @@ public class SeleniumManager {
       arguments.add("--offline");
     }
 
-    Proxy proxy = (Proxy) options.getCapability("proxy");
+    Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null) {
       if (proxy.getSslProxy() != null) {
         arguments.add("--proxy");

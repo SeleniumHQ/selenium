@@ -1,3 +1,12 @@
+v4.12.1
+======
+* Supported CDP versions: 85, 114, 115, 116
+* Safari driver service system properties should be public
+* [grid] Removing browserVersion before sending payload to driver
+* Selenium Manager don't log file paths by default (#12673)
+* Parse log output to support streams and file location in system properties (#12674)
+* Fixing default service for drivers #12682
+
 v4.12.0
 ======
 * Supported CDP versions: 85, 114, 115, 116
@@ -16,6 +25,13 @@ v4.12.0
 * Increase maximum depth of generated JSON (see #12581)
 * Do not register multiple listeners
 * Improve synchronization for network event listeners
+* Fix bug for null hashCode in element subclasses (#12442)
+* Fix potential deadlock in processing events (#12576)
+* Fix proxy breaking in RemoteWebDriver (#12607)
+* Grid detects Safari and Safari Technology Preview only on macOS
+* Grid avoids using Selenium Manager offline mode when it is enabled in arguments
+* Batch copy input to multiple streams
+* Remove browserVersion from options in Selenium Manager (#12639)
 
 v4.11.0
 ======

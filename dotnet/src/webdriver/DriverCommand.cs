@@ -122,11 +122,6 @@ namespace OpenQA.Selenium
         public static readonly string FindShadowChildElements = "findShadowChildElements";
 
         /// <summary>
-        /// Describes an element
-        /// </summary>
-        //public static readonly string DescribeElement = "describeElement";
-
-        /// <summary>
         /// Represents ClearElement command
         /// </summary>
         public static readonly string ClearElement = "clearElement";
@@ -363,14 +358,44 @@ namespace OpenQA.Selenium
 
         // Virtual Authenticator API
         // http://w3c.github.io/webauthn#sctn-automation
+        /// <summary>
+        /// Represents the AddVirtualAuthenticator command.
+        /// </summary>
         public static readonly string AddVirtualAuthenticator = "addVirtualAuthenticator";
+
+        /// <summary>
+        /// Represents the RemoveVirtualAuthenticator command.
+        /// </summary>
         public static readonly string RemoveVirtualAuthenticator = "removeVirtualAuthenticator";
+
+        /// <summary>
+        /// Represents the AddCredential command
+        /// </summary>
         public static readonly string AddCredential = "addCredential";
+
+        /// <summary>
+        /// Represents the GetCredentials command.
+        /// </summary>
         public static readonly string GetCredentials = "getCredentials";
+
+        /// <summary>
+        /// Represents the RemoveCredential command.
+        /// </summary>
         public static readonly string RemoveCredential = "removeCredential";
+
+        /// <summary>
+        /// Represents the RemoveAllCredentials command.
+        /// </summary>
         public static readonly string RemoveAllCredentials = "removeAllCredentials";
+
+        /// <summary>
+        /// Represents the SetUserVerified command.
+        /// </summary>
         public static readonly string SetUserVerified = "setUserVerified";
 
+        /// <summary>
+        /// Lists the set of known commands valid for the Selenium library.
+        /// </summary>
         public static readonly IList<string> KnownCommands = new List<string>()
         {
             Status,

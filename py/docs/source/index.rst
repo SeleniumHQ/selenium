@@ -24,7 +24,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as 
 Supported Python Versions
 =========================
 
-* Python 3.7+
+* Python 3.8+
 
 Installing
 ==========
@@ -33,7 +33,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.11.2.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`, unarchive it, and run::
 
     python setup.py install
 
@@ -130,7 +130,7 @@ Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-4.11.0.jar
+    java -jar selenium-server-4.12.0.jar
 
 Then run your Python client scripts.
 
@@ -148,7 +148,7 @@ Contributing
 
  - Create a branch for your work
  - Ensure `tox` is installed (using a `virtualenv` is recommended)
- - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - `python3.8 -m venv .venv && . .venv/bin/activate && pip install tox`
  - After making changes, before committing execute `tox -e linting`
  - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
  - `flake8` requires manual fixes

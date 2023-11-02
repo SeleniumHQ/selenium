@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.remote.http;
 
-import static java.util.stream.Collectors.joining;
-
 import com.google.common.annotations.VisibleForTesting;
 import java.io.InputStream;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.StreamSupport;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 
@@ -56,16 +53,8 @@ public class DumpHttpExchangeFilter implements Filter {
   }
 
   private void expandHeadersAndContent(StringBuilder builder, HttpMessage<?> message) {
-    message
-        .getHeaderNames()
-        .forEach(
-            name -> {
-              builder.append("  ").append(name).append(": ");
-              builder.append(
-                  StreamSupport.stream(message.getHeaders(name).spliterator(), false)
-                      .collect(joining(", ")));
-              builder.append("\n");
-            });
+    message.forEachHeader(
+        (name, value) -> builder.append("  ").append(name).append(": ").append(value).append("\n"));
     builder.append("\n");
     builder.append(Contents.string(message));
   }

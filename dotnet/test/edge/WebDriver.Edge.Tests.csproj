@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
     <AssemblyName>WebDriver.Edge.Tests</AssemblyName>
   </PropertyGroup>
 

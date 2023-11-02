@@ -26,6 +26,11 @@ namespace OpenQA.Selenium.Remote
     [Obsolete("Replaced for dependent projects with WebElement class. Users should be using the IWebElement interface.")]
     public class RemoteWebElement : WebElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebElement"/> class.
+        /// </summary>
+        /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is the parent of this element.</param>
+        /// <param name="id">The internal ID of the element.</param>
         public RemoteWebElement(WebDriver parentDriver, string id) : base(parentDriver, id)
         {
         }

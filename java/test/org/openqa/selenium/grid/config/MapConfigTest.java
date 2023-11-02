@@ -132,4 +132,39 @@ class MapConfigTest {
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).isEqualTo(Optional.of(expected));
   }
+
+  @Test
+  void ensureCanReadListOfLists() {
+    String json =
+        String.join(
+                "",
+                "",
+                "{",
+                "`cheeses`: {",
+                "`default`: `manchego`,",
+                "`type`: [",
+                "{",
+                "`name`: `soft cheese`,",
+                "`default`: `brie`",
+                "},",
+                "{",
+                "`name`: `Medium-hard cheese`,",
+                "`default`: `Emmental`",
+                "}",
+                "]",
+                "}",
+                "}")
+            .replace("`", "\"");
+    Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
+    Config config = new MapConfig(raw);
+
+    List<List<String>> expected =
+        Arrays.asList(
+            Arrays.asList("name=\"soft cheese\"", "default=\"brie\""),
+            Arrays.asList("name=\"Medium-hard cheese\"", "default=\"Emmental\""));
+    assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
+        .isEqualTo(expected);
+    assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))
+        .isEqualTo(expected.subList(0, 1));
+  }
 }

@@ -1,3 +1,26 @@
+v4.12.4
+======
+* No code changes; issue with 4.12.3 release
+
+v4.12.3
+======
+* Fix saving png screenshot as file (#12654)
+* Correcting failures in CDP Network event tests
+* Close dev tools session safely (#12660)
+* Send data over cdp consecutively (#12666)
+* Show output from selenium manager error stream (#12677)
+* Return Task instead of wait it in generated CDP method invocations (#12672)
+* Invoke console log api called event many times depending on count of args (#12669)
+
+v4.12.2
+======
+* No code changes; issue with 4.12.1 release
+
+v4.12.1
+======
+* Only target Netstandard 2.0 for release
+* Fix bug for disposal of ClientWebSocket
+
 v4.12.0
 ======
 * Add CDP files for v116 and remove v113
@@ -5,8 +28,12 @@ v4.12.0
 * Improve performance in DriverFactory (#12497)
 * Avoid async void events in CDP Network session (#12486)
 * Rename methods in Actions class to follow .NET convention (#12439)
-
-
+* Fix bug with Selenium Manager executing in new window (#12593)
+* Simplify to only target .NET Standard 2.0 (#12608)
+* DriverFinder executed in Driver constructor not Service constructor (#12534)
+* Refactor WebScocket communication for BiDi (#12614)
+* Avoid potential deadlocks for new dev tools sessions (#12592)
+* Send data over cdp consecutively (#12591)
 
 v4.11.0
 ======

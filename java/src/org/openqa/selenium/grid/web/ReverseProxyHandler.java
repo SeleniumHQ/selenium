@@ -75,15 +75,13 @@ public class ReverseProxyHandler implements HttpHandler {
         }
       }
 
-      for (String name : req.getHeaderNames()) {
-        if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-          continue;
-        }
-
-        for (String value : req.getHeaders(name)) {
-          toUpstream.addHeader(name, value);
-        }
-      }
+      req.forEachHeader(
+          (name, value) -> {
+            if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
+              return;
+            }
+            toUpstream.addHeader(name, value);
+          });
       // None of this "keep alive" nonsense.
       toUpstream.setHeader("Connection", "keep-alive");
 
@@ -93,8 +91,8 @@ public class ReverseProxyHandler implements HttpHandler {
       HTTP_RESPONSE.accept(span, resp);
 
       // clear response defaults.
-      resp.removeHeader("Date");
-      resp.removeHeader("Server");
+      resp.removeHeader("date");
+      resp.removeHeader("server");
 
       IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 

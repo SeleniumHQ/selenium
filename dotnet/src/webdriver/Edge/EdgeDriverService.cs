@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.IO;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Internal;
@@ -55,7 +56,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService()
         {
-            return CreateDefaultService(new EdgeOptions());
+            return new EdgeDriverService(null, null, PortUtilities.FindFreePort());
         }
 
         /// <summary>
@@ -63,6 +64,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="options">Browser options used to find the correct MSEdgeDriver binary.</param>
         /// <returns>A EdgeDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
         public static EdgeDriverService CreateDefaultService(EdgeOptions options)
         {
             string fullServicePath = DriverFinder.FullPath(options);

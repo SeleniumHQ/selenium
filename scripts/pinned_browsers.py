@@ -19,51 +19,60 @@ def calculate_hash(url):
         h.update(b)
     return h.hexdigest()
 
-def chromedriver():
-    r = http.request('GET', 'https://chromedriver.storage.googleapis.com/LATEST_RELEASE')
-    v = r.data.decode('utf-8')
+def get_chrome_milestone():
+    channel = "Stable"
+    r = http.request('GET', f'https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux')
+    all_versions = json.loads(r.data)
+    # use the same milestone for all chrome releases, so pick the lowest
+    milestone = min([version["milestone"] for version in all_versions if version["milestone"]])
+    r = http.request('GET', 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
+    versions = json.loads(r.data)["versions"]
 
+    return sorted(
+        filter(lambda v: v['version'].split('.')[0] == str(milestone), versions),
+        key=lambda v: LegacyVersion(v['version'])
+    )[-1]
+
+def chromedriver():
     content = ""
 
-    linux = 'https://chromedriver.storage.googleapis.com/%s/chromedriver_linux64.zip' % v
+    selected_version = get_chrome_milestone()
+
+    drivers = selected_version["downloads"]["chromedriver"]
+
+    linux = [d["url"] for d in drivers if d["platform"] == "linux64"][0]
     sha = calculate_hash(linux)
+
     content = content + """
     http_archive(
         name = "linux_chromedriver",
         url = "%s",
         sha256 = "%s",
+        strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\\"chromedriver\\"])",
     )
     """ % (linux, sha)
 
-    mac = 'https://chromedriver.storage.googleapis.com/%s/chromedriver_mac64.zip' % v
+    mac = [d["url"] for d in drivers if d["platform"] == "mac-x64"][0]
     sha = calculate_hash(mac)
     content = content + """
     http_archive(
         name = "mac_chromedriver",
         url = "%s",
         sha256 = "%s",
+        strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\\"chromedriver\\"])",
     )
     """ % (mac, sha)
+
     return content
 
 def chrome():
-    channel = "Stable"
-    r = http.request('GET', f'https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Win32,Windows,Mac,Linux')
-    milestone = json.loads(r.data)[0]["milestone"]
+    selected_version = get_chrome_milestone()
 
-    r = http.request('GET', 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
-    versions = json.loads(r.data)["versions"]
+    chrome_downloads = selected_version["downloads"]["chrome"]
 
-    selected_version = sorted(
-        filter(lambda v: v['version'].split('.')[0] == str(milestone), versions),
-        key=lambda v: LegacyVersion(v['version'])
-    )[-1]
-
-    downloads = selected_version["downloads"]["chrome"]
-
-    linux = [d["url"] for d in downloads if d["platform"] == "linux64"][0]
+    linux = [d["url"] for d in chrome_downloads if d["platform"] == "linux64"][0]
     sha = calculate_hash(linux)
 
     content = """
@@ -86,7 +95,7 @@ exports_files(
 
 """ % (linux, sha)
 
-    mac = [d["url"] for d in downloads if d["platform"] == "mac-x64"][0]
+    mac = [d["url"] for d in chrome_downloads if d["platform"] == "mac-x64"][0]
     sha = calculate_hash(mac)
 
     content += """
@@ -99,7 +108,7 @@ exports_files(
             "mv 'Google Chrome for Testing.app' Chrome.app",
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
         ],
-        build_file_content = "exports_files([\\"Google Chrome for Testing.app\\"])",
+        build_file_content = "exports_files([\\"Chrome.app\\"])",
     )
 
 """ % (mac, sha)

@@ -302,7 +302,9 @@ impl SeleniumManager for ChromeManager {
                 {
                     // For discovering the latest driver version, the CfT endpoints are also used
                     self.request_latest_driver_version_from_online()?
-                } else if !major_browser_version.is_empty() && major_browser_version_int < 115 {
+                } else if !major_browser_version.is_empty()
+                    && major_browser_version_int < MIN_CHROMEDRIVER_VERSION_CFT
+                {
                     // For old versions (chromedriver 114-), the traditional method should work:
                     // https://chromedriver.chromium.org/downloads
                     self.request_driver_version_from_latest(

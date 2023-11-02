@@ -977,6 +977,7 @@ public class RemoteWebDriver
         return setScriptTimeout(Duration.ofMillis(unit.toMillis(time)));
       }
 
+      @Deprecated
       @Override
       public Timeouts setScriptTimeout(Duration duration) {
         return scriptTimeout(duration);

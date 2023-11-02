@@ -13,6 +13,11 @@ namespace OpenQA.Selenium.Chrome
         {
         }
 
+        public DevChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+            : base(service, options)
+        {
+        }
+
         public static ChromeOptions DefaultOptions
         {
             get { return new ChromeOptions() { BrowserVersion = "dev" }; }

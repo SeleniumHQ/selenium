@@ -18,8 +18,14 @@
 
 namespace OpenQA.Selenium
 {
+    /// <summary>
+    /// An interface indicating that the implementing class has a command executor.
+    /// </summary>
     public interface IHasCommandExecutor
     {
+        /// <summary>
+        /// Gets the command executor.
+        /// </summary>
         ICommandExecutor CommandExecutor { get; }
     }
 }
