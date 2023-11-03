@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi;
 
+import java.io.Closeable;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.script.ChannelValue;
@@ -33,6 +35,7 @@ import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.bidi.script.ExceptionDetails;
 import org.openqa.selenium.bidi.script.LocalValue;
+import org.openqa.selenium.bidi.script.Message;
 import org.openqa.selenium.bidi.script.RealmInfo;
 import org.openqa.selenium.bidi.script.RealmType;
 import org.openqa.selenium.bidi.script.RemoteValue;
@@ -42,7 +45,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
-public class Script {
+public class Script implements Closeable {
   private final Set<String> browsingContextIds;
 
   private static final Json JSON = new Json();
@@ -60,6 +63,16 @@ public class Script {
           return input.read(new TypeToken<List<RealmInfo>>() {}.getType());
         }
       };
+
+  private final Event<Message> messageEvent =
+      new Event<>(
+          "script.message",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(Message.class);
+            }
+          });
 
   public Script(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -293,6 +306,14 @@ public class Script {
     this.bidi.send(new Command<>("script.removePreloadScript", Map.of("script", id)));
   }
 
+  public void onMessage(Consumer<Message> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(messageEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, messageEvent, consumer);
+    }
+  }
+
   private Map<String, Object> getCallFunctionParams(
       String targetType,
       String id,
@@ -375,5 +396,10 @@ public class Script {
     }
 
     return evaluateResult;
+  }
+
+  @Override
+  public void close() {
+    this.bidi.clearListener(messageEvent);
   }
 }
