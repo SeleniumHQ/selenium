@@ -1726,6 +1726,22 @@ class WebDriver {
         .setParameter('isUserVerified', verified)
     )
   }
+
+  async getDownloadableFiles() {
+    return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))
+  }
+
+  async downloadFile(fileName) {
+    return this.execute(
+      new command.Command(command.Name.DOWNLOAD_FILE).setParameter('file_name', fileName)
+    )
+  }
+
+  async deleteDownloadableFiles() {
+    return this.execute(
+      new command.Command(command.Name.DELETE_DOWNLOADABLE_FILES)
+    )
+  }
 }
 
 /**

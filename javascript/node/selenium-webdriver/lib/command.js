@@ -181,6 +181,10 @@ const Name = {
 
   ACTIONS: 'actions',
   CLEAR_ACTIONS: 'clearActions',
+
+  GET_DOWNLOADABLE_FILES: "getDownloadableFiles",
+  DOWNLOAD_FILE: "downloadFile",
+  DELETE_DOWNLOADABLE_FILES: "deleteDownloadableFiles",
 }
 
 /**

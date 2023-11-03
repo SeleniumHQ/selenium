@@ -400,6 +400,10 @@ const W3C_COMMAND_MAP = new Map([
     cmd.Name.SET_USER_VERIFIED,
     post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv'),
   ],
+
+  [cmd.Name.GET_DOWNLOADABLE_FILES, get('/session/:sessionId/se/files')],
+  [cmd.Name.DOWNLOAD_FILE, post(`/session/:sessionId/se/files`)],
+  [cmd.Name.DELETE_DOWNLOADABLE_FILES, del(`/session/:sessionId/se/files`)]
 ])
 
 /**
