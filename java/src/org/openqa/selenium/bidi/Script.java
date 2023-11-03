@@ -74,6 +74,26 @@ public class Script implements Closeable {
             }
           });
 
+  private final Event<RealmInfo> realmCreated =
+      new Event<>(
+          "script.realmCreated",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(RealmInfo.class);
+            }
+          });
+
+  private final Event<RealmInfo> realmDestroyed =
+      new Event<>(
+          "script.realmDestroyed",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(RealmInfo.class);
+            }
+          });
+
   public Script(WebDriver driver) {
     this(new HashSet<>(), driver);
   }
@@ -311,6 +331,22 @@ public class Script implements Closeable {
       this.bidi.addListener(messageEvent, consumer);
     } else {
       this.bidi.addListener(browsingContextIds, messageEvent, consumer);
+    }
+  }
+
+  public void onRealmCreated(Consumer<RealmInfo> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(realmCreated, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, realmCreated, consumer);
+    }
+  }
+
+  public void onRealmDestroyed(Consumer<RealmInfo> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(realmDestroyed, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, realmDestroyed, consumer);
     }
   }
 

@@ -20,6 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -33,10 +34,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.Script;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.Pages;
 
 public class ScriptEventsTest extends JupiterTestBase {
   private AppServer server;
@@ -52,7 +55,7 @@ public class ScriptEventsTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
-  void canAddPreloadScriptWithChannelOptions()
+  void canListenToChannelMessage()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Script script = new Script(driver)) {
       CompletableFuture<Message> future = new CompletableFuture<>();
@@ -75,6 +78,47 @@ public class ScriptEventsTest extends JupiterTestBase {
       assertThat(message.getSource().getBrowsingContext().isPresent()).isTrue();
       assertThat(message.getSource().getBrowsingContext().get())
           .isEqualTo(driver.getWindowHandle());
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
+  void canListenToRealmCreatedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Script script = new Script(driver)) {
+      CompletableFuture<RealmInfo> future = new CompletableFuture<>();
+      script.onRealmCreated(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+
+      context.navigate(new Pages(server).blankPage);
+      RealmInfo realmInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(realmInfo.getRealmId()).isNotNull();
+      assertThat(realmInfo.getRealmType()).isEqualTo(RealmType.WINDOW);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
+  void canListenToRealmDestroyedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Script script = new Script(driver)) {
+      CompletableFuture<RealmInfo> future = new CompletableFuture<>();
+      script.onRealmDestroyed(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+
+      context.close();
+      RealmInfo realmInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(realmInfo.getRealmId()).isNotNull();
+      assertThat(realmInfo.getRealmType()).isEqualTo(RealmType.WINDOW);
     }
   }
 
