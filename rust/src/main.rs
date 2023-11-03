@@ -41,7 +41,7 @@ use std::process::exit;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, or webview2)
     #[clap(long, value_parser)]
     browser: Option<String>,
 
