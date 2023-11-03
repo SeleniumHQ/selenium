@@ -35,8 +35,12 @@ module Selenium
           send_command: [:post, 'session/:session_id/goog/cdp/execute']
         }.freeze
 
+        def command_list
+          CHROME_COMMANDS.merge(CHROMIUM_COMMANDS).merge(self.class::COMMANDS)
+        end
+
         def commands(command)
-          CHROME_COMMANDS[command] || CHROMIUM_COMMANDS[command] || self.class::COMMANDS[command]
+          command_list[command]
         end
       end # Bridge
     end # Chrome

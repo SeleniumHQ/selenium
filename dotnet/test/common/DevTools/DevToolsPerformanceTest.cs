@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace OpenQA.Selenium.DevTools
 {
-    using CurrentCdpVersion = V118;
+    using CurrentCdpVersion = V119;
 
     [TestFixture]
     public class DevToolsPerformanceTest : DevToolsTestFixture

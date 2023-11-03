@@ -1,3 +1,15 @@
+0.4.15
+======
+* Include mirror arguments to change default online repository URLs (#11687)
+* Support for automatic management of Firefox ESR (#12946)
+* Fix webview2 support (#12966)
+* Include checkbox in SM workflow to generate binaries with debug symbols (#12974)
+* Include flag in workflow to build SM in CI with debug info
+* Include debug and split-debuginfo in dev profile
+* Change windows target to stable-i686-pc-windows-gnu
+* Bump all crates to the last versions (#13028)
+* Fix conditions to check edge in cache (#13057)
+
 0.4.14
 ======
 * Use original browser version in Firefox management logic

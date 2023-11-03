@@ -56,7 +56,7 @@ const FIREFOX_HISTORY_DEV_ENDPOINT: &str = "firefox_history_development_releases
 const FIREFOX_NIGHTLY_URL: &str =
     "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os={}&lang={}";
 const FIREFOX_VOLUME: &str = "Firefox";
-const FIREFOX_NIGHTLY_VOLUME: &str = r#"Firefox\ Nightly"#;
+const FIREFOX_NIGHTLY_VOLUME: &str = r"Firefox\ Nightly";
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_WIN: i32 = 13;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
@@ -132,24 +132,24 @@ impl SeleniumManager for FirefoxManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
                 // "",
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"Firefox Developer Edition\firefox.exe"#,
+                r"Firefox Developer Edition\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"Firefox Nightly\firefox.exe"#,
+                r"Firefox Nightly\firefox.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, ESR),
-                r#"Mozilla Firefox\firefox.exe"#,
+                r"Mozilla Firefox\firefox.exe",
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
@@ -181,7 +181,7 @@ impl SeleniumManager for FirefoxManager {
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKCU\Software\Mozilla\Mozilla Firefox"#,
+            r"HKCU\Software\Mozilla\Mozilla Firefox",
             REG_CURRENT_VERSION_ARG,
             DASH_VERSION,
         )

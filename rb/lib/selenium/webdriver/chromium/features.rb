@@ -31,10 +31,6 @@ module Selenium
           get_log: [:post, 'session/:session_id/se/log']
         }.freeze
 
-        def commands(command)
-          CHROME_COMMANDS[command] || self.class::COMMANDS[command]
-        end
-
         def launch_app(id)
           execute :launch_app, {}, {id: id}
         end

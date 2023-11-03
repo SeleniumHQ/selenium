@@ -93,13 +93,13 @@ impl SeleniumManager for IExplorerManager {
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([(
             BrowserPath::new(WINDOWS, STABLE),
-            r#"Internet Explorer\iexplore.exe"#,
+            r"Internet Explorer\iexplore.exe",
         )])
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            r"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer",
             REG_VERSION_ARG,
             "",
         )

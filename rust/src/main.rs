@@ -41,7 +41,7 @@ use std::process::exit;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, or webview2)
     #[clap(long, value_parser)]
     browser: Option<String>,
 
@@ -57,7 +57,8 @@ struct Cli {
     #[clap(long, value_parser)]
     driver_version: Option<String>,
 
-    /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
+    /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly-,
+    /// and esr -in Firefox- are accepted)
     #[clap(long, value_parser)]
     browser_version: Option<String>,
 
