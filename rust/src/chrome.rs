@@ -220,19 +220,19 @@ impl SeleniumManager for ChromeManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Google\Chrome\Application\chrome.exe"#,
+                r"Google\Chrome\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"Google\Chrome Beta\Application\chrome.exe"#,
+                r"Google\Chrome Beta\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"Google\Chrome Dev\Application\chrome.exe"#,
+                r"Google\Chrome Dev\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"Google\Chrome SxS\Application\chrome.exe"#,
+                r"Google\Chrome SxS\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
@@ -261,7 +261,7 @@ impl SeleniumManager for ChromeManager {
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKCU\Software\Google\Chrome\BLBeacon"#,
+            r"HKCU\Software\Google\Chrome\BLBeacon",
             REG_VERSION_ARG,
             DASH_DASH_VERSION,
         )

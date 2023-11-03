@@ -29,7 +29,7 @@ use std::string::ToString;
 pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
     "safari technology preview",
-    r#"safari\ technology\ preview"#,
+    r"safari\ technology\ preview",
     "safaritechnologypreview",
 ];
 pub const SAFARITPDRIVER_NAME: &str = "safaridriver";

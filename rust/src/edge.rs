@@ -107,25 +107,25 @@ impl SeleniumManager for EdgeManager {
         if self.is_webview2() {
             HashMap::from([(
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Microsoft\EdgeWebView\Application"#,
+                r"Microsoft\EdgeWebView\Application",
             )])
         } else {
             HashMap::from([
                 (
                     BrowserPath::new(WINDOWS, STABLE),
-                    r#"Microsoft\Edge\Application\msedge.exe"#,
+                    r"Microsoft\Edge\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, BETA),
-                    r#"Microsoft\Edge Beta\Application\msedge.exe"#,
+                    r"Microsoft\Edge Beta\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, DEV),
-                    r#"Microsoft\Edge Dev\Application\msedge.exe"#,
+                    r"Microsoft\Edge Dev\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, NIGHTLY),
-                    r#"Microsoft\Edge SxS\Application\msedge.exe"#,
+                    r"Microsoft\Edge SxS\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(MACOS, STABLE),
@@ -158,20 +158,20 @@ impl SeleniumManager for EdgeManager {
             let arch = self.get_arch();
             if X32.is(arch) {
                 (
-                    r#"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             } else {
                 (
-                    r#"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             }
         } else {
             (
-                r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+                r"HKCU\Software\Microsoft\Edge\BLBeacon",
                 REG_VERSION_ARG,
                 DASH_DASH_VERSION,
             )
