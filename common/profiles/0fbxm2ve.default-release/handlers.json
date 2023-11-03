@@ -1,1 +1,0 @@
-{"defaultHandlersVersion":{},"mimeTypes":{"application/pdf":{"action":3,"extensions":["pdf"]},"image/webp":{"action":3,"extensions":["webp"]},"image/avif":{"action":3,"extensions":["avif"]}},"schemes":{"mailto":{"stubEntry":true,"handlers":[null,{"name":"Gmail","uriTemplate":"https://mail.google.com/mail/?extsrc=mailto&url=%s"}]}},"isDownloadsImprovementsAlreadyMigrated":false}

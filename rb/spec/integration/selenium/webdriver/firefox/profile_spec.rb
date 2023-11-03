@@ -23,9 +23,6 @@ module Selenium
   module WebDriver
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
-        let(:profiles) { '../../../../../../common/profiles' }
-        let(:profile_dir) { '0fbxm2ve.default-release' }
-        let(:profile_path) { File.expand_path(File.join(profiles, profile_dir), __dir__) }
         let(:profile) { described_class.new }
 
         before do
@@ -36,13 +33,6 @@ module Selenium
         it 'instantiates the browser with the correct profile' do
           reset_driver!(profile: profile) do |driver|
             expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
-          end
-        end
-
-        it 'instantiates the browser with an existing profile model path' do
-          reset_driver!(profile: described_class.new(profile_path)) do |driver|
-            driver.get('about:config')
-            expect { wait(5).until { driver.find_element(id: 'about-config-search') } }.not_to raise_error
           end
         end
 

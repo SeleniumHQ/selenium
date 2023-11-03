@@ -1,4 +1,0 @@
-Name: gmpopenh264
-Description: GMP Plugin for OpenH264.
-Version: 2.3.2
-APIs: encode-video[h264], decode-video[h264]
