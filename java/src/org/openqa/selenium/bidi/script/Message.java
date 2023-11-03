@@ -34,6 +34,7 @@ public class Message {
     RemoteValue data = null;
     Source source = null;
 
+    input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "channel":
