@@ -22,6 +22,8 @@ module Selenium
     module Firefox
       # @api private
       class ProfilesIni
+        attr_reader :profile_paths
+
         def initialize
           @ini_path = File.join(Util.app_data_path, 'profiles.ini')
           @profile_paths = {}

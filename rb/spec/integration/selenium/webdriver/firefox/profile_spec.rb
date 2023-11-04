@@ -18,12 +18,14 @@
 # under the License.
 
 require_relative '../spec_helper'
+require 'selenium/webdriver/firefox/profiles_ini'
 
 module Selenium
   module WebDriver
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { described_class.new }
+        let(:existing_profile_path) { ProfilesIni.new.profile_paths.first.last }
 
         before do
           profile['browser.startup.homepage'] = url_for('simpleTest.html')
@@ -42,6 +44,12 @@ module Selenium
             reset_driver!(profile: profile) do |driver2|
               expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
             end
+          end
+        end
+
+        it 'instantiates the browser with an existing default profile' do
+          reset_driver!(profile: described_class.new(existing_profile_path)) do |driver|
+            expect { driver }.not_to raise_error
           end
         end
       end
