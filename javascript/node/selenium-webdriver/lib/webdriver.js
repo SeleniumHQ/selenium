@@ -2799,7 +2799,7 @@ class WebElement {
         keys.join('')
       )
     } catch (ex) {
-      this.log_.error(
+      this.log_.severe(
         'Error trying parse string as a file with file detector; sending keys instead' +
           ex
       )
