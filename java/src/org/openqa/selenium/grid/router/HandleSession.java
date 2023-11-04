@@ -228,7 +228,9 @@ class HandleSession implements HttpHandler {
                     }
 
                     ClientConfig config =
-                        ClientConfig.defaultConfig().baseUri(sessionUri).withRetries();
+                        ClientConfig.defaultConfig()
+                            .baseUri(sessionUri)
+                            .withRetries();
                     HttpClient httpClient = httpClientFactory.createClient(config);
 
                     return new CacheEntry(httpClient, 1);

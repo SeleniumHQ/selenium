@@ -97,18 +97,7 @@ class Input {
       length = MEMORY_SIZE;
     }
 
-    String last = "Last " + length + " characters read: " + new String(buffer, offset, length);
-    int next = Math.min(MEMORY_SIZE, filled - (offset + length));
-
-    if (next > 0) {
-      return last
-          + ", next "
-          + next
-          + " characters to read: "
-          + new String(buffer, offset + length, next);
-    }
-
-    return last;
+    return "Last " + length + " characters read: " + new String(buffer, offset, length);
   }
 
   /**
