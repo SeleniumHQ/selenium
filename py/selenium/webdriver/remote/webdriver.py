@@ -1166,7 +1166,6 @@ class WebDriver(BaseWebDriver):
         with zipfile.ZipFile(target_file, "r") as zip_ref:
             zip_ref.extractall(target_directory)
 
-
     def delete_downloadable_files(self) -> None:
         """Deletes all downloadable files."""
         if "se:downloadsEnabled" not in self.capabilities:

@@ -42,6 +42,10 @@ if [[ "$BUILD_TYPE" == "nightly" ]]; then
     sed -i '' "s/${VERSION}/${NEXT_VERSION}/g" "Rakefile"
     sed -i '' "s/${VERSION}.0/${NEXT_VERSION}.0-SNAPSHOT/g" "java/version.bzl"
     sed -i '' "s/${VERSION}.0/${NEXT_VERSION}.0.nightly/g" "rb/lib/selenium/webdriver/version.rb"
+    sed -i '' "s/0.${VERSION}/0.${NEXT_VERSION}/g" "rust/BUILD.bazel"
+    sed -i '' "s/0.${VERSION}/0.${NEXT_VERSION}/g" "rust/Cargo.Bazel.lock"
+    sed -i '' "s/0.${VERSION}/0.${NEXT_VERSION}/g" "rust/Cargo.lock"
+    sed -i '' "s/0.${VERSION}/0.${NEXT_VERSION}/g" "rust/Cargo.toml"
 else
     for file in "${FILES_TO_UPDATE[@]}"; do
       if [[ -f $file ]]; then
@@ -57,4 +61,8 @@ popd
 
 pushd javascript/node/selenium-webdriver
 npm install
+popd
+
+pushd rust
+bundle CARGO_BAZEL_REPIN=true bazel sync --only=crates
 popd
