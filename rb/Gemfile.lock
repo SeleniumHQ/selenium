@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     selenium-devtools (0.119.0)
-      selenium-webdriver (~> 4.2)
+      selenium-webdriver (~> 4.2.0)
     selenium-webdriver (4.16.0.nightly)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -46,7 +46,6 @@ GEM
     irb (1.7.0)
       reline (>= 0.3.0)
     json (2.6.3)
-    json (2.6.3-java)
     language_server-protocol (3.17.0.3)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -60,7 +59,6 @@ GEM
       racc
     public_suffix (5.0.1)
     racc (1.7.1)
-    racc (1.7.1-java)
     rack (2.2.7)
     rainbow (3.1.1)
     rake (13.0.6)
