@@ -25,14 +25,19 @@ module Selenium
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { described_class.new }
-        let(:profile_from_model) { described_class.new create_test_profile }
+        let(:profile_from_model) { described_class.new profile_model }
+
+        def profile_model
+          profile_paths = ProfilesIni.new.profile_paths
+          profile_paths.empty? ? create_test_profile : profile_paths.first.last
+        end
 
         def create_test_profile
           profile_name = SecureRandom.hex
           system "firefox --no-remote -CreateProfile #{profile_name}"
           @test_profile = ProfilesIni.new.profile_paths[profile_name]
           Process.spawn "firefox --headless -P #{profile_name}" # Running process uses 'lock' file
-          sleep 10 # while all the profile files are created on first use, incl. 'lock'
+          sleep 10 # while all the profile files are created on first use, incl. 'lock'. Better way?
           @test_profile
         end
 
@@ -61,7 +66,7 @@ module Selenium
             expect { driver }.not_to raise_error
           end
         ensure
-          FileUtils.rm_rf @test_profile
+          FileUtils.rm_rf @test_profile if @test_profile
         end
       end
     end # Firefox
