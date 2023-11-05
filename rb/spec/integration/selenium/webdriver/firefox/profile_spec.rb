@@ -25,7 +25,16 @@ module Selenium
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { described_class.new }
-        let(:existing_profile_path) { ProfilesIni.new.profile_paths.first.last }
+        let(:profile_from_model) { described_class.new create_test_profile }
+
+        def create_test_profile
+          profile_name = SecureRandom.hex
+          system "firefox --no-remote -CreateProfile #{profile_name}"
+          @test_profile = ProfilesIni.new.profile_paths[profile_name]
+          Process.spawn "firefox --headless -P #{profile_name}" # Running process uses 'lock' file
+          sleep 10 # while all the profile files are created on first use, incl. 'lock'
+          @test_profile
+        end
 
         before do
           profile['browser.startup.homepage'] = url_for('simpleTest.html')
@@ -48,9 +57,11 @@ module Selenium
         end
 
         it 'instantiates the browser with an existing default profile' do
-          reset_driver!(profile: described_class.new(existing_profile_path)) do |driver|
+          reset_driver!(profile: profile_from_model) do |driver|
             expect { driver }.not_to raise_error
           end
+        ensure
+          FileUtils.rm_rf @test_profile
         end
       end
     end # Firefox
