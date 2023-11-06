@@ -198,10 +198,13 @@ public class ExternalProcess {
 
         new Thread(
                 () -> {
+                  // copyOutputTo might be system.out or system.err, do not to close
+                  OutputStream output = new MultiOutputStream(circular, copyOutputTo);
+                  // closing the InputStream does somehow disturb the process, do not to close
+                  InputStream input = process.getInputStream();
                   // use the CircularOutputStream as mandatory, we know it will never raise a
                   // IOException
-                  try (InputStream input = process.getInputStream();
-                      OutputStream output = new MultiOutputStream(circular, copyOutputTo)) {
+                  try {
                     // we must read the output to ensure the process will not lock up
                     input.transferTo(output);
                   } catch (IOException ex) {
