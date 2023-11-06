@@ -1728,16 +1728,31 @@ class WebDriver {
   }
 
   async getDownloadableFiles() {
-    return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))
+      const caps = await this.getCapabilities()
+      if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+        throw new error.WebDriverError('Downloads must be enabled in options')
+      }
+
+      return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))
   }
 
   async downloadFile(fileName) {
+    const caps = await this.getCapabilities()
+    if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+      throw new error.WebDriverError('Downloads must be enabled in options')
+    }
+
     return this.execute(
       new command.Command(command.Name.DOWNLOAD_FILE).setParameter('file_name', fileName)
     )
   }
 
   async deleteDownloadableFiles() {
+    const caps = await this.getCapabilities()
+    if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
+      throw new error.WebDriverError('Downloads must be enabled in options')
+    }
+
     return this.execute(
       new command.Command(command.Name.DELETE_DOWNLOADABLE_FILES)
     )
