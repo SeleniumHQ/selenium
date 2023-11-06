@@ -64,8 +64,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yard', ['~> 0.9.11']
 
   if RUBY_PLATFORM == 'java'
-    s.add_development_dependency 'rbs', ['~> 1.8']
-    s.add_development_dependency 'steep', ['~> 0.46.0']
+    s.add_development_dependency 'rbs', ['1.2.0']
+    s.add_development_dependency 'steep', ['0.46.0']
   else
     s.add_development_dependency 'rbs', ['~> 3.2.0']
     s.add_development_dependency 'steep', ['~> 1.5']
