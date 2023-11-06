@@ -1733,7 +1733,7 @@ class WebDriver {
         throw new error.WebDriverError('Downloads must be enabled in options')
       }
 
-      return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))
+      return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES)).names
   }
 
   async downloadFile(fileName, targetDirectory) {
