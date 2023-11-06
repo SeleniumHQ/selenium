@@ -24,6 +24,7 @@ import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_STATIC_PHASE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 import static net.bytebuddy.jar.asm.Opcodes.ASM9;
+import static net.bytebuddy.jar.asm.Opcodes.V11;
 
 import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import com.github.javaparser.JavaParser;
@@ -319,9 +320,7 @@ public class ModuleGenerator {
                         exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
 
     ClassWriter classWriter = new ClassWriter(0);
-    classWriter.visit(
-        /* version 9 */
-        53, ACC_MODULE, "module-info", null, null, null);
+    classWriter.visit(V11, ACC_MODULE, "module-info", null, null, null);
     ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, isOpen ? ACC_OPEN : 0, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
@@ -334,24 +333,14 @@ public class ModuleGenerator {
 
     Manifest manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-    manifest.getMainAttributes().put(Attributes.Name.MULTI_RELEASE, "true");
 
     try (OutputStream os = Files.newOutputStream(outJar);
         JarOutputStream jos = new JarOutputStream(os, manifest)) {
       jos.setLevel(ZipOutputStream.STORED);
 
-      ZipEntry dir = new StableZipEntry("META-INF/");
-      jos.putNextEntry(dir);
-
-      dir = new StableZipEntry("META-INF/versions/");
-      jos.putNextEntry(dir);
-
-      dir = new StableZipEntry("META-INF/versions/9/");
-      jos.putNextEntry(dir);
-
       byte[] bytes = classWriter.toByteArray();
 
-      ZipEntry entry = new StableZipEntry("META-INF/versions/9/module-info.class");
+      ZipEntry entry = new StableZipEntry("module-info.class");
       entry.setSize(bytes.length);
 
       jos.putNextEntry(entry);
