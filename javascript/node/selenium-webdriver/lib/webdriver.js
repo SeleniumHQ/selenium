@@ -1736,15 +1736,34 @@ class WebDriver {
       return this.execute(new command.Command(command.Name.GET_DOWNLOADABLE_FILES))
   }
 
-  async downloadFile(fileName) {
+  async downloadFile(fileName, targetDirectory) {
     const caps = await this.getCapabilities()
     if (!caps[Capabilities.ENABLE_DOWNLOADS]) {
       throw new error.WebDriverError('Downloads must be enabled in options')
     }
 
-    return this.execute(
+    response = this.execute(
       new command.Command(command.Name.DOWNLOAD_FILE).setParameter('file_name', fileName)
     )
+
+    const base64Content = response.contents;
+
+    if (!targetDirectory.endsWith('/')) {
+      targetDirectory += '/';
+    }
+
+    fs.mkdirSync(targetDirectory, { recursive: true });
+    const zipFilePath = path.join(targetDirectory, `${fileName}.zip`);
+    fs.writeFileSync(zipFilePath, Buffer.from(base64Content, 'base64'));
+
+    try {
+      await pipeline(
+          fs.createReadStream(zipFilePath),
+          unzipper.Extract({ path: targetDirectory })
+      );
+    } finally {
+      fs.unlinkSync(zipFilePath);
+    }
   }
 
   async deleteDownloadableFiles() {
