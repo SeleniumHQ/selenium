@@ -34,15 +34,15 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webdriver import WebElement
 
-D = TypeVar("D")
-T = TypeVar("T")
-
-WebDriverOrWebElement = Union[WebDriver, WebElement]
-
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
  * tests.
 """
+
+D = TypeVar("D")
+T = TypeVar("T")
+
+WebDriverOrWebElement = Union[WebDriver, WebElement]
 
 
 def title_is(title: str) -> Callable[[WebDriver], bool]:
