@@ -67,7 +67,7 @@ module Selenium
           end
           if options.proxy
             command << '--proxy'
-            (command << options.proxy.ssl) || options.proxy.http
+            command << (options.proxy.ssl || options.proxy.http)
           end
           command
         end

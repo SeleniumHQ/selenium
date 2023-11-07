@@ -193,29 +193,29 @@ public class ExternalProcess {
         throw new UncheckedIOException(ex);
       }
 
-      CircularOutputStream circular;
       try {
-        circular = new CircularOutputStream(bufferSize);
+        CircularOutputStream circular = new CircularOutputStream(bufferSize);
 
         new Thread(
                 () -> {
+                  // copyOutputTo might be system.out or system.err, do not to close
+                  OutputStream output = new MultiOutputStream(circular, copyOutputTo);
+                  // closing the InputStream does somehow disturb the process, do not to close
                   InputStream input = process.getInputStream();
                   // use the CircularOutputStream as mandatory, we know it will never raise a
                   // IOException
-                  OutputStream output = new MultiOutputStream(circular, copyOutputTo);
-                  while (process.isAlive()) {
-                    try {
-                      // we must read the output to ensure the process will not lock up
-                      input.transferTo(output);
-                    } catch (IOException ex) {
-                      LOG.log(
-                          Level.WARNING,
-                          "failed to copy the output of process " + process.pid(),
-                          ex);
-                    }
+                  try {
+                    // we must read the output to ensure the process will not lock up
+                    input.transferTo(output);
+                  } catch (IOException ex) {
+                    LOG.log(
+                        Level.WARNING, "failed to copy the output of process " + process.pid(), ex);
                   }
+                  LOG.log(Level.FINE, "completed to copy the output of process " + process.pid());
                 })
             .start();
+
+        return new ExternalProcess(process, circular);
       } catch (Throwable t) {
         // ensure we do not leak a process in case of failures
         try {
@@ -225,8 +225,6 @@ public class ExternalProcess {
         }
         throw t;
       }
-
-      return new ExternalProcess(process, circular);
     }
   }
 
