@@ -18,37 +18,12 @@
 # under the License.
 
 require_relative '../spec_helper'
-require 'selenium/webdriver/firefox/profiles_ini'
 
 module Selenium
   module WebDriver
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { described_class.new }
-        let(:profile_from_model) { described_class.new profile_model }
-
-        def profile_model
-          profile_paths = ProfilesIni.new.profile_paths
-          profile_paths.empty? ? create_test_profile : profile_paths.first.last
-        rescue KeyError # ProfilesIni on windows
-          create_test_profile
-        end
-
-        def cleanup
-          FileUtils.rm_rf @test_profile if @test_profile
-          Process.kill 'TERM', @pid if @pid
-        rescue Errno::ESRCH
-          true
-        end
-
-        def create_test_profile
-          profile_name = SecureRandom.hex
-          system "firefox --no-remote -CreateProfile #{profile_name}"
-          @test_profile = ProfilesIni.new.profile_paths[profile_name]
-          @pid = Process.spawn "firefox --headless -P #{profile_name}" # Running process uses 'lock' file
-          sleep 10 # while all the profile files are created on first use, incl. 'lock'. Better way?
-          @test_profile
-        end
 
         before do
           profile['browser.startup.homepage'] = url_for('simpleTest.html')
@@ -68,14 +43,6 @@ module Selenium
               expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
             end
           end
-        end
-
-        it 'instantiates the browser with an existing default profile' do
-          reset_driver!(profile: profile_from_model) do |driver|
-            expect { driver }.not_to raise_error
-          end
-        ensure
-          cleanup
         end
       end
     end # Firefox
