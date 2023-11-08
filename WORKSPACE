@@ -167,9 +167,9 @@ pinned_maven_install()
 
 http_archive(
     name = "rules_dotnet",
-    sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
-    strip_prefix = "rules_dotnet-0.10.7",
-    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
+    sha256 = "718cb2c3431523aaf3df7feed0e997e4ded002abbf56ac37d9c0536a812d6276",
+    strip_prefix = "rules_dotnet-0.12.0",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.12.0/rules_dotnet-v0.12.0.tar.gz",
 )
 
 load(
