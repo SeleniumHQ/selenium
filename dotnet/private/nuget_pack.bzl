@@ -143,45 +143,11 @@ def nuget_pack_impl(ctx):
         mnemonic = "CreateNupkg",
     )
 
-    assembly_infos = [lib[DotnetAssemblyRuntimeInfo] for lib in ctx.attr.libs]
-    all_libs = depset()
-    for info in assembly_infos:
-        all_libs = depset(info.libs, transitive = [all_libs])
 
     return [
         DefaultInfo(
             files = depset([pkg, symbols_pkg]),
             runfiles = ctx.runfiles(files = [pkg, symbols_pkg]),
-        ),
-        DotnetAssemblyCompileInfo(
-            name = ctx.attr.id,
-            version = ctx.attr.version,
-            project_sdk = "default",
-            refs = all_libs.to_list(),
-            irefs = [],
-            analyzers = [],
-            compile_data = [],
-            exports = [],
-            transitive_compile_data = depset([]),
-            transitive_refs = depset(),
-            transitive_analyzers = depset(),
-            internals_visible_to = [],
-        ),
-        DotnetAssemblyRuntimeInfo(
-            name = ctx.attr.id,
-            version = ctx.attr.version,
-            libs = all_libs.to_list(),
-            xml_docs = [],
-            native = [],
-            data = [],
-            deps = depset(transitive = [lib[DotnetAssemblyRuntimeInfo].deps for lib in ctx.attr.libs]),
-            nuget_info = None,
-            direct_deps_depsjson_fragment = None
-        ),
-        NuGetInfo(
-            targeting_pack_overrides = {},
-            sha512 = None,
-            nupkg = pkg,
         ),
     ]
 
