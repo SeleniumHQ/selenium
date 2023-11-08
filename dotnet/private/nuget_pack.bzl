@@ -2,7 +2,7 @@ load("@rules_dotnet//dotnet/private:common.bzl", "is_debug")
 load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyRuntimeInfo", "NuGetInfo")
 load(":dotnet_utils.bzl", "dotnet_preamble")
 
-def _guess_dotnet_version(assembly_info):
+def _guess_dotnet_version(label, assembly_info):
     if len(assembly_info.libs) == 0:
         fail("Cannot guess .Net version without an output dll: ", assembly_info.name)
 
@@ -16,13 +16,13 @@ def _guess_dotnet_version(assembly_info):
     full_path = assembly_info.libs[0].dirname
 
     # And that framework is after the constant string `bazelout`
-    index = full_path.index(assembly_info.name)
+    index = full_path.index(label.name)
 
     # The actual start is at the _end_ of the `bazelout` string
-    index += len(assembly_info.name) + 1
-    slash_index = full_path.index("/", index + 1)
-    to_return = full_path[index:slash_index]
-    return to_return
+    index += len(label.name)
+
+    to_return = full_path[index:].replace("/", "")
+    return to_return.replace("/", "")
 
 def nuget_pack_impl(ctx):
     nuspec = ctx.actions.declare_file("%s-generated.nuspec" % ctx.label.name)
@@ -45,11 +45,11 @@ def nuget_pack_impl(ctx):
         assembly_info = lib[DotnetAssemblyRuntimeInfo]
 
         for dll in assembly_info.libs:
-            paths[dll] = "lib/%s/%s.dll" % (_guess_dotnet_version(assembly_info), name)
+            paths[dll] = "lib/%s/%s.dll" % (_guess_dotnet_version(lib.label, assembly_info), name)
         for pdb in assembly_info.pdbs:
-            paths[pdb] = "lib/%s/%s.pdb" % (_guess_dotnet_version(assembly_info), name)
+            paths[pdb] = "lib/%s/%s.pdb" % (_guess_dotnet_version(lib.label, assembly_info), name)
         for doc in assembly_info.xml_docs:
-            paths[doc] = "lib/%s/%s.xml" % (_guess_dotnet_version(assembly_info), name)
+            paths[doc] = "lib/%s/%s.xml" % (_guess_dotnet_version(lib.label, assembly_info), name)
 
     csproj_template = """<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
