@@ -49,14 +49,4 @@ public class ConverterFunctions {
       return value;
     };
   }
-
-  public static Function<JsonInput, Void> empty() {
-    return input -> {
-      // expects an empty object
-      input.beginObject();
-      input.endObject();
-
-      return null;
-    };
-  }
 }

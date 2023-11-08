@@ -437,7 +437,7 @@ public class CdpClientGenerator {
               .get()
               .addStatement(
                   String.format(
-                      "return new Event<>(\"%s.%s\", input -> ConverterFunctions.empty());",
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.empty());",
                       domain.name, name));
         } else if (type instanceof ObjectType || type instanceof ArrayType) {
           methodDecl
