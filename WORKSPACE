@@ -171,7 +171,6 @@ http_archive(
     patches = [
         "//dotnet:0001-Include-more-of-the-SDK.patch",
         "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
-        "//dotnet:0003-Make-Runfiles-library-compatible-with-net-standard-2-0.patch",
         "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
         "//dotnet:0005-Ensure-csharp_library-files-are-unique.patch",
     ],

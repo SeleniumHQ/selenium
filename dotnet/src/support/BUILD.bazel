@@ -36,7 +36,7 @@ csharp_library(
         "UI/*.cs",
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = [
@@ -76,7 +76,7 @@ csharp_library(
     ]) + [":assembly-info"],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = [

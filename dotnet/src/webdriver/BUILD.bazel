@@ -33,7 +33,7 @@ csharp_library(
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     resources = [
@@ -62,7 +62,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     resources = [
