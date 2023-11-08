@@ -26,14 +26,14 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "webdriver-lib",
+    name = "webdriver",
     srcs = [
         ":assembly-info",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     resources = [
@@ -51,10 +51,13 @@ csharp_library(
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "System.Drawing.Common"),
     ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )
 
 csharp_library(
-    name = "webdriver-strongnamed-lib",
+    name = "webdriver-strongnamed",
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -62,7 +65,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     resources = [
@@ -79,6 +82,9 @@ csharp_library(
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "System.Drawing.Common"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
     ],
 )
 
@@ -101,7 +107,7 @@ copy_file(
 )
 
 nuget_pack(
-    name = "webdriver",
+    name = "webdriver-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
@@ -113,7 +119,7 @@ nuget_pack(
     },
     id = "Selenium.WebDriver",
     libs = {
-        ":webdriver-lib": "WebDriver",
+        ":webdriver": "WebDriver",
     },
     nuspec_template = "WebDriver.nuspec",
     tags = [
@@ -126,7 +132,7 @@ nuget_pack(
 )
 
 nuget_pack(
-    name = "webdriver-strongnamed",
+    name = "webdriver-strongnamed-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
@@ -138,7 +144,7 @@ nuget_pack(
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
-        ":webdriver-strongnamed-lib": "WebDriver.StrongNamed",
+        ":webdriver-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "WebDriver.StrongNamed.nuspec",
     property_group_vars = {

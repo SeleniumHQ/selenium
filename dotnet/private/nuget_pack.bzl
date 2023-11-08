@@ -1,8 +1,8 @@
 load("@rules_dotnet//dotnet/private:common.bzl", "is_debug")
-load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyInfo", "NuGetInfo")
+load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyRuntimeInfo", "DotnetAssemblyCompileInfo", "NuGetInfo")
 load(":dotnet_utils.bzl", "dotnet_preamble")
 
-def _guess_dotnet_version(assembly_info):
+def _guess_dotnet_version(label, assembly_info):
     if len(assembly_info.libs) == 0:
         fail("Cannot guess .Net version without an output dll: ", assembly_info.name)
 
@@ -16,13 +16,13 @@ def _guess_dotnet_version(assembly_info):
     full_path = assembly_info.libs[0].dirname
 
     # And that framework is after the constant string `bazelout`
-    index = full_path.index("bazelout")
+    index = full_path.index(label.name)
 
     # The actual start is at the _end_ of the `bazelout` string
-    index += len("bazelout") + 1
-    slash_index = full_path.index("/", index + 1)
-    to_return = full_path[index:slash_index]
-    return to_return
+    index += len(label.name)
+
+    to_return = full_path[index:].replace("/", "")
+    return to_return.replace("/", "")
 
 def nuget_pack_impl(ctx):
     nuspec = ctx.actions.declare_file("%s-generated.nuspec" % ctx.label.name)
@@ -42,14 +42,14 @@ def nuget_pack_impl(ctx):
     paths = {}
 
     for (lib, name) in ctx.attr.libs.items():
-        assembly_info = lib[DotnetAssemblyInfo]
+        assembly_info = lib[DotnetAssemblyRuntimeInfo]
 
         for dll in assembly_info.libs:
-            paths[dll] = "lib/%s/%s.dll" % (_guess_dotnet_version(assembly_info), name)
+            paths[dll] = "lib/%s/%s.dll" % (_guess_dotnet_version(lib.label, assembly_info), name)
         for pdb in assembly_info.pdbs:
-            paths[pdb] = "lib/%s/%s.pdb" % (_guess_dotnet_version(assembly_info), name)
+            paths[pdb] = "lib/%s/%s.pdb" % (_guess_dotnet_version(lib.label, assembly_info), name)
         for doc in assembly_info.xml_docs:
-            paths[doc] = "lib/%s/%s.xml" % (_guess_dotnet_version(assembly_info), name)
+            paths[doc] = "lib/%s/%s.xml" % (_guess_dotnet_version(lib.label, assembly_info), name)
 
     csproj_template = """<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
@@ -97,8 +97,8 @@ def nuget_pack_impl(ctx):
     packages = ctx.actions.declare_directory("%s-nuget-packages" % ctx.label.name)
     packages_cmd = "mkdir -p %s " % packages.path
 
-    transitive_libs = depset(transitive = [l[DotnetAssemblyInfo].transitive_runtime_deps for l in ctx.attr.libs]).to_list()
-    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs]).to_list()
+    transitive_libs = depset(transitive = [l[DotnetAssemblyRuntimeInfo].deps for l in ctx.attr.libs]).to_list()
+    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs if lib.nuget_info ]).to_list()
 
     if len(package_files):
         packages_cmd += "&& cp " + " ".join([f.path for f in package_files]) + " " + packages.path
@@ -143,43 +143,11 @@ def nuget_pack_impl(ctx):
         mnemonic = "CreateNupkg",
     )
 
-    assembly_infos = [lib[DotnetAssemblyInfo] for lib in ctx.attr.libs]
-    all_libs = depset()
-    for info in assembly_infos:
-        all_libs = depset(info.libs, transitive = [all_libs])
 
     return [
         DefaultInfo(
             files = depset([pkg, symbols_pkg]),
             runfiles = ctx.runfiles(files = [pkg, symbols_pkg]),
-        ),
-        DotnetAssemblyInfo(
-            name = ctx.attr.id,
-            version = ctx.attr.version,
-            project_sdk = "default",
-            libs = all_libs.to_list(),
-            refs = all_libs.to_list(),
-            irefs = [],
-            analyzers = [],
-            xml_docs = [],
-            native = [],
-            data = [],
-            compile_data = [],
-            exports = [],
-            transitive_libs = depset(transitive = [lib[DotnetAssemblyInfo].transitive_libs for lib in ctx.attr.libs]),
-            transitive_native = depset(),
-            transitive_data = depset(),
-            transitive_compile_data = depset([]),
-            transitive_refs = depset(),
-            transitive_analyzers = depset(),
-            internals_visible_to = [],
-            runtime_deps = [],
-            transitive_runtime_deps = depset(),
-        ),
-        NuGetInfo(
-            targeting_pack_overrides = {},
-            sha512 = None,
-            nupkg = pkg,
         ),
     ]
 
@@ -195,7 +163,7 @@ nuget_pack = rule(
         ),
         "libs": attr.label_keyed_string_dict(
             doc = "The .Net libraries that are being published",
-            providers = [DotnetAssemblyInfo],
+            providers = [DotnetAssemblyRuntimeInfo],
         ),
         "files": attr.label_keyed_string_dict(
             doc = "Mapping of files to paths within the nuget package",

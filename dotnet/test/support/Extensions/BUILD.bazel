@@ -4,7 +4,7 @@ dotnet_nunit_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*.cs"]),
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = ["net7.0"],
