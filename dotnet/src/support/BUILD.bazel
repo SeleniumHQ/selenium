@@ -46,6 +46,9 @@ csharp_library(
         "//dotnet/src/webdriver",
         framework("nuget", "NETStandard.Library"),
     ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )
 
 nuget_pack(
@@ -85,6 +88,9 @@ csharp_library(
     deps = [
         "//dotnet/src/webdriver:webdriver-strongnamed",
         framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
     ],
 )
 
