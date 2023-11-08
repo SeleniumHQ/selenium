@@ -167,12 +167,6 @@ pinned_maven_install()
 
 http_archive(
     name = "rules_dotnet",
-    patch_args = ["-p1"],
-    patches = [
-        "//dotnet:0001-Include-more-of-the-SDK.patch",
-        "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
-        "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
-    ],
     sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
     strip_prefix = "rules_dotnet-0.10.7",
     url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
