@@ -67,6 +67,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       io.netty.handler.codec.http.HttpRequest nettyRequest =
           (io.netty.handler.codec.http.HttpRequest) msg;
 
+      request = createRequest(ctx, nettyRequest);
       if (HttpUtil.is100ContinueExpected(nettyRequest)) {
         ctx.write(new HttpResponse().setStatus(100));
         return;
@@ -80,7 +81,6 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         return;
       }
 
-      request = createRequest(ctx, nettyRequest);
       if (request == null) {
         return;
       }
