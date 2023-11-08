@@ -10,7 +10,7 @@ csharp_binary(
     ],
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
-    ]
+    ],
     deps = [
         framework("nuget", "Microsoft.NETCore.App.Ref"),
         framework("nuget", "CommandLineParser"),

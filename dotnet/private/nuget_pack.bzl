@@ -16,10 +16,10 @@ def _guess_dotnet_version(assembly_info):
     full_path = assembly_info.libs[0].dirname
 
     # And that framework is after the constant string `bazelout`
-    index = full_path.index("bazelout")
+    index = full_path.index(assembly_info.name)
 
     # The actual start is at the _end_ of the `bazelout` string
-    index += len("bazelout") + 1
+    index += len(assembly_info.name) + 1
     slash_index = full_path.index("/", index + 1)
     to_return = full_path[index:slash_index]
     return to_return
