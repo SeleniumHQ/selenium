@@ -1,5 +1,5 @@
 load("@rules_dotnet//dotnet/private:common.bzl", "is_debug")
-load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyRuntimeInfo", "DotnetAssemblyCompileInfo", "NuGetInfo")
+load("@rules_dotnet//dotnet/private:providers.bzl", "DotnetAssemblyRuntimeInfo")
 load(":dotnet_utils.bzl", "dotnet_preamble")
 
 def _guess_dotnet_version(label, assembly_info):
@@ -98,7 +98,7 @@ def nuget_pack_impl(ctx):
     packages_cmd = "mkdir -p %s " % packages.path
 
     transitive_libs = depset(transitive = [l[DotnetAssemblyRuntimeInfo].deps for l in ctx.attr.libs]).to_list()
-    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs if lib.nuget_info ]).to_list()
+    package_files = depset([lib.nuget_info.nupkg for lib in transitive_libs if lib.nuget_info]).to_list()
 
     if len(package_files):
         packages_cmd += "&& cp " + " ".join([f.path for f in package_files]) + " " + packages.path
@@ -142,7 +142,6 @@ def nuget_pack_impl(ctx):
         command = cmd,
         mnemonic = "CreateNupkg",
     )
-
 
     return [
         DefaultInfo(

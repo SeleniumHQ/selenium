@@ -33,9 +33,6 @@ csharp_library(
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -46,13 +43,16 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "System.Drawing.Common"),
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
     ],
 )
 
@@ -65,9 +65,6 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -78,13 +75,16 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
         framework("nuget", "System.Drawing.Common"),
-    ],
-    visibility = [
-        "//dotnet:__subpackages__",
     ],
 )
 

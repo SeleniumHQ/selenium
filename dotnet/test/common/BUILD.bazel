@@ -39,10 +39,10 @@ csharp_library(
             "**/*Tests.cs",
         ],
     ),
+    target_frameworks = ["netstandard2.0"],
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
-    target_frameworks = ["netstandard2.0"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -75,10 +75,10 @@ dotnet_nunit_test_suite(
     data = [
         ":test-data",
     ],
+    target_frameworks = ["net7.0"],
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
-    target_frameworks = ["net7.0"],
     deps = [
         ":fixtures",
         "//dotnet/src/webdriver",
