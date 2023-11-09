@@ -316,7 +316,7 @@ module Selenium
         bridge = Remote::Bridge.new(http_client: http_client, url: url)
         bridge.create_session(caps)
         socket_url = bridge.capabilities[:web_socket_url]
-        if socket_url
+        if socket_url.kind_of?(String)
           bridge.extend(Remote::BiDiBridge)
           bridge.bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
         end
