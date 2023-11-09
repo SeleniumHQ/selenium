@@ -41,10 +41,9 @@ module Selenium
         log_inspector = BiDi::LogInspector.new(driver)
         log_inspector.on_javascript_exception { |log| log_entry = log }
 
-        browsing_context = BiDi::BrowsingContext.new(driver: driver, browsing_context_id: driver.window_handle)
-        info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
+        info = driver.navigate.to(url_for('/bidi/logEntryAdded.html'))
 
-        expect(browsing_context.id).not_to be_nil
+        expect(driver.send(:bridge).browsing_context.id).not_to be_nil
         expect(info.navigation_id).not_to be_nil
         expect(info.url).to include('/bidi/logEntryAdded.html')
 

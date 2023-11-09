@@ -313,9 +313,14 @@ module Selenium
       attr_reader :bridge
 
       def create_bridge(caps:, url:, http_client: nil)
-        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
-          bridge.create_session(caps)
+        bridge = Remote::Bridge.new(http_client: http_client, url: url)
+        bridge.create_session(caps)
+        socket_url = bridge.capabilities[:web_socket_url]
+        if socket_url
+          bridge.extend(Remote::BiDiBridge)
+          bridge.bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
         end
+        bridge
       end
 
       def service_url(service)
