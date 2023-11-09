@@ -299,12 +299,14 @@ public class Connection implements Closeable {
                   // TODO: This is grossly inefficient. I apologise, and we should fix this.
                   try (StringReader reader = new StringReader(asString);
                       JsonInput input = JSON.newInput(reader)) {
-                    Object value = null;
+                    boolean hasParams = false;
+                    Object params = null;
                     input.beginObject();
                     while (input.hasNext()) {
                       switch (input.nextName()) {
                         case "params":
-                          value = event.getKey().getMapper().apply(input);
+                          hasParams = true;
+                          params = event.getKey().getMapper().apply(input);
                           break;
 
                         default:
@@ -314,12 +316,13 @@ public class Connection implements Closeable {
                     }
                     input.endObject();
 
-                    if (value == null) {
-                      // Do nothing.
+                    if (!hasParams) {
+                      LOG.fine(
+                          "suppressed event '"
+                              + event.getKey().getMethod()
+                              + "', no params in input");
                       return;
                     }
-
-                    final Object finalValue = value;
 
                     for (Consumer<?> action : event.getValue()) {
                       @SuppressWarnings("unchecked")
@@ -327,8 +330,8 @@ public class Connection implements Closeable {
                       LOG.log(
                           getDebugLogLevel(),
                           "Calling callback for {0} using {1} being passed {2}",
-                          new Object[] {event.getKey(), obj, finalValue});
-                      obj.accept(finalValue);
+                          new Object[] {event.getKey(), obj, params});
+                      obj.accept(params);
                     }
                   }
                 });

@@ -437,8 +437,9 @@ public class CdpClientGenerator {
               .get()
               .addStatement(
                   String.format(
-                      "return new Event<>(\"%s.%s\", input -> null);", domain.name, name));
-        } else if (type instanceof ObjectType) {
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.empty());",
+                      domain.name, name));
+        } else if (type instanceof ObjectType || type instanceof ArrayType) {
           methodDecl
               .getBody()
               .get()
@@ -659,7 +660,7 @@ public class CdpClientGenerator {
         body.addStatement(
             String.format(
                 "return new Command<>(\"%s.%s\", Map.copyOf(params));", domain.name, name));
-      } else if (type instanceof ObjectType) {
+      } else if (type instanceof ObjectType || type instanceof ArrayType) {
         body.addStatement(
             String.format(
                 "return new Command<>(\"%s.%s\", Map.copyOf(params), input -> %s);",

@@ -27,7 +27,7 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "support-lib",
+    name = "support",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -36,7 +36,7 @@ csharp_library(
         "UI/*.cs",
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = [
@@ -46,16 +46,19 @@ csharp_library(
         "//dotnet/src/webdriver",
         framework("nuget", "NETStandard.Library"),
     ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )
 
 nuget_pack(
-    name = "support",
+    name = "support-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support",
     libs = {
-        ":support-lib": "WebDriver.Support",
+        ":support": "WebDriver.Support",
     },
     nuspec_template = "WebDriver.Support.nuspec",
     tags = [
@@ -66,7 +69,7 @@ nuget_pack(
 )
 
 csharp_library(
-    name = "support-strongnamed-lib",
+    name = "support-strongnamed",
     srcs = glob([
         "*.cs",
         "Events/*.cs",
@@ -76,7 +79,7 @@ csharp_library(
     ]) + [":assembly-info"],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = [
@@ -86,16 +89,19 @@ csharp_library(
         "//dotnet/src/webdriver:webdriver-strongnamed",
         framework("nuget", "NETStandard.Library"),
     ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )
 
 nuget_pack(
-    name = "support-strongnamed",
+    name = "support-strongnamed-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support.StrongNamed",
     libs = {
-        ":support-strongnamed-lib": "WebDriver.Support.StrongNamed",
+        ":support-strongnamed": "WebDriver.Support.StrongNamed",
     },
     nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
     tags = [

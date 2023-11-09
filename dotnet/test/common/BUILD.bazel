@@ -39,7 +39,7 @@ csharp_library(
             "**/*Tests.cs",
         ],
     ),
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = ["netstandard2.0"],
@@ -75,7 +75,7 @@ dotnet_nunit_test_suite(
     data = [
         ":test-data",
     ],
-    private_deps = [
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     target_frameworks = ["net7.0"],

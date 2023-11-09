@@ -8,15 +8,15 @@ csharp_binary(
     visibility = [
         "//dotnet:__subpackages__",
     ],
-    deps = [
+    targeting_packs = [
         framework("nuget", "Microsoft.NETCore.App.Ref"),
+    ],
+    deps = [
         framework("nuget", "CommandLineParser"),
         framework("nuget", "Handlebars.Net"),
         framework("nuget", "Humanizer.Core"),
-        framework("nuget", "Microsoft.CSharp"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection.Abstractions"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Runtime"),
     ],
 )
