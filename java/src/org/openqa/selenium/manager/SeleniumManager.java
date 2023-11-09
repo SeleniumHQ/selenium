@@ -21,14 +21,15 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Beta;
@@ -41,7 +42,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
-import org.openqa.selenium.os.ExternalProcess;
 
 /**
  * This implementation is still in beta, and may change.
@@ -121,14 +121,15 @@ public class SeleniumManager {
     String output;
     int code;
     try {
-      ExternalProcess process =
-          ExternalProcess.builder().command(binary.toAbsolutePath().toString(), arguments).start();
-      if (!process.waitFor(Duration.ofHours(1))) {
+      arguments.add(0, binary.toAbsolutePath().toString());
+      Process process = new ProcessBuilder(arguments).redirectErrorStream(true).start();
+      if (!process.waitFor(1, TimeUnit.HOURS)) {
         LOG.warning("Selenium Manager did not exit, shutting it down");
-        process.shutdown();
+        process.destroy();
       }
       code = process.exitValue();
-      output = process.getOutput();
+      output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
     } catch (Exception e) {
       throw new WebDriverException("Failed to run command: " + arguments, e);
     }
