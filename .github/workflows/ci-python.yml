@@ -77,22 +77,6 @@ jobs:
         env:
           TOXENV: mypy
 
-  browser-tests:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
-          - firefox
-    with:
-      name: Integration Tests (${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
-      cache-key: py-${{ matrix.browser }}
-      run: bazel test --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
-
   remote-tests:
     name: Remote Tests
     needs: build
