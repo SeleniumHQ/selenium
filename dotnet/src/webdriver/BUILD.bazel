@@ -52,7 +52,6 @@ csharp_library(
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Drawing.Common"),
     ],
 )
 
@@ -84,7 +83,6 @@ csharp_library(
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Drawing.Common"),
     ],
 )
 
