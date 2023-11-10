@@ -50,12 +50,30 @@ def pytest_addoption(parser):
         metavar="DRIVER",
         help="driver to run tests against ({})".format(", ".join(drivers)),
     )
-    parser.addoption("--browser-binary", action="store", dest="binary", help="location of the browser binary")
     parser.addoption(
-        "--driver-binary", action="store", dest="executable", help="location of the service executable binary"
+        "--browser-binary",
+        action="store",
+        dest="binary",
+        help="location of the browser binary",
     )
-    parser.addoption("--browser-args", action="store", dest="args", help="arguments to start the browser with")
-    parser.addoption("--headless", action="store", dest="headless", help="Allow tests to run in headless")
+    parser.addoption(
+        "--driver-binary",
+        action="store",
+        dest="executable",
+        help="location of the service executable binary",
+    )
+    parser.addoption(
+        "--browser-args",
+        action="store",
+        dest="args",
+        help="arguments to start the browser with",
+    )
+    parser.addoption(
+        "--headless",
+        action="store",
+        dest="headless",
+        help="Allow tests to run in headless",
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -119,7 +137,9 @@ def driver(request):
         if driver_class == "Chrome":
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
-            options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            options = (
+                get_options("Firefox", request.config) or webdriver.FirefoxOptions()
+            )
             options.set_capability("moz:firefoxOptions", {})
             options.enable_downloads = True
         if driver_class == "WebKitGTK":
@@ -262,7 +282,9 @@ def server(request):
             ]
         )
         print(f"Selenium server running as process: {process.pid}")
-        assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
+        assert wait_for_server(
+            url, 10
+        ), f"Timed out waiting for Selenium server at {url}"
         print("Selenium server is ready")
         yield process
         process.terminate()
@@ -283,3 +305,32 @@ def edge_service():
     from selenium.webdriver.edge.service import Service as EdgeService
 
     return EdgeService
+
+
+@pytest.fixture(scope="function")
+def driver_executable(request):
+    return request.config.option.executable
+
+
+@pytest.fixture(scope="function")
+def clean_service(request):
+    try:
+        driver_class = request.config.option.drivers[0].capitalize()
+    except AttributeError:
+        raise Exception("This test requires a --driver to be specified.")
+
+    yield get_service(driver_class, request.config.option.executable)
+
+
+@pytest.fixture(scope="function")
+def clean_driver(request):
+    try:
+        driver_class = request.config.option.drivers[0].capitalize()
+    except AttributeError:
+        raise Exception("This test requires a --driver to be specified.")
+
+    driver_reference = getattr(webdriver, driver_class)
+    yield driver_reference
+
+    if request.node.get_closest_marker("no_driver_after_test"):
+        driver_reference = None
