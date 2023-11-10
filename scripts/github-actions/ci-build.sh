@@ -18,7 +18,7 @@ bazel test --config=remote-ci --build_tests_only \
   --keep_going --flaky_test_attempts=2 \
   //dotnet/...  \
   //java/... \
-  //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/... \
+  //javascript/atoms/... //javascript/webdriver/... \
   //py/... -- $(cat .skipped-tests | tr '\n' ' ')
 # Build the packages we want to ship to users
 bazel build --config=remote-ci //dotnet:all java/src/... //javascript/node/selenium-webdriver:selenium-webdriver //py:selenium-wheel
