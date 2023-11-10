@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
+@Deprecated
 public class CommandLine {
 
   private final OsProcess process;

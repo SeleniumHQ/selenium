@@ -22,9 +22,8 @@ jobs:
       browser: firefox
       cache-key: atoms
       run: >
-        bazel test --test_tag_filters=firefox
+        bazel test --test_tag_filters=firefox,-firefox-beta,-firefox-dev
         //javascript/atoms/...
-        //javascript/selenium-atoms/...
         //javascript/webdriver/...
 
   browser-tests:
@@ -55,7 +54,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: NPM install

@@ -134,7 +134,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
       if (service.getExecutable() == null) {
         Result result = DriverFinder.getPath(service, capabilities);
         service.setExecutable(result.getDriverPath());
-        if (result.getBrowserPath() != null) {
+        if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
           capabilities = setBrowserBinary(capabilities, result.getBrowserPath());
         }
       }
@@ -326,9 +326,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
   // reject session requests when they cannot parse the specific capabilities (like platform or
   // browser version).
   private Capabilities removeCapability(Capabilities caps, String capability) {
-    MutableCapabilities noPlatformName = new MutableCapabilities(new HashMap<>(caps.asMap()));
-    noPlatformName.setCapability(capability, (String) null);
-    return new PersistentCapabilities(noPlatformName);
+    MutableCapabilities removableCaps = new MutableCapabilities(new HashMap<>(caps.asMap()));
+    removableCaps.setCapability(capability, (String) null);
+    return new PersistentCapabilities(removableCaps);
   }
 
   private Capabilities setInitialCapabilityValue(Capabilities caps, String key, Object value) {

@@ -24,7 +24,7 @@ module Selenium
   module WebDriver
     module Support
       class Guards
-        GUARD_TYPES = %i[except only exclude exclusive].freeze
+        GUARD_TYPES = %i[except only exclude exclusive flaky].freeze
 
         attr_reader :messages
         attr_accessor :bug_tracker

@@ -144,7 +144,7 @@ namespace OpenQA.Selenium
         /// Capability name used to indicate whether the driver supports setting the browser window's size and position.
         /// </summary>
         public static readonly string SetWindowRect = "setWindowRect";
-        
+
         /// <summary>
         /// Capability name used to get or set timeout values when creating a session.
         /// </summary>
@@ -160,6 +160,11 @@ namespace OpenQA.Selenium
         /// connection for bidirectional communication with a driver.
         /// </summary>
         public static readonly string WebSocketUrl = "webSocketUrl";
+
+        /// <summary>
+        /// Capability name used to get a value indicating whether files may be downloaded from remote end.
+        /// </summary>
+        public static readonly string EnableDownloads = "se:downloadsEnabled";
 
         private static readonly List<string> KnownSpecCompliantCapabilityNames = new List<string>() {
             BrowserName,

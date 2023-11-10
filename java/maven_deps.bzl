@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.96.Final"
+    netty_version = "4.1.100.Final"
     opentelemetry_version = "1.28.0"
     junit_jupiter_version = "5.10.0"
     junit_platform_version = "1.10.0"
@@ -29,16 +29,6 @@ def selenium_java_deps():
             "com.graphql-java:graphql-java:20.2",
             "com.graphql-java:java-dataloader:3.2.0",
             "dev.failsafe:failsafe:3.3.2",
-            maven.artifact(
-                group = "junit",
-                artifact = "junit",
-                version = "4.13.2",
-                exclusions = [
-                    "org.hamcrest:hamcrest-all",
-                    "org.hamcrest:hamcrest-core",
-                    "org.hamcrest:hamcrest-library",
-                ],
-            ),
             "io.grpc:grpc-context:1.57.1",
             "io.lettuce:lettuce-core:6.2.5.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
@@ -48,16 +38,6 @@ def selenium_java_deps():
             "io.netty:netty-handler:%s" % netty_version,
             "io.netty:netty-handler-proxy:%s" % netty_version,
             "io.netty:netty-transport:%s" % netty_version,
-            "io.netty:netty-transport-classes-epoll:%s" % netty_version,
-            "io.netty:netty-transport-classes-kqueue:%s" % netty_version,
-            # Start - Needed to support unix domain sockets
-            "io.netty:netty-transport-native-epoll:%s" % netty_version,
-            "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
-            "io.netty:netty-transport-native-kqueue:%s" % netty_version,
-            "io.netty:netty-transport-native-kqueue:jar:osx-aarch_64:%s" % netty_version,
-            "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
-            # End - Needed to support unix domain sockets
-            "io.netty:netty-transport-native-unix-common:%s" % netty_version,
             "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-exporter-logging:%s" % opentelemetry_version,
@@ -75,18 +55,8 @@ def selenium_java_deps():
             "org.apache.commons:commons-exec:1.3",
             "org.apache.logging.log4j:log4j-core:2.20.0",
             "org.assertj:assertj-core:3.24.2",
-            maven.artifact(
-                group = "org.asynchttpclient",
-                artifact = "async-http-client",
-                version = "2.12.3",
-                exclusions = [
-                    "io.netty:netty-transport-native-epoll",
-                    "io.netty:netty-transport-native-kqueue",
-                ],
-            ),
-            "org.bouncycastle:bcpkix-jdk15on:1.70",
+            "org.bouncycastle:bcpkix-jdk18on:1.76",
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
-            "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.7.2",
             "org.junit.jupiter:junit-jupiter-api:%s" % junit_jupiter_version,
             "org.junit.jupiter:junit-jupiter-engine:%s" % junit_jupiter_version,

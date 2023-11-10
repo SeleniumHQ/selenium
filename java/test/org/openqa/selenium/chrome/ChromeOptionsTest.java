@@ -84,6 +84,7 @@ class ChromeOptionsTest {
         .setAcceptInsecureCerts(true)
         .setPageLoadStrategy(PageLoadStrategy.EAGER)
         .setStrictFileInteractability(true)
+        .setEnableDownloads(true)
         .setImplicitWaitTimeout(Duration.ofSeconds(1))
         .setPageLoadTimeout(Duration.ofSeconds(2))
         .setScriptTimeout(Duration.ofSeconds(3));
@@ -96,6 +97,7 @@ class ChromeOptionsTest {
     assertThat(mappedOptions.get("acceptInsecureCerts")).isEqualTo(true);
     assertThat(mappedOptions.get("pageLoadStrategy")).hasToString("eager");
     assertThat(mappedOptions.get("strictFileInteractability")).isEqualTo(true);
+    assertThat(mappedOptions.get("se:downloadsEnabled")).isEqualTo(true);
 
     Map<String, Long> expectedTimeouts = new HashMap<>();
     expectedTimeouts.put("implicit", 1000L);
@@ -147,7 +149,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
   }
 
   @Test
@@ -263,7 +265,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map)
         .asInstanceOf(MAP)
@@ -328,7 +330,7 @@ class ChromeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsExactly("--remote-allow-origins=*", "verbose", "silent");
+        .containsExactly("verbose", "silent");
 
     assertThat(map).asInstanceOf(MAP).containsEntry("opt1", "val1");
 

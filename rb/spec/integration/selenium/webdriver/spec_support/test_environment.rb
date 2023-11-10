@@ -91,7 +91,7 @@ module Selenium
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60,
-            args: %w[--selenium-manager true]
+            args: %w[--selenium-manager true --enable-managed-downloads true]
           )
         end
 
@@ -106,9 +106,9 @@ module Selenium
         end
 
         def remote_server_jar
-          jar = 'selenium_server_deploy.jar'
+          jar = 'java/src/org/openqa/selenium/grid/selenium_server_deploy.jar'
           test_jar = Pathname.new(Dir.pwd).join(jar)
-          built_jar = root.join("bazel-bin/java/src/org/openqa/selenium/grid/#{jar}")
+          built_jar = root.join("bazel-bin/#{jar}")
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
@@ -240,19 +240,19 @@ module Selenium
         def chrome_options(args: [], **opts)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.chrome(args: args, **opts)
+          WebDriver::Options.chrome(browser_version: 'stable', args: args, **opts)
         end
 
         def edge_options(args: [], **opts)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.edge(args: args, **opts)
+          WebDriver::Options.edge(browser_version: 'stable', args: args, **opts)
         end
 
         def firefox_options(args: [], **opts)
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           args << '--headless' if ENV['HEADLESS']
-          WebDriver::Options.firefox(args: args, **opts)
+          WebDriver::Options.firefox(browser_version: 'stable', args: args, **opts)
         end
 
         def ie_options(**opts)

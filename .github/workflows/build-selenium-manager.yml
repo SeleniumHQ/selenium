@@ -1,31 +1,49 @@
 name: Build selenium-manager
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Include debug symbols in binaries'
+        required: false
+        type: boolean
 
 jobs:
   win32:
     name: "[Windows x32] Build selenium-manager"
     runs-on: windows-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
       - name: "Update Rust"
         run: |
           rustup update
-          rustup toolchain install stable-i686-pc-windows-msvc
-          rustup default stable-i686-pc-windows-msvc
+          rustup toolchain install stable-i686-pc-windows-gnu
+          rustup default stable-i686-pc-windows-gnu
           rustc -vV
-      - name: "Build release"
+      - name: "Build release binary"
+        if: ${{ inputs.debug == false }}
         run: |
           cd rust
           cargo build --release
-      - name: "Upload binary"
+      - name: "Upload release binary"
+        if: ${{ inputs.debug == false }}
         uses: actions/upload-artifact@v3
         with:
           name: selenium-manager_windows-x32
           path: rust/target/release/selenium-manager.exe
+          retention-days: 6
+      - name: "Build debug binary"
+        if: ${{ inputs.debug == true }}
+        run: |
+          cd rust
+          cargo build --profile dev
+      - name: "Upload debug binary"
+        if: ${{ inputs.debug == true }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_windows-x32-debug
+          path: rust/target/debug/selenium-manager.exe
           retention-days: 6
 
   linux64:
@@ -42,26 +60,38 @@ jobs:
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
           cross -V
-      - name: "Build release"
+      - name: "Build release binary"
+        if: ${{ inputs.debug == false }}
         run: |
           cd rust
           cross build --target x86_64-unknown-linux-musl --release
-      - name: "Tar binary (to keep executable permission)"
-        run: |
-          cd rust/target/x86_64-unknown-linux-musl/release
+          cd target/x86_64-unknown-linux-musl/release
           tar -cvf ../../../../selenium-manager.tar selenium-manager
-      - name: "Upload binary"
+      - name: "Upload release binary"
+        if: ${{ inputs.debug == false }}
         uses: actions/upload-artifact@v3
         with:
           name: selenium-manager_linux-x64
+          path: selenium-manager.tar
+          retention-days: 6
+      - name: "Build debug binary"
+        if: ${{ inputs.debug == true }}
+        run: |
+          cd rust
+          cross build --target x86_64-unknown-linux-musl --profile dev
+          cd target/x86_64-unknown-linux-musl/debug
+          tar -cvf ../../../../selenium-manager.tar selenium-manager
+      - name: "Upload debug binary"
+        if: ${{ inputs.debug == true }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_linux-x64-debug
           path: selenium-manager.tar
           retention-days: 6
 
   macos64:
     name: "[macOS x64/arm64] Build selenium-manager"
     runs-on: macos-latest
-    env:
-      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v4
@@ -70,28 +100,39 @@ jobs:
           rustup update
           rustup target add aarch64-apple-darwin
           rustc -vV
-      - name: "Build x64"
+      - name: "Build release binary"
+        if: ${{ inputs.debug == false }}
         run: |
           cd rust
-          cargo build --release --target x86_64-apple-darwin
-      - name: "Build arm64"
-        run: |
-          cd rust
-          cargo build --release --target aarch64-apple-darwin
-      - name: "Build universal"
-        run: |
-          cd rust
-          lipo -create \
-            -output target/selenium-manager \
+          cargo build --target x86_64-apple-darwin --release
+          cargo build --target aarch64-apple-darwin --release
+          lipo -create -output target/selenium-manager \
             target/aarch64-apple-darwin/release/selenium-manager \
             target/x86_64-apple-darwin/release/selenium-manager
-      - name: "Tar binary (to keep executable permission)"
-        run: |
-          cd rust/target
+          cd target
           tar -cvf ../../selenium-manager.tar selenium-manager
-      - name: "Upload binary"
+      - name: "Upload release binary"
+        if: ${{ inputs.debug == false }}
         uses: actions/upload-artifact@v3
         with:
           name: selenium-manager_macos-universal
+          path: selenium-manager.tar
+          retention-days: 6
+      - name: "Build debug binary"
+        if: ${{ inputs.debug == true }}
+        run: |
+          cd rust
+          cargo build --target x86_64-apple-darwin --profile dev
+          cargo build --target aarch64-apple-darwin --profile dev
+          lipo -create -output target/selenium-manager \
+            target/aarch64-apple-darwin/debug/selenium-manager \
+            target/x86_64-apple-darwin/debug/selenium-manager
+          cd target
+          tar -cvf ../../selenium-manager.tar selenium-manager
+      - name: "Upload debug binary"
+        if: ${{ inputs.debug == true }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_macos-universal-debug
           path: selenium-manager.tar
           retention-days: 6

@@ -28,6 +28,7 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
+        include DriverExtensions::HasFileDownloads
 
         def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can not set :service object on #{self.class}" if service
@@ -36,6 +37,9 @@ module Selenium
           caps = process_options(options, capabilities)
           super(caps: caps, url: url, **opts)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
+          command_list = @bridge.command_list
+          @bridge.extend(WebDriver::Remote::Features)
+          @bridge.add_commands(command_list)
         end
 
         private

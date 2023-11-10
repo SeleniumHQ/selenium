@@ -1,3 +1,73 @@
+v4.15.0
+======
+
+* Fixed the characteristics of the collector
+* Marked Client Config version field as final. (#12941)
+* Removed use of guava from browser packages
+* Removed use of guava from devtools (#12943)
+* Do not set browser binary if it is an empty string (#12738)
+* Allow setting proxy for all http client instances (#12940)
+* Ensure request can be modified while intercepting (#12930)
+* Add BiDi browsing contexts events related to navigation and user prompt
+* Update Actions.java as removed modifier keys (#12903)
+* Removed the unused netty domain socket client and dependencies
+* Removed the guava reference from os, manager, bidi package
+* Removed the unused sockets test base
+* Removed most usages of guava from the support package
+* Copy SM binary to cache folder and use it from there (#11359) (#12539)
+* Prevent browser to be created and unused in case a short session-request-timeout is set (#12848)
+* Add BiDi request data types from Network module
+* Remove the http2-settings header in the reverse proxy
+* Add BiDi network response data type, network initiator type
+* Add value key to delete downloadFile response per w3c convention (#13025)
+* Add BiDi BeforeRequestSent type
+* Add BiDi mechanism to listen to network event - beforeRequestSent
+* Fix bug in downloading files by ensuring browser vendor options in capabilities (#13024)
+* Add BiDi network module events - onResponseStarted and onResponseCompleted
+* Fixed processing continuation frames #12962
+* Remove CDP version dependencies in the server (#12502)
+* Add placeholder for BiDi script module commands and events
+* Add BiDi script types, remote reference types, and local value types for script module
+* Change local value method name for BiDi serialization
+* Fixed the invalid session id response #12655
+* Add BiDi channel value type, remote value type and evaluate result types
+* Add BiDi call script command, evaluate function command, disown command, get realms command
+* Open the selenium-manager to the selenium-json package for the Java Module System
+* Add message to exception error for downloads error
+* Add BiDi command to add and remove preload script
+* Add CDP v119 and remove v116
+* Implement file downloads (#12979)
+
+v4.14.1
+======
+* Add print, activate and set viewport commands to Browsing Context
+* Remove deprecated lift packages (#12917)
+* Add validation for browsing context id (#12920)
+* Fix default values for print options page size
+* Use the java process builder to run external processes (#12898)
+* Allow a custom timeout when shutting down a process
+* Replacing Guava implementations with native Java implementations
+* Allow setting version in Http Client Config (#12919)
+
+v4.14.0
+======
+* Supported CDP versions: 85, 116, 117, 118
+* Replace the EventAttribute(Value) with an AttributeMap (#12684)
+* Add browsing context's capture box and element screenshot commands
+* Enable handle user prompt tests for Firefox
+* Delete SM binary only when SE_MANAGER_PATH is not set (#12840)
+* Shutdown executors created for a single tasks
+* Ensure closed socket connection does not prevent freeing up resources
+* Remove the unused htmlunit-driver from the unit tests (#12849)
+* Ensure proper error message gets logged (#12853)
+* Allow setting SSL context in client config for HttpClient (#12874)
+* Improve warning when CDP version not found (#12880)
+* Ensure retry mechanism does not swallow an exception (#12838)
+* Require Java 11 and move jdk-http-client into default package (#12843)
+* Reduce log noise at FINE level (#12866)
+* Refactor frame method to use isEmpty for list check and String check. (#12894)
+* Use new 'getArray' method to extract driver configurations (#12716)
+
 v4.13.0
 ======
 * Supported CDP versions: 85, 115, 116, 117

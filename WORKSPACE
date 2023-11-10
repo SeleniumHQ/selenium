@@ -144,9 +144,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "548f0583192ff79c317789b03b882a7be9b1325eb5d3da5d7fdcc4b7ca69d543",
-    strip_prefix = "rules_jvm-0.9.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/refs/tags/v0.9.0.tar.gz",
+    sha256 = "4d62589dc6a55e74bbe33930b826d593367fc777449a410604b2ad7c6c625ef7",
+    strip_prefix = "rules_jvm-0.19.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/releases/download/v0.19.0/rules_jvm-v0.19.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
@@ -167,17 +167,9 @@ pinned_maven_install()
 
 http_archive(
     name = "rules_dotnet",
-    patch_args = ["-p1"],
-    patches = [
-        "//dotnet:0001-Include-more-of-the-SDK.patch",
-        "//dotnet:0002-Pass-through-information-about-location-of-the-nupkg.patch",
-        "//dotnet:0003-Make-Runfiles-library-compatible-with-net-standard-2-0.patch",
-        "//dotnet:0004-Ensure-data-runfiles-are-added-to-tests.patch",
-        "//dotnet:0005-Ensure-csharp_library-files-are-unique.patch",
-    ],
-    sha256 = "f445400dac566eed9d7895aa0fb168a5453a07e5128dc1c4852cd9c537e0ca60",
-    strip_prefix = "rules_dotnet-0.10.7",
-    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.10.7/rules_dotnet-v0.10.7.tar.gz",
+    sha256 = "718cb2c3431523aaf3df7feed0e997e4ded002abbf56ac37d9c0536a812d6276",
+    strip_prefix = "rules_dotnet-0.12.0",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.12.0/rules_dotnet-v0.12.0.tar.gz",
 )
 
 load(

@@ -15,6 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const logging = require('../lib/logging')
+
 const RESPONSE_TIMEOUT = 1000 * 30
 class CDPConnection {
   constructor(wsConnection) {
@@ -65,7 +67,9 @@ class CDPConnection {
             resolve(payload)
           }
         } catch (err) {
-          console.error(`Failed parse message: ${err.message}`)
+          logging
+            .getLogger(logging.Type.BROWSER)
+            .severe(`Failed parse message: ${err.message}`)
         }
       }
 

@@ -38,6 +38,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -78,6 +80,17 @@ class NetworkInterceptorTest extends JupiterTestBase {
                                     utf8String(
                                         "<html><head><title>Hello,"
                                             + " World!</title></head><body/></html>"))),
+            Route.matching(req -> req.getUri().contains("london"))
+                .to(
+                    () ->
+                        req ->
+                            new HttpResponse()
+                                .setStatus(200)
+                                .addHeader("Content-Type", XHTML_UTF_8.toString())
+                                .setContent(
+                                    utf8String(
+                                        "<html><head><title>Hello,"
+                                            + " London!</title></head><body/></html>"))),
             Route.get("/redirect")
                 .to(
                     () ->
@@ -130,6 +143,26 @@ class NetworkInterceptorTest extends JupiterTestBase {
     String source = driver.getPageSource();
 
     assertThat(source).contains("delicious cheese!");
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldAllowTheInterceptorToChangeTheRequest() {
+    interceptor =
+        new NetworkInterceptor(
+            driver,
+            (Filter)
+                next ->
+                    req -> {
+                      req = new HttpRequest(HttpMethod.GET, appServer.whereIs("/london"));
+                      return next.execute(req);
+                    });
+
+    driver.get(appServer.whereIs("/cheese"));
+
+    String source = driver.getPageSource();
+
+    assertThat(source).contains("London");
   }
 
   @Test

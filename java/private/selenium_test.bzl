@@ -1,4 +1,3 @@
-load("@contrib_rules_jvm//java:defs.bzl", "java_junit5_test")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
@@ -16,6 +15,7 @@ load(
     "firefox_dev_jvm_flags",
     "firefox_jvm_flags",
 )
+load(":junit5_test.bzl", "junit5_test")
 
 DEFAULT_BROWSER = "firefox"
 
@@ -42,13 +42,13 @@ BROWSERS = {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_beta_jvm_flags,
         "data": firefox_beta_data,
-        "tags": COMMON_TAGS + ["firefox"],
+        "tags": COMMON_TAGS + ["firefox", "firefox-beta"],
     },
     "firefox-dev": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_dev_jvm_flags,
         "data": firefox_dev_data,
-        "tags": COMMON_TAGS + ["firefox"],
+        "tags": COMMON_TAGS + ["firefox", "firefox-dev"],
     },
     "ie": {
         "deps": ["//java/src/org/openqa/selenium/ie"],
@@ -105,7 +105,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
 
         test = name if browser == default_browser else "%s-%s" % (name, browser)
 
-        java_junit5_test(
+        junit5_test(
             name = test,
             test_class = test_class,
             size = size,
@@ -124,7 +124,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
         all_tests.append(":%s" % test)
 
         if remote:
-            java_junit5_test(
+            junit5_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
                 size = size,

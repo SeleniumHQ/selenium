@@ -55,7 +55,7 @@ java_library(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/manager",
         "//java/src/org/openqa/selenium/os",
-        "//java/src/org/openqa/selenium/remote/http/netty",
+        "//java/src/org/openqa/selenium/remote/http/jdk",
         "//java/src/org/openqa/selenium/remote/tracing",
         "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
         "//java/src/org/openqa/selenium/support/decorators",

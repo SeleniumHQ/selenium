@@ -15,13 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::{assert_browser, assert_driver};
 use assert_cmd::Command;
+use rstest::rstest;
 use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Write};
-
-use crate::common::{assert_browser, assert_driver};
-use rstest::rstest;
 use tempfile::Builder;
 
 mod common;

@@ -41,8 +41,8 @@ class SeleniumManager:
         :Returns: The Selenium Manager executable location
         """
 
-        if os.getenv("SE_MANAGER_PATH"):
-            path = os.getenv("SE_MANAGER_PATH")
+        if (path := os.getenv("SE_MANAGER_PATH")) is not None:
+            return Path(path)
         else:
             platform = sys.platform
 
@@ -57,10 +57,6 @@ class SeleniumManager:
 
             path = Path(__file__).parent.joinpath(directory, file)
 
-        if not path.is_file() and os.environ["CONDA_PREFIX"]:
-            # conda has a separate package selenium-manager, installs in bin
-            path = Path(os.path.join(os.environ["CONDA_PREFIX"], "bin", file))
-            logger.debug("Conda environment detected, using `%s`", path)
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
@@ -101,7 +97,7 @@ class SeleniumManager:
         driver_path = output["driver_path"]
         logger.debug("Using driver at: %s", driver_path)
 
-        if hasattr(options.__class__, "binary_location"):
+        if hasattr(options.__class__, "binary_location") and browser_path:
             options.binary_location = browser_path
             options.browser_version = None  # if we have the binary location we no longer need the version
 

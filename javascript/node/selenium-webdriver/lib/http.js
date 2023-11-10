@@ -34,6 +34,8 @@ const { Session } = require('./session')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
 
+const log_ = logging.getLogger(`${logging.Type.DRIVER}.http`)
+
 const getAttribute = requireAtom(
   'get-attribute.js',
   '//javascript/node/selenium-webdriver/lib/atoms:get-attribute.js'
@@ -58,10 +60,10 @@ function requireAtom(module, bazelTarget) {
   } catch (ex) {
     try {
       const file = bazelTarget.slice(2).replace(':', '/')
-      console.log(`../../../bazel-bin/${file}`)
+      log_.log(`../../../bazel-bin/${file}`)
       return require(path.resolve(`../../../bazel-bin/${file}`))
     } catch (ex2) {
-      console.log(ex2)
+      log_.severe(ex2)
       throw Error(
         `Failed to import atoms module ${module}. If running in dev mode, you` +
           ` need to run \`bazel build ${bazelTarget}\` from the project` +
@@ -152,8 +154,6 @@ const Atom = {
   IS_DISPLAYED: isDisplayed,
   FIND_ELEMENTS: findElements,
 }
-
-const LOG = logging.getLogger('webdriver.http')
 
 function post(path) {
   return resource('POST', path)
@@ -428,7 +428,7 @@ class Client {
  *     command to execute.
  */
 function buildRequest(customCommands, command) {
-  LOG.finest(() => `Translating command: ${command.getName()}`)
+  log_.finest(() => `Translating command: ${command.getName()}`)
   let spec = customCommands && customCommands.get(command.getName())
   if (spec) {
     return toHttpRequest(spec)
@@ -436,7 +436,7 @@ function buildRequest(customCommands, command) {
 
   spec = W3C_COMMAND_MAP.get(command.getName())
   if (typeof spec === 'function') {
-    LOG.finest(() => `Transforming command for W3C: ${command.getName()}`)
+    log_.finest(() => `Transforming command for W3C: ${command.getName()}`)
     let newCommand = spec(command)
     return buildRequest(customCommands, newCommand)
   } else if (spec) {
@@ -451,7 +451,7 @@ function buildRequest(customCommands, command) {
    * @return {!Request}
    */
   function toHttpRequest(resource) {
-    LOG.finest(() => `Building HTTP request: ${JSON.stringify(resource)}`)
+    log_.finest(() => `Building HTTP request: ${JSON.stringify(resource)}`)
     let parameters = command.getParameters()
     let path = buildPath(resource.path, parameters)
     return new Request(resource.method, path, parameters)
@@ -487,7 +487,7 @@ class Executor {
     this.customCommands_ = null
 
     /** @private {!logging.Logger} */
-    this.log_ = logging.getLogger('webdriver.http.Executor')
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.http.Executor`)
   }
 
   /**

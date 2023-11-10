@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.devtools.v85;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
@@ -52,7 +52,7 @@ public class V85Target implements org.openqa.selenium.devtools.idealized.target.
 
     return new Command<>(
         Target.getTargets().getMethod(),
-        ImmutableMap.of(),
+        Map.of(),
         input -> {
           List<TargetInfo> infos = mapper.apply(input);
           return infos.stream()
@@ -67,7 +67,7 @@ public class V85Target implements org.openqa.selenium.devtools.idealized.target.
                           info.getOpenerId().map(id -> new TargetID(id.toString())),
                           info.getBrowserContextId()
                               .map(id -> new BrowserContextID(id.toString()))))
-              .collect(ImmutableList.toImmutableList());
+              .collect(Collectors.toUnmodifiableList());
         });
   }
 
@@ -79,7 +79,7 @@ public class V85Target implements org.openqa.selenium.devtools.idealized.target.
 
     return new Command<>(
         "Target.attachToTarget",
-        ImmutableMap.of(
+        Map.of(
             "targetId",
             new org.openqa.selenium.devtools.v85.target.model.TargetID(targetId.toString()),
             "flatten",

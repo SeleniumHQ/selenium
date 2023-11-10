@@ -1,3 +1,29 @@
+v4.15.0
+======
+
+* Do not set binary as empty string (#12738)
+* Store the mutated element for the user not just the target id (#12948)
+* Do not pack Selenium Manager binaries by consumer packages
+* Fix driver service path determination when starting it directly
+* Improve nuget packages metadata (#12873)
+* Add CDP files for v119 and remove v116
+* Implement file downloads (#12979)
+
+v4.14.1
+======
+* Fix add CDP files for v118 and remove v115
+
+v4.14.0
+======
+* Add CDP files for v118 and remove v115
+* Normalize selenium manager path (#12823)
+* Remove IdentityModel nuget from bazel workspace (#12834)
+* Update `rules_dotnet` to the latest version (#12784)
+* Rename strong assembly name (#12861)
+* Fix ci dotnet build on github actions (#12863)
+* Deprecate saving screenshots with different image formats (#12878)
+* Remove tools folder not related to selenium (#12899)
+
 v4.13.1
 ======
 * Fix bug in selenium manager paths to work on mac and linux

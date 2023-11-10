@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -98,7 +99,7 @@ public class ChromeDriver extends ChromiumDriver {
     if (service.getExecutable() == null) {
       Result result = DriverFinder.getPath(service, options);
       service.setExecutable(result.getDriverPath());
-      if (result.getBrowserPath() != null) {
+      if (result.getBrowserPath() != null && !result.getBrowserPath().isEmpty()) {
         options.setBinary(result.getBrowserPath());
       }
     }
@@ -116,10 +117,10 @@ public class ChromeDriver extends ChromiumDriver {
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
-      return ImmutableMap.<String, CommandInfo>builder()
-          .putAll(new AddHasCasting().getAdditionalCommands())
-          .putAll(new AddHasCdp().getAdditionalCommands())
-          .build();
+      return Stream.of(
+              new AddHasCasting().getAdditionalCommands(), new AddHasCdp().getAdditionalCommands())
+          .flatMap((m) -> m.entrySet().stream())
+          .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }
 }

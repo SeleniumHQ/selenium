@@ -218,7 +218,7 @@ impl Logger {
         let json_output = &self.json.borrow();
         let json = json_output.deref();
         if !json.logs.is_empty() {
-            print!("{}", serde_json::to_string_pretty(json.deref()).unwrap());
+            print!("{}", serde_json::to_string_pretty(json).unwrap());
         }
     }
 }

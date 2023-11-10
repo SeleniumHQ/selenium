@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::{assert_driver, assert_output};
 use assert_cmd::Command;
 use rstest::rstest;
 use std::env::consts::OS;
-
-use crate::common::assert_output;
 
 mod common;
 
@@ -85,7 +84,7 @@ fn wrong_parameters_test(
         .assert()
         .try_success();
 
-    assert_output(&mut cmd, result, "in PATH", error_code);
+    assert_output(&mut cmd, result, vec!["in PATH"], error_code);
 }
 
 #[rstest]
@@ -115,18 +114,18 @@ fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
 #[case(
     "windows",
     "chrome",
-    r#"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"#
+    r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 )]
 #[case(
     "windows",
     "chrome",
-    r#"C:\Program Files\Google\Chrome\Application\chrome.exe"#
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 )]
 #[case("linux", "chrome", "/usr/bin/google-chrome")]
 #[case(
     "macos",
     "chrome",
-    r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
+    r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 )]
 #[case(
     "macos",
@@ -146,4 +145,15 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
         println!("{}", output);
         assert!(!output.contains("WARN"));
     }
+}
+
+#[test]
+fn webview2_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args(["--browser", "webview2", "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
+
+    assert_driver(&mut cmd);
 }

@@ -1,3 +1,20 @@
+4.15.0 (unreleased)
+=========================
+
+* Do not set browser binary in selenium manager if it is an empty string (#12738)
+* Add flaky condition to guards to mark unreliable tests
+* Rake update needs to build latest grid for running remote tests
+* Add CDP v119 and remove v116
+* Implement file downloads (#12979)
+
+4.14.0 (2023-10-09)
+=========================
+Ruby:
+  * allow users to access the full script of the atom directly
+
+BiDi:
+  * Released selenium-devtools 0.118.0 (supports CDP v85, v116, v117, v118)
+
 4.13.1 (2023-09-25)
 =========================
 Ruby:

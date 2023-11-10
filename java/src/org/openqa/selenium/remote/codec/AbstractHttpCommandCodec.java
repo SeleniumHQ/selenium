@@ -32,6 +32,8 @@ import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_DOWNLOADABLE_FILES;
+import static org.openqa.selenium.remote.DriverCommand.DOWNLOAD_FILE;
 import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
 import static org.openqa.selenium.remote.DriverCommand.ELEMENT_SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
@@ -51,6 +53,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
@@ -237,6 +240,10 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(GET_FEDCM_DIALOG_TYPE, get(fedcm + "/getdialogtype"));
     defineCommand(SET_DELAY_ENABLED, post(fedcm + "/setdelayenabled"));
     defineCommand(RESET_COOLDOWN, post(fedcm + "/resetCooldown"));
+
+    defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
+    defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
+    defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
   }
 
   protected static CommandSpec delete(String path) {
