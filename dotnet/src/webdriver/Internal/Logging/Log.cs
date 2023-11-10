@@ -1,19 +1,17 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
     public static class Log
     {
-        private static readonly ILogContext _globalLogContext = new LogContext(LogLevel.None, Array.Empty<ILogHandler>());
+        private static readonly ILogContext _globalLogContext = new LogContext(Level.None, Array.Empty<ILogHandler>());
 
         private static readonly AsyncLocal<ILogContext> _ambientLogContext = new AsyncLocal<ILogContext>();
 
-        private static object _logContextLock = new object();
+        private static readonly object _logContextLock = new object();
 
-        public static ILogContext Context
+        public static ILogContext ForContext
         {
             get
             {
@@ -32,7 +30,7 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public static ILogContext SetLevel(LogLevel level)
+        public static ILogContext SetLevel(Level level)
         {
             return _globalLogContext.SetLevel(level);
         }

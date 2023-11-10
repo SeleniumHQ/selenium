@@ -12,6 +12,6 @@ namespace OpenQA.Selenium.Internal.Logging
 
         void Error(string message);
 
-        LogLevel Level { get; set; }
+        Level Level { get; set; }
     }
 }

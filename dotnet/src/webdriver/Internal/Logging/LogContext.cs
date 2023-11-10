@@ -11,9 +11,9 @@ namespace OpenQA.Selenium.Internal.Logging
 
         protected readonly IList<ILogHandler> _handlers;
 
-        protected LogLevel _level;
+        protected Level _level;
 
-        public LogContext(LogLevel level, IList<ILogHandler> handlers)
+        public LogContext(Level level, IList<ILogHandler> handlers)
         {
             _level = level;
 
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Internal.Logging
             return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
-        public void LogMessage(LogMessage message)
+        public void LogMessage(LogEvent message)
         {
             if (_handlers != null)
             {
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public ILogContext SetLevel(LogLevel level)
+        public ILogContext SetLevel(Level level)
         {
             _level = level;
 

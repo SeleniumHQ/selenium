@@ -1,9 +1,10 @@
 using System;
+
 namespace OpenQA.Selenium.Internal.Logging
 {
-    public sealed class LogMessage
+    public sealed class LogEvent
     {
-        public LogMessage(Type issuedBy, DateTime timeStamp, LogLevel level, string message)
+        public LogEvent(Type issuedBy, DateTime timeStamp, Level level, string message)
         {
             IssuedBy = issuedBy;
             TimeStamp = timeStamp;
@@ -15,7 +16,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public DateTime TimeStamp { get; }
 
-        public LogLevel Level { get; }
+        public Level Level { get; }
 
         public string Message { get; }
 

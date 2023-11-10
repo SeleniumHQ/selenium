@@ -8,9 +8,9 @@ namespace OpenQA.Selenium.Internal.Logging
 
         ILogger GetLogger(Type type);
 
-        void LogMessage(LogMessage message);
+        void LogMessage(LogEvent logEvent);
 
-        ILogContext SetLevel(LogLevel level);
+        ILogContext SetLevel(Level level);
 
         ILogContext AddHandler(ILogHandler handler);
     }

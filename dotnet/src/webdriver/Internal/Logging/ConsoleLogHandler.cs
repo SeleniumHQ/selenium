@@ -5,18 +5,18 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     public class ConsoleLogHandler : ILogHandler
     {
-        private static readonly Dictionary<LogLevel, string> _levelMap = new Dictionary<LogLevel, string>
+        private static readonly Dictionary<Level, string> _levelMap = new Dictionary<Level, string>
         {
-            { LogLevel.Trace, "TRC" },
-            { LogLevel.Debug, "DBG" },
-            { LogLevel.Info, "INF" },
-            { LogLevel.Warn, "WARN" },
-            { LogLevel.Error, "ERR" }
+            { Level.Trace, "TRC" },
+            { Level.Debug, "DBG" },
+            { Level.Info, "INF" },
+            { Level.Warn, "WRN" },
+            { Level.Error, "ERR" }
         };
 
-        public void Handle(LogMessage logMessage)
+        public void Handle(LogEvent logEvent)
         {
-            Console.WriteLine($"{logMessage.TimeStamp:HH:mm:ss.fff} {_levelMap[logMessage.Level]} {logMessage.IssuedBy.Name}: {logMessage.Message}");
+            Console.WriteLine($"{logEvent.TimeStamp:HH:mm:ss.fff} {_levelMap[logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
         }
     }
 }
