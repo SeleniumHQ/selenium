@@ -5,27 +5,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      cache-key: javascript-build
-      run: bazel build //javascript/node/selenium-webdriver:selenium-webdriver
-
-  atoms:
-    name: Atom Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Atom Tests
-      browser: firefox
-      cache-key: atoms
-      run: >
-        bazel test --test_tag_filters=firefox,-firefox-beta,-firefox-dev
-        //javascript/atoms/...
-        //javascript/webdriver/...
-
   browser-tests:
     name: Browser Tests
     needs: build

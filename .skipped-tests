@@ -35,8 +35,12 @@
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
 -//java/test/org/openqa/selenium:FormHandlingTest-chrome
+-//javascript/atoms:test-chrome
+-//javascript/atoms:test-firefox-beta
+-//javascript/atoms:test-firefox-dev
 -//py:common-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_launcher_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/proxy_tests.py
 -//py:test-chrome-test/selenium/webdriver/chrome/chrome_service_tests.py
+-//py:auto-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
 -//py:unit-test/unit/selenium/webdriver/common/cdp_module_fallback_tests.py
