@@ -439,7 +439,7 @@ public class CdpClientGenerator {
                   String.format(
                       "return new Event<>(\"%s.%s\", ConverterFunctions.empty());",
                       domain.name, name));
-        } else if (type instanceof ObjectType || type instanceof ArrayType) {
+        } else if (type instanceof ObjectType) {
           methodDecl
               .getBody()
               .get()
@@ -447,6 +447,14 @@ public class CdpClientGenerator {
                   String.format(
                       "return new Event<>(\"%s.%s\", input -> %s);",
                       domain.name, name, type.getMapper()));
+        } else if (type instanceof ArrayType) {
+          methodDecl
+              .getBody()
+              .get()
+              .addStatement(
+                  String.format(
+                      "return new Event<>(\"%s.%s\", ConverterFunctions.map(\"%s\", input -> %s));",
+                      domain.name, name, type.getName(), type.getMapper()));
         } else {
           methodDecl
               .getBody()
@@ -660,11 +668,17 @@ public class CdpClientGenerator {
         body.addStatement(
             String.format(
                 "return new Command<>(\"%s.%s\", Map.copyOf(params));", domain.name, name));
-      } else if (type instanceof ObjectType || type instanceof ArrayType) {
+      } else if (type instanceof ObjectType) {
         body.addStatement(
             String.format(
                 "return new Command<>(\"%s.%s\", Map.copyOf(params), input -> %s);",
                 domain.name, name, type.getMapper()));
+      } else if (type instanceof ArrayType) {
+        body.addStatement(
+            String.format(
+                "return new Command<>(\"%s.%s\", Map.copyOf(params), ConverterFunctions.map(\"%s\","
+                    + " input -> %s));",
+                domain.name, name, type.getName(), type.getMapper()));
       } else {
         body.addStatement(
             String.format(

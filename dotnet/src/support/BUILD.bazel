@@ -36,18 +36,18 @@ csharp_library(
         "UI/*.cs",
     ]) + [":assembly-info"],
     out = "WebDriver.Support",
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     target_frameworks = [
         "netstandard2.0",
     ],
-    deps = [
-        "//dotnet/src/webdriver",
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     visibility = [
         "//dotnet:__subpackages__",
+    ],
+    deps = [
+        "//dotnet/src/webdriver",
+        framework("nuget", "NETStandard.Library"),
     ],
 )
 
@@ -79,18 +79,18 @@ csharp_library(
     ]) + [":assembly-info"],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    targeting_packs = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     target_frameworks = [
         "netstandard2.0",
     ],
-    deps = [
-        "//dotnet/src/webdriver:webdriver-strongnamed",
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
     visibility = [
         "//dotnet:__subpackages__",
+    ],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-strongnamed",
+        framework("nuget", "NETStandard.Library"),
     ],
 )
 

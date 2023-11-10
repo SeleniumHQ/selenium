@@ -568,13 +568,13 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
     } else {
       // If we're in edge_ie_mode, we need to look for different windows
       if (this->ignore_process_match_) {
-        LOG(TRACE) << "Finding windonw handle for IE Mode on Edge, "
+        LOG(TRACE) << "Finding window handle for IE Mode on Edge, "
                    << "ignoring process id match. This assumes only one "
                    << "Edge instance is running on the host.";
         ::EnumWindows(&BrowserFactory::FindEdgeWindowIgnoringProcessMatch,
                       reinterpret_cast<LPARAM>(process_window_info));
       } else {
-        LOG(TRACE) << "Finding windonw handle for IE Mode on Edge";
+        LOG(TRACE) << "Finding window handle for IE Mode on Edge";
         ::EnumWindows(&BrowserFactory::FindEdgeWindow,
                     reinterpret_cast<LPARAM>(process_window_info));
 
