@@ -402,7 +402,6 @@ py_test_suite(
     env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
     ] + BROWSERS["edge"]["tags"],
     deps = [
         ":init-tree",
