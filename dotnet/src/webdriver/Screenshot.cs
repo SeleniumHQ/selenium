@@ -22,38 +22,6 @@ using System.IO;
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// File format for saving screenshots.
-    /// </summary>
-    [Obsolete("Support for decoding/encoding between different image formats is deprecated")]
-    public enum ScreenshotImageFormat
-    {
-        /// <summary>
-        /// W3C Portable Network Graphics image format.
-        /// </summary>
-        Png,
-
-        /// <summary>
-        /// Joint Photgraphic Experts Group image format.
-        /// </summary>
-        Jpeg,
-
-        /// <summary>
-        /// Graphics Interchange Format image format.
-        /// </summary>
-        Gif,
-
-        /// <summary>
-        /// Tagged Image File Format image format.
-        /// </summary>
-        Tiff,
-
-        /// <summary>
-        /// Bitmap image format.
-        /// </summary>
-        Bmp
-    }
-
-    /// <summary>
     /// Represents an image of the page currently loaded in the browser.
     /// </summary>
     [Serializable]
@@ -75,40 +43,6 @@ namespace OpenQA.Selenium
         public override void SaveAsFile(string fileName)
         {
             File.WriteAllBytes(fileName, this.AsByteArray);
-        }
-
-        /// <summary>
-        /// Saves the screenshot to a file, overwriting the file if it already exists.
-        /// </summary>
-        /// <param name="fileName">The full path and file name to save the screenshot to.</param>
-        /// <param name="format">A <see cref="ScreenshotImageFormat"/> value indicating the format
-        /// to save the image to.</param>
-        [Obsolete("Support for decoding/encoding between different image formats is deprecated; use SaveAsFile(string fileName) method instead")]
-        public void SaveAsFile(string fileName, ScreenshotImageFormat format)
-        {
-            using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
-            {
-                using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                {
-                    // Optimization: The byte array is already a PNG, so we can just
-                    // write directly to the file. If the user wants to convert to
-                    // another image format, we'll allow them to do so, but on certain
-                    // framework versions (.NET 6 or above) this is likely to fail at
-                    // runtime. It is unclear how many Selenium users are using this
-                    // feature to convert the returned screenshot into a different image
-                    // format. Future mitigations of this issue would need to take a
-                    // dependency on an image processing library like ImageSharp or
-                    // similar.
-                    if (format == ScreenshotImageFormat.Png)
-                    {
-                        imageStream.WriteTo(fileStream);
-                    }
-                    else
-                    {
-                        throw new WebDriverException("Selenium doesn't support decoding/encoding between different image formats. Use \"SaveAsFile(string fileName)\" method instead.");
-                    }
-                }
-            }
         }
     }
 }
