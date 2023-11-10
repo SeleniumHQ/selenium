@@ -35,5 +35,5 @@
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
 -//java/test/org/openqa/selenium:FormHandlingTest-chrome
--//py:auto-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
+-//py:common-chrome-test/selenium/webdriver/common/virtual_authenticator_tests.py
 -//py:unit-test/unit/selenium/webdriver/common/cdp_module_fallback_tests.py
