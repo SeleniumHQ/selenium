@@ -346,19 +346,17 @@ py_test_suite(
     srcs = glob(
         [
             "test/selenium/webdriver/chrome/**/*.py",
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
         ],
         exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
     ),
     args = [
         "--instafail",
-        "--driver=chrome",
-    ],
+    ] + BROWSERS["chrome"]["args"],
+    data = BROWSERS["chrome"]["data"],
+    env_inherit = ["DISPLAY"],
     tags = [
         "no-sandbox",
-        "skip-remote",
-    ],
+    ] + BROWSERS["chrome"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",
