@@ -136,3 +136,5 @@ bazel-testlogs
 *.crt
 *.key
 javascript/node/selenium-webdriver/.vscode/settings.json
+
+dotnet-bin
