@@ -19,12 +19,15 @@ import pytest
 import os
 import urllib3
 
+from selenium import webdriver
+
 
 @pytest.mark.no_driver_after_test
 def test_bad_proxy_doesnt_interfere(clean_driver, clean_service):
     # these values should be ignored if ignore_local_proxy_environment_variables() is called.
     os.environ["https_proxy"] = "bad"
     os.environ["http_proxy"] = "bad"
+
     options = webdriver.ChromeOptions()
 
     options.ignore_local_proxy_environment_variables()
@@ -32,11 +35,9 @@ def test_bad_proxy_doesnt_interfere(clean_driver, clean_service):
     chrome_kwargs = {"options": options, "service": clean_service}
     driver = clean_driver(**chrome_kwargs)
 
-    try:
-        assert hasattr(driver, "command_executor")
-        assert hasattr(driver.command_executor, "_proxy_url")
-        assert isinstance(driver.command_executor._conn, urllib3.PoolManager)
-    finally:
-        os.environ.pop("https_proxy")
-        os.environ.pop("http_proxy")
-        driver.quit()
+    assert hasattr(driver, "command_executor")
+    assert hasattr(driver.command_executor, "_proxy_url")
+    assert isinstance(driver.command_executor._conn, urllib3.PoolManager)
+    os.environ.pop("https_proxy")
+    os.environ.pop("http_proxy")
+    driver.quit()
