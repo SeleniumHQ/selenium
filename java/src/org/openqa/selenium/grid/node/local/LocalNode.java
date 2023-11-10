@@ -551,9 +551,12 @@ public class LocalNode extends Node {
   @SuppressWarnings("unchecked")
   private Capabilities appendPrefs(
       Capabilities caps, String optionsKey, Map<String, Serializable> map) {
-    Map<String, Object> currentOptions =
-        (Map<String, Object>)
-            Optional.ofNullable(caps.getCapability(optionsKey)).orElse(new HashMap<>());
+    if (caps.getCapability(optionsKey) == null) {
+      MutableCapabilities mutableCaps = new MutableCapabilities();
+      mutableCaps.setCapability(optionsKey, new HashMap<>());
+      caps = caps.merge(mutableCaps);
+    }
+    Map<String, Object> currentOptions = (Map<String, Object>) caps.getCapability(optionsKey);
 
     ((Map<String, Serializable>) currentOptions.computeIfAbsent("prefs", k -> new HashMap<>()))
         .putAll(map);
@@ -649,7 +652,11 @@ public class LocalNode extends Node {
     }
     TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
     if (tempFS == null) {
-      throw new WebDriverException("Cannot find downloads file system for session id: " + id);
+      String msg =
+          "Cannot find downloads file system for session id: "
+              + id
+              + " — ensure downloads are enabled in the options class when requesting a session.";
+      throw new WebDriverException(msg);
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
@@ -668,7 +675,9 @@ public class LocalNode extends Node {
       for (File file : files) {
         FileHandler.delete(file);
       }
-      return new HttpResponse();
+      Map<String, Object> toReturn = new HashMap<>();
+      toReturn.put("value", null);
+      return new HttpResponse().setContent(asJson(toReturn));
     }
     String raw = string(req);
     if (raw.isEmpty()) {

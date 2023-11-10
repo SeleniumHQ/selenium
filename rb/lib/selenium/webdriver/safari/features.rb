@@ -28,8 +28,12 @@ module Selenium
           attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
         }.freeze
 
+        def command_list
+          SAFARI_COMMANDS.merge(self.class::COMMANDS)
+        end
+
         def commands(command)
-          SAFARI_COMMANDS[command] || self.class::COMMANDS[command]
+          command_list[command]
         end
 
         def permissions

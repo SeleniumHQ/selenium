@@ -26,8 +26,6 @@ class Command:
         https://w3c.github.io/webdriver/
     """
 
-    # Keep in sync with org.openqa.selenium.remote.DriverCommand
-
     NEW_SESSION: str = "newSession"
     DELETE_SESSION: str = "deleteSession"
     NEW_WINDOW: str = "newWindow"
@@ -49,7 +47,6 @@ class Command:
     CLEAR_ELEMENT: str = "clearElement"
     CLICK_ELEMENT: str = "clickElement"
     SEND_KEYS_TO_ELEMENT: str = "sendKeysToElement"
-    UPLOAD_FILE: str = "uploadFile"
     W3C_GET_CURRENT_WINDOW_HANDLE: str = "w3cGetCurrentWindowHandle"
     W3C_GET_WINDOW_HANDLES: str = "w3cGetWindowHandles"
     SET_WINDOW_RECT: str = "setWindowRect"
@@ -119,3 +116,9 @@ class Command:
     REMOVE_CREDENTIAL: str = "removeCredential"
     REMOVE_ALL_CREDENTIALS: str = "removeAllCredentials"
     SET_USER_VERIFIED: str = "setUserVerified"
+
+    # Remote File Management
+    UPLOAD_FILE: str = "uploadFile"
+    GET_DOWNLOADABLE_FILES: str = "getDownloadableFiles"
+    DOWNLOAD_FILE: str = "downloadFile"
+    DELETE_DOWNLOADABLE_FILES: str = "deleteDownloadableFiles"

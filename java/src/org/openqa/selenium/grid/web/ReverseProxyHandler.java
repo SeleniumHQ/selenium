@@ -39,6 +39,7 @@ public class ReverseProxyHandler implements HttpHandler {
   private static final ImmutableSet<String> IGNORED_REQ_HEADERS =
       ImmutableSet.<String>builder()
           .add("connection")
+          .add("http2-settings")
           .add("keep-alive")
           .add("proxy-authorization")
           .add("proxy-authenticate")

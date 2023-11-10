@@ -193,29 +193,31 @@ public class ExternalProcess {
         throw new UncheckedIOException(ex);
       }
 
-      CircularOutputStream circular;
       try {
-        circular = new CircularOutputStream(bufferSize);
+        CircularOutputStream circular = new CircularOutputStream(bufferSize);
 
-        new Thread(
+        Thread worker =
+            new Thread(
                 () -> {
+                  // copyOutputTo might be system.out or system.err, do not to close
+                  OutputStream output = new MultiOutputStream(circular, copyOutputTo);
+                  // closing the InputStream does somehow disturb the process, do not to close
                   InputStream input = process.getInputStream();
                   // use the CircularOutputStream as mandatory, we know it will never raise a
                   // IOException
-                  OutputStream output = new MultiOutputStream(circular, copyOutputTo);
-                  while (process.isAlive()) {
-                    try {
-                      // we must read the output to ensure the process will not lock up
-                      input.transferTo(output);
-                    } catch (IOException ex) {
-                      LOG.log(
-                          Level.WARNING,
-                          "failed to copy the output of process " + process.pid(),
-                          ex);
-                    }
+                  try {
+                    // we must read the output to ensure the process will not lock up
+                    input.transferTo(output);
+                  } catch (IOException ex) {
+                    LOG.log(
+                        Level.WARNING, "failed to copy the output of process " + process.pid(), ex);
                   }
-                })
-            .start();
+                  LOG.log(Level.FINE, "completed to copy the output of process " + process.pid());
+                });
+
+        worker.start();
+
+        return new ExternalProcess(process, circular, worker);
       } catch (Throwable t) {
         // ensure we do not leak a process in case of failures
         try {
@@ -225,8 +227,6 @@ public class ExternalProcess {
         }
         throw t;
       }
-
-      return new ExternalProcess(process, circular);
     }
   }
 
@@ -236,10 +236,12 @@ public class ExternalProcess {
 
   private final Process process;
   private final CircularOutputStream outputStream;
+  private final Thread worker;
 
-  public ExternalProcess(Process process, CircularOutputStream outputStream) {
+  public ExternalProcess(Process process, CircularOutputStream outputStream, Thread worker) {
     this.process = process;
     this.outputStream = outputStream;
+    this.worker = worker;
   }
 
   /**
@@ -257,7 +259,13 @@ public class ExternalProcess {
   }
 
   public boolean waitFor(Duration duration) throws InterruptedException {
-    return process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
+    boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
+
+    if (exited) {
+      worker.join();
+    }
+
+    return exited;
   }
 
   public int exitValue() {
@@ -284,6 +292,7 @@ public class ExternalProcess {
 
       try {
         if (process.waitFor(timeout.toMillis(), MILLISECONDS)) {
+          worker.join();
           return;
         }
       } catch (InterruptedException ex) {
@@ -292,5 +301,10 @@ public class ExternalProcess {
     }
 
     process.destroyForcibly();
+    try {
+      worker.join();
+    } catch (InterruptedException ex) {
+      Thread.interrupted();
+    }
   }
 }

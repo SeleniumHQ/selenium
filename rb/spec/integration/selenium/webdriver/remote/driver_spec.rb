@@ -31,7 +31,8 @@ module Selenium
           expect(driver.status).to be_a(Hash)
         end
 
-        it 'uses a default file detector' do
+        it 'uses a default file detector',
+           flaky: {browser: :safari, ci: :github, reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys(__FILE__)
@@ -43,6 +44,59 @@ module Selenium
 
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
+        end
+
+        it 'lists downloads', exclude: {browser: :safari, reason: 'grid hangs'} do
+          reset_driver!(enable_downloads: true) do |driver|
+            browser_downloads(driver)
+
+            file_names = %w[file_1.txt file_2.jpg]
+
+            expect(driver.downloadable_files).to eq file_names
+          end
+        end
+
+        it 'downloads a file', exclude: {browser: :safari, reason: 'grid hangs'} do
+          target_directory = File.join(Dir.tmpdir, SecureRandom.uuid)
+          at_exit { FileUtils.rm_f(target_directory) }
+
+          reset_driver!(enable_downloads: true) do |driver|
+            browser_downloads(driver)
+
+            file_name = driver.downloadable_files.first
+            driver.download_file(file_name, target_directory)
+
+            file_content = File.read("#{target_directory}/#{file_name}").strip
+            expect(file_content).to eq('Hello, World!')
+          end
+        end
+
+        it 'deletes downloadable files', exclude: {browser: :safari, reason: 'grid hangs'} do
+          reset_driver!(enable_downloads: true) do |driver|
+            browser_downloads(driver)
+
+            driver.delete_downloadable_files
+
+            expect(driver.downloadable_files).to be_empty
+          end
+        end
+
+        it 'errors when not set', {except: {browser: :firefox, reason: 'grid always sets true and firefox returns it'},
+                                   exclude: {browser: :safari, reason: 'grid hangs'}} do
+          expect {
+            driver.downloadable_files
+          }.to raise_exception(Error::WebDriverError,
+                               'You must enable downloads in order to work with downloadable files.')
+        end
+
+        private
+
+        def browser_downloads(driver)
+          driver.navigate.to url_for('downloads/download.html')
+          driver.find_element(id: 'file-1').click
+          driver.find_element(id: 'file-2').click
+
+          wait.until { driver.downloadable_files.include? 'file_2.jpg' }
         end
       end
     end # Remote

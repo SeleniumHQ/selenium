@@ -238,6 +238,77 @@ class BrowsingContext {
       }
     }
   }
+
+  async activate() {
+    const params = {
+      method: 'browsingContext.activate',
+      params: {
+        context: this._id,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
+
+  async handleUserPrompt(accept = undefined, userText = undefined) {
+    const params = {
+      method: 'browsingContext.handleUserPrompt',
+      params: {
+        context: this._id,
+        accept: accept,
+        userText: userText,
+      },
+    }
+
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
+
+  async reload(ignoreCache = undefined, readinessState = undefined) {
+    if (
+      readinessState !== undefined &&
+      !['none', 'interactive', 'complete'].includes(readinessState)
+    ) {
+      throw Error(
+        `Valid readiness states are 'none', 'interactive' & 'complete'. Received: ${readinessState}`
+      )
+    }
+
+    const params = {
+      method: 'browsingContext.reload',
+      params: {
+        context: this._id,
+        ignoreCache: ignoreCache,
+        wait: readinessState,
+      },
+    }
+    const navigateResult = (await this.bidi.send(params))['result']
+
+    return new NavigateResult(
+      navigateResult['url'],
+      navigateResult['navigation']
+    )
+  }
+
+  async setViewport(width, height, devicePixelRatio = undefined) {
+    const params = {
+      method: 'browsingContext.setViewport',
+      params: {
+        context: this._id,
+        viewport: { width: width, height: height },
+        devicePixelRatio: devicePixelRatio,
+      },
+    }
+    let result = await this.bidi.send(params)
+    if ('error' in result) {
+      throw Error(result['error'])
+    }
+  }
 }
 
 class NavigateResult {

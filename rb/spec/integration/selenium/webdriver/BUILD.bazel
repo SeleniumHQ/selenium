@@ -54,7 +54,7 @@ rb_test(
     args = ["rb/spec/"],
     env = ENV,
     main = "@bundle//:bin/rspec",
-    tags = TAGS,
+    tags = TAGS + ["exclusive-if-local"],
     deps = [
         ":spec_helper",
         "//rb/lib/selenium/devtools",
@@ -69,7 +69,7 @@ rb_test(
     args = ["rb/spec/"],
     env = ENV,
     main = "@bundle//:bin/rspec",
-    tags = TAGS,
+    tags = TAGS + ["exclusive-if-local"],
     deps = [
         ":spec_helper",
         "//rb/lib/selenium/devtools",

@@ -29,7 +29,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.collect.ImmutableMap;
 import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.Callable;
@@ -43,6 +42,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -137,15 +137,7 @@ class HandleSession implements HttpHandler {
         if (e instanceof NoSuchSessionException) {
           HttpResponse response = new HttpResponse();
           response.setStatus(404);
-          response.setContent(
-              asJson(
-                  ImmutableMap.of(
-                      "value",
-                      req.getUri(),
-                      "message",
-                      errorMessage,
-                      "error",
-                      "invalid session id")));
+          response.setContent(asJson(ErrorCodec.createDefault().encode(e)));
           return response;
         }
 

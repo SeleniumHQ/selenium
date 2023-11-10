@@ -114,18 +114,18 @@ fn browser_beta_test(#[case] browser: String, #[case] driver_name: String) {
 #[case(
     "windows",
     "chrome",
-    r#"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"#
+    r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 )]
 #[case(
     "windows",
     "chrome",
-    r#"C:\Program Files\Google\Chrome\Application\chrome.exe"#
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 )]
 #[case("linux", "chrome", "/usr/bin/google-chrome")]
 #[case(
     "macos",
     "chrome",
-    r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
+    r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 )]
 #[case(
     "macos",
