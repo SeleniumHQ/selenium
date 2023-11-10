@@ -314,7 +314,7 @@ py_library(
 
 [
     py_test_suite(
-        name = "auto-%s" % browser,
+        name = "common-%s" % browser,
         size = "large",
         srcs = glob(
             [
