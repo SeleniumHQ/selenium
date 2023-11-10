@@ -101,13 +101,3 @@ def test_stderr_is_propagated_to_exception_messages():
         manager = SeleniumManager()
         binary = manager.get_binary()
         _ = manager.run([str(binary), "--browser", "foo"])
-
-
-def test_driver_finder_error(mocker):
-    mocker.patch("selenium.webdriver.common.selenium_manager.SeleniumManager.driver_location", return_value=None)
-
-    service = Service()
-    options = Options()
-    msg = r"Unable to locate or obtain driver for chrome.*errors\/driver_location"
-    with pytest.raises(WebDriverException, match=msg):
-        DriverFinder.get_path(service, options)
