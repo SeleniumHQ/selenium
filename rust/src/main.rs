@@ -135,109 +135,110 @@ struct Cli {
 }
 
 fn main() {
-    let mut cli = Cli::parse();
-    let cache_path =
-        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
-
-    let debug = cli.debug || BooleanKey("debug", false).get_value();
-    let trace = cli.trace || BooleanKey("trace", false).get_value();
-    let log = Logger::create(&cli.output, debug, trace);
-    let grid = cli.grid;
-    let mut browser_name: String = cli.browser.unwrap_or_default();
-    let mut driver_name: String = cli.driver.unwrap_or_default();
-    if browser_name.is_empty() {
-        browser_name = StringKey(vec!["browser"], "").get_value();
-    }
-    if driver_name.is_empty() {
-        driver_name = StringKey(vec!["driver"], "").get_value();
-    }
-
-    let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
-        get_manager_by_browser(browser_name).unwrap_or_else(|err| {
-            log.error(&err);
-            flush_and_exit(DATAERR, &log, Some(err));
-        })
-    } else if !driver_name.is_empty() {
-        get_manager_by_driver(driver_name).unwrap_or_else(|err| {
-            log.error(&err);
-            flush_and_exit(DATAERR, &log, Some(err));
-        })
-    } else if grid.is_some() {
-        GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
-            log.error(&err);
-            flush_and_exit(DATAERR, &log, Some(err));
-        })
-    } else {
-        log.error("You need to specify a browser or driver");
-        flush_and_exit(DATAERR, &log, None);
-    };
-
-    if cli.offline {
-        if cli.force_browser_download {
-            log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
-        }
-        cli.force_browser_download = false;
-        if !cli.avoid_browser_download {
-            log.debug("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
-        }
-        cli.avoid_browser_download = true;
-    }
-
-    // Logger set first so other setters can use it
-    selenium_manager.set_logger(log);
-    selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
-    selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
-    selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
-    selenium_manager.set_driver_mirror_url(cli.driver_mirror_url.unwrap_or_default());
-    selenium_manager.set_browser_mirror_url(cli.browser_mirror_url.unwrap_or_default());
-    selenium_manager.set_os(cli.os.unwrap_or_default());
-    selenium_manager.set_arch(cli.arch.unwrap_or_default());
-    selenium_manager.set_ttl(cli.ttl);
-    selenium_manager.set_force_browser_download(cli.force_browser_download);
-    selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
-    selenium_manager.set_cache_path(cache_path.clone());
-    selenium_manager.set_offline(cli.offline);
-
-    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
-        clear_cache(selenium_manager.get_logger(), &cache_path);
-    }
-    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
-        clear_metadata(selenium_manager.get_logger(), &cache_path);
-    }
-
-    selenium_manager
-        .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
-        .and_then(|_| selenium_manager.setup())
-        .map(|driver_path| {
-            let log = selenium_manager.get_logger();
-            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
-            flush_and_exit(OK, log, None);
-        })
-        .unwrap_or_else(|err| {
-            let log = selenium_manager.get_logger();
-            if let Some(best_driver_from_cache) =
-                selenium_manager.find_best_driver_from_cache().unwrap()
-            {
-                log.warn(format!(
-                    "There was an error managing {} ({}); using driver found in the cache",
-                    selenium_manager.get_browser_name(),
-                    err
-                ));
-                log_driver_and_browser_path(
-                    log,
-                    &best_driver_from_cache,
-                    selenium_manager.get_browser_path(),
-                );
-                flush_and_exit(OK, log, Some(err));
-            } else if selenium_manager.is_offline() {
-                log.warn(err.to_string());
-                flush_and_exit(OK, log, Some(err));
-            } else {
-                log.error(err.to_string());
-                flush_and_exit(DATAERR, log, Some(err));
-            }
-        });
+    std::process::exit(1)
+    // let mut cli = Cli::parse();
+    // let cache_path =
+    //     StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
+    //
+    // let debug = cli.debug || BooleanKey("debug", false).get_value();
+    // let trace = cli.trace || BooleanKey("trace", false).get_value();
+    // let log = Logger::create(&cli.output, debug, trace);
+    // let grid = cli.grid;
+    // let mut browser_name: String = cli.browser.unwrap_or_default();
+    // let mut driver_name: String = cli.driver.unwrap_or_default();
+    // if browser_name.is_empty() {
+    //     browser_name = StringKey(vec!["browser"], "").get_value();
+    // }
+    // if driver_name.is_empty() {
+    //     driver_name = StringKey(vec!["driver"], "").get_value();
+    // }
+    //
+    // let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
+    //     get_manager_by_browser(browser_name).unwrap_or_else(|err| {
+    //         log.error(&err);
+    //         flush_and_exit(DATAERR, &log, Some(err));
+    //     })
+    // } else if !driver_name.is_empty() {
+    //     get_manager_by_driver(driver_name).unwrap_or_else(|err| {
+    //         log.error(&err);
+    //         flush_and_exit(DATAERR, &log, Some(err));
+    //     })
+    // } else if grid.is_some() {
+    //     GridManager::new(grid.as_ref().unwrap().to_string()).unwrap_or_else(|err| {
+    //         log.error(&err);
+    //         flush_and_exit(DATAERR, &log, Some(err));
+    //     })
+    // } else {
+    //     log.error("You need to specify a browser or driver");
+    //     flush_and_exit(DATAERR, &log, None);
+    // };
+    //
+    // if cli.offline {
+    //     if cli.force_browser_download {
+    //         log.warn("Offline flag set, but also asked to force downloads. Honouring offline flag");
+    //     }
+    //     cli.force_browser_download = false;
+    //     if !cli.avoid_browser_download {
+    //         log.debug("Offline flag set, but also asked not to avoid browser downloads. Honouring offline flag");
+    //     }
+    //     cli.avoid_browser_download = true;
+    // }
+    //
+    // // Logger set first so other setters can use it
+    // selenium_manager.set_logger(log);
+    // selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
+    // selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
+    // selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    // selenium_manager.set_driver_mirror_url(cli.driver_mirror_url.unwrap_or_default());
+    // selenium_manager.set_browser_mirror_url(cli.browser_mirror_url.unwrap_or_default());
+    // selenium_manager.set_os(cli.os.unwrap_or_default());
+    // selenium_manager.set_arch(cli.arch.unwrap_or_default());
+    // selenium_manager.set_ttl(cli.ttl);
+    // selenium_manager.set_force_browser_download(cli.force_browser_download);
+    // selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
+    // selenium_manager.set_cache_path(cache_path.clone());
+    // selenium_manager.set_offline(cli.offline);
+    //
+    // if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
+    //     clear_cache(selenium_manager.get_logger(), &cache_path);
+    // }
+    // if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
+    //     clear_metadata(selenium_manager.get_logger(), &cache_path);
+    // }
+    //
+    // selenium_manager
+    //     .set_timeout(cli.timeout)
+    //     .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+    //     .and_then(|_| selenium_manager.setup())
+    //     .map(|driver_path| {
+    //         let log = selenium_manager.get_logger();
+    //         log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
+    //         flush_and_exit(OK, log, None);
+    //     })
+    //     .unwrap_or_else(|err| {
+    //         let log = selenium_manager.get_logger();
+    //         if let Some(best_driver_from_cache) =
+    //             selenium_manager.find_best_driver_from_cache().unwrap()
+    //         {
+    //             log.warn(format!(
+    //                 "There was an error managing {} ({}); using driver found in the cache",
+    //                 selenium_manager.get_browser_name(),
+    //                 err
+    //             ));
+    //             log_driver_and_browser_path(
+    //                 log,
+    //                 &best_driver_from_cache,
+    //                 selenium_manager.get_browser_path(),
+    //             );
+    //             flush_and_exit(OK, log, Some(err));
+    //         } else if selenium_manager.is_offline() {
+    //             log.warn(err.to_string());
+    //             flush_and_exit(OK, log, Some(err));
+    //         } else {
+    //             log.error(err.to_string());
+    //             flush_and_exit(DATAERR, log, Some(err));
+    //         }
+    //     });
 }
 
 fn log_driver_and_browser_path(log: &Logger, driver_path: &Path, browser_path: &str) {
