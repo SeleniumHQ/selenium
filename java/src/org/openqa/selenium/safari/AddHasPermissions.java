@@ -18,6 +18,8 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
@@ -66,9 +68,20 @@ public class AddHasPermissions
 
       @Override
       public Map<String, Boolean> getPermissions() {
-        Map<String, Object> results =
-            (Map<String, Object>) executeMethod.execute(GET_PERMISSIONS, null);
-        return (Map<String, Boolean>) results.get("permissions");
+        Object resultObject = executeMethod.execute(GET_PERMISSIONS, null);
+
+        if (resultObject instanceof Map<?,?>){
+          Map<?,?> resultMap = (Map<?,?>) resultObject;
+          Map<String, Boolean> permissionMap = new HashMap<>();
+          for (Map.Entry<?,?> entry : resultMap.entrySet()) {
+            if (entry.getKey() instanceof String && entry.getValue() instanceof Boolean) {
+              permissionMap.put((String) entry.getKey(), (Boolean) entry.getValue());
+            }
+          }
+          return permissionMap;
+        } else {
+          throw new IllegalStateException("Unexpected result type: " + resultObject.getClass().getName());
+        }
       }
     };
   }
