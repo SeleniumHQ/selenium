@@ -17,6 +17,7 @@
 
 use crate::common::{assert_driver, assert_output};
 use assert_cmd::Command;
+use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
 
@@ -27,6 +28,11 @@ mod common;
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
 #[case("edge", "msedgedriver", "105", "105.0")]
 #[case("edge", "msedgedriver", "106", "106.0")]
+#[case("firefox", "geckodriver", "101", "0.31.0")]
+#[case("firefox", "geckodriver", "91", "0.31.0")]
+#[case("firefox", "geckodriver", "90", "0.30.0")]
+#[case("firefox", "geckodriver", "62", "0.29.1")]
+#[case("firefox", "geckodriver", "53", "0.18.0")]
 fn browser_version_test(
     #[case] browser: String,
     #[case] driver_name: String,
@@ -57,13 +63,13 @@ fn browser_version_test(
 }
 
 #[rstest]
-#[case("wrong-browser", "", "", exitcode::DATAERR)]
-#[case("chrome", "wrong-browser-version", "", exitcode::DATAERR)]
-#[case("chrome", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("firefox", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("edge", "wrong-browser-version", "", exitcode::DATAERR)]
-#[case("edge", "", "wrong-driver-version", exitcode::DATAERR)]
-#[case("iexplorer", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("wrong-browser", "", "", DATAERR)]
+#[case("chrome", "wrong-browser-version", "", DATAERR)]
+#[case("chrome", "", "wrong-driver-version", DATAERR)]
+#[case("firefox", "", "wrong-driver-version", DATAERR)]
+#[case("edge", "wrong-browser-version", "", DATAERR)]
+#[case("edge", "", "wrong-driver-version", DATAERR)]
+#[case("iexplorer", "", "wrong-driver-version", DATAERR)]
 fn wrong_parameters_test(
     #[case] browser: String,
     #[case] browser_version: String,
@@ -85,6 +91,28 @@ fn wrong_parameters_test(
         .try_success();
 
     assert_output(&mut cmd, result, vec!["in PATH"], error_code);
+}
+
+#[test]
+fn invalid_geckodriver_version_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let result = cmd
+        .args([
+            "--browser",
+            "firefox",
+            "--browser-version",
+            "51",
+            "--avoid-browser-download",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(
+        &mut cmd,
+        result,
+        vec!["Not valid geckodriver version found"],
+        DATAERR,
+    );
 }
 
 #[rstest]

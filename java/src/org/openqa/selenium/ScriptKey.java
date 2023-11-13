@@ -28,6 +28,10 @@ public class ScriptKey {
     this.identifier = Require.nonNull("Script ID", identifier);
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof ScriptKey)) {

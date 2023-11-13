@@ -48,7 +48,7 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable: str = None,
+        executable_path: str = None,
         port: int = 0,
         log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
@@ -63,7 +63,7 @@ class Service(ABC):
         else:
             self.log_output = log_output
 
-        self._path = executable
+        self._path = executable_path
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
@@ -157,7 +157,11 @@ class Service(ABC):
         silently ignores errors here.
         """
         try:
-            stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
+            stdin, stdout, stderr = (
+                self.process.stdin,
+                self.process.stdout,
+                self.process.stderr,
+            )
             for stream in stdin, stdout, stderr:
                 try:
                     stream.close()  # type: ignore

@@ -36,8 +36,16 @@ namespace OpenQA.Selenium.Environment
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
-                var runfiles = Runfiles.Create();
-                standaloneTestJar = runfiles.Rlocation(standaloneTestJar);
+                try
+                {
+                    var runfiles = Runfiles.Create();
+                    standaloneTestJar = runfiles.Rlocation(standaloneTestJar);
+                }
+                catch (FileNotFoundException)
+                {
+                    var baseDirectory = AppContext.BaseDirectory;
+                    standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver");
+                }
 
                 Console.Write("Standalone jar is " + standaloneTestJar);
 

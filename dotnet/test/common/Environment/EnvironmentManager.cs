@@ -22,8 +22,16 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
-            var runfiles = Runfiles.Create();
-            var dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+            string dataFilePath;
+            try
+            {
+                var runfiles = Runfiles.Create();
+                dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+            }
+            catch (FileNotFoundException)
+            {
+                dataFilePath = "appconfig.json";
+            }
             string currentDirectory = this.CurrentDirectory;
 
             string content = File.ReadAllText(dataFilePath);
