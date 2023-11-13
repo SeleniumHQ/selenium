@@ -52,7 +52,7 @@ class Service(service.Service):
             self.service_args.append(f"--log-level={log_level}")
 
         super().__init__(
-            executable_path,
+            executable_path=executable_path,
             port=port,
             log_output=log_output,
             **kwargs,

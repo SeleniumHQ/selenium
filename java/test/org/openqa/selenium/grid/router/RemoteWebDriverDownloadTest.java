@@ -81,7 +81,7 @@ class RemoteWebDriverDownloadTest {
             new TomlConfig(
                 new StringReader(
                     "[node]\n"
-                        + "selenium-manager = true\n"
+                        + "selenium-manager = false\n"
                         + "enable-managed-downloads = true\n"
                         + "driver-implementation = "
                         + browser.displayName())));
