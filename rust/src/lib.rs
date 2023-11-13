@@ -170,6 +170,10 @@ pub trait SeleniumManager {
     fn get_browser_label_for_download(&self, _browser_version: &str)
         -> Result<Option<&str>, Error>;
 
+    fn is_download_browser(&self) -> bool;
+
+    fn set_download_browser(&mut self, download_browser: bool);
+
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
@@ -422,15 +426,9 @@ pub trait SeleniumManager {
         browser_version
     }
 
-    fn discover_driver_version_and_download_browser_if_necessary(
-        &mut self,
-    ) -> Result<String, Error> {
-        let original_browser_version = self.get_config().browser_version.clone();
-        let mut download_browser = self.is_force_browser_download();
-        let major_browser_version = self.get_major_browser_version();
-
-        // First, we try to discover the browser version
-        if !download_browser {
+    fn discover_local_browser(&mut self) -> Result<(), Error> {
+        if !self.is_force_browser_download() {
+            let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
@@ -465,7 +463,7 @@ pub trait SeleniumManager {
                                     self.get_browser_name(),
                                     discovered_major_browser_version,
                                 ));
-                                download_browser = true;
+                                self.set_download_browser(true);
                             }
                         } else {
                             self.set_browser_version(discovered_version);
@@ -480,7 +478,7 @@ pub trait SeleniumManager {
                             discovered_major_browser_version,
                             major_browser_version,
                         ));
-                        download_browser = true;
+                        self.set_download_browser(true);
                     } else {
                         self.set_browser_version(discovered_version);
                     }
@@ -500,12 +498,19 @@ pub trait SeleniumManager {
                         self.get_browser_name(),
                         self.get_browser_version_label()
                     ));
-                    download_browser = true;
+                    self.set_download_browser(true);
                 }
             }
         }
 
-        if download_browser
+        Ok(())
+    }
+
+    fn download_browser_if_necessary(
+        &mut self,
+        original_browser_version: String,
+    ) -> Result<(), Error> {
+        if self.is_download_browser()
             && !self.is_avoid_browser_download()
             && !self.is_iexplorer()
             && !self.is_grid()
@@ -528,8 +533,11 @@ pub trait SeleniumManager {
                 )));
             }
         }
+        Ok(())
+    }
 
-        // Second, we request the driver version using online endpoints
+    fn discover_driver_version(&mut self) -> Result<String, Error> {
+        // We request the driver version using online endpoints
         let driver_version = self.request_driver_version()?;
         if driver_version.is_empty() {
             Err(anyhow!(format!(
@@ -722,6 +730,7 @@ pub trait SeleniumManager {
     fn setup(&mut self) -> Result<PathBuf, Error> {
         let mut driver_in_path = None;
         let mut driver_in_path_version = None;
+        let original_browser_version = self.get_config().browser_version.clone();
 
         // Try to find driver in PATH
         if !self.is_safari() && !self.is_grid() {
@@ -741,24 +750,33 @@ pub trait SeleniumManager {
             }
         }
 
-        // Discover browser version (or download it, if not available and possible).
-        // With the found browser version, discover the proper driver version using online endpoints
+        // Discover browser version (or the need to download it, if not available and possible)
+        match self.discover_local_browser() {
+            Ok(_) => {}
+            Err(err) => {
+                self.check_error_with_driver_in_path(&driver_in_path, &driver_in_path_version, err)?
+            }
+        }
+
+        // Download browser if necessary
+        match self.download_browser_if_necessary(original_browser_version) {
+            Ok(_) => {}
+            Err(err) => {
+                self.check_error_with_driver_in_path(&driver_in_path, &driver_in_path_version, err)?
+            }
+        }
+
+        // With the discovered browser version, discover the proper driver version using online endpoints
         if self.get_driver_version().is_empty() {
-            match self.discover_driver_version_and_download_browser_if_necessary() {
+            match self.discover_driver_version() {
                 Ok(driver_version) => {
                     self.set_driver_version(driver_version);
                 }
-                Err(err) => {
-                    if driver_in_path_version.is_some() && driver_in_path.is_some() {
-                        self.get_logger().warn(format!(
-                            "Exception managing {}: {}",
-                            self.get_browser_name(),
-                            err
-                        ));
-                    } else {
-                        return Err(err);
-                    }
-                }
+                Err(err) => self.check_error_with_driver_in_path(
+                    &driver_in_path,
+                    &driver_in_path_version,
+                    err,
+                )?,
             }
         }
 
@@ -805,6 +823,24 @@ pub trait SeleniumManager {
             self.download_driver()?;
         }
         Ok(driver_path)
+    }
+
+    fn check_error_with_driver_in_path(
+        &mut self,
+        driver_in_path: &Option<String>,
+        driver_in_path_version: &Option<String>,
+        err: Error,
+    ) -> Result<(), Error> {
+        if driver_in_path_version.is_some() && driver_in_path.is_some() {
+            self.get_logger().warn(format!(
+                "Exception managing {}: {}",
+                self.get_browser_name(),
+                err
+            ));
+            Ok(())
+        } else {
+            Err(err)
+        }
     }
 
     fn is_driver(&self, entry: &DirEntry) -> bool {
