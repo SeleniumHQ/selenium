@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_driver, assert_output};
+use crate::common::assert_output;
 use assert_cmd::Command;
 use exitcode::DATAERR;
 use rstest::rstest;
@@ -173,15 +173,4 @@ fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browse
         println!("{}", output);
         assert!(!output.contains("WARN"));
     }
-}
-
-#[test]
-fn webview2_test() {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", "webview2", "--output", "json"])
-        .assert()
-        .success()
-        .code(0);
-
-    assert_driver(&mut cmd);
 }

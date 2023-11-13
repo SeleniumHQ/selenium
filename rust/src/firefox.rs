@@ -73,6 +73,7 @@ pub struct FirefoxManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub download_browser: bool,
 }
 
 impl FirefoxManager {
@@ -88,6 +89,7 @@ impl FirefoxManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            download_browser: false,
         }))
     }
 
@@ -216,54 +218,57 @@ impl SeleniumManager for FirefoxManager {
             _ => {
                 self.assert_online_or_err(OFFLINE_REQUEST_ERR_MSG)?;
 
-                let driver_releases_result = parse_json_from_url::<GeckodriverReleases>(
+                let driver_version = match parse_json_from_url::<GeckodriverReleases>(
                     self.get_http_client(),
                     DRIVER_VERSIONS_URL.to_string(),
-                );
-                let driver_version = if driver_releases_result.is_ok() {
-                    let driver_releases = driver_releases_result.unwrap();
-                    let major_browser_version_int =
-                        major_browser_version.parse::<u32>().unwrap_or_default();
-                    let filtered_versions: Vec<String> = driver_releases
-                        .geckodriver_releases
-                        .into_iter()
-                        .filter(|r| {
-                            major_browser_version_int >= r.min_firefox_version
-                                && (r.max_firefox_version.is_none()
-                                    || (r.max_firefox_version.is_some()
-                                        && major_browser_version_int
-                                            <= r.max_firefox_version.unwrap()))
-                        })
-                        .map(|r| r.geckodriver_version)
-                        .collect();
-                    self.log.debug(format!(
-                        "Valid {} versions for {} {}: {:?}",
-                        &self.driver_name,
-                        &self.browser_name,
-                        major_browser_version_int,
-                        filtered_versions
-                    ));
-                    if filtered_versions.is_empty() {
-                        return Err(anyhow!(format!(
-                            "Not valid {} version found for {} {}",
-                            &self.driver_name, &self.browser_name, major_browser_version_int
-                        )));
-                    } else {
-                        filtered_versions.first().unwrap().to_string()
+                ) {
+                    Ok(driver_releases) => {
+                        let major_browser_version_int =
+                            major_browser_version.parse::<u32>().unwrap_or_default();
+                        let filtered_versions: Vec<String> = driver_releases
+                            .geckodriver_releases
+                            .into_iter()
+                            .filter(|r| {
+                                major_browser_version_int >= r.min_firefox_version
+                                    && (r.max_firefox_version.is_none()
+                                        || (r.max_firefox_version.is_some()
+                                            && major_browser_version_int
+                                                <= r.max_firefox_version.unwrap()))
+                            })
+                            .map(|r| r.geckodriver_version)
+                            .collect();
+                        self.log.debug(format!(
+                            "Valid {} versions for {} {}: {:?}",
+                            &self.driver_name,
+                            &self.browser_name,
+                            major_browser_version_int,
+                            filtered_versions
+                        ));
+                        if filtered_versions.is_empty() {
+                            return Err(anyhow!(format!(
+                                "Not valid {} version found for {} {}",
+                                &self.driver_name, &self.browser_name, major_browser_version_int
+                            )));
+                        } else {
+                            filtered_versions.first().unwrap().to_string()
+                        }
                     }
-                } else {
-                    self.log.warn(format!(
-                        "Problem reading {} versions: {}. Using latest {} version",
-                        &self.driver_name,
-                        driver_releases_result.err().unwrap(),
-                        &self.driver_name,
-                    ));
-                    let latest_url = format!(
-                        "{}{}",
-                        self.get_driver_mirror_url_or_default(DRIVER_URL),
-                        LATEST_RELEASE
-                    );
-                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?
+                    Err(err) => {
+                        self.log.warn(format!(
+                            "Problem reading {} versions: {}. Using latest {} version",
+                            &self.driver_name, err, &self.driver_name,
+                        ));
+                        let latest_url = format!(
+                            "{}{}",
+                            self.get_driver_mirror_url_or_default(DRIVER_URL),
+                            LATEST_RELEASE
+                        );
+                        read_redirect_from_link(
+                            self.get_http_client(),
+                            latest_url,
+                            self.get_logger(),
+                        )?
+                    }
                 };
 
                 let driver_ttl = self.get_ttl();
@@ -588,6 +593,14 @@ impl SeleniumManager for FirefoxManager {
             FIREFOX_VOLUME
         };
         Ok(Some(browser_label))
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }
 
