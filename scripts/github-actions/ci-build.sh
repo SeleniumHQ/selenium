@@ -15,7 +15,7 @@ bazel query @npm//:all >/dev/null
 # shellcheck disable=SC2046
 bazel test --config=remote-ci --build_tests_only \
   --test_tag_filters=-exclusive-if-local,-skip-remote \
-  --keep_going --flaky_test_attempts=2 \
+  --keep_going --flaky_test_attempts=2 --cache_test_results=no\
   //dotnet/...  \
   //java/... \
   //javascript/atoms/... //javascript/webdriver/... \
