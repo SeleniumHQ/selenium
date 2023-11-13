@@ -21,7 +21,6 @@ import time
 import pytest
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service
 
 

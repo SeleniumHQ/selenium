@@ -41,8 +41,6 @@ class DriverFinder:
             raise NoSuchDriverException(msg) from err
 
         if path is None or not Path(path).is_file():
-            raise NoSuchDriverException(
-                f"Unable to locate or obtain driver for {options.capabilities['browserName']}"
-            )
+            raise NoSuchDriverException(f"Unable to locate or obtain driver for {options.capabilities['browserName']}")
 
         return path

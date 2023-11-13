@@ -137,9 +137,7 @@ def driver(request):
         if driver_class == "Chrome":
             options = get_options(driver_class, request.config)
         if driver_class == "Remote":
-            options = (
-                get_options("Firefox", request.config) or webdriver.FirefoxOptions()
-            )
+            options = get_options("Firefox", request.config) or webdriver.FirefoxOptions()
             options.set_capability("moz:firefoxOptions", {})
             options.enable_downloads = True
         if driver_class == "WebKitGTK":
@@ -282,9 +280,7 @@ def server(request):
             ]
         )
         print(f"Selenium server running as process: {process.pid}")
-        assert wait_for_server(
-            url, 10
-        ), f"Timed out waiting for Selenium server at {url}"
+        assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
         print("Selenium server is ready")
         yield process
         process.terminate()
