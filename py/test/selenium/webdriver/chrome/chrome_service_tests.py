@@ -15,13 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 import os
-import pytest
 import subprocess
 import time
 
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.service import Service
+import pytest
+
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.service import Service
 
 
 @pytest.mark.xfail_chrome(raises=WebDriverException)

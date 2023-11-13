@@ -21,15 +21,7 @@ namespace OpenQA.Selenium.Environment
 
         public DriverFactory(string driverPath, string browserBinaryLocation)
         {
-            if (string.IsNullOrEmpty(driverPath))
-            {
-                this.driverPath = TestContext.CurrentContext.TestDirectory;
-            }
-            else
-            {
-                this.driverPath = driverPath;
-            }
-
+            this.driverPath = driverPath;
             this.browserBinaryLocation = browserBinaryLocation;
 
             this.PopulateServiceTypes();

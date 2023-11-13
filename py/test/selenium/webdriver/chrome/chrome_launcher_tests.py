@@ -17,8 +17,6 @@
 
 import pytest
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
 
 @pytest.mark.no_driver_after_test
 def test_launch_and_close_browser(clean_driver, clean_service):

@@ -112,9 +112,7 @@ class Service(ABC):
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
         if return_code:
-            raise WebDriverException(
-                f"Service {self._path} unexpectedly exited. Status code was: {return_code}"
-            )
+            raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
         """Establishes a socket connection to determine if the service running
@@ -204,9 +202,7 @@ class Service(ABC):
             start_info = None
             if system() == "Windows":
                 start_info = subprocess.STARTUPINFO()
-                start_info.dwFlags = (
-                    subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
-                )
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
                 start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(

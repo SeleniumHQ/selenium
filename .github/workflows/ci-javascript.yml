@@ -5,6 +5,13 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: javascript-build
+      run: bazel build //javascript/node/selenium-webdriver:selenium-webdriver
   browser-tests:
     name: Browser Tests
     needs: build

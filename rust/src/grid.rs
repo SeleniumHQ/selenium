@@ -45,6 +45,7 @@ pub struct GridManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub download_browser: bool,
     pub driver_url: Option<String>,
 }
 
@@ -62,6 +63,7 @@ impl GridManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            download_browser: false,
             driver_url: None,
         }))
     }
@@ -260,5 +262,13 @@ impl SeleniumManager for GridManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }
