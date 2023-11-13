@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using OpenQA.Selenium.Internal;
 using NUnit.Framework;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -45,6 +46,11 @@ namespace OpenQA.Selenium.Environment
                 {
                     var baseDirectory = AppContext.BaseDirectory;
                     standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver");
+                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    standaloneTestJar += ".exe";
                 }
 
                 Console.Write("Standalone jar is " + standaloneTestJar);
