@@ -67,7 +67,6 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       io.netty.handler.codec.http.HttpRequest nettyRequest =
           (io.netty.handler.codec.http.HttpRequest) msg;
 
-
       if (nettyRequest.headers().contains("Sec-WebSocket-Version")
           && "upgrade".equalsIgnoreCase(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
