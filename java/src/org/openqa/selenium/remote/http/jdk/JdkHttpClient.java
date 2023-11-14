@@ -124,34 +124,28 @@ public class JdkHttpClient implements HttpClient {
       builder = builder.authenticator(authenticator);
     }
 
-    String proxyHost = System.getProperty("http.proxyHost");
-    String proxyPort = System.getProperty("http.proxyPort");
-
-    Proxy proxy =
-        (proxyHost != null && proxyPort != null)
-            ? new Proxy(
-                Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)))
-            : config.proxy();
-
-    ProxySelector proxySelector =
-        new ProxySelector() {
-          @Override
-          public List<Proxy> select(URI uri) {
-            if (proxy == null) {
+    Proxy proxy = config.proxy();
+    if (proxy != null) {
+      ProxySelector proxySelector =
+          new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+              if (proxy == null) {
+                return List.of();
+              }
+              if (uri.getScheme().toLowerCase().startsWith("http")) {
+                return List.of(proxy);
+              }
               return List.of();
             }
-            if (uri.getScheme().toLowerCase().startsWith("http")) {
-              return List.of(proxy);
-            }
-            return List.of();
-          }
 
-          @Override
-          public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-            // Do nothing
-          }
-        };
-    builder = builder.proxy(proxySelector);
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+              // Do nothing
+            }
+          };
+      builder = builder.proxy(proxySelector);
+    }
 
     SSLContext sslContext = config.sslContext();
     if (sslContext != null) {
