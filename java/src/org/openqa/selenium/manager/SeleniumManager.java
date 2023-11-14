@@ -66,6 +66,8 @@ public class SeleniumManager {
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
   private static final String BETA_PREFIX = "0.";
   private static final String EXE = ".exe";
+  private static final int RUN_COMMAND_RETRIES = 3;
+  private static final int RUN_COMMAND_POLL_TIME_SEC = 3;
 
   private static volatile SeleniumManager manager;
   private final String managerPath = System.getenv("SE_MANAGER_PATH");
@@ -118,21 +120,37 @@ public class SeleniumManager {
   private static Result runCommand(Path binary, List<String> arguments) {
     LOG.fine(String.format("Executing Process: %s", arguments));
 
-    String output;
-    int code;
-    try {
-      arguments.add(0, binary.toAbsolutePath().toString());
-      Process process = new ProcessBuilder(arguments).redirectErrorStream(true).start();
-      if (!process.waitFor(1, TimeUnit.HOURS)) {
-        LOG.warning("Selenium Manager did not exit, shutting it down");
-        process.destroy();
+    String output = null;
+    int code = 0;
+    int retryCount = 0;
+    arguments.add(0, binary.toAbsolutePath().toString());
+    while (retryCount < RUN_COMMAND_RETRIES) {
+      try {
+        Process process = new ProcessBuilder(arguments).redirectErrorStream(true).start();
+        if (!process.waitFor(1, TimeUnit.HOURS)) {
+          LOG.warning("Selenium Manager did not exit, shutting it down");
+          process.destroy();
+        }
+        code = process.exitValue();
+        output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        break; // Break out of the retry loop on success
+      } catch (Exception e) {
+        retryCount++;
+        if (retryCount >= RUN_COMMAND_RETRIES) {
+          throw new WebDriverException(
+              "Failed to run command after " + retryCount + " retries: " + arguments, e);
+        }
+        LOG.fine(
+            String.format(
+                "Failed to run command, retrying in %d seconds", RUN_COMMAND_POLL_TIME_SEC));
+        try {
+          Thread.sleep(TimeUnit.SECONDS.toMillis(RUN_COMMAND_POLL_TIME_SEC));
+        } catch (InterruptedException ex) {
+          // Ignored
+        }
       }
-      code = process.exitValue();
-      output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-
-    } catch (Exception e) {
-      throw new WebDriverException("Failed to run command: " + arguments, e);
     }
+
     SeleniumManagerOutput jsonOutput = null;
     JsonException failedToParse = null;
     String dump = output;
