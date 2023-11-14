@@ -41,6 +41,7 @@ NUGET
     NUnitLite (3.13.2)
       NETStandard.Library (>= 2.0)
       NUnit (3.13.2)
+    Runfiles (0.12)
     System.Diagnostics.EventLog (7.0)
       System.Security.Principal.Windows (>= 5.0) - restriction: || (&& (== net7.0) (>= net462)) (&& (== net7.0) (< net6.0)) (== netstandard2.0)
     System.Diagnostics.Tools (4.3)

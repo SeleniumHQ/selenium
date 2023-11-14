@@ -10,8 +10,8 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/119.0/linux-x86_64/en-US/firefox-119.0.tar.bz2",
-        sha256 = "3cba47e712cec5de5716666ef640f678d65ffb3c8ed5a67986296dcfa59fbc32",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/119.0.1/linux-x86_64/en-US/firefox-119.0.1.tar.bz2",
+        sha256 = "7d7e65a8e8f11a821545cdb9a3348c68d4fd60d2b6f5454fb17dc4d42fabde56",
         build_file_content = """
 filegroup(
     name = "files",
@@ -27,15 +27,15 @@ exports_files(
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/119.0/mac/en-US/Firefox%20119.0.dmg",
-        sha256 = "9ea862f623fb3ffbdc6af5cbab34aa7a57aff0c7b13789ccca03ceb73ccae2e9",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/119.0.1/mac/en-US/Firefox%20119.0.1.dmg",
+        sha256 = "e8aaf761df3a59e29bceb0a3331b097ba9a72a300d5dee677d11b908c8487701",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b4/linux-x86_64/en-US/firefox-120.0b4.tar.bz2",
-        sha256 = "820940b16184844d33acf58729ec7058b5a4e4faf6182810a51b66ae934f062b",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b7/linux-x86_64/en-US/firefox-120.0b7.tar.bz2",
+        sha256 = "c63d6c900c9c085e831807aa0d2456df51b06eed24a8a8314cae6131351b851b",
         build_file_content = """
 filegroup(
     name = "files",
@@ -51,15 +51,15 @@ exports_files(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b4/mac/en-US/Firefox%20120.0b4.dmg",
-        sha256 = "36ec8e6da5b442ee0681b6ccaba0a00fa649ea6eaa073fedd9690505956b1ed0",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b7/mac/en-US/Firefox%20120.0b7.dmg",
+        sha256 = "8244f255b15f3719404dd2766470aa5a2a1a0452dd3b7c7aaf7ec4fc3deb9335",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
     http_archive(
         name = "linux_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b4/linux-x86_64/en-US/firefox-120.0b4.tar.bz2",
-        sha256 = "820940b16184844d33acf58729ec7058b5a4e4faf6182810a51b66ae934f062b",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b7/linux-x86_64/en-US/firefox-120.0b7.tar.bz2",
+        sha256 = "c63d6c900c9c085e831807aa0d2456df51b06eed24a8a8314cae6131351b851b",
         build_file_content = """
 filegroup(
     name = "files",
@@ -75,8 +75,8 @@ exports_files(
 
     dmg_archive(
         name = "mac_dev_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b4/mac/en-US/Firefox%20120.0b4.dmg",
-        sha256 = "36ec8e6da5b442ee0681b6ccaba0a00fa649ea6eaa073fedd9690505956b1ed0",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/120.0b7/mac/en-US/Firefox%20120.0b7.dmg",
+        sha256 = "8244f255b15f3719404dd2766470aa5a2a1a0452dd3b7c7aaf7ec4fc3deb9335",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
@@ -96,10 +96,10 @@ exports_files(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/0653c991-65a8-45b1-a86e-5054fb37379a/MicrosoftEdge-118.0.2088.76.pkg",
-        sha256 = "19818679657a36795fe4824869361cdca55cb27ddb89e804248db3c99f41cdab",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/fba50137-9cc2-40da-9b02-dbb606193c1a/MicrosoftEdge-119.0.2151.46.pkg",
+        sha256 = "3cbd9e4e2360664409454615855968a2465e5f1d13480263824ea79da8ac421a",
         move = {
-            "MicrosoftEdge-118.0.2088.76.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-119.0.2151.46.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
