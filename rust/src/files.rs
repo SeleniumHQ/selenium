@@ -67,14 +67,6 @@ impl BrowserPath {
     }
 }
 
-pub fn create_empty_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
-    if let Some(p) = path.parent() {
-        create_path_if_not_exists(p)?;
-        fs::remove_dir_all(p).and_then(|_| fs::create_dir(p))?;
-    }
-    Ok(())
-}
-
 pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
@@ -185,7 +177,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
         "Moving extracted files and folders from {} to {}",
         core_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&core_str, &target_str)?;
 
     Ok(())
@@ -291,7 +283,7 @@ pub fn uncompress_deb(
         "Moving extracted files and folders from {} to {}",
         opt_edge_str, target_str
     ));
-    create_empty_parent_path_if_not_exists(target)?;
+    create_parent_path_if_not_exists(target)?;
     fs::rename(&opt_edge_str, &target_str)?;
 
     Ok(())
