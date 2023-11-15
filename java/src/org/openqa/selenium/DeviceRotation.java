@@ -35,9 +35,7 @@ public class DeviceRotation {
   private int y = 0;
   private int z = 0;
 
-  /**
-   * Instantiate a DeviceRotation object based on three integers.
-   */
+  /** Instantiate a DeviceRotation object based on three integers. */
   public DeviceRotation(int x, int y, int z) {
     this.x = x;
     this.y = y;
@@ -51,7 +49,8 @@ public class DeviceRotation {
    */
   public DeviceRotation(Map<String, Number> map) {
     if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
-      throw new IllegalArgumentException("Could not initialize DeviceRotation with map given: " + map);
+      throw new IllegalArgumentException(
+          "Could not initialize DeviceRotation with map given: " + map);
     }
     this.x = map.get("x").intValue();
     this.y = map.get("y").intValue();
@@ -61,30 +60,41 @@ public class DeviceRotation {
 
   private void validateParameters(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0) {
-      throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
+      throw new IllegalArgumentException(
+          String.format(
+              "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
     } else if (x >= 360 || y >= 360 || z >= 360) {
-      throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s", x, y, z));
+      throw new IllegalArgumentException(
+          String.format(
+              "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s",
+              x, y, z));
     }
   }
 
-  /** @return The x. */
+  /**
+   * @return The x.
+   */
   public int getX() {
     return x;
   }
 
-  /** @return The y. */
+  /**
+   * @return The y.
+   */
   public int getY() {
     return y;
   }
 
-  /** @return The z. */
+  /**
+   * @return The z.
+   */
   public int getZ() {
     return z;
   }
 
-  /** @return All axes mapped to a Map. */
+  /**
+   * @return All axes mapped to a Map.
+   */
   public Map<String, Integer> parameters() {
     HashMap<String, Integer> values = new HashMap<>();
     values.put("x", this.x);

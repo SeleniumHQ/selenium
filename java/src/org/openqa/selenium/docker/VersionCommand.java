@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.ImmutableMap;
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import org.openqa.selenium.docker.v1_41.V141Docker;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -28,20 +34,12 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class VersionCommand {
 
   private static final Json JSON = new Json();
   // Insertion order matters, and is preserved by ImmutableMap.
-  private static final Map<Version, Function<HttpHandler, DockerProtocol>>
-    SUPPORTED_VERSIONS = ImmutableMap.of(new Version("1.40"), V141Docker::new);
+  private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
+      ImmutableMap.of(new Version("1.40"), V141Docker::new);
 
   private final HttpHandler handler;
 
@@ -63,19 +61,19 @@ class VersionCommand {
       Version minVersion = new Version((String) raw.get("MinAPIVersion"));
 
       return SUPPORTED_VERSIONS.entrySet().stream()
-        .filter(entry -> {
-          Version version = entry.getKey();
-          if (version.equalTo(maxVersion) || version.equalTo(minVersion)) {
-            return true;
-          }
-          return version.isLessThan(maxVersion) && version.isGreaterThan(minVersion);
-        })
-        .map(Map.Entry::getValue)
-        .map(func -> func.apply(handler))
-        .findFirst();
+          .filter(
+              entry -> {
+                Version version = entry.getKey();
+                if (version.equalTo(maxVersion) || version.equalTo(minVersion)) {
+                  return true;
+                }
+                return version.isLessThan(maxVersion) && version.isGreaterThan(minVersion);
+              })
+          .map(Map.Entry::getValue)
+          .map(func -> func.apply(handler))
+          .findFirst();
     } catch (ClassCastException | JsonException | NullPointerException | UncheckedIOException e) {
       return Optional.empty();
     }
   }
-
 }

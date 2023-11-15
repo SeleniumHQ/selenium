@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
-import org.openqa.selenium.Platform;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -29,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import org.openqa.selenium.Platform;
 
 public class Build {
-  private static final Logger log = Logger.getLogger(Build.class.getName());
+  private static final Logger LOG = Logger.getLogger(Build.class.getName());
 
   private final List<String> targets = new ArrayList<>();
 
@@ -45,7 +44,7 @@ public class Build {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
-      log.info("Not in dev mode. Ignoring attempt to build: " + targets);
+      LOG.info("Not in dev mode. Ignoring attempt to build: " + targets);
       return;
     }
 
@@ -98,10 +97,13 @@ public class Build {
 
     @Override
     public void run() {
-      try (BufferedReader buildOutput = new BufferedReader(
-          new InputStreamReader(buildProcess.getInputStream(), Charset.defaultCharset()), 8192)) {
-        for (String s = buildOutput.readLine(); s != null && !interrupted(); s =
-            buildOutput.readLine()) {
+      try (BufferedReader buildOutput =
+          new BufferedReader(
+              new InputStreamReader(buildProcess.getInputStream(), Charset.defaultCharset()),
+              8192)) {
+        for (String s = buildOutput.readLine();
+            s != null && !interrupted();
+            s = buildOutput.readLine()) {
           try {
             System.out.println(">>> " + s);
           } catch (Throwable ignored) {

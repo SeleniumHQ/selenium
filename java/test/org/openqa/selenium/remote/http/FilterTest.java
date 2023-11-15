@@ -20,14 +20,13 @@ package org.openqa.selenium.remote.http;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class FilterTest {
@@ -37,13 +36,18 @@ class FilterTest {
     AtomicBoolean handlerCalled = new AtomicBoolean(false);
     AtomicBoolean filterCalled = new AtomicBoolean(false);
 
-    HttpHandler handler = ((Filter) next -> req -> {
-      filterCalled.set(true);
-      return next.execute(req);
-    }).andFinally(req -> {
-      handlerCalled.set(true);
-      return new HttpResponse();
-    });
+    HttpHandler handler =
+        ((Filter)
+                next ->
+                    req -> {
+                      filterCalled.set(true);
+                      return next.execute(req);
+                    })
+            .andFinally(
+                req -> {
+                  handlerCalled.set(true);
+                  return new HttpResponse();
+                });
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
@@ -54,17 +58,24 @@ class FilterTest {
 
   @Test
   void shouldBePossibleToChainFiltersOneAfterAnother() {
-    HttpHandler handler = ((Filter) next -> req -> {
-      HttpResponse res = next.execute(req);
-      res.addHeader("cheese", "cheddar");
-      return res;
-    }).andThen(next -> req -> {
-      HttpResponse res = next.execute(req);
-      res.setHeader("cheese", "brie");
-      return res;
-    }).andFinally(req -> new HttpResponse());
+    HttpHandler handler =
+        ((Filter)
+                next ->
+                    req -> {
+                      HttpResponse res = next.execute(req);
+                      res.addHeader("cheese", "cheddar");
+                      return res;
+                    })
+            .andThen(
+                next ->
+                    req -> {
+                      HttpResponse res = next.execute(req);
+                      res.setHeader("cheese", "brie");
+                      return res;
+                    })
+            .andFinally(req -> new HttpResponse());
 
-      HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
+    HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
     assertThat(res).isNotNull();
     // Because the headers are applied to the response _after_ the request has been processed,
@@ -76,22 +87,29 @@ class FilterTest {
   void eachFilterShouldOnlyBeCalledOnce() {
     AtomicInteger rootCalls = new AtomicInteger(0);
 
-    HttpHandler root = req -> {
-      rootCalls.incrementAndGet();
-      return new HttpResponse();
-    };
+    HttpHandler root =
+        req -> {
+          rootCalls.incrementAndGet();
+          return new HttpResponse();
+        };
 
     AtomicInteger filterOneCount = new AtomicInteger(0);
-    root = root.with(httpHandler -> req -> {
-      filterOneCount.incrementAndGet();
-      return httpHandler.execute(req);
-    });
+    root =
+        root.with(
+            httpHandler ->
+                req -> {
+                  filterOneCount.incrementAndGet();
+                  return httpHandler.execute(req);
+                });
 
     AtomicInteger filterTwoCount = new AtomicInteger(0);
-    root = root.with(httpHandler -> req -> {
-      filterTwoCount.incrementAndGet();
-      return httpHandler.execute(req);
-    });
+    root =
+        root.with(
+            httpHandler ->
+                req -> {
+                  filterTwoCount.incrementAndGet();
+                  return httpHandler.execute(req);
+                });
 
     root.execute(new HttpRequest(GET, "/cheese"));
 
@@ -104,17 +122,25 @@ class FilterTest {
   void filtersShouldBeCalledInTheOrderAddedWithLastInCalledFirst() {
     List<String> ordered = new ArrayList<>();
 
-    HttpHandler inner = req -> {
-      ordered.add("inner");
-      return new HttpResponse();
-    };
-    HttpHandler handler = inner.with(next -> req -> {
-      ordered.add("middle");
-      return next.execute(req);
-    }).with(next -> req -> {
-      ordered.add("outer");
-      return next.execute(req);
-    });
+    HttpHandler inner =
+        req -> {
+          ordered.add("inner");
+          return new HttpResponse();
+        };
+    HttpHandler handler =
+        inner
+            .with(
+                next ->
+                    req -> {
+                      ordered.add("middle");
+                      return next.execute(req);
+                    })
+            .with(
+                next ->
+                    req -> {
+                      ordered.add("outer");
+                      return next.execute(req);
+                    });
 
     handler.execute(new HttpRequest(GET, "/cheese"));
 

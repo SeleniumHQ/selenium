@@ -21,9 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Meant to be used together with {#link @ScheduledExecutedService.scheduleAtFixedRate}.
- * When scheduleAtFixedRate is used, and the Runnable fails, the subsequent executions are
- * suspended.
+ * Meant to be used together with {#link @ScheduledExecutedService.scheduleAtFixedRate}. When
+ * scheduleAtFixedRate is used, and the Runnable fails, the subsequent executions are suspended.
  * Using this class helps to guard the execution and keeps the scheduleAtFixedRate working.
  */
 public class GuardedRunnable {

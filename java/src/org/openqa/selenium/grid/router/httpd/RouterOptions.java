@@ -30,15 +30,20 @@ public class RouterOptions {
   }
 
   public String subPath() {
-    return config.get(NETWORK, "sub-path").map(prefix -> {
-      prefix = prefix.trim();
-      if (!prefix.startsWith("/")) {
-        prefix = "/" + prefix; //Prefix with a '/' if absent.
-      }
-      if (prefix.endsWith("/")) {
-        prefix = prefix.substring(0, prefix.length() -1); //Remove the trailing '/' if present.
-      }
-      return prefix;
-    }).orElse("");
+    return config
+        .get(NETWORK, "sub-path")
+        .map(
+            prefix -> {
+              prefix = prefix.trim();
+              if (!prefix.startsWith("/")) {
+                prefix = "/" + prefix; // Prefix with a '/' if absent.
+              }
+              if (prefix.endsWith("/")) {
+                prefix =
+                    prefix.substring(0, prefix.length() - 1); // Remove the trailing '/' if present.
+              }
+              return prefix;
+            })
+        .orElse("");
   }
 }

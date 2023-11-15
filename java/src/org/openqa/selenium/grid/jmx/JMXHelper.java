@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.jmx;
 
 import java.lang.management.ManagementFactory;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;

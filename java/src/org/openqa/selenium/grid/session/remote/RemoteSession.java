@@ -18,12 +18,20 @@
 package org.openqa.selenium.grid.session.remote;
 
 import com.google.common.base.StandardSystemProperty;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -42,21 +50,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.Dialect.OSS;
-
-/**
- * Abstract class designed to do things like protocol conversion.
- */
+/** Abstract class designed to do things like protocol conversion. */
 public abstract class RemoteSession implements ActiveSession {
 
   private static final Logger LOG = Logger.getLogger(ActiveSession.class.getName());
@@ -86,9 +80,9 @@ public abstract class RemoteSession implements ActiveSession {
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     CommandExecutor executor = new ActiveSessionCommandExecutor(this);
-    this.driver = new Augmenter().augment(new RemoteWebDriver(
-        executor,
-        new ImmutableCapabilities(getCapabilities())));
+    this.driver =
+        new Augmenter()
+            .augment(new RemoteWebDriver(executor, new ImmutableCapabilities(getCapabilities())));
   }
 
   @Override
@@ -137,9 +131,7 @@ public abstract class RemoteSession implements ActiveSession {
       try {
         HttpClient client = HttpClient.Factory.createDefault().createClient(url);
 
-        Command command = new Command(
-            null,
-            DriverCommand.NEW_SESSION(capabilities));
+        Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
@@ -150,19 +142,24 @@ public abstract class RemoteSession implements ActiveSession {
           codec = new ReverseProxyHandler(tracer, client);
           downstream = upstream;
         } else {
-          downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
-          codec = new ProtocolConverter(tracer, client, downstream, upstream);
+          LOG.warning(
+              String.format(
+                  "Unable to match protocol versions. Found %s upstream but can handle %s",
+                  upstream, downstreamDialects));
+          return Optional.empty();
         }
 
         Response response = result.createResponse();
         //noinspection unchecked
-        Optional<ActiveSession> activeSession = Optional.of(newActiveSession(
-            additionalData,
-            downstream,
-            upstream,
-            codec,
-            new SessionId(response.getSessionId()),
-            (Map<String, Object>) response.getValue()));
+        Optional<ActiveSession> activeSession =
+            Optional.of(
+                newActiveSession(
+                    additionalData,
+                    downstream,
+                    upstream,
+                    codec,
+                    new SessionId(response.getSessionId()),
+                    (Map<String, Object>) response.getValue()));
         activeSession.ifPresent(session -> LOG.info("Started new session " + session));
         return activeSession;
       } catch (IOException | IllegalStateException | NullPointerException e) {

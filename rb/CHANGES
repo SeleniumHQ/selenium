@@ -1,3 +1,125 @@
+4.15.0 (unreleased)
+=========================
+
+* Do not set browser binary in selenium manager if it is an empty string (#12738)
+* Add flaky condition to guards to mark unreliable tests
+* Rake update needs to build latest grid for running remote tests
+* Add CDP v119 and remove v116
+* Implement file downloads (#12979)
+
+4.14.0 (2023-10-09)
+=========================
+Ruby:
+  * allow users to access the full script of the atom directly
+
+BiDi:
+  * Released selenium-devtools 0.118.0 (supports CDP v85, v116, v117, v118)
+
+4.13.1 (2023-09-25)
+=========================
+Ruby:
+  * Fix bug preventing logging chromedriver to file
+
+4.13.0 (2023-09-25)
+=========================
+Ruby:
+  * Fix bug preventing using performance logging with chromium
+  * Allow users to set Selenium Manager path by environment variable (#12752)
+  * Allow service to be started before the driver
+  * remove deprecated driver extensions for location and network connection
+
+BiDi:
+  * Released selenium-devtools 0.117.0 (supports CDP v85, v115, v116, v117)
+
+4.12.0 (2023-08-31)
+=========================
+Ruby:
+  * Fix bug preventing good error messages in Selenium Manager when stdout empty
+  * Fix bug with Firefox not loading net/http library by default (#12506)
+  * Remove support for using capabilities in local drivers
+
+BiDi:
+  * Released selenium-devtools 0.116.0 (supports CDP v85, v114, v115, v116)
+
+4.11.0 (2023-07-31)
+=========================
+Ruby:
+  * Made network interception threads fail silently (#12226)
+  * Have Selenium Manager binary locate drivers on PATH (#12345)
+  * Add browser output from selenium manager to options (#12398)
+  * Remove deprecated code (#12417)
+BiDi:
+  * Released selenium-devtools 0.115.0 (supports CDP v85, v113, v114, v115)
+Edge:
+  * Adding ignore process match for IE Mode across bindings (#12279)
+
+4.10.0 (2023-06-07)
+=========================
+Ruby:
+  * Implement proxy support for Selenium Manager
+  * Prevent setting driver log level in Safari
+  * Change all Selenium Manager logging to :debug (#12145)
+  * Error messages include links to documentation
+  * Add custom error class for driver location and improve error logic
+
+BiDi:
+  * Released selenium-devtools 0.114.0 (supports CDP v85, v112, v113, v114)
+
+Edge:
+  * Add support for webview2
+
+4.9.1 (2023-05-08)
+=========================
+Ruby:
+  * Allow users to specify driver process output in Service class (#11964)
+  * Updated minimum required Ruby version to 3.0
+  * Selenium Logger defaults to :info and all debugging is now logged as :debug (#11967)
+  * Every logging entry can be ignored based on ID, not just warnings
+  * Logging entries can be filtered to allow or ignore specific IDs
+
+BiDi:
+  * Fix bug with loading devtools (#11931) (thanks Boris Petrov!)
+  * Released selenium-devtools 0.113.0 (supports CDP v85, v111, v112, v113)
+
+4.9.0 (2023-04-21)
+=========================
+Ruby:
+  * Fix devtools version fallback (#11869)
+  * Fix bug in selenium manager escaping back slashes in Windows (#11884)
+
+BiDi:
+  * Released selenium-devtools 0.112.0 (supports CDP v85, v110, v111, v112)
+
+4.8.6 (2023-03-29)
+=========================
+Ruby:
+  * Properly escape arguments passed to Selenium Manager
+
+4.8.5 (2023-03-28)
+=========================
+Ruby:
+  * Wrapping browser name in quotes when calling Selenium Manager
+
+4.8.4 (2023-03-28)
+=========================
+Ruby:
+  * Update the selenium-manager versions to fix an IE naming issue (#11828)
+
+4.8.3 (2023-03-26)
+=========================
+Ruby:
+  * Still need to use driver finder when using capabilities parameter
+  * Accommodate Driver Finder being sent something other than an Options instance
+
+4.8.2 (2023-03-24)
+=========================
+Ruby:
+  * Ruby driver finder (#11523)
+  * Using json output with Selenium Manager
+
+BiDi:
+  * Released selenium-devtools 0.111.0 (supports CDP v85, v109, v110, v111)
+
 4.8.1 (2023-02-17)
 =========================
 Ruby:

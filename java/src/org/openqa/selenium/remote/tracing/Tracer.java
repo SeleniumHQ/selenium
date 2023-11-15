@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.context.Context;
-
 public interface Tracer {
 
   TraceContext getCurrentContext();
 
   Propagator getPropagator();
 
-  void setOpenTelemetryContext(Context context);
-
+  AttributeMap createAttributeMap();
 }

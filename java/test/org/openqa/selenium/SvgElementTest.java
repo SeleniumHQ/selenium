@@ -19,22 +19,20 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.List;
 
 class SvgElementTest extends JupiterTestBase {
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
+  @NotYetImplemented(
+      value = FIREFOX,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
   @NotYetImplemented(SAFARI)
   void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
@@ -67,7 +65,6 @@ class SvgElementTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
@@ -81,5 +78,4 @@ class SvgElementTest extends JupiterTestBase {
     wait.until(elementTextToEqual(resultElement, "text_apple"));
     assertThat(resultElement.getText()).isEqualTo("text_apple");
   }
-
 }

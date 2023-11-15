@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -26,7 +26,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"        
           git add common/mirror/selenium
-          git commit -m "Update mirror info" -a
+          git commit -m "Update mirror info (`date`)" -a
           echo "::set-output name=commit::true"
         fi
     - name: Push changes

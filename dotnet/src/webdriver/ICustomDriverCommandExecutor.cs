@@ -36,7 +36,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Registers a set of commands to be executed with this driver instance.
         /// </summary>
-        /// <param name="commands">An <see cref="IReadOnlyDictionary{string, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
+        /// <param name="commands">An <see cref="IReadOnlyDictionary{String, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
         void RegisterCustomDriverCommands(IReadOnlyDictionary<string, CommandInfo> commands);
 
         /// <summary>

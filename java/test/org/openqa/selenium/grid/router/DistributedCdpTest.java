@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
+import com.google.common.collect.ImmutableMap;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -41,14 +47,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 class DistributedCdpTest {
 
   @BeforeAll
@@ -62,21 +60,30 @@ class DistributedCdpTest {
   void ensureBasicFunctionality() {
     Browser browser = Browser.detect();
 
-    Deployment deployment = DeploymentTypes.DISTRIBUTED.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "selenium-manager = true\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.DISTRIBUTED.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader(
+                    "[node]\n"
+                        + "selenium-manager = false\n"
+                        + "driver-implementation = "
+                        + browser.displayName())));
 
-    Server<?> server = new NettyServer(
-      new BaseServerOptions(new MapConfig(ImmutableMap.of())),
-      req -> new HttpResponse().setContent(Contents.utf8String(
-        "<script>document.write(navigator.userAgent);</script><body><h1 id=header>Cheese</h1>")))
-      .start();
+    Server<?> server =
+        new NettyServer(
+                new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+                req ->
+                    new HttpResponse()
+                        .setContent(
+                            Contents.utf8String(
+                                "<script>document.write(navigator.userAgent);</script><body><h1"
+                                    + " id=header>Cheese</h1>")))
+            .start();
 
-    WebDriver driver = new RemoteWebDriver(
-      deployment.getServer().getUrl(), addBrowserPath(browser.getCapabilities()));
+    WebDriver driver =
+        new RemoteWebDriver(
+            deployment.getServer().getUrl(), addBrowserPath(browser.getCapabilities()));
     driver = new Augmenter().augment(driver);
 
     try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
@@ -100,7 +107,8 @@ class DistributedCdpTest {
 
       MutableCapabilities newCaps = new MutableCapabilities(caps);
       @SuppressWarnings("unchecked")
-      Map<String, Object> rawOptions = (Map<String, Object>) newCaps.getCapability(ChromeOptions.CAPABILITY);
+      Map<String, Object> rawOptions =
+          (Map<String, Object>) newCaps.getCapability(ChromeOptions.CAPABILITY);
       HashMap<String, Object> googOptions = new HashMap<>(rawOptions);
       googOptions.put("binary", binary);
       newCaps.setCapability(ChromeOptions.CAPABILITY, googOptions);

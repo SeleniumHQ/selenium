@@ -17,13 +17,17 @@
 
 package org.openqa.selenium.grid;
 
-import com.google.common.collect.Sets;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-
+import com.google.common.collect.Sets;
+import java.io.PrintStream;
+import java.util.LinkedHashSet;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -35,13 +39,6 @@ import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
-
-import java.io.PrintStream;
-import java.util.LinkedHashSet;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public abstract class TemplateGridCommand implements CliCommand {
 
@@ -55,9 +52,9 @@ public abstract class TemplateGridCommand implements CliCommand {
     allFlags.add(helpFlags);
     allFlags.add(configFlags);
 
-    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), true)
-      .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
-      .forEach(allFlags::add);
+    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
+        .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
+        .forEach(allFlags::add);
 
     JCommander.Builder builder = JCommander.newBuilder().programName(getName());
     allFlags.forEach(builder::addObject);
@@ -84,19 +81,15 @@ public abstract class TemplateGridCommand implements CliCommand {
       allConfigs.add(new EnvConfig());
 
       // 2. System properties
-      allConfigs.add(new ConcatenatingConfig(
-        getSystemPropertiesConfigPrefix(),
-        '.',
-        System.getProperties()));
+      allConfigs.add(
+          new ConcatenatingConfig(getSystemPropertiesConfigPrefix(), '.', System.getProperties()));
 
       // 3. Cli arguments
-      Set<String> cliArgs = commander
-        .getFields()
-        .values()
-        .stream()
-        .filter(ParameterDescription::isAssigned)
-        .map(ParameterDescription::getLongestName)
-        .collect(Collectors.toSet());
+      Set<String> cliArgs =
+          commander.getFields().values().stream()
+              .filter(ParameterDescription::isAssigned)
+              .map(ParameterDescription::getLongestName)
+              .collect(Collectors.toSet());
       if (cliArgs.size() > 0) {
         allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs, true)));
       }

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.openqa.selenium.testing.JupiterTestBase;
-
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 public abstract class DevToolsTestBase extends JupiterTestBase {
 
@@ -41,8 +41,8 @@ public abstract class DevToolsTestBase extends JupiterTestBase {
       devTools.clearListeners();
     } catch (DevToolsException e) {
       if (isFirefox(driver)) {
-        assumeTrue(false,
-          "Unable to clear listeners on Firefox because Fetch domain is not implemented");
+        assumeTrue(
+            false, "Unable to clear listeners on Firefox because Fetch domain is not implemented");
       }
       throw e;
     }

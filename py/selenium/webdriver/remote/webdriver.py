@@ -14,14 +14,16 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 """The WebDriver implementation."""
+import base64
 import contextlib
 import copy
+import os
 import pkgutil
 import types
 import typing
 import warnings
+import zipfile
 from abc import ABCMeta
 from base64 import b64decode
 from base64 import urlsafe_b64encode
@@ -62,24 +64,6 @@ from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
-_W3C_CAPABILITY_NAMES = frozenset(
-    [
-        "acceptInsecureCerts",
-        "browserName",
-        "browserVersion",
-        "pageLoadStrategy",
-        "platformName",
-        "proxy",
-        "setWindowRect",
-        "strictFileInteractability",
-        "timeouts",
-        "unhandledPromptBehavior",
-        "webSocketUrl",
-    ]
-)
-
-_OSS_W3C_CONVERSION = {"acceptSslCerts": "acceptInsecureCerts", "version": "browserVersion", "platform": "platformName"}
-
 cdp = None
 
 
@@ -89,7 +73,7 @@ def import_cdp():
         cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
-def _make_w3c_caps(caps):
+def _create_caps(caps):
     """Makes a W3C alwaysMatch capabilities object.
 
     Filters out capability names that are not in the W3C spec. Spec-compliant
@@ -102,32 +86,10 @@ def _make_w3c_caps(caps):
      - caps - A dictionary of capabilities requested by the caller.
     """
     caps = copy.deepcopy(caps)
-    profile = caps.get("firefox_profile")
     always_match = {}
-    if caps.get("proxy") and caps["proxy"].get("proxyType"):
-        caps["proxy"]["proxyType"] = caps["proxy"]["proxyType"].lower()
     for k, v in caps.items():
-        if v and k in _OSS_W3C_CONVERSION:
-            # Todo: Remove in 4.7.0 (Deprecated in 4.5.0)
-            w3c_equivalent = _OSS_W3C_CONVERSION[k]
-            warnings.warn(
-                f"{k} is not a w3c capability.  use `{w3c_equivalent}` instead.  This will no longer be"
-                f" converted in 4.7.0",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            always_match[w3c_equivalent] = v.lower() if k == "platform" else v
-        if k in _W3C_CAPABILITY_NAMES or ":" in k:
-            always_match[k] = v
-    if profile:
-        moz_opts = always_match.get("moz:firefoxOptions", {})
-        # If it's already present, assume the caller did that intentionally.
-        if "profile" not in moz_opts:
-            # Don't mutate the original capabilities.
-            new_opts = copy.deepcopy(moz_opts)
-            new_opts["profile"] = profile
-            always_match["moz:firefoxOptions"] = new_opts
-    return {"firstMatch": [{}], "alwaysMatch": always_match}
+        always_match[k] = v
+    return {"capabilities": {"firstMatch": [{}], "alwaysMatch": always_match}}
 
 
 def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
@@ -186,12 +148,12 @@ class BaseWebDriver(metaclass=ABCMeta):
 class WebDriver(BaseWebDriver):
     """Controls a browser by sending commands to a remote server. This server
     is expected to be running the WebDriver wire protocol as defined at
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
+    https://www.selenium.dev/documentation/legacy/json_wire_protocol/.
 
     :Attributes:
      - session_id - String ID of the browser session started and controlled by this WebDriver.
      - capabilities - Dictionary of effective capabilities of this browser session as returned
-         by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
+         by the remote server. See https://www.selenium.dev/documentation/legacy/desired_capabilities/
      - command_executor - remote_connection.RemoteConnection object used to execute commands.
      - error_handler - errorhandler.ErrorHandler object used to handle errors.
     """
@@ -202,9 +164,6 @@ class WebDriver(BaseWebDriver):
     def __init__(
         self,
         command_executor="http://127.0.0.1:4444",
-        desired_capabilities=None,
-        browser_profile=None,
-        proxy=None,
         keep_alive=True,
         file_detector=None,
         options: Union[BaseOptions, List[BaseOptions]] = None,
@@ -215,56 +174,19 @@ class WebDriver(BaseWebDriver):
         :Args:
          - command_executor - Either a string representing URL of the remote server or a custom
              remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
-         - desired_capabilities - A dictionary of capabilities to request when
-             starting the browser session. Required parameter.
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.
-             Only used if Firefox is requested. Optional.
-         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
-             be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive. Defaults to True.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
         """
-        if desired_capabilities:
-            warnings.warn(
-                "desired_capabilities has been deprecated, please pass in an Options object with options kwarg",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if browser_profile:
-            warnings.warn(
-                "browser_profile has been deprecated, please pass in an Firefox Options object with options kwarg",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if proxy:
-            warnings.warn(
-                "proxy has been deprecated, please pass in an Options object with options kwarg",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if not keep_alive:
-            warnings.warn(
-                "keep_alive has been deprecated. We will be using True as the default value as we start removing it.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        capabilities = {}
-        # If we get a list we can assume that no capabilities
-        # have been passed in
+
         if isinstance(options, list):
             capabilities = create_matches(options)
-        else:
             _ignore_local_proxy = False
-            if options:
-                capabilities = options.to_capabilities()
-                _ignore_local_proxy = options._ignore_local_proxy
-            if desired_capabilities:
-                if not isinstance(desired_capabilities, dict):
-                    raise WebDriverException("Desired Capabilities must be a dictionary")
-                capabilities.update(desired_capabilities)
+        else:
+            capabilities = options.to_capabilities()
+            _ignore_local_proxy = options._ignore_local_proxy
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(
@@ -283,7 +205,7 @@ class WebDriver(BaseWebDriver):
         self.file_detector = file_detector or LocalFileDetector()
         self._authenticator_id = None
         self.start_client()
-        self.start_session(capabilities, browser_profile)
+        self.start_session(capabilities)
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -304,10 +226,10 @@ class WebDriver(BaseWebDriver):
         """Overrides the current file detector (if necessary) in limited
         context. Ensures the original file detector is set afterwards.
 
-        Example:
+        Example::
 
-        with webdriver.file_detector_context(UselessFileDetector):
-            someinput.send_keys('/etc/hosts')
+            with webdriver.file_detector_context(UselessFileDetector):
+                someinput.send_keys('/etc/hosts')
 
         :Args:
          - file_detector_class - Class of the desired file detector. If the class is different
@@ -359,32 +281,17 @@ class WebDriver(BaseWebDriver):
         """
         pass
 
-    def start_session(self, capabilities: dict, browser_profile=None) -> None:
+    def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.
 
         :Args:
          - capabilities - a capabilities dict to start the session with.
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
-        if not isinstance(capabilities, dict):
-            raise InvalidArgumentException("Capabilities must be a dictionary")
-        if browser_profile:
-            if "moz:firefoxOptions" in capabilities:
-                capabilities["moz:firefoxOptions"]["profile"] = browser_profile.encoded
-            else:
-                capabilities.update({"firefox_profile": browser_profile.encoded})
-        w3c_caps = _make_w3c_caps(capabilities)
-        parameters = {"capabilities": w3c_caps}
-        response = self.execute(Command.NEW_SESSION, parameters)
-        if "sessionId" not in response:
-            response = response["value"]
-        self.session_id = response["sessionId"]
-        self.caps = response.get("value")
 
-        # if capabilities is none we are probably speaking to
-        # a W3C endpoint
-        if not self.caps:
-            self.caps = response.get("capabilities")
+        caps = _create_caps(capabilities)
+        response = self.execute(Command.NEW_SESSION, caps)["value"]
+        self.session_id = response.get("sessionId")
+        self.caps = response.get("capabilities")
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -685,6 +592,7 @@ class WebDriver(BaseWebDriver):
         """
         with contextlib.suppress(NoSuchCookieException):
             return self.execute(Command.GET_COOKIE, {"name": name})["value"]
+        return None
 
     def delete_cookie(self, name) -> None:
         """Deletes a single cookie with the given name.
@@ -713,11 +621,13 @@ class WebDriver(BaseWebDriver):
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
             optional keys - "path", "domain", "secure", "httpOnly", "expiry", "sameSite"
 
-        Usage:
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
-            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
-            driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
+        :Usage:
+            ::
+
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure' : True})
+                driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'sameSite' : 'Strict'})
         """
         if "sameSite" in cookie_dict:
             assert cookie_dict["sameSite"] in ["Strict", "Lax", "None"]
@@ -779,6 +689,7 @@ class WebDriver(BaseWebDriver):
 
         :Usage:
             ::
+
                 driver.timeouts
         :rtype: Timeout
         """
@@ -861,13 +772,13 @@ class WebDriver(BaseWebDriver):
 
     @property
     def desired_capabilities(self) -> dict:
-        """returns the drivers current desired capabilities being used."""
+        """Returns the drivers current desired capabilities being used."""
         warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
         return self.caps
 
     @property
     def capabilities(self) -> dict:
-        """returns the drivers current capabilities being used."""
+        """Returns the drivers current capabilities being used."""
         return self.caps
 
     def get_screenshot_as_file(self, filename) -> bool:
@@ -886,8 +797,9 @@ class WebDriver(BaseWebDriver):
         """
         if not str(filename).lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.get_screenshot_as_png()
         try:
@@ -948,8 +860,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_size(800,600)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle: str = "current") -> dict:
@@ -961,8 +872,7 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_size()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
         if size.get("value", None):
@@ -982,8 +892,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_position(0,0)
         """
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle="current") -> dict:
@@ -995,11 +904,15 @@ class WebDriver(BaseWebDriver):
                 driver.get_window_position()
         """
 
-        if windowHandle != "current":
-            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
+        self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
         return {k: position[k] for k in ("x", "y")}
+
+    def _check_if_window_handle_is_current(self, windowHandle: str) -> None:
+        """Warns if the window handle is not equal to `current`."""
+        if windowHandle != "current":
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.", stacklevel=2)
 
     def get_window_rect(self) -> dict:
         """Gets the x, y coordinates of the window as well as height and width
@@ -1144,9 +1057,9 @@ class WebDriver(BaseWebDriver):
         http = urllib3.PoolManager()
         _firefox = False
         if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get(
-                "debuggerAddress"
-            )
+            debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
+        elif self.caps.get("browserName") == "msedge":
+            debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
         else:
             _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")
@@ -1222,3 +1135,40 @@ class WebDriver(BaseWebDriver):
         verified: True if the authenticator will pass user verification, False otherwise.
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
+
+    def get_downloadable_files(self) -> dict:
+        """Retrieves the downloadable files as a map of file names and their
+        corresponding URLs."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        return self.execute(Command.GET_DOWNLOADABLE_FILES)["value"]["names"]
+
+    def download_file(self, file_name: str, target_directory: str) -> None:
+        """Downloads a file with the specified file name to the target
+        directory.
+
+        file_name: The name of the file to download.
+        target_directory: The path to the directory to save the downloaded file.
+        """
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        if not os.path.exists(target_directory):
+            os.makedirs(target_directory)
+
+        contents = self.execute(Command.DOWNLOAD_FILE, {"name": file_name})["value"]["contents"]
+
+        target_file = os.path.join(target_directory, file_name)
+        with open(target_file, "wb") as file:
+            file.write(base64.b64decode(contents))
+
+        with zipfile.ZipFile(target_file, "r") as zip_ref:
+            zip_ref.extractall(target_directory)
+
+    def delete_downloadable_files(self) -> None:
+        """Deletes all downloadable files."""
+        if "se:downloadsEnabled" not in self.capabilities:
+            raise WebDriverException("You must enable downloads in order to work with downloadable files.")
+
+        self.execute(Command.DELETE_DOWNLOADABLE_FILES)

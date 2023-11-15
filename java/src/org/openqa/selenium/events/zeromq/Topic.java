@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.events.zeromq;
 
-import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.EventName;
-import org.openqa.selenium.internal.Require;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
 
 class Topic {
 

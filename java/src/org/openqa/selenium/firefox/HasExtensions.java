@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.Beta;
-
 import java.nio.file.Path;
+import org.openqa.selenium.Beta;
 
 /**
  * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
@@ -38,10 +37,11 @@ public interface HasExtensions {
   String installExtension(Path path, Boolean temporary);
 
   /**
-   * Uninstall the extension by the given identifier.
-   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
+   * Uninstall the extension by the given identifier. This value can be found in the extension's
+   * manifest, and typically ends with "@mozilla.org".
    *
-   * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
+   * @param extensionId The unique extension identifier returned by {{@link
+   *     #installExtension(Path)}}
    */
   void uninstallExtension(String extensionId);
 }

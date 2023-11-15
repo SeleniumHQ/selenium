@@ -17,7 +17,9 @@
 
 import pytest
 
+from selenium.webdriver import Proxy
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.proxy import ProxyType
 
 
 @pytest.fixture
@@ -62,3 +64,14 @@ def test_missing_capabilities_return_false_rather_than_none():
     assert options.strict_file_interactability is False
     assert options.set_window_rect is False
     assert options.accept_insecure_certs is False
+
+
+def test_add_proxy():
+    options = ArgOptions()
+    proxy = Proxy({"proxyType": ProxyType.MANUAL})
+    proxy.http_proxy = "http://user:password@http_proxy.com:8080"
+    options.proxy = proxy
+    caps = options.to_capabilities()
+
+    assert options.proxy == proxy
+    assert caps.get("proxy") == proxy.to_capabilities()

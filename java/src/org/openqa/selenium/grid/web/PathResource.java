@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.web;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -26,9 +28,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-
 import org.openqa.selenium.internal.Require;
 
 public class PathResource implements Resource {
@@ -47,11 +46,8 @@ public class PathResource implements Resource {
 
   public PathResource limit(String... subpaths) {
     return new PathResource(
-      base,
-      path -> Arrays.stream(subpaths)
-        .map(subpath -> Files.exists(base.resolve(subpath)))
-        .reduce(Boolean::logicalOr)
-        .orElse(false));
+        base,
+        path -> Arrays.stream(subpaths).anyMatch(subpath -> Files.exists(base.resolve(subpath))));
   }
 
   @Override

@@ -17,8 +17,26 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import com.google.common.collect.ImmutableMap;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.logging.Logger;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.IntrospectionException;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -43,27 +61,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.logging.Logger;
-
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.MBeanInfo;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
 class JmxTest {
 
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
@@ -77,9 +74,10 @@ class JmxTest {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
       new JMXHelper().unregister(name);
 
-      BaseServerOptions baseServerOptions = new BaseServerOptions(
-        new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+      BaseServerOptions baseServerOptions =
+          new BaseServerOptions(
+              new MapConfig(
+                  ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
 
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
@@ -90,8 +88,10 @@ class JmxTest {
       String uriValue = (String) beanServer.getAttribute(name, "Uri");
       assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
 
-    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-      | MalformedObjectNameException e) {
+    } catch (InstanceNotFoundException
+        | IntrospectionException
+        | ReflectionException
+        | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -112,13 +112,15 @@ class JmxTest {
 
       Secret secret = new Secret("cheese");
 
-      LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-          id,
-          nodeUri,
-          new ImmutableCapabilities(),
-          caps,
-          Instant.now()))).build();
+      LocalNode localNode =
+          LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
+              .add(
+                  CAPS,
+                  new TestSessionFactory(
+                      (id, caps) ->
+                          new Session(
+                              id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+              .build();
 
       assertThat(localNode).isNotNull();
 
@@ -152,8 +154,10 @@ class JmxTest {
       String gridUri = (String) beanServer.getAttribute(name, "GridUri");
       assertThat(gridUri).isEqualTo(nodeUri.toString());
 
-    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-      | MalformedObjectNameException e) {
+    } catch (InstanceNotFoundException
+        | IntrospectionException
+        | ReflectionException
+        | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -165,13 +169,13 @@ class JmxTest {
   @Test
   void shouldBeAbleToRegisterSessionQueueServerConfig() {
     try {
-      ObjectName name = new ObjectName(
-        "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
+      ObjectName name =
+          new ObjectName("org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
 
       new JMXHelper().unregister(name);
 
       NewSessionQueueOptions newSessionQueueOptions =
-        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+          new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
@@ -180,13 +184,15 @@ class JmxTest {
 
       String requestTimeout = (String) beanServer.getAttribute(name, "RequestTimeoutSeconds");
       assertThat(Long.parseLong(requestTimeout))
-        .isEqualTo(newSessionQueueOptions.getRequestTimeoutSeconds());
+          .isEqualTo(newSessionQueueOptions.getRequestTimeoutSeconds());
 
       String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalMilliseconds");
       assertThat(Long.parseLong(retryInterval))
-        .isEqualTo(newSessionQueueOptions.getRetryIntervalMilliseconds());
-    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-      | MalformedObjectNameException e) {
+          .isEqualTo(newSessionQueueOptions.getRetryIntervalMilliseconds());
+    } catch (InstanceNotFoundException
+        | IntrospectionException
+        | ReflectionException
+        | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -198,19 +204,21 @@ class JmxTest {
   @Test
   void shouldBeAbleToRegisterSessionQueue() {
     try {
-      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
+      ObjectName name =
+          new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
 
       new JMXHelper().unregister(name);
 
       Tracer tracer = DefaultTestTracer.createTracer();
 
-      NewSessionQueue sessionQueue = new LocalNewSessionQueue(
-        tracer,
-        new DefaultSlotMatcher(),
-        Duration.ofSeconds(2),
-        Duration.ofSeconds(2),
-        new Secret(""),
-        5);
+      NewSessionQueue sessionQueue =
+          new LocalNewSessionQueue(
+              tracer,
+              new DefaultSlotMatcher(),
+              Duration.ofSeconds(2),
+              Duration.ofSeconds(2),
+              new Secret(""),
+              5);
 
       assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
@@ -221,8 +229,10 @@ class JmxTest {
 
       String size = (String) beanServer.getAttribute(name, "NewSessionQueueSize");
       assertThat(Integer.parseInt(size)).isZero();
-    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-      | MalformedObjectNameException e) {
+    } catch (InstanceNotFoundException
+        | IntrospectionException
+        | ReflectionException
+        | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -242,34 +252,38 @@ class JmxTest {
     Secret secret = new Secret("cheese");
     URI nodeUri = new URI("https://example.com:1234");
 
-    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-        id,
-        nodeUri,
-        new ImmutableCapabilities(),
-        caps,
-        Instant.now()))).build();
+    LocalNode localNode =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
+            .add(
+                CAPS,
+                new TestSessionFactory(
+                    (id, caps) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+            .build();
 
-    NewSessionQueue sessionQueue = new LocalNewSessionQueue(
-      tracer,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
-      secret,
-      5);
+    NewSessionQueue sessionQueue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            secret,
+            5);
 
-    try (LocalDistributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(localNode),
-      new LocalSessionMap(tracer, bus),
-      sessionQueue,
-      new DefaultSlotSelector(),
-      secret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5),
-      Runtime.getRuntime().availableProcessors())) {
+    try (LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            sessionQueue,
+            new DefaultSlotSelector(),
+            secret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            Runtime.getRuntime().availableProcessors(),
+            new DefaultSlotMatcher())) {
 
       distributor.add(localNode);
 
@@ -293,6 +307,4 @@ class JmxTest {
       assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
     }
   }
-
 }
-

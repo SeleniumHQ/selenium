@@ -21,18 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.List;
 
 class ElementFindingTest extends JupiterTestBase {
 
@@ -108,7 +106,6 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -346,7 +343,6 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToFindASingleElementByAWeirdLookingClassName() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.className("cls-!@#$%^&*"));
@@ -354,7 +350,6 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToFindMultipleElementsByAWeirdLookingClassName() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.className("cls-!@#$%^&*"));
@@ -398,8 +393,9 @@ class ElementFindingTest extends JupiterTestBase {
   @Test
   void testShouldBeAbleToFindAnElementByXPathWithMultipleAttributes() {
     driver.get(pages.formPage);
-    WebElement element = driver.findElement(
-        By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
+    WebElement element =
+        driver.findElement(
+            By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
     assertThat(element.getTagName()).isEqualToIgnoringCase("input");
     assertThat(element.getAttribute("value")).isEqualTo("Click!");
   }
@@ -445,14 +441,16 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
-  void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
+  void
+      testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.xpath("this][isnot][valid")));
   }
 
   @Test
-  void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
+  void
+      testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -460,7 +458,8 @@ class ElementFindingTest extends JupiterTestBase {
   }
 
   @Test
-  void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
+  void
+      testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -754,38 +753,15 @@ class ElementFindingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = CHROME,
-    reason = "Element in different browsing context can not evaluate stale",
-    issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")
+  @Ignore(
+      value = CHROME,
+      reason = "Element in different browsing context can not evaluate stale",
+      issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")
   public void testAnElementFoundInADifferentFrameIsNotFound() {
     driver.get(pages.missedJsReferencePage);
     driver.switchTo().frame("inner");
     WebElement element = driver.findElement(By.id("oneline"));
     driver.switchTo().defaultContent();
-    assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(element::getText);
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(element::getText);
   }
-
-  @SwitchToTopAfterTest
-  @Test
-  @NotYetImplemented(SAFARI)
-  public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
-    driver.get(pages.missedJsReferencePage);
-
-    driver.switchTo().frame("inner");
-    WebElement first = driver.findElement(By.id("oneline"));
-
-    driver.switchTo().defaultContent();
-    WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return frames[0].document.getElementById('oneline');");
-
-
-    driver.switchTo().frame("inner");
-
-    WebElement second = driver.findElement(By.id("oneline"));
-
-    assertThat(element).isEqualTo(first);
-    assertThat(element).isEqualTo(second);
-  }
-
 }

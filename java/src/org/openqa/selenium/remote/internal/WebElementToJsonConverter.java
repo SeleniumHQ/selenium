@@ -17,34 +17,33 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.stream.Collectors.toList;
+
 import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.lang.reflect.Array;
-import static java.util.stream.Collectors.toList;
 
 /**
- * Converts {@link RemoteWebElement} objects, which may be
- * {@link WrapsElement wrapped}, into their JSON representation as defined by
- * the WebDriver wire protocol. This class will recursively convert Lists and
- * Maps to catch nested references.
+ * Converts {@link RemoteWebElement} objects, which may be {@link WrapsElement wrapped}, into their
+ * JSON representation as defined by the WebDriver wire protocol. This class will recursively
+ * convert Lists and Maps to catch nested references.
  *
- * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#webelement-json-object">
+ * @see <a
+ *     href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#webelement-json-object">
  *     WebDriver JSON Wire Protocol</a>
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
   @Override
   public Object apply(Object arg) {
-    if (arg == null || arg instanceof String || arg instanceof Boolean ||
-        arg instanceof Number) {
+    if (arg == null || arg instanceof String || arg instanceof Boolean || arg instanceof Number) {
       return arg;
     }
 
@@ -53,9 +52,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     if (arg instanceof RemoteWebElement) {
-      return ImmutableMap.of(
-        Dialect.OSS.getEncodedElementKey(), ((RemoteWebElement) arg).getId(),
-        Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
+      return ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
     }
 
     if (arg.getClass().isArray()) {
@@ -84,11 +81,11 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     throw new IllegalArgumentException(
         "Argument is of an illegal type: " + arg.getClass().getName());
   }
-  
+
   private static List<Object> arrayToList(Object array) {
     List<Object> list = new ArrayList<>();
     for (int i = 0; i < Array.getLength(array); i++) {
-        list.add(Array.get(array, i));
+      list.add(Array.get(array, i));
     }
     return list;
   }

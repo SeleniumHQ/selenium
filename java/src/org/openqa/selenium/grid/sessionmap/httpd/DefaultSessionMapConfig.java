@@ -18,19 +18,20 @@
 package org.openqa.selenium.grid.sessionmap.httpd;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultSessionMapConfig extends MapConfig {
 
   public DefaultSessionMapConfig() {
-    super(ImmutableMap.of(
-      "events", ImmutableMap.of(
-        "publish", "tcp://*:4442",
-        "subscribe", "tcp://*:4443"),
-      "sessions", ImmutableMap.of(
-        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap"),
-      "server", ImmutableMap.of(
-        "port", 5556)));
+    super(
+        ImmutableMap.of(
+            "events",
+                ImmutableMap.of(
+                    "publish", "tcp://*:4442",
+                    "subscribe", "tcp://*:4443"),
+            "sessions",
+                ImmutableMap.of(
+                    "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap"),
+            "server", ImmutableMap.of("port", 5556)));
   }
 }

@@ -17,24 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.annotation.AnnotationDescription;
-import net.bytebuddy.dynamic.DynamicType;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import net.bytebuddy.implementation.FixedValue;
-import net.bytebuddy.implementation.MethodDelegation;
-
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasAuthentication;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.logging.HasLogEvents;
-import org.openqa.selenium.remote.html5.AddWebStorage;
+import static java.util.Collections.unmodifiableSet;
+import static net.bytebuddy.matcher.ElementMatchers.anyOf;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,16 +33,29 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static java.util.Collections.unmodifiableSet;
-import static net.bytebuddy.matcher.ElementMatchers.anyOf;
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.annotation.AnnotationDescription;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.MethodDelegation;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasAuthentication;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.logging.HasLogEvents;
+import org.openqa.selenium.remote.html5.AddWebStorage;
+import org.openqa.selenium.support.decorators.Decorated;
 
 /**
- * Enhance the interfaces implemented by an instance of the
- * {@link org.openqa.selenium.WebDriver} based on the returned
- * {@link org.openqa.selenium.Capabilities} of the driver.
- * Note: this class is still experimental. Use at your own risk.
+ * Enhance the interfaces implemented by an instance of the {@link org.openqa.selenium.WebDriver}
+ * based on the returned {@link org.openqa.selenium.Capabilities} of the driver. Note: this class is
+ * still experimental. Use at your own risk.
  */
 @Beta
 public class Augmenter {
@@ -65,9 +63,8 @@ public class Augmenter {
 
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
-    Stream.of(
-        new AddWebStorage()
-    ).forEach(provider -> augmentations.add(createAugmentation(provider)));
+    Stream.of(new AddWebStorage())
+        .forEach(provider -> augmentations.add(createAugmentation(provider)));
 
     StreamSupport.stream(ServiceLoader.load(AugmenterProvider.class).spliterator(), false)
         .forEach(provider -> augmentations.add(createAugmentation(provider)));
@@ -77,9 +74,8 @@ public class Augmenter {
 
   private static <X> Augmentation<X> createAugmentation(AugmenterProvider<X> provider) {
     Require.nonNull("Interface provider", provider);
-    return new Augmentation<>(provider.isApplicable(),
-                              provider.getDescribedInterface(),
-                              provider::getImplementation);
+    return new Augmentation<>(
+        provider.isApplicable(), provider.getDescribedInterface(), provider::getImplementation);
   }
 
   private Augmenter(Set<Augmentation<?>> augmentations, Augmentation<?> toAdd) {
@@ -98,15 +94,13 @@ public class Augmenter {
     Require.nonNull("Interface provider", provider);
 
     return addDriverAugmentation(
-      provider.isApplicable(),
-      provider.getDescribedInterface(),
-      provider::getImplementation);
+        provider.isApplicable(), provider.getDescribedInterface(), provider::getImplementation);
   }
 
   public <X> Augmenter addDriverAugmentation(
-    String capabilityName,
-    Class<X> implementThis,
-    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+      String capabilityName,
+      Class<X> implementThis,
+      BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
     Require.nonNull("Capability name", capabilityName);
     Require.nonNull("Interface to implement", implementThis);
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
@@ -115,15 +109,17 @@ public class Augmenter {
   }
 
   public <X> Augmenter addDriverAugmentation(
-    Predicate<Capabilities> whenThisMatches,
-    Class<X> implementThis,
-    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+      Predicate<Capabilities> whenThisMatches,
+      Class<X> implementThis,
+      BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
     Require.nonNull("Capability predicate", whenThisMatches);
     Require.nonNull("Interface to implement", implementThis);
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
-    Require.precondition(implementThis.isInterface(), "Expected %s to be an interface", implementThis);
+    Require.precondition(
+        implementThis.isInterface(), "Expected %s to be an interface", implementThis);
 
-    return new Augmenter(augmentations, new Augmentation<>(whenThisMatches, implementThis, usingThis));
+    return new Augmenter(
+        augmentations, new Augmentation<>(whenThisMatches, implementThis, usingThis));
   }
 
   private Predicate<Capabilities> check(String capabilityName) {
@@ -139,27 +135,29 @@ public class Augmenter {
   }
 
   /**
-   * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
-   * {@link org.openqa.selenium.remote.RemoteWebDriver}.
-   * The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
-   * implementing class to remain constant.
+   * Enhance the interfaces implemented by this instance of WebDriver if that instance is a {@link
+   * org.openqa.selenium.remote.RemoteWebDriver}. The WebDriver that is returned may well be a
+   * dynamic proxy. You cannot rely on the concrete implementing class to remain constant.
    *
    * @param driver The driver to enhance
    * @return A class implementing the described interfaces.
    */
   public WebDriver augment(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
-    Require.precondition(driver instanceof HasCapabilities, "Driver must have capabilities", driver);
+    Require.precondition(
+        driver instanceof HasCapabilities, "Driver must have capabilities", driver);
 
     Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
 
     // Collect the interfaces to apply
-    List<Augmentation<?>> matchingAugmenters = augmentations.stream()
-      // Only consider the augmenters that match interfaces we don't already implement
-      .filter(augmentation -> !augmentation.interfaceClass.isAssignableFrom(driver.getClass()))
-      // And which match an augmentation we have
-      .filter(augmentation -> augmentation.whenMatches.test(caps))
-      .collect(Collectors.toList());
+    List<Augmentation<?>> matchingAugmenters =
+        augmentations.stream()
+            // Only consider the augmenters that match interfaces we don't already implement
+            .filter(
+                augmentation -> !augmentation.interfaceClass.isAssignableFrom(driver.getClass()))
+            // And which match an augmentation we have
+            .filter(augmentation -> augmentation.whenMatches.test(caps))
+            .collect(Collectors.toList());
 
     return this.augment(driver, matchingAugmenters);
   }
@@ -173,29 +171,38 @@ public class Augmenter {
 
     // Grab a remote execution method, if possible
     RemoteWebDriver remote = extractRemoteWebDriver(driver);
-    ExecuteMethod execute = remote == null ?
-      (commandName, parameters) -> { throw new WebDriverException("Cannot execute remote command: " + commandName); } :
-      new RemoteExecuteMethod(remote);
+    ExecuteMethod execute =
+        remote == null
+            ? (commandName, parameters) -> {
+              throw new WebDriverException("Cannot execute remote command: " + commandName);
+            }
+            : new RemoteExecuteMethod(remote);
 
-    DynamicType.Builder<? extends WebDriver> builder = new ByteBuddy()
-      .subclass(driver.getClass())
-      .annotateType(AnnotationDescription.Builder.ofType(Augmentable.class).build())
-      .method(named("isAugmented")).intercept(FixedValue.value(true));
+    DynamicType.Builder<? extends WebDriver> builder =
+        new ByteBuddy()
+            .subclass(driver.getClass())
+            .annotateType(AnnotationDescription.Builder.ofType(Augmentable.class).build())
+            .method(named("isAugmented"))
+            .intercept(FixedValue.value(true));
 
     for (Augmentation<?> augmentation : matchingAugmenters) {
       Class<?> iface = augmentation.interfaceClass;
 
       Object instance = augmentation.implementation.apply(caps, execute);
 
-      builder = builder.implement(iface)
-        .method(anyOf(iface.getDeclaredMethods()))
-        .intercept(MethodDelegation.to(instance, iface));
+      builder =
+          builder
+              .implement(iface)
+              .method(anyOf(iface.getDeclaredMethods()))
+              .intercept(MethodDelegation.to(instance, iface));
     }
 
-    Class<? extends WebDriver> definition = builder.make()
-      .load(driver.getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
-      .getLoaded()
-      .asSubclass(driver.getClass());
+    Class<? extends WebDriver> definition =
+        builder
+            .make()
+            .load(driver.getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+            .getLoaded()
+            .asSubclass(driver.getClass());
 
     try {
       WebDriver toReturn = definition.getDeclaredConstructor().newInstance();
@@ -225,11 +232,13 @@ public class Augmenter {
     }
 
     if (!augmentationList.isEmpty()) {
-      Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
+      Capabilities caps =
+          ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
 
-      List<Augmentation<?>> matchingAugmenters = augmentationList.stream()
-        .filter(augmentation -> augmentation.whenMatches.test(caps))
-        .collect(Collectors.toList());
+      List<Augmentation<?>> matchingAugmenters =
+          augmentationList.stream()
+              .filter(augmentation -> augmentation.whenMatches.test(caps))
+              .collect(Collectors.toList());
 
       toReturn = this.augment(driver, matchingAugmenters);
     }
@@ -241,6 +250,10 @@ public class Augmenter {
 
     if (driver instanceof RemoteWebDriver) {
       return (RemoteWebDriver) driver;
+    }
+
+    if (driver instanceof Decorated) {
+      return extractRemoteWebDriver((WebDriver) ((Decorated<?>) driver).getOriginal());
     }
 
     if (driver instanceof WrapsDriver) {
@@ -283,17 +296,17 @@ public class Augmenter {
     public final BiFunction<Capabilities, ExecuteMethod, X> implementation;
 
     public Augmentation(
-      Predicate<Capabilities> whenMatches,
-      Class<X> interfaceClass,
-      BiFunction<Capabilities, ExecuteMethod, X> implementation) {
+        Predicate<Capabilities> whenMatches,
+        Class<X> interfaceClass,
+        BiFunction<Capabilities, ExecuteMethod, X> implementation) {
       this.whenMatches = Require.nonNull("Capabilities predicate", whenMatches);
       this.interfaceClass = Require.nonNull("Interface to implement", interfaceClass);
       this.implementation = Require.nonNull("Interface implementation", implementation);
 
       Require.precondition(
-        interfaceClass.isInterface(),
-        "%s must be an interface, not a concrete class",
-        interfaceClass);
+          interfaceClass.isInterface(),
+          "%s must be an interface, not a concrete class",
+          interfaceClass);
     }
   }
 }

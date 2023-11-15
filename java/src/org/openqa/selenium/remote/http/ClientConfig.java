@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.Credentials;
-import org.openqa.selenium.internal.Require;
-
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -27,6 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import javax.net.ssl.SSLContext;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.internal.Require;
 
 public class ClientConfig {
 
@@ -38,40 +38,50 @@ public class ClientConfig {
   private final Filter filters;
   private final Proxy proxy;
   private final Credentials credentials;
+  private final SSLContext sslContext;
+  private final String version;
 
   protected ClientConfig(
-    URI baseUri,
-    Duration connectionTimeout,
-    Duration readTimeout,
-    Filter filters,
-    Proxy proxy,
-    Credentials credentials) {
+      URI baseUri,
+      Duration connectionTimeout,
+      Duration readTimeout,
+      Filter filters,
+      Proxy proxy,
+      Credentials credentials,
+      SSLContext sslContext,
+      String version) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
     this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
     this.credentials = credentials;
+    this.sslContext = sslContext;
+    this.version = version;
   }
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
-      null,
-      Duration.ofSeconds(10),
-      Duration.ofMinutes(3),
-      DEFAULT_FILTER,
-      null,
-      null);
+        null,
+        Duration.ofSeconds(10),
+        Duration.ofMinutes(3),
+        DEFAULT_FILTER,
+        null,
+        null,
+        null,
+        null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
     return new ClientConfig(
-      Require.nonNull("Base URI", baseUri),
-      connectionTimeout,
-      readTimeout,
-      filters,
-      proxy,
-      credentials);
+        Require.nonNull("Base URI", baseUri),
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
   }
 
   public ClientConfig baseUrl(URL baseUrl) {
@@ -96,12 +106,14 @@ public class ClientConfig {
 
   public ClientConfig connectionTimeout(Duration timeout) {
     return new ClientConfig(
-      baseUri,
-      Require.nonNull("Connection timeout", timeout),
-      readTimeout,
-      filters,
-      proxy,
-      credentials);
+        baseUri,
+        Require.nonNull("Connection timeout", timeout),
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
   }
 
   public Duration connectionTimeout() {
@@ -110,12 +122,14 @@ public class ClientConfig {
 
   public ClientConfig readTimeout(Duration timeout) {
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      Require.nonNull("Read timeout", timeout),
-      filters,
-      proxy,
-      credentials);
+        baseUri,
+        connectionTimeout,
+        Require.nonNull("Read timeout", timeout),
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
   }
 
   public Duration readTimeout() {
@@ -125,22 +139,26 @@ public class ClientConfig {
   public ClientConfig withFilter(Filter filter) {
     Require.nonNull("Filter", filter);
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      filter.andThen(DEFAULT_FILTER),
-      proxy,
-      credentials);
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filter.andThen(DEFAULT_FILTER),
+        proxy,
+        credentials,
+        sslContext,
+        version);
   }
 
   public ClientConfig withRetries() {
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      filters.andThen(RETRY_FILTER),
-      proxy,
-      credentials);
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters.andThen(RETRY_FILTER),
+        proxy,
+        credentials,
+        sslContext,
+        version);
   }
 
   public Filter filter() {
@@ -149,12 +167,14 @@ public class ClientConfig {
 
   public ClientConfig proxy(Proxy proxy) {
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      filters,
-      Require.nonNull("Proxy", proxy),
-      credentials);
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        Require.nonNull("Proxy", proxy),
+        credentials,
+        sslContext,
+        version);
   }
 
   public Proxy proxy() {
@@ -163,27 +183,71 @@ public class ClientConfig {
 
   public ClientConfig authenticateAs(Credentials credentials) {
     return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      filters,
-      proxy,
-      Require.nonNull("Credentials", credentials));
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        Require.nonNull("Credentials", credentials),
+        sslContext,
+        version);
   }
 
   public Credentials credentials() {
     return credentials;
   }
 
+  public ClientConfig sslContext(SSLContext sslContext) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        Require.nonNull("SSL Context", sslContext),
+        version);
+  }
+
+  public SSLContext sslContext() {
+    return sslContext;
+  }
+
+  public ClientConfig version(String version) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        Require.nonNull("Version", version));
+  }
+
+  public String version() {
+    return version;
+  }
+
   @Override
   public String toString() {
-    return "ClientConfig{" +
-      "baseUri=" + baseUri +
-      ", connectionTimeout=" + connectionTimeout +
-      ", readTimeout=" + readTimeout +
-      ", filters=" + filters +
-      ", proxy=" + proxy +
-      ", credentials=" + credentials +
-      '}';
+    return "ClientConfig{"
+        + "baseUri="
+        + baseUri
+        + ", connectionTimeout="
+        + connectionTimeout
+        + ", readTimeout="
+        + readTimeout
+        + ", filters="
+        + filters
+        + ", proxy="
+        + proxy
+        + ", credentials="
+        + credentials
+        + ", sslcontext="
+        + sslContext
+        + ", version="
+        + version
+        + '}';
   }
 }

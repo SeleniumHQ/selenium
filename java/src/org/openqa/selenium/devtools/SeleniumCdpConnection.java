@@ -17,18 +17,20 @@
 
 package org.openqa.selenium.devtools;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
-
 public class SeleniumCdpConnection extends Connection {
+
+  private static final Logger LOG = Logger.getLogger(SeleniumCdpConnection.class.getName());
 
   private SeleniumCdpConnection(HttpClient client, String url) {
     super(client, url);
@@ -47,29 +49,57 @@ public class SeleniumCdpConnection extends Connection {
     return create(HttpClient.Factory.createDefault(), capabilities);
   }
 
-  public static Optional<Connection> create(HttpClient.Factory clientFactory, Capabilities capabilities) {
+  public static Optional<Connection> create(
+      HttpClient.Factory clientFactory, Capabilities capabilities) {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("Capabilities", capabilities);
 
-    return getCdpUri(clientFactory, capabilities).map(uri -> new SeleniumCdpConnection(
-      clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-      uri.toString()));
-  }
+    Optional<URI> cdpUri =
+        Optional.ofNullable(capabilities.getCapability("se:cdp"))
+            .flatMap(
+                (uri) -> {
+                  if (uri instanceof String) {
+                    try {
+                      return Optional.of(new URI((String) uri));
+                    } catch (URISyntaxException e) {
+                      return Optional.empty();
+                    }
+                  }
+                  return Optional.empty();
+                });
 
-  public static Optional<URI> getCdpUri(HttpClient.Factory clientFactory,
-                                        Capabilities capabilities) {
-    Object cdp = capabilities.getCapability("se:cdp");
+    Optional<HttpClient> client;
 
-    if (cdp instanceof String) {
+    if (cdpUri.isPresent()) {
+      client = Optional.of(CdpEndpointFinder.getHttpClient(clientFactory, cdpUri.get()));
+    } else {
+      Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(capabilities);
+      client = reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(clientFactory, uri));
+
       try {
-        return Optional.of(new URI((String) cdp));
-      } catch (URISyntaxException e) {
-        return Optional.empty();
+        cdpUri = client.flatMap(httpClient -> CdpEndpointFinder.getCdpEndPoint(httpClient));
+      } catch (Exception e) {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception ex) {
+          e.addSuppressed(ex);
+        }
+        throw e;
+      }
+
+      if (!cdpUri.isPresent()) {
+        try {
+          client.ifPresent(HttpClient::close);
+        } catch (Exception e) {
+          LOG.log(
+              Level.FINE,
+              "failed to close the http client used to check the reported CDP endpoint: "
+                  + reportedUri.get(),
+              e);
+        }
       }
     }
 
-    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(capabilities);
-
-    return reportedUri.flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(clientFactory, uri));
+    return cdpUri.map(uri -> new SeleniumCdpConnection(client.get(), uri.toString()));
   }
 }

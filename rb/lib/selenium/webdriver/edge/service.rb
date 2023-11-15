@@ -17,19 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chromium/service'
-
 module Selenium
   module WebDriver
     module Edge
-      class Service < Chromium::Service
+      class Service < WebDriver::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'msedgedriver'
-        MISSING_TEXT = <<~ERROR
-          Unable to find msedgedriver. Please download the server from
-          https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and place it somewhere on your PATH.
-        ERROR
         SHUTDOWN_SUPPORTED = true
+
+        def log
+          return @log unless @log.is_a? String
+
+          @args << "--log-path=#{@log}"
+          @log = nil
+        end
       end # Service
     end # Edge
   end # WebDriver

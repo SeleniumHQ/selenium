@@ -73,9 +73,9 @@ namespace OpenQA.Selenium
             this.session.Value.Domains.Network.RequestPaused += OnRequestPaused;
             this.session.Value.Domains.Network.AuthRequired += OnAuthRequired;
             this.session.Value.Domains.Network.ResponsePaused += OnResponsePaused;
-            await this.session.Value.Domains.Network.EnableFetchForAllPatterns();
-            await this.session.Value.Domains.Network.EnableNetwork();
-            await this.session.Value.Domains.Network.DisableNetworkCaching();
+            await this.session.Value.Domains.Network.EnableFetchForAllPatterns().ConfigureAwait(false);
+            await this.session.Value.Domains.Network.EnableNetwork().ConfigureAwait(false);
+            await this.session.Value.Domains.Network.DisableNetworkCaching().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace OpenQA.Selenium
             this.session.Value.Domains.Network.ResponsePaused -= OnResponsePaused;
             this.session.Value.Domains.Network.AuthRequired -= OnAuthRequired;
             this.session.Value.Domains.Network.RequestPaused -= OnRequestPaused;
-            await this.session.Value.Domains.Network.EnableNetworkCaching();
+            await this.session.Value.Domains.Network.EnableNetworkCaching().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace OpenQA.Selenium
             this.responseHandlers.Clear();
         }
 
-        private async void OnAuthRequired(object sender, AuthRequiredEventArgs e)
+        private async Task OnAuthRequired(object sender, AuthRequiredEventArgs e)
         {
             string requestId = e.RequestId;
             Uri uri = new Uri(e.Uri);
@@ -200,7 +200,7 @@ namespace OpenQA.Selenium
                 if (authenticationHandler.UriMatcher.Invoke(uri))
                 {
                     PasswordCredentials credentials = authenticationHandler.Credentials as PasswordCredentials;
-                    await this.session.Value.Domains.Network.ContinueWithAuth(e.RequestId, credentials.UserName, credentials.Password);
+                    await this.session.Value.Domains.Network.ContinueWithAuth(e.RequestId, credentials.UserName, credentials.Password).ConfigureAwait(false);
                     successfullyAuthenticated = true;
                     break;
                 }
@@ -208,11 +208,11 @@ namespace OpenQA.Selenium
 
             if (!successfullyAuthenticated)
             {
-                await this.session.Value.Domains.Network.CancelAuth(e.RequestId);
+                await this.session.Value.Domains.Network.CancelAuth(e.RequestId).ConfigureAwait(false);
             }
         }
 
-        private async void OnRequestPaused(object sender, RequestPausedEventArgs e)
+        private async Task OnRequestPaused(object sender, RequestPausedEventArgs e)
         {
             if (this.NetworkRequestSent != null)
             {
@@ -225,27 +225,27 @@ namespace OpenQA.Selenium
                 {
                     if (handler.RequestTransformer != null)
                     {
-                        await this.session.Value.Domains.Network.ContinueRequest(handler.RequestTransformer(e.RequestData));
+                        await this.session.Value.Domains.Network.ContinueRequest(handler.RequestTransformer(e.RequestData)).ConfigureAwait(false);
                         return;
                     }
 
                     if (handler.ResponseSupplier != null)
                     {
-                        await this.session.Value.Domains.Network.ContinueRequestWithResponse(e.RequestData, handler.ResponseSupplier(e.RequestData));
+                        await this.session.Value.Domains.Network.ContinueRequestWithResponse(e.RequestData, handler.ResponseSupplier(e.RequestData)).ConfigureAwait(false);
                         return;
                     }
                 }
             }
 
-            await this.session.Value.Domains.Network.ContinueRequestWithoutModification(e.RequestData);
+            await this.session.Value.Domains.Network.ContinueRequestWithoutModification(e.RequestData).ConfigureAwait(false);
         }
 
-        private async void OnResponsePaused(object sender, ResponsePausedEventArgs e)
+        private async Task OnResponsePaused(object sender, ResponsePausedEventArgs e)
         {
             if (e.ResponseData.Headers.Count > 0)
             {
                 // If no headers are present, the body cannot be retrieved.
-                await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData);
+                await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData).ConfigureAwait(false);
             }
 
             if (this.NetworkResponseReceived != null)
@@ -262,12 +262,12 @@ namespace OpenQA.Selenium
                     // It might be better to refactor that method signature to simply pass the request ID, or
                     // alternatively, just pass the response data, which should also contain the request ID anyway.
                     HttpRequestData requestData = new HttpRequestData() { RequestId = e.ResponseData.RequestId };
-                    await this.session.Value.Domains.Network.ContinueRequestWithResponse(requestData, handler.ResponseTransformer(e.ResponseData));
+                    await this.session.Value.Domains.Network.ContinueRequestWithResponse(requestData, handler.ResponseTransformer(e.ResponseData)).ConfigureAwait(false);
                     return;
                 }
             }
 
-            await this.session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
+            await this.session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData).ConfigureAwait(false);
         }
     }
 }

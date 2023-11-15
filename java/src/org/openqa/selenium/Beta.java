@@ -24,20 +24,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a feature or API is in active development, and so should not
- * be relied upon. The update policy for anything marked beta is that it may be
- * deleted in the next Selenium release without warning.
+ * Indicates that a feature or API is in active development, and so should not be relied upon. The
+ * update policy for anything marked beta is that it may be deleted in the next Selenium release
+ * without warning.
  *
- * In the ideal world, this would cause the method to <span class="blink">blink gently</span> in the user's
- * IDE. We don't live in the ideal world. We'll find out the hard way whether
- * reading docs is the same thing.
+ * <p>In the ideal world, this would cause the method to <span class="blink">blink gently</span> in
+ * the user's IDE. We don't live in the ideal world. We'll find out the hard way whether reading
+ * docs is the same thing.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
-    ElementType.ANNOTATION_TYPE,
-    ElementType.CONSTRUCTOR,
-    ElementType.FIELD,
-    ElementType.METHOD,
-    ElementType.TYPE})
+  ElementType.ANNOTATION_TYPE,
+  ElementType.CONSTRUCTOR,
+  ElementType.FIELD,
+  ElementType.METHOD,
+  ElementType.TYPE
+})
 @Documented
 public @interface Beta {}

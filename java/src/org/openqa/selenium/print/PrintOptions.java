@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.print;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 public class PrintOptions {
 
@@ -29,6 +28,7 @@ public class PrintOptions {
     LANDSCAPE("landscape");
 
     private final String serialFormat;
+
     Orientation(String serialFormat) {
       this.serialFormat = serialFormat;
     }
@@ -38,6 +38,7 @@ public class PrintOptions {
       return serialFormat;
     }
   }
+
   private Orientation orientation = Orientation.PORTRAIT;
   private double scale = 1.0;
   private boolean background = false;
@@ -58,9 +59,10 @@ public class PrintOptions {
     return this.pageRanges;
   }
 
-  public void setPageRanges(String firstRange, String ... ranges) {
+  public void setPageRanges(String firstRange, String... ranges) {
     Require.nonNull("pageRanges", firstRange);
-    this.pageRanges = new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
+    this.pageRanges =
+        new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
 
     this.pageRanges[0] = firstRange;
 
@@ -125,6 +127,6 @@ public class PrintOptions {
     }
     options.put("margin", getPageMargin());
 
-   return options;
+    return options;
   }
 }

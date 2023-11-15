@@ -32,19 +32,19 @@ import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class JsonInputTest {
@@ -93,8 +93,8 @@ class JsonInputTest {
     JsonInput input = newInput("\"cheese");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThatExceptionOfType(JsonException.class)
-      .isThrownBy(input::nextString)
-      .withMessageStartingWith("Unterminated string");
+        .isThrownBy(input::nextString)
+        .withMessageStartingWith("Unterminated string");
   }
 
   @Test
@@ -137,8 +137,7 @@ class JsonInputTest {
   @Test
   void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
     JsonInput input = newInput("\"cheese\"");
-    assertThatExceptionOfType(JsonException.class)
-      .isThrownBy(input::hasNext);
+    assertThatExceptionOfType(JsonException.class).isThrownBy(input::hasNext);
   }
 
   @Test
@@ -166,12 +165,9 @@ class JsonInputTest {
 
   @Test
   void canReadAMapWithManyEntries() {
-    JsonInput input = newInput(
-      "{"
-      + "\"cheese\": \"stilton\","
-      + "\"vegetable\": \"peas\","
-      + "\"random\": 42"
-      + "}");
+    JsonInput input =
+        newInput(
+            "{" + "\"cheese\": \"stilton\"," + "\"vegetable\": \"peas\"," + "\"random\": 42" + "}");
 
     assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
@@ -238,11 +234,22 @@ class JsonInputTest {
   }
 
   @Test
+  void canReadListOfType() {
+    String raw = " [ 1 , 2 , 3 , 4 ] ";
+
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
+      List<Integer> array = in.readArray(Integer.class);
+
+      assertThat(array).isEqualTo(List.of(1, 2, 3, 4));
+    }
+  }
+
+  @Test
   void shouldBeAbleToReadDataLongerThanReadBuffer() {
-    char[] chars = new char[]{'c', 'h', 'e', 's'};
+    char[] chars = new char[] {'c', 'h', 'e', 's'};
     Random r = new Random();
-    String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
-      .limit(150).collect(Collectors.joining());
+    String raw =
+        Stream.generate(() -> "" + chars[r.nextInt(4)]).limit(150).collect(Collectors.joining());
     JsonInput input = newInput("\"" + raw + "\"");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThat(input.nextString()).isEqualTo(raw);
@@ -250,24 +257,25 @@ class JsonInputTest {
 
   @Test
   void shouldBeAbleToReadNonWellFormedDataLongerThanReadBuffer() {
-    char[] chars = new char[]{'c', 'h', 'e', 's'};
+    char[] chars = new char[] {'c', 'h', 'e', 's'};
     Random r = new Random();
-    String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
-      .limit(150).collect(Collectors.joining());
+    String raw =
+        Stream.generate(() -> "" + chars[r.nextInt(4)]).limit(150).collect(Collectors.joining());
     JsonInput input = newInput("\"" + raw);
     assertThat(input.peek()).isEqualTo(STRING);
     assertThatExceptionOfType(JsonException.class)
-      .isThrownBy(input::nextString)
-      .withMessageStartingWith(String.format(
-        "Unterminated string: %s. Last 128 characters read: %s",
-        raw, raw.substring(raw.length() - 128)));
+        .isThrownBy(input::nextString)
+        .withMessageStartingWith(
+            String.format(
+                "Unterminated string: %s. Last 128 characters read: %s",
+                raw, raw.substring(raw.length() - 128)));
   }
 
   @Test
   void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
-         Reader reader = new InputStreamReader(is, UTF_8);
-         JsonInput input = new Json().newInput(reader)) {
+        Reader reader = new InputStreamReader(is, UTF_8);
+        JsonInput input = new Json().newInput(reader)) {
 
       Object value = input.read(MAP_TYPE);
 
@@ -278,8 +286,8 @@ class JsonInputTest {
   @Test
   void emptyStringsWithNoJsonValuesComeBackAsNull() throws IOException {
     try (InputStream is = new ByteArrayInputStream("     ".getBytes(UTF_8));
-         Reader reader = new InputStreamReader(is, UTF_8);
-         JsonInput input = new Json().newInput(reader)) {
+        Reader reader = new InputStreamReader(is, UTF_8);
+        JsonInput input = new Json().newInput(reader)) {
 
       Object value = input.read(String.class);
 

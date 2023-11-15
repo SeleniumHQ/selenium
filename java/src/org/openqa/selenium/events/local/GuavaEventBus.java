@@ -19,16 +19,14 @@ package org.openqa.selenium.events.local;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 

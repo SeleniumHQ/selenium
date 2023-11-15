@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.SlowLoadableComponent;
-
 import java.lang.reflect.Field;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.SlowLoadableComponent;
 
 /**
  * An element locator that will wait for the specified number of seconds for an element to appear,
@@ -33,8 +32,8 @@ import java.util.List;
  * basis. The element returned will be present on the DOM, but may not actually be visible: override
  * {@link #isElementUsable(WebElement)} if this is important to you.
  *
- * Because this class polls the interface on a regular basis, it is strongly recommended that users
- * avoid locating elements by XPath.
+ * <p>Because this class polls the interface on a regular basis, it is strongly recommended that
+ * users avoid locating elements by XPath.
  */
 public class AjaxElementLocator extends DefaultElementLocator {
   protected final int timeOutInSeconds;
@@ -45,20 +44,15 @@ public class AjaxElementLocator extends DefaultElementLocator {
    *
    * @param context The context to use when finding the element
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
-   * @param annotations	AbstractAnnotations class implementation
+   * @param annotations AbstractAnnotations class implementation
    */
   public AjaxElementLocator(
-      SearchContext context,
-      int timeOutInSeconds,
-      AbstractAnnotations annotations) {
+      SearchContext context, int timeOutInSeconds, AbstractAnnotations annotations) {
     this(Clock.systemDefaultZone(), context, timeOutInSeconds, annotations);
   }
 
   public AjaxElementLocator(
-      Clock clock,
-      SearchContext context,
-      int timeOutInSeconds,
-      AbstractAnnotations annotations) {
+      Clock clock, SearchContext context, int timeOutInSeconds, AbstractAnnotations annotations) {
     super(context, annotations);
     this.timeOutInSeconds = timeOutInSeconds;
     this.clock = clock;
@@ -76,17 +70,14 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   public AjaxElementLocator(
-      Clock clock,
-      SearchContext searchContext,
-      Field field,
-      int timeOutInSeconds) {
+      Clock clock, SearchContext searchContext, Field field, int timeOutInSeconds) {
     this(clock, searchContext, timeOutInSeconds, new Annotations(field));
   }
 
   /**
    * {@inheritDoc}
    *
-   * Will poll the interface on a regular basis until the element is present.
+   * <p>Will poll the interface on a regular basis until the element is present.
    */
   @Override
   public WebElement findElement() {
@@ -103,7 +94,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
   /**
    * {@inheritDoc}
    *
-   * Will poll the interface on a regular basis until at least one element is present.
+   * <p>Will poll the interface on a regular basis until at least one element is present.
    */
   @Override
   public List<WebElement> findElements() {
@@ -127,15 +118,15 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
   /**
    * By default, elements are considered "found" if they are in the DOM. Override this method in
-   * order to change whether or not you consider the element loaded. For example, perhaps you need
-   * the element to be displayed:
+   * order to change whether you consider the element loaded. For example, perhaps you need the
+   * element to be displayed:
    *
    * <pre>{@code
-   *   return element.isDisplayed();
+   * return element.isDisplayed();
    * }</pre>
    *
    * @param element The element to use
-   * @return Whether or not it meets your criteria for "found"
+   * @return Whether it meets your criteria for "found"
    */
   protected boolean isElementUsable(WebElement element) {
     return true;
@@ -233,5 +224,4 @@ public class AjaxElementLocator extends DefaultElementLocator {
       super(message, throwable);
     }
   }
-
 }

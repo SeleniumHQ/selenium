@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 public enum ReadinessState {
-
   NONE("none"),
   INTERACTIVE("interactive"),
   COMPLETE("complete");
@@ -33,5 +32,4 @@ public enum ReadinessState {
   public String toString() {
     return String.valueOf(text);
   }
-
 }

@@ -77,7 +77,7 @@ def test_set_proxy_isnt_in_moz_prefix(options):
     options.proxy = proxy
 
     caps = options.to_capabilities()
-    assert caps["proxy"]["proxyType"] == "MANUAL"
+    assert caps["proxy"]["proxyType"] == "manual"
     assert caps.get("moz:firefoxOptions") is None
 
 
@@ -132,7 +132,7 @@ def test_creates_capabilities(options):
     options._arguments = ["foo"]
     options._binary = FirefoxBinary("/bar")
     options._preferences = {"foo": "bar"}
-    options._proxy = Proxy({"proxyType": ProxyType.MANUAL})
+    options.proxy = Proxy({"proxyType": ProxyType.MANUAL})
     options._profile = profile
     options.log.level = "debug"
     caps = options.to_capabilities()
@@ -142,7 +142,7 @@ def test_creates_capabilities(options):
     assert opts["binary"] == "/bar"
     assert opts["prefs"]["foo"] == "bar"
     assert opts["profile"] == profile.encoded
-    assert caps["proxy"]["proxyType"] == ProxyType.MANUAL["string"]
+    assert caps["proxy"]["proxyType"] == "manual"
     assert opts["log"]["level"] == "debug"
 
 

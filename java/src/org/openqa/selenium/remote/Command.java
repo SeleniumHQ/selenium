@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.json.JsonInput;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import org.openqa.selenium.json.JsonInput;
 
 public class Command {
 
@@ -67,9 +66,9 @@ public class Command {
     }
 
     Command that = (Command) o;
-    return Objects.equals(this.sessionId, that.sessionId) &&
-           Objects.equals(this.getName(), that.getName()) &&
-           Objects.equals(this.getParameters(), that.getParameters());
+    return Objects.equals(this.sessionId, that.sessionId)
+        && Objects.equals(this.getName(), that.getName())
+        && Objects.equals(this.getParameters(), that.getParameters());
   }
 
   @Override

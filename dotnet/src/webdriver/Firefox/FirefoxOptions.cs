@@ -104,6 +104,15 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Gets or sets the path and file name of the Firefox browser executable.
         /// </summary>
+        public override string BinaryLocation
+        {
+            get { return this.browserBinaryLocation; }
+            set { this.browserBinaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path and file name of the Firefox browser executable.
+        /// </summary>
         public string BrowserExecutableLocation
         {
             get { return this.browserBinaryLocation; }
@@ -119,6 +128,9 @@ namespace OpenQA.Selenium.Firefox
             set { this.logLevel = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to enable the DevTools protocol for the launched browser.
+        /// </summary>
         public bool EnableDevToolsProtocol
         {
             get { return this.enableDevToolsProtocol; }

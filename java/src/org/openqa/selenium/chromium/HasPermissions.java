@@ -19,14 +19,11 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can adjust permissions compatible items.
- */
+/** Used by classes to indicate that they can adjust permissions compatible items. */
 @Beta
 public interface HasPermissions {
 
   /**
-   *
    * @param name what item to set the permission on.
    * @param value what to set the permission to.
    */

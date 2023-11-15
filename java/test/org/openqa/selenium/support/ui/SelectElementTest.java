@@ -83,7 +83,8 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
-    assertThat(select.getOptions()).extracting(WebElement::getText)
+    assertThat(select.getOptions())
+        .extracting(WebElement::getText)
         .containsExactly("One", "Two", "Four", "Still learning how to count, apparently");
   }
 
@@ -92,7 +93,8 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
-    assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
+    assertThat(select.getAllSelectedOptions())
+        .extracting(WebElement::getText)
         .containsExactly("One");
   }
 
@@ -101,7 +103,8 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
 
-    assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
+    assertThat(select.getAllSelectedOptions())
+        .extracting(WebElement::getText)
         .containsExactly("Eggs", "Sausages");
   }
 
@@ -148,7 +151,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> select.selectByVisibleText("not there"));
+        .isThrownBy(() -> select.selectByVisibleText("not there"));
   }
 
   @Test
@@ -157,7 +160,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> select.selectByVisibleText("Disabled"));
+        .isThrownBy(() -> select.selectByVisibleText("Disabled"));
   }
 
   @Test
@@ -184,7 +187,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> select.selectByIndex(1));
+        .isThrownBy(() -> select.selectByIndex(1));
   }
 
   @Test
@@ -211,7 +214,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> select.selectByValue("disabled"));
+        .isThrownBy(() -> select.selectByValue("disabled"));
   }
 
   @Test

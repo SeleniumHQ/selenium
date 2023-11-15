@@ -30,5 +30,4 @@ public class NoSuchContextException extends NotFoundException {
   public NoSuchContextException(String reason, Throwable cause) {
     super(reason, cause);
   }
-
 }

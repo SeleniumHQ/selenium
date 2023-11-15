@@ -18,19 +18,15 @@
 package org.openqa.selenium.remote.html5;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.html5.LocalStorage;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.ExecuteMethod;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ExecuteMethod;
 
-/**
- * Executes the commands to access HTML5 localStorage on the remote webdriver server.
- */
+/** Executes the commands to access HTML5 localStorage on the remote webdriver server. */
 public class RemoteLocalStorage implements LocalStorage {
   private final ExecuteMethod executeMethod;
 
@@ -47,8 +43,8 @@ public class RemoteLocalStorage implements LocalStorage {
   @Override
   public Set<String> keySet() {
     @SuppressWarnings("unchecked")
-    Collection<String> result = (Collection<String>)
-        executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_KEYS, null);
+    Collection<String> result =
+        (Collection<String>) executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_KEYS, null);
     return new HashSet<>(result);
   }
 

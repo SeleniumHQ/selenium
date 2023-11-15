@@ -17,7 +17,20 @@
 
 package org.openqa.selenium.grid.session.remote;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -34,21 +47,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @ManagedService
 public class ServicedSession extends RemoteSession {
@@ -124,8 +122,7 @@ public class ServicedSession extends RemoteSession {
     }
 
     private Function<Capabilities, ? extends DriverService> get(
-        Class<? extends DriverService> driverServiceClazz,
-        Class... args) {
+        Class<? extends DriverService> driverServiceClazz, Class... args) {
       try {
         Method serviceMethod = driverServiceClazz.getDeclaredMethod("createDefaultService", args);
         serviceMethod.setAccessible(true);
@@ -169,7 +166,10 @@ public class ServicedSession extends RemoteSession {
             url,
             sessionRequest.getDownstreamDialects(),
             sessionRequest.getDesiredCapabilities());
-      } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
+      } catch (IOException
+          | IllegalStateException
+          | NullPointerException
+          | InvalidArgumentException e) {
         LOG.log(Level.INFO, e.getMessage(), e);
         service.stop();
         return Optional.empty();
@@ -184,13 +184,7 @@ public class ServicedSession extends RemoteSession {
         HttpHandler codec,
         SessionId id,
         Map<String, Object> capabilities) {
-      return new ServicedSession(
-          service,
-          downstream,
-          upstream,
-          codec,
-          id,
-          capabilities);
+      return new ServicedSession(service, downstream, upstream, codec, id, capabilities);
     }
 
     @Override
@@ -200,7 +194,9 @@ public class ServicedSession extends RemoteSession {
   }
 
   public ObjectName getObjectName() throws MalformedObjectNameException {
-    return new ObjectName(String.format("org.seleniumhq.server:type=Session,browser=\"%s\",id=%s",
-                                        getCapabilities().get("browserName"), getId()));
+    return new ObjectName(
+        String.format(
+            "org.seleniumhq.server:type=Session,browser=\"%s\",id=%s",
+            getCapabilities().get("browserName"), getId()));
   }
 }

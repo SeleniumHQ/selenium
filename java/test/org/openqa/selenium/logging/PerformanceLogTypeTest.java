@@ -17,21 +17,18 @@
 
 package org.openqa.selenium.logging;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-@Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
@@ -51,6 +48,7 @@ class PerformanceLogTypeTest extends JupiterTestBase {
   void performanceLogShouldBeDisabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
-        .describedAs("Performance log should not be enabled by default").isFalse();
+        .describedAs("Performance log should not be enabled by default")
+        .isFalse();
   }
 }

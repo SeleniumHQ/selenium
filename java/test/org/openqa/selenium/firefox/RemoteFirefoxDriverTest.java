@@ -17,23 +17,21 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class RemoteFirefoxDriverTest extends JupiterTestBase {
 
@@ -67,7 +65,10 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     localDriver = new WebDriverBuilder().get(options);
 
     ((HasContext) localDriver).setContext(FirefoxCommandContext.CHROME);
-    String result = (String) ((JavascriptExecutor) localDriver).executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+    String result =
+        (String)
+            ((JavascriptExecutor) localDriver)
+                .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
     assertThat(result).isEqualTo(dir);
   }
 
@@ -83,8 +84,10 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     HasContext context = (HasContext) localDriver;
     context.setContext(FirefoxCommandContext.CHROME);
 
-    String result = (String) ((JavascriptExecutor) localDriver)
-      .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+    String result =
+        (String)
+            ((JavascriptExecutor) localDriver)
+                .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
 
     assertThat(result).isEqualTo(dir);
   }

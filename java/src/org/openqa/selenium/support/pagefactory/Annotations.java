@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.AbstractFindByBuilder;
 import org.openqa.selenium.support.ByIdOrName;
@@ -26,11 +28,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactoryFinder;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-
 public class Annotations extends AbstractAnnotations {
-  private Field field;
+  private final Field field;
 
   /**
    * @param field expected to be an element in a Page Object
@@ -52,10 +51,10 @@ public class Annotations extends AbstractAnnotations {
   /**
    * {@inheritDoc}
    *
-   * Looks for one of {@link org.openqa.selenium.support.FindBy},
-   * {@link org.openqa.selenium.support.FindBys} or
-   * {@link org.openqa.selenium.support.FindAll} field annotations. In case
-   * no annotations provided for field, uses field name as 'id' or 'name'.
+   * <p>Looks for one of {@link org.openqa.selenium.support.FindBy}, {@link
+   * org.openqa.selenium.support.FindBys} or {@link org.openqa.selenium.support.FindAll} field
+   * annotations. In case no annotations provided for field, uses field name as 'id' or 'name'.
+   *
    * @throws IllegalArgumentException when more than one annotation on a field provided
    */
   @Override
@@ -68,9 +67,13 @@ public class Annotations extends AbstractAnnotations {
       AbstractFindByBuilder builder = null;
       if (annotation.annotationType().isAnnotationPresent(PageFactoryFinder.class)) {
         try {
-          builder = annotation.annotationType()
-              .getAnnotation(PageFactoryFinder.class).value()
-              .getDeclaredConstructor().newInstance();
+          builder =
+              annotation
+                  .annotationType()
+                  .getAnnotation(PageFactoryFinder.class)
+                  .value()
+                  .getDeclaredConstructor()
+                  .newInstance();
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }
@@ -101,16 +104,16 @@ public class Annotations extends AbstractAnnotations {
     FindAll findAll = field.getAnnotation(FindAll.class);
     FindBy findBy = field.getAnnotation(FindBy.class);
     if (findBys != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindBys' annotation, " +
-           "you must not also use a '@FindBy' annotation");
+      throw new IllegalArgumentException(
+          "If you use a '@FindBys' annotation, " + "you must not also use a '@FindBy' annotation");
     }
     if (findAll != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBy' annotation");
+      throw new IllegalArgumentException(
+          "If you use a '@FindAll' annotation, " + "you must not also use a '@FindBy' annotation");
     }
     if (findAll != null && findBys != null) {
-      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBys' annotation");
+      throw new IllegalArgumentException(
+          "If you use a '@FindAll' annotation, " + "you must not also use a '@FindBys' annotation");
     }
   }
 }

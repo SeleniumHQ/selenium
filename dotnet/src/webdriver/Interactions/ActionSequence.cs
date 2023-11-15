@@ -70,6 +70,14 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Gets the input device for this Action sequence.
+        /// </summary>
+        public InputDevice inputDevice
+        {
+            get { return this.inputDevice; }
+        }
+
+        /// <summary>
         /// Adds an action to the sequence.
         /// </summary>
         /// <param name="interactionToAdd">The action to add to the sequence.</param>

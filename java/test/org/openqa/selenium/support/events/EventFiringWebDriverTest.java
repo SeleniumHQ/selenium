@@ -30,9 +30,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openqa.selenium.Alert;
@@ -51,11 +54,6 @@ import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Tag("UnitTests")
 class EventFiringWebDriverTest {
@@ -188,16 +186,27 @@ class EventFiringWebDriverTest {
     testedDriver.findElement(By.name("foo")).sendKeys(someText);
 
     InOrder order = Mockito.inOrder(mockedElement, listener);
-    order.verify(listener).beforeChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
+    order
+        .verify(listener)
+        .beforeChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
     order.verify(mockedElement).clear();
-    order.verify(listener).afterChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
-    order.verify(listener).beforeChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(new CharSequence[]{someText}));
+    order
+        .verify(listener)
+        .afterChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
+    order
+        .verify(listener)
+        .beforeChangeValueOf(
+            any(WebElement.class), any(WebDriver.class), eq(new CharSequence[] {someText}));
     order.verify(mockedElement).sendKeys(someText);
-    order.verify(listener).afterChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(new CharSequence[]{someText}));
+    order
+        .verify(listener)
+        .afterChangeValueOf(
+            any(WebElement.class), any(WebDriver.class), eq(new CharSequence[] {someText}));
 
     verify(mockedDriver, times(2)).findElement(By.name("foo"));
     verify(listener, times(2)).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
-    verify(listener, times(2)).afterFindBy(eq(By.name("foo")), eq(mockedElement), any(WebDriver.class));
+    verify(listener, times(2))
+        .afterFindBy(eq(By.name("foo")), eq(mockedElement), any(WebDriver.class));
     verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
   }
 
@@ -223,15 +232,19 @@ class EventFiringWebDriverTest {
     verify(listener).beforeFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElement(By.id("foo"));
     verify(listener).afterFindBy(eq(By.id("foo")), eq(mockedElement), any(WebDriver.class));
-    verify(listener).beforeFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
+    verify(listener)
+        .beforeFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).findElement(By.linkText("bar"));
-    verify(listener).afterFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
+    verify(listener)
+        .afterFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
     verify(listener).beforeFindBy(eq(By.name("xyz")), any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).findElements(By.name("xyz"));
     verify(listener).afterFindBy(eq(By.name("xyz")), any(WebElement.class), any(WebDriver.class));
-    verify(listener).beforeFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
+    verify(listener)
+        .beforeFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
-    verify(listener).afterFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
+    verify(listener)
+        .afterFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
     verifyNoMoreInteractions(mockedElement, mockedDriver, listener);
   }
 
@@ -259,8 +272,8 @@ class EventFiringWebDriverTest {
 
   @Test
   void shouldUnpackElementArgsWhenCallingScripts() {
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(stubbedElement);
@@ -275,12 +288,11 @@ class EventFiringWebDriverTest {
 
   @Test
   void shouldWrapElementFoundWhenCallingScripts() {
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement = mock(WebElement.class);
 
-    when(((JavascriptExecutor) mockedDriver).executeScript("foo"))
-        .thenReturn(stubbedElement);
+    when(((JavascriptExecutor) mockedDriver).executeScript("foo")).thenReturn(stubbedElement);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 
@@ -292,8 +304,8 @@ class EventFiringWebDriverTest {
 
   @Test
   void testShouldUnpackListOfElementArgsWhenCallingScripts() {
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
@@ -314,8 +326,8 @@ class EventFiringWebDriverTest {
 
   @Test
   void shouldWrapMultipleElementsFoundWhenCallingScripts() {
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement1 = mock(WebElement.class);
     final WebElement stubbedElement2 = mock(WebElement.class);
 
@@ -337,8 +349,8 @@ class EventFiringWebDriverTest {
   void shouldWrapMapsWithNullValues() {
     Map<String, Object> map = new HashMap<>();
     map.put("a", null);
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     when(((JavascriptExecutor) mockedDriver).executeScript("foo")).thenReturn(map);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
@@ -351,8 +363,8 @@ class EventFiringWebDriverTest {
 
   @Test
   void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
-    final WebDriver mockedDriver = mock(WebDriver.class,
-                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
@@ -364,11 +376,14 @@ class EventFiringWebDriverTest {
     assertThat(foundElement).isInstanceOf(WrapsElement.class);
     assertThat(((WrapsElement) foundElement).getWrappedElement()).isSameAs(mockElement);
 
-    ImmutableMap<String, Object> args = ImmutableMap.of(
-        "foo", "bar",
-        "element", foundElement,
-        "nested", Arrays.asList("before", foundElement, "after")
-    );
+    ImmutableMap<String, Object> args =
+        ImmutableMap.of(
+            "foo",
+            "bar",
+            "element",
+            foundElement,
+            "nested",
+            Arrays.asList("before", foundElement, "after"));
 
     testedDriver.executeScript("foo", args);
 
@@ -442,18 +457,19 @@ class EventFiringWebDriverTest {
   @Test
   void getScreenshotAs() {
     final String DATA = "data";
-    WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
+    WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
     WebDriverEventListener listener = mock(WebDriverEventListener.class);
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
-    doReturn(DATA).when((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
+    doReturn(DATA).when((TakesScreenshot) mockedDriver).getScreenshotAs(OutputType.BASE64);
 
-    String screenshot = ((TakesScreenshot)testedDriver).getScreenshotAs(OutputType.BASE64);
+    String screenshot = ((TakesScreenshot) testedDriver).getScreenshotAs(OutputType.BASE64);
     assertThat(screenshot).isEqualTo(DATA);
 
     InOrder order = Mockito.inOrder(mockedDriver, listener);
     order.verify(listener).beforeGetScreenshotAs(OutputType.BASE64);
-    order.verify((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
+    order.verify((TakesScreenshot) mockedDriver).getScreenshotAs(OutputType.BASE64);
     order.verify(listener).afterGetScreenshotAs(OutputType.BASE64, screenshot);
     verifyNoMoreInteractions(mockedDriver, listener);
   }
@@ -486,7 +502,8 @@ class EventFiringWebDriverTest {
 
   @Test
   void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterface() {
-    WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(HasCapabilities.class));
+    WebDriver mockedDriver =
+        mock(WebDriver.class, withSettings().extraInterfaces(HasCapabilities.class));
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 
     final Capabilities caps = new ImmutableCapabilities();
@@ -504,5 +521,4 @@ class EventFiringWebDriverTest {
         .isThrownBy(testedDriver::getCapabilities)
         .withMessage("Underlying driver does not implement getting capabilities yet.");
   }
-
 }

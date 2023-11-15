@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.data;
 
+import java.util.function.Consumer;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
-
-import java.util.function.Consumer;
 
 public class NodeRemovedEvent extends Event {
 
@@ -35,6 +34,6 @@ public class NodeRemovedEvent extends Event {
   public static EventListener<NodeStatus> listener(Consumer<NodeStatus> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<>(NODE_REMOVED_EVENT, NodeStatus.class , handler);
+    return new EventListener<>(NODE_REMOVED_EVENT, NodeStatus.class, handler);
   }
 }

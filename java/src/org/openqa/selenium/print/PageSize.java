@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.print;
 
-
 public class PageSize {
 
   private final double height;
@@ -25,14 +24,15 @@ public class PageSize {
 
   public PageSize() {
     // Initialize with defaults. A4 paper size defaults in cms.
-    this.height = 21.59;
-    this.width = 27.94;
+    this.height = 27.94;
+    this.width = 21.59;
   }
 
   public PageSize(double height, double width) {
     this.height = height;
     this.width = width;
   }
+
   public double getHeight() {
     return height;
   }

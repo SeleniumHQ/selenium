@@ -17,20 +17,22 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotYetImplemented;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotWorkingInRemoteBazelBuilds;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class JavascriptEnabledDriverTest extends JupiterTestBase {
 
@@ -71,6 +73,7 @@ class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
+  @NotWorkingInRemoteBazelBuilds(value = CHROME)
   void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -167,13 +170,12 @@ class JavascriptEnabledDriverTest extends JupiterTestBase {
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim())
-        .isIn("focus change blur focus blur", "focus blur change focus blur",
-              "focus blur change focus blur change", "focus change blur focus change blur");
+        .isIn(
+            "focus change blur focus blur", "focus blur change focus blur",
+            "focus blur change focus blur change", "focus change blur focus change blur");
   }
 
-  /**
-   * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
-   */
+  /** If the click handler throws an exception, the firefox driver freezes. This is suboptimal. */
   @Test
   void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(pages.javascriptPage);
@@ -202,7 +204,6 @@ class JavascriptEnabledDriverTest extends JupiterTestBase {
     // Element's Y coordinates can be 0, as the element is scrolled right to the top of the window.
     assertThat(point.getY()).as("Y coordinate").isGreaterThanOrEqualTo(0);
   }
-
 
   /*
    * There's a weird issue with this test, which means that I've added the needs fresh driver

@@ -17,21 +17,9 @@
 
 package org.openqa.selenium.devtools.idealized;
 
-import org.openqa.selenium.Credentials;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.DevToolsException;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.internal.Either;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.Filter;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.logging.Level.WARNING;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -42,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -49,31 +38,58 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.logging.Level.WARNING;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.NetworkInterceptor;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   private static final Logger LOG = Logger.getLogger(Network.class.getName());
 
+  private static final HttpResponse STOP_PROCESSING =
+      new HttpResponse()
+          .addHeader("Selenium-Interceptor", "Stop")
+          .setContent(Contents.utf8String("Interception is stopped"));
+
   private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
   private final Filter defaultFilter = next -> next::execute;
-  private Filter filter = defaultFilter;
+  private volatile Filter filter = defaultFilter;
   protected final DevTools devTools;
 
-  private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
+  private final AtomicBoolean fetchEnabled = new AtomicBoolean();
+  private final Map<String, CompletableFuture<HttpResponse>> pendingResponses =
+      new ConcurrentHashMap<>();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
   }
 
   public void disable() {
-    devTools.send(disableFetch());
-    devTools.send(enableNetworkCaching());
+    fetchEnabled.set(false);
+    try {
+      devTools.send(disableFetch());
+      devTools.send(enableNetworkCaching());
+    } finally {
+      // we stopped the fetch we will not receive any pending responses
+      pendingResponses.values().forEach(cf -> cf.cancel(false));
+    }
 
-    authHandlers.clear();
+    synchronized (authHandlers) {
+      authHandlers.clear();
+    }
     filter = defaultFilter;
   }
 
@@ -87,7 +103,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       this(userAgent, Optional.empty(), Optional.empty());
     }
 
-    private UserAgent(String userAgent, Optional<String> acceptLanguage, Optional<String> platform) {
+    private UserAgent(
+        String userAgent, Optional<String> acceptLanguage, Optional<String> platform) {
       this.userAgent = userAgent;
       this.acceptLanguage = acceptLanguage;
       this.platform = platform;
@@ -122,11 +139,14 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     devTools.send(setUserAgentOverride(userAgent));
   }
 
-  public void addAuthHandler(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
+  public void addAuthHandler(
+      Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
 
-    authHandlers.put(whenThisMatches, useTheseCredentials);
+    synchronized (authHandlers) {
+      authHandlers.put(whenThisMatches, useTheseCredentials);
+    }
 
     prepareToInterceptTraffic();
   }
@@ -134,10 +154,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   @SuppressWarnings("SuspiciousMethodCalls")
   public void resetNetworkFilter() {
     filter = defaultFilter;
-  }
-
-  public void markNetworkInterceptorClosed() {
-    networkInterceptorClosed.set(true);
   }
 
   public void interceptTrafficWith(Filter filter) {
@@ -148,88 +164,104 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   public void prepareToInterceptTraffic() {
+    if (fetchEnabled.getAndSet(true)) {
+      // ensure we do not register the listeners multiple times, otherwise the events are handled
+      // multiple times
+      return;
+    }
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
-      authRequiredEvent(),
-      authRequired -> {
-        String origin = getUriFrom(authRequired);
-        try {
-          URI uri = new URI(origin);
+        authRequiredEvent(),
+        authRequired -> {
+          String origin = getUriFrom(authRequired);
+          try {
+            URI uri = new URI(origin);
 
-          Optional<Credentials> authCredentials = getAuthCredentials(uri);
-          if (authCredentials.isPresent()) {
-            Credentials credentials = authCredentials.get();
-            if (!(credentials instanceof UsernameAndPassword)) {
-              throw new DevToolsException("DevTools can only support username and password authentication");
+            Optional<Credentials> authCredentials = getAuthCredentials(uri);
+            if (authCredentials.isPresent()) {
+              Credentials credentials = authCredentials.get();
+              if (!(credentials instanceof UsernameAndPassword)) {
+                throw new DevToolsException(
+                    "DevTools can only support username and password authentication");
+              }
+
+              UsernameAndPassword uap = (UsernameAndPassword) credentials;
+              devTools.send(continueWithAuth(authRequired, uap));
+              return;
             }
-
-            UsernameAndPassword uap = (UsernameAndPassword) credentials;
-            devTools.send(continueWithAuth(authRequired, uap));
-            return;
+          } catch (URISyntaxException e) {
+            // Fall through
           }
-        } catch (URISyntaxException e) {
-          // Fall through
-        }
 
-        devTools.send(cancelAuth(authRequired));
-      });
-
-    Map<String, CompletableFuture<HttpResponse>> responses = new ConcurrentHashMap<>();
+          devTools.send(cancelAuth(authRequired));
+        });
 
     devTools.addListener(
-      requestPausedEvent(),
-      pausedRequest -> {
-        try {
-        String id = getRequestId(pausedRequest);
-        Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
-
-        if (message.isRight()) {
-          HttpResponse res = message.right();
-          CompletableFuture<HttpResponse> future = responses.remove(id);
-
-          if (future == null) {
-            devTools.send(continueWithoutModification(pausedRequest));
-            return;
-          }
-
-          future.complete(res);
-          return;
-        }
-
-        HttpResponse forBrowser = filter.andFinally(req -> {
-          // Convert the selenium request to a CDP one and fulfill.
-
-          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
-          responses.put(id, res);
-
-          devTools.send(continueRequest(pausedRequest, req));
-
-          // Wait for the CDP response and send that back.
+        requestPausedEvent(),
+        pausedRequest -> {
           try {
-            return res.get();
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new WebDriverException(e);
-          } catch (ExecutionException e) {
-            if (!networkInterceptorClosed.get()) {
-              LOG.log(WARNING, e, () -> "Unable to process request");
+            String id = getRequestId(pausedRequest);
+            Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
+
+            if (message.isRight()) {
+              HttpResponse res = message.right();
+              CompletableFuture<HttpResponse> future = pendingResponses.remove(id);
+
+              if (future == null) {
+                devTools.send(continueWithoutModification(pausedRequest));
+                return;
+              }
+
+              future.complete(res);
+              return;
             }
-            return new HttpResponse();
-          }
-        }).execute(message.left());
 
-        if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
-          devTools.send(continueWithoutModification(pausedRequest));
-          return;
-        }
+            HttpResponse forBrowser =
+                filter
+                    .andFinally(
+                        req -> {
+                          // Convert the selenium request to a CDP one and fulfill.
+                          devTools.send(continueRequest(pausedRequest, req));
+                          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
+                          // Save the future after the browser accepted the continueRequest
+                          pendingResponses.put(id, res);
 
-        devTools.send(fulfillRequest(pausedRequest, forBrowser));
-      } catch (TimeoutException e) {
-          if (!networkInterceptorClosed.get()) {
-            throw new WebDriverException(e);
+                          // Wait for the CDP response and send that back.
+                          try {
+                            return res.get();
+                          } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            throw new WebDriverException(e);
+                          } catch (CancellationException e) {
+                            // The interception was intentionally stopped, network().disable() has
+                            // been called
+                            pendingResponses.remove(id);
+                            return STOP_PROCESSING;
+                          } catch (ExecutionException e) {
+                            if (fetchEnabled.get()) {
+                              LOG.log(WARNING, e, () -> "Unable to process request");
+                            }
+                            return new HttpResponse();
+                          }
+                        })
+                    .execute(message.left());
+
+            if (forBrowser == NetworkInterceptor.PROCEED_WITH_REQUEST) {
+              devTools.send(continueWithoutModification(pausedRequest));
+              return;
+            } else if (forBrowser == STOP_PROCESSING) {
+              // The interception was intentionally stopped, network().disable() has been called
+              return;
+            }
+
+            devTools.send(fulfillRequest(pausedRequest, forBrowser));
+          } catch (TimeoutException e) {
+            if (fetchEnabled.get()) {
+              throw e;
+            }
           }
-    }});
+        });
 
     devTools.send(enableFetchForAllPatterns());
   }
@@ -237,11 +269,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected Optional<Credentials> getAuthCredentials(URI uri) {
     Require.nonNull("URI", uri);
 
-    return authHandlers.entrySet().stream()
-      .filter(entry -> entry.getKey().test(uri))
-      .map(Map.Entry::getValue)
-      .map(Supplier::get)
-      .findFirst();
+    synchronized (authHandlers) {
+      return authHandlers.entrySet().stream()
+          .filter(entry -> entry.getKey().test(uri))
+          .map(Map.Entry::getValue)
+          .map(Supplier::get)
+          .findFirst();
+    }
   }
 
   protected HttpMethod convertFromCdpHttpMethod(String method) {
@@ -255,10 +289,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   }
 
   protected HttpResponse createHttpResponse(
-    Optional<Integer> statusCode,
-    String body,
-    Boolean bodyIsBase64Encoded,
-    List<Map.Entry<String, String>> headers) {
+      Optional<Integer> statusCode,
+      String body,
+      Boolean bodyIsBase64Encoded,
+      List<Map.Entry<String, String>> headers) {
     Supplier<InputStream> content;
 
     if (body == null) {
@@ -270,24 +304,20 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       content = Contents.string(body, UTF_8);
     }
 
-    HttpResponse res = new HttpResponse()
-      .setStatus(statusCode.orElse(HTTP_OK))
-      .setContent(content);
+    HttpResponse res = new HttpResponse().setStatus(statusCode.orElse(HTTP_OK)).setContent(content);
 
-    headers.forEach(entry -> {
-      if (entry.getValue() != null) {
-        res.addHeader(entry.getKey(), entry.getValue());
-      }
-    });
+    headers.forEach(
+        entry -> {
+          if (entry.getValue() != null) {
+            res.addHeader(entry.getKey(), entry.getValue());
+          }
+        });
 
     return res;
   }
 
   protected HttpRequest createHttpRequest(
-    String cdpMethod,
-    String url,
-    Map<String, Object> headers,
-    Optional<String> postData) {
+      String cdpMethod, String url, Map<String, Object> headers, Optional<String> postData) {
     HttpRequest req = new HttpRequest(convertFromCdpHttpMethod(cdpMethod), url);
     headers.forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
     postData.ifPresent(data -> req.setContent(Contents.utf8String(data)));
@@ -309,7 +339,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   protected abstract String getUriFrom(AUTHREQUIRED authRequired);
 
-  protected abstract Command<Void> continueWithAuth(AUTHREQUIRED authRequired, UsernameAndPassword credentials);
+  protected abstract Command<Void> continueWithAuth(
+      AUTHREQUIRED authRequired, UsernameAndPassword credentials);
 
   protected abstract Command<Void> cancelAuth(AUTHREQUIRED authrequired);
 

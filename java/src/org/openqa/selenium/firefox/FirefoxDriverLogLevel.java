@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,26 +26,24 @@ import java.util.logging.Level;
  */
 public enum FirefoxDriverLogLevel {
   TRACE,
-  DEBUG ,
+  DEBUG,
   CONFIG,
   INFO,
   WARN,
   ERROR,
   FATAL;
 
-  private static final Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
-      = new ImmutableMap.Builder<Level, FirefoxDriverLogLevel>()
-      .put(Level.ALL, TRACE)
-      .put(Level.FINEST, TRACE)
-      .put(Level.FINER, TRACE)
-      .put(Level.FINE, DEBUG)
-      .put(Level.CONFIG, CONFIG)
-      .put(Level.INFO, INFO)
-      .put(Level.WARNING, WARN)
-      .put(Level.SEVERE, ERROR)
-      .put(Level.OFF, FATAL)
-      .build();
-
+  private static final Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap =
+      Map.of(
+          Level.ALL, TRACE,
+          Level.FINEST, TRACE,
+          Level.FINER, TRACE,
+          Level.FINE, DEBUG,
+          Level.CONFIG, CONFIG,
+          Level.INFO, INFO,
+          Level.WARNING, WARN,
+          Level.SEVERE, ERROR,
+          Level.OFF, FATAL);
 
   @Override
   public String toString() {

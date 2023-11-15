@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.Slot;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 
 public class Session {
 
@@ -42,8 +41,14 @@ public class Session {
   private final Slot slot;
   private static final Json JSON = new Json();
 
-  public Session(String id, Capabilities capabilities, Instant startTime, URI uri, String nodeId,
-                 URI nodeUri, Slot slot) {
+  public Session(
+      String id,
+      Capabilities capabilities,
+      Instant startTime,
+      URI uri,
+      String nodeId,
+      URI nodeUri,
+      Slot slot) {
     this.id = Require.nonNull("Session id", id);
     this.capabilities = Require.nonNull("Session capabilities", capabilities);
     this.startTime = Require.nonNull("Session Start time", startTime);
@@ -84,9 +89,6 @@ public class Session {
 
   public org.openqa.selenium.grid.graphql.Slot getSlot() {
     return new org.openqa.selenium.grid.graphql.Slot(
-        slot.getId().getSlotId(),
-        slot.getStereotype(),
-        slot.getLastStarted());
+        slot.getId().getSlotId(), slot.getStereotype(), slot.getLastStarted());
   }
-
 }

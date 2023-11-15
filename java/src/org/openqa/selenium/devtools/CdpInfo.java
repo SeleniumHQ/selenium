@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.devtools;
 
+import java.util.function.Function;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.internal.Require;
-
-import java.util.function.Function;
 
 public abstract class CdpInfo implements Comparable<CdpInfo> {
 

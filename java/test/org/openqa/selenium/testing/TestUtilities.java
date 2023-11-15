@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -32,19 +25,20 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 
 public class TestUtilities {
 
   public static String getUserAgent(WebDriver driver) {
     try {
-      return (String) ((JavascriptExecutor) driver).executeScript(
-        "return navigator.userAgent;");
+      return (String) ((JavascriptExecutor) driver).executeScript("return navigator.userAgent;");
     } catch (Throwable e) {
       // Some drivers will only execute JS once a page has been loaded. Since those
       // drivers aren't Firefox or IE, we don't worry about that here.
-      //
-      // Non-javascript-enabled HtmlUnit throws an UnsupportedOperationException here.
-      // Let's just ignore that.
       return "";
     }
   }
@@ -63,7 +57,7 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
+    return getUserAgent(driver).contains("Chrome");
   }
 
   public static int getChromeVersion(WebDriver driver) {
@@ -76,7 +70,7 @@ public class TestUtilities {
     if (chromedriverVersion == null) {
       Object chrome = caps.getCapability("chrome");
       if (chrome != null) {
-        chromedriverVersion = (String) ((Map<?,?>) chrome).get("chromedriverVersion");
+        chromedriverVersion = (String) ((Map<?, ?>) chrome).get("chromedriverVersion");
       }
     }
     if (chromedriverVersion != null) {
@@ -91,12 +85,11 @@ public class TestUtilities {
       }
     }
     return 0;
-
   }
 
   /**
-   * Finds the Firefox version of the given webdriver and returns it as an integer.
-   * For instance, '14.0.1' will translate to 14.
+   * Finds the Firefox version of the given webdriver and returns it as an integer. For instance,
+   * '14.0.1' will translate to 14.
    *
    * @param driver The driver to find the version for.
    * @return The found version, or 0 if no version could be found.
@@ -120,8 +113,8 @@ public class TestUtilities {
   }
 
   /**
-   * Finds the IE major version of the given webdriver and returns it as an integer.
-   * For instance, '10.6' will translate to 10.
+   * Finds the IE major version of the given webdriver and returns it as an integer. For instance,
+   * '10.6' will translate to 10.
    *
    * @param driver The driver to find the version for.
    * @return The found version, or 0 if no version could be found.
@@ -141,7 +134,7 @@ public class TestUtilities {
     } else if (tridentMatcher.find()) {
       versionMatcher = Pattern.compile("rv:(\\d+)").matcher(userAgent);
     } else {
-      return Integer.MAX_VALUE;  // Because people check to see if we're at this version or less
+      return Integer.MAX_VALUE; // Because people check to see if we're at this version or less
     }
 
     // extract version string
@@ -151,14 +144,11 @@ public class TestUtilities {
     return Integer.parseInt(versionMatcher.group(1));
   }
 
-
   public static Platform getEffectivePlatform() {
     return Platform.getCurrent();
   }
 
-  /**
-   * Returns Platform where the browser (driven by given WebDriver) runs on.
-   */
+  /** Returns Platform where the browser (driven by given WebDriver) runs on. */
   public static Platform getEffectivePlatform(WebDriver driver) {
     if (!(driver instanceof HasCapabilities)) {
       throw new RuntimeException("WebDriver must implement HasCapabilities");
@@ -169,8 +159,8 @@ public class TestUtilities {
   }
 
   public static boolean isLocal() {
-    return ! (Boolean.getBoolean("selenium.browser.remote")
-              || Boolean.getBoolean("selenium.browser.grid"));
+    return !(Boolean.getBoolean("selenium.browser.remote")
+        || Boolean.getBoolean("selenium.browser.grid"));
   }
 
   public static boolean isOnTravis() {

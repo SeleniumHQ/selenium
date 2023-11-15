@@ -146,8 +146,3 @@ def test_enables_chrome_mobile(options):
     options.enable_mobile()
     result_caps = options.to_capabilities()
     assert result_caps["goog:chromeOptions"]["androidPackage"] == "com.android.chrome"
-
-
-def test_set_w3c_false(options):
-    with pytest.warns(UserWarning):
-        options.add_experimental_option("w3c", False)

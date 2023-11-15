@@ -19,15 +19,12 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can simulate different network conditions.
- */
+/** Used by classes to indicate that they can simulate different network conditions. */
 @Beta
 public interface HasNetworkConditions {
 
   /**
-   * Gets map of network conditions.
-   * These have to be set before they can be retrieved.
+   * Gets map of network conditions. These have to be set before they can be retrieved.
    *
    * @return the current network condition values.
    */
@@ -40,9 +37,6 @@ public interface HasNetworkConditions {
    */
   void setNetworkConditions(ChromiumNetworkConditions networkConditions);
 
-  /**
-   * Resets the network conditions to the default settings.
-   */
+  /** Resets the network conditions to the default settings. */
   void deleteNetworkConditions();
-
 }

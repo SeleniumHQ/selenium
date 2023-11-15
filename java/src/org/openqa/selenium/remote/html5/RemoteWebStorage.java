@@ -22,9 +22,7 @@ import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-/**
- * Provides remote access to the {@link WebStorage} API.
- */
+/** Provides remote access to the {@link WebStorage} API. */
 public class RemoteWebStorage implements WebStorage {
 
   private final ExecuteMethod executeMethod;

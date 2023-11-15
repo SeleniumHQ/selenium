@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 /**
- * Represents the known architectures used in WebDriver.  It attempts to smooth over some of Java's
+ * Represents the known architectures used in WebDriver. It attempts to smooth over some of Java's
  * rough edges when dealing with microprocessor architectures by, for instance, allowing you to
  * query if a particular architecture is 32- or 64-bit.
  *
@@ -30,7 +30,16 @@ public enum Architecture {
 
   // Architecture families
 
-  X86("x86", "i386", "ia32", "i686", "i486", "i86", "pentium", "pentium_pro", "pentium_pro+mmx",
+  X86(
+      "x86",
+      "i386",
+      "ia32",
+      "i686",
+      "i486",
+      "i86",
+      "pentium",
+      "pentium_pro",
+      "pentium_pro+mmx",
       "pentium+mmx") {
     @Override
     public int getDataModel() {
@@ -67,7 +76,7 @@ public enum Architecture {
   }
 
   /**
-   * Heuristic for comparing two architectures.  If architectures are found to be in the same
+   * Heuristic for comparing two architectures. If architectures are found to be in the same
    * "architecture family" (e.g. i386, i686, x86 and ia32 are considered related), they will match.
    *
    * @param compareWith the architecture to compare with
@@ -78,7 +87,7 @@ public enum Architecture {
   }
 
   /**
-   * Gets the data model of the architecture.  The data model tells you how big memory addresses are
+   * Gets the data model of the architecture. The data model tells you how big memory addresses are
    * on the given microprocessor architecture.
    *
    * @return 32- or 64-bit depending on architecture
@@ -103,7 +112,7 @@ public enum Architecture {
 
   /**
    * Extracts architectures based on system properties in Java and a heuristic to overcome
-   * differences between JDK implementations.  If not able to determine the operating system's
+   * differences between JDK implementations. If not able to determine the operating system's
    * architecture, it will throw.
    *
    * @param arch the architecture name to determine the architecture of
@@ -133,5 +142,4 @@ public enum Architecture {
 
     throw new UnsupportedOperationException("Unknown architecture: " + arch);
   }
-
 }

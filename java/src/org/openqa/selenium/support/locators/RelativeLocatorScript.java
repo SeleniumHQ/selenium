@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.support.locators;
 
-import com.google.common.io.Resources;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 class RelativeLocatorScript {
@@ -30,15 +28,18 @@ class RelativeLocatorScript {
 
   static {
     try {
-      String location = String.format(
-        "/%s/%s",
-        RelativeLocator.class.getPackage().getName().replace(".", "/"),
-        "findElements.js");
+      String location =
+          String.format(
+              "/%s/%s",
+              RelativeLocator.class.getPackage().getName().replace(".", "/"), "findElements.js");
 
-      URL url = RelativeLocator.class.getResource(location);
+      String rawFunction;
+      try (InputStream stream = RelativeLocator.class.getResourceAsStream(location)) {
+        rawFunction = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+      }
 
-      String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-      FIND_ELEMENTS = String.format("/* findElements */return (%s).apply(null, arguments);", rawFunction);
+      FIND_ELEMENTS =
+          String.format("/* findElements */return (%s).apply(null, arguments);", rawFunction);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -47,5 +48,4 @@ class RelativeLocatorScript {
   private RelativeLocatorScript() {
     // Utility class.
   }
-
 }

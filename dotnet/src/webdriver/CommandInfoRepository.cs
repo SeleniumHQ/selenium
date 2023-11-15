@@ -64,10 +64,10 @@ namespace OpenQA.Selenium
         /// Finds a command name for a given <see cref="CommandInfo"/>.
         /// </summary>
         /// <param name="commandInfo">The <see cref="CommandInfo"/> object for which to find the command name.</param>
-        /// <returns>The name of the command defined by the command info, or <see langword=""="null"/> if the command is not defined.</returns>
+        /// <returns>The name of the command defined by the command info, or <see langword="null"/> if the command is not defined.</returns>
         public string FindCommandName(CommandInfo commandInfo)
         {
-            foreach(KeyValuePair<string, CommandInfo> pair in this.commandDictionary)
+            foreach (KeyValuePair<string, CommandInfo> pair in this.commandDictionary)
             {
                 if (pair.Value == commandInfo)
                 {

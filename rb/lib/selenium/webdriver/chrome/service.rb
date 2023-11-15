@@ -17,20 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chromium/service'
-
 module Selenium
   module WebDriver
     module Chrome
-      class Service < Chromium::Service
+      class Service < WebDriver::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'chromedriver'
-        MISSING_TEXT = <<~ERROR
-          Unable to find chromedriver. Please download the server from
-          https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
-          More info at https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/?language=ruby.
-        ERROR
         SHUTDOWN_SUPPORTED = true
+
+        def log
+          return @log unless @log.is_a? String
+
+          @args << "--log-path=#{@log}"
+          @log = nil
+        end
       end # Service
     end # Chrome
   end # WebDriver

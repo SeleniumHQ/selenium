@@ -19,12 +19,11 @@ package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class CircularOutputStreamTest {
@@ -122,6 +121,18 @@ class CircularOutputStreamTest {
       pw.write("789");
       pw.flush();
       assertThat(os.toString()).isEqualTo("56789");
+    }
+  }
+
+  @Test
+  void testWriteExceedsBuffer() {
+    CircularOutputStream os = new CircularOutputStream(5);
+    try (PrintWriter pw = new PrintWriter(os, true)) {
+
+      pw.write("00");
+      pw.write("000000000000012345");
+      pw.flush();
+      assertThat(os.toString()).isEqualTo("12345");
     }
   }
 

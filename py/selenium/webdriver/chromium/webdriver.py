@@ -15,18 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import warnings
-
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.service import Service
-from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-DEFAULT_PORT = 0
-DEFAULT_SERVICE_LOG_PATH = None
-DEFAULT_KEEP_ALIVE = None
 
 
 class ChromiumDriver(RemoteWebDriver):
@@ -37,13 +30,9 @@ class ChromiumDriver(RemoteWebDriver):
         self,
         browser_name,
         vendor_prefix,
-        port=DEFAULT_PORT,
-        options: BaseOptions = None,
-        service_args=None,
-        desired_capabilities=None,
-        service_log_path=DEFAULT_SERVICE_LOG_PATH,
-        service: Service = None,
-        keep_alive=DEFAULT_KEEP_ALIVE,
+        options: ArgOptions,
+        service: Service,
+        keep_alive=True,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
@@ -51,53 +40,16 @@ class ChromiumDriver(RemoteWebDriver):
         :Args:
          - browser_name - Browser name used when matching capabilities.
          - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
-         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromiumOptions
-         - service_args - Deprecated: List of args to pass to the driver service
-         - desired_capabilities - Deprecated: Dictionary object with non-browser specific
-           capabilities only, such as "proxy" or "loggingPref".
-         - service_log_path - Deprecated: Where to log information from the driver.
-         - keep_alive - Deprecated: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+         - service - Service object for handling the browser driver if you need to pass extra details
+         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        if desired_capabilities:
-            warnings.warn(
-                "desired_capabilities has been deprecated, please pass in a Service object",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if port != DEFAULT_PORT:
-            warnings.warn("port has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2)
-        self.port = port
-        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
-            warnings.warn(
-                "service_log_path has been deprecated, please pass in a Service object",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
-            warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
-            )
-        else:
-            keep_alive = True
-
         self.vendor_prefix = vendor_prefix
 
-        _ignore_proxy = None
-        if not options:
-            options = self.create_options()
-
-        if desired_capabilities:
-            for key, value in desired_capabilities.items():
-                options.set_capability(key, value)
-
-        if options._ignore_local_proxy:
-            _ignore_proxy = options._ignore_local_proxy
-
-        if not service:
-            raise AttributeError("service cannot be None")
-
         self.service = service
+
+        self.service.path = DriverFinder.get_path(self.service, options)
+
         self.service.start()
 
         try:
@@ -107,7 +59,7 @@ class ChromiumDriver(RemoteWebDriver):
                     browser_name=browser_name,
                     vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive,
-                    ignore_proxy=_ignore_proxy,
+                    ignore_proxy=options._ignore_local_proxy,
                 ),
                 options=options,
             )
@@ -123,10 +75,9 @@ class ChromiumDriver(RemoteWebDriver):
     def get_network_conditions(self):
         """Gets Chromium network emulation settings.
 
-        :Returns:
-            A dict. For example:
-            {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
-            'offline': False}
+        :Returns:     A dict. For example:     {'latency': 4,
+        'download_throughput': 2, 'upload_throughput': 2,     'offline':
+        False}
         """
         return self.execute("getNetworkConditions")["value"]
 
@@ -162,6 +113,7 @@ class ChromiumDriver(RemoteWebDriver):
 
         :Usage:
             ::
+
                 driver.set_permissions('clipboard-read', 'denied')
         """
         self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
@@ -177,6 +129,7 @@ class ChromiumDriver(RemoteWebDriver):
          - cmd_args: A dict, command args. empty dict {} if there is no command args
         :Usage:
             ::
+
                 driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})
         :Returns:
             A dict, empty dict {} if there is no result to return.
@@ -186,15 +139,12 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def get_sinks(self) -> list:
-        """
-        :Returns: A list of sinks available for Cast.
-        """
+        """:Returns: A list of sinks available for Cast."""
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """
-        :Returns: An error message when there is any issue in a Cast session.
-        """
+        """:Returns: An error message when there is any issue in a Cast
+        session."""
         return self.execute("getIssueMessage")["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:
@@ -240,6 +190,3 @@ class ChromiumDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
-
-    def create_options(self) -> BaseOptions:
-        return EdgeOptions() if self.vendor_prefix == "ms" else ChromeOptions()

@@ -21,6 +21,14 @@ import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import java.io.Closeable;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -30,15 +38,6 @@ import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
-
-import java.io.Closeable;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GridRedisClient implements Closeable {
   private final RedisClient client;
@@ -137,15 +136,16 @@ public class GridRedisClient implements Closeable {
 
     if (maybeNode.isPresent()) {
       NodeStatus node = maybeNode.get();
-      NodeStatus resultNode = new NodeStatus(
-        id,
-        node.getExternalUri(),
-        node.getMaxSessionCount(),
-        node.getSlots(),
-        node.getAvailability(),
-        node.getHeartbeatPeriod(),
-        node.getVersion(),
-        node.getOsInfo());
+      NodeStatus resultNode =
+          new NodeStatus(
+              id,
+              node.getExternalUri(),
+              node.getMaxSessionCount(),
+              node.getSlots(),
+              node.getAvailability(),
+              node.getHeartbeatPeriod(),
+              node.getVersion(),
+              node.getOsInfo());
       return Optional.of(resultNode);
     }
 
@@ -158,9 +158,9 @@ public class GridRedisClient implements Closeable {
 
   public Set<NodeStatus> getNodes(Set<NodeId> nodeIds) {
     return nodeIds.stream()
-      .filter(nodeId -> getNode(nodeId).isPresent())
-      .map(nodeId -> getNode(nodeId).get())
-      .collect(Collectors.toSet());
+        .filter(nodeId -> getNode(nodeId).isPresent())
+        .map(nodeId -> getNode(nodeId).get())
+        .collect(Collectors.toSet());
   }
 
   public Set<NodeId> getAllNodes() {

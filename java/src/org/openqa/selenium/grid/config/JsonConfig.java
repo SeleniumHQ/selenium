@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -28,8 +26,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 
 public class JsonConfig implements Config {
 

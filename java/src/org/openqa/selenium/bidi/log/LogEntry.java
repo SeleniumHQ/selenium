@@ -19,16 +19,18 @@ package org.openqa.selenium.bidi.log;
 
 import java.util.Optional;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+// @see <a
+// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class LogEntry {
 
   private final Optional<GenericLogEntry> genericLogEntry;
   private final Optional<ConsoleLogEntry> consoleLogEntry;
   private final Optional<JavascriptLogEntry> javascriptLogEntry;
 
-  public LogEntry(Optional<GenericLogEntry> genericLogEntry,
-                  Optional<ConsoleLogEntry> consoleLogEntry,
-                  Optional<JavascriptLogEntry> javascriptLogEntry) {
+  public LogEntry(
+      Optional<GenericLogEntry> genericLogEntry,
+      Optional<ConsoleLogEntry> consoleLogEntry,
+      Optional<JavascriptLogEntry> javascriptLogEntry) {
     this.genericLogEntry = genericLogEntry;
     this.consoleLogEntry = consoleLogEntry;
     this.javascriptLogEntry = javascriptLogEntry;

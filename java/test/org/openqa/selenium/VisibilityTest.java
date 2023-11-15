@@ -23,15 +23,13 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.List;
 
 class VisibilityTest extends JupiterTestBase {
 
@@ -131,14 +129,14 @@ class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
-    String[] pages = new String[]{
-        "overflow/x_hidden_y_hidden.html",
-        "overflow/x_hidden_y_scroll.html",
-        "overflow/x_hidden_y_auto.html",
-    };
-    for (String page: pages) {
+    String[] pages =
+        new String[] {
+          "overflow/x_hidden_y_hidden.html",
+          "overflow/x_hidden_y_scroll.html",
+          "overflow/x_hidden_y_auto.html",
+        };
+    for (String page : pages) {
       driver.get(appServer.whereIs(page));
       WebElement right = driver.findElement(By.id("right"));
       assertThat(right.isDisplayed()).as("On page %s", page).isFalse();
@@ -148,14 +146,14 @@ class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowYIsNotVisible() {
-    String[] pages = new String[]{
-        "overflow/x_hidden_y_hidden.html",
-        "overflow/x_scroll_y_hidden.html",
-        "overflow/x_auto_y_hidden.html",
-    };
-    for (String page: pages) {
+    String[] pages =
+        new String[] {
+          "overflow/x_hidden_y_hidden.html",
+          "overflow/x_scroll_y_hidden.html",
+          "overflow/x_auto_y_hidden.html",
+        };
+    for (String page : pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottom = driver.findElement(By.id("bottom"));
       assertThat(bottom.isDisplayed()).as("On page %s", page).isFalse();
@@ -166,15 +164,16 @@ class VisibilityTest extends JupiterTestBase {
 
   @Test
   void testElementScrollableByOverflowXIsVisible() {
-    String[] pages = new String[]{
-        "overflow/x_scroll_y_hidden.html",
-        "overflow/x_scroll_y_scroll.html",
-        "overflow/x_scroll_y_auto.html",
-        "overflow/x_auto_y_hidden.html",
-        "overflow/x_auto_y_scroll.html",
-        "overflow/x_auto_y_auto.html",
-    };
-    for (String page: pages) {
+    String[] pages =
+        new String[] {
+          "overflow/x_scroll_y_hidden.html",
+          "overflow/x_scroll_y_scroll.html",
+          "overflow/x_scroll_y_auto.html",
+          "overflow/x_auto_y_hidden.html",
+          "overflow/x_auto_y_scroll.html",
+          "overflow/x_auto_y_auto.html",
+        };
+    for (String page : pages) {
       driver.get(appServer.whereIs(page));
       WebElement right = driver.findElement(By.id("right"));
       assertThat(right.isDisplayed()).as("On page %s", page).isTrue();
@@ -183,15 +182,16 @@ class VisibilityTest extends JupiterTestBase {
 
   @Test
   void testElementScrollableByOverflowYIsVisible() {
-    String[] pages = new String[]{
-        "overflow/x_hidden_y_scroll.html",
-        "overflow/x_scroll_y_scroll.html",
-        "overflow/x_auto_y_scroll.html",
-        "overflow/x_hidden_y_auto.html",
-        "overflow/x_scroll_y_auto.html",
-        "overflow/x_auto_y_auto.html",
-    };
-    for (String page: pages) {
+    String[] pages =
+        new String[] {
+          "overflow/x_hidden_y_scroll.html",
+          "overflow/x_scroll_y_scroll.html",
+          "overflow/x_auto_y_scroll.html",
+          "overflow/x_hidden_y_auto.html",
+          "overflow/x_scroll_y_auto.html",
+          "overflow/x_auto_y_auto.html",
+        };
+    for (String page : pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottom = driver.findElement(By.id("bottom"));
       assertThat(bottom.isDisplayed()).as("On page %s", page).isTrue();
@@ -200,13 +200,14 @@ class VisibilityTest extends JupiterTestBase {
 
   @Test
   void testElementScrollableByOverflowXAndYIsVisible() {
-    String[] pages = new String[]{
-        "overflow/x_scroll_y_scroll.html",
-        "overflow/x_scroll_y_auto.html",
-        "overflow/x_auto_y_scroll.html",
-        "overflow/x_auto_y_auto.html",
-    };
-    for (String page: pages) {
+    String[] pages =
+        new String[] {
+          "overflow/x_scroll_y_scroll.html",
+          "overflow/x_scroll_y_auto.html",
+          "overflow/x_auto_y_scroll.html",
+          "overflow/x_auto_y_auto.html",
+        };
+    for (String page : pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottomRight = driver.findElement(By.id("bottom-right"));
       assertThat(bottomRight.isDisplayed()).as("On page %s", page).isTrue();
@@ -261,7 +262,8 @@ class VisibilityTest extends JupiterTestBase {
 
     WebElement element = driver.findElement(By.id("clickJacker"));
     assertThat(element.getCssValue("opacity"))
-        .describedAs("Precondition failed: clickJacker should be transparent").isEqualTo("0");
+        .describedAs("Precondition failed: clickJacker should be transparent")
+        .isEqualTo("0");
     element.click();
     assertThat(element.getCssValue("opacity")).isEqualTo("1");
   }
@@ -292,5 +294,4 @@ class VisibilityTest extends JupiterTestBase {
 
     assertThat(area.isDisplayed()).as("The element and the enclosing map").isTrue();
   }
-
 }

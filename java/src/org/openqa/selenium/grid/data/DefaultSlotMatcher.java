@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.Capabilities;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.openqa.selenium.Capabilities;
 
 /**
- * Default matching implementation for slots, loosely based on the
- * requirements for capability matching from the WebDriver spec. A match
- * is made if the following are all true:
+ * Default matching implementation for slots, loosely based on the requirements for capability
+ * matching from the WebDriver spec. A match is made if the following are all true:
+ *
  * <ul>
- *   <li>All non-extension capabilities from the {@code stereotype} match
- *       those in the {@link Capabilities} being considered.
+ *   <li>All non-extension capabilities from the {@code stereotype} match those in the {@link
+ *       Capabilities} being considered.
  *   <li>If the {@link Capabilities} being considered contain any of:
  *       <ul>
  *         <li>browserName
@@ -39,19 +38,18 @@ import java.util.Objects;
  *       </ul>
  *       Then the {@code stereotype} must contain the same values.
  * </ul>
- * <p>
- * One thing to note is that extension capabilities are not considered when
- * matching slots, since the matching of these is implementation-specific
- * to each driver.
+ *
+ * <p>One thing to note is that extension capabilities are not considered when matching slots, since
+ * the matching of these is implementation-specific to each driver.
  */
 public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
   /*
-    List of prefixed extension capabilities we never should try to match, they should be
-    matched in the Node or in the browser driver.
-   */
-  private static final List<String> EXTENSION_CAPABILITIES_PREFIXES = Arrays.asList(
-    "goog:", "moz:", "ms:", "se:");
+   List of prefixed extension capabilities we never should try to match, they should be
+   matched in the Node or in the browser driver.
+  */
+  private static final List<String> EXTENSION_CAPABILITIES_PREFIXES =
+      Arrays.asList("goog:", "moz:", "ms:", "se:");
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
@@ -61,6 +59,10 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     }
 
     if (!initialMatch(stereotype, capabilities)) {
+      return false;
+    }
+
+    if (!managedDownloadsEnabled(stereotype, capabilities)) {
       return false;
     }
 
@@ -74,78 +76,98 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
     // At the end, a simple browser, browserVersion and platformName match
     boolean browserNameMatch =
-      (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty()) ||
-      Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
+        (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty())
+            || Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
-      (capabilities.getBrowserVersion() == null || capabilities.getBrowserVersion().isEmpty()) ||
-      Objects.equals(stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
+        (capabilities.getBrowserVersion() == null
+                || capabilities.getBrowserVersion().isEmpty()
+                || Objects.equals(capabilities.getBrowserVersion(), "stable"))
+            || Objects.equals(stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
     boolean platformNameMatch =
-      capabilities.getPlatformName() == null ||
-      Objects.equals(stereotype.getPlatformName(), capabilities.getPlatformName()) ||
-      (stereotype.getPlatformName() != null &&
-       stereotype.getPlatformName().is(capabilities.getPlatformName()));
+        capabilities.getPlatformName() == null
+            || Objects.equals(stereotype.getPlatformName(), capabilities.getPlatformName())
+            || (stereotype.getPlatformName() != null
+                && stereotype.getPlatformName().is(capabilities.getPlatformName()));
     return browserNameMatch && browserVersionMatch && platformNameMatch;
   }
 
   private Boolean initialMatch(Capabilities stereotype, Capabilities capabilities) {
     return stereotype.getCapabilityNames().stream()
-      // Matching of extension capabilities is implementation independent. Skip them
-      .filter(name -> !name.contains(":"))
-      // Platform matching is special, we do it later
-      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
-      .map(name -> {
-        if (capabilities.getCapability(name) instanceof String) {
-          return stereotype.getCapability(name).toString()
-            .equalsIgnoreCase(capabilities.getCapability(name).toString());
-        } else {
-          return capabilities.getCapability(name) == null ||
-                 Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
-        }
-      })
-      .reduce(Boolean::logicalAnd)
-      .orElse(true);
+        // Matching of extension capabilities is implementation independent. Skip them
+        .filter(name -> !name.contains(":"))
+        // Platform matching is special, we do it later
+        .filter(name -> !"platformName".equalsIgnoreCase(name))
+        .map(
+            name -> {
+              if (capabilities.getCapability(name) instanceof String) {
+                return stereotype
+                    .getCapability(name)
+                    .toString()
+                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
+              } else {
+                return capabilities.getCapability(name) == null
+                    || Objects.equals(
+                        stereotype.getCapability(name), capabilities.getCapability(name));
+              }
+            })
+        .reduce(Boolean::logicalAnd)
+        .orElse(true);
+  }
+
+  private Boolean managedDownloadsEnabled(Capabilities stereotype, Capabilities capabilities) {
+    // First lets check if user wanted a Node with managed downloads enabled
+    Object raw = capabilities.getCapability("se:downloadsEnabled");
+    if (raw == null || !Boolean.parseBoolean(raw.toString())) {
+      // User didn't ask. So lets move on to the next matching criteria
+      return true;
+    }
+    // User wants managed downloads enabled to be done on this Node, let's check the stereotype
+    raw = stereotype.getCapability("se:downloadsEnabled");
+    // Try to match what the user requested
+    return raw != null && Boolean.parseBoolean(raw.toString());
   }
 
   private Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
     /*
-      This platform version match is not W3C compliant but users can add Appium servers as
-      Nodes, so we avoid delaying the match until the Slot, which makes the whole matching
-      process faster.
-     */
-    return capabilities.getCapabilityNames()
-      .stream()
-      .filter(name -> name.contains("platformVersion"))
-      .map(
-        platformVersionCapName ->
-          Objects.equals(stereotype.getCapability(platformVersionCapName),
-                         capabilities.getCapability(platformVersionCapName)))
-      .reduce(Boolean::logicalAnd)
-      .orElse(true);
+     This platform version match is not W3C compliant but users can add Appium servers as
+     Nodes, so we avoid delaying the match until the Slot, which makes the whole matching
+     process faster.
+    */
+    return capabilities.getCapabilityNames().stream()
+        .filter(name -> name.contains("platformVersion"))
+        .map(
+            platformVersionCapName ->
+                Objects.equals(
+                    stereotype.getCapability(platformVersionCapName),
+                    capabilities.getCapability(platformVersionCapName)))
+        .reduce(Boolean::logicalAnd)
+        .orElse(true);
   }
 
   private Boolean extensionCapabilitiesMatch(Capabilities stereotype, Capabilities capabilities) {
     /*
-      We match extension capabilities when they are not prefixed with any of the
-      EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
-      of the new session request contains that specific extension capability.
-     */
+     We match extension capabilities when they are not prefixed with any of the
+     EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
+     of the new session request contains that specific extension capability.
+    */
     return stereotype.getCapabilityNames().stream()
-      .filter(name -> name.contains(":"))
-      .filter(name -> capabilities.asMap().containsKey(name))
-      .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
-      .map(
-        name -> {
-          if (capabilities.getCapability(name) instanceof String) {
-            return stereotype.getCapability(name).toString()
-              .equalsIgnoreCase(capabilities.getCapability(name).toString());
-          } else {
-            return capabilities.getCapability(name) == null ||
-                   Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
-          }
-        }
-      )
-      .reduce(Boolean::logicalAnd)
-      .orElse(true);
+        .filter(name -> name.contains(":"))
+        .filter(name -> capabilities.asMap().containsKey(name))
+        .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
+        .map(
+            name -> {
+              if (capabilities.getCapability(name) instanceof String) {
+                return stereotype
+                    .getCapability(name)
+                    .toString()
+                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
+              } else {
+                return capabilities.getCapability(name) == null
+                    || Objects.equals(
+                        stereotype.getCapability(name), capabilities.getCapability(name));
+              }
+            })
+        .reduce(Boolean::logicalAnd)
+        .orElse(true);
   }
-
 }

@@ -31,8 +31,8 @@ import static org.openqa.selenium.Platform.WIN8_1;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.Platform.XP;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PlatformTest {
@@ -150,12 +150,14 @@ class PlatformTest {
 
   @Test
   void testWindows8Detection() {
-    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.2")).isEqualTo(Platform.WIN8);
+    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.2"))
+        .isEqualTo(Platform.WIN8);
   }
 
   @Test
   void testWindows81Detection() {
-    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.3")).isEqualTo(Platform.WIN8_1);
+    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.3"))
+        .isEqualTo(Platform.WIN8_1);
   }
 
   @Test
@@ -184,5 +186,4 @@ class PlatformTest {
       assertThat(seen.is(platform)).isTrue();
     }
   }
-
 }

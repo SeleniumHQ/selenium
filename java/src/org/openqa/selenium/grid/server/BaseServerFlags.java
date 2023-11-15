@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.grid.server;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 
 import com.beust.jcommander.Parameter;
-
-import org.openqa.selenium.grid.config.ConfigValue;
-import org.openqa.selenium.grid.config.HasRoles;
-import org.openqa.selenium.grid.config.Role;
-
+import com.google.auto.service.AutoService;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
 @AutoService(HasRoles.class)
 public class BaseServerFlags implements HasRoles {
@@ -37,61 +34,75 @@ public class BaseServerFlags implements HasRoles {
   private static final String SERVER_SECTION = "server";
 
   @Parameter(
-    names = {"--host"},
-    description = "Server IP or hostname: usually determined automatically.")
+      names = {"--external-url"},
+      description =
+          "External URL where component is generally available. "
+              + "Useful on complex network topologies when components are on different networks "
+              + "and proxy servers are involved.")
+  @ConfigValue(section = SERVER_SECTION, name = "external-url", example = "http://10.0.1.1:33333")
+  private String externalUrl;
+
+  @Parameter(
+      names = {"--host"},
+      description = "Server IP or hostname: usually determined automatically.")
   @ConfigValue(section = SERVER_SECTION, name = "host", example = "\"localhost\"")
   private String host;
 
   @Parameter(
-    names = "--bind-host",
-    description = "Whether the server should bind to the host address/name, or only use it to" +
-                  " report its reachable url. Helpful in complex network topologies where the" +
-                  " server cannot report itself with the current IP/hostname but rather an" +
-                  " external IP or hostname (e.g. inside a Docker container).",
-    arity = 1)
+      names = "--bind-host",
+      description =
+          "Whether the server should bind to the host address/name, or only use it to"
+              + " report its reachable url. Helpful in complex network topologies where the"
+              + " server cannot report itself with the current IP/hostname but rather an"
+              + " external IP or hostname (e.g. inside a Docker container).",
+      arity = 1)
   @ConfigValue(section = SERVER_SECTION, name = "bind-host", example = "true")
   private Boolean bindHost = true;
 
   @Parameter(
-    description = "Port to listen on. There is no default as this parameter is used by "
-                  + "different components, for example Router/Hub/Standalone will use 4444 and "
-                  + "Node will use 5555.",
-    names = {"-p", "--port"})
+      description =
+          "Port to listen on. There is no default as this parameter is used by "
+              + "different components, for example Router/Hub/Standalone will use 4444 and "
+              + "Node will use 5555.",
+      names = {"-p", "--port"})
   @ConfigValue(section = SERVER_SECTION, name = "port", example = "4444")
   private Integer port;
 
   @Parameter(
-    description = "Maximum number of listener threads. "
-                  + "Default value is: (available processors) * 3.",
-    names = "--max-threads")
+      description =
+          "Maximum number of listener threads. " + "Default value is: (available processors) * 3.",
+      names = "--max-threads")
   @ConfigValue(section = SERVER_SECTION, name = "max-threads", example = "12")
   private int maxThreads;
 
   @Parameter(
-    names = "--allow-cors",
-    description = "Whether the Selenium server should allow web browser connections from any host",
-    arity = 1)
+      names = "--allow-cors",
+      description =
+          "Whether the Selenium server should allow web browser connections from any host",
+      arity = 1)
   @ConfigValue(section = SERVER_SECTION, name = "allow-cors", example = "true")
   private Boolean allowCORS = false;
 
   @Parameter(
-    description = "Private key for https. Get more detailed information by running"
-                  + " \"java -jar selenium-server.jar info security\"",
-    names = "--https-private-key")
+      description =
+          "Private key for https. Get more detailed information by running"
+              + " \"java -jar selenium-server.jar info security\"",
+      names = "--https-private-key")
   @ConfigValue(
-    section = SERVER_SECTION,
-    name = "https-private-key",
-    example = "\"/path/to/key.pkcs8\"")
+      section = SERVER_SECTION,
+      name = "https-private-key",
+      example = "\"/path/to/key.pkcs8\"")
   private Path httpsPrivateKey;
 
   @Parameter(
-    description = "Server certificate for https. Get more detailed information by running"
-                  + " \"java -jar selenium-server.jar info security\"",
-    names = "--https-certificate")
+      description =
+          "Server certificate for https. Get more detailed information by running"
+              + " \"java -jar selenium-server.jar info security\"",
+      names = "--https-certificate")
   @ConfigValue(
-    section = SERVER_SECTION,
-    name = "https-certificate",
-    example = "\"/path/to/cert.pem\"")
+      section = SERVER_SECTION,
+      name = "https-certificate",
+      example = "\"/path/to/cert.pem\"")
   private Path httpsCertificate;
 
   @Parameter(description = "Node registration secret", names = "--registration-secret")
@@ -99,9 +110,9 @@ public class BaseServerFlags implements HasRoles {
   private String registrationSecret;
 
   @Parameter(
-    description = "Use a self-signed certificate for HTTPS communication",
-    names = "--self-signed-https",
-    hidden = true)
+      description = "Use a self-signed certificate for HTTPS communication",
+      names = "--self-signed-https",
+      hidden = true)
   @ConfigValue(section = SERVER_SECTION, name = "https-self-signed", example = "false")
   private Boolean isSelfSigned = false;
 

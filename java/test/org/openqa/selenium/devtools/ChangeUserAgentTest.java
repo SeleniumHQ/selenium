@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -24,30 +28,31 @@ import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 class ChangeUserAgentTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
   public void canChangeUserAgent() {
-    devTools.getDomains().network().setUserAgent(
-      new Network.UserAgent("Camembert 1.0")
-        .platform("FreeBSD").acceptLanguage("da, en-gb, *"));
+    devTools
+        .getDomains()
+        .network()
+        .setUserAgent(
+            new Network.UserAgent("Camembert 1.0")
+                .platform("FreeBSD")
+                .acceptLanguage("da, en-gb, *"));
     driver.get(appServer.whereIs("/echo"));
 
-    Map<String, String> headers = driver.findElements(By.cssSelector("#headers tr")).stream()
-      .map(row -> row.findElements(By.tagName("td")))
-      .collect(Collectors.toMap(cells -> cells.get(0).getText(), cells -> cells.get(1).getText()));
+    Map<String, String> headers =
+        driver.findElements(By.cssSelector("#headers tr")).stream()
+            .map(row -> row.findElements(By.tagName("td")))
+            .collect(
+                Collectors.toMap(cells -> cells.get(0).getText(), cells -> cells.get(1).getText()));
     assertThat(headers)
-      .containsEntry("User-Agent", "Camembert 1.0")
-      .containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
+        .containsEntry("User-Agent", "Camembert 1.0")
+        .containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
 
-    Object platform = ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
+    Object platform =
+        ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
     assertThat(platform).isEqualTo("FreeBSD");
   }
-
 }

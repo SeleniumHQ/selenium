@@ -25,9 +25,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-/**
- * Custom java.util.logging formatter providing compact output.
- */
+/** Custom java.util.logging formatter providing compact output. */
 public class TerseFormatter extends Formatter {
 
   /** The string to write at the beginning of all log headers (e.g. "[FINE core]") */
@@ -40,8 +38,8 @@ public class TerseFormatter extends Formatter {
   private static final String SUFFIX = " - ";
 
   /**
-   * Line separator string.  This is the value of the line.separator
-   * property at the moment that the TerseFormatter was created.
+   * Line separator string. This is the value of the line.separator property at the moment that the
+   * TerseFormatter was created.
    */
   private final String lineSeparator = System.getProperty("line.separator");
 
@@ -58,6 +56,7 @@ public class TerseFormatter extends Formatter {
    * allocations.
    */
   private final StringBuilder buffer;
+
   private final SimpleDateFormat timestampFormatter;
 
   public TerseFormatter(String logTimestampFormat) {
@@ -79,7 +78,7 @@ public class TerseFormatter extends Formatter {
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
     String[] parts = record.getSourceClassName().split("\\.");
-    buffer.append(" [" + parts[parts.length-1] + "." + record.getSourceMethodName() + "]");
+    buffer.append(" [" + parts[parts.length - 1] + "." + record.getSourceMethodName() + "]");
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {
@@ -90,7 +89,6 @@ public class TerseFormatter extends Formatter {
 
     return buffer.toString();
   }
-
 
   private String levelNumberToCommonsLevelName(Level level) {
     switch (level.intValue()) {
@@ -106,5 +104,4 @@ public class TerseFormatter extends Formatter {
         return level.getLocalizedName();
     }
   }
-
 }

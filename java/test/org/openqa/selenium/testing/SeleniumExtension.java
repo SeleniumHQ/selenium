@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.testing;
 
+import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
+import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.time.Duration;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
@@ -33,21 +45,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-
-import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
-import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
-
-public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
-                                          TestWatcher, ExecutionCondition, TestExecutionExceptionHandler {
+public class SeleniumExtension
+    implements BeforeEachCallback,
+        AfterEachCallback,
+        TestWatcher,
+        ExecutionCondition,
+        TestExecutionExceptionHandler {
 
   private static final ThreadLocal<SeleniumExtension.Instances> instances = new ThreadLocal<>();
 
@@ -64,6 +67,7 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
   private final CaptureLoggingRule captureLoggingRule;
 
   private boolean failedWithNotYetImplemented = false;
+  private boolean failedWithRemoteBuild = false;
 
   public SeleniumExtension() {
     this(Duration.ofSeconds(10), Duration.ofSeconds(5));
@@ -73,7 +77,8 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
     this.regularWait = Require.nonNull("Regular wait duration", regularWait);
     this.shortWait = Require.nonNull("Short wait duration", shortWait);
 
-    this.ignorance = new TestIgnorance(Optional.ofNullable(Browser.detect()).orElse(Browser.CHROME));
+    this.ignorance =
+        new TestIgnorance(Optional.ofNullable(Browser.detect()).orElse(Browser.CHROME));
     this.captureLoggingRule = new CaptureLoggingRule();
   }
 
@@ -84,7 +89,8 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
     // ManageDriverRule.starting
     Browser current = Objects.requireNonNull(Browser.detect());
     Optional<Method> testMethod = context.getTestMethod();
-    Optional<NoDriverBeforeTest> noDriverBeforeTest = findAnnotation(testMethod, NoDriverBeforeTest.class);
+    Optional<NoDriverBeforeTest> noDriverBeforeTest =
+        findAnnotation(testMethod, NoDriverBeforeTest.class);
 
     if (noDriverBeforeTest.isPresent()) {
       NoDriverBeforeTest annotation = noDriverBeforeTest.get();
@@ -95,7 +101,8 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
         return;
       }
     }
-    Optional<NeedsFreshDriver> needsFreshDriver = findAnnotation(testMethod, NeedsFreshDriver.class);
+    Optional<NeedsFreshDriver> needsFreshDriver =
+        findAnnotation(testMethod, NeedsFreshDriver.class);
     if (needsFreshDriver.isPresent()) {
       NeedsFreshDriver annotation = needsFreshDriver.get();
       if (current.matches(annotation.value())) {
@@ -109,6 +116,9 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
 
     // NotYetImplementedRule
     failedWithNotYetImplemented = false;
+
+    // Remote builds
+    failedWithRemoteBuild = false;
   }
 
   @Override
@@ -131,12 +141,28 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
       Optional<Class<?>> testClass = context.getTestClass();
       Optional<Method> testMethod = context.getTestMethod();
       Browser current = Objects.requireNonNull(Browser.detect());
-      throw new Exception(String.format(
-        "%s.%s is marked as not yet implemented with %s but already works!",
-        testClass.isPresent() ? testClass.get().getName() : "",
-        testMethod.isPresent() ? testMethod.get().getName() : "", current));
+      throw new Exception(
+          String.format(
+              "%s.%s is marked as not yet implemented with %s but already works!",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
+              current));
     }
 
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
+    boolean isNotExpectedToWork = notWorkingInRemoteBuilds.check();
+
+    if (isNotExpectedToWork && !failedWithRemoteBuild) {
+      Optional<Class<?>> testClass = context.getTestClass();
+      Optional<Method> testMethod = context.getTestMethod();
+      throw new Exception(
+          String.format(
+              "%s.%s is not yet expected to work on remote builds using %s, but it already works!",
+              testClass.map(Class::getName).orElse(""),
+              testMethod.map(Method::getName).orElse(""),
+              Browser.detect()));
+    }
   }
 
   @Override
@@ -146,7 +172,8 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
     // ManageDriverRule.succeeded
     Browser current = Objects.requireNonNull(Browser.detect());
     Optional<Method> testMethod = context.getTestMethod();
-    Optional<NoDriverAfterTest> noDriverAfterTest = findAnnotation(testMethod, NoDriverAfterTest.class);
+    Optional<NoDriverAfterTest> noDriverAfterTest =
+        findAnnotation(testMethod, NoDriverAfterTest.class);
     if (noDriverAfterTest.isPresent()) {
       NoDriverAfterTest annotation = noDriverAfterTest.get();
       if (!annotation.failedOnly() && current.matches(annotation.value())) {
@@ -163,7 +190,8 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
     // ManageDriverRule.failed
     Browser current = Objects.requireNonNull(Browser.detect());
     Optional<Method> testMethod = context.getTestMethod();
-    Optional<NoDriverAfterTest> noDriverAfterTest = findAnnotation(testMethod, NoDriverAfterTest.class);
+    Optional<NoDriverAfterTest> noDriverAfterTest =
+        findAnnotation(testMethod, NoDriverAfterTest.class);
     if (noDriverAfterTest.isPresent()) {
       NoDriverAfterTest annotation = noDriverAfterTest.get();
       if (current.matches(annotation.value())) {
@@ -179,22 +207,31 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
   @Override
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
     if (ignorance.isIgnored(context)) {
-      return ConditionEvaluationResult
-        .disabled("Test disabled");
+      return ConditionEvaluationResult.disabled("Test disabled");
     }
-    return ConditionEvaluationResult
-      .enabled("Test enabled");
+    return ConditionEvaluationResult.enabled("Test enabled");
   }
 
   @Override
-  public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+  public void handleTestExecutionException(ExtensionContext context, Throwable throwable)
+      throws Throwable {
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
     if (notYetImplementedRule.check()) {
-      // Expected
       failedWithNotYetImplemented = true;
+    }
+
+    NotWorkingInRemoteBazelBuildsRule notWorkingInRemoteBuilds =
+        new NotWorkingInRemoteBazelBuildsRule(context);
+    if (notWorkingInRemoteBuilds.check()) {
+      failedWithRemoteBuild = true;
+    }
+
+    if (failedWithNotYetImplemented || failedWithRemoteBuild) {
+      // Expected failures.
       return;
     }
+
     throw throwable;
   }
 
@@ -231,9 +268,10 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
   private WebDriver actuallyCreateDriver(Capabilities capabilities) {
     Instances current = instances.get();
 
-    if (current == null ||
-      current.driver == null ||
-      (current.driver instanceof RemoteWebDriver && ((RemoteWebDriver) current.driver).getSessionId() == null)) {
+    if (current == null
+        || current.driver == null
+        || (current.driver instanceof RemoteWebDriver
+            && ((RemoteWebDriver) current.driver).getSessionId() == null)) {
       StaticResources.ensureAvailable();
       WebDriver driver = new WebDriverBuilder().get(capabilities);
       nullDriver = false;
@@ -294,11 +332,42 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
 
     public boolean check() throws Exception {
       Optional<AnnotatedElement> element = context.getElement();
-      Optional<NotYetImplementedList> notYetImplementedList = findAnnotation(element, NotYetImplementedList.class);
-      List<NotYetImplemented> notYetImplemented = findRepeatableAnnotations(element, NotYetImplemented.class);
+      Optional<NotYetImplementedList> notYetImplementedList =
+          findAnnotation(element, NotYetImplementedList.class);
+      List<NotYetImplemented> notYetImplemented =
+          findRepeatableAnnotations(element, NotYetImplemented.class);
       return notImplemented(notYetImplementedList) || notImplemented(notYetImplemented.stream());
     }
+  }
 
+  private static class NotWorkingInRemoteBazelBuildsRule {
+    ExtensionContext context;
+    private final Browser current = Objects.requireNonNull(Browser.detect());
+
+    public NotWorkingInRemoteBazelBuildsRule(ExtensionContext context) {
+      this.context = context;
+    }
+
+    private boolean notWorkingYet(Optional<NotWorkingInRemoteBazelBuilds> list) {
+      return list.isPresent() && notWorkingYet(Stream.of(list.get()));
+    }
+
+    private boolean notWorkingYet(Stream<NotWorkingInRemoteBazelBuilds> value) {
+      return value.anyMatch(notWorking -> current.matches(notWorking.value()));
+    }
+
+    public boolean check() {
+      if (!Objects.equals("1", System.getenv("REMOTE_BUILD"))) {
+        return false;
+      }
+
+      Optional<AnnotatedElement> element = context.getElement();
+      Optional<NotWorkingInRemoteBazelBuilds> notWorkingList =
+          findAnnotation(element, NotWorkingInRemoteBazelBuilds.class);
+      List<NotWorkingInRemoteBazelBuilds> notWorking =
+          findRepeatableAnnotations(element, NotWorkingInRemoteBazelBuilds.class);
+      return notWorkingYet(notWorkingList) || notWorkingYet(notWorking.stream());
+    }
   }
 
   private static class SwitchToTopRule {
@@ -320,6 +389,4 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
       }
     }
   }
-
-
 }

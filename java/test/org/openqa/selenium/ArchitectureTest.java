@@ -24,8 +24,8 @@ import static org.openqa.selenium.Architecture.ARM;
 import static org.openqa.selenium.Architecture.X64;
 import static org.openqa.selenium.Architecture.X86;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class ArchitectureTest {
@@ -94,8 +94,7 @@ class ArchitectureTest {
 
   @Test
   void determineArchPentiumProMmx() {
-    assertThat(Architecture.extractFromSysProperty("pentium_pro+mmx").is(X86))
-        .isTrue();
+    assertThat(Architecture.extractFromSysProperty("pentium_pro+mmx").is(X86)).isTrue();
   }
 
   @Test
@@ -162,5 +161,4 @@ class ArchitectureTest {
   void anyDataModelIs64Bit() {
     assertThat(ANY.getDataModel()).isEqualTo(64);
   }
-
 }

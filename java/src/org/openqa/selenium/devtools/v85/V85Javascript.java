@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools.v85;
 
+import java.util.Optional;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
@@ -25,8 +26,6 @@ import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.devtools.v85.page.model.ScriptIdentifier;
 import org.openqa.selenium.devtools.v85.runtime.Runtime;
 import org.openqa.selenium.devtools.v85.runtime.model.BindingCalled;
-
-import java.util.Optional;
 
 public class V85Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 

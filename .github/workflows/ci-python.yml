@@ -19,15 +19,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Set up Python 3.7
+        uses: actions/checkout@v4
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7.10
+          python-version: 3.8
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==2.4.1
+          pip install tox==4.6.4
       - name: Test with tox
         run: tox -c py/tox.ini
         env:
@@ -39,19 +39,21 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Set up Python 3.7
+        uses: actions/checkout@v4
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7.10
+          python-version: 3.8
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==2.4.1
+          pip install tox==4.6.4
       - name: Test with tox
         run: tox -c py/tox.ini
         env:
-          TOXENV: linting-check
+          # If this fails, it will exit. Local work should be using `tox -e linting` prior to committing.
+          # the linting-ci recipe exists solely for CI and will not attempt to rewrite any files in-place etc.
+          TOXENV: linting-ci
 
   mypy:
     name: Mypy
@@ -59,15 +61,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Set up Python 3.7
+        uses: actions/checkout@v4
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7.10
+          python-version: 3.8
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==2.4.1
+          pip install tox==4.6.4
       - name: Test with tox
         run: |
           tox -c py/tox.ini -- --cobertura-xml-report ci || true
@@ -75,34 +77,9 @@ jobs:
         env:
           TOXENV: mypy
 
-  unit-tests:
-    name: Unit Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Unit Tests
-      cache-key: py-unit
-      run: bazel test //py:unit
-
-  browser-tests:
-    name: Browser Tests
-    needs: unit-tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
-          - firefox
-    with:
-      name: Integration Tests (${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
-      cache-key: py-${{ matrix.browser }}
-      run: bazel test --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
-
   remote-tests:
     name: Remote Tests
-    needs: unit-tests
+    needs: build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests (remote)

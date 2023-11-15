@@ -37,18 +37,18 @@ module Selenium
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a window with a reference context', except: {browser: %i[chrome edge]} do
+        it 'can create a window with a reference context' do
           browsing_context = described_class.new(driver: driver, type: :window,
                                                  reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a tab' do
+        it 'can create a tab without a reference context' do
           browsing_context = described_class.new(driver: driver, type: :tab)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a tab with a reference context', except: {browser: %i[chrome edge]} do
+        it 'can create a tab with a reference context' do
           browsing_context = described_class.new(driver: driver, type: :tab, reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
@@ -72,7 +72,7 @@ module Selenium
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
-        it 'can get tree with a child', except: {browser: %i[chrome edge]} do
+        it 'can get tree with a child' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
@@ -84,7 +84,7 @@ module Selenium
           expect(context_info.children[0]['url']).to include('formPage.html')
         end
 
-        it 'can get tree with depth', except: {browser: %i[chrome edge], reason: 'not yet implemented'} do
+        it 'can get tree with depth' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),

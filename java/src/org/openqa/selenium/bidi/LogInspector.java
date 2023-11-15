@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.bidi;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import org.openqa.selenium.WebDriver;
-
 import org.openqa.selenium.bidi.log.BaseLogEntry;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.FilterBy;
@@ -28,12 +32,6 @@ import org.openqa.selenium.bidi.log.Log;
 import org.openqa.selenium.bidi.log.LogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.internal.Require;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 public class LogInspector implements AutoCloseable {
 
@@ -61,76 +59,83 @@ public class LogInspector implements AutoCloseable {
     this.browsingContextIds = browsingContextIds;
   }
 
-  @Deprecated
-  public void onConsoleLog(Consumer<ConsoleLogEntry> consumer) {
-    Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
-
-    addLogEntryAddedListener(logEntryConsumer);
-  }
-
   public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
+        logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getConsoleLogEntry().ifPresent(entry -> {
-        if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-          consumer.accept(entry);
-        }
-      });
+        logEntry ->
+            logEntry
+                .getConsoleLogEntry()
+                .ifPresent(
+                    entry -> {
+                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
+                        consumer.accept(entry);
+                      }
+                    });
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
-
   public void onJavaScriptLog(Consumer<JavascriptLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getJavascriptLogEntry().ifPresent(consumer);
+        logEntry -> logEntry.getJavascriptLogEntry().ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onJavaScriptLog(Consumer<JavascriptLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getJavascriptLogEntry().ifPresent(entry -> {
-        if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-          consumer.accept(entry);
-        }
-      });
+        logEntry ->
+            logEntry
+                .getJavascriptLogEntry()
+                .ifPresent(
+                    entry -> {
+                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
+                        consumer.accept(entry);
+                      }
+                    });
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onJavaScriptException(Consumer<JavascriptLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getJavascriptLogEntry().ifPresent(entry -> {
-        if (entry.getLevel() == LogLevel.ERROR) {
-          consumer.accept(entry);
-        }
-      });
+        logEntry ->
+            logEntry
+                .getJavascriptLogEntry()
+                .ifPresent(
+                    entry -> {
+                      if (entry.getLevel() == LogLevel.ERROR) {
+                        consumer.accept(entry);
+                      }
+                    });
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onGenericLog(Consumer<GenericLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getGenericLogEntry().ifPresent(consumer);
+        logEntry -> logEntry.getGenericLogEntry().ifPresent(consumer);
 
     addLogEntryAddedListener(logEntryConsumer);
   }
 
   public void onGenericLog(Consumer<GenericLogEntry> consumer, FilterBy filter) {
     Consumer<LogEntry> logEntryConsumer =
-      logEntry -> logEntry.getGenericLogEntry().ifPresent(entry -> {
-        if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
-          consumer.accept(entry);
-        }
-      });
+        logEntry ->
+            logEntry
+                .getGenericLogEntry()
+                .ifPresent(
+                    entry -> {
+                      if (filter.getLevel() != null && entry.getLevel() == filter.getLevel()) {
+                        consumer.accept(entry);
+                      }
+                    });
 
     addLogEntryAddedListener(logEntryConsumer);
   }
@@ -140,17 +145,18 @@ public class LogInspector implements AutoCloseable {
   }
 
   public void onLog(Consumer<LogEntry> consumer, FilterBy filter) {
-    Consumer<LogEntry> logEntryConsumer = logEntry -> {
-      AtomicReference<BaseLogEntry> baseLogEntry = new AtomicReference<>();
+    Consumer<LogEntry> logEntryConsumer =
+        logEntry -> {
+          AtomicReference<BaseLogEntry> baseLogEntry = new AtomicReference<>();
 
-      logEntry.getGenericLogEntry().ifPresent(baseLogEntry::set);
-      logEntry.getConsoleLogEntry().ifPresent(baseLogEntry::set);
-      logEntry.getJavascriptLogEntry().ifPresent(baseLogEntry::set);
+          logEntry.getGenericLogEntry().ifPresent(baseLogEntry::set);
+          logEntry.getConsoleLogEntry().ifPresent(baseLogEntry::set);
+          logEntry.getJavascriptLogEntry().ifPresent(baseLogEntry::set);
 
-      if (filter.getLevel() != null && baseLogEntry.get().getLevel() == filter.getLevel()) {
-        consumer.accept(logEntry);
-      }
-    };
+          if (filter.getLevel() != null && baseLogEntry.get().getLevel() == filter.getLevel()) {
+            consumer.accept(logEntry);
+          }
+        };
 
     addLogEntryAddedListener(logEntryConsumer);
   }

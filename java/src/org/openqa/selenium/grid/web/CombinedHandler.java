@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.web;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
 
 public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHandler {
 
@@ -43,10 +42,7 @@ public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHa
 
   @Override
   public boolean matches(HttpRequest req) {
-    return handlers.keySet().stream()
-      .map(p -> p.matches(req))
-      .reduce(Boolean::logicalOr)
-      .orElse(false);
+    return handlers.keySet().stream().anyMatch(p -> p.matches(req));
   }
 
   @Override

@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -9,6 +6,8 @@ using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
+    using CurrentCdpVersion = V119;
+
     [TestFixture]
     public class DevToolsLogTest : DevToolsTestFixture
     {
@@ -19,12 +18,12 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEntryAddedAndClearLog()
         {
-            var domains = session.GetVersionSpecificDomains<V110.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V110.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
+            EventHandler<CurrentCdpVersion.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Entry.Text.Contains("404"));
-                Assert.That(e.Entry.Level == V110.Log.LogEntryLevelValues.Error);
+                Assert.That(e.Entry.Level == CurrentCdpVersion.Log.LogEntryLevelValues.Error);
                 sync.Set();
             };
 

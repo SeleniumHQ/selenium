@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 /**
  * Converts {@link Command} objects to and from another representation.
  *
- * @param <T> The type of an encoded command.
+ * @param <T> The type of encoded command.
  */
 public interface CommandCodec<T> {
 
@@ -50,13 +50,12 @@ public interface CommandCodec<T> {
    */
   Command decode(T encodedCommand);
 
-  /**
-   * Enhance this command codec with additional commands.
-   */
+  /** Enhance this command codec with additional commands. */
   void defineCommand(String name, HttpMethod method, String pathPattern);
 
   /**
    * Allow commands to have aliases.
+   *
    * @param commandName The command being added.
    * @param isAnAliasFor The command name that this is an alias for.
    */

@@ -1,6 +1,7 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java/private:selenium_test.bzl", "BROWSERS")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_binary", "java_library", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+load("//java/private:selenium_test.bzl", "BROWSERS")
 
 filegroup(
     name = "keystore",
@@ -37,7 +38,7 @@ java_library(
     ],
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     visibility = [
         "//java/test:__subpackages__",
@@ -108,8 +109,8 @@ java_test_suite(
     data = firefox["data"],
     jvm_flags = firefox["jvm_flags"],
     tags = [
-        "selenium-remote",
         "firefox",
+        "selenium-remote",
     ] + firefox["tags"],
     deps = [
         ":environment",

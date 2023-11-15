@@ -396,7 +396,11 @@ class RelativeBy {
  *     strategy.
  */
 function check(locator) {
-  if (locator instanceof By || typeof locator === 'function') {
+  if (
+    locator instanceof By ||
+    locator instanceof RelativeBy ||
+    typeof locator === 'function'
+  ) {
     return locator
   }
 

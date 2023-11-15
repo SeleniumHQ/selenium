@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import org.openqa.selenium.internal.Require;
-
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 /**
  * A credential stored in a virtual authenticator.
- * @see <a href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
+ *
+ * @see <a
+ *     href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
 public class Credential {
 
@@ -39,61 +40,43 @@ public class Credential {
   private final byte[] userHandle;
   private final int signCount;
 
-  /**
-   * Creates a non resident (i.e. stateless) credential.
-   */
+  /** Creates a non resident (i.e. stateless) credential. */
   public static Credential createNonResidentCredential(
-    byte[] id,
-    String rpId,
-    PKCS8EncodedKeySpec privateKey,
-    int signCount) {
-    return new Credential(
-      id,
-      false,
-      Require.nonNull("rpId", rpId),
-      privateKey,
-      null, signCount);
+      byte[] id, String rpId, PKCS8EncodedKeySpec privateKey, int signCount) {
+    return new Credential(id, false, Require.nonNull("rpId", rpId), privateKey, null, signCount);
   }
 
-  /**
-   * Creates a resident (i.e. stateful) credential.
-   */
+  /** Creates a resident (i.e. stateful) credential. */
   public static Credential createResidentCredential(
-    byte[] id,
-    String rpId,
-    PKCS8EncodedKeySpec privateKey,
-    byte[] userHandle,
-    int signCount) {
+      byte[] id, String rpId, PKCS8EncodedKeySpec privateKey, byte[] userHandle, int signCount) {
     return new Credential(
-      id,
-      true,
-      Require.nonNull("rpId", rpId),
-      privateKey,
-      Require.nonNull("User handle", userHandle),
-      signCount);
+        id,
+        true,
+        Require.nonNull("rpId", rpId),
+        privateKey,
+        Require.nonNull("User handle", userHandle),
+        signCount);
   }
 
-  /**
-   * Creates a credential from a map.
-   */
+  /** Creates a credential from a map. */
   public static Credential fromMap(Map<String, Object> map) {
     Base64.Decoder decoder = Base64.getUrlDecoder();
     return new Credential(
-      decoder.decode((String) map.get("credentialId")),
-      (boolean) map.get("isResidentCredential"),
-      (String) map.get("rpId"),
-      new PKCS8EncodedKeySpec(decoder.decode((String) map.get("privateKey"))),
-      map.get("userHandle") == null ? null : decoder.decode((String) map.get("userHandle")),
-      ((Long) map.get("signCount")).intValue());
+        decoder.decode((String) map.get("credentialId")),
+        (boolean) map.get("isResidentCredential"),
+        (String) map.get("rpId"),
+        new PKCS8EncodedKeySpec(decoder.decode((String) map.get("privateKey"))),
+        map.get("userHandle") == null ? null : decoder.decode((String) map.get("userHandle")),
+        ((Long) map.get("signCount")).intValue());
   }
 
   private Credential(
-    byte[] id,
-    boolean isResidentCredential,
-    String rpId,
-    PKCS8EncodedKeySpec privateKey,
-    byte[] userHandle,
-    int signCount) {
+      byte[] id,
+      boolean isResidentCredential,
+      String rpId,
+      PKCS8EncodedKeySpec privateKey,
+      byte[] userHandle,
+      int signCount) {
     this.id = Require.nonNull("Id", id);
     this.isResidentCredential = isResidentCredential;
     this.rpId = rpId;

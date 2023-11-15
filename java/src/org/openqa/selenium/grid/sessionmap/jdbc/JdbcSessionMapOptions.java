@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.internal.Require;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.internal.Require;
 
 public class JdbcSessionMapOptions {
 
@@ -43,12 +42,12 @@ public class JdbcSessionMapOptions {
 
       if (jdbcUrl.isEmpty()) {
         throw new JdbcException(
-          "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
+            "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
       }
     } catch (NoSuchElementException e) {
       throw new JdbcException(
-        "Missing session options. Check and add all the following options \n "
-        + "--jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
+          "Missing session options. Check and add all the following options \n "
+              + "--jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
     }
   }
 

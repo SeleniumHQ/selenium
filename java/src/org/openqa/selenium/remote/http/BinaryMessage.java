@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.internal.Require;
-
 import java.nio.ByteBuffer;
+import org.openqa.selenium.internal.Require;
 
 public class BinaryMessage implements Message {
 
@@ -42,4 +41,3 @@ public class BinaryMessage implements Message {
     return data;
   }
 }
-

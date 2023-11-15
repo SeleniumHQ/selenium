@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Objects;
 import java.util.UUID;
+import org.openqa.selenium.internal.Require;
 
 public class RequestId {
 
@@ -61,5 +60,4 @@ public class RequestId {
   private static RequestId fromJson(UUID id) {
     return new RequestId(id);
   }
-
 }

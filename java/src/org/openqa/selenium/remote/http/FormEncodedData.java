@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.net.MediaType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,7 +53,7 @@ public class FormEncodedData {
     AtomicBoolean eof = new AtomicBoolean(false);
     Charset encoding = request.getContentEncoding();
     try (InputStream is = request.getContent().get();
-         Reader reader = new InputStreamReader(is, request.getContentEncoding())) {
+        Reader reader = new InputStreamReader(is, request.getContentEncoding())) {
 
       while (!eof.get()) {
         String key = read(reader, encoding, '=', eof);
@@ -74,7 +73,8 @@ public class FormEncodedData {
     return Optional.of(toReturn.build());
   }
 
-  private static String read(Reader reader, Charset charSet, char delimiter, AtomicBoolean eof) throws IOException {
+  private static String read(Reader reader, Charset charSet, char delimiter, AtomicBoolean eof)
+      throws IOException {
     if (eof.get()) {
       return null;
     }
@@ -95,6 +95,4 @@ public class FormEncodedData {
 
     return URLDecoder.decode(builder.toString(), charSet.toString());
   }
-
-
 }

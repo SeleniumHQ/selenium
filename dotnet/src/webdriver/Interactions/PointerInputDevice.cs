@@ -264,6 +264,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="xOffset">The horizontal offset from the origin of the move.</param>
         /// <param name="yOffset">The vertical offset from the origin of the move.</param>
         /// <param name="duration">The length of time the move gesture takes to complete.</param>
+        /// <param name="properties">The object containing additional proprties for this pointer move operation.</param>
         /// <returns>The action representing the pointer move gesture.</returns>
         /// <exception cref="ArgumentException">Thrown when passing CoordinateOrigin.Element into origin.
         /// Users should us the other CreatePointerMove overload to move to a specific element.</exception>
@@ -286,6 +287,9 @@ namespace OpenQA.Selenium.Interactions
             return new PointerCancelInteraction(this);
         }
 
+        /// <summary>
+        /// A class representing the properties of a pointer event.
+        /// </summary>
         public class PointerEventProperties
         {
             private double? width;
@@ -399,6 +403,10 @@ namespace OpenQA.Selenium.Interactions
                 set { this.azimuthAngle = value; }
             }
 
+            /// <summary>
+            /// Serializes the properties of this input device as a dictionary.
+            /// </summary>
+            /// <returns>The dictionary containing the properties of this device.</returns>
             public Dictionary<string, object> ToDictionary()
             {
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
@@ -496,6 +504,7 @@ namespace OpenQA.Selenium.Interactions
                 : base(sourceDevice)
             {
                 this.button = button;
+                this.eventProperties = properties;
             }
 
             public override Dictionary<string, object> ToDictionary()

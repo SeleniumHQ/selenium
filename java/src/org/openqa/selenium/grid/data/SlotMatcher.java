@@ -20,9 +20,8 @@ package org.openqa.selenium.grid.data;
 import org.openqa.selenium.Capabilities;
 
 /**
- * Used to determine how a {@link Slot} can match its
- * stereotype to the capabilities sent in a particular
- * New Session request.
+ * Used to determine how a {@link Slot} can match its stereotype to the capabilities sent in a
+ * particular New Session request.
  */
 @FunctionalInterface
 public interface SlotMatcher {

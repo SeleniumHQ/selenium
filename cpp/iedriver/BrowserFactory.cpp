@@ -101,6 +101,7 @@ BrowserFactory::BrowserFactory(void) {
   this->GetIEVersion();
   this->oleacc_instance_handle_ = NULL;
   this->edge_ie_mode_ = false;
+  this->ignore_process_match_ = false;
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -127,10 +128,11 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
   this->edge_ie_mode_ = settings.attach_to_edge_ie || this->ie_redirects_edge_;
+  this->ignore_process_match_ = settings.ignore_process_match;
   this->ignore_zoom_setting_ = settings.ignore_zoom_setting || this->edge_ie_mode_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
-  LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
+  LOG(DEBUG) << "path after was " << StringUtilities::ToString(this->edge_executable_location_) << "\n";
   this->html_getobject_msg_ = ::RegisterWindowMessage(HTML_GETOBJECT_MSG);
 
   // Explicitly load MSAA so we know if it's installed
@@ -212,7 +214,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
       }
     } else {
       ::WaitForInputIdle(proc_info.hProcess, 2000);
-      LOG(DEBUG) << "IE launched successfully with process ID " << process_id;
+      std::string browser_launched = this->edge_ie_mode_ ? "Edge in IE Mode" : "IE";
+      LOG(DEBUG) << browser_launched << " launched successfully with process ID " << process_id;
       std::vector<wchar_t> image_buffer(MAX_PATH);
       int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
       std::wstring full_image_path = &image_buffer[0];
@@ -425,7 +428,7 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
 
-  LOG(TRACE) << "IE starting command line is: '"
+  LOG(TRACE) << "Edge in IE Mode starting command line is: '"
              << LOGWSTRING(executable_and_url) << "'.";
 
   LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
@@ -564,8 +567,18 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                     reinterpret_cast<LPARAM>(process_window_info));
     } else {
       // If we're in edge_ie_mode, we need to look for different windows
-      ::EnumWindows(&BrowserFactory::FindEdgeWindow,
+      if (this->ignore_process_match_) {
+        LOG(TRACE) << "Finding window handle for IE Mode on Edge, "
+                   << "ignoring process id match. This assumes only one "
+                   << "Edge instance is running on the host.";
+        ::EnumWindows(&BrowserFactory::FindEdgeWindowIgnoringProcessMatch,
+                      reinterpret_cast<LPARAM>(process_window_info));
+      } else {
+        LOG(TRACE) << "Finding window handle for IE Mode on Edge";
+        ::EnumWindows(&BrowserFactory::FindEdgeWindow,
                     reinterpret_cast<LPARAM>(process_window_info));
+
+      }
     }
 
     if (process_window_info->hwndBrowser == NULL) {
@@ -1111,6 +1124,21 @@ BOOL CALLBACK BrowserFactory::FindEdgeWindow(HWND hwnd, LPARAM arg) {
   if (process_window_info->dwProcessId != process_id) {
     return TRUE;
   }
+
+  return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
+}
+
+BOOL CALLBACK BrowserFactory::FindEdgeWindowIgnoringProcessMatch(HWND hwnd, LPARAM arg) {
+  // Could this be an EdgeChrome window?
+  // 19 == "Chrome_WidgetWin_1"
+  char name[20];
+  if (::GetClassNameA(hwnd, name, 20) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  // continue if it is not "Chrome_WidgetWin_1"
+  if (strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) return TRUE;
 
   return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
 }

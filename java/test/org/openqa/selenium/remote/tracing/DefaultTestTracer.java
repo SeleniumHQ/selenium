@@ -26,19 +26,17 @@ public class DefaultTestTracer {
 
   public static Tracer createTracer() {
     ContextPropagators propagators = ContextPropagators.noop();
-    SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
-      .build();
+    SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder().build();
 
-    OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder()
-      .setTracerProvider(sdkTracerProvider)
-      .setPropagators(propagators)
-      .build();
+    OpenTelemetrySdk openTelemetrySdk =
+        OpenTelemetrySdk.builder()
+            .setTracerProvider(sdkTracerProvider)
+            .setPropagators(propagators)
+            .build();
 
-    Runtime.getRuntime()
-      .addShutdownHook(new Thread(sdkTracerProvider::close));
+    Runtime.getRuntime().addShutdownHook(new Thread(sdkTracerProvider::close));
 
     return new OpenTelemetryTracer(
-      openTelemetrySdk.getTracer("test"),
-      propagators.getTextMapPropagator());
+        openTelemetrySdk.getTracer("test"), propagators.getTextMapPropagator());
   }
 }

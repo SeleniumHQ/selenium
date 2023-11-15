@@ -23,21 +23,19 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class ExecutingAsyncJavascriptTest extends JupiterTestBase {
 
@@ -73,8 +71,10 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   @Test
   void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
-    assertThat(((Number) executor.executeAsyncScript(
-        "arguments[arguments.length - 1](123);")).longValue()).isEqualTo(123);
+    assertThat(
+            ((Number) executor.executeAsyncScript("arguments[arguments.length - 1](123);"))
+                .longValue())
+        .isEqualTo(123);
     assertThat(executor.executeAsyncScript("arguments[arguments.length - 1]('abc');"))
         .isEqualTo("abc");
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](false);"))
@@ -112,8 +112,9 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
-    Object result = executor.executeAsyncScript(
-        "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
+    Object result =
+        executor.executeAsyncScript(
+            "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
 
     assertThat(result).isNotNull();
     assertThat(result).isInstanceOf(List.class);
@@ -137,11 +138,13 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4525")
   void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
-    Object result = executor.executeAsyncScript(
-        "arguments[arguments.length - 1]([document.body, document.body]);");
+    Object result =
+        executor.executeAsyncScript(
+            "arguments[arguments.length - 1]([document.body, document.body]);");
     assertThat(result).isNotNull().isInstanceOf(List.class);
 
     List<?> list = (List<?>) result;
@@ -174,8 +177,8 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     executor.executeAsyncScript(
-        "var callback = arguments[arguments.length - 1];" +
-        "window.setTimeout(function() { callback(123); }, 0)");
+        "var callback = arguments[arguments.length - 1];"
+            + "window.setTimeout(function() { callback(123); }, 0)");
   }
 
   @Test
@@ -184,9 +187,11 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(500));
     driver.get(pages.ajaxyPage);
     assertThatExceptionOfType(ScriptTimeoutException.class)
-        .isThrownBy(() -> executor.executeAsyncScript(
-            "var callback = arguments[arguments.length - 1];" +
-            "window.setTimeout(callback, 1500);"));
+        .isThrownBy(
+            () ->
+                executor.executeAsyncScript(
+                    "var callback = arguments[arguments.length - 1];"
+                        + "window.setTimeout(callback, 1500);"));
   }
 
   @Test
@@ -194,8 +199,9 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(100));
-    assertThatExceptionOfType(WebDriverException.class).isThrownBy(
-        () -> executor.executeAsyncScript("window.location = '" + pages.dynamicPage + "';"));
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(
+            () -> executor.executeAsyncScript("window.location = '" + pages.dynamicPage + "';"));
   }
 
   @Test
@@ -210,8 +216,11 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.ajaxyPage);
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"))
         .isTrue();
-    assertThat((Boolean) executor.executeAsyncScript(
-        "var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"))
+    assertThat(
+            (Boolean)
+                executor.executeAsyncScript(
+                    "var cb = arguments[arguments.length - 1];"
+                        + " window.setTimeout(function(){cb(true);}, 9);"))
         .isTrue();
   }
 
@@ -221,23 +230,23 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(FIREFOX)
-  @NotYetImplemented(HTMLUNIT)
   public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
-    String js = "function functionB() { throw Error('errormessage'); };"
-              + "function functionA() { functionB(); };"
-              + "functionA();";
+    String js =
+        "function functionB() { throw Error('errormessage'); };"
+            + "function functionA() { functionB(); };"
+            + "functionA();";
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> executor.executeAsyncScript(js))
         .withMessageContaining("errormessage")
-        .satisfies(t -> {
-          Throwable rootCause = getRootCause(t);
-          assertThat(rootCause).hasMessageContaining("errormessage");
-          assertThat(Arrays.asList(rootCause.getStackTrace()))
-              .extracting(StackTraceElement::getMethodName)
-              .contains("functionB");
-        });
-
+        .satisfies(
+            t -> {
+              Throwable rootCause = getRootCause(t);
+              assertThat(rootCause).hasMessageContaining("errormessage");
+              assertThat(Arrays.asList(rootCause.getStackTrace()))
+                  .extracting(StackTraceElement::getMethodName)
+                  .contains("functionB");
+            });
   }
 
   @Test
@@ -252,13 +261,16 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.findElement(By.name("submit")).click();
 
     assertThat(getNumDivElements())
-        .describedAs("There should only be 1 DIV at this point, which is used for the butter message")
+        .describedAs(
+            "There should only be 1 DIV at this point, which is used for the butter message")
         .isEqualTo(1);
 
     driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(15));
-    String text = (String) executor.executeAsyncScript(
-        "var callback = arguments[arguments.length - 1];"
-        + "window.registerListener(arguments[arguments.length - 1]);");
+    String text =
+        (String)
+            executor.executeAsyncScript(
+                "var callback = arguments[arguments.length - 1];"
+                    + "window.registerListener(arguments[arguments.length - 1]);");
     assertThat(text).isEqualTo("bob");
     assertThat(typer.getAttribute("value")).isEmpty();
 
@@ -270,35 +282,38 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
   @Test
   void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
     driver.get(pages.ajaxyPage);
-    Number result = (Number) executor.executeAsyncScript(
-        "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
+    Number result =
+        (Number)
+            executor.executeAsyncScript(
+                "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
     assertThat(result.intValue()).isEqualTo(3);
   }
 
   @Test
   void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
-        "var url = arguments[0];" +
-        "var callback = arguments[arguments.length - 1];" +
-        // Adapted from http://www.quirksmode.org/js/xmlhttp.html
-        "var XMLHttpFactories = [" +
-        "  function () {return new XMLHttpRequest()}," +
-        "  function () {return new ActiveXObject('Msxml2.XMLHTTP')}," +
-        "  function () {return new ActiveXObject('Msxml3.XMLHTTP')}," +
-        "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}" +
-        "];" +
-        "var xhr = false;" +
-        "while (!xhr && XMLHttpFactories.length) {" +
-        "  try {" +
-        "    xhr = XMLHttpFactories.shift().call();" +
-        "  } catch (e) {}" +
-        "}" +
-        "if (!xhr) throw Error('unable to create XHR object');" +
-        "xhr.open('GET', url, true);" +
-        "xhr.onreadystatechange = function() {" +
-        "  if (xhr.readyState == 4) callback(xhr.responseText);" +
-        "};" +
-        "xhr.send('');"; // empty string to stop firefox 3 from choking
+        "var url = arguments[0];"
+            + "var callback = arguments[arguments.length - 1];"
+            +
+            // Adapted from http://www.quirksmode.org/js/xmlhttp.html
+            "var XMLHttpFactories = ["
+            + "  function () {return new XMLHttpRequest()},"
+            + "  function () {return new ActiveXObject('Msxml2.XMLHTTP')},"
+            + "  function () {return new ActiveXObject('Msxml3.XMLHTTP')},"
+            + "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}"
+            + "];"
+            + "var xhr = false;"
+            + "while (!xhr && XMLHttpFactories.length) {"
+            + "  try {"
+            + "    xhr = XMLHttpFactories.shift().call();"
+            + "  } catch (e) {}"
+            + "}"
+            + "if (!xhr) throw Error('unable to create XHR object');"
+            + "xhr.open('GET', url, true);"
+            + "xhr.onreadystatechange = function() {"
+            + "  if (xhr.readyState == 4) callback(xhr.responseText);"
+            + "};"
+            + "xhr.send('');"; // empty string to stop firefox 3 from choking
 
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(3));
@@ -317,8 +332,11 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(() -> executor.executeAsyncScript(
-            "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
+        .isThrownBy(
+            () ->
+                executor.executeAsyncScript(
+                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An"
+                        + " alert!'); }, 50);"));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -348,8 +366,10 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(() -> executor.executeAsyncScript(
-            "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
+        .isThrownBy(
+            () ->
+                executor.executeAsyncScript(
+                    "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -379,16 +399,19 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     String alertText = "Look! An alert!";
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(() -> executor.executeAsyncScript(
-            "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText
-            + "'); }, 50);"))
+        .isThrownBy(
+            () ->
+                executor.executeAsyncScript(
+                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('"
+                        + alertText
+                        + "'); }, 50);"))
         .satisfies(t -> assertThat(t.getAlertText()).isEqualTo(alertText));
   }
 
   private long getNumDivElements() {
     // Selenium does not support "findElements" yet, so we have to do this through a script.
-    return (Long) ((JavascriptExecutor) driver).executeScript(
-        "return document.getElementsByTagName('div').length;");
+    return (Long)
+        ((JavascriptExecutor) driver)
+            .executeScript("return document.getElementsByTagName('div').length;");
   }
-
 }

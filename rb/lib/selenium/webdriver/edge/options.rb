@@ -26,6 +26,20 @@ module Selenium
         KEY = 'ms:edgeOptions'
         BROWSER = 'MicrosoftEdge'
 
+        #
+        # Changes the browser name enable webview2
+        # see: https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
+        # Automation of WebView2 apps with Microsoft Edge WebDriver
+        #
+        # @example Enable webview2
+        #   options = Selenium::WebDriver::Edge::Options.new
+        #   options.webview2!
+        #
+
+        def webview2!
+          @options[:browser_name] = 'webview2'
+        end
+
         private
 
         def enable_logging(browser_options)

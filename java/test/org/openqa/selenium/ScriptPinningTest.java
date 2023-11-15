@@ -17,16 +17,15 @@
 
 package org.openqa.selenium;
 
-import com.google.common.collect.ImmutableSet;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.JupiterTestBase;
-
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
+
+import com.google.common.collect.ImmutableSet;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 class ScriptPinningTest extends JupiterTestBase {
 
@@ -61,10 +60,11 @@ class ScriptPinningTest extends JupiterTestBase {
 
   @Test
   void shouldBeAbleToListAllPinnedScripts() {
-    Set<ScriptKey> expected = ImmutableSet.of(
-      executor.pin("return arguments[0];"),
-      executor.pin("return 'cheese';"),
-      executor.pin("return 42;"));
+    Set<ScriptKey> expected =
+        ImmutableSet.of(
+            executor.pin("return arguments[0];"),
+            executor.pin("return 'cheese';"),
+            executor.pin("return 42;"));
 
     Set<ScriptKey> pinned = executor.getPinnedScripts();
 
@@ -84,7 +84,16 @@ class ScriptPinningTest extends JupiterTestBase {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 
-    assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executor.executeScript(cheese));
+    assertThatExceptionOfType(JavascriptException.class)
+        .isThrownBy(() -> executor.executeScript(cheese));
   }
 
+  @Test
+  void afterPinningScriptShouldBeAvailableOnEveryPage() {
+    ScriptKey cheese = executor.pin("return 'havarti'");
+
+    driver.get(pages.xhtmlTestPage);
+
+    assertThat(executor.executeScript(cheese)).isEqualTo("havarti");
+  }
 }

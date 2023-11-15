@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class Secret {
 

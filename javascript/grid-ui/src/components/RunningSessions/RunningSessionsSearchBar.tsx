@@ -32,6 +32,9 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
+import { alpha, styled } from '@mui/material/styles'
+import InputBase from '@mui/material/InputBase'
+import SearchIcon from '@mui/icons-material/Search'
 
 interface RunningSessionsSearchBarProps {
   searchFilter: string
@@ -39,6 +42,48 @@ interface RunningSessionsSearchBarProps {
   searchBarHelpOpen: boolean
   setSearchBarHelpOpen: (value: boolean) => void
 }
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+}));
 
 function RunningSessionsSearchBar ({
   searchFilter,
@@ -52,17 +97,19 @@ function RunningSessionsSearchBar ({
       display='flex'
       justifyContent='flex-end'
     >
-      <OutlinedInput
-        id='search-query-tab-running'
-        autoFocus
-        margin='dense'
-        type='text'
-        value={searchFilter}
-        placeholder='search sessions...'
-        onChange={(e) => {
-          handleSearch(e.target.value)
-        }}
-      />
+      <Search>
+        <SearchIconWrapper>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          id='search-query-tab-running'
+          autoFocus
+          value={searchFilter}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder="Search…"
+          inputProps={{ 'aria-label': 'search' }}
+        />
+      </Search>
       <IconButton
         sx={{ padding: '1px' }}
         onClick={() => setSearchBarHelpOpen(true)}

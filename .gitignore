@@ -13,6 +13,8 @@ test-output/
 common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
+dotnet/.idea/
+dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
@@ -80,6 +82,7 @@ selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
+dotnet/**/bin/
 obj/
 *.opensdf
 *.suo
@@ -128,3 +131,10 @@ bazel-testlogs
 /.vscode/
 /.scannerwork/
 /.bazelrc.local
+
+# Engflow
+*.crt
+*.key
+javascript/node/selenium-webdriver/.vscode/settings.json
+
+dotnet-bin

@@ -28,23 +28,24 @@ class ClassCreation {
   }
 
   static <X> X callCreateMethod(String clazz, Class<X> typeOfClass, Config configToUse)
-    throws ReflectiveOperationException {
+      throws ReflectiveOperationException {
 
     // Use the context class loader since this is what the `--ext`
     // flag modifies.
-    Class<?> classClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+    Class<?> classClazz =
+        Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
 
     try {
       Method create = classClazz.getMethod("create", org.openqa.selenium.grid.config.Config.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-          "Class %s's `create(Config)` method must be static", clazz));
+        throw new IllegalArgumentException(
+            String.format("Class %s's `create(Config)` method must be static", clazz));
       }
 
       if (!typeOfClass.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-          "Class %s's `create(Config)` method must be static", clazz));
+        throw new IllegalArgumentException(
+            String.format("Class %s's `create(Config)` method must be static", clazz));
       }
 
       return typeOfClass.cast(create.invoke(null, configToUse));
@@ -54,8 +55,10 @@ class ClassCreation {
       try {
         constructor = classClazz.asSubclass(typeOfClass).getConstructor();
       } catch (NoSuchMethodException e2) {
-        throw new IllegalArgumentException(String.format(
-          "Class %s must have a static `create(Config)` method or a default constructor", clazz));
+        throw new IllegalArgumentException(
+            String.format(
+                "Class %s must have a static `create(Config)` method or a default constructor",
+                clazz));
       }
       return constructor.newInstance();
     }

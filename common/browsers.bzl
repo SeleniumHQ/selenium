@@ -4,37 +4,83 @@ COMMON_TAGS = [
     "requires-network",
 ]
 
-chrome_data = select({
+chromedriver_data = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "@linux_chromedriver//:chromedriver",
-        "@linux_chrome//:chrome-linux",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
         "@mac_chromedriver//:chromedriver",
-        "@mac_chrome//:Chromium.app",
     ],
     "@selenium//common:use_local_chromedriver": ["@selenium//common:chromedriver"],
     "//conditions:default": [],
 })
 
-edge_data = select({
+chrome_data = select({
+    "@selenium//common:use_pinned_linux_chrome": [
+        "@linux_chrome//:files",
+        "@linux_chrome//:chrome-linux64/chrome",
+    ],
+    "@selenium//common:use_pinned_macos_chrome": [
+        "@mac_chrome//:Chrome.app",
+    ],
+    "//conditions:default": [],
+}) + chromedriver_data
+
+edgedriver_data = select({
     "@selenium//common:use_pinned_macos_edge": [
         "@mac_edgedriver//:msedgedriver",
-        "@mac_edge//:Edge.app",
     ],
     "@selenium//common:use_local_msedgedriver": ["@selenium//common:msedgedriver"],
     "//conditions:default": [],
 })
 
-firefox_data = select({
+edge_data = select({
+    "@selenium//common:use_pinned_macos_edge": [
+        "@mac_edge//:Edge.app",
+    ],
+    "//conditions:default": [],
+}) + edgedriver_data
+
+geckodriver_data = select({
     "@selenium//common:use_pinned_linux_firefox": [
         "@linux_geckodriver//:geckodriver",
-        "@linux_firefox//:firefox",
     ],
     "@selenium//common:use_pinned_macos_firefox": [
         "@mac_geckodriver//:geckodriver",
-        "@mac_firefox//:Firefox.app",
     ],
     "@selenium//common:use_local_geckodriver": ["@selenium//common:geckodriver"],
     "//conditions:default": [],
 })
+
+firefox_data = select({
+    "@selenium//common:use_pinned_linux_firefox": [
+        "@linux_firefox//:files",
+        "@linux_firefox//:firefox/firefox",
+    ],
+    "@selenium//common:use_pinned_macos_firefox": [
+        "@mac_firefox//:Firefox.app",
+    ],
+    "//conditions:default": [],
+}) + geckodriver_data
+
+firefox_beta_data = select({
+    "@selenium//common:use_pinned_linux_firefox": [
+        "@linux_beta_firefox//:files",
+        "@linux_beta_firefox//:firefox/firefox",
+    ],
+    "@selenium//common:use_pinned_macos_firefox": [
+        "@mac_beta_firefox//:Firefox.app",
+    ],
+    "//conditions:default": [],
+}) + geckodriver_data
+
+firefox_dev_data = select({
+    "@selenium//common:use_pinned_linux_firefox": [
+        "@linux_dev_firefox//:files",
+        "@linux_dev_firefox//:firefox/firefox",
+    ],
+    "@selenium//common:use_pinned_macos_firefox": [
+        "@mac_dev_firefox//:Firefox.app",
+    ],
+    "//conditions:default": [],
+}) + geckodriver_data

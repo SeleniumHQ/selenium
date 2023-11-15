@@ -38,5 +38,4 @@ public class CloseMessage implements Message {
   public String reason() {
     return reason;
   }
-
 }

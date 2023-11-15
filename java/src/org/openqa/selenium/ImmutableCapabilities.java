@@ -17,13 +17,12 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
+import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
+import org.openqa.selenium.internal.Require;
 
 public class ImmutableCapabilities implements Capabilities {
 
@@ -80,10 +79,7 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(
-      String k1, Object v1,
-      String k2, Object v2,
-      String k3, Object v3,
-      String k4, Object v4) {
+      String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4) {
     Require.nonNull("First capability", k1);
     Require.nonNull("First value", v1);
     Require.nonNull("Second capability", k2);
@@ -105,11 +101,16 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(
-      String k1, Object v1,
-      String k2, Object v2,
-      String k3, Object v3,
-      String k4, Object v4,
-      String k5, Object v5) {
+      String k1,
+      Object v1,
+      String k2,
+      Object v2,
+      String k3,
+      Object v3,
+      String k4,
+      Object v4,
+      String k5,
+      Object v5) {
     Require.nonNull("First capability", k1);
     Require.nonNull("First value", v1);
     Require.nonNull("Second capability", k2);
@@ -134,32 +135,21 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(Capabilities other) {
-    Require.nonNull("Capabilities", other);
-
-    Map<String, Object> delegate = new TreeMap<>();
-    other.getCapabilityNames().forEach(name -> {
-      Require.nonNull("Capability name", name);
-      Object value = other.getCapability(name);
-      Require.nonNull("Capability value", value);
-
-      setCapability(delegate, name, value);
-    });
-
-    this.delegate = Collections.unmodifiableMap(delegate);
-    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
+    this(other.asMap());
   }
 
   public ImmutableCapabilities(Map<?, ?> capabilities) {
     Require.nonNull("Capabilities", capabilities);
 
     Map<String, Object> delegate = new TreeMap<>();
-    capabilities.forEach((key, value) -> {
-      Require.argument("Capability key", key).instanceOf(String.class);
-      Object v = capabilities.get(key);
-      Require.nonNull("Capability value", value);
+    capabilities.forEach(
+        (key, value) -> {
+          Require.argument("Capability key", key).instanceOf(String.class);
+          Object v = capabilities.get(key);
+          Require.nonNull("Capability value", value);
 
-      setCapability(delegate, (String) key, v);
-    });
+          setCapability(delegate, (String) key, v);
+        });
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -189,7 +179,6 @@ public class ImmutableCapabilities implements Capabilities {
     return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
 
-
   @Override
   public String toString() {
     return SharedCapabilitiesMethods.toString(this);
@@ -204,5 +193,4 @@ public class ImmutableCapabilities implements Capabilities {
 
     return new ImmutableCapabilities(capabilities);
   }
-
 }

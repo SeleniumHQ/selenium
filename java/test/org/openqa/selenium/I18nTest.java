@@ -17,26 +17,20 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.*;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.TestUtilities;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-
 class I18nTest extends JupiterTestBase {
 
-  /**
-   * The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
-   */
+  /** The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M). */
   private static final String shalom = "\u05E9\u05DC\u05D5\u05DD";
-
 
   /**
    * The Hebrew word tmunot (images) encoded in order Taf (t) Mem (m) Vav (u) Nun (n) Vav (o) Taf
@@ -44,14 +38,10 @@ class I18nTest extends JupiterTestBase {
    */
   private static final String tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
 
-  /**
-   * Japanese for "Tokyo"
-   */
+  /** Japanese for "Tokyo" */
   private static final String tokyo = "\u6771\u4EAC";
 
-  /**
-   * Chinese for "The Voice of China"
-   */
+  /** Chinese for "The Voice of China" */
   private static final String theVoiceOfChina = "\u4E2D\u56FD\u4E4B\u58F0";
 
   @Test
@@ -83,9 +73,8 @@ class I18nTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
+  @Ignore(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/2139")
   public void testEnteringSupplementaryCharacters() {
-    assumeFalse(TestUtilities.isInternetExplorer(driver) &&
-      TestUtilities.getIEVersion(driver) < 10, "IE: versions less thank 10 have issue 5069");
     driver.get(pages.chinesePage);
 
     String input = "";
@@ -103,9 +92,7 @@ class I18nTest extends JupiterTestBase {
 
   @Test
   void testShouldBeAbleToReturnTheTextInAPage() {
-    String url = GlobalTestEnvironment.get()
-      .getAppServer()
-      .whereIs("encoding");
+    String url = GlobalTestEnvironment.get().getAppServer().whereIs("encoding");
     driver.get(url);
 
     String text = driver.findElement(By.tagName("body")).getText();
@@ -118,7 +105,9 @@ class I18nTest extends JupiterTestBase {
   @Ignore(CHROME)
   @Ignore(EDGE)
   public void testShouldBeAbleToInputJapanese() {
-    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX), "IME is supported on Linux only.");
+    assumeTrue(
+        TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX),
+        "IME is supported on Linux only.");
 
     driver.get(pages.formPage);
 
@@ -137,8 +126,7 @@ class I18nTest extends JupiterTestBase {
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
     assertThat(elementValue)
-      .describedAs("The element's value should either remain in Romaji or be converted properly.")
-      .isIn(tokyo, "\uE040" + "toukyou ", "toukyou ");
+        .describedAs("The element's value should either remain in Romaji or be converted properly.")
+        .isIn(tokyo, "\uE040" + "toukyou ", "toukyou ");
   }
-
 }

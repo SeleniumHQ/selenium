@@ -22,9 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-/**
- * Tests for generic WebElement.
- */
+/** Tests for generic WebElement. */
 class WebElementTest extends JupiterTestBase {
 
   @Test
@@ -40,5 +38,4 @@ class WebElementTest extends JupiterTestBase {
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertThat(((WrapsDriver) parent).getWrappedDriver()).isSameAs(driver);
   }
-
 }

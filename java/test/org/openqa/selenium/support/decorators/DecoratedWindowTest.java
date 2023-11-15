@@ -24,14 +24,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedWindowTest {

@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.node;
 
+import java.net.URI;
+import java.time.Instant;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
-
-import java.net.URI;
-import java.time.Instant;
 
 public interface ActiveSession extends HttpHandler {
 

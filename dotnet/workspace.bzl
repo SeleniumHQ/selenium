@@ -12,24 +12,6 @@ def selenium_register_dotnet():
     native.register_toolchains("//third_party/dotnet/ilmerge:all")
 
     import_nuget_package(
-        name = "identitymodel.tokens",
-        file = "third_party/dotnet/nuget/packages/microsoft.identitymodel.tokens.6.19.0.nupkg",
-        sha256 = "9ef0cd1a0f36716e20a39a7d612292c1ea0b1a6f196395db0c7552518ac0f0bd",
-    )
-
-    import_nuget_package(
-        name = "identitymodel.logging",
-        file = "third_party/dotnet/nuget/packages/microsoft.identitymodel.logging.6.19.0.nupkg",
-        sha256 = "0f0c738bf4ce27c5b4f6a441ce067a888b3e3b2a6783517b5d8caa46eec4516a",
-    )
-
-    import_nuget_package(
-        name = "identitymodel.abstractions",
-        file = "third_party/dotnet/nuget/packages/microsoft.identitymodel.abstractions.6.19.0.nupkg",
-        sha256 = "eaa7f4995eb68edf7b6d1586a3a35027f6f9252ab82cb1478cec347a42895ee0",
-    )
-
-    import_nuget_package(
         name = "json.net",
         file = "third_party/dotnet/nuget/packages/newtonsoft.json.13.0.1.nupkg",
         sha256 = "2b6b52556e27e1b7913f33eedeb95568110c746bd64afff74357f1683878323a",

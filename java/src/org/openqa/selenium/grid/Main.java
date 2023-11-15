@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.grid;
 
-import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.WrappedPrintWriter;
-import org.openqa.selenium.grid.config.Role;
+import static java.util.Comparator.comparing;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -29,8 +27,9 @@ import java.util.Comparator;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static java.util.Comparator.comparing;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
 
 public class Main {
 
@@ -75,10 +74,11 @@ public class Main {
 
     Set<CliCommand> commands = loadCommands(loader);
 
-    CliCommand command = commands.parallelStream()
-        .filter(cmd -> commandName.equals(cmd.getName()))
-        .findFirst()
-        .orElse(new Help(commands));
+    CliCommand command =
+        commands.parallelStream()
+            .filter(cmd -> commandName.equals(cmd.getName()))
+            .findFirst()
+            .orElse(new Help(commands));
 
     command.configure(out, err, remainingArgs).run();
   }
@@ -108,19 +108,21 @@ public class Main {
 
     @Override
     public String getDescription() {
-      return "A list of all the commands available. To use one, run `java -jar selenium.jar " +
-             "commandName`.";
+      return "A list of all the commands available. To use one, run `java -jar selenium.jar "
+          + "commandName`.";
     }
 
     @Override
     public Executable configure(PrintStream out, PrintStream err, String... args) {
       return () -> {
-        int longest = commands.stream()
-                          .filter(CliCommand::isShown)
-                          .map(CliCommand::getName)
-                          .max(Comparator.comparingInt(String::length))
-                          .map(String::length)
-                          .orElse(0) + 2;  // two space padding either side
+        int longest =
+            commands.stream()
+                    .filter(CliCommand::isShown)
+                    .map(CliCommand::getName)
+                    .max(Comparator.comparingInt(String::length))
+                    .map(String::length)
+                    .orElse(0)
+                + 2; // two space padding either side
 
         PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
         outWriter.append(getName()).append("\n\n");
@@ -131,18 +133,23 @@ public class Main {
 
         PrintWriter indented = new WrappedPrintWriter(out, 72, indent);
         commands.stream()
-          .filter(CliCommand::isShown)
-          .forEach(cmd -> indented.format(format, cmd.getName())
-            .append(cmd.getDescription())
-            .append("\n"));
+            .filter(CliCommand::isShown)
+            .forEach(
+                cmd ->
+                    indented
+                        .format(format, cmd.getName())
+                        .append(cmd.getDescription())
+                        .append("\n"));
 
         outWriter.write("\nFor each command, run with `--help` for command-specific help\n");
-        outWriter.write("\nUse the `--ext` flag before the command name to specify an additional " +
-                  "classpath to use with the server (for example, to provide additional " +
-                  "commands, or to provide additional driver implementations). For example:\n");
-        outWriter.write(String.format(
-            "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
-            File.pathSeparator));
+        outWriter.write(
+            "\nUse the `--ext` flag before the command name to specify an additional "
+                + "classpath to use with the server (for example, to provide additional "
+                + "commands, or to provide additional driver implementations). For example:\n");
+        outWriter.write(
+            String.format(
+                "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+                File.pathSeparator));
         out.println("\n");
       };
     }

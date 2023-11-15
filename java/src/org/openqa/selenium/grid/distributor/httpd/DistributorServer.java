@@ -17,11 +17,24 @@
 
 package org.openqa.selenium.grid.distributor.httpd;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.Route.get;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-
+import java.util.Collections;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
@@ -35,21 +48,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class DistributorServer extends TemplateGridServerCommand {
@@ -68,7 +66,8 @@ public class DistributorServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(DISTRIBUTOR_ROLE, EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(
+        DISTRIBUTOR_ROLE, EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -92,46 +91,57 @@ public class DistributorServer extends TemplateGridServerCommand {
 
     Distributor distributor = distributorOptions.getDistributor();
 
-    HttpHandler readinessCheck = req -> {
-      boolean ready = distributor.isReady();
-      return new HttpResponse()
-        .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-        .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-        .setContent(Contents.utf8String("Distributor is " + ready));
-    };
+    HttpHandler readinessCheck =
+        req -> {
+          boolean ready = distributor.isReady();
+          return new HttpResponse()
+              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
+              .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
+              .setContent(Contents.utf8String("Distributor is " + ready));
+        };
 
     return new Handlers(
-      Route.combine(
-        distributor,
-        Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
-          .to(() -> req -> new HttpResponse()
-            .setContent(Contents.asJson(
-              ImmutableMap.of("value", ImmutableMap.of(
-                "ready", true,
-                "message", "Distributor is ready"))))),
-        get("/readyz").to(() -> readinessCheck)),
-      null);
+        Route.combine(
+            distributor,
+            Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
+                .to(
+                    () ->
+                        req ->
+                            new HttpResponse()
+                                .setContent(
+                                    Contents.asJson(
+                                        ImmutableMap.of(
+                                            "value",
+                                            ImmutableMap.of(
+                                                "ready",
+                                                true,
+                                                "message",
+                                                "Distributor is ready"))))),
+            get("/readyz").to(() -> readinessCheck)),
+        null);
   }
 
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
 
-    config.get("server", "max-threads")
-      .ifPresent(value -> LOG.log(Level.WARNING,
-                                  () ->
-                                    "Support for max-threads flag is deprecated. " +
-                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
-                                    "Please use newsession-threadpool-size flag instead."));
-
+    config
+        .get("server", "max-threads")
+        .ifPresent(
+            value ->
+                LOG.log(
+                    Level.WARNING,
+                    () ->
+                        "Support for max-threads flag is deprecated. The intent of the flag is to"
+                            + " set the thread pool size in the Distributor. Please use"
+                            + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();
-    LOG.info(String.format(
-      "Started Selenium Distributor %s (revision %s): %s",
-      info.getReleaseLabel(),
-      info.getBuildRevision(),
-      server.getUrl()));
+    LOG.info(
+        String.format(
+            "Started Selenium Distributor %s (revision %s): %s",
+            info.getReleaseLabel(), info.getBuildRevision(), server.getUrl()));
   }
 }

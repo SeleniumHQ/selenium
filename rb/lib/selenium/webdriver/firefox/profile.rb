@@ -33,6 +33,8 @@ module Selenium
           'security.csp.enable' => false
         }.freeze
 
+        LOCK_FILES = %w[.parentlock parent.lock lock].freeze
+
         attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :load_no_focus_lib
 
@@ -160,7 +162,7 @@ module Selenium
           destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            WebDriver.logger.debug({extenstion: name}.inspect)
+            WebDriver.logger.debug({extension: name}.inspect, id: :firefox_profile)
             extension.write_to(destination)
           end
         end
@@ -176,7 +178,7 @@ module Selenium
         end
 
         def delete_lock_files(directory)
-          %w[.parentlock parent.lock].each do |name|
+          LOCK_FILES.each do |name|
             FileUtils.rm_f File.join(directory, name)
           end
         end

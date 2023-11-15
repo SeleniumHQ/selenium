@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.devtools;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class Command<X> {
 
@@ -45,9 +42,13 @@ public class Command<X> {
     this(method, params, mapper, true);
   }
 
-  private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper, boolean sendsResponse) {
+  private Command(
+      String method,
+      Map<String, Object> params,
+      Function<JsonInput, X> mapper,
+      boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
-    this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
+    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
 
     this.sendsResponse = sendsResponse;
@@ -70,8 +71,8 @@ public class Command<X> {
   }
 
   /**
-   * Some CDP commands do not appear to send responses, and so are really hard
-   * to deal with. Work around that by flagging those commands.
+   * Some CDP commands do not appear to send responses, and so are really hard to deal with. Work
+   * around that by flagging those commands.
    */
   public Command<X> doesNotSendResponse() {
     return new Command<>(method, params, mapper, false);

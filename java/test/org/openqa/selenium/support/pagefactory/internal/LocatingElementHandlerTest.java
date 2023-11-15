@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,8 +33,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
-
-import java.lang.reflect.Proxy;
 
 class LocatingElementHandlerTest {
 
@@ -46,8 +45,9 @@ class LocatingElementHandlerTest {
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
-        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {WebElement.class}, handler);
+        (WebElement)
+            Proxy.newProxyInstance(
+                getClass().getClassLoader(), new Class[] {WebElement.class}, handler);
 
     proxy.sendKeys("Fishy");
     proxy.submit();
@@ -84,8 +84,9 @@ class LocatingElementHandlerTest {
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
-        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {WebElement.class}, handler);
+        (WebElement)
+            Proxy.newProxyInstance(
+                getClass().getClassLoader(), new Class[] {WebElement.class}, handler);
 
     proxy.isEnabled();
     proxy.sendKeys("Cheese");

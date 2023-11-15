@@ -45,7 +45,7 @@ module Selenium
         #
         # @example
         #   options = Selenium::WebDriver::Firefox::Options.new(args: ['--host=127.0.0.1'])
-        #   driver = Selenium::WebDriver.for :firefox, capabilities: options
+        #   driver = Selenium::WebDriver.for :firefox, options: options
         #
         # @param [Hash] opts the pre-defined options to create the Firefox::Options with
         # @option opts [String] :binary Path to the Firefox executable to use
@@ -97,21 +97,6 @@ module Selenium
 
         def add_preference(name, value)
           @options[:prefs][name] = value
-        end
-
-        #
-        # Run Firefox in headless mode.
-        #
-        # @example Enable headless mode
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.headless!
-        #
-
-        def headless!
-          WebDriver.logger.deprecate('`Options#headless!`',
-                                     "`Options#add_argument('-headless')`",
-                                     id: :headless)
-          add_argument '-headless'
         end
 
         #

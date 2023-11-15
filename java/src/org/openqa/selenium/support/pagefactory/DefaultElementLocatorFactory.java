@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.SearchContext;
-
 import java.lang.reflect.Field;
+import org.openqa.selenium.SearchContext;
 
 public final class DefaultElementLocatorFactory implements ElementLocatorFactory {
   private final SearchContext searchContext;

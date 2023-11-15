@@ -17,9 +17,25 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
+import java.net.URI;
+import java.net.URL;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,24 +51,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.net.URI;
-import java.net.URL;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.StreamSupport;
-
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public abstract class HttpClientTestBase {
 
@@ -84,10 +82,10 @@ public abstract class HttpClientTestBase {
   }
 
   /**
-   * The HTTP Spec that it should be
-   * <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2">safe to combine them
-   * </a>, but things like the <a href="https://www.ietf.org/rfc/rfc2109.txt">cookie spec</a> make
-   * this hard (notably when a legal value may contain a comma).
+   * The HTTP Spec that it should be <a
+   * href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2">safe to combine them </a>,
+   * but things like the <a href="https://www.ietf.org/rfc/rfc2109.txt">cookie spec</a> make this
+   * hard (notably when a legal value may contain a comma).
    */
   @Test
   void responseShouldKeepMultipleHeadersSeparate() {
@@ -97,9 +95,8 @@ public abstract class HttpClientTestBase {
 
     HttpResponse response = getResponseWithHeaders(headers);
 
-    List<String> values = StreamSupport
-      .stream(response.getHeaders("Cheese").spliterator(), false)
-      .collect(toList());
+    List<String> values =
+        StreamSupport.stream(response.getHeaders("Cheese").spliterator(), false).collect(toList());
 
     assertThat(values).contains("Cheddar");
     assertThat(values).contains("Brie, Gouda");
@@ -171,68 +168,73 @@ public abstract class HttpClientTestBase {
 
   @Test
   void shouldIncludeAUserAgentHeader() {
-    HttpResponse response = executeWithinServer(
-      new HttpRequest(GET, "/foo"),
-      req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
+    HttpResponse response =
+        executeWithinServer(
+            new HttpRequest(GET, "/foo"),
+            req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
 
     String label = new BuildInfo().getReleaseLabel();
     Platform platform = Platform.getCurrent();
     Platform family = platform.family() == null ? platform : platform.family();
 
-    assertThat(string(response)).isEqualTo(String.format(
-      "selenium/%s (java %s)",
-      label,
-      family.toString().toLowerCase()));
+    assertThat(string(response))
+        .isEqualTo(String.format("selenium/%s (java %s)", label, family.toString().toLowerCase()));
   }
 
   @Test
   void shouldAllowConfigurationOfRequestTimeout() {
     assertThatExceptionOfType(TimeoutException.class)
-      .isThrownBy(() -> executeWithinServer(
-        new HttpRequest(GET, "/foo"),
-        req -> {
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          return new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent")));
-        },
-        ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
+        .isThrownBy(
+            () ->
+                executeWithinServer(
+                    new HttpRequest(GET, "/foo"),
+                    req -> {
+                      try {
+                        Thread.sleep(1000);
+                      } catch (InterruptedException e) {
+                        e.printStackTrace();
+                      }
+                      return new HttpResponse()
+                          .setContent(Contents.utf8String(req.getHeader("user-agent")));
+                    },
+                    ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
-      new HttpRequest(GET, "/foo"),
-      req -> {
-        HttpResponse resp = new HttpResponse();
-        headers.forEach(resp::addHeader);
-        return resp;
-      });
+        new HttpRequest(GET, "/foo"),
+        req -> {
+          HttpResponse resp = new HttpResponse();
+          headers.forEach(resp::addHeader);
+          return resp;
+        });
   }
 
   private HttpResponse getQueryParameterResponse(HttpRequest request) {
     return executeWithinServer(
-      request,
-      req -> {
-        Map<String, Iterable<String>> params = new TreeMap<>();
-        req.getQueryParameterNames()
-          .forEach(name -> params.put(name, req.getQueryParameters(name)));
+        request,
+        req -> {
+          Map<String, Iterable<String>> params = new TreeMap<>();
+          req.getQueryParameterNames()
+              .forEach(name -> params.put(name, req.getQueryParameters(name)));
 
-        return new HttpResponse().setContent(Contents.asJson(params));
-      });
+          return new HttpResponse().setContent(Contents.asJson(params));
+        });
   }
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler) {
     delegate = handler;
-    try (HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))))) {
+    try (HttpClient client =
+        createFactory().createClient(fromUri(URI.create(server.whereIs("/"))))) {
       return client.execute(request);
     }
   }
 
-  private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler, ClientConfig config) {
+  private HttpResponse executeWithinServer(
+      HttpRequest request, HttpHandler handler, ClientConfig config) {
     delegate = handler;
-    HttpClient client = createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
+    HttpClient client =
+        createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
     return client.execute(request);
   }
 }

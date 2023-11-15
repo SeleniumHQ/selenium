@@ -20,7 +20,7 @@ use std::env::consts::OS;
 
 #[test]
 fn safari_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let safari_assert = cmd.args(["--browser", "safari"]).assert();
 
     if OS.eq("macos") {

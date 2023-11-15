@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.server;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.logging.Logger;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -27,14 +32,9 @@ import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.logging.Logger;
-
-@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=BaseServerConfig",
-  description = "Server config")
+@ManagedService(
+    objectName = "org.seleniumhq.grid:type=Config,name=BaseServerConfig",
+    description = "Server config")
 public class BaseServerOptions {
 
   private static final String SERVER_SECTION = "server";
@@ -55,8 +55,7 @@ public class BaseServerOptions {
   @ManagedAttribute(name = "Port")
   public int getPort() {
     if (port == -1) {
-      int newPort = config.getInt(SERVER_SECTION, "port")
-        .orElseGet(PortProber::findFreePort);
+      int newPort = config.getInt(SERVER_SECTION, "port").orElseGet(PortProber::findFreePort);
       if (newPort == -1) {
         newPort = PortProber.findFreePort();
       }
@@ -71,8 +70,10 @@ public class BaseServerOptions {
 
   @ManagedAttribute(name = "MaxServerThreads")
   public int getMaxServerThreads() {
-    int count = config.getInt(SERVER_SECTION, "max-threads")
-      .orElse(Runtime.getRuntime().availableProcessors() * 3);
+    int count =
+        config
+            .getInt(SERVER_SECTION, "max-threads")
+            .orElse(Runtime.getRuntime().availableProcessors() * 3);
 
     if (count < 0) {
       throw new ConfigException("Maximum number of server threads cannot be less than 0: " + count);
@@ -83,32 +84,48 @@ public class BaseServerOptions {
 
   @ManagedAttribute(name = "Uri")
   public URI getExternalUri() {
-    // Assume the host given is addressable if it's been set
-    String host = getHostname()
-      .orElseGet(() -> {
-        try {
-          return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-        } catch (WebDriverException e) {
-          String name = HostIdentifier.getHostName();
-          LOG.info("No network connection, guessing name: " + name);
-          return name;
-        }
-      });
+    return config
+        .get(SERVER_SECTION, "external-url")
+        .map(
+            url -> {
+              try {
+                return new URI(url);
+              } catch (URISyntaxException e) {
+                throw new RuntimeException(
+                    "Supplied external URI is invalid: " + e.getMessage(), e);
+              }
+            })
+        .orElseGet(
+            () -> {
+              // Assume the host given is addressable if it's been set
+              String host =
+                  getHostname()
+                      .orElseGet(
+                          () -> {
+                            try {
+                              return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+                            } catch (WebDriverException e) {
+                              String name = HostIdentifier.getHostName();
+                              LOG.info("No network connection, guessing name: " + name);
+                              return name;
+                            }
+                          });
 
-    int port = getPort();
+              int port = getPort();
 
-    try {
-      return new URI(
-        (isSecure() || isSelfSigned()) ? "https" : "http",
-        null,
-        host,
-        port,
-        null,
-        null,
-        null);
-    } catch (URISyntaxException e) {
-      throw new ConfigException("Cannot determine external URI: " + e.getMessage());
-    }
+              try {
+                return new URI(
+                    (isSecure() || isSelfSigned()) ? "https" : "http",
+                    null,
+                    host,
+                    port,
+                    null,
+                    null,
+                    null);
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Cannot determine external URI: " + e.getMessage());
+              }
+            });
   }
 
   public boolean getAllowCORS() {
@@ -121,7 +138,7 @@ public class BaseServerOptions {
 
   public boolean isSecure() {
     return config.get(SERVER_SECTION, "https-private-key").isPresent()
-           && config.get(SERVER_SECTION, "https-certificate").isPresent();
+        && config.get(SERVER_SECTION, "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {
@@ -129,19 +146,17 @@ public class BaseServerOptions {
     if (privateKey != null) {
       return new File(privateKey);
     }
-    throw new ConfigException("Please provide a private key via --https-private-key " +
-                              "when using --https");
+    throw new ConfigException(
+        "Please provide a private key via --https-private-key " + "when using --https");
   }
 
   public File getCertificate() {
-    String certificatePath = config
-      .get(SERVER_SECTION, "https-certificate")
-      .orElse(null);
+    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
     if (certificatePath != null) {
       return new File(certificatePath);
     }
-    throw new ConfigException("Please provide a certificate via --https-certificate " +
-                              "when using --https");
+    throw new ConfigException(
+        "Please provide a certificate via --https-certificate " + "when using --https");
   }
 
   public boolean isSelfSigned() {

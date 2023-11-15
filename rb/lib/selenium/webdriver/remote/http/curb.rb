@@ -83,7 +83,7 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = @timeout if @timeout
-              c.verbose         = WebDriver.logger.info?
+              c.verbose         = WebDriver.logger.debug?
 
               c
             end

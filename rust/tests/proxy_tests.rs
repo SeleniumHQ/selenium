@@ -15,41 +15,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::assert_output;
 use assert_cmd::Command;
+use exitcode::DATAERR;
 
-use exitcode::UNAVAILABLE;
-
-use wiremock::MockServer;
+mod common;
 
 #[tokio::test]
-async fn ok_proxy_test() {
-    let mock_server = MockServer::start().await;
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
+async fn wrong_proxy_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let result = cmd
+        .args([
+            "--debug",
+            "--browser",
+            "chrome",
+            "--proxy",
+            "http://localhost:12345",
+        ])
         .assert()
-        .success()
-        .code(0);
-}
+        .try_success();
 
+    assert_output(&mut cmd, result, vec!["in PATH"], DATAERR);
+}
 #[test]
 fn wrong_protocol_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let result = cmd
+        .args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
-        .failure()
-        .code(UNAVAILABLE);
+        .try_success();
+
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }
 
 #[test]
 fn wrong_port_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--proxy",
-        "https:://localhost:1234567",
-    ])
-    .assert()
-    .failure()
-    .code(UNAVAILABLE);
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    let result = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--proxy",
+            "https:://localhost:1234567",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(&mut cmd, result, vec!["There was an error"], DATAERR);
 }

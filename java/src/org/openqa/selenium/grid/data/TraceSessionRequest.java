@@ -31,10 +31,8 @@ public class TraceSessionRequest {
     Require.nonNull("Tracer", tracer);
     Require.nonNull("Session request", sessionRequest);
 
-    return tracer.getPropagator()
-      .extractContext(
-        tracer.getCurrentContext(),
-        sessionRequest,
-        SessionRequest::getTraceHeader);
+    return tracer
+        .getPropagator()
+        .extractContext(tracer.getCurrentContext(), sessionRequest, SessionRequest::getTraceHeader);
   }
 }

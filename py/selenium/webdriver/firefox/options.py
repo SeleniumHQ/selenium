@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 from typing import Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -42,7 +41,6 @@ class Options(ArgOptions):
         self._binary: typing.Optional[FirefoxBinary] = None
         self._preferences: dict = {}
         self._profile = None
-        self._proxy = None
         self.log = Log()
 
     @property
@@ -60,14 +58,14 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        :Returns: The location of the binary.
-        """
+        """:Returns: The location of the binary."""
         return self.binary._start_cmd
 
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
+        if not isinstance(value, str):
+            raise TypeError(self.BINARY_LOCATION_ERROR)
         self.binary = value
 
     @property
@@ -81,52 +79,16 @@ class Options(ArgOptions):
 
     @property
     def profile(self) -> FirefoxProfile:
-        """
-        :Returns: The Firefox profile to use.
-        """
-        if self._profile:
-            warnings.warn("Getting a profile has been deprecated.", DeprecationWarning, stacklevel=2)
+        """:Returns: The Firefox profile to use."""
         return self._profile
 
     @profile.setter
     def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
         """Sets location of the browser profile to use, either by string or
         ``FirefoxProfile``."""
-        warnings.warn(
-            "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
-
-    @property
-    def headless(self) -> bool:
-        """
-        :Returns: True if the headless argument is set, else False
-        """
-        warnings.warn(
-            "headless property is deprecated, instead check for '-headless' in arguments",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return "-headless" in self._arguments
-
-    @headless.setter
-    def headless(self, value: bool) -> None:
-        """Sets the headless argument.
-
-        Args:
-          value: boolean value indicating to set the headless option
-        """
-        warnings.warn(
-            "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
-        )
-        if value:
-            self._arguments.append("-headless")
-        elif "-headless" in self._arguments:
-            self._arguments.remove("-headless")
 
     def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
         super().enable_mobile(android_package, android_activity, device_serial)
@@ -144,8 +106,6 @@ class Options(ArgOptions):
             opts["binary"] = self._binary._start_cmd
         if self._preferences:
             opts["prefs"] = self._preferences
-        if self._proxy:
-            self._proxy.add_to_capabilities(caps)
         if self._profile:
             opts["profile"] = self._profile.encoded
         if self._arguments:

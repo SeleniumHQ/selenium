@@ -1,5 +1,3 @@
-using OpenQA.Selenium.Remote;
-
 namespace OpenQA.Selenium.Firefox
 {
     // This is a simple wrapper class to create a FirefoxDriver that
@@ -7,21 +5,25 @@ namespace OpenQA.Selenium.Firefox
     // constructor.
     public class StableChannelFirefoxDriver : FirefoxDriver
     {
-        public StableChannelFirefoxDriver(FirefoxDriverService service)
-            : this(service, DefaultOptions)
+        public StableChannelFirefoxDriver()
+            : base(DefaultOptions)
+        {
+        }
+
+        // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+        public StableChannelFirefoxDriver(FirefoxOptions options)
+            : base(options)
         {
         }
 
         public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
-            : base(service, options, RemoteWebDriver.DefaultCommandTimeout)
+            : base(service, options)
         {
         }
 
         public static FirefoxOptions DefaultOptions
         {
-            // If you are running with Firefox installed to a custom location, you will need
-            // to add a property to the below options: BrowserExecutableLocation = <path to Firefox.exe>
-            get { return new FirefoxOptions() { AcceptInsecureCertificates = true }; }
+            get { return new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true }; }
         }
     }
 }

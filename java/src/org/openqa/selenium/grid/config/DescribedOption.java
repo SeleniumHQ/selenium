@@ -20,13 +20,11 @@ package org.openqa.selenium.grid.config;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 
+import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
-
-import com.beust.jcommander.Parameter;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -42,9 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/**
- * Represents a configurable attribute of the Selenium Grid.
- */
+/** Represents a configurable attribute of the Selenium Grid. */
 public class DescribedOption implements Comparable<DescribedOption> {
 
   public final String section;
@@ -84,9 +80,9 @@ public class DescribedOption implements Comparable<DescribedOption> {
     Set<Role> minimized = ImmutableSet.copyOf(roles);
 
     return StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
-      .filter(hasRoles -> !Sets.intersection(hasRoles.getRoles(), minimized).isEmpty())
-      .flatMap(DescribedOption::getAllFields)
-      .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .filter(hasRoles -> !Sets.intersection(hasRoles.getRoles(), minimized).isEmpty())
+        .flatMap(DescribedOption::getAllFields)
+        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
   }
 
   private static Stream<DescribedOption> getAllFields(HasRoles hasRoles) {
@@ -112,7 +108,6 @@ public class DescribedOption implements Comparable<DescribedOption> {
     }
     return fields.stream();
   }
-
 
   public String section() {
     return section;
@@ -143,8 +138,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
     if (allOptions.isPresent() && !allOptions.get().isEmpty()) {
       if (repeats) {
         return allOptions.get().stream()
-          .map(value -> quotable ? "\"" + value + "\"" : String.valueOf(value))
-          .collect(Collectors.joining(", ", "[", "]"));
+            .map(value -> quotable ? "\"" + value + "\"" : String.valueOf(value))
+            .collect(Collectors.joining(", ", "[", "]"));
       }
       String value = allOptions.get().get(0);
       return quotable ? "\"" + value + "\"" : value;
@@ -160,8 +155,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
   @Override
   public int compareTo(DescribedOption o) {
     return comparing((DescribedOption describedOption) -> describedOption.section)
-      .thenComparing(describedOption -> describedOption.optionName)
-      .compare(this, o);
+        .thenComparing(describedOption -> describedOption.optionName)
+        .compare(this, o);
   }
 
   @Override
@@ -173,28 +168,29 @@ public class DescribedOption implements Comparable<DescribedOption> {
       return false;
     }
     DescribedOption that = (DescribedOption) o;
-    return repeats == that.repeats &&
-           quotable == that.quotable &&
-           Objects.equals(section, that.section) &&
-           Objects.equals(optionName, that.optionName) &&
-           Objects.equals(description, that.description) &&
-           Objects.equals(defaultValue, that.defaultValue) &&
-           Objects.equals(type, that.type) &&
-           Arrays.equals(example, that.example) &&
-           Objects.equals(flags, that.flags);
+    return repeats == that.repeats
+        && quotable == that.quotable
+        && Objects.equals(section, that.section)
+        && Objects.equals(optionName, that.optionName)
+        && Objects.equals(description, that.description)
+        && Objects.equals(defaultValue, that.defaultValue)
+        && Objects.equals(type, that.type)
+        && Arrays.equals(example, that.example)
+        && Objects.equals(flags, that.flags);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(section,
-                        optionName,
-                        description,
-                        type,
-                        Arrays.hashCode(example),
-                        repeats,
-                        quotable,
-                        flags,
-                        defaultValue);
+    return Objects.hash(
+        section,
+        optionName,
+        description,
+        type,
+        Arrays.hashCode(example),
+        repeats,
+        quotable,
+        flags,
+        defaultValue);
   }
 
   public String getType(Type type) {
@@ -211,9 +207,9 @@ public class DescribedOption implements Comparable<DescribedOption> {
   }
 
   private Class<?> deriveClass(Type type) {
-    if (type instanceof ParameterizedType &&
-        ((ParameterizedType) type).getRawType() instanceof Class &&
-        Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
+    if (type instanceof ParameterizedType
+        && ((ParameterizedType) type).getRawType() instanceof Class
+        && Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
       Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
       if (typeArgs.length == 1 && typeArgs[0] instanceof Class) {
         // TODO: This is not how to pluralise something
@@ -229,8 +225,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
   }
 
   private boolean isCollection(Type type) {
-    return type instanceof ParameterizedType &&
-           ((ParameterizedType) type).getRawType() instanceof Class &&
-           Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
+    return type instanceof ParameterizedType
+        && ((ParameterizedType) type).getRawType() instanceof Class
+        && Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
   }
 }

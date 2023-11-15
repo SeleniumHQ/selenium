@@ -18,9 +18,7 @@
 package org.openqa.selenium;
 
 /**
- * Marker interface for credentials used for authenticating a browser to a
- * site, typically via {@link UsernameAndPassword} and Basic or Digest
- * authentication.
+ * Marker interface for credentials used for authenticating a browser to a site, typically via
+ * {@link UsernameAndPassword} and Basic or Digest authentication.
  */
-public interface Credentials {
-}
+public interface Credentials {}

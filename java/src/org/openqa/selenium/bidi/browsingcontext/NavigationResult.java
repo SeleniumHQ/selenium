@@ -37,7 +37,6 @@ public class NavigationResult {
     this.url = url;
   }
 
-
   public static NavigationResult fromJson(JsonInput input) {
     String navigationId = null;
     String url = null;

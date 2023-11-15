@@ -17,7 +17,18 @@
 
 package org.openqa.selenium.json;
 
+import java.io.Reader;
+import java.lang.reflect.Type;
+
+/**
+ * Used to specify the strategy used to assign values during deserialization.
+ *
+ * @see org.openqa.selenium.json.Json#toType(Reader, Type, PropertySetting)
+ * @see org.openqa.selenium.json.Json#toType(String, Type, PropertySetting)
+ */
 public enum PropertySetting {
+  /** Values are stored via the corresponding Bean setter methods. */
   BY_NAME,
+  /** Values are stored in fields with the indicated names. */
   BY_FIELD
 }

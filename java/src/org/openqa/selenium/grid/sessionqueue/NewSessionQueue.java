@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.options;
+import static org.openqa.selenium.remote.http.Route.post;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -34,18 +45,6 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.options;
-import static org.openqa.selenium.remote.http.Route.post;
-
 public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   protected final Tracer tracer;
@@ -57,46 +56,52 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     Require.nonNull("Registration secret", registrationSecret);
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
-    routes = combine(
-      post("/session")
-        .to(() -> req -> {
-          SessionRequest sessionRequest = new SessionRequest(
-            new RequestId(UUID.randomUUID()),
-            req,
-            Instant.now()
-          );
-          return addToQueue(sessionRequest);
-        }),
-      options("/session")
-        .to(() -> req -> new HttpResponse()),
-      post("/se/grid/newsessionqueue/session")
-        .to(() -> new AddToSessionQueue(tracer, this))
-        .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/{requestId}/retry")
-        .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
-        .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/{requestId}/failure")
-        .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params)))
-        .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/{requestId}/success")
-        .to(params -> new SessionCreated(tracer, this, requestIdFrom(params)))
-        .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/{requestId}")
-        .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
-        .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/next")
-        .to(() -> new GetNextMatchingRequest(tracer, this))
-        .with(requiresSecret),
-      get("/se/grid/newsessionqueue/queue")
-        .to(() -> new GetSessionQueue(tracer, this)),
-      delete("/se/grid/newsessionqueue/queue")
-        .to(() -> new ClearSessionQueue(tracer, this))
-        .with(requiresSecret));
+    routes =
+        combine(
+            post("/session")
+                .to(
+                    () ->
+                        req -> {
+                          SessionRequest sessionRequest =
+                              new SessionRequest(
+                                  new RequestId(UUID.randomUUID()), req, Instant.now());
+                          return addToQueue(sessionRequest);
+                        }),
+            options("/session").to(() -> req -> new HttpResponse()),
+            post("/se/grid/newsessionqueue/session")
+                .to(() -> new AddToSessionQueue(tracer, this))
+                .with(requiresSecret),
+            post("/se/grid/newsessionqueue/session/{requestId}/retry")
+                .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
+                .with(requiresSecret),
+            post("/se/grid/newsessionqueue/session/{requestId}/failure")
+                .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params)))
+                .with(requiresSecret),
+            post("/se/grid/newsessionqueue/session/{requestId}/success")
+                .to(params -> new SessionCreated(tracer, this, requestIdFrom(params)))
+                .with(requiresSecret),
+            post("/se/grid/newsessionqueue/session/{requestId}")
+                .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
+                .with(requiresSecret),
+            post("/se/grid/newsessionqueue/session/next")
+                .to(() -> new GetNextMatchingRequest(tracer, this))
+                .with(requiresSecret),
+            get("/se/grid/newsessionqueue/queue").to(() -> new GetSessionQueue(tracer, this)),
+            delete("/se/grid/newsessionqueue/queue")
+                .to(() -> new ClearSessionQueue(tracer, this))
+                .with(requiresSecret));
   }
 
   private RequestId requestIdFrom(Map<String, String> params) {
     return new RequestId(UUID.fromString(params.get("requestId")));
   }
+
+  /**
+   * A fast-path to detect if the queue is empty, returns false if there is no fast-path available.
+   *
+   * @return true if the queue is empty, false if it is not empty or unknown
+   */
+  public abstract boolean peekEmpty();
 
   public abstract HttpResponse addToQueue(SessionRequest request);
 
@@ -106,7 +111,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   public abstract List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes);
 
-  public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
+  public abstract boolean complete(
+      RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
 
   public abstract int clearQueue();
 
@@ -122,4 +128,3 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     return routes.execute(req);
   }
 }
-

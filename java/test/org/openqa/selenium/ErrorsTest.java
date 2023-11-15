@@ -34,8 +34,8 @@ class ErrorsTest extends JupiterTestBase {
   @Ignore(value = IE, reason = "IE does not support onerror")
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {
     driver.get(pages.errorsPage);
-    Object result = ((JavascriptExecutor) driver).
-        executeScript("return window.ERRORS.join('\\n');");
+    Object result =
+        ((JavascriptExecutor) driver).executeScript("return window.ERRORS.join('\\n');");
     assertThat(result).isEqualTo("");
   }
 }

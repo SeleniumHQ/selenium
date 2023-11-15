@@ -17,22 +17,19 @@
 
 package org.openqa.selenium.logging;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-@Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
@@ -52,7 +49,8 @@ class AvailableLogsTest extends JupiterTestBase {
   void browserLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.BROWSER))
-        .describedAs("Browser logs should be enabled by default").isTrue();
+        .describedAs("Browser logs should be enabled by default")
+        .isTrue();
   }
 
   @Test
@@ -61,7 +59,8 @@ class AvailableLogsTest extends JupiterTestBase {
     driver.get(pages.formPage);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.CLIENT))
-        .describedAs("Client logs should be enabled by default").isTrue();
+        .describedAs("Client logs should be enabled by default")
+        .isTrue();
     boolean foundExecutingStatement = false;
     boolean foundExecutedStatement = false;
     for (LogEntry logEntry : driver.manage().logs().get(LogType.CLIENT)) {
@@ -77,14 +76,16 @@ class AvailableLogsTest extends JupiterTestBase {
   void driverLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.DRIVER))
-        .describedAs("Remote driver logs should be enabled by default").isTrue();
+        .describedAs("Remote driver logs should be enabled by default")
+        .isTrue();
   }
 
   @Test
   void profilerLogShouldBeDisabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PROFILER))
-        .describedAs("Profiler logs should not be enabled by default").isFalse();
+        .describedAs("Profiler logs should not be enabled by default")
+        .isFalse();
   }
 
   @Test
@@ -93,7 +94,7 @@ class AvailableLogsTest extends JupiterTestBase {
 
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.SERVER))
-        .describedAs("Server logs should be enabled by default").isTrue();
+        .describedAs("Server logs should be enabled by default")
+        .isTrue();
   }
-
 }

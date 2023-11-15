@@ -36,7 +36,7 @@ module Selenium
         expect(status.message).not_to be_empty
       end
 
-      it 'can navigate and listen to errors', except: {browser: %i[chrome edge], reason: 'not yet implemented'} do
+      it 'can navigate and listen to errors' do
         log_entry = nil
         log_inspector = BiDi::LogInspector.new(driver)
         log_inspector.on_javascript_exception { |log| log_entry = log }
@@ -45,10 +45,12 @@ module Selenium
         info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
 
         expect(browsing_context.id).not_to be_nil
-        expect(info.navigation_id).to be_nil
+        expect(info.navigation_id).not_to be_nil
         expect(info.url).to include('/bidi/logEntryAdded.html')
 
-        driver.find_element(id: 'jsException').click
+        js_exception = wait.until { driver.find_element(id: 'jsException') }
+        js_exception.click
+
         wait.until { !log_entry.nil? }
 
         expect(log_entry).to have_attributes(

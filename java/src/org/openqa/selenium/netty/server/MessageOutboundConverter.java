@@ -24,12 +24,11 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import java.util.logging.Logger;
 import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
-
-import java.util.logging.Logger;
 
 class MessageOutboundConverter extends ChannelOutboundHandlerAdapter {
 
@@ -37,7 +36,7 @@ class MessageOutboundConverter extends ChannelOutboundHandlerAdapter {
 
   @Override
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
-    throws Exception {
+      throws Exception {
     if (!(msg instanceof Message)) {
       super.write(ctx, msg, promise);
       return;
@@ -46,19 +45,15 @@ class MessageOutboundConverter extends ChannelOutboundHandlerAdapter {
     Message seMessage = (Message) msg;
 
     if (seMessage instanceof CloseMessage) {
-      ctx.writeAndFlush(new CloseWebSocketFrame(true, 0));
+      CloseMessage closeMessage = (CloseMessage) seMessage;
+      ctx.writeAndFlush(
+          new CloseWebSocketFrame(true, 0, closeMessage.code(), closeMessage.reason()));
     } else if (seMessage instanceof BinaryMessage) {
       ctx.writeAndFlush(
-        new BinaryWebSocketFrame(
-          true,
-          0,
-          Unpooled.copiedBuffer(((BinaryMessage) seMessage).data())));
+          new BinaryWebSocketFrame(
+              true, 0, Unpooled.copiedBuffer(((BinaryMessage) seMessage).data())));
     } else if (seMessage instanceof TextMessage) {
-      ctx.writeAndFlush(
-        new TextWebSocketFrame(
-          true,
-          0,
-          ((TextMessage) seMessage).text()));
+      ctx.writeAndFlush(new TextWebSocketFrame(true, 0, ((TextMessage) seMessage).text()));
     } else {
       LOG.warning(String.format("Unable to handle %s", msg));
       super.write(ctx, msg, promise);

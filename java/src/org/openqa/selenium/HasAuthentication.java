@@ -17,11 +17,10 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
-
 import java.net.URI;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Indicates that a driver supports authenticating to a website in some way.
@@ -32,21 +31,19 @@ import java.util.function.Supplier;
 public interface HasAuthentication {
 
   /**
-   * Registers a check for whether a set of {@link Credentials} should be
-   * used for a particular site, identified by its URI. If called multiple
-   * times, the credentials will be checked in the order they've been added
-   * and the first one to match will be used.
+   * Registers a check for whether a set of {@link Credentials} should be used for a particular
+   * site, identified by its URI. If called multiple times, the credentials will be checked in the
+   * order they've been added and the first one to match will be used.
    */
   void register(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials);
 
   /**
-   * As {@link #register(Predicate, Supplier)} but attempts to apply the
-   * credentials for any request for authorization.
+   * As {@link #register(Predicate, Supplier)} but attempts to apply the credentials for any request
+   * for authorization.
    */
   default void register(Supplier<Credentials> alwaysUseTheseCredentials) {
     Require.nonNull("Credentials", alwaysUseTheseCredentials);
 
     register(uri -> true, alwaysUseTheseCredentials);
   }
-
 }

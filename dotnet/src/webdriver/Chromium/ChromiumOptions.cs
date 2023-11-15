@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the location of the Chromium browser's binary executable file.
         /// </summary>
-        public string BinaryLocation
+        public override string BinaryLocation
         {
             get { return this.binaryLocation; }
             set { this.binaryLocation = value; }

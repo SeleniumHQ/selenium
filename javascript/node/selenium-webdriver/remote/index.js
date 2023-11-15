@@ -17,7 +17,6 @@
 
 'use strict'
 
-const fs = require('fs')
 const url = require('url')
 
 const httpUtil = require('../http/util')
@@ -121,7 +120,7 @@ class DriverService {
    */
   constructor(executable, options) {
     /** @private @const */
-    this.log_ = logging.getLogger('webdriver.DriverService')
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.DriverService`)
     /** @private {string} */
     this.executable_ = executable
 
@@ -165,6 +164,14 @@ class DriverService {
      * @private {Promise<string>}
      */
     this.address_ = null
+  }
+
+  getExecutable() {
+    return this.executable_
+  }
+
+  setExecutable(value) {
+    this.executable_ = value
   }
 
   /**
@@ -318,10 +325,6 @@ DriverService.Builder = class {
    * @throws {Error} If the provided executable path does not exist.
    */
   constructor(exe) {
-    if (!fs.existsSync(exe)) {
-      throw Error(`The specified executable path does not exist: ${exe}`)
-    }
-
     /** @private @const {string} */
     this.exe_ = exe
 

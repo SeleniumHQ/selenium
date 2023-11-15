@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.support.events;
 
-import com.google.common.primitives.Primitives;
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
@@ -26,27 +30,23 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.decorators.WebDriverDecorator;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This decorator creates a wrapper around an arbitrary {@link WebDriver} instance that notifies
- * registered listeners about events happening in this WebDriver and derived objects, such as
- * {@link WebElement}s and {@link Alert}.
- * <p>
- * Listeners should implement {@link WebDriverListener}. It supports three types of events:
+ * registered listeners about events happening in this WebDriver and derived objects, such as {@link
+ * WebElement}s and {@link Alert}.
+ *
+ * <p>Listeners should implement {@link WebDriverListener}. It supports three types of events:
+ *
  * <ul>
- *   <li>"before"-event: a method is about to be called;</li>
- *   <li>"after"-event: a method was called successfully and returned some result;</li>
- *   <li>"error"-event: a method was called and thrown an exception.</li>
+ *   <li>"before"-event: a method is about to be called;
+ *   <li>"after"-event: a method was called successfully and returned some result;
+ *   <li>"error"-event: a method was called and thrown an exception.
  * </ul>
+ *
  * To use this decorator you have to prepare a listener, create a decorator using this listener,
- * decorate the original WebDriver instance with this decorator and use the new WebDriver
- * instance created by the decorator instead of the original one:
+ * decorate the original WebDriver instance with this decorator and use the new WebDriver instance
+ * created by the decorator instead of the original one:
+ *
  * <pre><code>
  *   WebDriver original = new FirefoxDriver();
  *   WebDriverListener listener = new MyListener();
@@ -55,18 +55,19 @@ import java.util.logging.Logger;
  *   WebElement header = decorated.findElement(By.tagName("h1"));
  *   String headerText = header.getText();
  * </code></pre>
- * <p>
- * The instance of WebDriver created by the decorator implements all the same interfaces as
- * the original driver.
- * <p>
- * A listener can subscribe to "specific" or "generic" events (or both). A "specific" event
- * correspond to a single specific method, a "generic" event correspond to any method called in
- * a class or in any class.
- * <p>
- * To subscribe to a "specific" event a listener should implement a method with a name derived from
- * the target method to be watched. The listener methods for "before"-events receive the parameters
- * passed to the decorated method. The listener methods for "after"-events receive the parameters
- * passed to the decorated method as well as the result returned by this method.
+ *
+ * <p>The instance of WebDriver created by the decorator implements all the same interfaces as the
+ * original driver.
+ *
+ * <p>A listener can subscribe to "specific" or "generic" events (or both). A "specific" event
+ * correspond to a single specific method, a "generic" event correspond to any method called in a
+ * class or in any class.
+ *
+ * <p>To subscribe to a "specific" event a listener should implement a method with a name derived
+ * from the target method to be watched. The listener methods for "before"-events receive the
+ * parameters passed to the decorated method. The listener methods for "after"-events receive the
+ * parameters passed to the decorated method as well as the result returned by this method.
+ *
  * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
  *     &#x40;Override
@@ -79,9 +80,10 @@ import java.util.logging.Logger;
  *     }
  *   };
  * </code></pre>
- * <p>
- * To subscribe to a "generic" event a listener should implement a method with a name derived from
- * the class to be watched:
+ *
+ * <p>To subscribe to a "generic" event a listener should implement a method with a name derived
+ * from the class to be watched:
+ *
  * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
  *     &#x40;Override
@@ -96,8 +98,9 @@ import java.util.logging.Logger;
  *     }
  *   };
  * </code></pre>
- * <p>
- * There are also listener methods for "super-generic" events:
+ *
+ * <p>There are also listener methods for "super-generic" events:
+ *
  * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
  *     &#x40;Override
@@ -112,10 +115,11 @@ import java.util.logging.Logger;
  *     }
  *   };
  * </code></pre>
- * <p>
- * A listener can subscribe to both "specific" and "generic" events at the same time. In this case
- * "before"-events are fired in order from the most generic to the most specific,
- * and "after"-events are fired in the opposite order, for example:
+ *
+ * <p>A listener can subscribe to both "specific" and "generic" events at the same time. In this
+ * case "before"-events are fired in order from the most generic to the most specific, and
+ * "after"-events are fired in the opposite order, for example:
+ *
  * <pre><code>
  *   beforeAnyCall
  *   beforeAnyWebDriverCall
@@ -125,13 +129,14 @@ import java.util.logging.Logger;
  *   afterAnyWebDriverCall
  *   afterAnyCall
  * </code></pre>
- * <p>
- * One of the most obvious use of this decorator is logging. But it can be used to modify behavior
- * of the original driver to some extent because listener methods are executed in the same thread
- * as the original driver methods.
- * <p>
- * For example, a listener can be used to slow down execution for demonstration purposes, just
+ *
+ * <p>One of the most obvious use of this decorator is logging. But it can be used to modify
+ * behavior of the original driver to some extent because listener methods are executed in the same
+ * thread as the original driver methods.
+ *
+ * <p>For example, a listener can be used to slow down execution for demonstration purposes, just
  * make a listener that adds a pause before some operations:
+ *
  * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
  *     &#x40;Override
@@ -144,20 +149,20 @@ import java.util.logging.Logger;
  *     }
  *   };
  * </code></pre>
- * <p>
- * Just be careful to not block the current thread in a listener method!
- * <p>
- * Listeners can't affect driver behavior too much. They can't throw any exceptions
- * (they can, but the decorator suppresses these exceptions), can't prevent execution of
- * the decorated methods, can't modify parameters and results of the methods.
- * <p>
- * Decorators that modify the behaviour of the underlying drivers should be implemented by
+ *
+ * <p>Just be careful to not block the current thread in a listener method!
+ *
+ * <p>Listeners can't affect driver behavior too much. They can't throw any exceptions (they can,
+ * but the decorator suppresses these exceptions), can't prevent execution of the decorated methods,
+ * can't modify parameters and results of the methods.
+ *
+ * <p>Decorators that modify the behaviour of the underlying drivers should be implemented by
  * extending {@link WebDriverDecorator}, not by creating sophisticated listeners.
  */
 @Beta
-public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorator<T>  {
+public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorator<T> {
 
-  private static final Logger logger = Logger.getLogger(EventFiringDecorator.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventFiringDecorator.class.getName());
 
   private final List<WebDriverListener> listeners;
 
@@ -183,23 +188,26 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
   }
 
   @Override
-  public Object onError(Decorated<?> target, Method method, Object[] args,
-                        InvocationTargetException e) throws Throwable {
-    listeners.forEach(listener -> {
-      try {
-        listener.onError(target.getOriginal(), method, args, e);
-      } catch (Throwable t) {
-        logger.log(Level.WARNING, t.getMessage(), t);
-      }
-    });
+  public Object onError(
+      Decorated<?> target, Method method, Object[] args, InvocationTargetException e)
+      throws Throwable {
+    listeners.forEach(
+        listener -> {
+          try {
+            listener.onError(target.getOriginal(), method, args, e);
+          } catch (Throwable t) {
+            LOG.log(Level.WARNING, t.getMessage(), t);
+          }
+        });
     return super.onError(target, method, args, e);
   }
 
-  private void fireBeforeEvents(WebDriverListener listener, Decorated<?> target, Method method, Object[] args) {
+  private void fireBeforeEvents(
+      WebDriverListener listener, Decorated<?> target, Method method, Object[] args) {
     try {
       listener.beforeAnyCall(target.getOriginal(), method, args);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     try {
@@ -219,7 +227,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.beforeAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args);
       }
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     String methodName = createEventMethodName("before", method.getName());
@@ -237,18 +245,19 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     }
   }
 
-  private void fireAfterEvents(WebDriverListener listener, Decorated<?> target, Method method, Object res, Object[] args) {
+  private void fireAfterEvents(
+      WebDriverListener listener, Decorated<?> target, Method method, Object res, Object[] args) {
     String methodName = createEventMethodName("after", method.getName());
 
-    boolean isVoid = method.getReturnType() == Void.TYPE
-                     || method.getReturnType() == WebDriver.Timeouts.class;
+    boolean isVoid =
+        method.getReturnType() == Void.TYPE || method.getReturnType() == WebDriver.Timeouts.class;
     int argsLength = args != null ? args.length : 0;
-    Object[] args2 = new Object[argsLength + 1 + (isVoid  ? 0 : 1)];
+    Object[] args2 = new Object[argsLength + 1 + (isVoid ? 0 : 1)];
     args2[0] = target.getOriginal();
     for (int i = 0; i < argsLength; i++) {
       args2[i + 1] = args[i];
     }
-    if (! isVoid) {
+    if (!isVoid) {
       args2[args2.length - 1] = res;
     }
 
@@ -263,8 +272,8 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       } else if (target.getOriginal() instanceof WebElement) {
         listener.afterAnyWebElementCall((WebElement) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Navigation) {
-        listener.afterAnyNavigationCall((WebDriver.Navigation) target.getOriginal(), method, args,
-                                        res);
+        listener.afterAnyNavigationCall(
+            (WebDriver.Navigation) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof Alert) {
         listener.afterAnyAlertCall((Alert) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Options) {
@@ -275,18 +284,20 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args, res);
       }
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     try {
       listener.afterAnyCall(target.getOriginal(), method, args, res);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
   }
 
   private String createEventMethodName(String prefix, String originalMethodName) {
-    return prefix + originalMethodName.substring(0, 1).toUpperCase() + originalMethodName.substring(1);
+    return prefix
+        + originalMethodName.substring(0, 1).toUpperCase()
+        + originalMethodName.substring(1);
   }
 
   private Method findMatchingMethod(WebDriverListener listener, String methodName, Object[] args) {
@@ -304,7 +315,29 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       return false;
     }
     for (int i = 0; i < params.length; i++) {
-      if (args[i] != null && ! Primitives.wrap(params[i]).isAssignableFrom(args[i].getClass())) {
+      Class<?> param = params[i];
+      if (param.isPrimitive()) {
+        if (boolean.class.equals(param)) {
+          param = Boolean.class;
+        } else if (byte.class.equals(param)) {
+          param = Byte.class;
+        } else if (char.class.equals(param)) {
+          param = Character.class;
+        } else if (double.class.equals(param)) {
+          param = Double.class;
+        } else if (float.class.equals(param)) {
+          param = Float.class;
+        } else if (int.class.equals(param)) {
+          param = Integer.class;
+        } else if (long.class.equals(param)) {
+          param = Long.class;
+        } else if (short.class.equals(param)) {
+          param = Short.class;
+        } else if (void.class.equals(param)) {
+          param = Void.class;
+        }
+      }
+      if (args[i] != null && !param.isAssignableFrom(args[i].getClass())) {
         return false;
       }
     }
@@ -315,7 +348,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     try {
       m.invoke(listener, args);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
   }
 }

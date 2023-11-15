@@ -17,13 +17,16 @@
 
 package org.openqa.selenium.chrome;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.AcceptedW3CCapabilityKeys;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
-import org.openqa.selenium.testing.TestUtilities;
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
+import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
+import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 import java.io.File;
 import java.time.Duration;
@@ -34,17 +37,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.toSet;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.testing.TestUtilities;
 
 @Tag("UnitTests")
 class ChromeOptionsTest {
@@ -53,39 +53,41 @@ class ChromeOptionsTest {
   void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new ChromeOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> options.put("browserType", "firefox"));
+        .isThrownBy(() -> options.put("browserType", "firefox"));
 
     Map<String, Object> googOptions = (Map<String, Object>) options.get(ChromeOptions.CAPABILITY);
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> googOptions.put("binary", ""));
+        .isThrownBy(() -> googOptions.put("binary", ""));
 
     List<String> extensions = (List<String>) googOptions.get("extensions");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> extensions.add("x"));
+        .isThrownBy(() -> extensions.add("x"));
 
     List<String> args = (List<String>) googOptions.get("args");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> args.add("-help"));
+        .isThrownBy(() -> args.add("-help"));
   }
 
   @Test
   void canBuildLogLevelFromStringRepresentation() {
-    assertThat(ChromeDriverLogLevel.fromString("off")).isEqualTo(OFF);
-    assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
+    assertThat(ChromiumDriverLogLevel.fromString("off")).isEqualTo(OFF);
+    assertThat(ChromiumDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
   }
 
   @Test
   void canAddW3CCompliantOptions() {
     ChromeOptions chromeOptions = new ChromeOptions();
-    chromeOptions.setBrowserVersion("99")
-      .setPlatformName("9 3/4")
-      .setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE)
-      .setAcceptInsecureCerts(true)
-      .setPageLoadStrategy(PageLoadStrategy.EAGER)
-      .setStrictFileInteractability(true)
-      .setImplicitWaitTimeout(Duration.ofSeconds(1))
-      .setPageLoadTimeout(Duration.ofSeconds(2))
-      .setScriptTimeout(Duration.ofSeconds(3));
+    chromeOptions
+        .setBrowserVersion("99")
+        .setPlatformName("9 3/4")
+        .setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE)
+        .setAcceptInsecureCerts(true)
+        .setPageLoadStrategy(PageLoadStrategy.EAGER)
+        .setStrictFileInteractability(true)
+        .setEnableDownloads(true)
+        .setImplicitWaitTimeout(Duration.ofSeconds(1))
+        .setPageLoadTimeout(Duration.ofSeconds(2))
+        .setScriptTimeout(Duration.ofSeconds(3));
 
     Map<String, Object> mappedOptions = chromeOptions.asMap();
     assertThat(mappedOptions.get("browserName")).isEqualTo("chrome");
@@ -95,6 +97,7 @@ class ChromeOptionsTest {
     assertThat(mappedOptions.get("acceptInsecureCerts")).isEqualTo(true);
     assertThat(mappedOptions.get("pageLoadStrategy")).hasToString("eager");
     assertThat(mappedOptions.get("strictFileInteractability")).isEqualTo(true);
+    assertThat(mappedOptions.get("se:downloadsEnabled")).isEqualTo(true);
 
     Map<String, Long> expectedTimeouts = new HashMap<>();
     expectedTimeouts.put("implicit", 1000L);
@@ -140,10 +143,13 @@ class ChromeOptionsTest {
     ChromeOptions two = new ChromeOptions().addArguments("silent");
     ChromeOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+    assertThat(merged.asMap())
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("verbose", "silent");
   }
 
   @Test
@@ -155,10 +161,13 @@ class ChromeOptionsTest {
     ChromeOptions two = new ChromeOptions().addEncodedExtensions(ext2);
     ChromeOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1, ext2);
+    assertThat(merged.asMap())
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1, ext2);
   }
 
   @Test
@@ -172,10 +181,13 @@ class ChromeOptionsTest {
     ChromeOptions two = new ChromeOptions().addExtensions(ext2);
     ChromeOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1Encoded, ext2Encoded);
+    assertThat(merged.asMap())
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1Encoded, ext2Encoded);
   }
 
   @Test
@@ -188,27 +200,34 @@ class ChromeOptionsTest {
     ChromeOptions two = new ChromeOptions().addEncodedExtensions(ext2);
     ChromeOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1Encoded, ext2);
+    assertThat(merged.asMap())
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1Encoded, ext2);
   }
 
   @Test
   void mergingOptionsMergesExperimentalOptions() {
-    ChromeOptions one = new ChromeOptions()
-      .setExperimentalOption("opt1", "val1")
-      .setExperimentalOption("opt2", "val2");
-    ChromeOptions two = new ChromeOptions()
-      .setExperimentalOption("opt2", "val4")
-      .setExperimentalOption("opt3", "val3");
+    ChromeOptions one =
+        new ChromeOptions()
+            .setExperimentalOption("opt1", "val1")
+            .setExperimentalOption("opt2", "val2");
+    ChromeOptions two =
+        new ChromeOptions()
+            .setExperimentalOption("opt2", "val4")
+            .setExperimentalOption("opt3", "val3");
     ChromeOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .containsEntry("opt1", "val1")
-      .containsEntry("opt2", "val4")
-      .containsEntry("opt3", "val3");
+    assertThat(merged.asMap())
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .containsEntry("opt1", "val1")
+        .containsEntry("opt2", "val4")
+        .containsEntry("opt3", "val3");
   }
 
   @Test
@@ -240,29 +259,42 @@ class ChromeOptionsTest {
 
     Map<String, Object> map = two.asMap();
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("verbose", "silent");
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .containsEntry("opt1", "val1")
-      .containsEntry("opt2", "val4")
-      .containsEntry("opt3", "val3");
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .containsEntry("opt1", "val1")
+        .containsEntry("opt2", "val4")
+        .containsEntry("opt3", "val3");
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ACCEPT_INSECURE_CERTS)
+        .isExactlyInstanceOf(Boolean.class);
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1Encoded, ext2);
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1Encoded, ext2);
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("binary").asInstanceOf(STRING)
-      .isEqualTo(binary.getPath());
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("binary")
+        .asInstanceOf(STRING)
+        .isEqualTo(binary.getPath());
   }
 
   @Test
@@ -292,58 +324,62 @@ class ChromeOptionsTest {
 
     Map<String, Object> map = two.asMap();
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("args")
+        .asInstanceOf(LIST)
+        .containsExactly("verbose", "silent");
 
-    assertThat(map).asInstanceOf(MAP)
-      .containsEntry("opt1", "val1");
+    assertThat(map).asInstanceOf(MAP).containsEntry("opt1", "val1");
 
-    assertThat(map).asInstanceOf(MAP)
-      .containsEntry("opt2", "val4");
+    assertThat(map).asInstanceOf(MAP).containsEntry("opt2", "val4");
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .containsEntry("opt2", "val2")
-      .containsEntry("opt3", "val3");
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .containsEntry("opt2", "val2")
+        .containsEntry("opt3", "val3");
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("extensions").asInstanceOf(LIST)
-      .containsExactly(ext1Encoded, ext2);
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("extensions")
+        .asInstanceOf(LIST)
+        .containsExactly(ext1Encoded, ext2);
 
-    assertThat(map).asInstanceOf(MAP)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("binary").asInstanceOf(STRING)
-      .isEqualTo(binary.getPath());
+    assertThat(map)
+        .asInstanceOf(MAP)
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("binary")
+        .asInstanceOf(STRING)
+        .isEqualTo(binary.getPath());
   }
 
   @Test
   void isW3CSafe() {
-    Map<String, Object> converted = new ChromeOptions()
-      .setBinary("some/path")
-      .addArguments("--headless")
-      .setLogLevel(ChromeDriverLogLevel.INFO)
-      .asMap();
+    Map<String, Object> converted =
+        new ChromeOptions().setBinary("some/path").addArguments("--headless").asMap();
 
     Predicate<String> badKeys = new AcceptedW3CCapabilityKeys().negate();
-    Set<String> seen = converted.keySet().stream()
-      .filter(badKeys)
-      .collect(toSet());
+    Set<String> seen = converted.keySet().stream().filter(badKeys).collect(toSet());
 
     assertThat(seen).isEmpty();
   }
 
   @Test
   void shouldBeAbleToSetAnAndroidOption() {
-    Map<String, Object> converted = new ChromeOptions()
-      .setAndroidActivity("com.cheese.nom")
-      .asMap();
+    Map<String, Object> converted =
+        new ChromeOptions().setAndroidActivity("com.cheese.nom").asMap();
 
     assertThat(converted)
-      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
-      .extractingByKey("androidActivity")
-      .isEqualTo("com.cheese.nom");
+        .extractingByKey(ChromeOptions.CAPABILITY)
+        .asInstanceOf(MAP)
+        .extractingByKey("androidActivity")
+        .isEqualTo("com.cheese.nom");
   }
 }

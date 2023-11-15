@@ -19,9 +19,8 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import static org.openqa.selenium.bidi.browsingcontext.BrowsingContext.LIST_OF_BROWSING_CONTEXT_INFO;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.List;
+import org.openqa.selenium.json.JsonInput;
 
 public class BrowsingContextInfo {
 
@@ -50,7 +49,7 @@ public class BrowsingContextInfo {
   }
 
   public BrowsingContextInfo(
-    String id, String url, List<BrowsingContextInfo> children, String parentBrowsingContext) {
+      String id, String url, List<BrowsingContextInfo> children, String parentBrowsingContext) {
     this.id = id;
     this.url = url;
     this.children = children;

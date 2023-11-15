@@ -24,14 +24,13 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.function.Consumer;
 
 class WindowTest extends JupiterTestBase {
 
@@ -100,7 +99,8 @@ class WindowTest extends JupiterTestBase {
     Dimension originalSize = window.getSize();
 
     try {
-      // Some Linux window managers start taking liberties wrt window positions when moving the window
+      // Some Linux window managers start taking liberties wrt window positions when moving the
+      // window
       // off-screen. Therefore, try to stay on-screen. Hopefully you have more than 210 px,
       // or this may fail.
       window.setSize(new Dimension(200, 200));
@@ -168,7 +168,8 @@ class WindowTest extends JupiterTestBase {
     changeSizeTo(new Dimension(640, 400));
     driver.manage().window().minimize();
 
-    assertThat(((JavascriptExecutor) driver).executeScript("return document.hidden;")).isEqualTo(true);
+    assertThat(((JavascriptExecutor) driver).executeScript("return document.hidden;"))
+        .isEqualTo(true);
   }
 
   @Test

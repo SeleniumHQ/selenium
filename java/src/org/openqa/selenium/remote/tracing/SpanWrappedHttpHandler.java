@@ -17,26 +17,23 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
 import java.io.UncheckedIOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.KIND;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class SpanWrappedHttpHandler implements HttpHandler {
 
@@ -45,7 +42,8 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   private final Function<HttpRequest, String> namer;
   private final HttpHandler delegate;
 
-  public SpanWrappedHttpHandler(Tracer tracer, Function<HttpRequest, String> namer, HttpHandler delegate) {
+  public SpanWrappedHttpHandler(
+      Tracer tracer, Function<HttpRequest, String> namer, HttpHandler delegate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.namer = Require.nonNull("Naming function", namer);
     this.delegate = Require.nonNull("Actual handler", delegate);
@@ -55,15 +53,15 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // If there is already a span attached to this request, then do nothing.
     Object possibleSpan = req.getAttribute("selenium.tracing.span");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
-                     EventAttribute.setValue(delegate.getClass().getName()));
+    AttributeMap attributeMap = tracer.createAttributeMap();
+    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(), delegate.getClass().getName());
 
     if (possibleSpan instanceof Span) {
       return delegate.execute(req);
     }
 
-    String name = Require.state("Operation name", namer.apply(req)).nonNull("must be set for %s", req);
+    String name =
+        Require.state("Operation name", namer.apply(req)).nonNull("must be set for %s", req);
 
     TraceContext before = tracer.getCurrentContext();
     Span span = newSpanAsChildOf(tracer, req, name);
@@ -73,7 +71,10 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
       req.setAttribute("selenium.tracing.span", span);
 
-      if (!(after.getClass().getName().equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
+      if (!(after
+          .getClass()
+          .getName()
+          .equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
         LOG.fine(String.format("Wrapping request. Before %s and after %s", before, after));
       }
 
@@ -95,8 +96,8 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, t);
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                       EventAttribute.setValue("Unable to execute request: " + t.getMessage()));
+      attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), "Unable to execute request: " + t.getMessage());
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
