@@ -98,6 +98,10 @@ class LocalValue {
     return new LocalValue(NonPrimitiveType.SET, value)
   }
 
+  static createChannelValue(value) {
+    return new LocalValue(NonPrimitiveType.CHANNEL, value)
+  }
+
   toJson() {
     let toReturn = {}
     toReturn[TYPE_CONSTANT] = this.type
@@ -195,10 +199,56 @@ class RegExpValue {
   }
 }
 
+class SerializationOptions {
+  constructor(
+    maxDomDepth = 0,
+    maxObjectDepth = null,
+    includeShadowTree = 'none'
+  ) {
+    this._maxDomDepth = maxDomDepth
+    this._maxObjectDepth = maxObjectDepth
+
+    if (['none', 'open', 'all'].includes(includeShadowTree)) {
+      throw Error(
+        `Valid types are 'none', 'open', and 'all'. Received: ${includeShadowTree}`
+      )
+    }
+    this._includeShadowTree = includeShadowTree
+  }
+}
+
+class ChannelValue {
+  constructor(channel, options = undefined, resultOwnership = undefined) {
+    this.channel = channel
+
+    if (options !== undefined) {
+      if (options instanceof SerializationOptions) {
+        this.options = options
+      } else {
+        throw Error(
+          `Pass in SerializationOptions object. Received: ${options} `
+        )
+      }
+    }
+
+    if (resultOwnership != undefined) {
+      if (['root', 'none'].includes(resultOwnership)) {
+        this.resultOwnership = resultOwnership
+      } else {
+        throw Error(
+          `Valid types are 'root' and 'none. Received: ${resultOwnership}`
+        )
+      }
+    }
+  }
+}
+
 module.exports = {
+  ChannelValue,
   LocalValue,
   RemoteValue,
   ReferenceValue,
   RemoteReferenceType,
   RegExpValue,
+  SerializationOptions,
 }
