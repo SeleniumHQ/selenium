@@ -22,7 +22,7 @@ const {
   ExceptionDetails,
 } = require('./evaluateResult')
 const { Message } = require('./scriptTypes')
-const { RealmInfo } = require('./realmInfo')
+const { RealmInfo, RealmType, WindowRealmInfo } = require('./realmInfo')
 const { RemoteValue } = require('./protocolValue')
 const { Source } = require('./scriptTypes')
 const { WebDriverError } = require('../lib/error')
@@ -355,6 +355,10 @@ class ScriptManager {
     await this.subscribeAndHandleEvent('script.message', callback)
   }
 
+  async onRealmCreated(callback) {
+    await this.subscribeAndHandleEvent('script.realmCreated', callback)
+  }
+
   async subscribeAndHandleEvent(eventType, callback) {
     if (this._browsingContextIds != null) {
       await this.bidi.subscribe(eventType, this._browsingContextIds)
@@ -376,6 +380,20 @@ class ScriptManager {
             new RemoteValue(params.data),
             new Source(params.source)
           )
+        } else if ('realm' in params) {
+          if (params.type === RealmType.WINDOW) {
+            response = new WindowRealmInfo(
+              params.realm,
+              params.origin,
+              params.type,
+              params.context,
+              params.sandbox
+            )
+          } else if (params.realm !== null && params.type !== null) {
+            response = new RealmInfo(params.realm, params.origin, params.type)
+          } else if (params.realm !== null) {
+            response = params.realm
+          }
         }
         callback(response)
       }

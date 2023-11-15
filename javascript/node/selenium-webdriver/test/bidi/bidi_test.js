@@ -2160,6 +2160,27 @@ suite(
         assert.equal(message.data.type, 'string')
         assert.equal(message.data.value, 'foo')
       })
+
+      it('can listen to realm created message', async function () {
+        const manager = await ScriptManager(undefined, driver)
+
+        let realmInfo = null
+
+        await manager.onRealmCreated((result) => {
+          realmInfo = result
+        })
+
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await browsingContext.navigate(Pages.blankPage, 'complete')
+
+        assert.notEqual(realmInfo, null)
+        assert.notEqual(realmInfo.realmId, null)
+        assert.equal(realmInfo.realmType, RealmType.WINDOW)
+      })
     })
 
     describe('Network Inspector', function () {
