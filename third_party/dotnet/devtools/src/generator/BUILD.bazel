@@ -4,19 +4,19 @@ csharp_binary(
     name = "generator",
     srcs = glob(["**/*.cs"]),
     # Used as a tool in our build, so just target one framework
-    target_frameworks = ["net6.0"],
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
+    ],
     visibility = [
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "Microsoft.NETCore.App.Ref"),
         framework("nuget", "CommandLineParser"),
         framework("nuget", "Handlebars.Net"),
         framework("nuget", "Humanizer.Core"),
-        framework("nuget", "Microsoft.CSharp"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection.Abstractions"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Runtime"),
     ],
 )

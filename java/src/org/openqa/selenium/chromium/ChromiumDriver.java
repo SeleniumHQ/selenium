@@ -23,9 +23,11 @@ import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -35,7 +37,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.BiDi;
@@ -54,6 +58,7 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
@@ -102,6 +107,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private final Optional<BiDi> biDi;
   protected HasCasting casting;
   protected HasCdp cdp;
+  private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
 
   protected ChromiumDriver(
       CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
@@ -192,6 +198,75 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public Capabilities getCapabilities() {
     return capabilities;
+  }
+
+  @Override
+  public ScriptKey pin(String script) {
+    Require.nonNull("Script to pin", script);
+
+    ScriptKey existingKey = scriptKeys.get(script.hashCode());
+    if (existingKey != null) {
+      return existingKey;
+    }
+
+    // Create the actual script we're going to use.
+    String scriptToUse =
+        String.format(
+            "window.seleniumPinnedScript%s = function(){%s}", Math.abs(script.hashCode()), script);
+
+    DevTools devTools = getDevTools();
+    devTools.createSessionIfThereIsNotOne();
+    devTools.send(new org.openqa.selenium.devtools.Command<>("Page.enable", Map.of()));
+    devTools.send(
+        new org.openqa.selenium.devtools.Command<>(
+            "Runtime.evaluate", Map.of("expression", scriptToUse)));
+    Map<String, Object> result =
+        devTools.send(
+            new org.openqa.selenium.devtools.Command<>(
+                "Page.addScriptToEvaluateOnNewDocument",
+                Map.of("source", scriptToUse),
+                new TypeToken<Map<String, Object>>() {}.getType()));
+
+    ScriptKey key = new ScriptKey((String) result.get("identifier"));
+    scriptKeys.put(script.hashCode(), key);
+    return key;
+  }
+
+  @Override
+  public Set<ScriptKey> getPinnedScripts() {
+    return Set.copyOf(scriptKeys.values());
+  }
+
+  @Override
+  public void unpin(ScriptKey key) {
+    int hashCode = getScriptId(key);
+
+    executeScript(String.format("window.seleniumPinnedScript%s = undefined", Math.abs(hashCode)));
+    scriptKeys.remove(hashCode);
+
+    DevTools devTools = getDevTools();
+    devTools.send(
+        new org.openqa.selenium.devtools.Command(
+            "Page.removeScriptToEvaluateOnNewDocument", Map.of("identifier", key.getIdentifier())));
+  }
+
+  @Override
+  public Object executeScript(ScriptKey key, Object... args) {
+    int hashCode = getScriptId(key);
+
+    String scriptToUse =
+        String.format(
+            "return window.seleniumPinnedScript%s.apply(window, arguments)", Math.abs(hashCode));
+
+    return this.executeScript(scriptToUse, args);
+  }
+
+  private int getScriptId(ScriptKey key) {
+    return scriptKeys.entrySet().stream()
+        .filter(entry -> key.equals(entry.getValue()))
+        .map(Map.Entry::getKey)
+        .findAny()
+        .orElseThrow(() -> new JavascriptException("Unable to find script key matching " + key));
   }
 
   @Override

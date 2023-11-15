@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.DevTools
 
             this.CommandTimeout = TimeSpan.FromSeconds(30);
             this.debuggerEndpoint = endpointAddress;
-            if (endpointAddress.StartsWith("ws:"))
+            if (endpointAddress.StartsWith("ws", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.websocketAddress = endpointAddress;
             }

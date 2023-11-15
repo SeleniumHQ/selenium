@@ -26,10 +26,10 @@ module Selenium
       describe Guards do
         describe '#new' do
           it 'collects guards from example only for known guard types',
-             except: {}, exclude: {}, exclusive: {}, ignored: {}, only: {} do |example|
+             except: {}, exclude: {}, exclusive: {}, flaky: {}, ignored: {}, only: {} do |example|
             guards = described_class.new(example)
             types = guards.instance_variable_get(:@guards).map { |g| g.instance_variable_get(:@type) }
-            expect(types).to include :except, :only, :exclusive, :exclude
+            expect(types).to include :except, :only, :exclusive, :exclude, :flaky
             expect(types).not_to include :ignored
           end
 
@@ -190,7 +190,13 @@ module Selenium
           it 'has special message for exclude' do
             guard = described_class.new({reason: 'because'}, :exclude)
 
-            expect(guard.message).to eq('Test not guarded because it breaks test run; because')
+            expect(guard.message).to eq('Test skipped because it breaks test run; because')
+          end
+
+          it 'has special message for flaky' do
+            guard = described_class.new({reason: 'because'}, :flaky)
+
+            expect(guard.message).to eq('Test skipped because it is unreliable in this configuration; because')
           end
 
           it 'has special message for exclusive' do

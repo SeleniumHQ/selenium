@@ -42,13 +42,13 @@ BROWSERS = {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_beta_jvm_flags,
         "data": firefox_beta_data,
-        "tags": COMMON_TAGS + ["firefox"],
+        "tags": COMMON_TAGS + ["firefox", "firefox-beta"],
     },
     "firefox-dev": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_dev_jvm_flags,
         "data": firefox_dev_data,
-        "tags": COMMON_TAGS + ["firefox"],
+        "tags": COMMON_TAGS + ["firefox", "firefox-dev"],
     },
     "ie": {
         "deps": ["//java/src/org/openqa/selenium/ie"],

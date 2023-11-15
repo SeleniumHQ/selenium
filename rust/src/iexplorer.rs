@@ -51,6 +51,7 @@ pub struct IExplorerManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub download_browser: bool,
     pub driver_url: Option<String>,
 }
 
@@ -68,6 +69,7 @@ impl IExplorerManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            download_browser: false,
             driver_url: None,
         }))
     }
@@ -93,13 +95,13 @@ impl SeleniumManager for IExplorerManager {
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([(
             BrowserPath::new(WINDOWS, STABLE),
-            r#"Internet Explorer\iexplore.exe"#,
+            r"Internet Explorer\iexplore.exe",
         )])
     }
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer"#,
+            r"HKEY_LOCAL_MACHINE\Software\Microsoft\Internet Explorer",
             REG_VERSION_ARG,
             "",
         )
@@ -266,5 +268,13 @@ impl SeleniumManager for IExplorerManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         self.unavailable_download()
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }

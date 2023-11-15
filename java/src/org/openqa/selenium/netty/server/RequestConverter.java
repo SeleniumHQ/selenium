@@ -67,11 +67,6 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       io.netty.handler.codec.http.HttpRequest nettyRequest =
           (io.netty.handler.codec.http.HttpRequest) msg;
 
-      if (HttpUtil.is100ContinueExpected(nettyRequest)) {
-        ctx.write(new HttpResponse().setStatus(100));
-        return;
-      }
-
       if (nettyRequest.headers().contains("Sec-WebSocket-Version")
           && "upgrade".equalsIgnoreCase(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
@@ -82,6 +77,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
       request = createRequest(ctx, nettyRequest);
       if (request == null) {
+        return;
+      }
+
+      if (HttpUtil.is100ContinueExpected(nettyRequest)) {
+        ctx.write(new HttpResponse().setStatus(100));
         return;
       }
 

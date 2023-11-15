@@ -87,4 +87,13 @@ class ScriptPinningTest extends JupiterTestBase {
     assertThatExceptionOfType(JavascriptException.class)
         .isThrownBy(() -> executor.executeScript(cheese));
   }
+
+  @Test
+  void afterPinningScriptShouldBeAvailableOnEveryPage() {
+    ScriptKey cheese = executor.pin("return 'havarti'");
+
+    driver.get(pages.xhtmlTestPage);
+
+    assertThat(executor.executeScript(cheese)).isEqualTo("havarti");
+  }
 }

@@ -29,8 +29,12 @@ module Selenium
           full_page_screenshot: [:get, 'session/:session_id/moz/screenshot/full']
         }.freeze
 
+        def command_list
+          FIREFOX_COMMANDS.merge(self.class::COMMANDS)
+        end
+
         def commands(command)
-          FIREFOX_COMMANDS[command] || self.class::COMMANDS[command]
+          command_list[command]
         end
 
         def install_addon(path, temporary)

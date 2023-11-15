@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.15'
+  '4.16'
 end
 
 def version
@@ -98,7 +98,7 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v116:v116.publish
+  //java/src/org/openqa/selenium/devtools/v119:v119.publish
   //java/src/org/openqa/selenium/devtools/v117:v117.publish
   //java/src/org/openqa/selenium/devtools/v118:v118.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish

@@ -27,7 +27,7 @@ class _BaseOptionsDescriptor:
         self.name = name
 
     def __get__(self, obj, cls):
-        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect"):
+        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect", "se:downloadsEnabled"):
             return obj._caps.get(self.name, False)
         return obj._caps.get(self.name)
 
@@ -318,6 +318,28 @@ class BaseOptions(metaclass=ABCMeta):
     -------
     - Get
         - `Proxy`
+    - Set
+        - `None`
+    """
+
+    enable_downloads = _BaseOptionsDescriptor("se:downloadsEnabled")
+    """Gets and Sets whether session can download files.
+
+    Usage
+    -----
+    - Get
+        - `self.enable_downloads`
+    - Set
+        - `self.enable_downloads` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
     - Set
         - `None`
     """
