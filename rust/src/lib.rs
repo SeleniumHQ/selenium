@@ -427,7 +427,8 @@ pub trait SeleniumManager {
     }
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
-        if !self.is_force_browser_download() {
+        let mut download_browser = self.is_force_browser_download();
+        if !download_browser {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
@@ -463,7 +464,7 @@ pub trait SeleniumManager {
                                     self.get_browser_name(),
                                     discovered_major_browser_version,
                                 ));
-                                self.set_download_browser(true);
+                                download_browser = true;
                             }
                         } else {
                             self.set_browser_version(discovered_version);
@@ -478,7 +479,7 @@ pub trait SeleniumManager {
                             discovered_major_browser_version,
                             major_browser_version,
                         ));
-                        self.set_download_browser(true);
+                        download_browser = true;
                     } else {
                         self.set_browser_version(discovered_version);
                     }
@@ -498,10 +499,11 @@ pub trait SeleniumManager {
                         self.get_browser_name(),
                         self.get_browser_version_label()
                     ));
-                    self.set_download_browser(true);
+                    download_browser = true;
                 }
             }
         }
+        self.set_download_browser(download_browser);
 
         Ok(())
     }
