@@ -17,19 +17,39 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import org.openqa.selenium.PageLoadStrategy;
+
 public enum ReadinessState {
-  NONE("none"),
-  INTERACTIVE("interactive"),
-  COMPLETE("complete");
+  NONE("none", "none"),
+  INTERACTIVE("interactive", "eager"),
+  COMPLETE("complete", "normal");
 
-  private final String text;
+  private final String readinessState;
 
-  ReadinessState(String text) {
-    this.text = text;
+  private final String pageLoadStrategy;
+
+  ReadinessState(String readinessState, String pageLoadStrategy) {
+    this.readinessState = readinessState;
+    this.pageLoadStrategy = pageLoadStrategy;
+  }
+
+  public String getPageLoadStrategy() {
+    return pageLoadStrategy;
+  }
+
+  public static ReadinessState getReadinessState(String pageLoadStrategy) {
+    if (pageLoadStrategy != null) {
+      for (ReadinessState b : ReadinessState.values()) {
+        if (pageLoadStrategy.equalsIgnoreCase(b.pageLoadStrategy)) {
+          return b;
+        }
+      }
+    }
+    return null;
   }
 
   @Override
   public String toString() {
-    return String.valueOf(text);
+    return String.valueOf(readinessState);
   }
 }

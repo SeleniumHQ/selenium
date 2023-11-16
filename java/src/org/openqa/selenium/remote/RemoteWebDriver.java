@@ -183,13 +183,13 @@ public class RemoteWebDriver
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor =
-          new HttpCommandExecutor(
+          new Delegator(
               Collections.emptyMap(),
               config,
               new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
       return new TracedCommandExecutor(executor, tracer);
     } else {
-      return new HttpCommandExecutor(config);
+      return new Delegator(config);
     }
   }
 
@@ -251,6 +251,11 @@ public class RemoteWebDriver
 
     @SuppressWarnings("unchecked")
     Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    if (rawCapabilities.containsKey("webSocketUrl") && getCommandExecutor() instanceof Delegator) {
+      if (rawCapabilities.get("webSocketUrl") instanceof String) {
+        ((Delegator) (getCommandExecutor())).setBidiCommandExecutor(new BiDiCommandExecutor(this));
+      }
+    }
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
