@@ -24,6 +24,8 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -36,6 +38,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -159,6 +162,30 @@ public class RemoteWebDriver
 
     try {
       startSession(capabilities);
+
+      Optional<String> webSocketUrl =
+          Optional.ofNullable((String) this.capabilities.getCapability("webSocketUrl"));
+
+      // Firefox returns the capability back as it is if it is not supported
+      // So we need to check before proceeding
+      // Add a test to check
+      if (webSocketUrl.isPresent() && getCommandExecutor() instanceof Delegator) {
+        Optional<BiDi> biDi =
+            ((HasBiDi) this)
+                .createBiDi(
+                    webSocketUrl.map(
+                        uri -> {
+                          try {
+                            return new URI(uri);
+                          } catch (URISyntaxException e) {
+                            LOG.warning(e.getMessage());
+                          }
+                          return null;
+                        }));
+
+        biDi.ifPresent(connection -> ((HasBiDi) this).setBiDi(connection));
+        ((Delegator) (getCommandExecutor())).setBidiCommandExecutor(new BiDiCommandExecutor(this));
+      }
     } catch (RuntimeException e) {
       try {
         quit();
@@ -251,11 +278,6 @@ public class RemoteWebDriver
 
     @SuppressWarnings("unchecked")
     Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
-    if (rawCapabilities.containsKey("webSocketUrl") && getCommandExecutor() instanceof Delegator) {
-      if (rawCapabilities.get("webSocketUrl") instanceof String) {
-        ((Delegator) (getCommandExecutor())).setBidiCommandExecutor(new BiDiCommandExecutor(this));
-      }
-    }
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;

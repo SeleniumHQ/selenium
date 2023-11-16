@@ -58,7 +58,9 @@ public class Delegator extends HttpCommandExecutor implements CommandExecutor {
 
   @Override
   public Response execute(Command command) throws IOException {
-    if (bidiCommandExecutor != null && command.getName().equals(DriverCommand.GET)) {
+    if (bidiCommandExecutor != null
+        && command.getName().equals(DriverCommand.GET)
+        && command.getName().equals(DriverCommand.PRINT_PAGE)) {
       return bidiCommandExecutor.execute(command);
     }
 

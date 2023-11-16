@@ -48,7 +48,7 @@ public class BiDiCommandExecutor implements CommandExecutor {
 
   private Network network;
 
-  private AtomicReference<BrowsingContext> currentContext = new AtomicReference<>();
+  private final AtomicReference<BrowsingContext> currentContext = new AtomicReference<>();
 
   // Each browsing context has an associated id, maintains state
   // We will need to maintain a map of all the browsingContext to run further commands
@@ -62,16 +62,16 @@ public class BiDiCommandExecutor implements CommandExecutor {
 
   private void init(RemoteWebDriver driver) {
     // Add other modules
+    this.script = new Script(driver);
+    this.network = new Network(driver);
+
+    BrowsingContext parentContext = new BrowsingContext(driver, driver.getWindowHandle());
+    browsingContextMap.put(parentContext.getId(), parentContext);
+    currentContext.set(parentContext);
   }
 
   @Override
   public Response execute(Command command) throws IOException {
-    this.script = new Script(driver);
-    this.network = new Network(driver);
-    BrowsingContext parentContext = new BrowsingContext(driver, driver.getWindowHandle());
-    browsingContextMap.put(parentContext.getId(), parentContext);
-    currentContext.set(parentContext);
-
     Response response = new Response();
 
     switch (command.getName()) {

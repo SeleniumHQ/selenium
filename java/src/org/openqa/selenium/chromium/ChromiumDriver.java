@@ -104,7 +104,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
-  private final Optional<BiDi> biDi;
+  private Optional<BiDi> biDi;
   protected HasCasting casting;
   protected HasCdp cdp;
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
@@ -346,7 +346,8 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
+  @Override
+  public Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -371,6 +372,11 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public Optional<BiDi> maybeGetBiDi() {
     return biDi;
+  }
+
+  @Override
+  public void setBiDi(BiDi bidi) {
+    this.biDi = Optional.of(bidi);
   }
 
   @Override
