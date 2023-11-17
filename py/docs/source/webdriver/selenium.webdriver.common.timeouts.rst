@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.common.timeouts
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      Timeouts
-   
-   
 
-   
-   
-   
+      Timeouts
+
+
+
+
+
+
 
 
 

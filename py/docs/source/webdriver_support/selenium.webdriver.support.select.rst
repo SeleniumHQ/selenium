@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.support.select
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      Select
-   
-   
 
-   
-   
-   
+      Select
+
+
+
+
+
+
 
 
 

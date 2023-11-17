@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.chromium.options
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      ChromiumOptions
-   
-   
 
-   
-   
-   
+      ChromiumOptions
+
+
+
+
+
+
 
 
 

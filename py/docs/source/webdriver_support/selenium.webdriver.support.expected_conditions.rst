@@ -3,16 +3,16 @@
 
 .. automodule:: selenium.webdriver.support.expected_conditions
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
    .. rubric:: Functions
 
    .. autosummary::
-   
+
       alert_is_present
       all_of
       any_of
@@ -44,16 +44,16 @@
       visibility_of_all_elements_located
       visibility_of_any_elements_located
       visibility_of_element_located
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
 
 
 

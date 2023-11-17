@@ -3,28 +3,28 @@
 
 .. automodule:: selenium.webdriver.remote.webelement
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
+
       BaseWebElement
       WebElement
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 
 
