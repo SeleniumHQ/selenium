@@ -24,6 +24,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.Closeable;
 import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +53,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
@@ -72,7 +75,7 @@ public class Connection implements Closeable {
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
-  private final HttpClient client;
+  private HttpClient client;
   private final String url;
   private final AtomicBoolean isClosed;
 
@@ -90,6 +93,14 @@ public class Connection implements Closeable {
   }
 
   void reopen() {
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    ClientConfig wsConfig = null;
+    try {
+      wsConfig = ClientConfig.defaultConfig().baseUri(new URI(this.url));
+    } catch (URISyntaxException e) {
+      LOG.warning(e.getMessage());
+    }
+    this.client = clientFactory.createClient(wsConfig);
     this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
