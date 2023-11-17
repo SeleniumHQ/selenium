@@ -170,6 +170,10 @@ pub trait SeleniumManager {
     fn get_browser_label_for_download(&self, _browser_version: &str)
         -> Result<Option<&str>, Error>;
 
+    fn is_download_browser(&self) -> bool;
+
+    fn set_download_browser(&mut self, download_browser: bool);
+
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
@@ -206,7 +210,7 @@ pub trait SeleniumManager {
 
     fn download_browser(
         &mut self,
-        original_browser_version: String,
+        original_browser_version: &str,
     ) -> Result<Option<PathBuf>, Error> {
         let browser_version;
         let cache_path = self.get_cache_path()?;
@@ -247,10 +251,10 @@ pub trait SeleniumManager {
                 // If not in metadata, discover version using online metadata
                 if self.is_browser_version_stable() || self.is_browser_version_empty() {
                     browser_version =
-                        self.request_latest_browser_version_from_online(&original_browser_version)?;
+                        self.request_latest_browser_version_from_online(original_browser_version)?;
                 } else {
                     browser_version =
-                        self.request_fixed_browser_version_from_online(&original_browser_version)?;
+                        self.request_fixed_browser_version_from_online(original_browser_version)?;
                 }
                 self.set_browser_version(browser_version.clone());
 
@@ -276,7 +280,7 @@ pub trait SeleniumManager {
         ));
 
         // Checking if browser version is in the cache
-        let browser_binary_path = self.get_browser_binary_path(&original_browser_version)?;
+        let browser_binary_path = self.get_browser_binary_path(original_browser_version)?;
         if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} already exists",
@@ -292,7 +296,7 @@ pub trait SeleniumManager {
                 )));
             }
 
-            let browser_url = self.get_browser_url_for_download(&original_browser_version)?;
+            let browser_url = self.get_browser_url_for_download(original_browser_version)?;
             self.get_logger().debug(format!(
                 "Downloading {} {} from {}",
                 self.get_browser_name(),
@@ -307,7 +311,7 @@ pub trait SeleniumManager {
                 .parse::<i32>()
                 .unwrap_or_default();
             let browser_label_for_download =
-                self.get_browser_label_for_download(&original_browser_version)?;
+                self.get_browser_label_for_download(original_browser_version)?;
             uncompress(
                 &driver_zip_file,
                 &self.get_browser_path_in_cache()?,
@@ -422,15 +426,10 @@ pub trait SeleniumManager {
         browser_version
     }
 
-    fn discover_driver_version_and_download_browser_if_necessary(
-        &mut self,
-    ) -> Result<String, Error> {
-        let original_browser_version = self.get_config().browser_version.clone();
+    fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
-        let major_browser_version = self.get_major_browser_version();
-
-        // First, we try to discover the browser version
         if !download_browser {
+            let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
@@ -504,8 +503,16 @@ pub trait SeleniumManager {
                 }
             }
         }
+        self.set_download_browser(download_browser);
 
-        if download_browser
+        Ok(())
+    }
+
+    fn download_browser_if_necessary(
+        &mut self,
+        original_browser_version: &str,
+    ) -> Result<(), Error> {
+        if self.is_download_browser()
             && !self.is_avoid_browser_download()
             && !self.is_iexplorer()
             && !self.is_grid()
@@ -528,8 +535,11 @@ pub trait SeleniumManager {
                 )));
             }
         }
+        Ok(())
+    }
 
-        // Second, we request the driver version using online endpoints
+    fn discover_driver_version(&mut self) -> Result<String, Error> {
+        // We request the driver version using online endpoints
         let driver_version = self.request_driver_version()?;
         if driver_version.is_empty() {
             Err(anyhow!(format!(
@@ -722,6 +732,7 @@ pub trait SeleniumManager {
     fn setup(&mut self) -> Result<PathBuf, Error> {
         let mut driver_in_path = None;
         let mut driver_in_path_version = None;
+        let original_browser_version = self.get_config().browser_version.clone();
 
         // Try to find driver in PATH
         if !self.is_safari() && !self.is_grid() {
@@ -740,32 +751,39 @@ pub trait SeleniumManager {
                     .debug(format!("{} not found in PATH", self.get_driver_name()));
             }
         }
+        let use_driver_in_path = driver_in_path_version.is_some()
+            && driver_in_path.is_some()
+            && original_browser_version.is_empty();
 
-        // Discover browser version (or download it, if not available and possible).
-        // With the found browser version, discover the proper driver version using online endpoints
+        // Discover browser version (or the need to download it, if not available and possible)
+        match self.discover_local_browser() {
+            Ok(_) => {}
+            Err(err) => self.check_error_with_driver_in_path(&use_driver_in_path, err)?,
+        }
+
+        // Download browser if necessary
+        match self.download_browser_if_necessary(&original_browser_version) {
+            Ok(_) => {}
+            Err(err) => self.check_error_with_driver_in_path(&use_driver_in_path, err)?,
+        }
+
+        // With the discovered browser version, discover the proper driver version using online endpoints
         if self.get_driver_version().is_empty() {
-            match self.discover_driver_version_and_download_browser_if_necessary() {
+            match self.discover_driver_version() {
                 Ok(driver_version) => {
                     self.set_driver_version(driver_version);
                 }
-                Err(err) => {
-                    if driver_in_path_version.is_some() && driver_in_path.is_some() {
-                        self.get_logger().warn(format!(
-                            "Exception managing {}: {}",
-                            self.get_browser_name(),
-                            err
-                        ));
-                    } else {
-                        return Err(err);
-                    }
-                }
+                Err(err) => self.check_error_with_driver_in_path(&use_driver_in_path, err)?,
             }
         }
 
-        // If driver is in path, always use it
-        if let (Some(version), Some(path)) = (&driver_in_path_version, &driver_in_path) {
-            // If proper driver version is not the same as the driver in path, display warning
-            let major_version = self.get_major_version(version)?;
+        // Use driver in PATH when the user has not specified any browser version
+        if use_driver_in_path {
+            let version = driver_in_path_version.unwrap();
+            let path = driver_in_path.unwrap();
+            let major_version = self.get_major_version(&version)?;
+
+            // Display warning if the discovered driver version is not the same as the driver in PATH
             if !self.get_driver_version().is_empty()
                 && (self.is_firefox() && !version.eq(self.get_driver_version()))
                 || (!self.is_firefox() && !major_version.eq(&self.get_major_browser_version()))
@@ -775,7 +793,7 @@ pub trait SeleniumManager {
                     the detected {} version ({}); currently, {} {} is recommended for {} {}.*, \
                     so it is advised to delete the driver in PATH and retry",
                     self.get_driver_name(),
-                    version,
+                    &version,
                     path,
                     self.get_browser_name(),
                     self.get_browser_version(),
@@ -805,6 +823,23 @@ pub trait SeleniumManager {
             self.download_driver()?;
         }
         Ok(driver_path)
+    }
+
+    fn check_error_with_driver_in_path(
+        &mut self,
+        is_driver_in_path: &bool,
+        err: Error,
+    ) -> Result<(), Error> {
+        if *is_driver_in_path {
+            self.get_logger().warn(format!(
+                "Exception managing {}: {}",
+                self.get_browser_name(),
+                err
+            ));
+            Ok(())
+        } else {
+            Err(err)
+        }
     }
 
     fn is_driver(&self, entry: &DirEntry) -> bool {

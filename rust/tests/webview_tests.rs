@@ -15,24 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-/**
- * @fileoverview Defines the core.text.getText function, breaking a circular
- * dependency between core.text, core.locators, and core.LocatorStrategies.
- */
+use crate::common::assert_driver;
+use assert_cmd::Command;
 
-goog.provide('core.text.getText');
+mod common;
 
-goog.require('core.locators');
-goog.require('core.text');
+#[test]
+fn webview2_test() {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
+    cmd.args(["--browser", "webview2", "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
 
-
-/**
- * Locate an element and return it's text content.
- *
- * @param {string|!Element} locator The element locator.
- * @return {string} The text content of the located element.
- */
-core.text.getText = function(locator) {
-  var element = core.locators.findElement(locator);
-  return core.text.getElementText(element);
-};
+    assert_driver(&mut cmd);
+}

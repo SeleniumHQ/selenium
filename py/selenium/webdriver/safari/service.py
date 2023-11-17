@@ -44,11 +44,15 @@ class Service(service.Service):
     ) -> None:
         self.service_args = service_args or []
         if quiet is not None:
-            warnings.warn("quiet is no longer needed to supress output", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "quiet is no longer needed to supress output",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self._reuse_service = reuse_service
         super().__init__(
-            executable=executable_path,
+            executable_path=executable_path,
             port=port,
             env=env,
             **kwargs,

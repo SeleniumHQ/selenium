@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionmap;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import java.io.UncheckedIOException;
+import java.util.Map;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -37,6 +38,6 @@ class GetSessionUri implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(asJson(sessionMap.getUri(sessionId)));
+    return new HttpResponse().setContent(asJson(Map.of("value", sessionMap.getUri(sessionId))));
   }
 }
