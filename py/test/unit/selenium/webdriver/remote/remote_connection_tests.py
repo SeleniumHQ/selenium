@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import re
 from urllib import parse
 
 import pytest
@@ -31,8 +31,10 @@ def test_get_remote_connection_headers_defaults():
     assert "Connection" not in headers
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
-    assert headers.get("User-Agent").startswith(f"selenium/{__version__} (python ")
-    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)"}
+    ua = headers.get("User-Agent")
+    assert ua is not None
+    pattern = rf'selenium/{__version__} \(python (?:windows)|(?:mac)|(?:linux)\)'
+    assert re.match(pattern, ua) is not None
 
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass():
