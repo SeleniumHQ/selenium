@@ -295,7 +295,6 @@ class CdpProperty:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
                 expr = f"[{py_ref}.from_json(i) for i in {dict_}['{self.name}']]"
-                expr
             else:
                 cons = CdpPrimitiveType.get_constructor(self.items.type, 'i')
                 expr = f"[{cons} for i in {dict_}['{self.name}']]"
