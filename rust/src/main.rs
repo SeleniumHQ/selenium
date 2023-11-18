@@ -132,6 +132,11 @@ struct Cli {
     /// Avoid to download browser (even when browser-version is specified)
     #[clap(long)]
     avoid_browser_download: bool,
+
+    /// Selenium language bindings that invokes Selenium Manager (e.g., Java, JavaScript, Python,
+    /// DotNet, Ruby)
+    #[clap(long)]
+    language_binding: Option<String>,
 }
 
 fn main() {
@@ -197,6 +202,7 @@ fn main() {
     selenium_manager.set_avoid_browser_download(cli.avoid_browser_download);
     selenium_manager.set_cache_path(cache_path.clone());
     selenium_manager.set_offline(cli.offline);
+    selenium_manager.set_language_binding(cli.language_binding.unwrap_or_default());
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
@@ -216,6 +222,7 @@ fn main() {
                 &driver_path,
                 &selenium_manager.get_browser_path_or_latest_from_cache(),
             );
+            selenium_manager.stats();
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {

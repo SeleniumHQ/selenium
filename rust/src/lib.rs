@@ -38,6 +38,7 @@ use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use crate::stats::{send_stats_to_plausible, Props};
 use anyhow::anyhow;
 use anyhow::Error;
 use is_executable::IsExecutable;
@@ -62,6 +63,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 pub mod shell;
+pub mod stats;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -112,6 +114,7 @@ pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
 pub const UNC_PREFIX: &str = r"\\?\";
+pub const SM_BETA_LABEL: &str = "0.";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -826,6 +829,20 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
+    fn stats(&self) {
+        let sm_version = env!("CARGO_PKG_VERSION");
+        let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
+        let props = Props {
+            browser: self.get_browser_name().to_string(),
+            browser_version: self.get_browser_version().to_string(),
+            os: self.get_os().to_string(),
+            arch: self.get_arch().to_string(),
+            lang: self.get_language_binding().to_string(),
+            selenium_version: selenium_version.to_string(),
+        };
+        send_stats_to_plausible(self.get_http_client(), props, self.get_logger());
+    }
+
     fn check_error_with_driver_in_path(
         &mut self,
         is_driver_in_path: &bool,
@@ -1425,6 +1442,16 @@ pub trait SeleniumManager {
     fn set_cache_path(&mut self, cache_path: String) {
         if !cache_path.is_empty() {
             self.get_config_mut().cache_path = cache_path;
+        }
+    }
+
+    fn get_language_binding(&self) -> &str {
+        self.get_config().language_binding.as_str()
+    }
+
+    fn set_language_binding(&mut self, language_binding: String) {
+        if !language_binding.is_empty() {
+            self.get_config_mut().language_binding = language_binding;
         }
     }
 }
