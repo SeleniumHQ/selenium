@@ -62,6 +62,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']
   s.add_development_dependency 'yard', ['~> 0.9.11']
-
-  s.add_development_dependency 'steep', ['~> 1.5'] unless RUBY_PLATFORM == 'java'
 end
