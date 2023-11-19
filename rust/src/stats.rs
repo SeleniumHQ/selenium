@@ -68,6 +68,6 @@ pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &L
         .body(body);
 
     if let Err(err) = request.send().await {
-        log.warn(format!("Error sending stats to Plausible: {}", err));
+        log.warn(format!("Error sending stats to {}: {}", PLAUSIBLE_URL, err));
     }
 }
