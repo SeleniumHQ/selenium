@@ -47,6 +47,8 @@ fn browser_version_test(
         &browser_version,
         "--debug",
         "--avoid-browser-download",
+        "--language-binding",
+        "java"
     ])
     .assert()
     .success()
