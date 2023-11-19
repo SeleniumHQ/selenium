@@ -830,15 +830,13 @@ pub trait SeleniumManager {
     }
 
     fn stats(&self) {
-        let sm_version = env!("CARGO_PKG_VERSION");
-        let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
         let props = Props {
             browser: self.get_browser_name().to_string(),
             browser_version: self.get_browser_version().to_string(),
             os: self.get_os().to_string(),
             arch: self.get_arch().to_string(),
             lang: self.get_language_binding().to_string(),
-            selenium_version: selenium_version.to_string(),
+            selenium_version: self.get_selenium_version().to_string(),
         };
         send_stats_to_plausible(self.get_http_client(), props, self.get_logger());
     }
@@ -1452,6 +1450,16 @@ pub trait SeleniumManager {
     fn set_language_binding(&mut self, language_binding: String) {
         if !language_binding.is_empty() {
             self.get_config_mut().language_binding = language_binding;
+        }
+    }
+
+    fn get_selenium_version(&self) -> &str {
+        self.get_config().selenium_version.as_str()
+    }
+
+    fn set_selenium_version(&mut self, selenium_version: String) {
+        if !selenium_version.is_empty() {
+            self.get_config_mut().selenium_version = selenium_version;
         }
     }
 }

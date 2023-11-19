@@ -49,8 +49,7 @@ pub struct Props {
 
 #[tokio::main]
 pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &Logger) {
-    let sm_version = env!("CARGO_PKG_VERSION");
-    let user_agent = format_one_arg(SM_USER_AGENT, sm_version);
+    let user_agent = format_one_arg(SM_USER_AGENT, &props.selenium_version);
     let sm_stats_url = format_one_arg(SM_STATS_URL, SELENIUM_DOMAIN);
 
     let data = Data {
@@ -67,7 +66,6 @@ pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &L
         .header(USER_AGENT, user_agent)
         .header(CONTENT_TYPE, APP_JSON)
         .body(body);
-    // TODO proxy
 
     if let Err(err) = request.send().await {
         log.warn(format!("Error sending stats to Plausible: {}", err));
