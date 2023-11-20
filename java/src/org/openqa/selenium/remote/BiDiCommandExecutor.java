@@ -61,7 +61,6 @@ public class BiDiCommandExecutor implements CommandExecutor {
   }
 
   private void init(RemoteWebDriver driver) {
-    // Add other modules
     this.script = new Script(driver);
     this.network = new Network(driver);
 
@@ -86,68 +85,8 @@ public class BiDiCommandExecutor implements CommandExecutor {
         break;
 
       case PRINT_PAGE:
-        try (StringReader reader = new StringReader(JSON.toJson(command.getParameters()));
-            JsonInput input = JSON.newInput(reader)) {
-          PrintOptions printOptions = new PrintOptions();
-
-          input.beginObject();
-          while (input.hasNext()) {
-            switch (input.nextName()) {
-              case "page":
-                Map<String, Object> map = input.read(String.class);
-                if (map.size() != 0) {
-                  printOptions.setPageSize(
-                      new PageSize((double) map.get("height"), (double) map.get("width")));
-                }
-                break;
-
-              case "orientation":
-                String orientation = input.read(String.class);
-                if (orientation.equals("portrait")) {
-                  printOptions.setOrientation(PrintOptions.Orientation.PORTRAIT);
-                } else {
-                  printOptions.setOrientation(PrintOptions.Orientation.LANDSCAPE);
-                }
-                break;
-
-              case "scale":
-                printOptions.setScale(input.read(Double.class));
-                break;
-
-              case "shrinkToFit":
-                printOptions.setShrinkToFit(input.read(Boolean.class));
-                break;
-
-              case "background":
-                printOptions.setBackground(input.read(Boolean.class));
-                break;
-
-              case "pageRanges":
-                printOptions.setPageRanges(input.read(new TypeToken<String[]>() {}.getType()));
-                break;
-
-              case "margin":
-                Map<String, Object> marginMap = input.read(Map.class);
-                if (marginMap.size() != 0) {
-                  printOptions.setPageMargin(
-                      new PageMargin(
-                          (double) marginMap.get("top"),
-                          (double) marginMap.get("bottom"),
-                          (double) marginMap.get("left"),
-                          (double) marginMap.get("right")));
-                }
-                break;
-
-              default:
-                input.skipValue();
-                break;
-            }
-          }
-
-          input.endObject();
-          String result = currentContext.get().print(printOptions);
-          response.setValue(result);
-        }
+        String result = currentContext.get().print(serializePrintOptions(command));
+        response.setValue(result);
         break;
 
       default:
@@ -155,5 +94,70 @@ public class BiDiCommandExecutor implements CommandExecutor {
     }
 
     return response;
+  }
+
+  private PrintOptions serializePrintOptions(Command command) {
+    try (StringReader reader = new StringReader(JSON.toJson(command.getParameters()));
+        JsonInput input = JSON.newInput(reader)) {
+      PrintOptions printOptions = new PrintOptions();
+
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "page":
+            Map<String, Object> map = input.read(String.class);
+            if (map.size() != 0) {
+              printOptions.setPageSize(
+                  new PageSize((double) map.get("height"), (double) map.get("width")));
+            }
+            break;
+
+          case "orientation":
+            String orientation = input.read(String.class);
+            if (orientation.equals("portrait")) {
+              printOptions.setOrientation(PrintOptions.Orientation.PORTRAIT);
+            } else {
+              printOptions.setOrientation(PrintOptions.Orientation.LANDSCAPE);
+            }
+            break;
+
+          case "scale":
+            printOptions.setScale(input.read(Double.class));
+            break;
+
+          case "shrinkToFit":
+            printOptions.setShrinkToFit(input.read(Boolean.class));
+            break;
+
+          case "background":
+            printOptions.setBackground(input.read(Boolean.class));
+            break;
+
+          case "pageRanges":
+            printOptions.setPageRanges(input.read(new TypeToken<String[]>() {}.getType()));
+            break;
+
+          case "margin":
+            Map<String, Object> marginMap = input.read(Map.class);
+            if (marginMap.size() != 0) {
+              printOptions.setPageMargin(
+                  new PageMargin(
+                      (double) marginMap.get("top"),
+                      (double) marginMap.get("bottom"),
+                      (double) marginMap.get("left"),
+                      (double) marginMap.get("right")));
+            }
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+
+      input.endObject();
+
+      return printOptions;
+    }
   }
 }

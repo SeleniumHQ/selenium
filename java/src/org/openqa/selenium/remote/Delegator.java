@@ -21,14 +21,23 @@ import static java.util.Collections.emptyMap;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
 public class Delegator extends HttpCommandExecutor implements CommandExecutor {
 
-  private BiDiCommandExecutor bidiCommandExecutor = null;
+  private BiDiCommandExecutor biDiCommandExecutor = null;
+  private static final Set<String> biDiCommands = new HashSet<>();
+
+  static {
+    biDiCommands.add(DriverCommand.GET);
+    biDiCommands.add(DriverCommand.PRINT_PAGE);
+  }
 
   public Delegator(ClientConfig config) {
     super(
@@ -36,7 +45,7 @@ public class Delegator extends HttpCommandExecutor implements CommandExecutor {
         Require.nonNull("HTTP client configuration", config),
         getDefaultClientFactory());
   }
-  
+
   public Delegator(
       Map<String, CommandInfo> additionalCommands,
       ClientConfig config,
@@ -45,25 +54,25 @@ public class Delegator extends HttpCommandExecutor implements CommandExecutor {
   }
 
   public Delegator(
-    Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer, ClientConfig config) {
+      Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer, ClientConfig config) {
     super(
-      additionalCommands,
-      config.baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
-      getDefaultClientFactory());
+        additionalCommands,
+        config.baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
+        getDefaultClientFactory());
   }
 
-  public void setBidiCommandExecutor(BiDiCommandExecutor bidiCommandExecutor) {
-    this.bidiCommandExecutor = bidiCommandExecutor;
+  public void setBiDiCommandExecutor(BiDiCommandExecutor biDiCommandExecutor) {
+    this.biDiCommandExecutor = biDiCommandExecutor;
   }
 
   @Override
   public Response execute(Command command) throws IOException {
-    if (bidiCommandExecutor != null
-        && command.getName().equals(DriverCommand.GET)
-        && command.getName().equals(DriverCommand.PRINT_PAGE)) {
-      return bidiCommandExecutor.execute(command);
+    if (biDiCommandExecutor != null && biDiCommands.contains(command.getName())) {
+      return biDiCommandExecutor.execute(command);
     }
 
+    // Add a mechanism to use HttpCommandExecutor if the command is not support by the browser
+    // But the browser supports W3C BiDi
     return super.execute(command);
   }
 }

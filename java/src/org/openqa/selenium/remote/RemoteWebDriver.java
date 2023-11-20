@@ -184,7 +184,7 @@ public class RemoteWebDriver
                         }));
 
         biDi.ifPresent(connection -> ((HasBiDi) this).setBiDi(connection));
-        ((Delegator) (getCommandExecutor())).setBidiCommandExecutor(new BiDiCommandExecutor(this));
+        ((Delegator) (getCommandExecutor())).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
       }
     } catch (RuntimeException e) {
       try {
