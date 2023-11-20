@@ -26,7 +26,7 @@ const PLAUSIBLE_URL: &str = "https://plausible.io/api/event";
 const SM_USER_AGENT: &str = "Selenium Manager {}";
 const APP_JSON: &str = "application/json";
 const PAGE_VIEW: &str = "pageview";
-const SELENIUM_DOMAIN: &str = "bonigarcia.dev"; // TODO change with selenium.dev
+const SELENIUM_DOMAIN: &str = "selenium.dev";
 const SM_STATS_URL: &str = "https://{}/sm-stats";
 
 #[derive(Default, Serialize, Deserialize)]
