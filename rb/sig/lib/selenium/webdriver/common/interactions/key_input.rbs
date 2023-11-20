@@ -1,0 +1,20 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class KeyInput < InputDevice
+        @type: untyped
+
+        SUBTYPES: { down: :keyDown, up: :keyUp, pause: :pause }
+
+        def initialize: (?untyped? name) -> void
+
+        def create_key_down: (untyped key) -> untyped
+
+        def create_key_up: (untyped key) -> untyped
+
+        class TypingInteraction < Interactions::TypingInteraction
+        end
+      end
+    end
+  end
+end

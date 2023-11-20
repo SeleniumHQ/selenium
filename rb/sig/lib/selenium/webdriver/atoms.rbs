@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Atoms
+      private
+
+      def read_atom: (Symbol function) -> String
+
+      def execute_atom: (Symbol function_name, *untyped arguments) -> untyped
+    end
+  end
+end
