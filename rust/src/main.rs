@@ -217,6 +217,7 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
@@ -225,7 +226,6 @@ fn main() {
                 &driver_path,
                 &selenium_manager.get_browser_path_or_latest_from_cache(),
             );
-            selenium_manager.stats();
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {

@@ -67,7 +67,8 @@ pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &L
         .header(CONTENT_TYPE, APP_JSON)
         .body(body);
 
-    if let Err(err) = request.send().await {
+    let handle = tokio::spawn(async move { request.send().await });
+    if let Err(err) = handle.await {
         log.warn(format!("Error sending stats to {}: {}", PLAUSIBLE_URL, err));
     }
 }

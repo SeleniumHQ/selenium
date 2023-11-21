@@ -829,7 +829,7 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
-    fn stats(&self) {
+    fn stats(&self) -> Result<(), Error> {
         let props = Props {
             browser: self.get_browser_name().to_string(),
             browser_version: self.get_browser_version().to_string(),
@@ -839,6 +839,7 @@ pub trait SeleniumManager {
             selenium_version: self.get_selenium_version().to_string(),
         };
         send_stats_to_plausible(self.get_http_client(), props, self.get_logger());
+        Ok(())
     }
 
     fn check_error_with_driver_in_path(
