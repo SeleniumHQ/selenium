@@ -52,15 +52,7 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
     HttpClient wsClient = clientFactory.createClient(wsConfig);
     Connection connection = new Connection(wsClient, wsUri.toString());
 
-    return new HasBiDi() {
-      @Override
-      public Optional<BiDi> maybeGetBiDi() {
-        return Optional.of(new BiDi(connection));
-      }
-
-      @Override
-      public void setBiDi(BiDi bidi) {}
-    };
+    return () -> Optional.of(new BiDi(connection));
   }
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {

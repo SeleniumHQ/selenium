@@ -25,31 +25,9 @@ import java.util.Optional;
 
 public interface HasBiDi {
   Optional<BiDi> maybeGetBiDi();
-
-  void setBiDi(BiDi bidi);
-
+  
   default BiDi getBiDi() {
     return maybeGetBiDi()
         .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));
-  }
-
-  default Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
-    if (!biDiUri.isPresent()) {
-      return Optional.empty();
-    }
-
-    URI wsUri =
-        biDiUri.orElseThrow(
-            () ->
-                new BiDiException("This version of Firefox or geckodriver does not support BiDi"));
-
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    org.openqa.selenium.bidi.Connection biDiConnection =
-        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-    return Optional.of(new BiDi(biDiConnection));
   }
 }

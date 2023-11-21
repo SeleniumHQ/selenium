@@ -104,6 +104,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 public class RemoteWebDriver
     implements WebDriver,
         JavascriptExecutor,
+        HasBiDi,
         HasCapabilities,
         HasDownloads,
         HasFederatedCredentialManagement,
@@ -126,6 +127,8 @@ public class RemoteWebDriver
 
   private Logs remoteLogs;
   private LocalLogs localLogs;
+
+  private Optional<BiDi> biDi = Optional.empty();
 
   // For cglib
   protected RemoteWebDriver() {
@@ -168,23 +171,17 @@ public class RemoteWebDriver
 
       // Firefox returns the capability back as it is if it is not supported
       // So we need to check before proceeding
-      // Add a test to check
-      if (webSocketUrl.isPresent() && getCommandExecutor() instanceof Delegator) {
-        Optional<BiDi> biDi =
-            ((HasBiDi) this)
-                .createBiDi(
-                    webSocketUrl.map(
-                        uri -> {
-                          try {
-                            return new URI(uri);
-                          } catch (URISyntaxException e) {
-                            LOG.warning(e.getMessage());
-                          }
-                          return null;
-                        }));
+      if (webSocketUrl.isPresent()) {
+        this.biDi = createBiDi(webSocketUrl.get());
+        CommandExecutor commandExecutor = executor;
 
-        biDi.ifPresent(connection -> ((HasBiDi) this).setBiDi(connection));
-        ((Delegator) (getCommandExecutor())).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
+        if (commandExecutor instanceof TracedCommandExecutor) {
+          commandExecutor = ((TracedCommandExecutor) executor).getDelegate();
+        }
+
+        if (commandExecutor instanceof Delegator) {
+          ((Delegator) (commandExecutor)).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
+        }
       }
     } catch (RuntimeException e) {
       try {
@@ -845,6 +842,27 @@ public class RemoteWebDriver
     return String.format(
         "%s: %s on %s (%s)",
         getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
+  }
+
+  @Override
+  public Optional<BiDi> maybeGetBiDi() {
+    return this.biDi;
+  }
+
+  private Optional<BiDi> createBiDi(String biDiUri) {
+    try {
+      URI wsUri = new URI(biDiUri);
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+      HttpClient wsClient = clientFactory.createClient(wsConfig);
+
+      org.openqa.selenium.bidi.Connection biDiConnection =
+          new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
+
+      return Optional.of(new BiDi(biDiConnection));
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public enum When {
