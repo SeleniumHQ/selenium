@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.bidi.Network;
@@ -44,11 +45,12 @@ public class BiDiCommandExecutor implements CommandExecutor {
 
   private final RemoteWebDriver driver;
 
-  private Script script;
-
-  private Network network;
-
   private final AtomicReference<BrowsingContext> currentContext = new AtomicReference<>();
+  private final AtomicReference<Script> script = new AtomicReference<>();
+  private final AtomicReference<Network> network = new AtomicReference<>();
+
+  private final Map<String, BiFunction<Command, RemoteWebDriver, Response>> commandHandlerMap =
+      new HashMap<>();
 
   // Each browsing context has an associated id, maintains state
   // We will need to maintain a map of all the browsingContext to run further commands
@@ -61,39 +63,43 @@ public class BiDiCommandExecutor implements CommandExecutor {
   }
 
   private void init(RemoteWebDriver driver) {
-    this.script = new Script(driver);
-    this.network = new Network(driver);
+    script.set(new Script(driver));
+    network.set(new Network(driver));
 
     BrowsingContext parentContext = new BrowsingContext(driver, driver.getWindowHandle());
     browsingContextMap.put(parentContext.getId(), parentContext);
     currentContext.set(parentContext);
+
+    commandHandlerMap.put(
+        GET,
+        (command, webDriver) -> {
+          String pageLoadStrategy =
+              (String) webDriver.getCapabilities().getCapability("pageLoadStrategy");
+          currentContext
+              .get()
+              .navigate(
+                  (String) command.getParameters().get("url"),
+                  ReadinessState.getReadinessState(pageLoadStrategy));
+          return new Response(webDriver.getSessionId());
+        });
+
+    commandHandlerMap.put(
+        PRINT_PAGE,
+        (command, webDriver) -> {
+          String result = currentContext.get().print(serializePrintOptions(command));
+          Response response = new Response(webDriver.getSessionId());
+          response.setValue(result);
+          return response;
+        });
   }
 
   @Override
   public Response execute(Command command) throws IOException {
-    Response response = new Response();
-
-    switch (command.getName()) {
-      case GET:
-        String pageLoadStrategy =
-            (String) driver.getCapabilities().getCapability("pageLoadStrategy");
-        currentContext
-            .get()
-            .navigate(
-                (String) command.getParameters().get("url"),
-                ReadinessState.getReadinessState(pageLoadStrategy));
-        break;
-
-      case PRINT_PAGE:
-        String result = currentContext.get().print(serializePrintOptions(command));
-        response.setValue(result);
-        break;
-
-      default:
-        throw new UnsupportedCommandException();
+    if (commandHandlerMap.containsKey(command.getName())) {
+      return commandHandlerMap.get(command.getName()).apply(command, driver);
+    } else {
+      throw new UnsupportedCommandException();
     }
-
-    return response;
   }
 
   private PrintOptions serializePrintOptions(Command command) {
@@ -156,7 +162,6 @@ public class BiDiCommandExecutor implements CommandExecutor {
       }
 
       input.endObject();
-
       return printOptions;
     }
   }
