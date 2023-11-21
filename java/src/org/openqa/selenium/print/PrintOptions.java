@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.print;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.internal.Require;
 
@@ -69,6 +71,11 @@ public class PrintOptions {
     for (int i = 1; i < ranges.length; i++) {
       this.pageRanges[i] = ranges[i - 1];
     }
+  }
+
+  public void setPageRanges(List<String> ranges) {
+    this.pageRanges = new String[ranges.size()];
+    this.pageRanges = ranges.toArray(this.pageRanges);
   }
 
   public void setBackground(boolean background) {
