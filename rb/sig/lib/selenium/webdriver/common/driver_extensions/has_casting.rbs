@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasCasting
+        def cast_sinks: () -> Array[String]
+
+        def cast_sink_to_use=: (String name) -> untyped
+
+        def start_cast_tab_mirroring: (String name) -> untyped
+
+        def start_cast_desktop_mirroring: (String name) -> untyped
+
+        def cast_issue_message: () -> String
+
+        def stop_casting: (String name) -> untyped
+      end
+    end
+  end
+end

@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    class VirtualAuthenticator
+      @id: untyped
+
+      @bridge: untyped
+
+      @options: untyped
+
+      @valid: untyped
+
+      attr_reader options: untyped
+
+      def initialize: (untyped bridge, untyped authenticator_id, untyped options) -> void
+
+      def add_credential: (untyped credential) -> untyped
+
+      def credentials: () -> untyped
+
+      def remove_credential: (untyped credential_id) -> untyped
+
+      def remove_all_credentials: () -> untyped
+
+      def user_verified=: (untyped verified) -> untyped
+
+      def remove!: () -> untyped
+
+      def valid?: () -> untyped
+    end
+  end
+end

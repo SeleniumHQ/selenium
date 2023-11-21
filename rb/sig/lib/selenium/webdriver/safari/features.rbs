@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Safari
+      module Features
+        SAFARI_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def commands: (untyped command) -> untyped
+
+        def permissions: () -> untyped
+
+        def permissions=: (untyped permissions) -> untyped
+
+        def attach_debugger: () -> untyped
+      end
+    end
+  end
+end
