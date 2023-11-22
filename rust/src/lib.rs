@@ -830,15 +830,17 @@ pub trait SeleniumManager {
     }
 
     fn stats(&self) -> Result<(), Error> {
-        let props = Props {
-            browser: self.get_browser_name().to_string(),
-            browser_version: self.get_browser_version().to_string(),
-            os: self.get_os().to_string(),
-            arch: self.get_arch().to_string(),
-            lang: self.get_language_binding().to_string(),
-            selenium_version: self.get_selenium_version().to_string(),
-        };
-        send_stats_to_plausible(self.get_http_client(), props, self.get_logger());
+        if !self.is_avoid_stats() {
+            let props = Props {
+                browser: self.get_browser_name().to_string(),
+                browser_version: self.get_browser_version().to_string(),
+                os: self.get_os().to_string(),
+                arch: self.get_arch().to_string(),
+                lang: self.get_language_binding().to_string(),
+                selenium_version: self.get_selenium_version().to_string(),
+            };
+            send_stats_to_plausible(self.get_http_client(), props, self.get_logger());
+        }
         Ok(())
     }
 
@@ -1461,6 +1463,16 @@ pub trait SeleniumManager {
     fn set_selenium_version(&mut self, selenium_version: String) {
         if !selenium_version.is_empty() {
             self.get_config_mut().selenium_version = selenium_version;
+        }
+    }
+
+    fn is_avoid_stats(&self) -> bool {
+        self.get_config().avoid_stats
+    }
+
+    fn set_avoid_stats(&mut self, avoid_stats: bool) {
+        if avoid_stats {
+            self.get_config_mut().avoid_stats = true;
         }
     }
 }

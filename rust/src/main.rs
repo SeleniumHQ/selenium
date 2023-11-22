@@ -137,6 +137,10 @@ struct Cli {
     /// DotNet, Ruby)
     #[clap(long)]
     language_binding: Option<String>,
+
+    /// Avoid sends usage statistics to plausible.io
+    #[clap(long)]
+    avoid_stats: bool,
 }
 
 fn main() {
@@ -206,6 +210,7 @@ fn main() {
     let sm_version = clap::crate_version!();
     let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
     selenium_manager.set_selenium_version(selenium_version.to_string());
+    selenium_manager.set_avoid_stats(cli.avoid_stats);
 
     if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(selenium_manager.get_logger(), &cache_path);
