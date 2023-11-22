@@ -3,28 +3,28 @@
 
 .. automodule:: selenium.webdriver.common.options
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
+
       ArgOptions
       BaseOptions
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 
 

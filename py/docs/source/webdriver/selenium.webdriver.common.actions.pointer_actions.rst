@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.common.actions.pointer_actions
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      PointerActions
-   
-   
 
-   
-   
-   
+      PointerActions
+
+
+
+
+
+
 
 
 

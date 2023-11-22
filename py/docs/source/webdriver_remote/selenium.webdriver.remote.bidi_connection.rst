@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.remote.bidi_connection
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      BidiConnection
-   
-   
 
-   
-   
-   
+      BidiConnection
+
+
+
+
+
+
 
 
 

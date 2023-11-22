@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.webkitgtk.service
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      Service
-   
-   
 
-   
-   
-   
+      Service
+
+
+
+
+
+
 
 
 

@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.chrome.webdriver
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      WebDriver
-   
-   
 
-   
-   
-   
+      WebDriver
+
+
+
+
+
+
 
 
 

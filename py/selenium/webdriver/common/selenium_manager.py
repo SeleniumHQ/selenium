@@ -42,18 +42,19 @@ class SeleniumManager:
         """
 
         if (path := os.getenv("SE_MANAGER_PATH")) is not None:
-            return Path(path)
+            path = Path(path)
         else:
-            platform = sys.platform
-
             dirs = {
                 "darwin": "macos",
                 "win32": "windows",
                 "cygwin": "windows",
             }
 
-            directory = dirs.get(platform) if dirs.get(platform) else platform
-            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+            platform = sys.platform
+            directory = dirs.get(platform, platform)
+            file = "selenium-manager"
+            if directory == "windows":
+                file += ".exe"
 
             path = Path(__file__).parent.joinpath(directory, file)
 

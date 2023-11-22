@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.firefox.webdriver
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      WebDriver
-   
-   
 
-   
-   
-   
+      WebDriver
+
+
+
+
+
+
 
 
 

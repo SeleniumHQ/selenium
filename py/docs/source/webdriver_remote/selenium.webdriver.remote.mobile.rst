@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.remote.mobile
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      Mobile
-   
-   
 
-   
-   
-   
+      Mobile
+
+
+
+
+
+
 
 
 

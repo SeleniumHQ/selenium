@@ -3,27 +3,27 @@
 
 .. automodule:: selenium.webdriver.support.abstract_event_listener
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      AbstractEventListener
-   
-   
 
-   
-   
-   
+      AbstractEventListener
+
+
+
+
+
+
 
 
 
