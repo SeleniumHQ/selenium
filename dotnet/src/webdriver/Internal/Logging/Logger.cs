@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 // route message to contextual log
                 var logEvent = new LogEvent(_type, DateTime.Now, level, message);
 
-                Log.ForContext.LogMessage(logEvent);
+                Log.CurrentContext.LogMessage(logEvent);
             }
         }
     }

@@ -1,43 +1,34 @@
-using System;
-using System.Threading;
-
 namespace OpenQA.Selenium.Internal.Logging
 {
     public static class Log
     {
-        private static readonly ILogContext _globalLogContext = new LogContext(LogEventLevel.None, Array.Empty<ILogHandler>());
+        private static readonly LogContextManager _logContextManager = new LogContextManager();
 
-        private static readonly AsyncLocal<ILogContext> _ambientLogContext = new AsyncLocal<ILogContext>();
+        public static ILogContext CreateContext()
+        {
+            var context = (ILogContext)_logContextManager.GlobalContext.Clone();
 
-        private static readonly object _logContextLock = new object();
+            _logContextManager.CurrentContext = context;
 
-        public static ILogContext ForContext
+            return context;
+        }
+
+        internal static ILogContext CurrentContext
         {
             get
             {
-                if (_ambientLogContext.Value is null)
-                {
-                    lock (_logContextLock)
-                    {
-                        if (_ambientLogContext.Value is null)
-                        {
-                            _ambientLogContext.Value = (ILogContext)_globalLogContext.Clone();
-                        }
-                    }
-                }
-
-                return _ambientLogContext.Value;
+                return _logContextManager.CurrentContext;
             }
         }
 
         public static ILogContext SetLevel(LogEventLevel level)
         {
-            return _globalLogContext.SetLevel(level);
+            return _logContextManager.GlobalContext.SetLevel(level);
         }
 
         public static ILogContext AddHandler(ILogHandler handler)
         {
-            return _globalLogContext.AddHandler(handler);
+            return _logContextManager.GlobalContext.AddHandler(handler);
         }
     }
 }
