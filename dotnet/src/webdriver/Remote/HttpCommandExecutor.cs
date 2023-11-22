@@ -166,7 +166,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
             }
 
-            _logger.Trace($"Executing http command: {commandToExecute}");
+            _logger.Trace($"Executing HHTP command: {commandToExecute}");
 
             HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
             if (info == null)
