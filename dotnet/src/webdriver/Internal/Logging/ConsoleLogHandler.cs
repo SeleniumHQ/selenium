@@ -5,13 +5,13 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     public class ConsoleLogHandler : ILogHandler
     {
-        private static readonly Dictionary<Level, string> _levelMap = new Dictionary<Level, string>
+        private static readonly Dictionary<LogEventLevel, string> _levelMap = new Dictionary<LogEventLevel, string>
         {
-            { Level.Trace, "TRC" },
-            { Level.Debug, "DBG" },
-            { Level.Info, "INF" },
-            { Level.Warn, "WRN" },
-            { Level.Error, "ERR" }
+            { LogEventLevel.Trace, "TRC" },
+            { LogEventLevel.Debug, "DBG" },
+            { LogEventLevel.Info, "INF" },
+            { LogEventLevel.Warn, "WRN" },
+            { LogEventLevel.Error, "ERR" }
         };
 
         public void Handle(LogEvent logEvent)

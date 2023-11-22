@@ -5,7 +5,7 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     public static class Log
     {
-        private static readonly ILogContext _globalLogContext = new LogContext(Level.None, Array.Empty<ILogHandler>());
+        private static readonly ILogContext _globalLogContext = new LogContext(LogEventLevel.None, Array.Empty<ILogHandler>());
 
         private static readonly AsyncLocal<ILogContext> _ambientLogContext = new AsyncLocal<ILogContext>();
 
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public static ILogContext SetLevel(Level level)
+        public static ILogContext SetLevel(LogEventLevel level)
         {
             return _globalLogContext.SetLevel(level);
         }

@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         void LogMessage(LogEvent logEvent);
 
-        ILogContext SetLevel(Level level);
+        ILogContext SetLevel(LogEventLevel level);
 
         ILogContext AddHandler(ILogHandler handler);
     }

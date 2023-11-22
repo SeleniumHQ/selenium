@@ -11,9 +11,9 @@ namespace OpenQA.Selenium.Internal.Logging
 
         protected readonly IList<ILogHandler> _handlers;
 
-        protected Level _level;
+        protected LogEventLevel _level;
 
-        public LogContext(Level level, IList<ILogHandler> handlers)
+        public LogContext(LogEventLevel level, IList<ILogHandler> handlers)
         {
             _level = level;
 
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public ILogContext SetLevel(Level level)
+        public ILogContext SetLevel(LogEventLevel level)
         {
             _level = level;
 

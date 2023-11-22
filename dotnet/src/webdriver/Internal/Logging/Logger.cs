@@ -6,40 +6,40 @@ namespace OpenQA.Selenium.Internal.Logging
     {
         private readonly Type _type;
 
-        public Logger(Type type, Level level)
+        public Logger(Type type, LogEventLevel level)
         {
             _type = type;
             Level = level;
         }
 
-        public Level Level { get; set; }
+        public LogEventLevel Level { get; set; }
 
         public void Trace(string message)
         {
-            LogMessage(Level.Trace, message);
+            LogMessage(LogEventLevel.Trace, message);
         }
 
         public void Debug(string message)
         {
-            LogMessage(Level.Debug, message);
+            LogMessage(LogEventLevel.Debug, message);
         }
 
         public void Info(string message)
         {
-            LogMessage(Level.Info, message);
+            LogMessage(LogEventLevel.Info, message);
         }
 
         public void Warn(string message)
         {
-            LogMessage(Level.Warn, message);
+            LogMessage(LogEventLevel.Warn, message);
         }
 
         public void Error(string message)
         {
-            LogMessage(Level.Error, message);
+            LogMessage(LogEventLevel.Error, message);
         }
 
-        private void LogMessage(Level level, string message)
+        private void LogMessage(LogEventLevel level, string message)
         {
             if (level >= Level)
             {

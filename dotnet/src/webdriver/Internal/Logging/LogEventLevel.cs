@@ -1,6 +1,6 @@
 namespace OpenQA.Selenium.Internal.Logging
 {
-    public enum Level
+    public enum LogEventLevel
     {
         Trace = 0,
         Debug = 1,
