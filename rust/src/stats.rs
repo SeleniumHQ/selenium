@@ -21,6 +21,8 @@ use reqwest::header::CONTENT_TYPE;
 use reqwest::header::USER_AGENT;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+use std::time::Duration;
 
 const PLAUSIBLE_URL: &str = "https://plausible.io/api/event";
 const SM_USER_AGENT: &str = "Selenium Manager {}";
@@ -28,6 +30,7 @@ const APP_JSON: &str = "application/json";
 const PAGE_VIEW: &str = "pageview";
 const SELENIUM_DOMAIN: &str = "selenium.dev";
 const SM_STATS_URL: &str = "https://{}/sm-stats";
+const REQUEST_TIMEOUT_SEC: u64 = 3;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct Data {
@@ -65,10 +68,17 @@ pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &L
         .post(PLAUSIBLE_URL)
         .header(USER_AGENT, user_agent)
         .header(CONTENT_TYPE, APP_JSON)
+        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
         .body(body);
 
     let handle = tokio::spawn(async move { request.send().await });
-    if let Err(err) = handle.await {
-        log.warn(format!("Error sending stats to {}: {}", PLAUSIBLE_URL, err));
+    match handle.await {
+        Ok(Err(err)) => log_warn(log, Box::new(err)),
+        Err(err) => log_warn(log, Box::new(err)),
+        _ => {}
     }
+}
+
+fn log_warn(log: &Logger, err: Box<dyn Error>) {
+    log.warn(format!("Error sending stats to {}: {}", PLAUSIBLE_URL, err));
 }
