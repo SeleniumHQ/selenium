@@ -15,7 +15,7 @@ module Selenium
 
       def initialize: (String level, Integer timestamp, String message) -> void
 
-      def as_json: (*String | Integer) -> Hash[String, Integer | String]
+      def as_json: (*untyped?) -> Hash[String, Integer | String]
 
       def to_s: () -> String
 
