@@ -9,7 +9,7 @@ module Selenium
       @ignored: Array[Symbol]
       @logger: ::Logger
 
-      def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: Array[Symbol]? ignored, ?allowed: bool? allowed) -> void
+      def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: Array[Symbol]? ignored, ?allowed: Array[Symbol]? allowed) -> void
 
       def level=: (Symbol level) -> Symbol
 
