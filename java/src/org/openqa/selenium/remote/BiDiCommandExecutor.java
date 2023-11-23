@@ -22,7 +22,9 @@ import static org.openqa.selenium.remote.DriverCommand.PRINT_PAGE;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -110,10 +112,9 @@ public class BiDiCommandExecutor implements CommandExecutor {
       while (input.hasNext()) {
         switch (input.nextName()) {
           case "page":
-            Map<String, Object> map = input.read(String.class);
+            Map<String, Double> map = input.read(new TypeToken<Map<String, Double>>() {}.getType());
             if (map.size() != 0) {
-              printOptions.setPageSize(
-                  new PageSize((double) map.get("height"), (double) map.get("width")));
+              printOptions.setPageSize(new PageSize(map.get("height"), map.get("width")));
             }
             break;
 
@@ -139,18 +140,20 @@ public class BiDiCommandExecutor implements CommandExecutor {
             break;
 
           case "pageRanges":
-            printOptions.setPageRanges(input.read(new TypeToken<String[]>() {}.getType()));
+            List<String> pageRanges = input.read(new TypeToken<ArrayList<String>>() {}.getType());
+            printOptions.setPageRanges(pageRanges);
             break;
 
           case "margin":
-            Map<String, Object> marginMap = input.read(Map.class);
+            Map<String, Double> marginMap =
+                input.read(new TypeToken<Map<String, Double>>() {}.getType());
             if (marginMap.size() != 0) {
               printOptions.setPageMargin(
                   new PageMargin(
-                      (double) marginMap.get("top"),
-                      (double) marginMap.get("bottom"),
-                      (double) marginMap.get("left"),
-                      (double) marginMap.get("right")));
+                      marginMap.get("top"),
+                      marginMap.get("bottom"),
+                      marginMap.get("left"),
+                      marginMap.get("right")));
             }
             break;
 
