@@ -30,6 +30,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.Pages;
 
 class PortClassicToBiDiTest extends JupiterTestBase {
 
@@ -47,9 +48,9 @@ class PortClassicToBiDiTest extends JupiterTestBase {
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
   void canNavigate() {
-    driver.get("http://google.com");
+    driver.get(new Pages(server).simpleTestPage);
 
-    assertThat(driver.getTitle()).isEqualTo("Google");
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @AfterEach
