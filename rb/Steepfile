@@ -1,4 +1,6 @@
 target :lib do
   signature 'sig' # Signature directory
   check 'lib' # Directory name
+
+  library 'forwardable' # Standard libraries
 end
