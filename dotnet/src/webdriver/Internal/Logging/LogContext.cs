@@ -38,16 +38,15 @@ namespace OpenQA.Selenium.Internal.Logging
             return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
-        public void LogMessage(LogEvent message)
+        public void LogMessage(ILogger logger, LogEventLevel level, string message)
         {
-            if (_handlers != null)
+            if (_handlers != null && logger.Level >= level && logger.Level >= _level)
             {
-                if (message.Level >= _level)
+                var logEvent = new LogEvent(logger.Issuer, DateTime.Now, level, message);
+
+                foreach (var handler in _handlers)
                 {
-                    foreach (var handler in _handlers)
-                    {
-                        handler.Handle(message);
-                    }
+                    handler.Handle(logEvent);
                 }
             }
         }

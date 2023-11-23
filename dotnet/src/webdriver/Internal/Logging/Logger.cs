@@ -4,15 +4,15 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     internal class Logger : ILogger
     {
-        private readonly Type _type;
-
-        public Logger(Type type, LogEventLevel level)
+        public Logger(Type issuer, LogEventLevel level)
         {
-            _type = type;
+            Issuer = issuer;
             Level = level;
         }
 
         public LogEventLevel Level { get; set; }
+
+        public Type Issuer { get; internal set; }
 
         public void Trace(string message)
         {
@@ -41,13 +41,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         private void LogMessage(LogEventLevel level, string message)
         {
-            if (level >= Level)
-            {
-                // route message to contextual log
-                var logEvent = new LogEvent(_type, DateTime.Now, level, message);
-
-                Log.CurrentContext.LogMessage(logEvent);
-            }
+            Log.CurrentContext.LogMessage(this, level, message);
         }
     }
 }

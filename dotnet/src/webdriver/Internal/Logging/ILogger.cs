@@ -1,3 +1,5 @@
+using System;
+
 namespace OpenQA.Selenium.Internal.Logging
 {
     public interface ILogger
@@ -13,5 +15,7 @@ namespace OpenQA.Selenium.Internal.Logging
         void Error(string message);
 
         LogEventLevel Level { get; set; }
+
+        Type Issuer { get; }
     }
 }

@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         ILogger GetLogger(Type type);
 
-        void LogMessage(LogEvent logEvent);
+        void LogMessage(ILogger logger, LogEventLevel level, string message);
 
         ILogContext SetLevel(LogEventLevel level);
 
