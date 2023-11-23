@@ -112,7 +112,7 @@ module Selenium
       # Overrides default #debug to skip ignored messages by provided id
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
       def debug(message, id: [], &block)
@@ -123,7 +123,7 @@ module Selenium
       # Used to supply information of general interest
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
       def info(message, id: [], &block)
@@ -134,7 +134,7 @@ module Selenium
       # Used to supply information that suggests an error occurred
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
       def error(message, id: [], &block)
@@ -145,7 +145,7 @@ module Selenium
       # Used to supply information that suggests action be taken by user
       #
       # @param [String] message
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
       # @yield see #deprecate
       #
       def warn(message, id: [], &block)

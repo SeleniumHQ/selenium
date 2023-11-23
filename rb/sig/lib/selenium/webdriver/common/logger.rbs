@@ -1,0 +1,35 @@
+module Selenium
+  module WebDriver
+    class Logger
+      extend Forwardable
+
+      def initialize: (?::String progname, ?default_level: Symbol? default_level, ?ignored: bool? ignored, ?allowed: bool? allowed) -> void
+
+      def level=: (Symbol level) -> untyped
+
+      def output=: (String io) -> IO
+
+      def io: () -> IO
+
+      def ignore: (*Symbol ids) -> untyped
+
+      def allow: (*Symbol ids) -> untyped
+
+      def debug: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
+
+      def info: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
+
+      def error: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
+
+      def warn: (String message, ?id: Symbol | Array[Symbol] id) { () -> untyped } -> untyped
+
+      def deprecate: (String old, ?String? new, ?id: Symbol | Array[Symbol] id, ?reference: ::String reference) { () -> untyped } -> (nil | untyped)
+
+      private
+
+      def create_logger: (String name, level: Symbol level) -> untyped
+
+      def discard_or_log: (Symbol level, String message, Symbol | Array[Symbol] id) { () -> untyped } -> (nil | untyped)
+    end
+  end
+end
