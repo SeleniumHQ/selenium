@@ -57,8 +57,8 @@ module Selenium
           end
         end
 
-        def driver_instance(**opts, &block)
-          @driver_instance || create_driver!(**opts, &block)
+        def driver_instance(...)
+          @driver_instance || create_driver!(...)
         end
 
         def reset_driver!(time: 0, **opts, &block)
