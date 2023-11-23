@@ -7,14 +7,14 @@ namespace OpenQA.Selenium.Internal.Logging
         public LogEvent(Type issuedBy, DateTime timeStamp, LogEventLevel level, string message)
         {
             IssuedBy = issuedBy;
-            TimeStamp = timeStamp;
+            Timestamp = timeStamp;
             Level = level;
             Message = message;
         }
 
         public Type IssuedBy { get; }
 
-        public DateTime TimeStamp { get; }
+        public DateTime Timestamp { get; }
 
         public LogEventLevel Level { get; }
 
