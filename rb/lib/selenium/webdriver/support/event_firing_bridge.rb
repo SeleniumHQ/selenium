@@ -120,8 +120,8 @@ module Selenium
           returned
         end
 
-        def method_missing(meth, *args, &blk) # rubocop:disable Style/MissingRespondToMissing
-          @delegate.__send__(meth, *args, &blk)
+        def method_missing(meth, ...) # rubocop:disable Style/MissingRespondToMissing
+          @delegate.__send__(meth, ...)
         end
       end # EventFiringBridge
     end # Support
