@@ -341,7 +341,7 @@ public class ChromiumDriver extends RemoteWebDriver
   public Optional<DevTools> maybeGetDevTools() {
     return devTools;
   }
-  
+
   @Override
   public Optional<BiDi> maybeGetBiDi() {
     return biDi;

@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.bidi;
 
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
-
-import java.net.URI;
 import java.util.Optional;
 
 public interface HasBiDi {
   Optional<BiDi> maybeGetBiDi();
-  
+
   default BiDi getBiDi() {
     return maybeGetBiDi()
         .orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));

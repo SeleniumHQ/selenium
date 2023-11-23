@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import org.openqa.selenium.PageLoadStrategy;
 
 public enum ReadinessState {
   NONE("none", "none"),

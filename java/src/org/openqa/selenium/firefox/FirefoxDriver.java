@@ -186,7 +186,7 @@ public class FirefoxDriver extends RemoteWebDriver
               + reportedUri.get(),
           e);
     }
-    
+
     this.cdpUri = cdpUri;
     this.capabilities =
         cdpUri
@@ -334,7 +334,7 @@ public class FirefoxDriver extends RemoteWebDriver
     return maybeGetDevTools()
         .orElseThrow(() -> new DevToolsException("Unable to initialize CDP connection"));
   }
-
+  
   public void setBiDi(BiDi bidi) {
     this.biDi = Optional.ofNullable(bidi);
   }

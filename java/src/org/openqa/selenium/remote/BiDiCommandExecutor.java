@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.bidi.Network;
 import org.openqa.selenium.bidi.Script;
