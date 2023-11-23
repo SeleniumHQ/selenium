@@ -1,4 +1,4 @@
-// <copyright file="DevToolsEventData.cs" company="WebDriver Committers">
+// <copyright file="TargetAttachedEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -28,14 +28,14 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets the ID of the session of the target attached.
         /// </summary>
-        public string SessionId { get; set; }
+        public string SessionId { get; internal set; }
         /// <summary>
         /// Gets the target which is attached.
         /// </summary>
-        public TargetInfo TargetInfo { get; set; }
+        public TargetInfo TargetInfo { get; internal set; }
         /// <summary>
         /// Gets if the target is waiting on the debugger. Target continues after invoking Runtime.runIfWaitingForDebugger.
         /// </summary>
-        public bool WaitingForDebugger { get; set; }
+        public bool WaitingForDebugger { get; internal set; }
     }
 }
