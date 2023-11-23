@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-
 public enum ReadinessState {
   NONE("none", "none"),
   INTERACTIVE("interactive", "eager"),
