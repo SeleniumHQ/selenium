@@ -175,9 +175,9 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     this.listeners = Arrays.asList(listeners);
   }
 
-  /*
-   * 
-   * @param targetClass the class of the WebDriver instance to be decorated
+  /**
+   *
+   * @param targetClass the class of the WebDriver to be decorated
    * @param listeners the listeners to notify about events happening in the decorated WebDriver
    */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
