@@ -28,7 +28,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
-// Delegats the command to the respective command executor.
+// Delegates the command to the respective command executor.
 // If the commands is supported in BiDi, it is delegated to BiDiCommandExecutor
 // Otherwise, it falls back on HttpCommandExecutor
 // The reason both are required is that, HttpCommandExecutor route will always be used to start and
