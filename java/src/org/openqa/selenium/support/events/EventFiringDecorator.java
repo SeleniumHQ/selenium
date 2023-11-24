@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.support.events;
 
-import com.google.common.primitives.Primitives;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -325,7 +324,29 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       return false;
     }
     for (int i = 0; i < params.length; i++) {
-      if (args[i] != null && !Primitives.wrap(params[i]).isAssignableFrom(args[i].getClass())) {
+      Class<?> param = params[i];
+      if (param.isPrimitive()) {
+        if (boolean.class.equals(param)) {
+          param = Boolean.class;
+        } else if (byte.class.equals(param)) {
+          param = Byte.class;
+        } else if (char.class.equals(param)) {
+          param = Character.class;
+        } else if (double.class.equals(param)) {
+          param = Double.class;
+        } else if (float.class.equals(param)) {
+          param = Float.class;
+        } else if (int.class.equals(param)) {
+          param = Integer.class;
+        } else if (long.class.equals(param)) {
+          param = Long.class;
+        } else if (short.class.equals(param)) {
+          param = Short.class;
+        } else if (void.class.equals(param)) {
+          param = Void.class;
+        }
+      }
+      if (args[i] != null && !param.isAssignableFrom(args[i].getClass())) {
         return false;
       }
     }
