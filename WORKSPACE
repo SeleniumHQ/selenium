@@ -327,9 +327,9 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "34296f8cad46ec10b7eea59f3399feabcfbc33935b7d8bec880ea0ecfadc23b5",
-    strip_prefix = "rules_ruby-9550503e1c1702375e87837d43eb137030edd28a",
-    url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
+    sha256 = "92055f29f94963cd3cf7be1da15503c3306879e2e8545b2b5f9e5bb37d6713d3",
+    strip_prefix = "rules_ruby-0.2.0",
+    url = "https://github.com/p0deje/rules_ruby/releases/download/v0.2.0/rules_ruby-v0.2.0.tar.gz",
 )
 
 load(
