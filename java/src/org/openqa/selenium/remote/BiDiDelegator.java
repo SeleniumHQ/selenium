@@ -28,7 +28,12 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
-public class Delegator extends HttpCommandExecutor implements CommandExecutor {
+// Delegats the command to the respective command executor.
+// If the commands is supported in BiDi, it is delegated to BiDiCommandExecutor
+// Otherwise, it falls back on HttpCommandExecutor
+// The reason both are required is that, HttpCommandExecutor route will always be used to start and
+// stop the session.
+public class BiDiDelegator extends HttpCommandExecutor implements CommandExecutor {
 
   private BiDiCommandExecutor biDiCommandExecutor = null;
   private static final Set<String> biDiCommands = new HashSet<>();
@@ -38,21 +43,21 @@ public class Delegator extends HttpCommandExecutor implements CommandExecutor {
     biDiCommands.add(DriverCommand.PRINT_PAGE);
   }
 
-  public Delegator(ClientConfig config) {
+  public BiDiDelegator(ClientConfig config) {
     super(
         emptyMap(),
         Require.nonNull("HTTP client configuration", config),
         getDefaultClientFactory());
   }
 
-  public Delegator(
+  public BiDiDelegator(
       Map<String, CommandInfo> additionalCommands,
       ClientConfig config,
       HttpClient.Factory httpClientFactory) {
     super(additionalCommands, config, httpClientFactory);
   }
 
-  public Delegator(
+  public BiDiDelegator(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer, ClientConfig config) {
     super(
         additionalCommands,

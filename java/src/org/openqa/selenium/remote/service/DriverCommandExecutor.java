@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandInfo;
-import org.openqa.selenium.remote.Delegator;
+import org.openqa.selenium.remote.BiDiDelegator;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
@@ -45,7 +45,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
  * dies with a single WebDriver session. The service will be restarted upon each new session request
  * and shutdown after each quit command.
  */
-public class DriverCommandExecutor extends Delegator implements Closeable {
+public class DriverCommandExecutor extends BiDiDelegator implements Closeable {
 
   private static final String NAME = "Driver Command Executor";
   private final DriverService service;

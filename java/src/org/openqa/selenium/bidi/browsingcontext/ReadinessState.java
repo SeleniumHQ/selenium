@@ -18,6 +18,9 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 public enum ReadinessState {
+  // Mapping the page load strategy values used in BiDi To Classic
+  // Refer: https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState
+  // Refer: https://www.w3.org/TR/webdriver2/#navigation
   NONE("none", "none"),
   INTERACTIVE("interactive", "eager"),
   COMPLETE("complete", "normal");

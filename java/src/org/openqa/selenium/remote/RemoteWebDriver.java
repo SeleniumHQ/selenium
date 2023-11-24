@@ -179,8 +179,8 @@ public class RemoteWebDriver
           commandExecutor = ((TracedCommandExecutor) executor).getDelegate();
         }
 
-        if (commandExecutor instanceof Delegator) {
-          ((Delegator) (commandExecutor)).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
+        if (commandExecutor instanceof BiDiDelegator) {
+          ((BiDiDelegator) (commandExecutor)).setBiDiCommandExecutor(new BiDiCommandExecutor(this));
         }
       }
     } catch (RuntimeException e) {
@@ -207,13 +207,13 @@ public class RemoteWebDriver
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor =
-          new Delegator(
+          new BiDiDelegator(
               Collections.emptyMap(),
               config,
               new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
       return new TracedCommandExecutor(executor, tracer);
     } else {
-      return new Delegator(config);
+      return new BiDiDelegator(config);
     }
   }
 
