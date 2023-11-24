@@ -27,14 +27,14 @@ def reset_timeouts(driver):
     driver.set_page_load_timeout(300)
 
 
-def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
+def test_should_timeout_on_page_load_taking_too_long(driver, pages):
     driver.set_page_load_timeout(0.01)
     with pytest.raises(TimeoutException):
         pages.load("simpleTest.html")
 
 
 @pytest.mark.xfail_safari
-def testClickShouldTimeout(driver, pages):
+def test_click_should_timeout(driver, pages):
     pages.load("simpleTest.html")
     driver.set_page_load_timeout(0.01)
     with pytest.raises(TimeoutException):

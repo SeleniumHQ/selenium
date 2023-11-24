@@ -1,0 +1,8 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_library")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+rb_library(
+    name = "selenium-webdriver",
+    srcs = ["selenium-webdriver.rb"],
+)

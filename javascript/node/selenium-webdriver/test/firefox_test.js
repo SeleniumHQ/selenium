@@ -25,14 +25,21 @@ const io = require('../io')
 const { Browser } = require('../')
 const { Context } = require('../firefox')
 const { Pages, suite } = require('../lib/test')
+const { locate } = require('../lib/test/resources')
+const { until, By } = require('../index')
 
-const WEBEXTENSION_EXTENSION_XPI = path.join(
-  __dirname,
-  '../lib/test/data/firefox/webextension.xpi'
+const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
+const EXT_UNSIGNED_ZIP = locate(
+  'common/extensions/webextensions-selenium-example-unsigned.zip'
 )
-const WEBEXTENSION_EXTENSION_ZIP = path.join(
-  __dirname,
-  '../lib/test/data/firefox/webextension.zip'
+const EXT_SIGNED_ZIP = locate(
+  'common/extensions/webextensions-selenium-example.zip'
+)
+const EXT_UNSIGNED_DIR = locate(
+  'common/extensions/webextensions-selenium-example'
+)
+const EXT_SIGNED_DIR = locate(
+  'common/extensions/webextensions-selenium-example'
 )
 
 const WEBEXTENSION_EXTENSION_ID =
@@ -61,7 +68,7 @@ suite(
           await io.mkdir(extensionsDir)
           await io.write(
             path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID),
-            await io.read(WEBEXTENSION_EXTENSION_XPI)
+            await io.read(EXT_XPI)
           )
         })
 
@@ -92,6 +99,17 @@ suite(
 
             await driver.get(Pages.echoPage)
             await verifyWebExtensionWasInstalled()
+          })
+        })
+
+        describe('set mobile options', function () {
+          it('allows setting android activity', function () {
+            let options = new firefox.Options().enableMobile()
+            let firefoxOptions = options.firefoxOptions_()
+            assert.deepStrictEqual(
+              { androidPackage: 'org.mozilla.firefox' },
+              firefoxOptions
+            )
           })
         })
 
@@ -142,7 +160,7 @@ suite(
         describe('addExtensions', function () {
           it('can add extension to brand new profile', async function () {
             let options = new firefox.Options()
-            options.addExtensions(WEBEXTENSION_EXTENSION_XPI)
+            options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -152,7 +170,7 @@ suite(
 
           it('can add extension to custom profile', async function () {
             let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
+              .addExtensions(EXT_XPI)
               .setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -164,7 +182,7 @@ suite(
 
           it('can addExtensions and setPreference', async function () {
             let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
+              .addExtensions(EXT_XPI)
               .setPreference('general.useragent.override', 'foo;bar')
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -176,7 +194,7 @@ suite(
 
           it('can load .zip webextensions', async function () {
             let options = new firefox.Options()
-            options.addExtensions(WEBEXTENSION_EXTENSION_ZIP)
+            options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -192,17 +210,17 @@ suite(
         })
 
         it('can get context', async function () {
-          assert.equal(await driver.getContext(), Context.CONTENT)
+          assert.strictEqual(await driver.getContext(), Context.CONTENT)
         })
 
         it('can set context', async function () {
           await driver.setContext(Context.CHROME)
           let ctxt = await driver.getContext()
-          assert.equal(ctxt, Context.CHROME)
+          assert.strictEqual(ctxt, Context.CHROME)
 
           await driver.setContext(Context.CONTENT)
           ctxt = await driver.getContext()
-          assert.equal(ctxt, Context.CONTENT)
+          assert.strictEqual(ctxt, Context.CONTENT)
         })
 
         it('throws on unknown context', function () {
@@ -212,43 +230,107 @@ suite(
         })
       })
 
-      it('addons can be installed and uninstalled at runtime', async function () {
-        driver = env.builder().build()
+      describe('installAddon', function () {
+        beforeEach(function () {
+          driver = env.builder().build()
+        })
 
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
+        it('installs and uninstalls by xpi file', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
 
-        let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
-        await driver.sleep(1000) // Give extension time to install (yuck).
+          let id = await driver.installAddon(EXT_XPI)
 
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionWasInstalled()
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
 
-        await driver.uninstallAddon(id)
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by unsigned zip file', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_UNSIGNED_ZIP, true)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by signed zip file', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_SIGNED_ZIP)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by unsigned directory', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_UNSIGNED_DIR, true)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by signed directory', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_SIGNED_DIR, true)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
       })
 
       async function verifyUserAgentWasChanged() {
         let userAgent = await driver.executeScript(
           'return window.navigator.userAgent'
         )
-        assert.equal(userAgent, 'foo;bar')
+        assert.strictEqual(userAgent, 'foo;bar')
       }
 
       async function verifyWebExtensionNotInstalled() {
         let found = await driver.findElements({
           id: 'webextensions-selenium-example',
         })
-        assert.equal(found.length, 0)
+        assert.strictEqual(found.length, 0)
       }
 
       async function verifyWebExtensionWasInstalled() {
-        let footer = await driver.findElement({
-          id: 'webextensions-selenium-example',
-        })
+        let footer = await driver.wait(
+          until.elementLocated(By.id('webextensions-selenium-example')),
+          5000
+        )
+
         let text = await footer.getText()
-        assert.equal(text, 'Content injected by webextensions-selenium-example')
+        assert.strictEqual(
+          text,
+          'Content injected by webextensions-selenium-example'
+        )
       }
     })
   },

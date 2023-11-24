@@ -22,6 +22,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "command.h"
 #include "CustomTypes.h"
@@ -70,6 +71,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     MESSAGE_HANDLER(WD_SCRIPT_WAIT, OnScriptWait)
     MESSAGE_HANDLER(WD_ASYNC_SCRIPT_TRANSFER_MANAGED_ELEMENT, OnTransferManagedElement)
     MESSAGE_HANDLER(WD_ASYNC_SCRIPT_SCHEDULE_REMOVE_MANAGED_ELEMENT, OnScheduleRemoveManagedElement)
+    MESSAGE_HANDLER(WD_ADD_CHROMIUM_WINDOW_HANDLE, OnAddChromiumWindowHandle)
+    MESSAGE_HANDLER(WD_SESSION_QUIT_WAIT, OnSessionQuitWait)
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -95,6 +98,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   LRESULT OnScriptWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnTransferManagedElement(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnScheduleRemoveManagedElement(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnAddChromiumWindowHandle(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnSessionQuitWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
   std::string session_id(void) const { return this->session_id_; }
 
@@ -260,7 +265,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                                      const std::string& url);
   std::string OpenNewBrowserWindow(const std::wstring& url);
   std::string OpenNewBrowserTab(const std::wstring& url);
-  static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;
@@ -290,6 +294,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_strict_file_interactability_;
   bool is_edge_chromium_;
   std::string edge_executable_path_;
+  std::wstring edge_temp_dir_;
+  std::unordered_set<HWND> chromium_window_handles_;
 
   Command current_command_;
   std::string serialized_response_;

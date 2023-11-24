@@ -1,0 +1,123 @@
+load("@crates//:defs.bzl", "all_crate_deps")
+load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rust_test_suite", "rustfmt_config")
+
+rustfmt_config(
+    name = "enable-rustfmt",
+)
+
+# We want the release versions of Selenium to include the prebuilt
+# binaries, but if we're doing day-to-day dev work, then we should
+# use a local build, unless on we're on Windows, where for some
+# reason we're not able to build locally.
+#
+# We tag the compiled versions as `manual` so that when we do a
+# `bazel build //...` we don't do any additional work
+
+# Start with the variants for each platform
+alias(
+    name = "selenium-manager-windows",
+    actual = select({
+        "//common:windows": ":selenium-manager",
+        "//conditions:default": "//common/manager:windows/selenium-manager.exe",
+    }),
+    tags = [
+        "manual",
+    ],
+    visibility = [
+        "//common/manager:__pkg__",
+    ],
+)
+
+alias(
+    name = "selenium-manager-macos",
+    actual = select({
+        "//common:macos": ":selenium-manager",
+        "//conditions:default": "//common/manager:macos/selenium-manager",
+    }),
+    tags = [
+        "manual",
+    ],
+    visibility = [
+        "//common/manager:__pkg__",
+    ],
+)
+
+alias(
+    name = "selenium-manager-linux",
+    actual = select({
+        "//common:linux": ":selenium-manager",
+        "//conditions:default": "//common/manager:linux/selenium-manager",
+    }),
+    tags = [
+        "manual",
+    ],
+    visibility = [
+        "//common/manager:__pkg__",
+    ],
+)
+
+filegroup(
+    name = "selenium-manager-dev",
+    srcs = [
+        ":selenium-manager-linux",
+        ":selenium-manager-macos",
+        ":selenium-manager-windows",
+    ],
+    tags = [
+        "manual",
+    ],
+    visibility = [
+        "//common/manager:__subpackages__",
+    ],
+)
+
+rust_binary(
+    # Yes, this name is very similar to the library. Note the dash
+    # instead of an underscore
+    name = "selenium-manager",
+    srcs = ["src/main.rs"],
+    edition = "2021",
+    version = "0.4.16",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":selenium_manager",
+    ] + all_crate_deps(normal = True),
+)
+
+rust_library(
+    # The name here is used as the crate name
+    name = "selenium_manager",
+    srcs = glob(
+        ["src/**/*.rs"],
+        exclude = ["main.rs"],
+    ),
+    edition = "2021",
+    deps = all_crate_deps(normal = True),
+)
+
+rust_test(
+    name = "unit",
+    size = "small",
+    srcs = glob(["src/**/*.rs"]),
+    crate = ":selenium_manager",
+    tags = ["no-sandbox"],
+)
+
+rust_test_suite(
+    name = "integration",
+    size = "small",
+    srcs = glob(["tests/**/*_tests.rs"]),
+    data = [
+        "tests/common.rs",
+        ":selenium-manager",
+    ],
+    edition = "2021",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [":selenium_manager"] + all_crate_deps(
+        normal = True,
+        normal_dev = True,
+    ),
+)

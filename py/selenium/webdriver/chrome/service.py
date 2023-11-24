@@ -14,30 +14,37 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
+    """A Service class that is responsible for the starting and stopping of
+    `chromedriver`.
+
+    :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
-    Object that manages the starting and stopping of the ChromeDriver
-    """
 
-    def __init__(self, executable_path, port=0, service_args=None,
-                 log_path=None, env=None):
-        """
-        Creates a new instance of the Service
-
-        :Args:
-         - executable_path : Path to the ChromeDriver
-         - port : Port the service is running on
-         - service_args : List of args to pass to the chromedriver service
-         - log_path : Path for the chromedriver service to log to"""
-
-        super(Service, self).__init__(
-            executable_path,
-            port,
-            service_args,
-            log_path,
-            env,
-            "Please see https://chromedriver.chromium.org/home")
+    def __init__(
+        self,
+        executable_path=None,
+        port: int = 0,
+        service_args: typing.Optional[typing.List[str]] = None,
+        log_output: SubprocessStdAlias = None,
+        env: typing.Optional[typing.Mapping[str, str]] = None,
+        **kwargs,
+    ) -> None:
+        super().__init__(
+            executable_path=executable_path,
+            port=port,
+            service_args=service_args,
+            log_output=log_output,
+            env=env,
+            **kwargs,
+        )

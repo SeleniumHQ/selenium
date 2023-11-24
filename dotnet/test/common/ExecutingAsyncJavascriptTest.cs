@@ -118,6 +118,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4525")]
         public void ShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -194,7 +195,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
-        [IgnoreBrowser(Browser.EdgeLegacy, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
         public void ShouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript()
         {
@@ -275,7 +275,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
 		public void ThrowsIfScriptTriggersAlert()
         {
             driver.Url = simpleTestPage;
@@ -288,7 +287,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScript()
         {
             driver.Url = slowLoadingAlertPage;
@@ -301,7 +299,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfScriptTriggersAlertWhichTimesOut()
         {
             driver.Url = simpleTestPage;
@@ -315,7 +312,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
         {
             driver.Url = slowLoadingAlertPage;
@@ -328,9 +324,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);

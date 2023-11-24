@@ -19,11 +19,10 @@ import pytest
 
 from selenium.webdriver.common.by import By
 
-
 newLine = "\n"
 
 
-def testShouldReturnTheTextContentOfASingleElementWithNoChildren(driver, pages):
+def test_should_return_the_text_content_of_asingle_element_with_no_children(driver, pages):
     pages.load("simpleTest.html")
     selectText = driver.find_element(by=By.ID, value="oneline").text
     assert selectText == "A single line of text"
@@ -32,7 +31,7 @@ def testShouldReturnTheTextContentOfASingleElementWithNoChildren(driver, pages):
     assert getText == "A single line of text"
 
 
-def testShouldReturnTheEntireTextContentOfChildElements(driver, pages):
+def test_should_return_the_entire_text_content_of_child_elements(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="multiline").text
 
@@ -42,7 +41,7 @@ def testShouldReturnTheEntireTextContentOfChildElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldIgnoreScriptElements(driver, pages):
+def test_should_ignore_script_elements(driver, pages):
     pages.load("javascriptEnhancedForm.html")
     labelForUsername = driver.find_element(by=By.ID, value="labelforusername")
     text = labelForUsername.text
@@ -53,7 +52,7 @@ def testShouldIgnoreScriptElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldRepresentABlockLevelElementAsANewline(driver, pages):
+def test_should_represent_ablock_level_element_as_anewline(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="multiline").text
 
@@ -63,7 +62,7 @@ def testShouldRepresentABlockLevelElementAsANewline(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(driver, pages):
+def test_should_collapse_multiple_whitespace_characters_into_asingle_space(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="lotsofspaces").text
 
@@ -71,7 +70,7 @@ def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(driver, pages
 
 
 @pytest.mark.xfail_safari
-def testShouldTrimText(driver, pages):
+def test_should_trim_text(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="multiline").text
 
@@ -80,7 +79,7 @@ def testShouldTrimText(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(driver, pages):
+def test_should_convert_anon_breaking_space_into_anormal_space_character(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="nbsp").text
 
@@ -88,7 +87,7 @@ def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(driver, pages):
+def test_should_treat_anon_breaking_space_as_any_other_whitespace_character_when_collapsing_whitespace(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="nbspandspaces")
     text = element.text
@@ -97,7 +96,7 @@ def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingW
 
 
 @pytest.mark.xfail_safari
-def testHavingInlineElementsShouldNotAffectHowTextIsReturned(driver, pages):
+def test_having_inline_elements_should_not_affect_how_text_is_returned(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="inline").text
 
@@ -105,14 +104,14 @@ def testHavingInlineElementsShouldNotAffectHowTextIsReturned(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldReturnTheEntireTextOfInlineElements(driver, pages):
+def test_should_return_the_entire_text_of_inline_elements(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="span").text
 
     assert text == "An inline element"
 
 
-def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(driver, pages):
+def test_should_be_able_to_set_more_than_one_line_of_text_in_atext_area(driver, pages):
     pages.load("formPage.html")
     textarea = driver.find_element(by=By.ID, value="withText")
     textarea.clear()
@@ -125,7 +124,7 @@ def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(driver, pages):
     assert seenText == expectedText
 
 
-def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(driver, pages):
+def test_should_be_able_to_enter_dates_after_filling_in_other_values_first(driver, pages):
     pages.load("formPage.html")
     input_ = driver.find_element(by=By.ID, value="working")
     expectedValue = "10/03/2007 to 30/07/1993"
@@ -136,14 +135,14 @@ def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldReturnEmptyStringWhenTextIsOnlySpaces(driver, pages):
+def test_should_return_empty_string_when_text_is_only_spaces(driver, pages):
     pages.load("xhtmlTest.html")
 
     text = driver.find_element(by=By.ID, value="spaces").text
     assert text == ""
 
 
-def testShouldReturnEmptyStringWhenTextIsEmpty(driver, pages):
+def test_should_return_empty_string_when_text_is_empty(driver, pages):
     pages.load("xhtmlTest.html")
 
     text = driver.find_element(by=By.ID, value="empty").text
@@ -151,7 +150,7 @@ def testShouldReturnEmptyStringWhenTextIsEmpty(driver, pages):
 
 
 @pytest.mark.xfail
-def testShouldReturnEmptyStringWhenTagIsSelfClosing(driver, pages):
+def test_should_return_empty_string_when_tag_is_self_closing(driver, pages):
     pages.load("xhtmlFormPage.xhtml")
 
     text = driver.find_element(by=By.ID, value="self-closed").text
@@ -159,7 +158,7 @@ def testShouldReturnEmptyStringWhenTagIsSelfClosing(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldHandleSiblingBlockLevelElements(driver, pages):
+def test_should_handle_sibling_block_level_elements(driver, pages):
     pages.load("simpleTest.html")
 
     text = driver.find_element(by=By.ID, value="twoblocks").text
@@ -167,14 +166,14 @@ def testShouldHandleSiblingBlockLevelElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldHandleWhitespaceInInlineElements(driver, pages):
+def test_should_handle_whitespace_in_inline_elements(driver, pages):
     pages.load("simpleTest.html")
 
     text = driver.find_element(by=By.ID, value="inlinespan").text
     assert text == "line has text"
 
 
-def testReadALargeAmountOfData(driver, pages):
+def test_read_alarge_amount_of_data(driver, pages):
     pages.load("macbeth.html")
     source = driver.page_source.strip().lower()
 
@@ -182,7 +181,7 @@ def testReadALargeAmountOfData(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldOnlyIncludeVisibleText(driver, pages):
+def test_should_only_include_visible_text(driver, pages):
     pages.load("javascriptPage.html")
 
     empty = driver.find_element(by=By.ID, value="suppressedParagraph").text
@@ -193,7 +192,7 @@ def testShouldOnlyIncludeVisibleText(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldGetTextFromTableCells(driver, pages):
+def test_should_get_text_from_table_cells(driver, pages):
     pages.load("tables.html")
 
     tr = driver.find_element(by=By.ID, value="hidden_text")
@@ -203,14 +202,14 @@ def testShouldGetTextFromTableCells(driver, pages):
     assert "some more text" not in text
 
 
-def testShouldGetTextWhichIsAValidJSONObject(driver, pages):
+def test_should_get_text_which_is_avalid_jsonobject(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="simpleJsonText")
-    assert "{a=\"b\", c=1, d=true}" == element.text
+    assert '{a="b", c=1, d=true}' == element.text
     # assert "{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.text)
 
 
-def testShouldGetTextWhichIsAValidComplexJSONObject(driver, pages):
+def test_should_get_text_which_is_avalid_complex_jsonobject(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="complexJsonText")
     assert """{a=\"\\\\b\\\\\\\"\'\\\'\"}""" == element.text

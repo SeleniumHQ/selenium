@@ -28,7 +28,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag()
         {
             driver.Url = simpleTestPage;
@@ -38,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag()
         {
             driver.Url = simpleTestPage;
@@ -351,7 +349,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldReturnNullForNonPresentBooleanAttributes()
         {
             driver.Url = booleanAttributes;

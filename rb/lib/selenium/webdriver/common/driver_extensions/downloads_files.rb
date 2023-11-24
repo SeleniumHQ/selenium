@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module DownloadsFiles
-
         #
         # Sets download path for Chromium.
         #
@@ -38,7 +37,6 @@ module Selenium
           }
           @bridge.send_command(params)
         end
-
       end # DownloadsFiles
     end # DriverExtensions
   end # WebDriver

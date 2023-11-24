@@ -46,7 +46,7 @@ test.suite(function (env) {
       )
       const el = await driver.findElement(By.css('div'))
       const rect = await el.getRect()
-      assert.deepEqual(rect, { width: 35, height: 25, x: 40, y: 50 })
+      assert.deepStrictEqual(rect, { width: 35, height: 25, x: 40, y: 50 })
     })
   })
 })

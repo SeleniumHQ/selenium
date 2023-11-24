@@ -1,0 +1,87 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
+
+java_library(
+    name = "testing",
+    testonly = True,
+    visibility = [
+        "//java/test:__subpackages__",
+    ],
+    exports = [
+        ":annotations",
+        ":test-base",
+    ],
+)
+
+java_library(
+    name = "annotations",
+    testonly = True,
+    srcs = [
+        "Ignore.java",
+        "IgnoreList.java",
+        "NeedsFreshDriver.java",
+        "NoDriverAfterTest.java",
+        "NoDriverBeforeTest.java",
+        "NotWorkingInRemoteBazelBuilds.java",
+        "NotWorkingInRemoteBazelBuildsList.java",
+        "NotYetImplemented.java",
+        "NotYetImplementedList.java",
+        "SwitchToTopAfterTest.java",
+    ],
+    visibility = ["//java/test:__subpackages__"],
+    exports = [
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+    ],
+    deps = ["//java/test/org/openqa/selenium/testing/drivers:browser"],
+)
+
+java_library(
+    name = "test-base",
+    testonly = True,
+    srcs = [
+        "CaptureLoggingRule.java",
+        "IgnoreComparator.java",
+        "JupiterTestBase.java",
+        "Pages.java",
+        "Safely.java",
+        "SeleniumExtension.java",
+        "StaticResources.java",
+        "TearDownFixture.java",
+        "TestIgnorance.java",
+        "TestUtilities.java",
+    ],
+    visibility = ["//java/test:__subpackages__"],
+    deps = [
+        ":annotations",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.platform:junit-platform-commons"),
+        artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = ["IgnoreComparatorUnitTest.java"],
+    visibility = [
+        "//java/test/org/openqa/selenium:__pkg__",
+    ],
+    deps = [
+        ":test-base",
+        "//java/src/org/openqa/selenium:core",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

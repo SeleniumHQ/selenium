@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver", "src\webdriver\WebDriver.csproj", "{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriverBackedSelenium", "src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj", "{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Support", "src\support\WebDriver.Support.csproj", "{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Common.Tests", "test\common\WebDriver.Common.Tests.csproj", "{1869A2D9-3782-41E4-84DD-EB1A5E971C93}"
@@ -14,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Chrome.Tests", "test\chrome\WebDriver.Chrome.Tests.csproj", "{F5751636-2F68-4BE3-B383-D4F4937A1946}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Edge.Tests", "test\edge\WebDriver.Edge.Tests.csproj", "{EF99FB04-94C3-4AA0-8809-B514B253DF51}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Opera.Tests", "test\opera\WebDriver.Opera.Tests.csproj", "{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.IE.Tests", "test\ie\WebDriver.IE.Tests.csproj", "{E54A6F7B-3939-4DE5-85CC-28158615A967}"
 EndProject
@@ -27,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Safari.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Support.Tests", "test\support\WebDriver.Support.Tests.csproj", "{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriverBackedSelenium.Tests", "test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +33,6 @@ Global
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,10 +49,6 @@ Global
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,10 +69,6 @@ Global
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

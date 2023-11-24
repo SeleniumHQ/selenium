@@ -32,10 +32,8 @@ const Browser = {
   CHROME: 'chrome',
   EDGE: 'MicrosoftEdge',
   FIREFOX: 'firefox',
-  IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
   SAFARI: 'safari',
-  OPERA: 'opera',
 }
 
 /**
@@ -264,7 +262,9 @@ class Capabilities {
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities().setBrowserName(Browser.FIREFOX)
+    return new Capabilities()
+      .setBrowserName(Browser.FIREFOX)
+      .set('moz:debuggerAddress', true)
   }
 
   /**

@@ -90,6 +90,7 @@ module Selenium
         meta: "\ue03D",
         command: "\ue03D", # alias
         left_meta: "\ue03D", # alias
+        zenkaku_hankaku: "\uE040",
         right_shift: "\ue050",
         right_control: "\ue051",
         right_alt: "\ue052",

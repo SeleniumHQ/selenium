@@ -39,19 +39,12 @@ module Selenium
           persistent_hover: 'enablePersistentHover',
           require_window_focus: 'requireWindowFocus',
           use_per_process_proxy: 'ie.usePerProcessProxy',
-          validate_cookie_document_type: 'ie.validateCookieDocumentType'
+          use_legacy_file_upload_dialog_handling: 'ie.useLegacyFileUploadDialogHandling',
+          attach_to_edge_chrome: 'ie.edgechromium',
+          edge_executable_path: 'ie.edgepath',
+          ignore_process_match: 'ie.ignoreprocessmatch'
         }.freeze
         BROWSER = 'internet explorer'
-
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
 
         attr_reader :args
 

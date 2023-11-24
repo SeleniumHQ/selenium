@@ -18,6 +18,7 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -29,7 +30,6 @@ namespace OpenQA.Selenium.IE
     public sealed class InternetExplorerDriverService : DriverService
     {
         private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
-        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
         private string host = string.Empty;
@@ -44,8 +44,14 @@ namespace OpenQA.Selenium.IE
         /// <param name="executableFileName">The file name of the IEDriverServer executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
         private InternetExplorerDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, InternetExplorerDriverDownloadUrl)
+            : base(executablePath, port, executableFileName)
         {
+        }
+
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new InternetExplorerOptions();
         }
 
         /// <summary>
@@ -149,8 +155,19 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
         public static InternetExplorerDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            return new InternetExplorerDriverService(null, null, PortUtilities.FindFreePort());
+        }
+
+        /// <summary>
+        /// Creates a default instance of the InternetExplorerDriverService.
+        /// </summary>
+        /// <param name="options">Browser options used to find the correct IEDriver binary.</param>
+        /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
+        public static InternetExplorerDriverService CreateDefaultService(InternetExplorerOptions options)
+        {
+            string fullServicePath = DriverFinder.FullPath(options);
+            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
         }
 
         /// <summary>
@@ -160,6 +177,11 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
+            if (File.Exists(driverPath))
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName);
         }
 

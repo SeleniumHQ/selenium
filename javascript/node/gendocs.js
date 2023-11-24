@@ -89,7 +89,7 @@ function mkdirp(aPath) {
  */
 function installDossier() {
   return new Promise(function(fulfill, reject) {
-    let buildNodeDir = path.join(PROJECT_ROOT, 'build/javascript/node');
+    let buildNodeDir = path.join(PROJECT_ROOT);
     let jar = path.join(buildNodeDir, 'node_modules/js-dossier/dossier.jar');
     fs.stat(jar, function(err) {
       if (!err) return fulfill(jar);
@@ -116,6 +116,7 @@ function getModules() {
     path.join(__dirname, 'selenium-webdriver/lib/safari'),
     path.join(__dirname, 'selenium-webdriver/lib/test'),
     path.join(__dirname, 'selenium-webdriver/lib/tools'),
+    path.join(__dirname, 'selenium-webdriver/devtools/generator'),
     path.join(__dirname, 'selenium-webdriver/node_modules'),
     path.join(__dirname, 'selenium-webdriver/test')
   ];

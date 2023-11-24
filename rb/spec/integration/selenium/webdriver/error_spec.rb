@@ -22,11 +22,11 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Error do
-      it 'should raise an appropriate error' do
+      it 'raises an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect {
-          driver.find_element(id: 'nonexistant')
+          driver.find_element(id: 'nonexistent')
         }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
     end

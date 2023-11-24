@@ -1,0 +1,44 @@
+package(
+    default_visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/manager:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+alias(
+    name = "selenium-manager-linux",
+    actual = select({
+        "//common:stamp": "linux/selenium-manager",
+        "//conditions:default": "//rust:selenium-manager-linux",
+    }),
+)
+
+alias(
+    name = "selenium-manager-macos",
+    actual = select({
+        "//common:stamp": "macos/selenium-manager",
+        "//conditions:default": "//rust:selenium-manager-macos",
+    }),
+)
+
+alias(
+    name = "selenium-manager-windows",
+    actual = select({
+        "//common:stamp": "windows/selenium-manager.exe",
+        "//conditions:default": "//rust:selenium-manager-windows",
+    }),
+)
+
+exports_files(
+    [
+        "linux/selenium-manager",
+        "macos/selenium-manager",
+        "windows/selenium-manager.exe",
+    ],
+    visibility = [
+        "//rust:__pkg__",
+    ],
+)

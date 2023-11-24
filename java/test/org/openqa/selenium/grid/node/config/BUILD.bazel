@@ -1,0 +1,81 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load(
+    "//common:browsers.bzl",
+    "chromedriver_data",
+    "edgedriver_data",
+    "geckodriver_data",
+)
+load(
+    "//java:browsers.bzl",
+    "chromedriver_jvm_flags",
+    "edgedriver_jvm_flags",
+    "geckodriver_jvm_flags",
+)
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+TESTS_WITH_DATA = [
+    "NodeOptionsTest.java",
+]
+
+java_test_suite(
+    name = "medium-test-with-data",
+    size = "medium",
+    srcs = ["NodeOptionsTest.java"],
+    data = chromedriver_data + edgedriver_data + geckodriver_data,
+    jvm_flags = chromedriver_jvm_flags + edgedriver_jvm_flags + geckodriver_jvm_flags,
+    tags = ["no-sandbox"],
+    deps = [
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/grid/node/config",
+        "//java/src/org/openqa/selenium/grid/node/local",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/test/org/openqa/selenium/grid/node/data",
+        artifact("com.google.guava:guava"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = TESTS_WITH_DATA,
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/grid/node/config",
+        "//java/src/org/openqa/selenium/grid/node/local",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/test/org/openqa/selenium/grid/node/data",
+        "//java/test/org/openqa/selenium/grid/testing",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

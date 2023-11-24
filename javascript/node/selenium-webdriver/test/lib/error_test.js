@@ -21,65 +21,6 @@ describe('error', function () {
   let assert = require('assert')
   let error = require('../../lib/error')
 
-  describe('checkResponse', function () {
-    it('defaults to WebDriverError if type is unrecognized', function () {
-      assert.throws(
-        () => error.checkResponse({ error: 'foo', message: 'hi there' }),
-        (e) => {
-          assert.equal(e.constructor, error.WebDriverError)
-          return true
-        }
-      )
-    })
-
-    it('does not throw if error property is not a string', function () {
-      let resp = { error: 123, message: 'abc123' }
-      let out = error.checkResponse(resp)
-      assert.strictEqual(out, resp)
-    })
-
-    test('unknown error', error.WebDriverError)
-    test('element not interactable', error.ElementNotInteractableError)
-    test('element not selectable', error.ElementNotSelectableError)
-    test('insecure certificate', error.InsecureCertificateError)
-    test('invalid argument', error.InvalidArgumentError)
-    test('invalid cookie domain', error.InvalidCookieDomainError)
-    test('invalid coordinates', error.InvalidCoordinatesError)
-    test('invalid element state', error.InvalidElementStateError)
-    test('invalid selector', error.InvalidSelectorError)
-    test('invalid session id', error.NoSuchSessionError)
-    test('javascript error', error.JavascriptError)
-    test('move target out of bounds', error.MoveTargetOutOfBoundsError)
-    test('no such alert', error.NoSuchAlertError)
-    test('no such cookie', error.NoSuchCookieError)
-    test('no such element', error.NoSuchElementError)
-    test('no such frame', error.NoSuchFrameError)
-    test('no such window', error.NoSuchWindowError)
-    test('script timeout', error.ScriptTimeoutError)
-    test('session not created', error.SessionNotCreatedError)
-    test('stale element reference', error.StaleElementReferenceError)
-    test('timeout', error.TimeoutError)
-    test('unable to set cookie', error.UnableToSetCookieError)
-    test('unable to capture screen', error.UnableToCaptureScreenError)
-    test('unexpected alert open', error.UnexpectedAlertOpenError)
-    test('unknown command', error.UnknownCommandError)
-    test('unknown method', error.UnknownMethodError)
-    test('unsupported operation', error.UnsupportedOperationError)
-
-    function test(status, expectedType) {
-      it(`"${status}" => ${expectedType.name}`, function () {
-        assert.throws(
-          () => error.checkResponse({ error: status, message: 'oops' }),
-          (e) => {
-            assert.equal(expectedType, e.constructor)
-            assert.equal(e.message, 'oops')
-            return true
-          }
-        )
-      })
-    }
-  })
-
   describe('encodeError', function () {
     describe('defaults to an unknown error', function () {
       it('for a generic error value', function () {
@@ -139,7 +80,7 @@ describe('error', function () {
       assert.throws(
         () => error.throwDecodedError({ error: 'foo', message: 'hi there' }),
         (e) => {
-          assert.equal(e.constructor, error.WebDriverError)
+          assert.strictEqual(e.constructor, error.WebDriverError)
           return true
         }
       )
@@ -302,9 +243,9 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(response),
           (e) => {
-            assert.equal(error.UnexpectedAlertOpenError, e.constructor)
-            assert.equal(e.message, 'hi')
-            assert.equal(e.getAlertText(), 'alert text here')
+            assert.strictEqual(error.UnexpectedAlertOpenError, e.constructor)
+            assert.strictEqual(e.message, 'hi')
+            assert.strictEqual(e.getAlertText(), 'alert text here')
             return true
           }
         )
@@ -320,9 +261,9 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(response),
           (e) => {
-            assert.equal(error.UnexpectedAlertOpenError, e.constructor)
-            assert.equal(e.message, 'hi')
-            assert.equal(e.getAlertText(), '')
+            assert.strictEqual(error.UnexpectedAlertOpenError, e.constructor)
+            assert.strictEqual(e.message, 'hi')
+            assert.strictEqual(e.getAlertText(), '')
             return true
           }
         )
@@ -336,8 +277,8 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(resp),
           (e) => {
-            assert.equal(expectedType, e.constructor)
-            assert.equal(e.message, 'hi')
+            assert.strictEqual(expectedType, e.constructor)
+            assert.strictEqual(e.message, 'hi')
             return true
           }
         )

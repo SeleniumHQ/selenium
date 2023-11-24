@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.Support.UI
 
         // [Test]
         // [ExpectedException(typeof(NoSuchElementException))]
-        // The .NET bindings do not have a "FirstSelectedOption" property, 
+        // The .NET bindings do not have a "FirstSelectedOption" property,
         // and no one has asked for it to this point. Given that, this test
         // is not a valid test.
         public void ShouldThrowANoSuchElementExceptionIfNothingIsSelected()
@@ -197,6 +197,14 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
+        public void ShouldThrowExceptionOnSelectByVisibleTextIfOptionDisabled()
+        {
+            IWebElement element = driver.FindElement(By.Name("single_disabled"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("Disabled"));
+        }
+
+        [Test]
         public void ShouldAllowOptionsToBeSelectedByIndex()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
@@ -215,6 +223,14 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
+        public void ShouldThrowExceptionOnSelectByIndexIfOptionDisabled()
+        {
+            IWebElement element = driver.FindElement(By.Name("single_disabled"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByIndex(1));
+        }
+
+        [Test]
         public void ShouldAllowOptionsToBeSelectedByReturnedValue()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
@@ -230,6 +246,14 @@ namespace OpenQA.Selenium.Support.UI
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
             Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByValue("not there"));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnSelectByReturnedValueIfOptionDisabled()
+        {
+            IWebElement element = driver.FindElement(By.Name("single_disabled"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByValue("disabled"));
         }
 
         [Test]

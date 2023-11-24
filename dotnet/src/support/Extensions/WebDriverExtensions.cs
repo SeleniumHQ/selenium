@@ -1,4 +1,4 @@
-﻿// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
+// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Support.Extensions
         /// indicate that it cannot take screenshots.</exception>
         public static Screenshot TakeScreenshot(this IWebDriver driver)
         {
-            ITakesScreenshot screenshotDriver = driver as ITakesScreenshot;
+            ITakesScreenshot screenshotDriver = GetDriverAs<ITakesScreenshot>(driver);
             if (screenshotDriver == null)
             {
                 IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
@@ -101,13 +101,20 @@ namespace OpenQA.Selenium.Support.Extensions
                     throw new WebDriverException("Script returned null, but desired type is a value type");
                 }
             }
-            else if (!type.IsInstanceOfType(value))
+            else if (type.IsInstanceOfType(value))
             {
-                throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
+                result = (T)value;
             }
             else
             {
-                result = (T)value;
+                try
+                {
+                    result = (T)Convert.ChangeType(value, type);
+                }
+                catch (Exception exp)
+                {
+                    throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type", exp);
+                }
             }
 
             return result;
@@ -115,13 +122,33 @@ namespace OpenQA.Selenium.Support.Extensions
 
         private static object ExecuteJavaScriptInternal(IWebDriver driver, string script, object[] args)
         {
-            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            IJavaScriptExecutor executor = GetDriverAs<IJavaScriptExecutor>(driver);
             if (executor == null)
             {
                 throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
             }
 
             return executor.ExecuteScript(script, args);
+        }
+
+        private static T GetDriverAs<T>(IWebDriver driver) where T : class
+        {
+            T convertedDriver = driver as T;
+            if (convertedDriver == null)
+            {
+                // If the driver doesn't directly implement the desired interface, but does
+                // implement IWrapsDriver, walk up the hierarchy of wrapped drivers until
+                // either we find a class that does implement the desired interface, or is
+                // no longer wrapping a driver.
+                IWrapsDriver driverWrapper = driver as IWrapsDriver;
+                while (convertedDriver == null && driverWrapper != null)
+                {
+                    convertedDriver = driverWrapper.WrappedDriver as T;
+                    driverWrapper = driverWrapper.WrappedDriver as IWrapsDriver;
+                }
+            }
+
+            return convertedDriver;
         }
     }
 }

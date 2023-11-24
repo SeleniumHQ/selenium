@@ -2,14 +2,12 @@ namespace OpenQA.Selenium
 {
     public enum Browser
     {
-        All, 
+        All,
         IE,
         Edge,
-        EdgeLegacy,
-        Firefox, 
-        Safari, 
+        Firefox,
+        Safari,
         Chrome,
-        Opera,
-        Remote, 
+        Remote,
     }
 }

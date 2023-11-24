@@ -1,0 +1,44 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
+
+copy_file(
+    name = "execute_script",
+    src = "//javascript/atoms/fragments:execute-script.js",
+    out = "execute_script.js",
+)
+
+copy_file(
+    name = "atoms_inputs",
+    src = "//javascript/webdriver/atoms:inputs_bin.js",
+    out = "atoms_inputs.js",
+)
+
+java_library(
+    name = "lib",
+    srcs = ["JavaScriptLoader.java"],
+    deps = [
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    resources = [
+        ":atoms_inputs",
+        ":execute_script",
+    ],
+    deps = [
+        ":lib",
+        "//java/src/org/openqa/selenium/json",
+        "//java/test/org/openqa/selenium:helpers",
+        "//java/test/org/openqa/selenium/build",
+        artifact("org.assertj:assertj-core"),
+        artifact("net.sourceforge.htmlunit:htmlunit-core-js"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)

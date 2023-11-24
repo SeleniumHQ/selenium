@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsTestFixture : DriverTestFixture
     {
         protected IDevTools devTools;
-        protected DevToolsSession session;
+        protected IDevToolsSession session;
 
         public bool IsDevToolsSupported
         {
@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.DevTools
                 return;
             }
 
-            session = devTools.CreateDevToolsSession();
+            session = devTools.GetDevToolsSession();
         }
 
         [TearDown]
@@ -39,6 +39,7 @@ namespace OpenQA.Selenium.DevTools
             {
                 session.Dispose();
                 EnvironmentManager.Instance.CloseCurrentDriver();
+                session = null;
                 driver = null;
             }
         }

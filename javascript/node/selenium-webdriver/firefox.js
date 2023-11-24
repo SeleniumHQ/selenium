@@ -116,6 +116,7 @@
 
 'use strict'
 
+const fs = require('fs')
 const path = require('path')
 const Symbols = require('./lib/symbols')
 const command = require('./lib/command')
@@ -126,6 +127,8 @@ const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
+const { getPath } = require('./common/driverFinder')
+const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
  * Thrown when there an add-on is malformed.
@@ -261,10 +264,10 @@ class Options extends Capabilities {
    * @private
    */
   firefoxOptions_() {
-    let options = this.get('moz:firefoxOptions')
+    let options = this.get(FIREFOX_CAPABILITY_KEY)
     if (!options) {
       options = {}
-      this.set('moz:firefoxOptions', options)
+      this.set(FIREFOX_CAPABILITY_KEY, options)
     }
     return options
   }
@@ -297,6 +300,10 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('-headless');
+   * @example
    * Configures the geckodriver to start Firefox in headless mode.
    *
    * @return {!Options} A self reference.
@@ -393,6 +400,43 @@ class Options extends Capabilities {
     }
     throw TypeError('binary must be a string path or Channel object')
   }
+
+  /**
+   * Enables Mobile start up features
+   *
+   * @param {string} androidPackage The package to use
+   * @return {!Options} A self reference
+   */
+  enableMobile(
+    androidPackage = 'org.mozilla.firefox',
+    androidActivity = null,
+    deviceSerial = null
+  ) {
+    this.firefoxOptions_().androidPackage = androidPackage
+
+    if (androidActivity) {
+      this.firefoxOptions_().androidActivity = androidActivity
+    }
+    if (deviceSerial) {
+      this.firefoxOptions_().deviceSerial = deviceSerial
+    }
+    return this
+  }
+
+  /**
+   * Enables moz:debuggerAddress for firefox cdp
+   */
+  enableDebugger() {
+    return this.set('moz:debuggerAddress', true)
+  }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
 }
 
 /**
@@ -408,38 +452,6 @@ class Options extends Capabilities {
 const Context = {
   CONTENT: 'content',
   CHROME: 'chrome',
-}
-
-const GECKO_DRIVER_EXE =
-  process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver'
-
-/**
- * _Synchronously_ attempts to locate the geckodriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(GECKO_DRIVER_EXE, true)
-}
-
-/**
- * @return {string} .
- * @throws {Error}
- */
-function findGeckoDriver() {
-  let exe = locateSynchronously()
-  if (!exe) {
-    throw Error(
-      'The ' +
-        GECKO_DRIVER_EXE +
-        ' executable could not be found on the current ' +
-        'PATH. Please download the latest version from ' +
-        'https://github.com/mozilla/geckodriver/releases/ ' +
-        'and ensure it can be found on your PATH.'
-    )
-  }
-  return exe
 }
 
 /**
@@ -523,7 +535,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findGeckoDriver())
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 
@@ -569,6 +581,8 @@ class Driver extends webdriver.WebDriver {
     let caps =
       opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
 
+    let firefoxBrowserPath = null
+
     let executor
     let onQuit
 
@@ -576,12 +590,32 @@ class Driver extends webdriver.WebDriver {
       executor = opt_executor
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
+      if (!opt_executor.getExecutable()) {
+        const { driverPath, browserPath } = getPath(caps)
+        opt_executor.setExecutable(driverPath)
+        firefoxBrowserPath = browserPath
+      }
       executor = createExecutor(opt_executor.start())
       onQuit = () => opt_executor.kill()
     } else {
       let service = new ServiceBuilder().build()
+      if (!service.getExecutable()) {
+        const { driverPath, browserPath } = getPath(caps)
+        service.setExecutable(driverPath)
+        firefoxBrowserPath = browserPath
+      }
       executor = createExecutor(service.start())
       onQuit = () => service.kill()
+    }
+
+    if (firefoxBrowserPath) {
+      const vendorOptions = caps.get(FIREFOX_CAPABILITY_KEY)
+      if (vendorOptions) {
+        vendorOptions['binary'] = firefoxBrowserPath
+        caps.set(FIREFOX_CAPABILITY_KEY, vendorOptions)
+      } else {
+        caps.set(FIREFOX_CAPABILITY_KEY, { binary: firefoxBrowserPath })
+      }
     }
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
@@ -641,7 +675,15 @@ class Driver extends webdriver.WebDriver {
    * @see #uninstallAddon
    */
   async installAddon(path, temporary = false) {
-    let buf = await io.read(path)
+    let stats = fs.statSync(path)
+    let buf
+    if (stats.isDirectory()) {
+      let zip = new Zip()
+      await zip.addDir(path)
+      buf = await zip.toBuffer('DEFLATE')
+    } else {
+      buf = await io.read(path)
+    }
     return this.execute(
       new command.Command(ExtensionCommand.INSTALL_ADDON)
         .setParameter('addon', buf.toString('base64'))
@@ -780,9 +822,10 @@ Channel.NIGHTLY = new Channel(
 
 // PUBLIC API
 
-exports.Channel = Channel
-exports.Context = Context
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
-exports.locateSynchronously = locateSynchronously
+module.exports = {
+  Channel,
+  Context,
+  Driver,
+  Options,
+  ServiceBuilder,
+}

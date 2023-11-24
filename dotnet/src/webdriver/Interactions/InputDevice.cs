@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(deviceName))
             {
-                throw new ArgumentException("Device name must not be null or empty", "deviceName");
+                throw new ArgumentException("Device name must not be null or empty", nameof(deviceName));
             }
 
             this.deviceName = deviceName;

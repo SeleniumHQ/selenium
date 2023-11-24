@@ -56,6 +56,32 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldAllowSettingActivePointerWithKeyBoardActions()
+        {
+            driver.Url = loginPage;
+
+            IWebElement username = driver.FindElement(By.Id("username-field"));
+            IWebElement password = driver.FindElement(By.Id("password-field"));
+            IWebElement login = driver.FindElement(By.Id("login-form-submit"));
+
+            Actions actionProvider = new Actions(driver);
+            IAction loginAction = actionProvider
+            .SendKeys(username, "username")
+            .SendKeys(password, "password")
+            .SetActivePointer(PointerKind.Mouse, "test")
+            .MoveToElement(login)
+            .Click()
+            .Build();
+
+            loginAction.Perform();
+
+            IAlert alert = driver.SwitchTo().Alert();
+            Assert.AreEqual("You have successfully logged in.", alert.Text);
+
+            alert.Accept();
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
         public void ShiftClickingOnMultiSelectionList()
         {
@@ -194,30 +220,17 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement element = driver.FindElement(By.Id("eventish"));
             Point location = element.Location;
+            Size size = element.Size;
 
             new Actions(driver)
-                .MoveToElement(element, 20, 10)
+                .MoveToElement(element, 20 - size.Width / 2, 10 - size.Height / 2)
                 .Click()
                 .Perform();
 
             WaitFor<IWebElement>(() => driver.FindElement(By.Id("pageX")), "Did not find element with ID pageX");
 
-            // This will fail for IE 9 or earlier. The correct code would look something like
-            // this:
-            // int x;
-            // int y;
-            // if (TestUtilities.IsInternetExplorer(driver) && !TestUtilities.IsIE10OrHigher(driver))
-            //{
-            //    x = int.Parse(driver.FindElement(By.Id("clientX")).Text);
-            //    y = int.Parse(driver.FindElement(By.Id("clientY")).Text);
-            //}
-            //else
-            //{
-            //    x = int.Parse(driver.FindElement(By.Id("pageX")).Text);
-            //    y = int.Parse(driver.FindElement(By.Id("pageY")).Text);
-            //}
-            int x = int.Parse(driver.FindElement(By.Id("pageX")).Text);
-            int y = int.Parse(driver.FindElement(By.Id("pageY")).Text);
+            int x = Convert.ToInt16(Math.Round(Convert.ToDouble(driver.FindElement(By.Id("pageX")).Text)));
+            int y = Convert.ToInt16(Math.Round(Convert.ToDouble(driver.FindElement(By.Id("pageY")).Text)));
 
             Assert.That(FuzzyPositionMatching(location.X + 20, location.Y + 10, string.Format("{0},{1}", x, y)), Is.True);
         }
@@ -285,8 +298,8 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
             driver.Url = linkedImage;
@@ -317,7 +330,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
         public void HoldingDownShiftKeyWhileClicking()
         {
             driver.Url = clickEventPage;
@@ -375,6 +388,14 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement result = driver.FindElement(By.Id("result"));
             WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
+        }
+
+        [Test]
+        public void PerformsPause()
+        {
+            DateTime start = DateTime.Now;
+            new Actions(driver).Pause(TimeSpan.FromMilliseconds(1200)).Build().Perform();
+            Assert.IsTrue(DateTime.Now - start > TimeSpan.FromMilliseconds(1200));
         }
 
         private bool FuzzyPositionMatching(int expectedX, int expectedY, string locationTuple)

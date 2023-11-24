@@ -25,45 +25,42 @@ module Selenium
       let(:service_path) { '/path/to/service' }
 
       before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
+        allow(Platform).to receive(:assert_executable)
         stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
 
-      describe '#new' do
-        it 'uses default path and port' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
-          expect(Service).to receive(:driver_path)
+      describe 'browser shortcuts' do
+        let(:args) { %w[--foo --bar] }
 
-          service = Service.new
-          expect(service.executable_path).to eq service_path
-          expect(service.port).to eq Selenium::WebDriver::Service::DEFAULT_PORT
+        it 'creates Chrome instance' do
+          service = described_class.chrome(args: args)
+          expect(service).to be_a(Chrome::Service)
+          expect(service.args).to eq args
         end
 
-        it 'uses provided path and port' do
-          path = 'foo'
-          port = 5678
-
-          service = Service.new(path: path, port: port)
-
-          expect(service.executable_path).to eq path
-          expect(service.port).to eq port
+        it 'creates Edge instance' do
+          service = described_class.edge(args: args)
+          expect(service).to be_a(Edge::Service)
+          expect(service.args).to eq args
         end
 
-        it 'does not create args by default' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
-          expect(Service).to receive(:driver_path)
-
-          service = Service.new
-          expect(service.extra_args).to be_empty
+        it 'creates Firefox instance' do
+          service = described_class.firefox(args: args)
+          expect(service).to be_a(Firefox::Service)
+          expect(service.args).to eq args
         end
 
-        it 'uses provided args' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
-          expect(Service).to receive(:driver_path)
+        it 'creates IE instance' do
+          service = described_class.internet_explorer(args: args)
+          expect(service).to be_a(IE::Service)
+          expect(service.args).to eq args
+        end
 
-          service = Service.new(args: ['--foo', '--bar'])
-          expect(service.extra_args).to eq ['--foo', '--bar']
+        it 'creates Safari instance' do
+          service = described_class.safari(args: args)
+          expect(service).to be_a(Safari::Service)
+          expect(service.args).to eq args
         end
       end
     end

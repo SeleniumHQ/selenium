@@ -23,6 +23,8 @@
 # This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
+# flake8: noqa
+
 import builtins
 from dataclasses import dataclass
 from enum import Enum
@@ -55,13 +57,34 @@ MODULE_HEADER = '''{}
 #
 # CDP domain: {{}}{{}}
 from __future__ import annotations
-from ..devtools.util import event_class, T_JSON_DICT
+from .util import event_class, T_JSON_DICT
 from dataclasses import dataclass
 import enum
 import typing
 '''.format(SHARED_HEADER)
 
 current_version = ''
+
+UTIL_PY = """
+import typing
+
+
+T_JSON_DICT = typing.Dict[str, typing.Any]
+_event_parsers = dict()
+
+
+def event_class(method):
+    ''' A decorator that registers a class as an event class. '''
+    def decorate(cls):
+        _event_parsers[method] = cls
+        return cls
+    return decorate
+
+
+def parse_json_event(json: T_JSON_DICT) -> typing.Any:
+    ''' Parse a JSON dictionary into a CDP event. '''
+    return _event_parsers[json['method']].from_json(json['params'])
+"""
 
 
 def indent(s, n):
@@ -83,12 +106,11 @@ def escape_backticks(docstr):
     def replace_one(match):
         if match.group(2) == 's':
             return f"``{match.group(1)}``'s"
-        elif match.group(2):
+        if match.group(2):
             # This case (some trailer other than "s") doesn't currently exist
             # in the CDP definitions, but it's here just to be safe.
             return f'``{match.group(1)}`` {match.group(2)}'
-        else:
-            return f'``{match.group(1)}``'
+        return f'``{match.group(1)}``'
 
     # Sometimes pipes are used where backticks should have been used.
     docstr = docstr.replace('|', '`')
@@ -101,7 +123,7 @@ def inline_doc(description):
         return ''
 
     description = escape_backticks(description)
-    lines = ['#: {}'.format(l) for l in description.split('\n')]
+    lines = [f'#: {l}' for l in description.split('\n')]
     return '\n'.join(lines)
 
 
@@ -139,7 +161,7 @@ def ref_to_python(ref):
     '''
     if '.' in ref:
         domain, subtype = ref.split('.')
-        ref = '{}.{}'.format(snake_case(domain), subtype)
+        ref = f'{snake_case(domain)}.{subtype}'
     return f"{ref}"
 
 
@@ -156,17 +178,15 @@ class CdpPrimitiveType(Enum):
         ''' Return a type annotation for the CDP type. '''
         if cdp_type == 'any':
             return 'typing.Any'
-        else:
-            return cls[cdp_type].value
+        return cls[cdp_type].value
 
     @classmethod
     def get_constructor(cls, cdp_type, val):
         ''' Return the code to construct a value for a given CDP type. '''
         if cdp_type == 'any':
             return val
-        else:
-            cons = cls[cdp_type].value
-            return f'{cons}({val})'
+        cons = cls[cdp_type].value
+        return f'{cons}({val})'
 
 
 @dataclass
@@ -205,7 +225,7 @@ class CdpProperty:
         if self.items:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
-                ann = "typing.List[{}]".format(py_ref)
+                ann = f"typing.List[{py_ref}]"
             else:
                 ann = 'typing.List[{}]'.format(
                     CdpPrimitiveType.get_annotation(self.items.type))
@@ -245,7 +265,7 @@ class CdpProperty:
             code += ' = None'
         return code
 
-    def generate_to_json(self, dict_, use_self = True):
+    def generate_to_json(self, dict_, use_self=True):
         ''' Generate the code that exports this property to the specified JSON
         dict. '''
         self_ref = 'self.' if use_self else ''
@@ -275,6 +295,7 @@ class CdpProperty:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
                 expr = f"[{py_ref}.from_json(i) for i in {dict_}['{self.name}']]"
+                expr
             else:
                 cons = CdpPrimitiveType.get_constructor(self.items.type, 'i')
                 expr = f"[{cons} for i in {dict_}['{self.name}']]"
@@ -309,7 +330,7 @@ class CdpType:
             type_['type'],
             CdpItems.from_json(type_['items']) if 'items' in type_ else None,
             type_.get('enum'),
-            [CdpProperty.from_json(p) for p in type_.get('properties', list())],
+            [CdpProperty.from_json(p) for p in type_.get('properties', [])],
         )
 
     def generate_code(self):
@@ -317,10 +338,9 @@ class CdpType:
         logger.debug('Generating type %s: %s', self.id, self.type)
         if self.enum:
             return self.generate_enum_code()
-        elif self.properties:
+        if self.properties:
             return self.generate_class_code()
-        else:
-            return self.generate_primitive_code()
+        return self.generate_primitive_code()
 
     def generate_primitive_code(self):
         ''' Generate code for a primitive type. '''
@@ -371,7 +391,7 @@ class CdpType:
             def to_json(self):
                 return self.value''')
 
-        def_from_json = dedent(f'''\
+        def_from_json = dedent('''\
             @classmethod
             def from_json(cls, json):
                 return cls(json)''')
@@ -425,12 +445,12 @@ class CdpType:
 
         # Emit from_json() method. The properties are sorted in the same order
         # as above for readability.
-        def_from_json = dedent(f'''\
+        def_from_json = dedent('''\
             @classmethod
             def from_json(cls, json):
                 return cls(
         ''')
-        from_jsons = list()
+        from_jsons = []
         for p in props:
             from_json = p.generate_from_json(dict_='json')
             from_jsons.append(f'{p.py_name}={from_json},')
@@ -476,7 +496,7 @@ class CdpParameter(CdpProperty):
                 py_type = f'typing.List[{nested_type}]'
         else:
             if self.ref:
-                py_type = "{}".format(ref_to_python(self.ref))
+                py_type = f"{ref_to_python(self.ref)}"
             else:
                 py_type = CdpPrimitiveType.get_annotation(
                     typing.cast(str, self.type))
@@ -502,10 +522,10 @@ class CdpParameter(CdpProperty):
         doc = f':param {self.py_name}:'
 
         if self.experimental:
-            doc += f' **(EXPERIMENTAL)**'
+            doc += ' **(EXPERIMENTAL)**'
 
         if self.optional:
-            doc += f' *(Optional)*'
+            doc += ' *(Optional)*'
 
         if self.description:
             desc = self.description.replace('`', '``').replace('\n', ' ')
@@ -576,8 +596,8 @@ class CdpCommand:
     @classmethod
     def from_json(cls, command, domain) -> 'CdpCommand':
         ''' Instantiate a CDP command from a JSON object. '''
-        parameters = command.get('parameters', list())
-        returns = command.get('returns', list())
+        parameters = command.get('parameters', [])
+        returns = command.get('returns', [])
 
         return cls(
             command['name'],
@@ -607,9 +627,18 @@ class CdpCommand:
         code += f'def {self.py_name}('
         ret = f') -> {ret_type}:\n'
         if self.parameters:
+            params = [p.generate_code() for p in self.parameters]
+            optional = False
+            clean_params = []
+            for para in params:
+                if "= None" in para:
+                    optional = True
+                if optional and "= None" not in para:
+                    para += ' = None'
+                clean_params.append(para)
             code += '\n'
             code += indent(
-                ',\n'.join(p.generate_code() for p in self.parameters), 8)
+                ',\n'.join(clean_params), 8)
             code += '\n'
             code += indent(ret, 4)
         else:
@@ -620,7 +649,7 @@ class CdpCommand:
         if self.description:
             doc = self.description
         if self.experimental:
-            doc += f'\n\n**EXPERIMENTAL**'
+            doc += '\n\n**EXPERIMENTAL**'
         if self.parameters and doc:
             doc += '\n\n'
         elif not self.parameters and self.returns:
@@ -702,7 +731,7 @@ class CdpEvent:
             json.get('deprecated', False),
             json.get('experimental', False),
             [typing.cast(CdpParameter, CdpParameter.from_json(p))
-                for p in json.get('parameters', list())],
+                for p in json.get('parameters', [])],
             domain
         )
 
@@ -771,16 +800,16 @@ class CdpDomain:
     @classmethod
     def from_json(cls, domain: dict):
         ''' Instantiate a CDP domain from a JSON object. '''
-        types = domain.get('types', list())
-        commands = domain.get('commands', list())
-        events = domain.get('events', list())
+        types = domain.get('types', [])
+        commands = domain.get('commands', [])
+        events = domain.get('events', [])
         domain_name = domain['domain']
 
         return cls(
             domain_name,
             domain.get('description'),
             domain.get('experimental', False),
-            domain.get('dependencies', list()),
+            domain.get('dependencies', []),
             [CdpType.from_json(type) for type in types],
             [CdpCommand.from_json(command, domain_name)
                 for command in commands],
@@ -830,7 +859,7 @@ class CdpDomain:
                 continue
             if domain != self.domain:
                 dependencies.add(snake_case(domain))
-        code = '\n'.join(f'from ..devtools import {d}' for d in sorted(dependencies))
+        code = '\n'.join(f'from . import {d}' for d in sorted(dependencies))
 
         return code
 
@@ -906,12 +935,12 @@ def parse(json_path, output_path):
     :returns: a list of CDP domain objects
     '''
     global current_version
-    with open(json_path, "r") as json_file:
+    with open(json_path, encoding="utf-8") as json_file:
         schema = json.load(json_file)
     version = schema['version']
     assert (version['major'], version['minor']) == ('1', '3')
     current_version = f'{version["major"]}.{version["minor"]}'
-    domains = list()
+    domains = []
     for domain in schema['domains']:
         domains.append(CdpDomain.from_json(domain))
     return domains
@@ -924,11 +953,11 @@ def generate_init(init_path, domains):
     :param list[tuple] modules: a list of modules each represented as tuples
         of (name, list_of_exported_symbols)
     '''
-    with open(init_path, "w") as init_file:
+    with open(init_path, "w", encoding="utf-8") as init_file:
         init_file.write(INIT_HEADER)
-        init_file.write('from ..devtools import util\n\n')
         for domain in domains:
-            init_file.write('from ..devtools import {}\n'.format(domain.module))
+            init_file.write(f'from . import {domain.module}\n')
+        init_file.write('from . import util\n\n')
 
 
 def generate_docs(docs_path, domains):
@@ -955,7 +984,11 @@ def main(browser_protocol_path, js_protocol_path, output_path):
         browser_protocol_path,
         js_protocol_path,
     ]
-    output_path.mkdir(parents=True)
+
+    # Generate util.py
+    util_path = output_path / "util.py"
+    with util_path.open('w') as util_file:
+        util_file.write(UTIL_PY)
 
     # Remove generated code
     for subpath in output_path.iterdir():
@@ -963,7 +996,7 @@ def main(browser_protocol_path, js_protocol_path, output_path):
             subpath.unlink()
 
     # Parse domains
-    domains = list()
+    domains = []
     for json_path in json_paths:
         logger.info('Parsing JSON file %s', json_path)
         domains.extend(parse(json_path, output_path))

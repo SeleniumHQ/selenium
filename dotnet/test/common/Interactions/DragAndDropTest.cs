@@ -128,7 +128,7 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
 
-            // Dragging too far left and up does not move the element. It will be at 
+            // Dragging too far left and up does not move the element. It will be at
             // its original location after the drag.
             Point originalLocation = new Point(0, 0);
             Actions actionProvider = new Actions(driver);
@@ -199,7 +199,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Untested")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()

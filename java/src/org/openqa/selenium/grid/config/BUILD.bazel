@@ -1,0 +1,26 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "config",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/cli:__pkg__",
+        "//java/src/org/openqa/selenium/events:__subpackages__",
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/src/org/openqa/selenium/netty/server:__pkg__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/src/org/openqa/selenium/remote/tracing:__subpackages__",
+        "//java/test/org/openqa/selenium:__pkg__",
+        "//java/test/org/openqa/selenium:__subpackages__",
+        "//java/test/org/openqa/selenium/environment:__pkg__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("io.ous:jtoml"),
+    ],
+)

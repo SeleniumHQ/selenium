@@ -1,0 +1,14 @@
+genrule(
+    name = "update",
+    srcs = [
+        "jruby-complete.jar",
+        "update.rb",
+        "VERSION",
+    ],
+    outs = ["jruby-complete-new.jar"],
+    cmd = "java -jar $(location jruby-complete.jar) $(location update.rb) $@",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+)

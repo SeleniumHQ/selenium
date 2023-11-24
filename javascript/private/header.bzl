@@ -58,7 +58,7 @@ closure_lang_file = rule(
         "_lang_gen": attr.label(
             default = "//javascript/private:gen_file",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
         "utf8": attr.bool(
             doc = "Generate utf8 or not. UTF8 with generate string and char. " +

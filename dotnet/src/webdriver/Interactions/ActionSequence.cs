@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (device == null)
             {
-                throw new ArgumentNullException("device", "Input device cannot be null.");
+                throw new ArgumentNullException(nameof(device), "Input device cannot be null.");
             }
 
             this.device = device;
@@ -70,6 +70,14 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Gets the input device for this Action sequence.
+        /// </summary>
+        public InputDevice inputDevice
+        {
+            get { return this.inputDevice; }
+        }
+
+        /// <summary>
         /// Adds an action to the sequence.
         /// </summary>
         /// <param name="interactionToAdd">The action to add to the sequence.</param>
@@ -78,12 +86,12 @@ namespace OpenQA.Selenium.Interactions
         {
             if (interactionToAdd == null)
             {
-                throw new ArgumentNullException("interactionToAdd", "Interaction to add to sequence must not be null");
+                throw new ArgumentNullException(nameof(interactionToAdd), "Interaction to add to sequence must not be null");
             }
 
             if (!interactionToAdd.IsValidFor(this.device.DeviceKind))
             {
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Interaction {0} is invalid for device type {1}.", interactionToAdd.GetType(), this.device.DeviceKind), "interactionToAdd");
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Interaction {0} is invalid for device type {1}.", interactionToAdd.GetType(), this.device.DeviceKind), nameof(interactionToAdd));
             }
 
             this.interactions.Add(interactionToAdd);

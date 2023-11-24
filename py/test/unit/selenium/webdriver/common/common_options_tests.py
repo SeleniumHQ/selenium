@@ -17,7 +17,9 @@
 
 import pytest
 
+from selenium.webdriver import Proxy
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.proxy import ProxyType
 
 
 @pytest.fixture
@@ -26,10 +28,50 @@ def options():
 
 
 def test_add_arguments(options):
-    options.add_argument('foo')
-    assert 'foo' in options._arguments
+    options.add_argument("foo")
+    assert "foo" in options._arguments
 
 
 def test_get_arguments(options):
-    options._arguments = ['foo']
-    assert 'foo' in options.arguments
+    options._arguments = ["foo"]
+    assert "foo" in options.arguments
+
+
+def test_enables_mobile(options):
+    options.enable_mobile(android_package="cheese")
+    assert options.mobile_options["androidPackage"] == "cheese"
+    assert not hasattr(options.mobile_options, "androidActivity")
+    assert not hasattr(options.mobile_options, "androidDeviceSerial")
+
+
+def test_enable_mobile_errors_without_package(options):
+    with pytest.raises(AttributeError):
+        options.enable_mobile()
+
+
+def test_enable_mobile_with_activity(options):
+    options.enable_mobile(android_package="sausages", android_activity="eating")
+    assert options.mobile_options["androidActivity"] == "eating"
+
+
+def test_enable_mobile_with_device_serial(options):
+    options.enable_mobile(android_package="cheese", android_activity="crackers", device_serial="1234")
+    options.mobile_options["androidDeviceSerial"] == "1234"
+
+
+def test_missing_capabilities_return_false_rather_than_none():
+    options = ArgOptions()
+    assert options.strict_file_interactability is False
+    assert options.set_window_rect is False
+    assert options.accept_insecure_certs is False
+
+
+def test_add_proxy():
+    options = ArgOptions()
+    proxy = Proxy({"proxyType": ProxyType.MANUAL})
+    proxy.http_proxy = "http://user:password@http_proxy.com:8080"
+    options.proxy = proxy
+    caps = options.to_capabilities()
+
+    assert options.proxy == proxy
+    assert caps.get("proxy") == proxy.to_capabilities()

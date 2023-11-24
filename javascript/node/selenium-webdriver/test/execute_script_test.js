@@ -67,19 +67,19 @@ suite(function (env) {
     describe('scripts;', function () {
       it('do not pollute the global scope', async function () {
         await execute('var x = 1;')
-        assert.equal(await execute('return typeof x;'), 'undefined')
+        assert.strictEqual(await execute('return typeof x;'), 'undefined')
       })
 
       it('can set global variables', async function () {
         await execute('window.x = 1234;')
-        assert.equal(await execute('return x;'), 1234)
+        assert.strictEqual(await execute('return x;'), 1234)
       })
 
       it('may be defined as a function expression', async function () {
         let result = await execute(function () {
           return 1234 + 'abc'
         })
-        assert.equal(result, '1234abc')
+        assert.strictEqual(result, '1234abc')
       })
     })
 
@@ -93,17 +93,17 @@ suite(function (env) {
       })
 
       it('can return numbers', async function () {
-        assert.equal(await execute('return 1234'), 1234)
-        assert.equal(await execute('return 3.1456'), 3.1456)
+        assert.strictEqual(await execute('return 1234'), 1234)
+        assert.strictEqual(await execute('return 3.1456'), 3.1456)
       })
 
       it('can return strings', async function () {
-        assert.equal(await execute('return "hello"'), 'hello')
+        assert.strictEqual(await execute('return "hello"'), 'hello')
       })
 
       it('can return booleans', async function () {
-        assert.equal(await execute('return true'), true)
-        assert.equal(await execute('return false'), false)
+        assert.strictEqual(await execute('return true'), true)
+        assert.strictEqual(await execute('return false'), false)
       })
 
       it('can return an array of primitives', function () {
@@ -116,7 +116,7 @@ suite(function (env) {
         return execute('return [[1, 2, [3]]]').then(verifyJson([[1, 2, [3]]]))
       })
 
-      ignore(env.browsers(Browser.IE)).it(
+      ignore(env.browsers(Browser.INTERNET_EXPLORER)).it(
         'can return empty object literal',
         function () {
           return execute('return {}').then(verifyJson({}))
@@ -126,8 +126,8 @@ suite(function (env) {
       it('can return object literals', function () {
         return execute('return {a: 1, b: false, c: null}').then((result) => {
           verifyJson(['a', 'b', 'c'])(Object.keys(result).sort())
-          assert.equal(result.a, 1)
-          assert.equal(result.b, false)
+          assert.strictEqual(result.a, 1)
+          assert.strictEqual(result.b, false)
           assert.strictEqual(result.c, null)
         })
       })
@@ -153,7 +153,7 @@ suite(function (env) {
           'var nodes = document.querySelectorAll(".request,.host");' +
             'return [nodes[0], nodes[1]];'
         )
-        assert.equal(result.length, 2)
+        assert.strictEqual(result.length, 2)
 
         assert.ok(result[0] instanceof WebElement)
         assert.ok((await result[0].getText()).startsWith('GET '))
@@ -167,7 +167,7 @@ suite(function (env) {
           'return document.querySelectorAll(".request,.host");'
         )
 
-        assert.equal(result.length, 2)
+        assert.strictEqual(result.length, 2)
 
         assert.ok(result[0] instanceof WebElement)
         assert.ok((await result[0].getText()).startsWith('GET '))
@@ -180,39 +180,48 @@ suite(function (env) {
         let result = await execute('return {a: document.body}')
 
         assert.ok(result.a instanceof WebElement)
-        assert.equal((await result.a.getTagName()).toLowerCase(), 'body')
+        assert.strictEqual((await result.a.getTagName()).toLowerCase(), 'body')
       })
     })
 
     describe('parameters;', function () {
       it('can pass numeric arguments', async function () {
-        assert.equal(await execute('return arguments[0]', 12), 12)
-        assert.equal(await execute('return arguments[0]', 3.14), 3.14)
+        assert.strictEqual(await execute('return arguments[0]', 12), 12)
+        assert.strictEqual(await execute('return arguments[0]', 3.14), 3.14)
       })
 
       it('can pass boolean arguments', async function () {
-        assert.equal(await execute('return arguments[0]', true), true)
-        assert.equal(await execute('return arguments[0]', false), false)
+        assert.strictEqual(await execute('return arguments[0]', true), true)
+        assert.strictEqual(await execute('return arguments[0]', false), false)
       })
 
       it('can pass string arguments', async function () {
-        assert.equal(await execute('return arguments[0]', 'hi'), 'hi')
+        assert.strictEqual(await execute('return arguments[0]', 'hi'), 'hi')
       })
 
       it('can pass null arguments', async function () {
-        assert.equal(await execute('return arguments[0] === null', null), true)
-        assert.equal(await execute('return arguments[0]', null), null)
+        assert.strictEqual(
+          await execute('return arguments[0] === null', null),
+          true
+        )
+        assert.strictEqual(await execute('return arguments[0]', null), null)
       })
 
       it('passes undefined as a null argument', async function () {
         var x
-        assert.equal(await execute('return arguments[0] === null', x), true)
-        assert.equal(await execute('return arguments[0]', x), null)
+        assert.strictEqual(
+          await execute('return arguments[0] === null', x),
+          true
+        )
+        assert.strictEqual(await execute('return arguments[0]', x), null)
       })
 
       it('can pass multiple arguments', async function () {
-        assert.equal(await execute('return arguments.length'), 0)
-        assert.equal(await execute('return arguments.length', 1, 'a', false), 3)
+        assert.strictEqual(await execute('return arguments.length'), 0)
+        assert.strictEqual(
+          await execute('return arguments.length', 1, 'a', false),
+          3
+        )
       })
 
       ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI)).it(
@@ -220,10 +229,10 @@ suite(function (env) {
         async function () {
           let val = await execute('return arguments', 1, 'a', false)
 
-          assert.equal(val.length, 3)
-          assert.equal(val[0], 1)
-          assert.equal(val[1], 'a')
-          assert.equal(val[2], false)
+          assert.strictEqual(val.length, 3)
+          assert.strictEqual(val[0], 1)
+          assert.strictEqual(val[1], 'a')
+          assert.strictEqual(val[2], false)
         }
       )
 
@@ -232,8 +241,8 @@ suite(function (env) {
           'return [typeof arguments[0], arguments[0].a]',
           { a: 'hello' }
         )
-        assert.equal(result[0], 'object')
-        assert.equal(result[1], 'hello')
+        assert.strictEqual(result[0], 'object')
+        assert.strictEqual(result[1], 'hello')
       })
 
       it('WebElement arguments are passed as DOM elements', async function () {
@@ -242,13 +251,13 @@ suite(function (env) {
           'return arguments[0].tagName.toLowerCase();',
           el
         )
-        assert.equal(result, 'div')
+        assert.strictEqual(result, 'div')
       })
 
       it('can pass array containing object literals', async function () {
         let result = await execute('return arguments[0]', [{ color: 'red' }])
-        assert.equal(result.length, 1)
-        assert.equal(result[0].color, 'red')
+        assert.strictEqual(result.length, 1)
+        assert.strictEqual(result[0].color, 'red')
       })
 
       it('does not modify object literal parameters', function () {
@@ -351,9 +360,9 @@ suite(function (env) {
           })
           .catch(function (e) {
             if (env.browser.name === Browser.SAFARI) {
-              assert.equal(e.name, error.TimeoutError.name)
+              assert.strictEqual(e.name, error.TimeoutError.name)
             } else {
-              assert.equal(e.name, error.ScriptTimeoutError.name)
+              assert.strictEqual(e.name, error.ScriptTimeoutError.name)
             }
           })
       })
@@ -369,7 +378,7 @@ suite(function (env) {
 
   function verifyJson(expected) {
     return function (actual) {
-      assert.equal(JSON.stringify(actual), JSON.stringify(expected))
+      assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected))
     }
   }
 

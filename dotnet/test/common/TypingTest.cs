@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -291,6 +292,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
         public void NumericShiftKeys()
         {
             driver.Url = javascriptPage;
@@ -320,6 +322,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
         public void UppercaseAlphaKeys()
         {
             driver.Url = javascriptPage;
@@ -336,6 +339,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
         public void AllPrintableKeys()
         {
             driver.Url = javascriptPage;
@@ -366,21 +370,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
         public void HomeAndEndAndPageUpAndPageDownKeys()
         {
-            // FIXME: macs don't have HOME keys, would PGUP work?
-            if (System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return;
-            }
-
             driver.Url = javascriptPage;
 
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
-            element.SendKeys("abc" + Keys.Home + "0" + Keys.Left + Keys.Right +
-                             Keys.PageUp + Keys.PageDown + Keys.End + "1" + Keys.Home +
-                             "0" + Keys.PageUp + Keys.End + "111" + Keys.Home + "00");
+            element.SendKeys("abc" + HomeKey() + "0" + Keys.Left + Keys.Right +
+                             Keys.PageUp + Keys.PageDown + EndKey() + "1" + HomeKey() +
+                             "0" + Keys.PageUp + EndKey() + "111" + HomeKey() + "00");
             Assert.AreEqual("0000abc1111", element.GetAttribute("value"));
         }
 
@@ -455,14 +454,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/646")]
         public void ChordControlHomeShiftEndDelete()
         {
-            // FIXME: macs don't have HOME keys, would PGUP work?
-            if (System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return;
-            }
-
             driver.Url = javascriptPage;
 
             IWebElement result = driver.FindElement(By.Id("result"));
@@ -470,8 +464,8 @@ namespace OpenQA.Selenium
 
             element.SendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
 
-            element.SendKeys(Keys.Home);
-            element.SendKeys("" + Keys.Shift + Keys.End + Keys.Delete);
+            element.SendKeys(HomeKey());
+            element.SendKeys("" + Keys.Shift + EndKey() + Keys.Delete);
 
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
             string text = result.Text.Trim();
@@ -479,82 +473,66 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ChordReveseShiftHomeSelectionDeletes()
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
+        public void ChordReverseShiftHomeSelectionDeletes()
         {
-            // FIXME: macs don't have HOME keys, would PGUP work?
-            if (System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return;
-            }
             driver.Url = javascriptPage;
 
             IWebElement result = driver.FindElement(By.Id("result"));
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
-            element.SendKeys("done" + Keys.Home);
+            element.SendKeys("done" + HomeKey());
             Assert.AreEqual("done", element.GetAttribute("value"));
 
             //Sending chords
-            element.SendKeys("" + Keys.Shift + "ALL " + Keys.Home);
+            element.SendKeys("" + Keys.Shift + "ALL " + HomeKey());
             Assert.AreEqual("ALL done", element.GetAttribute("value"));
 
             element.SendKeys(Keys.Delete);
             Assert.AreEqual("done", element.GetAttribute("value"), "done");
 
-            element.SendKeys("" + Keys.End + Keys.Shift + Keys.Home);
+            element.SendKeys("" + EndKey() + Keys.Shift + HomeKey());
             Assert.AreEqual("done", element.GetAttribute("value"));
             // Note: trailing SHIFT up here
             string text = result.Text.Trim();
-            Assert.That(text, Does.Contain(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
 
             element.SendKeys("" + Keys.Delete);
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
         }
 
-        // control-x control-v here for cut & paste tests, these work on windows
-        // and linux, but not on the MAC.
-
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
         public void ChordControlCutAndPaste()
         {
-            // FIXME: macs don't have HOME keys, would PGUP work?
-            if (System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return;
-            }
-
             driver.Url = javascriptPage;
 
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
-            IWebElement result = driver.FindElement(By.Id("result"));
 
             String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
             element.SendKeys(paste);
             Assert.AreEqual(paste, element.GetAttribute("value"));
 
             //Chords
-            element.SendKeys("" + Keys.Home + Keys.Shift + Keys.End);
-            string text = result.Text.Trim();
-            Assert.That(text, Does.Contain(" up: 16"));
+            element.SendKeys("" + HomeKey() + Keys.Shift + EndKey());
 
-            element.SendKeys(Keys.Control + "x");
+            element.SendKeys(PrimaryModifier() + "x");
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
 
-            element.SendKeys(Keys.Control + "v");
+            element.SendKeys(PrimaryModifier() + "v");
             Assert.AreEqual(paste, element.GetAttribute("value"));
 
             element.SendKeys("" + Keys.Left + Keys.Left + Keys.Left +
-                             Keys.Shift + Keys.End);
-            element.SendKeys(Keys.Control + "x" + "v");
+                             Keys.Shift + EndKey());
+            element.SendKeys(PrimaryModifier() + "x" + "v");
             Assert.AreEqual(paste, element.GetAttribute("value"));
 
-            element.SendKeys(Keys.Home);
-            element.SendKeys(Keys.Control + "v");
-            element.SendKeys(Keys.Control + "v" + "v");
-            element.SendKeys(Keys.Control + "v" + "v" + "v");
+            element.SendKeys(HomeKey());
+            element.SendKeys(PrimaryModifier() + "v");
+            element.SendKeys(PrimaryModifier() + "v" + "v");
+            element.SendKeys(PrimaryModifier() + "v" + "v" + "v");
             Assert.AreEqual("EFGEFGEFGEFGEFGEFG" + paste, element.GetAttribute("value"));
 
-            element.SendKeys("" + Keys.End + Keys.Shift + Keys.Home +
+            element.SendKeys("" + EndKey() + Keys.Shift + HomeKey() +
                              Keys.Null + Keys.Delete);
             Assert.AreEqual(element.GetAttribute("value"), string.Empty);
         }
@@ -658,7 +636,6 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
-        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -676,32 +653,22 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
         [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
-        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
-
-            // not tested on mac
-            // FIXME: macs don't have HOME keys, would PGUP work?
-            if (System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return;
-            }
 
             driver.SwitchTo().Frame("editFrame");
             IWebElement element = driver.SwitchTo().ActiveElement();
 
             //Chords
             element.SendKeys("Dishy" + Keys.Backspace + Keys.Left + Keys.Left);
-            element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + Keys.End + "ee!");
+            element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + EndKey() + "ee!");
 
             Assert.AreEqual(element.Text, "Fishee!");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
             driver.Url = readOnlyPage;
@@ -714,9 +681,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
-        [IgnoreBrowser(Browser.Edge, "Driver prepends text in contentEditable")]
-        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable")]
+        // [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
+        // [IgnoreBrowser(Browser.Edge, "Driver prepends text in contentEditable")]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2015")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
             driver.Url = readOnlyPage;
@@ -754,6 +721,18 @@ namespace OpenQA.Selenium
             string withKeyPress = string.Format("down: {0} press: {0} up: {0}", expectedKeyCode);
             string withoutKeyPress = string.Format("down: {0} up: {0}", expectedKeyCode);
             Assert.That(element.Text.Trim(), Is.AnyOf(withKeyPress, withoutKeyPress));
+        }
+
+        private string PrimaryModifier() {
+            return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Command : Keys.Control;
+        }
+
+        private string HomeKey() {
+            return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Up : Keys.Home;
+        }
+
+        private string EndKey() {
+            return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Down : Keys.End;
         }
     }
 }

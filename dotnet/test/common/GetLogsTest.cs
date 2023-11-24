@@ -9,7 +9,6 @@ using OpenQA.Selenium.Environment;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support logs API")]
     [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
@@ -83,10 +82,9 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsChrome(driver))
             {
-                ChromeDriverService service = ChromeDriverService.CreateDefaultService(EnvironmentManager.Instance.DriverServiceDirectory);
                 ChromeOptions options = new ChromeOptions();
                 options.SetLoggingPreference(logType, logLevel);
-                localDriver = new ChromeDriver(service, options);
+                localDriver = new ChromeDriver(options);
             }
 
             localDriver.Url = simpleTestPage;

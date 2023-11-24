@@ -14,37 +14,33 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+from typing import Dict
+from typing import Union
 
 KEY = "key"
 POINTER = "pointer"
 NONE = "none"
-SOURCE_TYPES = set([KEY, POINTER, NONE])
+WHEEL = "wheel"
+SOURCE_TYPES = {KEY, POINTER, NONE}
 
 POINTER_MOUSE = "mouse"
 POINTER_TOUCH = "touch"
 POINTER_PEN = "pen"
 
-POINTER_KINDS = set([POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN])
+POINTER_KINDS = {POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN}
 
 
-class Interaction(object):
-
+class Interaction:
     PAUSE = "pause"
 
-    def __init__(self, source):
+    def __init__(self, source: str) -> None:
         self.source = source
 
 
 class Pause(Interaction):
-
-    def __init__(self, source, duration=0):
-        super(Interaction, self).__init__()
-        self.source = source
+    def __init__(self, source, duration: float = 0) -> None:
+        super().__init__(source)
         self.duration = duration
 
-    def encode(self):
-        return {
-            "type": self.PAUSE,
-            "duration": int(self.duration * 1000)
-        }
+    def encode(self) -> Dict[str, Union[str, int]]:
+        return {"type": self.PAUSE, "duration": int(self.duration * 1000)}

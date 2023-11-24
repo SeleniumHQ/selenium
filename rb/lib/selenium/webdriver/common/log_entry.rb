@@ -30,14 +30,14 @@ module Selenium
 
       def as_json(*)
         {
-          'level' => level,
           'timestamp' => timestamp,
+          'level' => level,
           'message' => message
         }
       end
 
       def to_s
-        "#{level} #{time}: #{message}"
+        "#{time} #{level}: #{message}"
       end
 
       def time

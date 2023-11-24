@@ -16,31 +16,50 @@
 # under the License.
 
 import time
+import typing
+from typing import Callable
+from typing import Generic
+from typing import Literal
+from typing import TypeVar
+from typing import Union
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.types import WaitExcTypes
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
-POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
-IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
+POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
+IGNORED_EXCEPTIONS: typing.Tuple[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
+
+D = TypeVar("D", bound=Union[WebDriver, WebElement])
+T = TypeVar("T")
 
 
-class WebDriverWait(object):
-    def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None):
+class WebDriverWait(Generic[D]):
+    def __init__(
+        self,
+        driver: D,
+        timeout: float,
+        poll_frequency: float = POLL_FREQUENCY,
+        ignored_exceptions: typing.Optional[WaitExcTypes] = None,
+    ):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
-           :Args:
-            - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
-            - timeout - Number of seconds before timing out
-            - poll_frequency - sleep interval between calls
-              By default, it is 0.5 second.
-            - ignored_exceptions - iterable structure of exception classes ignored during calls.
-              By default, it contains NoSuchElementException only.
+        :Args:
+         - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote) or a WebElement
+         - timeout - Number of seconds before timing out
+         - poll_frequency - sleep interval between calls
+           By default, it is 0.5 second.
+         - ignored_exceptions - iterable structure of exception classes ignored during calls.
+           By default, it contains NoSuchElementException only.
 
-           Example::
+        Example::
 
-            from selenium.webdriver.support.wait import WebDriverWait \n
-            element = WebDriverWait(driver, 10).until(lambda x: x.find_element(By.ID, "someId")) \n
-            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
-                        until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
+         from selenium.webdriver.support.wait import WebDriverWait \n
+         element = WebDriverWait(driver, 10).until(lambda x: x.find_element(By.ID, "someId")) \n
+         is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
+                     until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
         """
         self._driver = driver
         self._timeout = float(timeout)
@@ -49,7 +68,7 @@ class WebDriverWait(object):
         if self._poll == 0:
             self._poll = POLL_FREQUENCY
         exceptions = list(IGNORED_EXCEPTIONS)
-        if ignored_exceptions is not None:
+        if ignored_exceptions:
             try:
                 exceptions.extend(iter(ignored_exceptions))
             except TypeError:  # ignored_exceptions is not iterable
@@ -57,10 +76,9 @@ class WebDriverWait(object):
         self._ignored_exceptions = tuple(exceptions)
 
     def __repr__(self):
-        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
-            type(self), self._driver.session_id)
+        return f'<{type(self).__module__}.{type(self).__name__} (session="{self._driver.session_id}")>'
 
-    def until(self, method, message=''):
+    def until(self, method: Callable[[D], Union[Literal[False], T]], message: str = "") -> T:
         """Calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
@@ -72,21 +90,21 @@ class WebDriverWait(object):
         screen = None
         stacktrace = None
 
-        end_time = time.time() + self._timeout
+        end_time = time.monotonic() + self._timeout
         while True:
             try:
                 value = method(self._driver)
                 if value:
                     return value
             except self._ignored_exceptions as exc:
-                screen = getattr(exc, 'screen', None)
-                stacktrace = getattr(exc, 'stacktrace', None)
+                screen = getattr(exc, "screen", None)
+                stacktrace = getattr(exc, "stacktrace", None)
             time.sleep(self._poll)
-            if time.time() > end_time:
+            if time.monotonic() > end_time:
                 break
         raise TimeoutException(message, screen, stacktrace)
 
-    def until_not(self, method, message=''):
+    def until_not(self, method: Callable[[D], T], message: str = "") -> Union[T, Literal[True]]:
         """Calls the method provided with the driver as an argument until the \
         return value evaluates to ``False``.
 
@@ -96,7 +114,7 @@ class WebDriverWait(object):
                   ``True`` if `method` has raised one of the ignored exceptions
         :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
         """
-        end_time = time.time() + self._timeout
+        end_time = time.monotonic() + self._timeout
         while True:
             try:
                 value = method(self._driver)
@@ -105,6 +123,6 @@ class WebDriverWait(object):
             except self._ignored_exceptions:
                 return True
             time.sleep(self._poll)
-            if time.time() > end_time:
+            if time.monotonic() > end_time:
                 break
         raise TimeoutException(message)

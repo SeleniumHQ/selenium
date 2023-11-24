@@ -108,8 +108,7 @@ namespace OpenQA.Selenium
 
         public class UnhandledPromptBehaviorOptions : DriverOptions
         {
-            [Obsolete]
-            public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+            public override void AddAdditionalOption(string capabilityName, object capabilityValue)
             {
             }
 

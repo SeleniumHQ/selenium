@@ -17,28 +17,29 @@
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
 const url = require('url')
 
 const httpUtil = require('../http/util')
 const io = require('../io')
-const exec = require('../io/exec')
+const { exec } = require('../io/exec')
 const { Zip } = require('../io/zip')
 const cmd = require('../lib/command')
 const input = require('../lib/input')
 const net = require('../net')
 const portprober = require('../net/portprober')
+const logging = require('../lib/logging')
+
+const { getJavaPath, formatSpawnArgs } = require('./util')
 
 /**
  * @typedef {(string|!Array<string|number|!stream.Stream|null|undefined>)}
  */
-var StdIoOptions // eslint-disable-line
+let StdIoOptions // eslint-disable-line
 
 /**
  * @typedef {(string|!IThenable<string>)}
  */
-var CommandLineFlag // eslint-disable-line
+let CommandLineFlag // eslint-disable-line
 
 /**
  * A record object that defines the configuration options for a DriverService
@@ -118,6 +119,8 @@ class DriverService {
    * @param {!ServiceOptions} options Configuration options for the service.
    */
   constructor(executable, options) {
+    /** @private @const */
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.DriverService`)
     /** @private {string} */
     this.executable_ = executable
 
@@ -163,6 +166,14 @@ class DriverService {
     this.address_ = null
   }
 
+  getExecutable() {
+    return this.executable_
+  }
+
+  setExecutable(value) {
+    this.executable_ = value
+  }
+
   /**
    * @return {!Promise<string>} A promise that resolves to the server's address.
    * @throws {Error} If the server has not been started.
@@ -196,8 +207,8 @@ class DriverService {
       return this.address_
     }
 
-    var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS
-    var self = this
+    const timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS
+    const self = this
 
     let resolveCommand
     this.command_ = new Promise((resolve) => (resolveCommand = resolve))
@@ -210,7 +221,7 @@ class DriverService {
           }
 
           return resolveCommandLineFlags(this.args_).then((args) => {
-            var command = exec(self.executable_, {
+            const command = exec(self.executable_, {
               args: args,
               env: self.env_,
               stdio: self.stdio_,
@@ -218,8 +229,8 @@ class DriverService {
 
             resolveCommand(command)
 
-            var earlyTermination = command.result().then(function (result) {
-              var error =
+            const earlyTermination = command.result().then(function (result) {
+              const error =
                 result.code == null
                   ? Error('Server was killed with ' + result.signal)
                   : Error('Server terminated early with status ' + result.code)
@@ -229,14 +240,14 @@ class DriverService {
               throw error
             })
 
-            var hostname = self.hostname_
+            let hostname = self.hostname_
             if (!hostname) {
               hostname =
                 (!self.loopbackOnly_ && net.getAddress()) ||
                 net.getLoopbackAddress()
             }
 
-            var serverUrl = url.format({
+            const serverUrl = url.format({
               protocol: 'http',
               hostname: hostname,
               port: port + '',
@@ -314,10 +325,6 @@ DriverService.Builder = class {
    * @throws {Error} If the provided executable path does not exist.
    */
   constructor(exe) {
-    if (!fs.existsSync(exe)) {
-      throw Error(`The specified executable path does not exist: ${exe}`)
-    }
-
     /** @private @const {string} */
     this.exe_ = exe
 
@@ -338,9 +345,8 @@ DriverService.Builder = class {
    * @this {THIS}
    * @template THIS
    */
-  addArguments(var_args) { // eslint-disable-line
-    let args = Array.prototype.slice.call(arguments, 0)
-    this.options_.args = this.options_.args.concat(args)
+  addArguments(...arguments_) {
+    this.options_.args = this.options_.args.concat(arguments_)
     return this
   }
 
@@ -449,7 +455,7 @@ DriverService.Builder = class {
 
 /**
  * Manages the life and death of the
- * <a href="http://selenium-release.storage.googleapis.com/index.html">
+ * <a href="https://www.selenium.dev/downloads/">
  * standalone Selenium server</a>.
  */
 class SeleniumServer extends DriverService {
@@ -465,7 +471,7 @@ class SeleniumServer extends DriverService {
       throw Error('Path to the Selenium jar not specified')
     }
 
-    var options = opt_options || {}
+    const options = opt_options || {}
 
     if (options.port < 0) {
       throw Error('Port must be >= 0: ' + options.port)
@@ -480,13 +486,15 @@ class SeleniumServer extends DriverService {
       let port = resolved[0]
       let jvmArgs = resolved[1]
       let args = resolved[2]
-      return jvmArgs.concat('-jar', jar, '-port', port).concat(args)
+
+      const fullArgsList = jvmArgs
+        .concat('-jar', jar, '-port', port)
+        .concat(args)
+
+      return formatSpawnArgs(jar, fullArgsList)
     })
 
-    let java = 'java'
-    if (process.env['JAVA_HOME']) {
-      java = path.join(process.env['JAVA_HOME'], 'bin/java')
-    }
+    const java = getJavaPath()
 
     super(java, {
       loopback: options.loopback,
@@ -563,12 +571,12 @@ SeleniumServer.Options = class {
 /**
  * A {@link webdriver.FileDetector} that may be used when running
  * against a remote
- * [Selenium server](http://selenium-release.storage.googleapis.com/index.html).
+ * [Selenium server](https://www.selenium.dev/downloads/).
  *
  * When a file path on the local machine running this script is entered with
  * {@link webdriver.WebElement#sendKeys WebElement#sendKeys}, this file detector
  * will transfer the specified file to the Selenium server's host; the sendKeys
- * command will be updated to use the transfered file's path.
+ * command will be updated to use the transferred file's path.
  *
  * __Note:__ This class depends on a non-standard command supported on the
  * Java Selenium server. The file detector will fail if used with a server that
@@ -619,7 +627,10 @@ class FileDetector extends input.FileDetector {
 
 // PUBLIC API
 
-exports.DriverService = DriverService
-exports.FileDetector = FileDetector
-exports.SeleniumServer = SeleniumServer
-exports.ServiceOptions = ServiceOptions // Exported for API docs.
+module.exports = {
+  DriverService,
+  FileDetector,
+  SeleniumServer,
+  // Exported for API docs.
+  ServiceOptions,
+}

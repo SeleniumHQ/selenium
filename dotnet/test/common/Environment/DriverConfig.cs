@@ -26,5 +26,8 @@ namespace OpenQA.Selenium.Environment
 
         [JsonProperty]
         public bool AutoStartRemoteServer { get; set; }
+
+        [JsonProperty]
+        public bool Logging { get; set; }
     }
 }

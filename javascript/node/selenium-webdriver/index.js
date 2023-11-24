@@ -38,14 +38,19 @@ const safari = require('./safari')
 const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
-const opera = require('./opera')
+const select = require('./lib/select')
+const LogInspector = require('./bidi/logInspector')
+const BrowsingContext = require('./bidi/browsingContext')
+const BrowsingConextInspector = require('./bidi/browsingContextInspector')
+const ScriptManager = require('./bidi/scriptManager')
+const NetworkInspector = require('./bidi/networkInspector')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
 const Capability = capabilities.Capability
 const WebDriver = webdriver.WebDriver
 
-var seleniumServer
+let seleniumServer
 
 /**
  * Starts an instance of the Selenium server if not yet running.
@@ -76,13 +81,12 @@ function startSeleniumServer(jar) {
  * @return {function(new: webdriver.WebDriver, ...?)}
  */
 function ensureFileDetectorsAreEnabled(ctor) {
-  const mixin = class extends ctor {
+  return class extends ctor {
     /** @param {input.FileDetector} detector */
     setFileDetector(detector) {
       webdriver.WebDriver.prototype.setFileDetector.call(this, detector)
     }
   }
-  return mixin
 }
 
 /**
@@ -162,7 +166,7 @@ function createDriver(ctor, ...args) {
  *   option always takes precedence over {@code SELENIUM_SERVER_JAR}.
  *
  * - {@code SELENIUM_SERVER_JAR}: defines the path to the
- *   <a href="http://selenium-release.storage.googleapis.com/index.html">
+ *   <a href="https://www.selenium.dev/downloads/">
  *   standalone Selenium server</a> jar to use. The server will be started the
  *   first time a WebDriver instance and be killed when the process exits.
  *
@@ -190,7 +194,7 @@ function createDriver(ctor, ...args) {
 class Builder {
   constructor() {
     /** @private @const */
-    this.log_ = logging.getLogger('webdriver.Builder')
+    this.log_ = logging.getLogger(`${logging.Type.DRIVER}.Builder`)
 
     /** @private {string} */
     this.url_ = ''
@@ -233,12 +237,6 @@ class Builder {
 
     /** @private {http.Agent} */
     this.agent_ = null
-
-    /** @private {opera.Options} */
-    this.operaOptions_ = null
-
-    /** @private {remote.DriverService.Builder} */
-    this.operaService_ = null
   }
 
   /**
@@ -318,6 +316,8 @@ class Builder {
   }
 
   /**
+   * Recommended way is to use set*Options where * is the browser(eg setChromeOptions)
+   *
    * Sets the desired capabilities when requesting a new session. This will
    * overwrite any previously set capabilities.
    * @param {!(Object|Capabilities)} capabilities The desired capabilities for
@@ -336,6 +336,19 @@ class Builder {
    */
   getCapabilities() {
     return this.capabilities_
+  }
+
+  /**
+   * Sets the desired capability when requesting a new session.
+   * If there is already a capability named key, its value will be overwritten with value.
+   * This is a convenience wrapper around builder.getCapabilities().set(key, value) to support Builder method chaining.
+   * @param {string} key The capability key.
+   * @param {*} value The capability value.
+   * @return {!Builder} A self reference.
+   */
+  setCapability(key, value) {
+    this.capabilities_.set(key, value)
+    return this
   }
 
   /**
@@ -415,20 +428,6 @@ class Builder {
    */
   setChromeOptions(options) {
     this.chromeOptions_ = options
-    return this
-  }
-
-  /**
-   * Sets Opera specific {@linkplain opera.Options options} for drivers
-   * created by this builder. Any logging or proxy settings defined on the given
-   * options will take precedence over those set through
-   * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
-   *
-   * @param {!opera.Options} options The OperaDriver options to use.
-   * @return {!Builder} A self reference.
-   */
-  setOperaOptions(options) {
-    this.operaOptions_ = options
     return this
   }
 
@@ -547,21 +546,6 @@ class Builder {
   }
 
   /**
-   * Sets the {@link opera.ServiceBuilder} to use to manage the
-   * operaDriver child process when creating sessions locally.
-   *
-   * @param {opera.ServiceBuilder} service the service to use.
-   * @return {!Builder} a self reference.
-   */
-  setOperaService(service) {
-    if (service && !(service instanceof opera.ServiceBuilder)) {
-      throw TypeError('not a opera.ServiceBuilder object')
-    }
-    this.operaService_ = service
-    return this
-  }
-
-  /**
    * Sets Safari specific {@linkplain safari.Options options} for drivers
    * created by this builder. Any logging settings defined on the given options
    * will take precedence over those set through {@link #setLoggingPrefs}.
@@ -598,9 +582,9 @@ class Builder {
   build() {
     // Create a copy for any changes we may need to make based on the current
     // environment.
-    var capabilities = new Capabilities(this.capabilities_)
+    const capabilities = new Capabilities(this.capabilities_)
 
-    var browser
+    let browser
     if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
       this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`)
       browser = process.env.SELENIUM_BROWSER.split(/:/, 3)
@@ -634,8 +618,6 @@ class Builder {
       capabilities.merge(this.safariOptions_)
     } else if (browser === Browser.EDGE && this.edgeOptions_) {
       capabilities.merge(this.edgeOptions_)
-    } else if (browser === Browser.OPERA && this.operaOptions_) {
-      capabilities.merge(this.operaOptions_)
     }
 
     checkOptions(
@@ -722,14 +704,6 @@ class Builder {
         return createDriver(edge.Driver, capabilities, service)
       }
 
-      case Browser.OPERA: {
-        let service = null
-        if (this.operaService_) {
-          service = this.operaService_.build()
-        }
-        return createDriver(opera.Driver, capabilities, service)
-      }
-
       case Browser.SAFARI:
         return createDriver(safari.Driver, capabilities)
 
@@ -806,7 +780,9 @@ exports.Browser = capabilities.Browser
 exports.Builder = Builder
 exports.Button = input.Button
 exports.By = by.By
+exports.RelativeBy = by.RelativeBy
 exports.withTagName = by.withTagName
+exports.locateWith = by.locateWith
 exports.Capabilities = capabilities.Capabilities
 exports.Capability = capabilities.Capability
 exports.Condition = webdriver.Condition
@@ -823,3 +799,9 @@ exports.error = error
 exports.logging = logging
 exports.promise = promise
 exports.until = until
+exports.Select = select.Select
+exports.LogInspector = LogInspector
+exports.BrowsingContext = BrowsingContext
+exports.BrowsingConextInspector = BrowsingConextInspector
+exports.ScriptManager = ScriptManager
+exports.NetworkInspector = NetworkInspector

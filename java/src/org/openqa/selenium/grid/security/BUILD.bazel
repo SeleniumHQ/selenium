@@ -1,0 +1,21 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "security",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/events:__subpackages__",
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/test/org/openqa/selenium:__subpackages__",
+        "//java/test/org/openqa/selenium/events:__subpackages__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
+    ],
+)

@@ -48,7 +48,7 @@ namespace OpenQA.Selenium
                 }
             }
 
-            wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* findElements */return ({0}).apply(null, arguments);", atom);
         }
 
         private RelativeBy(object root) : this(root, null)
@@ -68,17 +68,13 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified tag name.
         /// </summary>
-        /// <param name="tagName">The tag name of the element to find.</param>
+        /// <param name="by">A By object that will be used to find the initial element.</param>
         /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
-        public static RelativeBy WithTagName(string tagName)
+        public static RelativeBy WithLocator(By by)
         {
-            if (string.IsNullOrEmpty(tagName))
-            {
-                throw new ArgumentException("Tag name must not be null or the empty string", "tagName");
-            }
-
-            return new RelativeBy(By.TagName(tagName));
+            return new RelativeBy(by);
         }
+
 
         /// <summary>
         /// Finds the first element matching the criteria.
@@ -111,7 +107,7 @@ namespace OpenQA.Selenium
             filterParameters["filters"] = this.filters;
             parameters["relative"] = filterParameters;
             object rawElements = js.ExecuteScript(wrappedAtom, parameters);
-            ReadOnlyCollection<IWebElement> elements = rawElements as ReadOnlyCollection<IWebElement>; 
+            ReadOnlyCollection<IWebElement> elements = rawElements as ReadOnlyCollection<IWebElement>;
             return elements;
         }
 
@@ -124,7 +120,7 @@ namespace OpenQA.Selenium
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "Element relative to cannot be null");
+                throw new ArgumentNullException(nameof(element), "Element relative to cannot be null");
             }
 
             return SimpleDirection("above", element);
@@ -139,7 +135,7 @@ namespace OpenQA.Selenium
         {
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Element locator to cannot be null");
+                throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
             }
 
             return SimpleDirection("above", locator);
@@ -154,7 +150,7 @@ namespace OpenQA.Selenium
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "Element relative to cannot be null");
+                throw new ArgumentNullException(nameof(element), "Element relative to cannot be null");
             }
 
             return SimpleDirection("below", element);
@@ -169,7 +165,7 @@ namespace OpenQA.Selenium
         {
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Element locator to cannot be null");
+                throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
             }
 
             return SimpleDirection("below", locator);
@@ -184,7 +180,7 @@ namespace OpenQA.Selenium
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "Element relative to cannot be null");
+                throw new ArgumentNullException(nameof(element), "Element relative to cannot be null");
             }
 
             return SimpleDirection("left", element);
@@ -199,7 +195,7 @@ namespace OpenQA.Selenium
         {
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Element locator to cannot be null");
+                throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
             }
 
             return SimpleDirection("left", locator);
@@ -214,7 +210,7 @@ namespace OpenQA.Selenium
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "Element relative to cannot be null");
+                throw new ArgumentNullException(nameof(element), "Element relative to cannot be null");
             }
 
             return SimpleDirection("right", element);
@@ -229,7 +225,7 @@ namespace OpenQA.Selenium
         {
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Element locator to cannot be null");
+                throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
             }
 
             return SimpleDirection("right", locator);
@@ -281,12 +277,12 @@ namespace OpenQA.Selenium
         {
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Locator to use to search must be set");
+                throw new ArgumentNullException(nameof(locator), "Locator to use to search must be set");
             }
 
             if (atMostDistanceInPixels <= 0)
             {
-                throw new ArgumentException("Distance must be greater than zero", "atMostDistanceInPixels");
+                throw new ArgumentException("Distance must be greater than zero", nameof(atMostDistanceInPixels));
             }
 
             Dictionary<string, object> filter = new Dictionary<string, object>();
@@ -301,12 +297,12 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(direction))
             {
-                throw new ArgumentNullException("direction", "Direction cannot be null or the empty string");
+                throw new ArgumentNullException(nameof(direction), "Direction cannot be null or the empty string");
             }
 
             if (locator == null)
             {
-                throw new ArgumentNullException("locator", "Element locator to cannot be null");
+                throw new ArgumentNullException(nameof(locator), "Element locator to cannot be null");
             }
 
             Dictionary<string, object> filter = new Dictionary<string, object>();
@@ -321,7 +317,7 @@ namespace OpenQA.Selenium
         {
             if (toSerialize == null)
             {
-                throw new ArgumentNullException("toSerialize", "object to serialize must not be null");
+                throw new ArgumentNullException(nameof(toSerialize), "object to serialize must not be null");
             }
 
             By asBy = toSerialize as By;
@@ -349,7 +345,7 @@ namespace OpenQA.Selenium
         {
             if (toSerialize == null)
             {
-                throw new ArgumentNullException("toSerialize", "object to serialize must not be null");
+                throw new ArgumentNullException(nameof(toSerialize), "object to serialize must not be null");
             }
 
             By asBy = toSerialize as By;
@@ -398,7 +394,7 @@ namespace OpenQA.Selenium
 
             if (executor == null)
             {
-                throw new ArgumentException("Search context must support JavaScript or IWrapsDriver where the wrappted driver supports JavaScript", "context");
+                throw new ArgumentException("Search context must support JavaScript or IWrapsDriver where the wrappted driver supports JavaScript", nameof(context));
             }
 
             return executor;

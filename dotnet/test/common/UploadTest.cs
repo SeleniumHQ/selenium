@@ -27,7 +27,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;
@@ -45,7 +44,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support clearing file upload elements")]
         public void CleanFileInput()
         {
             driver.Url = uploadPage;
@@ -66,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
         public void UploadingWithHiddenFileInput()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("upload_invisible.html");
@@ -91,7 +88,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             driver.Url = transparentUploadPage;

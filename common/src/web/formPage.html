@@ -65,10 +65,20 @@ There should be a form here:
 			<option id="multi_false_2" value="select_2">select_2</option>
 		</select>
 
-    <select id="invisi_select" style="opacity:0;">
-      <option selected value="apples">Apples</option>
-      <option value="oranges">Oranges</option>
+    <select name="single_disabled">
+      <option id="sinlge_disabled_1" value="enabled">Enabled</option>
+      <option id="sinlge_disabled_2" value="disabled" disabled="disabled">Disabled</option>
     </select>
+
+    <select name="multi_disabled" multiple="true">
+      <option id="multi_disabled_1" value="enabled">Enabled</option>
+      <option id="multi_disabled_2" value="disabled" disabled="disabled">Disabled</option>
+    </select>
+
+    <select id="invisi_select" style="opacity:0;">
+        <option selected value="apples">Apples</option>
+        <option value="oranges">Oranges</option>
+      </select>
 
     <select name="select-default">
         <option>One</option>
@@ -106,7 +116,7 @@ There should be a form here:
 
     <p id="cheeseLiker">I like cheese</p>
     <input type="submit" value="Click!"/>
-    
+
     <input type="radio" id="lone_disabled_selected_radio" name="not_a_snack" value="cumberland" checked="checked" disabled="disabled" />Cumberland sausage
 </form>
 
@@ -150,7 +160,7 @@ There should be a form here:
     <input type="text" value="name" name="x"/>
   </div>
   <input type="submit" />
-</form>  
+</form>
 
 <!-- Form with disabled form elements -->
 <form method="get" action="xhtmlTest.html">
@@ -170,6 +180,15 @@ There should be a form here:
     <label for="checkbox-with-label" id="label-for-checkbox-with-label">Label</label><input type="checkbox" id="checkbox-with-label" />
   </p>
 </form>
+
+<form method="get" action="resultPage.html" name="submit_id">
+  <input type="submit" id="submit" value="Submit a Submit ID Button"/>
+</form>
+
+<form method="get" action="resultPage.html" name="submit_name">
+  <input type="submit" name="submit" value="Submit a Submit ID Button"/>
+</form>
+
 <input id="vsearchGadget" name="SearchableText" type="text" size="18" value="" title="Hvad søger du?" accesskey="4" class="inputLabel" />
 </body>
 </html>

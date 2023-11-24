@@ -21,25 +21,24 @@ module Selenium
   module WebDriver
     module Firefox
       class Options < WebDriver::Options
+        attr_accessor :debugger_address
+
         KEY = 'moz:firefoxOptions'
 
-        # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
+        # see: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
         CAPABILITIES = {binary: 'binary',
                         args: 'args',
-                        profile: 'profile',
                         log: 'log',
-                        prefs: 'prefs'}.freeze
+                        prefs: 'prefs',
+                        env: 'env',
+                        android_package: 'androidPackage',
+                        android_activity: 'androidActivity',
+                        android_device_serial: 'androidDeviceSerial',
+                        android_intent_arguments: 'androidIntentArguments'}.freeze
         BROWSER = 'firefox'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
+        # NOTE: special handling of 'profile' to validate when set instead of when used
+        attr_reader :profile
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
@@ -58,10 +57,17 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
+          @debugger_address = opts.delete(:debugger_address) { true }
+          opts[:accept_insecure_certs] = true unless opts.key?(:accept_insecure_certs)
+
           super(**opts)
 
+          @options[:args] ||= []
+          @options[:prefs] ||= {}
+          @options[:env] ||= {}
           @options[:log] ||= {level: log_level} if log_level
-          process_profile(@options[:profile]) if @options.key?(:profile)
+
+          process_profile(@options.delete(:profile))
         end
 
         #
@@ -75,7 +81,6 @@ module Selenium
         #
 
         def add_argument(arg)
-          @options[:args] ||= []
           @options[:args] << arg
         end
 
@@ -91,20 +96,7 @@ module Selenium
         #
 
         def add_preference(name, value)
-          @options[:prefs] ||= {}
           @options[:prefs][name] = value
-        end
-
-        #
-        # Run Firefox in headless mode.
-        #
-        # @example Enable headless mode
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.headless!
-        #
-
-        def headless!
-          add_argument '-headless'
         end
 
         #
@@ -122,7 +114,6 @@ module Selenium
         # @param [Profile, String] profile Profile to be used
         #
 
-        undef profile=
         def profile=(profile)
           process_profile(profile)
         end
@@ -135,21 +126,47 @@ module Selenium
           @options[:log] = {level: level}
         end
 
+        #
+        # Enables mobile browser use on Android.
+        #
+        # @see https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions#android
+        #
+        # @param [String] package The package name of the Chrome or WebView app.
+        # @param [String] serial_number The serial number of the device on which to launch the application.
+        #   If not specified and multiple devices are attached, an error will be returned.
+        # @param [String] activity The fully qualified class name of the activity to be launched.
+        # @param [Array] intent_arguments Arguments to launch the intent with.
+        #
+
+        def enable_android(package: 'org.mozilla.firefox', serial_number: nil, activity: nil, intent_arguments: nil)
+          @options[:android_package] = package
+          @options[:android_activity] = activity unless activity.nil?
+          @options[:android_device_serial] = serial_number unless serial_number.nil?
+          @options[:android_intent_arguments] = intent_arguments unless intent_arguments.nil?
+        end
+
         private
 
         def process_browser_options(browser_options)
+          browser_options['moz:debuggerAddress'] = true if @debugger_address
           options = browser_options[KEY]
           options['binary'] ||= Firefox.path if Firefox.path
+          options['profile'] = @profile if @profile
         end
 
         def process_profile(profile)
-          @options[:profile] = if profile.nil?
-                                 nil
-                               elsif profile.is_a? Profile
-                                 profile
-                               else
-                                 Profile.from_name(profile)
-                               end
+          @profile = case profile
+                     when nil
+                       nil
+                     when Profile
+                       profile
+                     else
+                       Profile.from_name(profile)
+                     end
+        end
+
+        def camelize?(key)
+          key != 'prefs'
         end
       end # Options
     end # Firefox

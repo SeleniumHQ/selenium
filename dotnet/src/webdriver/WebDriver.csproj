@@ -1,88 +1,52 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <AssemblyTitle>WebDriver</AssemblyTitle>
-    <Description>Selenium WebDriver API .NET Bindings</Description>
     <Company>Selenium Committers</Company>
     <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
-    <Version>4</Version>
-    <PackageId>Selenium.WebDriver</PackageId>
+    <Version>4.0.0</Version>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
+    <PackageId>Selenium.WebDriver</PackageId>
+    <Authors>Selenium Committers</Authors>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
+    <Title>Selenium WebDriver</Title>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net46\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
+    <PackageProjectUrl>https://selenium.dev</PackageProjectUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryUrl>https://github.com/SeleniumHQ/selenium</RepositoryUrl>
+    <Description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains the .NET bindings for the concise and object-based
+      Selenium WebDriver API, which uses native OS-level events to manipulate the
+      browser, bypassing the JavaScript sandbox, and does not require the Selenium
+      Server to automate the browser.
+    </Description>
+    <PackageTags>selenium webdriver browser automation</PackageTags>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIconUrl>https://selenium.dev/images/selenium_logo_square_green.png</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net46\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net47\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net47\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net48\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net48\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.1\WebDriver.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.1\WebDriver.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="cdp\**" />
     <EmbeddedResource Remove="obj\**" />
+    <None Remove="cdp\**" />
     <None Remove="obj\**" />
   </ItemGroup>
 
@@ -92,10 +56,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
       <Visible>False</Visible>
       <LogicalName>webdriver_prefs.json</LogicalName>
@@ -112,30 +80,30 @@
       <Visible>False</Visible>
       <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)../../../third_party/js/selenium/webdriver.json">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
       <Visible>False</Visible>
-      <LogicalName>webdriver_prefs.json</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
-      <Visible>False</Visible>
-      <LogicalName>get-attribute.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/is-displayed.js">
-      <Visible>False</Visible>
-      <LogicalName>is-displayed.js</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/find-elements.js">
-      <Visible>False</Visible>
-      <LogicalName>find-elements.js</LogicalName>
+      <LogicalName>mutation-listener.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' And '$(TargetFramework)'!='netstandard2.1'">
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.IO.Compression" />
+  <ItemGroup>
+    <Folder Include="Remote\JsonConverters\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
+    <BaseImagePath>..\..\..\common\images</BaseImagePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="assets\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
+    <None Include="assets\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
+
+    <None Include="$(BaseImagePath)\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
+
+    <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="manager\linux" Visible="false" />
+    <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="manager\macos" Visible="false" />
+    <None Include="$(BaseSeleniumManagerPath)\windows\selenium-manager.exe" Pack="true" PackagePath="manager\windows" Visible="false" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">

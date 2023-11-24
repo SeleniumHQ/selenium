@@ -1,0 +1,39 @@
+package(default_visibility = ["//rb/spec/integration:__subpackages__"])
+
+BROWSERS = [
+    "chrome",
+    "edge",
+    "firefox",
+    "ie",
+    "safari",
+    "safari-preview",
+]
+
+[
+    [
+        config_setting(
+            name = browser,
+            testonly = True,
+            define_values = {
+                "browser": browser,
+            },
+        ),
+    ]
+    for browser in BROWSERS
+]
+
+config_setting(
+    name = "headless",
+    testonly = True,
+    define_values = {
+        "headless": "true",
+    },
+)
+
+config_setting(
+    name = "remote",
+    testonly = True,
+    define_values = {
+        "remote": "true",
+    },
+)

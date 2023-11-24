@@ -1,14 +1,11 @@
-query {
+query Summary {
 	grid {
 		uri
-		nodes {
-			id
-			uri
-			status
-			maxSession
-			capabilities
-		}
 		totalSlots
-		usedSlots
+		nodeCount
+		maxSession
+		sessionCount
+		sessionQueueSize
+		version
 	}
 }

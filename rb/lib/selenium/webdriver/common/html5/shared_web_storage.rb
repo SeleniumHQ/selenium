@@ -26,8 +26,8 @@ module Selenium
         def key?(key)
           keys.include? key
         end
-        alias_method :member?, :key?
-        alias_method :has_key?, :key?
+        alias member? key?
+        alias has_key? key?
 
         def fetch(key)
           return self[key] if key? key

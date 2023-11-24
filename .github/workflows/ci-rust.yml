@@ -1,0 +1,31 @@
+name: CI - Rust
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: rust-build
+      run: bazel build //rust:selenium-manager
+
+  tests:
+    name: Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos
+          - os: ubuntu
+          - os: windows
+    with:
+      name: Tests (${{ matrix.os }})
+      cache-key: rust-test
+      os: ${{ matrix.os }}
+      run: bazel test --test_env=RUST_BACKTRACE=1 --flaky_test_attempts=3 //rust/...

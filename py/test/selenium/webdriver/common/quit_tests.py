@@ -22,4 +22,4 @@ import pytest
 def test_quit(driver, pages):
     driver.quit()
     with pytest.raises(Exception):
-        pages.load('simpleTest.html')
+        pages.load("simpleTest.html")

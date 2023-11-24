@@ -1,0 +1,16 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "redis",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium:__subpackages__",
+        "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/grid/data",
+        artifact("io.lettuce:lettuce-core"),
+        artifact("org.redisson:redisson"),
+    ],
+)

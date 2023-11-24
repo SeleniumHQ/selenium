@@ -216,7 +216,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrame()
         {
             driver.Url = framesetPage;
@@ -225,7 +224,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
         {
             driver.Url = framesetPage;
@@ -235,7 +233,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void SwitchingToParentFrameFromDefaultContextIsNoOp()
         {
             driver.Url = xhtmlTestPage;
@@ -244,7 +241,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFromAnIframe()
         {
             driver.Url = iframePage;
@@ -268,12 +264,10 @@ namespace OpenQA.Selenium
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
             checkbox.Click();
             checkbox.Submit();
-            IWebElement result = WaitFor<IWebElement>(() => driver.FindElement(By.XPath("//p")), "result element not found");
-            Assert.AreEqual("Success!", result.Text);
+            WaitFor(() => driver.FindElement(By.XPath("//p")).Text == "Success!", "result element not found");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
         {
             driver.Url = framesetPage;
@@ -281,8 +275,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame(0);
             driver.FindElement(By.LinkText("top")).Click();
 
-            // TODO(simon): Avoid going too fast when native events are there.
-            System.Threading.Thread.Sleep(1000);
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -447,10 +440,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver throws NoSuchElementException, spec is unclear")]
-        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
-        [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver throws NoSuchElementException")]
+        [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException")]
         public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
         {
             driver.Url = deletingFrame;
@@ -459,7 +451,7 @@ namespace OpenQA.Selenium
             IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
             killIframe.Click();
 
-            Assert.That(() => driver.FindElement(By.Id("killIframe")), Throws.InstanceOf<NoSuchFrameException>());
+            Assert.That(() => driver.FindElement(By.Id("killIframe")), Throws.InstanceOf<NoSuchWindowException>());
         }
 
         [Test]
@@ -542,6 +534,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToSelectAFrameByName()
         {
             driver.Url = framesetPage;

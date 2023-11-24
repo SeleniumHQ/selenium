@@ -74,4 +74,4 @@ class Session {
 
 // PUBLIC API
 
-module.exports = { Session: Session }
+module.exports = { Session }

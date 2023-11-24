@@ -1,0 +1,19 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_test")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+[
+    rb_test(
+        name = file[:-8],
+        size = "small",
+        srcs = [file],
+        args = ["rb/spec/"],
+        main = "@bundle//:bin/rspec",
+        tags = ["no-sandbox"],
+        deps = [
+            "//rb/lib/selenium/webdriver:bidi",
+            "//rb/spec/unit/selenium/webdriver:spec_helper",
+        ],
+    )
+    for file in glob(["*_spec.rb"])
+]

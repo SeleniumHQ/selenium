@@ -346,6 +346,11 @@ namespace OpenQA.Selenium
         /// </summary>
         public static readonly string Command = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
+        /// <summary>
+        /// Represents the Zenkaku/Hankaku key.
+        /// </summary>
+        public static readonly string ZenkakuHankaku = Convert.ToString(Convert.ToChar(0xE040, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+
         private static Dictionary<string, string> descriptions;
 
         /// <summary>
@@ -414,6 +419,7 @@ namespace OpenQA.Selenium
                 descriptions.Add(F12, "F12");
                 descriptions.Add(Meta, "Meta");
                 descriptions.Add(Command, "Command");
+                descriptions.Add(ZenkakuHankaku, "Zenkaku Hankaku");
             }
 
             if (descriptions.ContainsKey(value))

@@ -35,6 +35,7 @@ namespace OpenQA.Selenium.Chromium
         private string portServerAddress = string.Empty;
         private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
+        private bool disableBuildCheck;
         private bool enableVerboseLogging;
         private bool enableAppendLog;
 
@@ -44,9 +45,9 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        /// <param name="downloadUrl">The url that ChromiumDriver should be downloaded from.</param>
-        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl)
-            : base(executablePath, port, executableFileName, downloadUrl)
+        /// <param name="downloadUrl">The URL from which the driver executable can be downloaded.</param>
+        protected ChromiumDriverService(string executablePath, string executableFileName, int port, Uri downloadUrl = null)
+            : base(executablePath, port, executableFileName)
         {
         }
 
@@ -84,6 +85,17 @@ namespace OpenQA.Selenium.Chromium
         {
             get { return this.adbPort; }
             set { this.adbPort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to skip version compatibility check
+        /// between the driver and the browser.
+        /// Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool DisableBuildCheck
+        {
+            get { return this.disableBuildCheck; }
+            set { this.disableBuildCheck = value; }
         }
 
         /// <summary>
@@ -133,6 +145,11 @@ namespace OpenQA.Selenium.Chromium
                 if (this.SuppressInitialDiagnosticInformation)
                 {
                     argsBuilder.Append(" --silent");
+                }
+
+                if (this.disableBuildCheck)
+                {
+                    argsBuilder.Append(" --disable-build-check");
                 }
 
                 if (this.enableVerboseLogging)

@@ -26,25 +26,26 @@ def options():
 
 
 def test_set_binary_location(options):
-    options.binary_location = '/foo/bar'
-    assert options._binary_location == '/foo/bar'
+    options.binary_location = "/foo/bar"
+    assert options._binary_location == "/foo/bar"
 
 
 def test_get_binary_location(options):
-    options._binary_location = '/foo/bar'
-    assert options.binary_location == '/foo/bar'
+    options._binary_location = "/foo/bar"
+    assert options.binary_location == "/foo/bar"
 
 
 def test_creates_capabilities(options):
-    options._arguments = ['foo']
-    options._binary_location = '/bar'
+    options._arguments = ["foo"]
+    options._binary_location = "/bar"
     caps = options.to_capabilities()
     opts = caps.get(Options.KEY)
     assert opts
-    assert 'foo' in opts['args']
-    assert opts['binary'] == '/bar'
+    assert "foo" in opts["args"]
+    assert opts["binary"] == "/bar"
 
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
+
     assert isinstance(options, BaseOptions)

@@ -22,53 +22,63 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
+      class NewDevice < InputDevice
+        def initialize(name = nil)
+          super
+          @type = :special
+        end
+
+        def create_special(val)
+          add_action(NewInteraction.new(self, val))
+        end
+      end
+
+      class NewInteraction < Interaction
+        def initialize(source, special)
+          super(source)
+          @special = special
+          @type = :newType
+        end
+
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? NewDevice
+        end
+
+        def encode
+          {type: type, special: @special}
+        end
+      end
+
+      class SubActionBuilder < ActionBuilder
+        def special_action(special, device: nil)
+          special_input(device).create_special(special)
+          self
+        end
+
+        private
+
+        def special_input(name = nil)
+          device(name: name, type: :newType) || add_input(NewDevice.new('new'))
+        end
+      end
+
       describe Interaction do
-        let(:source) { instance_double(NoneInput) }
-        let(:interaction) { Interaction.new(source) }
+        it 'can create subclass' do
+          bridge = instance_double(Remote::Bridge)
+          allow(bridge).to receive(:send_actions)
+          sub_action_builder = SubActionBuilder.new(bridge)
+          sub_action_builder.special_action('special').perform
 
-        it 'should provide access to source' do
-          allow(source).to receive(:type).and_return(Interactions::NONE)
-          expect(interaction).to respond_to(:source)
+          expect(bridge).to have_received(:send_actions).with([{type: :special,
+                                                                id: 'new',
+                                                                actions: [{type: :newType,
+                                                                           special: 'special'}]}])
         end
 
-        it 'should raise a TypeError if the type of the source device is not in Interactions::SOURCE_TYPES' do
-          allow(source).to receive(:type).and_return(:no_type)
-          expect { Interaction.new(source) }.to raise_error(TypeError)
+        it 'raises a NotImplementedError if not a subclass' do
+          expect { described_class.new(NoneInput.new) }.to raise_error(NotImplementedError)
         end
-      end # Interaction
-
-      describe Pause do
-        let(:source) { instance_double(NoneInput) }
-        let(:pause) { Pause.new(source) }
-        let(:duration) { 5 }
-
-        it 'should have a type of :pause' do
-          allow(source).to receive(:type).and_return(Interactions::NONE)
-          expect(pause.type).to eq(:pause)
-        end
-
-        context 'when encoding' do
-          it 'should return a hash' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).to be_a(Hash)
-          end
-
-          it 'should contain a type key with the value :pause' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).to include(type: :pause)
-          end
-
-          it 'should not contain a duration key when duration is nil' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).not_to include(:duration)
-          end
-
-          it 'should contain a duration key with the duration value multiplied by 1000 is not nil' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(Pause.new(source, duration).encode).to include(duration: duration * 1000)
-          end
-        end # when encoding
-      end # Pause
+      end
     end # Interactions
   end # WebDriver
 end # Selenium

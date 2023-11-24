@@ -17,14 +17,12 @@
 
 import pytest
 
-
-from selenium.common.exceptions import (
-    ElementNotVisibleException,
-    ElementNotInteractableException)
+from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
 
 
-def testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot(driver, pages):
+def test_should_allow_the_user_to_tell_if_an_element_is_displayed_or_not(driver, pages):
     pages.load("javascriptPage.html")
 
     assert driver.find_element(by=By.ID, value="displayed").is_displayed() is True
@@ -33,7 +31,7 @@ def testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot(driver, pages):
     assert driver.find_element(by=By.ID, value="hidden").is_displayed() is False
 
 
-def testVisibilityShouldTakeIntoAccountParentVisibility(driver, pages):
+def test_visibility_should_take_into_account_parent_visibility(driver, pages):
     pages.load("javascriptPage.html")
 
     childDiv = driver.find_element(by=By.ID, value="hiddenchild")
@@ -43,14 +41,14 @@ def testVisibilityShouldTakeIntoAccountParentVisibility(driver, pages):
     assert hiddenLink.is_displayed() is False
 
 
-def testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet(driver, pages):
+def test_should_count_elements_as_visible_if_style_property_has_been_set(driver, pages):
     pages.load("javascriptPage.html")
     shown = driver.find_element(by=By.ID, value="visibleSubElement")
     assert shown.is_displayed() is True
 
 
 @pytest.mark.xfail_safari
-def testShouldModifyTheVisibilityOfAnElementDynamically(driver, pages):
+def test_should_modify_the_visibility_of_an_element_dynamically(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="hideMe")
     assert element.is_displayed() is True
@@ -58,7 +56,7 @@ def testShouldModifyTheVisibilityOfAnElementDynamically(driver, pages):
     assert element.is_displayed() is False
 
 
-def testHiddenInputElementsAreNeverVisible(driver, pages):
+def test_hidden_input_elements_are_never_visible(driver, pages):
     pages.load("javascriptPage.html")
 
     shown = driver.find_element(by=By.NAME, value="hidden")
@@ -66,7 +64,7 @@ def testHiddenInputElementsAreNeverVisible(driver, pages):
     assert shown.is_displayed() is False
 
 
-def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(driver, pages):
+def test_should_not_be_able_to_click_on_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
     try:
@@ -76,7 +74,7 @@ def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(driver, pages):
         pass
 
 
-def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(driver, pages):
+def test_should_not_be_able_to_toggle_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
     try:
@@ -86,7 +84,7 @@ def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(driver, pages):
         pass
 
 
-def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
+def test_should_not_be_able_to_select_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
     try:
@@ -96,7 +94,7 @@ def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
         pass
 
 
-def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
+def test_should_not_be_able_to_type_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
     try:
@@ -107,41 +105,41 @@ def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
     assert element.get_attribute("value") != "You don't see me"
 
 
-def testShouldSayElementsWithNegativeTransformAreNotDisplayed(driver, pages):
-    pages.load('cssTransform.html')
-    elementX = driver.find_element(By.ID, value='parentX')
+def test_should_say_elements_with_negative_transform_are_not_displayed(driver, pages):
+    pages.load("cssTransform.html")
+    elementX = driver.find_element(By.ID, value="parentX")
     assert elementX.is_displayed() is False
-    elementY = driver.find_element(By.ID, value='parentY')
+    elementY = driver.find_element(By.ID, value="parentY")
     assert elementY.is_displayed() is False
 
 
-def testShouldSayElementsWithParentWithNegativeTransformAreNotDisplayed(driver, pages):
-    pages.load('cssTransform.html')
-    elementX = driver.find_element(By.ID, value='childX')
+def test_should_say_elements_with_parent_with_negative_transform_are_not_displayed(driver, pages):
+    pages.load("cssTransform.html")
+    elementX = driver.find_element(By.ID, value="childX")
     assert elementX.is_displayed() is False
-    elementY = driver.find_element(By.ID, value='childY')
+    elementY = driver.find_element(By.ID, value="childY")
     assert elementY.is_displayed() is False
 
 
-def testShouldSayElementWithZeroTransformIsVisible(driver, pages):
-    pages.load('cssTransform.html')
-    zero_tranform = driver.find_element(By.ID, 'zero-tranform')
+def test_should_say_element_with_zero_transform_is_visible(driver, pages):
+    pages.load("cssTransform.html")
+    zero_tranform = driver.find_element(By.ID, "zero-tranform")
     assert zero_tranform.is_displayed() is True
 
 
-def testShouldSayElementIsVisibleWhenItHasNegativeTransformButElementisntInANegativeSpace(driver, pages):
-    pages.load('cssTransform2.html')
-    zero_tranform = driver.find_element(By.ID, 'negative-percentage-transformY')
+def test_should_say_element_is_visible_when_it_has_negative_transform_but_elementisnt_in_anegative_space(driver, pages):
+    pages.load("cssTransform2.html")
+    zero_tranform = driver.find_element(By.ID, "negative-percentage-transformY")
     assert zero_tranform.is_displayed() is True
 
 
-def testShouldShowElementNotVisibleWithHiddenAttribute(driver, pages):
-    pages.load('hidden.html')
-    singleHidden = driver.find_element(By.ID, 'singleHidden')
+def test_should_show_element_not_visible_with_hidden_attribute(driver, pages):
+    pages.load("hidden.html")
+    singleHidden = driver.find_element(By.ID, "singleHidden")
     assert singleHidden.is_displayed() is False
 
 
-def testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute(driver, pages):
-    pages.load('hidden.html')
-    child = driver.find_element(By.ID, 'child')
+def test_should_show_element_not_visible_when_parent_element_has_hidden_attribute(driver, pages):
+    pages.load("hidden.html")
+    child = driver.find_element(By.ID, "child")
     assert child.is_displayed() is False

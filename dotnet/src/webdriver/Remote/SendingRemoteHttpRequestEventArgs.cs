@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace OpenQA.Selenium.Remote
@@ -26,26 +27,38 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class SendingRemoteHttpRequestEventArgs : EventArgs
     {
-        private HttpWebRequest request;
+        private string method;
+        private string fullUrl;
         private string requestBody;
+        private Dictionary<string, string> headers = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
         /// </summary>
-        /// <param name="request">The <see cref="HttpWebRequest"/> object being sent.</param>
+        /// <param name="method">The HTTP method of the request being sent.</param>
+        /// <param name="fullUrl">The full URL of the request being sent.</param>
         /// <param name="requestBody">The body of the request.</param>
-        public SendingRemoteHttpRequestEventArgs(HttpWebRequest request, string requestBody)
+        public SendingRemoteHttpRequestEventArgs(string method, string fullUrl, string requestBody)
         {
-            this.request = request;
+            this.method = method;
+            this.fullUrl = fullUrl;
             this.requestBody = requestBody;
         }
 
         /// <summary>
-        /// Gets the <see cref="HttpWebRequest"/> object representing the HTTP request being sent.
+        /// Gets the HTTP method for the HTTP request.
         /// </summary>
-        public HttpWebRequest Request
+        public string Method
         {
-            get { return this.request; }
+            get { return this.method; }
+        }
+
+        /// <summary>
+        /// Gets the full URL of the HTTP request.
+        /// </summary>
+        public string FullUrl
+        {
+            get { return this.fullUrl; }
         }
 
         /// <summary>
@@ -54,6 +67,40 @@ namespace OpenQA.Selenium.Remote
         public string RequestBody
         {
             get { return this.requestBody; }
+        }
+
+        /// <summary>
+        /// Gets a read-only dictionary of the headers of the HTTP request.
+        /// Does not include default headers of the web client making the request.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> Headers
+        {
+            get { return this.headers; }
+        }
+
+        /// <summary>
+        /// Adds a header to the HTTP request.
+        /// </summary>
+        /// <param name="headerName">The name of the header to add.</param>
+        /// <param name="headerValue">The value of the header to add.</param>
+        /// <remarks>
+        /// Adding headers here will attempt to add them to the headers for the
+        /// HTTP request being sent; however, be aware they may be overwritten by
+        /// the client raising the event.
+        /// </remarks>
+        public void AddHeader(string headerName, string headerValue)
+        {
+            if (string.IsNullOrEmpty(headerName))
+            {
+                throw new ArgumentException("Header name may not be null or the empty string.", nameof(headerName));
+            }
+
+            if (headerValue == null)
+            {
+                throw new ArgumentNullException(nameof(headerValue), "Header value may not be null.");
+            }
+
+            this.headers[headerName] = headerValue;
         }
     }
 }

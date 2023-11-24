@@ -17,10 +17,10 @@
 
 'use strict'
 
-var assert = require('assert'),
+const assert = require('assert'),
   sinon = require('sinon')
 
-var Capabilities = require('../../lib/capabilities').Capabilities,
+const Capabilities = require('../../lib/capabilities').Capabilities,
   Command = require('../../lib/command').Command,
   CommandName = require('../../lib/command').Name,
   error = require('../../lib/error'),
@@ -31,21 +31,21 @@ var Capabilities = require('../../lib/capabilities').Capabilities,
 describe('http', function () {
   describe('buildPath', function () {
     it('properly replaces path segments with command parameters', function () {
-      var parameters = { sessionId: 'foo', url: 'http://www.google.com' }
-      var finalPath = http.buildPath('/session/:sessionId/url', parameters)
-      assert.equal(finalPath, '/session/foo/url')
-      assert.deepEqual(parameters, { url: 'http://www.google.com' })
+      const parameters = { sessionId: 'foo', url: 'http://www.google.com' }
+      const finalPath = http.buildPath('/session/:sessionId/url', parameters)
+      assert.strictEqual(finalPath, '/session/foo/url')
+      assert.deepStrictEqual(parameters, { url: 'http://www.google.com' })
     })
 
     it('handles web element references', function () {
-      var parameters = { sessionId: 'foo', id: WebElement.buildId('bar') }
+      const parameters = { sessionId: 'foo', id: WebElement.buildId('bar') }
 
-      var finalPath = http.buildPath(
+      const finalPath = http.buildPath(
         '/session/:sessionId/element/:id/click',
         parameters
       )
-      assert.equal(finalPath, '/session/foo/element/bar/click')
-      assert.deepEqual(parameters, {})
+      assert.strictEqual(finalPath, '/session/foo/element/bar/click')
+      assert.deepStrictEqual(parameters, {})
     })
 
     it('throws if missing a parameter', function () {
@@ -74,7 +74,7 @@ describe('http', function () {
     })
 
     it('does not match on segments that do not start with a colon', function () {
-      assert.equal(
+      assert.strictEqual(
         http.buildPath('/session/foo:bar/baz', {}),
         '/session/foo:bar/baz'
       )
@@ -121,7 +121,7 @@ describe('http', function () {
       })
 
       it('can execute commands with no URL parameters', function () {
-        var resp = JSON.stringify({ sessionId: 'abc123' })
+        const resp = JSON.stringify({ sessionId: 'abc123' })
         send.returns(Promise.resolve(new http.Response(200, {}, resp)))
 
         let command = new Command(CommandName.NEW_SESSION)
@@ -144,13 +144,13 @@ describe('http', function () {
           return Promise.reject(Error('should have thrown'))
         } catch (err) {
           assert.strictEqual(err.constructor, error.InvalidArgumentError)
-          assert.equal(err.message, 'Missing required parameter: id')
+          assert.strictEqual(err.message, 'Missing required parameter: id')
         }
         assert.ok(!send.called)
       })
 
       it('replaces URL parameters with command parameters', function () {
-        var command = new Command(CommandName.GET)
+        const command = new Command(CommandName.GET)
           .setParameter('sessionId', 's123')
           .setParameter('url', 'http://www.google.com')
 
@@ -168,26 +168,6 @@ describe('http', function () {
 
       describe('uses correct URL', function () {
         beforeEach(() => (executor = new http.Executor(client)))
-
-        describe('in legacy mode', function () {
-          test(
-            CommandName.MAXIMIZE_WINDOW,
-            { sessionId: 's123' },
-            false,
-            'POST',
-            '/session/s123/window/current/maximize'
-          )
-
-          // This is consistent b/w legacy and W3C, just making sure.
-          test(
-            CommandName.GET,
-            { sessionId: 's123', url: 'http://www.example.com' },
-            false,
-            'POST',
-            '/session/s123/url',
-            { url: 'http://www.example.com' }
-          )
-        })
 
         describe('in W3C mode', function () {
           test(
@@ -218,7 +198,7 @@ describe('http', function () {
           opt_expectedParams
         ) {
           it(`command=${command}`, function () {
-            var resp = JSON.stringify({ sessionId: 'abc123' })
+            const resp = JSON.stringify({ sessionId: 'abc123' })
             send.returns(Promise.resolve(new http.Response(200, {}, resp)))
 
             let cmd = new Command(command).setParameters(parameters)
@@ -238,12 +218,12 @@ describe('http', function () {
 
     describe('response parsing', function () {
       it('extracts value from JSON response', function () {
-        var responseObj = {
+        const responseObj = {
           status: error.ErrorCode.SUCCESS,
           value: 'http://www.google.com',
         }
 
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -315,7 +295,7 @@ describe('http', function () {
         })
 
         it('handles legacy response', function () {
-          var rawResponse = {
+          const rawResponse = {
             sessionId: 's123',
             status: 0,
             value: { name: 'Bob' },
@@ -330,11 +310,11 @@ describe('http', function () {
           assert.ok(!executor.w3c)
           return executor.execute(command).then(function (response) {
             assert.ok(response instanceof Session)
-            assert.equal(response.getId(), 's123')
+            assert.strictEqual(response.getId(), 's123')
 
             let caps = response.getCapabilities()
             assert.ok(caps instanceof Capabilities)
-            assert.equal(caps.get('name'), 'Bob')
+            assert.strictEqual(caps.get('name'), 'Bob')
 
             assert.ok(!executor.w3c)
           })
@@ -359,18 +339,18 @@ describe('http', function () {
           assert.ok(!executor.w3c)
           return executor.execute(command).then(function (response) {
             assert.ok(response instanceof Session)
-            assert.equal(response.getId(), 's123')
+            assert.strictEqual(response.getId(), 's123')
 
             let caps = response.getCapabilities()
             assert.ok(caps instanceof Capabilities)
-            assert.equal(caps.get('name'), 'Bob')
+            assert.strictEqual(caps.get('name'), 'Bob')
 
             assert.ok(executor.w3c)
           })
         })
 
         it('if w3c, does not downgrade on legacy response', function () {
-          var rawResponse = { sessionId: 's123', status: 0, value: null }
+          const rawResponse = { sessionId: 's123', status: 0, value: null }
 
           send.returns(
             Promise.resolve(
@@ -381,8 +361,8 @@ describe('http', function () {
           executor.w3c = true
           return executor.execute(command).then(function (response) {
             assert.ok(response instanceof Session)
-            assert.equal(response.getId(), 's123')
-            assert.equal(response.getCapabilities().size, 0)
+            assert.strictEqual(response.getId(), 's123')
+            assert.strictEqual(response.getCapabilities().size, 0)
             assert.ok(executor.w3c, 'should never downgrade')
           })
         })
@@ -403,7 +383,7 @@ describe('http', function () {
             () => assert.fail('should have failed'),
             (e) => {
               assert.ok(e instanceof error.NoSuchElementError)
-              assert.equal(e.message, 'hi')
+              assert.strictEqual(e.message, 'hi')
             }
           )
         })
@@ -423,14 +403,14 @@ describe('http', function () {
             () => assert.fail('should have failed'),
             (e) => {
               assert.ok(e instanceof error.NoSuchElementError)
-              assert.equal(e.message, 'oops')
+              assert.strictEqual(e.message, 'oops')
             }
           )
         })
       })
 
       it('handles JSON null', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -452,10 +432,9 @@ describe('http', function () {
 
         function test(value) {
           it(`value=${value}`, function () {
-            var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
-              'sessionId',
-              's123'
-            )
+            const command = new Command(
+              CommandName.GET_CURRENT_URL
+            ).setParameter('sessionId', 's123')
 
             send.returns(
               Promise.resolve(
@@ -478,7 +457,7 @@ describe('http', function () {
       })
 
       it('handles non-object JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -494,7 +473,7 @@ describe('http', function () {
       })
 
       it('returns body text when 2xx but not JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -514,7 +493,7 @@ describe('http', function () {
       })
 
       it('returns body text when 2xx but invalid JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -530,7 +509,7 @@ describe('http', function () {
       })
 
       it('returns null if no body text and 2xx', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -546,7 +525,7 @@ describe('http', function () {
       })
 
       it('returns normalized body text when 2xx but not JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -564,7 +543,7 @@ describe('http', function () {
       })
 
       it('throws UnsupportedOperationError for 404 and body not JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -587,7 +566,7 @@ describe('http', function () {
       })
 
       it('throws WebDriverError for generic 4xx when body not JSON', function () {
-        var command = new Command(CommandName.GET_CURRENT_URL).setParameter(
+        const command = new Command(CommandName.GET_CURRENT_URL).setParameter(
           'sessionId',
           's123'
         )
@@ -615,7 +594,7 @@ describe('http', function () {
     it('canDefineNewCommands', function () {
       executor.defineCommand('greet', 'GET', '/person/:name')
 
-      var command = new Command('greet').setParameter('name', 'Bob')
+      const command = new Command('greet').setParameter('name', 'Bob')
 
       send.returns(Promise.resolve(new http.Response(200, {}, '')))
 
@@ -629,7 +608,7 @@ describe('http', function () {
     it('canRedefineStandardCommands', function () {
       executor.defineCommand(CommandName.GO_BACK, 'POST', '/custom/back')
 
-      var command = new Command(CommandName.GO_BACK).setParameter('times', 3)
+      const command = new Command(CommandName.GO_BACK).setParameter('times', 3)
 
       send.returns(Promise.resolve(new http.Response(200, {}, '')))
 
@@ -643,7 +622,7 @@ describe('http', function () {
     it('accepts promised http clients', function () {
       executor = new http.Executor(Promise.resolve(client))
 
-      var resp = JSON.stringify({ sessionId: 'abc123' })
+      const resp = JSON.stringify({ sessionId: 'abc123' })
       send.returns(Promise.resolve(new http.Response(200, {}, resp)))
 
       let command = new Command(CommandName.NEW_SESSION)
@@ -676,10 +655,10 @@ describe('http', function () {
       assert.ok(
         send.calledWith(
           sinon.match(function (value) {
-            assert.equal(value.method, method)
-            assert.equal(value.path, path)
-            assert.deepEqual(value.data, data)
-            assert.deepEqual(entries(value.headers), headers)
+            assert.strictEqual(value.method, method)
+            assert.strictEqual(value.path, path)
+            assert.deepStrictEqual(value.data, data)
+            assert.deepStrictEqual(entries(value.headers), headers)
             return true
           })
         )

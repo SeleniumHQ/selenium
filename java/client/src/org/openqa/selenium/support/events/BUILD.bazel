@@ -1,8 +1,0 @@
-java_library(
-    name = "events",
-    srcs = glob(["**/*.java"]),
-    visibility = ["//visibility:public"],
-    deps = [
-        "//java/client/src/org/openqa/selenium:core",
-    ],
-)

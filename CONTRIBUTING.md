@@ -30,7 +30,7 @@ the issue is a regression.
 ## Feature Requests
 
 If you find that Selenium is missing something, feel free to open an issue
-with details describing what feature(s) you'd like added or changed.  
+with details describing what feature(s) you'd like added or changed.
 
 If you'd like a hand at trying to implement the feature yourself, please refer to the [Code Contributions](#code-contributions) section of the document.
 
@@ -42,13 +42,13 @@ understanding how things work and learning effective ways to exploit
 its potential.
 
 The [seleniumhq.github.io](https://github.com/SeleniumHQ/seleniumhq.github.io/)
-repository contains both Selenium’s site and documentation. This is an ongoing
-effort (not targeted at any specific release) to provide updated information on
-how to use Selenium effectively, how to get involved and how to contribute to Selenium.
+repository contains both Selenium’s site and documentation. This is an ongoing effort (not targeted
+at any specific release) to provide updated information on how to use Selenium effectively, how to
+get involved and how to contribute to Selenium.
 
-The official documentation of Selenium is at https://selenium.dev/documentation/.
-More details on how to get involved and contribute, please check the site's
-and documentation [contributing guidelines](https://selenium.dev/documentation/en/contributing/).
+The official documentation of Selenium is at https://selenium.dev/documentation/. More details on
+how to get involved and contribute, please check the site's and
+documentation [contributing guidelines](https://www.selenium.dev/documentation/about/contributing/).
 
 ## Code Contributions
 
@@ -65,10 +65,11 @@ This document will guide you through the contribution process.
 ### Step 1: Fork
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
-and check out your copy locally.
+and check out your copy locally. Use `--depth 1` for a quick check out.
+The repository is ~2GB and checking the whole history takes a while.
 
 ```shell
-% git clone git@github.com:username/selenium.git
+% git clone git@github.com:username/selenium.git --depth 1
 % cd selenium
 % git remote add upstream git://github.com/seleniumhq/selenium.git
 ```
@@ -180,7 +181,86 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 ### Step 5: Test
 
 Bug fixes and features **should have tests**. Look at other tests to
-see how they should be structured.
+see how they should be structured. Verify that new and existing tests are
+passing locally before pushing code.
+
+#### Running tests locally
+
+Build your code for the latest changes and run tests locally.
+
+##### Python
+<details>
+  <summary>
+    Click to see How to run Python Tests.
+  </summary>
+
+  It's not mandatory to run tests sequentially but running Unit tests
+  before browser testing is recommended.
+
+  Unit Tests
+  ```shell
+  % bazel test //py:unit
+  ```
+
+  Remote Tests
+  ```shell
+  % bazel test --jobs 1 //py:test-remote
+  ```
+
+  Browser Tests
+  ```shell
+  % bazel test //py:test-<browsername> #eg test-chrome, test-firefox
+  ```
+</details>
+
+##### Javascript
+<details>
+  <summary>
+    Click to see How to run JavaScript Tests.
+  </summary>
+
+  Node Tests
+  ```shell
+  % bazel test //javascript/node/selenium-webdriver:tests
+  ```
+
+  Firefox Atom Tests
+  ```shell
+  % bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
+  ```
+
+  Grid UI Unit Tests
+  ```shell
+  % cd javascript/grid-ui && npm install && npm test
+  ```
+</details>
+
+##### Java
+<details>
+  <summary>
+    Click to see How to run Java Tests.
+  </summary>
+
+  Small Tests
+  ```shell
+  % bazel test --cache_test_results=no --test_size_filters=small grid java/test/...
+  ```
+
+  Large Tests
+  ```shell
+  % bazel test --cache_test_results=no java/test/org/openqa/selenium/grid/router:large-tests
+  ```
+
+  Browser Tests
+  ```shell
+  bazel test --test_size_filters=small,medium --cache_test_results=no --test_tag_filters=-browser-test //java/...
+  ```
+</details>
+
+##### Ruby
+
+Please see https://github.com/SeleniumHQ/selenium#ruby for details about running
+tests.
 
 ### Step 6: Push
 
@@ -189,7 +269,7 @@ see how they should be structured.
 ```
 
 Go to https://github.com/yourusername/selenium.git and press the _Pull
-Request_ and fill out the form. 
+Request_ and fill out the form.
 
 Pull requests are usually reviewed within a few days. If there are
 comments to address, apply your changes in new commits (preferably
@@ -239,3 +319,14 @@ Selenium contributors frequent the `#selenium` channel on
 [`irc.freenode.org`](https://webchat.freenode.net/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
 Check https://selenium.dev/support/ for a complete list of options to communicate.
+
+## Using the EngFlow RBE
+
+To access the EngFlow RBE, a developer needs to be granted access to our project
+container repository. Once that has been done, then any bazel command can be run
+remotely by using `--config=remote`. For example: `bazel build --config=remote
+grid` or `bazel test --config=remote java/test/...`
+
+When you run a remote build, one of the first lines of output from Bazel will 
+include a link to the EngFlow UI so you can track the progress of the build and
+gather information about the efficiency of the build.

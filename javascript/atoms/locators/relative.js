@@ -22,6 +22,7 @@ goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.math.Rect');
 
 
 /**
@@ -37,14 +38,14 @@ var Filter;
  *    selector matches the proximity function.
  * @private
  */
-bot.locators.relative.proximity_ = function(selector, proximity) {
+bot.locators.relative.proximity_ = function (selector, proximity) {
   /**
    * Assigning to a temporary variable to keep the closure compiler happy.
    * @todo Inline this.
    *
    * @type {!function(!Element):boolean}
    */
-  var toReturn = function(compareTo) {
+  var toReturn = function (compareTo) {
     var element = bot.locators.relative.resolve_(selector);
 
     var rect1 = bot.dom.getClientRect(element);
@@ -66,7 +67,7 @@ bot.locators.relative.proximity_ = function(selector, proximity) {
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.relative.above_ = function(selector) {
+bot.locators.relative.above_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
@@ -86,7 +87,7 @@ bot.locators.relative.above_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is below the given element.
  * @private
  */
-bot.locators.relative.below_ = function(selector) {
+bot.locators.relative.below_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
@@ -103,7 +104,7 @@ bot.locators.relative.below_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is left of the given element.
  * @private
  */
-bot.locators.relative.leftOf_ = function(selector) {
+bot.locators.relative.leftOf_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
@@ -120,7 +121,7 @@ bot.locators.relative.leftOf_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is right of the given element.
  * @private
  */
-bot.locators.relative.rightOf_ = function(selector) {
+bot.locators.relative.rightOf_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
@@ -139,25 +140,24 @@ bot.locators.relative.rightOf_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is near the given element.
  * @private
  */
-bot.locators.relative.near_ = function(selector, opt_distance) {
+bot.locators.relative.near_ = function (selector, opt_distance) {
   var distance;
   if (opt_distance) {
     distance = opt_distance;
   } else if (goog.isNumber(selector['distance'])) {
     distance = /** @type {number} */ (selector['distance']);
-    delete selector['distance'];
+    // delete selector['distance'];
   }
 
   if (!distance) {
     distance = 50;
   }
 
-
   /**
    * @param {!Element} compareTo
    * @return {boolean}
    */
-  var func = function(compareTo) {
+  var func = function (compareTo) {
     var element = bot.locators.relative.resolve_(selector);
 
     if (element === compareTo) {
@@ -167,42 +167,11 @@ bot.locators.relative.near_ = function(selector, opt_distance) {
     var rect1 = bot.dom.getClientRect(element);
     var rect2 = bot.dom.getClientRect(compareTo);
 
-    // Ascii art time!
-    //
-    //    +---+
-    //    | 1 |
-    //    +---+     +---+
-    //              | 2 |
-    //              +---+
-    //
-    // As you can see, the right hand side of 1 is "near" the left hand side
-    // of 2. Of course, it might be that 2 is to the left of 1, in which case
-    // we would be comparing the right hand side of 2 to the left hand side
-    // of 1. Similar logic happens for top and bottom.
+    var rect1_bigger = new goog.math.Rect(rect1.left-distance,rect1.top-distance,rect1.width+distance*2,rect1.height+distance*2);
 
-    var rhs1 = rect1.left + rect1.width;
-    var rhs2 = rect2.left + rect2.width;
-    var bottom1 = rect1.top - rect1.height;
-    var bottom2 = rect2.top - rect2.height;
-
-    /** @type {function():boolean} */
-    var verticalProximity = function () {
-      return Math.abs(bottom1 - rect2.top) <= distance ||
-        Math.abs(bottom2 - rect1.top) <= distance;
-    };
-
-    // Is 1 to the right of 2?
-    if (Math.abs(rhs1 - rect2.left) <= distance) {
-      return verticalProximity();
-    }
-
-    // Is 1 to the left of 2?
-    if (Math.abs(rhs2 - rect1.left) <= distance) {
-      return verticalProximity();
-    }
-
-    return false;
+    return rect1_bigger.intersects(rect2);
   };
+
   return func;
 };
 
@@ -212,7 +181,7 @@ bot.locators.relative.near_ = function(selector, opt_distance) {
  * @returns {!Element} A single element.
  * @private
  */
-bot.locators.relative.resolve_  = function(selector) {
+bot.locators.relative.resolve_ = function (selector) {
   if (goog.dom.isElement(selector)) {
     return /** @type {!Element} */ (selector);
   }
@@ -251,6 +220,13 @@ bot.locators.relative.STRATEGIES_ = {
   'near': bot.locators.relative.near_,
 };
 
+bot.locators.relative.RESOLVERS_ = {
+  'left': bot.locators.relative.resolve_,
+  'right': bot.locators.relative.resolve_,
+  'above': bot.locators.relative.resolve_,
+  'below': bot.locators.relative.resolve_,
+  'near': bot.locators.relative.resolve_,
+};
 
 /**
  * @param {!IArrayLike<!Element>} allElements
@@ -258,18 +234,18 @@ bot.locators.relative.STRATEGIES_ = {
  * @return {!Array<!Element>}
  * @private
  */
-bot.locators.relative.filterElements_ = function(allElements, filters) {
+bot.locators.relative.filterElements_ = function (allElements, filters) {
   var toReturn = [];
   goog.array.forEach(
     allElements,
-    function(element) {
+    function (element) {
       if (!!!element) {
         return;
       }
 
       var include = goog.array.every(
         filters,
-        function(filter) {
+        function (filter) {
           // Look up the filter function by name
           var name = filter["kind"];
           var strategy = bot.locators.relative.STRATEGIES_[name];
@@ -282,7 +258,7 @@ bot.locators.relative.filterElements_ = function(allElements, filters) {
 
           // Call it with args.
           var filterFunc = strategy.apply(null, filter["args"]);
-          return filterFunc(/** @type {!Element} */ (element));
+          return filterFunc(/** @type {!Element} */(element));
         },
         null);
 
@@ -292,7 +268,54 @@ bot.locators.relative.filterElements_ = function(allElements, filters) {
     },
     null);
 
-  return toReturn;
+  // We want to sort the returned elements by proximity to the last "anchor"
+  // element in the filters.
+  var finalFilter = goog.array.last(filters);
+  var name = finalFilter ? finalFilter["kind"] : "unknown";
+  var resolver = bot.locators.relative.RESOLVERS_[name];
+  if (!!!resolver) {
+    return toReturn;
+  }
+  var lastAnchor = resolver.apply(null, finalFilter["args"]);
+  if (!!!lastAnchor) {
+    return toReturn;
+  }
+
+  return bot.locators.relative.sortByProximity_(lastAnchor, toReturn);
+};
+
+
+/**
+ * @param {!Element} anchor
+ * @param {!Array<!Element>} elements
+ * @return {!Array<!Element>}
+ * @private
+ */
+bot.locators.relative.sortByProximity_ = function (anchor, elements) {
+  var anchorRect = bot.dom.getClientRect(anchor);
+  var anchorCenter = {
+    x: anchorRect.left + (Math.max(1, anchorRect.width) / 2),
+    y: anchorRect.top + (Math.max(1, anchorRect.height) / 2)
+  };
+
+  var distance = function (e) {
+    var rect = bot.dom.getClientRect(e);
+    var center = {
+      x: rect.left + (Math.max(1, rect.width) / 2),
+      y: rect.top + (Math.max(1, rect.height) / 2)
+    };
+
+    var x = Math.pow(anchorCenter.x - center.x, 2);
+    var y = Math.pow(anchorCenter.y - center.y, 2);
+
+    return Math.sqrt(x + y);
+  };
+
+  goog.array.sort(elements, function (left, right) {
+    return distance(left) - distance(right);
+  });
+
+  return elements;
 };
 
 
@@ -305,7 +328,7 @@ bot.locators.relative.filterElements_ = function(allElements, filters) {
  * @return {Element} The first matching element, or null if no such element
  *     could be found.
  */
-bot.locators.relative.single = function(target, ignored_root) {
+bot.locators.relative.single = function (target, ignored_root) {
   var matches = bot.locators.relative.many(target, ignored_root);
   if (goog.array.isEmpty(matches)) {
     return null;
@@ -321,7 +344,7 @@ bot.locators.relative.single = function(target, ignored_root) {
  *     the search under, which is ignored.
  * @return {!IArrayLike<Element>} All matching elements, or an empty list.
  */
-bot.locators.relative.many = function(target, root) {
+bot.locators.relative.many = function (target, root) {
   if (!target.hasOwnProperty("root") || !target.hasOwnProperty("filters")) {
     throw new bot.Error(
       bot.ErrorCode.INVALID_ARGUMENT,
@@ -335,7 +358,7 @@ bot.locators.relative.many = function(target, root) {
 
   var elements;
   if (bot.dom.isElement(target["root"])) {
-    elements = [ /** @type {!Element} */ (target["root"]) ];
+    elements = [ /** @type {!Element} */ (target["root"])];
   } else {
     elements = bot.locators.findElements(target["root"], root);
   }

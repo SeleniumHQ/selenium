@@ -1,0 +1,19 @@
+query GetNodes {
+	nodesInfo {
+		nodes {
+			id
+			uri
+			status
+			maxSession
+			slotCount
+			stereotypes
+			version
+			sessionCount
+			osInfo {
+				version
+				name
+				arch
+			}
+		}
+	}
+}

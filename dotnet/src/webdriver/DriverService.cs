@@ -21,8 +21,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Security.Permissions;
-using OpenQA.Selenium.Internal;
+using System.Net.Http;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         private bool hideCommandPromptWindow;
         private bool isDisposed;
         private Process driverServiceProcess;
+        private TimeSpan initializationTimeout = TimeSpan.FromSeconds(20);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -47,38 +48,27 @@ namespace OpenQA.Selenium
         /// <param name="servicePath">The full path to the directory containing the executable providing the service to drive the browser.</param>
         /// <param name="port">The port on which the driver executable should listen.</param>
         /// <param name="driverServiceExecutableName">The file name of the driver service executable.</param>
-        /// <param name="driverServiceDownloadUrl">A URL at which the driver service executable may be downloaded.</param>
+        /// <param name="driverServiceDownloadUrl">This parameter is no longer used; kept for backwards compatibility.</param>
         /// <exception cref="ArgumentException">
         /// If the path specified is <see langword="null"/> or an empty string.
         /// </exception>
         /// <exception cref="DriverServiceNotFoundException">
         /// If the specified driver service executable does not exist in the specified directory.
         /// </exception>
-        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl)
+        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl = null)
         {
-            if (string.IsNullOrEmpty(servicePath))
-            {
-                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "servicePath");
-            }
-
-            string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
-            if (!File.Exists(executablePath))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
-            }
-
             this.driverServicePath = servicePath;
             this.driverServiceExecutableName = driverServiceExecutableName;
             this.driverServicePort = port;
         }
 
         /// <summary>
-        /// Occurs when the driver process is starting. 
+        /// Occurs when the driver process is starting.
         /// </summary>
         public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
 
         /// <summary>
-        /// Occurs when the driver process has completely started. 
+        /// Occurs when the driver process has completely started.
         /// </summary>
         public event EventHandler<DriverProcessStartedEventArgs> DriverProcessStarted;
 
@@ -129,7 +119,6 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
-            [SecurityPermission(SecurityAction.Demand)]
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
@@ -168,11 +157,30 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets the executable file name of the driver service.
+        /// Gets or sets a value indicating the time to wait for an initial connection before timing out.
         /// </summary>
-        protected string DriverServiceExecutableName
+        public TimeSpan InitializationTimeout
+        {
+            get { return this.initializationTimeout; }
+            set { this.initializationTimeout = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the executable file name of the driver service.
+        /// </summary>
+        public string DriverServiceExecutableName
         {
             get { return this.driverServiceExecutableName; }
+            set { this.driverServiceExecutableName = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path of the driver service.
+        /// </summary>
+        public string DriverServicePath
+        {
+            get { return this.driverServicePath; }
+            set { this.driverServicePath = value; }
         }
 
         /// <summary>
@@ -181,14 +189,6 @@ namespace OpenQA.Selenium
         protected virtual string CommandLineArguments
         {
             get { return string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort); }
-        }
-
-        /// <summary>
-        /// Gets a value indicating the time to wait for an initial connection before timing out.
-        /// </summary>
-        protected virtual TimeSpan InitializationTimeout
-        {
-            get { return TimeSpan.FromSeconds(20); }
         }
 
         /// <summary>
@@ -218,20 +218,23 @@ namespace OpenQA.Selenium
                 bool isInitialized = false;
                 try
                 {
-                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-                    request.KeepAlive = false;
-                    request.Timeout = 5000;
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+                        httpClient.Timeout = TimeSpan.FromSeconds(5);
 
-                    // Checking the response from the 'status' end point. Note that we are simply checking
-                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
-                    // Content-Type header. A more sophisticated check would parse the JSON response and
-                    // validate its values. At the moment we do not do this more sophisticated check.
-                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
+                        Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+                        using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
+                        {
+                            // Checking the response from the 'status' end point. Note that we are simply checking
+                            // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                            // Content-Type header. A more sophisticated check would parse the JSON response and
+                            // validate its values. At the moment we do not do this more sophisticated check.
+                            isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
                 }
-                catch (WebException ex)
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -252,7 +255,6 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts the DriverService if it is not already running.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
             if (this.driverServiceProcess != null)
@@ -261,7 +263,16 @@ namespace OpenQA.Selenium
             }
 
             this.driverServiceProcess = new Process();
-            this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
+
+            if (this.driverServicePath != null)
+            {
+                this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
+            }
+            else
+            {
+                this.driverServiceProcess.StartInfo.FileName = DriverFinder.FullPath(this.GetDefaultDriverOptions());
+            }
+
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
@@ -282,24 +293,10 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Finds the specified driver service executable.
+        /// The browser options instance that corresponds to the driver service
         /// </summary>
-        /// <param name="executableName">The file name of the executable to find.</param>
-        /// <param name="downloadUrl">A URL at which the driver service executable may be downloaded.</param>
-        /// <returns>The directory containing the driver service executable.</returns>
-        /// <exception cref="DriverServiceNotFoundException">
-        /// If the specified driver service executable does not exist in the current directory or in a directory on the system path.
-        /// </exception>
-        protected static string FindDriverServiceExecutable(string executableName, Uri downloadUrl)
-        {
-            string serviceDirectory = FileUtilities.FindFile(executableName);
-            if (string.IsNullOrEmpty(serviceDirectory))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The {0} file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at {1}.", executableName, downloadUrl));
-            }
-
-            return serviceDirectory;
-        }
+        /// <returns></returns>
+        protected abstract DriverOptions GetDefaultDriverOptions();
 
         /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
@@ -326,7 +323,7 @@ namespace OpenQA.Selenium
         {
             if (eventArgs == null)
             {
-                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+                throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
             }
 
             if (this.DriverProcessStarting != null)
@@ -343,7 +340,7 @@ namespace OpenQA.Selenium
         {
             if (eventArgs == null)
             {
-                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+                throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
             }
 
             if (this.DriverProcessStarted != null)
@@ -355,7 +352,6 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Stops the DriverService.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
         {
             if (this.IsRunning)
@@ -364,23 +360,29 @@ namespace OpenQA.Selenium
                 {
                     Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
                     DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
-                    while (this.IsRunning && DateTime.Now < timeout)
+                    using (var httpClient = new HttpClient())
                     {
-                        try
+                        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
+                        while (this.IsRunning && DateTime.Now < timeout)
                         {
-                            // Issue the shutdown HTTP request, then wait a short while for
-                            // the process to have exited. If the process hasn't yet exited,
-                            // we'll retry. We wait for exit here, since catching the exception
-                            // for a failed HTTP request due to a closed socket is particularly
-                            // expensive.
-                            HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
-                            request.KeepAlive = false;
-                            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                            response.Close();
-                            this.driverServiceProcess.WaitForExit(3000);
-                        }
-                        catch (WebException)
-                        {
+                            try
+                            {
+                                // Issue the shutdown HTTP request, then wait a short while for
+                                // the process to have exited. If the process hasn't yet exited,
+                                // we'll retry. We wait for exit here, since catching the exception
+                                // for a failed HTTP request due to a closed socket is particularly
+                                // expensive.
+                                using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl)).GetAwaiter().GetResult())
+                                {
+
+                                }
+
+                                this.driverServiceProcess.WaitForExit(3000);
+                            }
+                            catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
+                            {
+                            }
                         }
                     }
                 }

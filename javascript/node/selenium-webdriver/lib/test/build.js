@@ -20,7 +20,6 @@
 const fs = require('fs')
 const path = require('path')
 const { spawn } = require('child_process')
-
 const PROJECT_ROOT = path.normalize(path.join(__dirname, '../../../../..'))
 const WORKSPACE_FILE = path.join(PROJECT_ROOT, 'WORKSPACE')
 
@@ -38,14 +37,14 @@ function checkIsDevMode() {
  * Targets that have been previously built.
  * @type {!Object}
  */
-var builtTargets = {}
+let builtTargets = {}
 
 /**
  * @param {!Array.<string>} targets The targets to build.
  * @throws {Error} If not running in dev mode.
  * @constructor
  */
-var Build = function (targets) {
+const Build = function (targets) {
   checkIsDevMode()
   this.targets_ = targets
 }
@@ -70,7 +69,7 @@ Build.prototype.onlyOnce = function () {
  * @throws {Error} If no targets were specified.
  */
 Build.prototype.go = function () {
-  var targets = this.targets_
+  let targets = this.targets_
   if (!targets.length) {
     throw Error('No targets specified')
   }
@@ -88,7 +87,7 @@ Build.prototype.go = function () {
 
   console.log('\nBuilding', targets.join(' '), '...')
 
-  var cmd,
+  let cmd,
     args = targets
   if (process.platform === 'win32') {
     cmd = 'cmd.exe'
@@ -110,7 +109,7 @@ Build.prototype.go = function () {
         return resolve()
       }
 
-      var msg = 'Unable to build artifacts'
+      let msg = 'Unable to build artifacts'
       if (code) {
         // May be null.
         msg += '; code=' + code
@@ -135,7 +134,7 @@ exports.isDevMode = isDevMode
  * @throws {Error} If not running in dev mode.
  */
 exports.of = function (var_args) { // eslint-disable-line
-  var targets = Array.prototype.slice.call(arguments, 0)
+  let targets = Array.prototype.slice.call(arguments, 0)
   return new Build(targets)
 }
 

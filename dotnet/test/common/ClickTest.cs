@@ -28,7 +28,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void CanClickOnALinkThatOverflowsAndFollowIt()
         {
             driver.FindElement(By.Id("overflowLink")).Click();
@@ -88,7 +87,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        
+
         public void CanClickOnAnElementWithTopSetToANegativeNumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
@@ -101,7 +100,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
         {
             driver.Url = javascriptPage;
@@ -132,8 +130,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;
@@ -142,13 +140,6 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("new-window")).Click();
             WaitFor(() => { return driver.WindowHandles.Count >= windowHandlesBefore + 1; }, "Window handles was not " + (windowHandlesBefore + 1).ToString());
             Assert.AreEqual(windowHandlesBefore + 1, driver.WindowHandles.Count);
-        }
-
-        [Test]
-        [Ignore("Ignored for all browsers")]
-        public void ShouldSetRelatedTargetForMouseOut()
-        {
-            Assert.Fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
         }
 
         [Test]
@@ -186,6 +177,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/653")]
         public void CanClickOnALinkThatContainsEmbeddedBlockElements()
         {
             driver.FindElement(By.Id("embeddedBlock")).Click();
@@ -201,7 +193,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
-        // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
         [Test]
         public void ShouldBeAbleToClickOnAnElementInTheViewport()
         {
@@ -221,7 +212,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Map click fails")]
+        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")]
         public void CanClickAnImageMapArea()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
@@ -238,6 +229,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")]
         public void ShouldBeAbleToClickOnAnElementGreaterThanTwoViewports()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big.html");
@@ -251,7 +243,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big_in_frame.html");
@@ -331,23 +322,6 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/span_that_wraps.html");
 
             driver.FindElement(By.Id("span")).Click();
-
-            WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
-            Assert.AreEqual("Submitted Successfully!", driver.Title);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.Chrome, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.Edge, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.Firefox, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.Safari, "Element is properly seen as obscured.")]
-        public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/wrapped_overlapping_elements.html");
-
-            driver.FindElement(By.Id("link")).Click();
 
             WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
             Assert.AreEqual("Submitted Successfully!", driver.Title);

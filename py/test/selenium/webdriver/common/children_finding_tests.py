@@ -17,9 +17,8 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    WebDriverException,
-    NoSuchElementException)
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 

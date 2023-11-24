@@ -20,14 +20,8 @@
 /**
  * @fileoverview Defines types related to user input with the WebDriver API.
  */
-
-const promise = require('./promise')
 const { Command, Name } = require('./command')
-const {
-  InvalidArgumentError,
-  UnknownCommandError,
-  UnsupportedOperationError,
-} = require('./error')
+const { InvalidArgumentError } = require('./error')
 
 /**
  * Enumeration of the buttons used in the advanced interactions API.
@@ -37,6 +31,8 @@ const Button = {
   LEFT: 0,
   MIDDLE: 1,
   RIGHT: 2,
+  BACK: 3,
+  FORWARD: 4,
 }
 
 /**
@@ -165,7 +161,8 @@ class FileDetector {
    * @return {!Promise<string>} A promise for the processed file path.
    * @package
    */
-  handleFile(driver, path) { // eslint-disable-line
+  handleFile(_driver, path) {
+    // eslint-disable-line
     return Promise.resolve(path)
   }
 }
@@ -206,6 +203,7 @@ Action.Type = {
   POINTER_UP: 'pointerUp',
   POINTER_MOVE: 'pointerMove',
   POINTER_CANCEL: 'pointerCancel',
+  SCROLL: 'scroll',
 }
 
 /**
@@ -239,6 +237,7 @@ Device.Type = {
   KEY: 'key',
   NONE: 'none',
   POINTER: 'pointer',
+  WHEEL: 'wheel',
 }
 
 /**
@@ -256,7 +255,7 @@ function checkCodePoint(key) {
   }
 
   key = key.normalize()
-  if (Array.from(key).length != 1) {
+  if (Array.from(key).length !== 1) {
     throw new InvalidArgumentError(
       `key input is not a single code point: ${key}`
     )
@@ -350,11 +349,43 @@ class Pointer extends Device {
 
   /**
    * @param {!Button=} button The button to press.
+   * @param width
+   * @param height
+   * @param pressure
+   * @param tangentialPressure
+   * @param tiltX
+   * @param tiltY
+   * @param twist
+   * @param altitudeAngle
+   * @param azimuthAngle
    * @return {!Action} An action to press the specified button with this device.
    * @package
    */
-  press(button = Button.LEFT) {
-    return { type: Action.Type.POINTER_DOWN, button }
+  press(
+    button = Button.LEFT,
+    width = 0,
+    height = 0,
+    pressure = 0,
+    tangentialPressure = 0,
+    tiltX = 0,
+    tiltY = 0,
+    twist = 0,
+    altitudeAngle = 0,
+    azimuthAngle = 0
+  ) {
+    return {
+      type: Action.Type.POINTER_DOWN,
+      button,
+      width,
+      height,
+      pressure,
+      tangentialPressure,
+      tiltX,
+      tiltY,
+      twist,
+      altitudeAngle,
+      azimuthAngle,
+    }
   }
 
   /**
@@ -383,8 +414,37 @@ class Pointer extends Device {
    * @return {!Action} The new action.
    * @package
    */
-  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT }) {
-    return { type: Action.Type.POINTER_MOVE, origin, duration, x, y }
+  move({
+    x = 0,
+    y = 0,
+    duration = 100,
+    origin = Origin.VIEWPORT,
+    width = 0,
+    height = 0,
+    pressure = 0,
+    tangentialPressure = 0,
+    tiltX = 0,
+    tiltY = 0,
+    twist = 0,
+    altitudeAngle = 0,
+    azimuthAngle = 0,
+  }) {
+    return {
+      type: Action.Type.POINTER_MOVE,
+      origin,
+      duration,
+      x,
+      y,
+      width,
+      height,
+      pressure,
+      tangentialPressure,
+      tiltX,
+      tiltY,
+      twist,
+      altitudeAngle,
+      azimuthAngle,
+    }
   }
 }
 
@@ -396,6 +456,37 @@ Pointer.Type = {
   MOUSE: 'mouse',
   PEN: 'pen',
   TOUCH: 'touch',
+}
+
+class Wheel extends Device {
+  /**
+   * @param {string} id the device ID..
+   */
+  constructor(id) {
+    super(Device.Type.WHEEL, id)
+  }
+
+  /**
+   * Scrolls a page via the coordinates given
+   * @param {number} x starting x coordinate
+   * @param {number} y starting y coordinate
+   * @param {number} deltaX Delta X to scroll to target
+   * @param {number} deltaY Delta Y to scroll to target
+   * @param {WebElement} origin element origin
+   * @param {number} duration duration ratio be the ratio of time delta and duration
+   * @returns {!Action} An action to scroll with this device.
+   */
+  scroll(x, y, deltaX, deltaY, origin, duration) {
+    return {
+      type: Action.Type.SCROLL,
+      duration: duration,
+      x: x,
+      y: y,
+      deltaX: deltaX,
+      deltaY: deltaY,
+      origin: origin,
+    }
+  }
 }
 
 /**
@@ -489,67 +580,6 @@ Pointer.Type = {
  * | Keyboard | pause(100)            | keyDown(SHIFT) |
  * | Mouse    | move({duration: 300}) |                |
  *
- *
- * #### Bridge Mode
- *
- * As of January 2018, only Firefox natively supports this API. For other
- * browsers, you may either use the
- * {@link ./actions.LegacyActionSequence LegacyActionSequence} class, _or_ you
- * can put the Actions class into bridge mode by passing `{bridge: true}` on
- * creation:
- *
- *     const actions = driver.actions({bridge: true});
- *     await actions.click(element).sendKeys('abc').perform();
- *
- * In bridge mode, {@link #perform perform()} will first attempt to execute the
- * configured action sequence using the W3C action protocol. If this is rejected
- * by the remote end, the sequence will be translated to and executed against
- * the legacy protocol.
- *
- * Bridge mode __is not enabled by default__ as there are several notable
- * differences between W3C-specified and legacy protocols. Care must be
- * taken to configure your action sequences to account for these differences:
- *
- * 1.  For W3C actions, the entire action sequence is executed in a single
- *     call to the remote end. For legacy sequences, multiple calls must be
- *     made for each step in the sequence. This introduces additional latency
- *     which may impact how the browser responds to the emulated user actions.
- *
- * 2.  For the legacy actions, {@linkplain #pause pauses} are handled _locally_.
- *
- * 3.  For legacy actions, a {@linkplain #keyDown keyDown()} for a
- *     _non-modifier key_ **must** be followed by a {@linkplain #keyUP keyUp()}
- *     for the same key. This will be handled for you if you use the
- *     {@linkplain #sendKeys sendKeys()} method.
- *
- * 4.  Mouse movements may not be specified relative to
- *     {@linkplain ./input.Origin.VIEWPORT Origin.VIEWPORT}.
- *     All movements must be relative to an element or the mouse's current
- *     position ({@linkplain ./input.Origin.POINTER Origin.POINTER}).
- *     The {@linkplain #move move()} method defaults to viewport relative
- *     offsets, so you must always specify an appropriate origin in bridge mode:
- *
- *         driver.actions({bridge: true})
- *             .move({x: 0, y: 0, origin: Origin.POINTER})
- *             .perform();
- *         driver.actions({bridge: true})
- *             .move({x: 0, y: 0, origin: someWebElement})
- *             .perform();
- *
- * 5.  The legacy protocol does not support specifying the duration of a
- *     {@linkplain #move mouse movement}; any specified duration _is ignored_
- *     when translating actions to the legacy protocol.
- *
- * 6.  For W3C actions, move offsets relative to a
- *     {@linkplain ./webdriver.WebElement WebElement} are interpreted relative
- *     to the center of an element's _first_ [client rect] in the viewport. For
- *     legacy actions, element offsets are relative to the top-left corner of
- *     the element's [bounding client rect]. When translating actions to the
- *     legacy protocol in bridge mode, an extra command must be inserted to
- *     translate move offsets from one frame of reference to the other. This
- *     extra command contributes to the overall latency issue outlined in
- *     point 1.
- *
  * [client rect]: https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects
  * [bounding client rect]: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
  *
@@ -560,17 +590,10 @@ class Actions {
   /**
    * @param {!Executor} executor The object to execute the configured
    *     actions with.
-   * @param {{async: (boolean|undefined),
-   *          bridge: (boolean|undefined)}} options Options for this action
+   * @param {{async: (boolean|undefined)}} options Options for this action
    *     sequence (see class description for details).
    */
-  constructor(executor, { async = false, bridge = false } = {}) {
-    if (async && bridge) {
-      throw new InvalidArgumentError(
-        'Async sequences not supported with bridge mode'
-      )
-    }
-
+  constructor(executor, { async = false } = {}) {
     /** @private @const */
     this.executor_ = executor
 
@@ -578,18 +601,19 @@ class Actions {
     this.sync_ = !async
 
     /** @private @const */
-    this.bridge_ = !!bridge
-
-    /** @private @const */
     this.keyboard_ = new Keyboard('default keyboard')
 
     /** @private @const */
     this.mouse_ = new Pointer('default mouse', Pointer.Type.MOUSE)
 
+    /** @private @const */
+    this.wheel_ = new Wheel('default wheel')
+
     /** @private @const {!Map<!Device, !Array<!Action>>} */
     this.sequences_ = new Map([
       [this.keyboard_, []],
       [this.mouse_, []],
+      [this.wheel_, []],
     ])
   }
 
@@ -601,6 +625,11 @@ class Actions {
   /** @return {!Pointer} the mouse pointer device handle. */
   mouse() {
     return this.mouse_
+  }
+
+  /** @return {!Wheel} the wheel device handle. */
+  wheel() {
+    return this.wheel_
   }
 
   /**
@@ -775,7 +804,13 @@ class Actions {
    * @return {!Actions} a self reference.
    */
   sendKeys(...keys) {
+    const { WebElement } = require('./webdriver')
+
     const actions = []
+    if (keys.length > 1 && keys[0] instanceof WebElement) {
+      this.click(keys[0])
+      keys.shift()
+    }
     for (const key of keys) {
       if (typeof key === 'string') {
         for (const symbol of key) {
@@ -813,11 +848,27 @@ class Actions {
   }
 
   /**
+   * scrolls a page via the coordinates given
+   * @param {number} x starting x coordinate
+   * @param {number} y starting y coordinate
+   * @param {number} deltax delta x to scroll to target
+   * @param {number} deltay delta y to scroll to target
+   * @param {number} duration duration ratio be the ratio of time delta and duration
+   * @returns {!Actions} An action to scroll with this device.
+   */
+  scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
+    return this.insert(
+      this.wheel_,
+      this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration)
+    )
+  }
+
+  /**
    * Inserts an action for moving the mouse `x` and `y` pixels relative to the
    * specified `origin`. The `origin` may be defined as the mouse's
-   * {@linkplain ./input.Origin.POINTER current position}, the
+   * {@linkplain ./input.Origin.POINTER current position}, the top-left corner of the
    * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
-   * {@linkplain ./webdriver.WebElement WebElement}.
+   * {@linkplain ./webdriver.WebElement WebElement}. Default is top left corner of the view-port if origin is not specified
    *
    * You may adjust how long the remote end should take, in milliseconds, to
    * perform the move using the `duration` parameter (defaults to 100 ms).
@@ -952,20 +1003,9 @@ class Actions {
       return Promise.resolve()
     }
 
-    try {
-      await this.executor_.execute(
-        new Command(Name.ACTIONS).setParameter('actions', _actions)
-      )
-    } catch (ex) {
-      if (
-        this.bridge_ &&
-        (ex instanceof UnknownCommandError ||
-          ex instanceof UnsupportedOperationError)
-      ) {
-        return executeLegacy(this.executor_, this.sequences_)
-      }
-      throw ex
-    }
+    await this.executor_.execute(
+      new Command(Name.ACTIONS).setParameter('actions', _actions)
+    )
   }
 }
 
@@ -978,213 +1018,6 @@ function isIdle(actions) {
     actions.length === 0 ||
     actions.every((a) => a.type === Action.Type.PAUSE && !a.duration)
   )
-}
-
-const MODIFIER_KEYS = new Set([Key.ALT, Key.CONTROL, Key.SHIFT, Key.COMMAND])
-
-/**
- * @param {!Executor} executor
- * @param {!Map<!Device, !Array<!Action>>} sequences
- * @return {!Promise<void>}
- * @suppress {deprecated} Ignore warnings about using LegacyActionSequence.
- */
-async function executeLegacy(executor, sequences) {
-  let maxLength = 0
-  sequences.forEach((seq) => (maxLength = Math.max(maxLength, seq.length)))
-
-  const actions = []
-  for (let i = 0; i < maxLength; i++) {
-    let next
-    for (const device of sequences.keys()) {
-      const seq = sequences.get(device)
-
-      if (
-        device instanceof Pointer &&
-        device.pointerType_ !== Pointer.Type.MOUSE
-      ) {
-        throw new UnsupportedOperationError(
-          `${device.pointerType_} pointer not supported in bridge mode`
-        )
-      }
-
-      const action = seq[i]
-      if (!action || (action.type === Action.Type.PAUSE && !action.duration)) {
-        continue
-      }
-
-      // -  If we've already found an action for this tick:
-      //    -  If we have two pauses, use the one with a longer duration
-      //    -  If one is a pause and the other isn't, use the non-pause
-      //    -  Otherwise, two non-pauses is an error.
-      // - Otherwise, we haven't selected an action yet.
-      if (next) {
-        if (next.type === Action.Type.PAUSE) {
-          if (action.type === Action.Type.PAUSE) {
-            next = next.duration > action.duration ? next : action
-          } else {
-            next = action
-          }
-        } else if (action.type !== Action.Type.PAUSE) {
-          throw new UnsupportedOperationError(
-            'parallel actions not supported in bridge mode'
-          )
-        }
-      } else {
-        next = action
-      }
-
-      if (action.type === Action.Type.KEY_DOWN) {
-        // If this action is a keydown for a non-modifier key, the next action
-        // must be a keyup for the same key, otherwise it cannot be translated
-        // to the legacy action API.
-        if (!MODIFIER_KEYS.has(action.value)) {
-          const nextAction = seq[i + 1]
-          if (
-            !nextAction ||
-            nextAction.type !== Action.Type.KEY_UP ||
-            nextAction.value !== action.value
-          ) {
-            throw new UnsupportedOperationError(
-              `in bridge mode, keydown for <${action.value}> must be followed` +
-                ' by a keyup for the same key'
-            )
-          }
-        }
-      } else if (
-        action.type === Action.Type.KEY_UP &&
-        !MODIFIER_KEYS.has(action.value)
-      ) {
-        next = null
-      }
-    }
-
-    if (next) {
-      actions.push(next)
-    }
-  }
-
-  for (let i = 0; i < actions.length; i++) {
-    const action = actions[i]
-    switch (action.type) {
-      case Action.Type.PAUSE: {
-        await promise.delayed(action.duration || 0)
-        break
-      }
-      case Action.Type.KEY_DOWN: {
-        const keys = [action.value]
-        if (!MODIFIER_KEYS.has(action.value)) {
-          // eslint-disable-next-line no-inner-declarations
-          function nextIsKeyDown() {
-            const next = actions[i + 1]
-            return (
-              !!next &&
-              next.type === Action.Type.KEY_DOWN &&
-              !MODIFIER_KEYS.has(next.value)
-            )
-          }
-          for (; nextIsKeyDown(); i++) {
-            keys.push(actions[i + 1].value)
-          }
-        }
-        await executor.execute(
-          new Command(Name.LEGACY_ACTION_SEND_KEYS).setParameter('value', keys)
-        )
-        break
-      }
-      case Action.Type.KEY_UP: {
-        await executor.execute(
-          new Command(Name.LEGACY_ACTION_SEND_KEYS).setParameter('value', [
-            action.value,
-          ])
-        )
-        break
-      }
-      case Action.Type.POINTER_DOWN: {
-        // eslint-disable-next-line no-inner-declarations
-        function isClick(startAt) {
-          const first = actions[startAt]
-          const second = actions[startAt + 1]
-          return (
-            !!first &&
-            !!second &&
-            first.type === Action.Type.POINTER_DOWN &&
-            second.type === Action.Type.POINTER_UP &&
-            first.button === second.button
-          )
-        }
-
-        // eslint-disable-next-line no-inner-declarations
-        function isDoubleClick(startAt) {
-          return (
-            isClick(startAt) &&
-            isClick(startAt + 2) &&
-            actions[startAt].button === actions[(startAt = 2)].button
-          )
-        }
-
-        let cmd
-        if (isDoubleClick(i)) {
-          i += 3 // Consume the pointer up/down/up.
-          cmd = Name.LEGACY_ACTION_DOUBLE_CLICK
-        } else if (isClick(i)) {
-          i++ // Consume the pointer-up.
-          cmd = Name.LEGACY_ACTION_CLICK
-        } else {
-          cmd = Name.LEGACY_ACTION_MOUSE_DOWN
-        }
-        await executor.execute(
-          new Command(cmd).setParameter('button', action.button)
-        )
-        break
-      }
-      case Action.Type.POINTER_UP: {
-        await executor.execute(
-          new Command(Name.LEGACY_ACTION_MOUSE_UP).setParameter(
-            'button',
-            action.button
-          )
-        )
-        break
-      }
-      case Action.Type.POINTER_MOVE: {
-        if (action.origin === Origin.VIEWPORT) {
-          throw new UnsupportedOperationError(
-            `pointer movements relative to ${Origin.VIEWPORT} are not` +
-              ' supported in bridge mode'
-          )
-        }
-
-        let x = action.x
-        let y = action.y
-        const cmd = new Command(Name.LEGACY_ACTION_MOUSE_MOVE)
-        if (action.origin && action.origin !== Origin.POINTER) {
-          const el = /** @type {!./webdriver.WebElement} */ (action.origin)
-
-          // Need to translate frame of reference from center of element's first
-          // client rect to the top-left of its bounding client rect. See:
-          // https://w3c.github.io/webdriver/webdriver-spec.html#dfn-center-point
-          let diff = await executor.execute(
-            new Command(Name.EXECUTE_SCRIPT)
-              .setParameter('script', INTERNAL_COMPUTE_OFFSET_SCRIPT)
-              .setParameter('args', [el])
-          )
-          x += diff[0]
-          y += diff[1]
-
-          const id = await el.getId()
-          cmd.setParameter('element', id)
-        }
-        cmd.setParameter('xoffset', x).setParameter('yoffset', y)
-        await executor.execute(cmd)
-        break
-      }
-      default: {
-        throw new UnsupportedOperationError(
-          `${action.type} actions not supported in bridge mode`
-        )
-      }
-    }
-  }
 }
 
 /**

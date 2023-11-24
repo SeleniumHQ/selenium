@@ -35,3 +35,12 @@ genrule(
     tools = [":make_atoms_module"],
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
+
+genrule(
+    name = "mutation-listener",
+    srcs = ["//javascript/cdp-support:mutation-listener.js"],
+    outs = ["mutation-listener.js"],
+    cmd = "mv $(location //javascript/cdp-support:mutation-listener.js) $@",
+    tools = [],
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)

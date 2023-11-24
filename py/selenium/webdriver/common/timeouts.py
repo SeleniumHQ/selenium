@@ -15,81 +15,128 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import TYPE_CHECKING
 
-class Timeouts(object):
+if TYPE_CHECKING:
+    from typing import TypedDict
 
-    def __init__(self, implicit_wait=None, page_load=None, script=None):
-        """
-        Create a new Timeout object.
+    class JSONTimeouts(TypedDict, total=False):
+        implicit: int
+        pageLoad: int
+        script: int
+
+else:
+    from typing import Dict
+
+    JSONTimeouts = Dict[str, int]
+
+
+class _TimeoutsDescriptor:
+    """Get or set the value of the attributes listed below.
+
+    _implicit_wait _page_load _script
+
+    This does not set the value on the remote end.
+    """
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, cls) -> float:
+        return getattr(obj, self.name) / 1000
+
+    def __set__(self, obj, value) -> None:
+        converted_value = getattr(obj, "_convert")(value)
+        setattr(obj, self.name, converted_value)
+
+
+class Timeouts:
+    def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
+        """Create a new Timeouts object.
+
+        This implements https://w3c.github.io/webdriver/#timeouts.
 
         :Args:
-         - implicit_wait - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
-         - page_load - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
-         - script - Either an int or a float. The number passed in needs to how many
-            seconds the driver will wait.
+         - implicit_wait - Either an int or a float. Set how many
+            seconds to wait when searching for elements before
+            throwing an error.
+         - page_load - Either an int or a float. Set how many seconds
+            to wait for a page load to complete before throwing
+            an error.
+         - script - Either an int or a float. Set how many seconds to
+            wait for an asynchronous script to finish execution
+            before throwing an error.
         """
-        self._implicit_wait = self._convert(implicit_wait)
-        self._page_load = self._convert(page_load)
-        self._script = self._convert(script)
 
-    @property
-    def implicit_wait(self):
-        """
-        Return the value for the implicit wait. This does not return the value on the remote end
-        """
-        return self._implicit_wait / 1000
+        self.implicit_wait = implicit_wait
+        self.page_load = page_load
+        self.script = script
 
-    @implicit_wait.setter
-    def implicit_wait(self, _implicit_wait):
-        """
-        Sets the value for the implicit wait. This does not set the value on the remote end
-        """
-        self._implicit_wait = self._convert(_implicit_wait)
+    # Creating descriptor objects
+    implicit_wait = _TimeoutsDescriptor("_implicit_wait")
+    """Get or set how many seconds to wait when searching for elements.
 
-    @property
-    def page_load(self):
-        """
-        Return the value for the page load wait. This does not return the value on the remote end
-        """
-        return self._page_load / 1000
+    This does not set the value on the remote end.
 
-    @page_load.setter
-    def page_load(self, _page_load):
-        """
-        Sets the value for the page load wait. This does not set the value on the remote end
-        """
-        self._page_load = self._convert(_page_load)
+    Usage
+    -----
+    - Get
+        - `self.implicit_wait`
+    - Set
+        - `self.implicit_wait` = `value`
 
-    @property
-    def script(self):
-        """
-        Return the value for the script wait. This does not return the value on the remote end
-        """
-        return self._script / 1000
+    Parameters
+    ----------
+    `value`: `float`
+    """
 
-    @script.setter
-    def script(self, _script):
-        """
-        Sets the value for the script wait. This does not set the value on the remote end
-        """
-        self._script = self._convert(_script)
+    page_load = _TimeoutsDescriptor("_page_load")
+    """Get or set how many seconds to wait for the page to load.
 
-    def _convert(self, timeout):
-        if timeout is not None:
-            if isinstance(timeout, (int, float)):
-                return int(float(timeout) * 1000)
-            else:
-                raise TypeError("Timeouts can only be an int or a float")
+    This does not set the value on the remote end.
 
-    def _to_json(self):
-        timeouts = {}
-        if self._implicit_wait is not None:
+    Usage
+    -----
+    - Get
+        - `self.page_load`
+    - Set
+        - `self.page_load` = `value`
+
+    Parameters
+    ----------
+    `value`: `float`
+    """
+
+    script = _TimeoutsDescriptor("_script")
+    """Get or set how many seconds to wait for an asynchronous script to finish
+    execution.
+
+    This does not set the value on the remote end.
+
+    Usage
+    ------
+    - Get
+        - `self.script`
+    - Set
+        - `self.script` = `value`
+
+    Parameters
+    -----------
+    `value`: `float`
+    """
+
+    def _convert(self, timeout: float) -> int:
+        if isinstance(timeout, (int, float)):
+            return int(float(timeout) * 1000)
+        raise TypeError("Timeouts can only be an int or a float")
+
+    def _to_json(self) -> JSONTimeouts:
+        timeouts: JSONTimeouts = {}
+        if self._implicit_wait:
             timeouts["implicit"] = self._implicit_wait
-        if self._page_load is not None:
+        if self._page_load:
             timeouts["pageLoad"] = self._page_load
-        if self._script is not None:
+        if self._script:
             timeouts["script"] = self._script
 
         return timeouts

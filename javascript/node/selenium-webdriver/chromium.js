@@ -82,9 +82,8 @@ const command = require('./lib/command')
 const error = require('./lib/error')
 const Symbols = require('./lib/symbols')
 const webdriver = require('./lib/webdriver')
-const WebSocket = require('ws')
-const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
+const { getPath } = require('./common/driverFinder')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -94,10 +93,13 @@ const Command = {
   LAUNCH_APP: 'launchApp',
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
+  DELETE_NETWORK_CONDITIONS: 'deleteNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
+  START_CAST_DESKTOP_MIRRORING: 'startDesktopMirroring',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
@@ -106,12 +108,13 @@ const Command = {
 /**
  * Creates a command executor with support for Chromium's custom commands.
  * @param {!Promise<string>} url The server's URL.
+ * @param vendorPrefix
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url, vendorPrefix) {
-  let agent = new http.Agent({ keepAlive: true })
-  let client = url.then((url) => new http.HttpClient(url, agent))
-  let executor = new http.Executor(client)
+  const agent = new http.Agent({ keepAlive: true })
+  const client = url.then((url) => new http.HttpClient(url, agent))
+  const executor = new http.Executor(client)
   configureExecutor(executor, vendorPrefix)
   return executor
 }
@@ -137,9 +140,19 @@ function configureExecutor(executor, vendorPrefix) {
     '/session/:sessionId/chromium/network_conditions'
   )
   executor.defineCommand(
+    Command.DELETE_NETWORK_CONDITIONS,
+    'DELETE',
+    '/session/:sessionId/chromium/network_conditions'
+  )
+  executor.defineCommand(
     Command.SEND_DEVTOOLS_COMMAND,
     'POST',
     '/session/:sessionId/chromium/send_command'
+  )
+  executor.defineCommand(
+    Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command_and_get_result'
   )
   executor.defineCommand(
     Command.SET_PERMISSION,
@@ -155,6 +168,11 @@ function configureExecutor(executor, vendorPrefix) {
     Command.SET_CAST_SINK_TO_USE,
     'POST',
     `/session/:sessionId/${vendorPrefix}/cast/set_sink_to_use`
+  )
+  executor.defineCommand(
+    Command.START_CAST_DESKTOP_MIRRORING,
+    'POST',
+    `/session/:sessionId/${vendorPrefix}/cast/start_desktop_mirroring`
   )
   executor.defineCommand(
     Command.START_CAST_TAB_MIRRORING,
@@ -207,6 +225,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
    */
   loggingTo(path) {
     return this.addArguments('--log-path=' + path)
+  }
+
+  /**
+   * Enables Chrome logging.
+   * @returns {!ServiceBuilder} A self reference.
+   */
+  enableChromeLogging() {
+    return this.addArguments('--enable-chrome-logs')
   }
 
   /**
@@ -272,6 +298,28 @@ class Options extends Capabilities {
   }
 
   /**
+   * Sets the address of a Chromium remote debugging server to connect to.
+   * Address should be of the form "{hostname|IP address}:port"
+   * (e.g. "localhost:9222").
+   *
+   * @param {string} address The address to connect to.
+   * @return {!Options} A self reference.
+   */
+  debuggerAddress(address) {
+    this.options_.debuggerAddress = address
+    return this
+  }
+
+  /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('--headless=chrome'); (or)
+   * options.addArguments('--headless');
+   * @example
+   *
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   *
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
@@ -333,8 +381,11 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addExtensions(...args) {
-    let current = this.options_.extensions || []
-    this.options_.extensions = current.concat(...args)
+    let extensions = this.options_.extensions || new Extensions()
+    extensions.add(...args)
+    if (extensions.length) {
+      this.options_.extensions = extensions
+    }
     return this
   }
 
@@ -386,7 +437,7 @@ class Options extends Capabilities {
    * - `enableTimeline`: Whether or not to collect events from Timeline domain.
    *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
    *     unless `enableTimeline` is explicitly set to true.
-   * - `tracingCategories`: A comma-separated string of Chromium tracing
+   * - `traceCategories`: A comma-separated string of Chromium tracing
    *     categories for which trace events should be collected. An unspecified
    *     or empty string disables tracing.
    * - `bufferUsageReportingInterval`: The requested number of milliseconds
@@ -397,7 +448,7 @@ class Options extends Capabilities {
    * @param {{enableNetwork: boolean,
    *          enablePage: boolean,
    *          enableTimeline: boolean,
-   *          tracingCategories: string,
+   *          traceCategories: string,
    *          bufferUsageReportingInterval: number}} prefs The performance
    *     logging preferences.
    * @return {!Options} A self reference.
@@ -546,26 +597,68 @@ class Options extends Capabilities {
   }
 
   /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
+   * Sets a list of the window types that will appear when getting window
+   * handles. For access to <webview> elements, include "webview" in the list.
+   * @param {...(string|!Array<string>)} args The window types that will appear
+   * when getting window handles.
+   * @return {!Options} A self reference.
+   */
+  windowTypes(...args) {
+    let windowTypes = (this.options_.windowTypes || []).concat(...args)
+    if (windowTypes.length) {
+      this.options_.windowTypes = windowTypes
+    }
+    return this
+  }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
+}
+
+/**
+ * A list of extensions to install when launching the browser.
+ */
+class Extensions {
+  constructor() {
+    this.extensions = []
+  }
+
+  /**
+   * @return {number} The length of the extensions list.
+   */
+  get length() {
+    return this.extensions.length
+  }
+
+  /**
+   * Add additional extensions to install when launching the browser. Each
+   * extension should be specified as the path to the packed CRX file, or a
+   * Buffer for an extension.
    *
-   * @return {!Object} The JSON wire protocol representation of this instance.
-   * @suppress {checkTypes} Suppress [] access on a struct.
+   * @param {...(string|!Buffer|!Array<(string|!Buffer)>)} args The
+   *     extensions to add.
+   */
+  add(...args) {
+    this.extensions = this.extensions.concat(...args)
+  }
+
+  /**
+   * @return {!Object} A serialized representation of this Extensions object.
    */
   [Symbols.serialize]() {
-    if (this.options_.extensions && this.options_.extensions.length) {
-      this.options_.extensions = this.options_.extensions.map(function (
-        extension
-      ) {
-        if (Buffer.isBuffer(extension)) {
-          return extension.toString('base64')
-        }
-        return io
-          .read(/** @type {string} */ (extension))
-          .then((buffer) => buffer.toString('base64'))
-      })
-    }
-    return super[Symbols.serialize]()
+    return this.extensions.map(function (extension) {
+      if (Buffer.isBuffer(extension)) {
+        return extension.toString('base64')
+      }
+      return io
+        .read(/** @type {string} */ (extension))
+        .then((buffer) => buffer.toString('base64'))
+    })
   }
 }
 
@@ -576,24 +669,42 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new session with the WebDriver server.
    *
-   * @param {(Capabilities|Options)=} opt_config The configuration options.
+   * @param {(Capabilities|Options)=} caps The configuration options.
    * @param {(remote.DriverService|http.Executor)=} opt_serviceExecutor Either
    *     a  DriverService to use for the remote end, or a preconfigured executor
    *     for an externally managed endpoint. If neither is provided, the
    *     {@linkplain ##getDefaultService default service} will be used by
    *     default.
+   * @param vendorPrefix Either 'goog' or 'ms'
+   * @param vendorCapabilityKey Either 'goog:chromeOptions' or 'ms:edgeOptions'
    * @return {!Driver} A new driver instance.
    */
-  static createSession(caps, opt_serviceExecutor) {
+  static createSession(
+    caps,
+    opt_serviceExecutor,
+    vendorPrefix = '',
+    vendorCapabilityKey = ''
+  ) {
     let executor
     let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
-      configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
+      configureExecutor(executor, vendorPrefix)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
-      executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
+      if (!service.getExecutable()) {
+        const { driverPath, browserPath } = getPath(caps)
+        service.setExecutable(driverPath)
+        const vendorOptions = caps.get(vendorCapabilityKey)
+        if (vendorOptions) {
+          vendorOptions['binary'] = browserPath
+          caps.set(vendorCapabilityKey, vendorOptions)
+        } else {
+          caps.set(vendorCapabilityKey, { binary: browserPath })
+        }
+      }
       onQuit = () => service.kill()
+      executor = createExecutor(service.start(), vendorPrefix)
     }
 
     // W3C spec requires noProxy value to be an array of strings, but Chromium
@@ -631,10 +742,19 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to get Chromium network emulation settings.
    * @return {!Promise} A promise that will be resolved when network
-   *     emulation settings are retrievied.
+   *     emulation settings are retrieved.
    */
   getNetworkConditions() {
     return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
+  }
+
+  /**
+   * Schedules a command to delete Chromium network emulation settings.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings have been deleted.
+   */
+  deleteNetworkConditions() {
+    return this.execute(new command.Command(Command.DELETE_NETWORK_CONDITIONS))
   }
 
   /**
@@ -685,49 +805,22 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-   * Creates a new WebSocket connection.
-   * @return {!Promise<resolved>} A new CDP instance.
+   * Sends an arbitrary devtools command to the browser and get the result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<string>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
    */
-  async createCDPConnection() {
-    const caps = await this.getCapabilities()
-    const seOptions = caps['map_'].get('se:options') || new Map()
-    const vendorInfo =
-      caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
-      new Map()
-    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
-    this._wsUrl = await this.getWsUrl(debuggerUrl)
-    return new Promise((resolve, reject) => {
-      try {
-        this._wsConnection = new WebSocket(this._wsUrl)
-      } catch (err) {
-        reject(err)
-        return
-      }
-
-      this._wsConnection.on('open', () => {
-        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
-        resolve(this._cdpConnection)
-      })
-
-      this._wsConnection.on('error', (error) => {
-        reject(error)
-      })
-    })
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
   }
 
-  /**
-   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
-   * @param {string} debuggerAddress
-   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
-   */
-  async getWsUrl(debuggerAddress) {
-    let request = new http.Request('GET', '/json/version')
-    let client = new http.HttpClient('http://' + debuggerAddress)
-    let url
-    let response = await client.send(request)
-    url = JSON.parse(response.body)['webSocketDebuggerUrl']
-    return url
-  }
   /**
    * Set a permission state to the given value.
    *
@@ -799,6 +892,23 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
+   * Initiates desktop mirroring for the current browser tab on the specified device.
+   *
+   * @param {String} deviceName name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  startDesktopMirroring(deviceName) {
+    return this.schedule(
+      new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.startDesktopMirroring(' + deviceName + ')'
+    )
+  }
+
+  /**
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
    * @param {String} deviceName name of the target device.
@@ -847,6 +957,8 @@ class Driver extends webdriver.WebDriver {
 
 // PUBLIC API
 
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
+module.exports = {
+  Driver,
+  Options,
+  ServiceBuilder,
+}

@@ -32,7 +32,7 @@ goog.require('goog.string');
  * @see http://www.w3.org/TR/selectors-api/
  * @private
  */
-bot.locators.className.canUseQuerySelector_ = function(root) {
+bot.locators.className.canUseQuerySelector_ = function (root) {
   return !!(root.querySelectorAll && root.querySelector);
 };
 
@@ -45,16 +45,16 @@ bot.locators.className.canUseQuerySelector_ = function(root) {
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.className.single = function(target, root) {
+bot.locators.className.single = function (target, root) {
   if (!target) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                        'No class name specified');
+      'No class name specified');
   }
 
   target = goog.string.trim(target);
   if (target.indexOf(' ') !== -1) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                        'Compound class names not permitted');
+      'Compound class names not permitted');
   }
 
   // Closure will not properly escape class names that contain a '.' when using
@@ -64,7 +64,7 @@ bot.locators.className.single = function(target, root) {
       return root.querySelector('.' + target.replace(/\./g, '\\.')) || null;
     } catch (e) {
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                          'An invalid or illegal class name was specified');
+        'An invalid or illegal class name was specified');
     }
   }
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
@@ -80,16 +80,16 @@ bot.locators.className.single = function(target, root) {
  *     search under.
  * @return {!IArrayLike} All matching elements, or an empty list.
  */
-bot.locators.className.many = function(target, root) {
+bot.locators.className.many = function (target, root) {
   if (!target) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                        'No class name specified');
+      'No class name specified');
   }
 
   target = goog.string.trim(target);
   if (target.indexOf(' ') !== -1) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                        'Compound class names not permitted');
+      'Compound class names not permitted');
   }
 
   // Closure will not properly escape class names that contain a '.' when using
@@ -99,7 +99,7 @@ bot.locators.className.many = function(target, root) {
       return root.querySelectorAll('.' + target.replace(/\./g, '\\.'));
     } catch (e) {
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                          'An invalid or illegal class name was specified');
+        'An invalid or illegal class name was specified');
     }
   }
   return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(

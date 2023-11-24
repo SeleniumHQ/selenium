@@ -35,14 +35,14 @@ goog.require('goog.color.names');
  * @return {string} The value, in a standardized format
  *    if it is a color property.
  */
-bot.color.standardizeColor = function(propertyName, propertyValue) {
+bot.color.standardizeColor = function (propertyName, propertyValue) {
   if (!goog.array.contains(bot.color.COLOR_PROPERTIES_, propertyName)) {
     return propertyValue;
   }
   var rgba =
-      bot.color.maybeParseRgbaColor_(propertyValue) ||
-      bot.color.maybeParseRgbColor_(propertyValue) ||
-      bot.color.maybeConvertHexOrColorName_(propertyValue);
+    bot.color.maybeParseRgbaColor_(propertyValue) ||
+    bot.color.maybeParseRgbColor_(propertyValue) ||
+    bot.color.maybeConvertHexOrColorName_(propertyValue);
   return rgba ? 'rgba(' + rgba.join(', ') + ')' : propertyValue;
 };
 
@@ -83,12 +83,12 @@ bot.color.HEX_TRIPLET_RE_ = /#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/;
  *     for invalid colors.
  * @private
  */
-bot.color.maybeConvertHexOrColorName_ = function(hexOrColorName) {
+bot.color.maybeConvertHexOrColorName_ = function (hexOrColorName) {
   hexOrColorName = hexOrColorName.toLowerCase();
   var hex = goog.color.names[hexOrColorName.toLowerCase()];
   if (!hex) {
     hex = hexOrColorName.charAt(0) == '#' ?
-        hexOrColorName : '#' + hexOrColorName;
+      hexOrColorName : '#' + hexOrColorName;
     if (hex.length == 4) { // of the form #RGB
       hex = hex.replace(bot.color.HEX_TRIPLET_RE_, '#$1$1$2$2$3$3');
     }
@@ -120,7 +120,7 @@ bot.color.VALID_HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
  * @const
  */
 bot.color.RGBA_COLOR_RE_ =
-    /^(?:rgba)?\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3}),\s?(0|1|0\.\d*)\)$/i;
+  /^(?:rgba)?\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3}),\s?(0|1|0\.\d*)\)$/i;
 
 
 /**
@@ -132,7 +132,7 @@ bot.color.RGBA_COLOR_RE_ =
  *     for invalid colors.
  * @private
  */
-bot.color.maybeParseRgbaColor_ = function(str) {
+bot.color.maybeParseRgbaColor_ = function (str) {
   // Each component is separate (rather than using a repeater) so we can
   // capture the match. Also, we explicitly set each component to be either 0,
   // or start with a non-zero, to prevent octal numbers from slipping through.
@@ -143,9 +143,9 @@ bot.color.maybeParseRgbaColor_ = function(str) {
     var b = Number(regExpResultArray[3]);
     var a = Number(regExpResultArray[4]);
     if (r >= 0 && r <= 255 &&
-        g >= 0 && g <= 255 &&
-        b >= 0 && b <= 255 &&
-        a >= 0 && a <= 1) {
+      g >= 0 && g <= 255 &&
+      b >= 0 && b <= 255 &&
+      a >= 0 && a <= 1) {
       return [r, g, b, a];
     }
   }
@@ -159,7 +159,7 @@ bot.color.maybeParseRgbaColor_ = function(str) {
  * @const
  */
 bot.color.RGB_COLOR_RE_ =
-    /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
+  /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
 
 
 /**
@@ -171,7 +171,7 @@ bot.color.RGB_COLOR_RE_ =
  *     for invalid colors.
  * @private
  */
-bot.color.maybeParseRgbColor_ = function(str) {
+bot.color.maybeParseRgbColor_ = function (str) {
   // Each component is separate (rather than using a repeater) so we can
   // capture the match. Also, we explicitly set each component to be either 0,
   // or start with a non-zero, to prevent octal numbers from slipping through.
@@ -181,8 +181,8 @@ bot.color.maybeParseRgbColor_ = function(str) {
     var g = Number(regExpResultArray[2]);
     var b = Number(regExpResultArray[3]);
     if (r >= 0 && r <= 255 &&
-        g >= 0 && g <= 255 &&
-        b >= 0 && b <= 255) {
+      g >= 0 && g <= 255 &&
+      b >= 0 && b <= 255) {
       return [r, g, b, 1];
     }
   }

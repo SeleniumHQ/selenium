@@ -1,0 +1,10 @@
+exports_files([
+    "command.hbs",
+    "DevToolsSessionDomains.hbs",
+    "domain.hbs",
+    "event.hbs",
+    "project.hbs",
+    "type-enum.hbs",
+    "type-hash.hbs",
+    "type-object.hbs",
+])

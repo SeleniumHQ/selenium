@@ -20,23 +20,48 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # Driver implementation for Firefox using GeckoDriver.
       # @api private
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasContext,
+                      DriverExtensions::HasBiDi,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
+
+        include LocalDriver
+
+        def initialize(options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :firefox
         end
 
-        def bridge_class
-          Bridge
+        private
+
+        def devtools_url
+          if capabilities['moz:debuggerAddress'].nil?
+            raise(Error::WebDriverError, 'DevTools is not supported by this version of Firefox; use v85 or higher')
+          end
+
+          uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
+        end
+
+        def devtools_version
+          Firefox::DEVTOOLS_VERSION
         end
       end # Driver
     end # Firefox

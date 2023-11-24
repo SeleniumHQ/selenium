@@ -1,4 +1,4 @@
-load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "has_maven_deps", "read_coordinates")
+load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "read_coordinates")
 load("//java/private:module.bzl", "JavaModuleInfo")
 
 DistInfo = provider(

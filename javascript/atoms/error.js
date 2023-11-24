@@ -75,7 +75,7 @@ bot.ErrorCode = {
  * @constructor
  * @extends {Error}
  */
-bot.Error = function(code, opt_message) {
+bot.Error = function (code, opt_message) {
 
   /**
    * This error's status code.
@@ -85,12 +85,12 @@ bot.Error = function(code, opt_message) {
 
   /** @type {string} */
   this.state =
-      bot.Error.CODE_TO_STATE_[code] || bot.Error.State.UNKNOWN_ERROR;
+    bot.Error.CODE_TO_STATE_[code] || bot.Error.State.UNKNOWN_ERROR;
 
   /** @override */
   this.message = opt_message || '';
 
-  var name = this.state.replace(/((?:^|\s+)[a-z])/g, function(str) {
+  var name = this.state.replace(/((?:^|\s+)[a-z])/g, function (str) {
     // IE<9 does not support String#trim(). Also, IE does not include 0xa0
     // (the non-breaking-space) in the \s character class, so we have to
     // explicitly include it.
@@ -154,7 +154,7 @@ bot.Error.State = {
  * @private {!Object.<bot.ErrorCode, bot.Error.State>}
  */
 bot.Error.CODE_TO_STATE_ = {};
-goog.scope(function() {
+goog.scope(function () {
   var map = bot.Error.CODE_TO_STATE_;
   var code = bot.ErrorCode;
   var state = bot.Error.State;
@@ -201,7 +201,7 @@ if (goog.DEBUG) {
    * @override
    * @return {string} The string representation of this error.
    */
-  bot.Error.prototype.toString = function() {
+  bot.Error.prototype.toString = function () {
     return this.name + ': ' + this.message;
   };
 }

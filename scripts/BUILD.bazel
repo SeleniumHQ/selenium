@@ -1,0 +1,24 @@
+load("@py_dev_requirements//:requirements.bzl", "requirement")
+load("//java:defs.bzl", "artifact")
+
+py_binary(
+    name = "pinned_browsers",
+    srcs = ["pinned_browsers.py"],
+    deps = [
+        requirement("packaging"),
+        requirement("urllib3"),
+    ],
+)
+
+java_binary(
+    name = "google-java-format",
+    jvm_flags = [
+        "--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+        "--add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+        "--add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+        "--add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+        "--add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    ],
+    main_class = "com.google.googlejavaformat.java.Main",
+    runtime_deps = [artifact("com.google.googlejavaformat:google-java-format")],
+)

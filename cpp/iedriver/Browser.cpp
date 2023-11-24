@@ -40,7 +40,7 @@ Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool is_
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
-  this->is_edge_chromium_ = is_edge_chromium;
+  this->set_is_edge_chromium(is_edge_chromium);
 }
 
 Browser::~Browser(void) {
@@ -113,51 +113,75 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    DWORD dwFlags,
                                    BSTR bstrUrlContext,
                                    BSTR bstrUrl) {
-  if (this->is_edge_chromium_) {
-    LOG(TRACE) << "Entering Browser::NewWindow3 but early exiting due to edge mode";
-    // In Edge Chromium, we do not yet support attaching to new windows.
-    // Quit early and ignore that event.
-    return;
-  }
   LOG(TRACE) << "Entering Browser::NewWindow3";
-  // Handle the NewWindow3 event to allow us to immediately hook
-  // the events of the new browser window opened by the user action.
-  // The three ways we can respond to this event are documented at
-  // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
-  // We potentially use two of those response methods.
-  // This will not allow us to handle windows created by the JavaScript
-  // showModalDialog function().
   ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
-  std::wstring url = bstrUrl;
-  IWebBrowser2* browser;
-  NewWindowInfo info;
-  info.target_url = StringUtilities::ToString(url);
-  LRESULT create_result = ::SendMessage(this->executor_handle(),
-                                        WD_BROWSER_NEW_WINDOW,
-                                        NULL,
-                                        reinterpret_cast<LPARAM>(&info));
-  if (create_result != 0) {
-    // The new, blank IWebBrowser2 object was not created,
-    // so we can't really do anything appropriate here.
-    // Note this is "response method 2" of the aforementioned
-    // documentation.
-    LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
-    *pbCancel = VARIANT_TRUE;
-    ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, NULL, NULL);
-    return;
+  std::vector<HWND>* ie_window_handles = nullptr;
+  WPARAM param_flag = 0;
+
+  if (this->is_edge_chromium()) {
+    param_flag = 1000;
+    //HWND top_level_handle = this->GetTopLevelWindowHandle();
+    // 1) find all Edge browser window handles
+    std::vector<HWND>edge_window_handles;
+    ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
+                  reinterpret_cast<LPARAM>(&edge_window_handles));
+
+    // 2) find all IE browser window handlers as child window when Edge runs in IEMode
+    ie_window_handles = new std::vector<HWND>;
+    for (HWND& edge_window_handle : edge_window_handles) {
+      std::vector<HWND> child_window_handles;
+      ::EnumChildWindows(edge_window_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&child_window_handles));
+
+      for (HWND& child_window_handle : child_window_handles) {
+        ie_window_handles->push_back(child_window_handle);
+      }
+    }
+  } else {
+    // Handle the NewWindow3 event to allow us to immediately hook
+    // the events of the new browser window opened by the user action.
+    // The three ways we can respond to this event are documented at
+    // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
+    // We potentially use two of those response methods.
+    // This will not allow us to handle windows created by the JavaScript
+    // showModalDialog function().
+    std::wstring url = bstrUrl;
+    IWebBrowser2* browser;
+    NewWindowInfo info;
+    info.target_url = StringUtilities::ToString(url);
+    LRESULT create_result = ::SendMessage(this->executor_handle(),
+                                          WD_BROWSER_NEW_WINDOW,
+                                          NULL,
+                                          reinterpret_cast<LPARAM>(&info));
+    if (create_result != 0) {
+      // The new, blank IWebBrowser2 object was not created,
+      // so we can't really do anything appropriate here.
+      // Note this is "response method 2" of the aforementioned
+      // documentation.
+      LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
+      *pbCancel = VARIANT_TRUE;
+      ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, NULL, NULL);
+      return;
+    }
+
+    // We received a valid IWebBrowser2 pointer, so deserialize it onto this
+    // thread, and pass the result back to the caller.
+    HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
+                                                  IID_IWebBrowser2,
+                                                  reinterpret_cast<void**>(&browser));
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Failed to marshal IWebBrowser2 interface from stream.";
+    }
+
+    *ppDisp = browser;
   }
 
-  // We received a valid IWebBrowser2 pointer, so deserialize it onto this
-  // thread, and pass the result back to the caller.
-  HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
-                                                IID_IWebBrowser2,
-                                                reinterpret_cast<void**>(&browser));
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Failed to marshal IWebBrowser2 interface from stream.";
-  }
-
-  *ppDisp = browser;
-  ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000, NULL);
+  // 3) pass all IE window handles to WD_AFTER_NEW_WINDOW
+  ::PostMessage(this->executor_handle(),
+                WD_AFTER_NEW_WINDOW,
+                param_flag,
+                reinterpret_cast<LPARAM>(ie_window_handles));
 }
 
 void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
@@ -402,6 +426,16 @@ void Browser::DetachEvents() {
 
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
+  if (this->is_edge_chromium()) {
+    // For Edge in IE Mode, cache the top-level hosting Chromium window
+    // handle so they can be properly closed on quit.
+    HWND top_level_window_handle = this->GetTopLevelWindowHandle();
+    ::SendMessage(this->executor_handle(),
+                  WD_ADD_CHROMIUM_WINDOW_HANDLE,
+                  reinterpret_cast<WPARAM>(top_level_window_handle),
+                  NULL);
+  }
+
   this->is_explicit_close_requested_ = true;
   this->set_is_closing(true);
   // Closing the browser, so having focus on a frame doesn't
@@ -409,11 +443,8 @@ void Browser::Close() {
   this->SetFocusedFrameByElement(NULL);
 
   HRESULT hr = S_OK;
-  if (this->is_edge_chromium_) {
-    hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
-  } else {
-    hr = this->browser_->Quit();
-  }
+  hr = this->browser_->Stop();
+  hr = this->browser_->Quit();
 
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";

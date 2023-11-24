@@ -21,6 +21,8 @@ const assert = require('assert')
 const promise = require('../lib/promise')
 const { Browser, By, error, withTagName, until } = require('..')
 const { Pages, ignore, suite, whereIs } = require('../lib/test')
+const { locateWith } = require('../lib/by')
+const { RelativeBy } = require('../')
 
 suite(function (env) {
   const browsers = (...args) => env.browsers(...args)
@@ -53,7 +55,7 @@ suite(function (env) {
       it('should fail if ID not present on page', async function () {
         await driver.get(Pages.formPage)
         return driver
-          .findElement(By.id('nonExistantButton'))
+          .findElement(By.id('nonExistentButton'))
           .then(assert.fail, function (e) {
             assert.ok(e instanceof error.NoSuchElementError)
           })
@@ -66,7 +68,7 @@ suite(function (env) {
           await driver.get(Pages.nestedPage)
 
           let elements = await driver.findElements(By.id('2'))
-          assert.equal(elements.length, 8)
+          assert.strictEqual(elements.length, 8)
         }
       )
     })
@@ -89,7 +91,7 @@ suite(function (env) {
         let el = await driver.findElement(By.linkText('Link=equalssign'))
 
         let id = await el.getAttribute('id')
-        assert.equal(id, 'linkWithEqualsSign')
+        assert.strictEqual(id, 'linkWithEqualsSign')
       })
 
       it('matches by partial text when containing equals sign', async function () {
@@ -97,39 +99,39 @@ suite(function (env) {
         let link = await driver.findElement(By.partialLinkText('Link='))
 
         let id = await link.getAttribute('id')
-        assert.equal(id, 'linkWithEqualsSign')
+        assert.strictEqual(id, 'linkWithEqualsSign')
       })
 
       it('works when searching for multiple and text contains =', async function () {
         await driver.get(Pages.xhtmlTestPage)
         let elements = await driver.findElements(By.linkText('Link=equalssign'))
 
-        assert.equal(elements.length, 1)
+        assert.strictEqual(elements.length, 1)
 
         let id = await elements[0].getAttribute('id')
-        assert.equal(id, 'linkWithEqualsSign')
+        assert.strictEqual(id, 'linkWithEqualsSign')
       })
 
       it('works when searching for multiple with partial text containing =', async function () {
         await driver.get(Pages.xhtmlTestPage)
         let elements = await driver.findElements(By.partialLinkText('Link='))
 
-        assert.equal(elements.length, 1)
+        assert.strictEqual(elements.length, 1)
 
         let id = await elements[0].getAttribute('id')
-        assert.equal(id, 'linkWithEqualsSign')
+        assert.strictEqual(id, 'linkWithEqualsSign')
       })
 
       it('should be able to find multiple exact matches', async function () {
         await driver.get(Pages.xhtmlTestPage)
         let elements = await driver.findElements(By.linkText('click me'))
-        assert.equal(elements.length, 2)
+        assert.strictEqual(elements.length, 2)
       })
 
       it('should be able to find multiple partial matches', async function () {
         await driver.get(Pages.xhtmlTestPage)
         let elements = await driver.findElements(By.partialLinkText('ick me'))
-        assert.equal(elements.length, 2)
+        assert.strictEqual(elements.length, 2)
       })
 
       ignore(browsers(Browser.SAFARI)).it(
@@ -138,7 +140,7 @@ suite(function (env) {
           await driver.get(whereIs('actualXhtmlPage.xhtml'))
 
           let el = await driver.findElement(By.linkText('Foo'))
-          assert.equal(await el.getText(), 'Foo')
+          assert.strictEqual(await el.getText(), 'Foo')
         }
       )
     })
@@ -148,7 +150,7 @@ suite(function (env) {
         await driver.get(Pages.formPage)
 
         let el = await driver.findElement(By.name('checky'))
-        assert.equal(await el.getAttribute('value'), 'furrfu')
+        assert.strictEqual(await el.getAttribute('value'), 'furrfu')
       })
 
       it('should find multiple elements with same name', async function () {
@@ -187,28 +189,28 @@ suite(function (env) {
         await driver.get(Pages.xhtmlTestPage)
 
         let el = await driver.findElement(By.className('nameA'))
-        assert.equal(await el.getText(), 'An H2 title')
+        assert.strictEqual(await el.getText(), 'An H2 title')
       })
 
       it('should work when name is last name among many', async function () {
         await driver.get(Pages.xhtmlTestPage)
 
         let el = await driver.findElement(By.className('nameC'))
-        assert.equal(await el.getText(), 'An H2 title')
+        assert.strictEqual(await el.getText(), 'An H2 title')
       })
 
       it('should work when name is middle of many', async function () {
         await driver.get(Pages.xhtmlTestPage)
 
         let el = await driver.findElement(By.className('nameBnoise'))
-        assert.equal(await el.getText(), 'An H2 title')
+        assert.strictEqual(await el.getText(), 'An H2 title')
       })
 
       it('should work when name surrounded by whitespace', async function () {
         await driver.get(Pages.xhtmlTestPage)
 
         let el = await driver.findElement(By.className('spaceAround'))
-        assert.equal(await el.getText(), 'Spaced out')
+        assert.strictEqual(await el.getText(), 'Spaced out')
       })
 
       it('should fail if queried name only partially matches', async function () {
@@ -229,7 +231,7 @@ suite(function (env) {
 
         let start = new Date()
         return driver
-          .findElement(By.id('nonExistantButton'))
+          .findElement(By.id('nonExistentButton'))
           .then(assert.fail, function (e) {
             let end = new Date()
             assert.ok(e instanceof error.NoSuchElementError)
@@ -255,7 +257,7 @@ suite(function (env) {
           .get(Pages.xhtmlTestPage)
           .then(() => driver.findElement(By.className('nameA nameC')))
           .then((el) => el.getText())
-          .then((text) => assert.equal(text, 'An H2 title'))
+          .then((text) => assert.strictEqual(text, 'An H2 title'))
       })
     })
 
@@ -278,7 +280,7 @@ suite(function (env) {
         await driver.get(Pages.formPage)
 
         let el = await driver.findElement(By.tagName('input'))
-        assert.equal((await el.getTagName()).toLowerCase(), 'input')
+        assert.strictEqual((await el.getTagName()).toLowerCase(), 'input')
       })
 
       it('can find multiple elements', async function () {
@@ -311,7 +313,7 @@ suite(function (env) {
           await driver.get(Pages.xhtmlTestPage)
 
           let el = await driver.findElement(By.css('div.extraDiv, div.content'))
-          assert.equal(await el.getAttribute('class'), 'content')
+          assert.strictEqual(await el.getAttribute('class'), 'content')
         }
       )
 
@@ -328,12 +330,12 @@ suite(function (env) {
 
         async function assertClassIs(el, expected) {
           let clazz = await el.getAttribute('class')
-          assert.equal(clazz, expected)
+          assert.strictEqual(clazz, expected)
         }
       })
 
       // IE only supports short version option[selected].
-      ignore(browsers(Browser.IE)).it(
+      ignore(browsers(Browser.INTERNET_EXPLORER)).it(
         'should be able to find element by boolean attribute',
         async function () {
           await driver.get(
@@ -343,7 +345,7 @@ suite(function (env) {
           let el = await driver.findElement(
             By.css('option[selected="selected"]')
           )
-          assert.equal(await el.getAttribute('value'), 'two')
+          assert.strictEqual(await el.getAttribute('value'), 'two')
         }
       )
 
@@ -356,7 +358,7 @@ suite(function (env) {
           )
 
           let el = await driver.findElement(By.css('option[selected]'))
-          assert.equal(await el.getAttribute('value'), 'two')
+          assert.strictEqual(await el.getAttribute('value'), 'two')
         }
       )
 
@@ -369,7 +371,7 @@ suite(function (env) {
           )
 
           let el = await driver.findElement(By.css('option[selected]'))
-          assert.equal(await el.getAttribute('value'), 'two')
+          assert.strictEqual(await el.getAttribute('value'), 'two')
         }
       )
     })
@@ -399,7 +401,7 @@ suite(function (env) {
           return driver.findElements(By.tagName('a'))
         })
 
-        assert.equal(await link.getText(), 'Change the page title!')
+        assert.strictEqual(await link.getText(), 'Change the page title!')
       })
 
       it('fails if locator returns non-webelement value', async function () {
@@ -422,11 +424,11 @@ suite(function (env) {
         let below = await driver.findElement(By.id('below'))
         let elements = await driver.findElements(withTagName('p').above(below))
         let ids = []
-        assert.equal(elements.length, 2)
+        assert.strictEqual(elements.length, 2)
         for (let i = 0; i < elements.length; i++) {
           ids.push(await elements[i].getAttribute('id'))
         }
-        assert.deepEqual(ids, ['above', 'mid'])
+        assert.deepStrictEqual(ids, ['mid', 'above'])
       })
 
       it('should combine filters', async function () {
@@ -439,7 +441,39 @@ suite(function (env) {
         for (let i = 0; i < elements.length; i++) {
           ids.push(await elements[i].getAttribute('id'))
         }
-        assert.notEqual(ids.indexOf('third'), -1, `Elements are ${ids}`)
+        assert.notDeepStrictEqual(
+          ids.indexOf('third'),
+          -1,
+          `Elements are ${ids}`
+        )
+      })
+    })
+
+    describe('RelativeBy with findElement', function () {
+      it('finds an element above', async function () {
+        await driver.get(Pages.relativeLocators)
+        let below = await driver.findElement(By.id('below'))
+        let element = await driver.findElement(withTagName('p').above(below))
+        assert.deepStrictEqual(await element.getAttribute('id'), `mid`)
+      })
+
+      it('should combine filters', async function () {
+        await driver.get(Pages.relativeLocators)
+        let element = await driver.findElement(
+          withTagName('td').above(By.id('center')).toRightOf(By.id('second'))
+        )
+        assert.deepStrictEqual(await element.getAttribute('id'), `third`)
+      })
+
+      it('should search by passing in a by object', async function () {
+        await driver.get(Pages.relativeLocators)
+        let relativeLocator = locateWith(By.css('p')).above(
+          await driver.findElement(By.id('below'))
+        )
+        assert.ok(relativeLocator instanceof RelativeBy)
+
+        let element = await driver.findElement(relativeLocator)
+        assert.deepStrictEqual(await element.getAttribute('id'), 'mid')
       })
     })
 

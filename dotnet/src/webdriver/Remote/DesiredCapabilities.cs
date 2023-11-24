@@ -27,7 +27,6 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Internal class to specify the requested capabilities of the browser for <see cref="IWebDriver"/>.
     /// </summary>
-    [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
     internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();

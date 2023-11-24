@@ -45,6 +45,33 @@ module Selenium
       end
 
       #
+      # Switch to a new top-level browsing context
+      #
+      # @param type either :tab or :window
+      #
+
+      def new_window(type = :window)
+        raise ArgumentError, "Valid types are :tab and :window, received: #{type.inspect}" unless %i[window
+                                                                                                     tab].include?(type)
+
+        handle = @bridge.new_window(type)['handle']
+
+        if block_given?
+          execute_and_close = proc do
+            yield(self)
+            begin
+              @bridge.close
+            rescue Error::NoSuchWindowError
+              # window already closed
+            end
+          end
+          window(handle, &execute_and_close)
+        else
+          window(handle)
+        end
+      end
+
+      #
       # switch to the given window handle
       #
       # If given a block, this method will switch back to the original window after
@@ -57,10 +84,10 @@ module Selenium
       def window(id)
         if block_given?
           original = begin
-                       @bridge.window_handle
-                     rescue Error::NoSuchWindowError
-                       nil
-                     end
+            @bridge.window_handle
+          rescue Error::NoSuchWindowError
+            nil
+          end
 
           unless @bridge.window_handles.include? id
             raise Error::NoSuchWindowError, "The specified identifier '#{id}' is not found in the window handle list"

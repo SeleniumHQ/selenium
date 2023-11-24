@@ -90,7 +90,7 @@ namespace OpenQA.Selenium
             IHasCapabilities hasCaps = driver as IHasCapabilities;
             if (hasCaps != null)
             {
-                object cap = hasCaps.Capabilities.GetCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents);
+                object cap = hasCaps.Capabilities.GetCapability(OpenQA.Selenium.CapabilityType.HasNativeEvents);
                 if (cap != null && cap is bool)
                 {
                     return (bool)cap;

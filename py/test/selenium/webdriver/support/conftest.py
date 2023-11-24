@@ -17,5 +17,5 @@
 
 
 def pytest_generate_tests(metafunc):
-    if 'driver' in metafunc.fixturenames and metafunc.config.option.drivers:
-        metafunc.parametrize('driver', metafunc.config.option.drivers, indirect=True)
+    if "driver" in metafunc.fixturenames and metafunc.config.option.drivers:
+        metafunc.parametrize("driver", metafunc.config.option.drivers, indirect=True)

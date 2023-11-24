@@ -16,8 +16,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-require 'net/https'
 require 'ipaddr'
 
 module Selenium
@@ -28,8 +26,7 @@ module Selenium
         class Default < Common
           attr_writer :proxy
 
-          attr_accessor :open_timeout
-          attr_accessor :read_timeout
+          attr_accessor :open_timeout, :read_timeout
 
           # Initializes object.
           # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
@@ -39,6 +36,7 @@ module Selenium
           def initialize(open_timeout: nil, read_timeout: nil)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
+            super()
           end
 
           def close
@@ -55,8 +53,7 @@ module Selenium
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
               end
 
-              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-              http.open_timeout = open_timeout
+              http.open_timeout = open_timeout if open_timeout
               http.read_timeout = read_timeout if read_timeout
 
               start(http)
@@ -76,21 +73,15 @@ module Selenium
             begin
               request = new_request_for(verb, url, headers, payload)
               response = response_for(request)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
-              # a retry is sometimes needed on Windows XP where we may quickly
-              # run out of ephemeral ports
+            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE, Errno::EADDRNOTAVAIL
+              # a retry is sometimes needed:
+              #   on Windows XP where we may quickly run out of ephemeral ports
+              #   when the port becomes temporarily unavailable
               #
               # A more robust solution is bumping the MaxUserPort setting
               # as described here:
               #
               # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
-              raise if retries >= MAX_RETRIES
-
-              retries += 1
-              sleep 2
-              retry
-            rescue Errno::EADDRNOTAVAIL => e
-              # a retry is sometimes needed when the port becomes temporarily unavailable
               raise if retries >= MAX_RETRIES
 
               retries += 1
@@ -103,10 +94,12 @@ module Selenium
             end
 
             if response.is_a? Net::HTTPRedirection
+              WebDriver.logger.debug("Redirect to #{response['Location']}; times: #{redirects}")
               raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
 
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
+              WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}", id: :header)
               create_response response.code, response.body, response.content_type
             end
           end
@@ -128,7 +121,10 @@ module Selenium
           def new_http_client
             if use_proxy?
               url = @proxy.http
-              raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless proxy.respond_to?(:http) && url
+              unless proxy.respond_to?(:http) && url
+                raise Error::WebDriverError,
+                      "expected HTTP proxy, got #{@proxy.inspect}"
+              end
 
               proxy = URI.parse(url)
 
@@ -140,8 +136,8 @@ module Selenium
 
           def proxy
             @proxy ||= begin
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
+              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
 
               if proxy
                 proxy = "http://#{proxy}" unless proxy.start_with?('http://')

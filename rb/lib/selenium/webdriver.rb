@@ -17,16 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'childprocess'
 require 'tmpdir'
 require 'fileutils'
 require 'date'
 require 'json'
 require 'set'
-require 'websocket'
+require 'uri'
+require 'net/http'
 
-require 'selenium/webdriver/common'
 require 'selenium/webdriver/atoms'
+require 'selenium/webdriver/common'
 require 'selenium/webdriver/version'
 
 module Selenium
@@ -34,13 +34,12 @@ module Selenium
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
     Rectangle = Struct.new(:x, :y, :width, :height)
-    Location  = Struct.new(:latitude, :longitude, :altitude)
 
+    autoload :BiDi,       'selenium/webdriver/bidi'
+    autoload :Chromium,   'selenium/webdriver/chromium'
     autoload :Chrome,     'selenium/webdriver/chrome'
     autoload :DevTools,   'selenium/webdriver/devtools'
     autoload :Edge,       'selenium/webdriver/edge'
-    autoload :EdgeHtml,   'selenium/webdriver/edge'
-    autoload :EdgeChrome, 'selenium/webdriver/edge'
     autoload :Firefox,    'selenium/webdriver/firefox'
     autoload :IE,         'selenium/webdriver/ie'
     autoload :Remote,     'selenium/webdriver/remote'
@@ -77,7 +76,7 @@ module Selenium
     #
     #   WebDriver.for :firefox, profile: 'some-profile'
     #   WebDriver.for :firefox, profile: Profile.new
-    #   WebDriver.for :remote,  url: "http://localhost:4444/wd/hub", desired_capabilities: caps
+    #   WebDriver.for :remote,  url: "http://localhost:4444/wd/hub", capabilities: caps
     #
     # One special argument is not passed on to the bridges, :listener.
     # You can pass a listener for this option to get notified of WebDriver events.
@@ -96,8 +95,9 @@ module Selenium
     # @return [Logger]
     #
 
-    def self.logger
-      @logger ||= WebDriver::Logger.new
+    def self.logger(**opts)
+      level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
+      @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **opts)
     end
   end # WebDriver
 end # Selenium

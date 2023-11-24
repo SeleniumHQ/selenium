@@ -40,7 +40,8 @@ module Selenium
         @executable_path = config.executable_path
         @host = Platform.localhost
         @port = config.port
-        @extra_args = config.extra_args
+        @io = config.log
+        @extra_args = config.args
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
@@ -49,7 +50,7 @@ module Selenium
       def start
         raise "already started: #{uri.inspect} #{@executable_path.inspect}" if process_running?
 
-        Platform.exit_hook(&method(:stop)) # make sure we don't leave the server running
+        Platform.exit_hook { stop } # make sure we don't leave the server running
 
         socket_lock.locked do
           find_free_port
@@ -60,10 +61,11 @@ module Selenium
 
       def stop
         return unless @shutdown_supported
+        return if process_exited?
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
-      rescue ChildProcess::TimeoutError
+      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED
         nil # noop
       ensure
         stop_process
@@ -76,14 +78,10 @@ module Selenium
       private
 
       def build_process(*command)
-        WebDriver.logger.debug("Executing Process #{command}")
+        WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
-        if WebDriver.logger.debug?
-          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
-        elsif Platform.jruby?
-          # Apparently we need to read the output of drivers on JRuby.
-          @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-        end
+        @io ||= WebDriver.logger.io if WebDriver.logger.debug?
+        @process.io = @io if @io
 
         @process
       end
@@ -103,8 +101,6 @@ module Selenium
 
       def start_process
         @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
-        # Note: this is a bug only in Windows 7
-        @process.leader = true unless Platform.windows?
         @process.start
       end
 
@@ -112,12 +108,9 @@ module Selenium
         return if process_exited?
 
         @process.stop STOP_TIMEOUT
-        @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server
-        return if process_exited?
-
         connect_to_server do |http|
           headers = WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
           http.get('/shutdown', headers)

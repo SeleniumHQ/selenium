@@ -23,11 +23,12 @@ module Selenium
       attr_writer :default_move_duration
 
       #
-      # The overridable duration for movement used by methods in this module
+      # By default this is set to 250ms in the ActionBuilder constructor
+      # It can be overridden with default_move_duration=
       #
 
       def default_move_duration
-        @default_move_duration ||= 0.25 # 250 milliseconds
+        @default_move_duration ||= @duration / 1000.0 # convert ms to seconds
       end
 
       #
@@ -45,8 +46,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_down(button, device: nil)
-        button_action(button, action: :create_pointer_down, device: device)
+      def pointer_down(button = :left, device: nil, **opts)
+        button_action(button, :create_pointer_down, device: device, **opts)
       end
 
       #
@@ -62,21 +63,20 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_up(button, device: nil)
-        button_action(button, action: :create_pointer_up, device: device)
+      def pointer_up(button = :left, device: nil, **opts)
+        button_action(button, :create_pointer_up, device: device, **opts)
       end
 
       #
-      # Moves the mouse to the middle of the given element. The element is scrolled into
-      # view and its location is calculated using getBoundingClientRect.  Then the
-      # mouse is moved to optional offset coordinates from the element.
+      # Moves the pointer to the in-view center point of the given element.
+      # Then the pointer is moved to optional offset coordinates.
       #
-      # This is adapted to be backward compatible from non- actions.  calculates offset from the center point
-      # of the element
+      # The element is not scrolled into view.
+      # MoveTargetOutOfBoundsError will be raised if element with offset is outside the viewport
       #
-      # Note that when using offsets, both coordinates need to be passed.
+      # When using offsets, both coordinates need to be passed.
       #
-      # @example Scroll element into view and move the mouse to it
+      # @example Move the pointer to element
       #
       #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el).perform
@@ -87,69 +87,60 @@ module Selenium
       #   driver.action.move_to(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] element to move to.
-      # @param [Integer] right_by Optional offset from the top-left corner. A negative value means
-      #   coordinates to the left of the element.
-      # @param [Integer] down_by Optional offset from the top-left corner. A negative value means
-      #   coordinates above the element.
+      # @param [Integer] right_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the left of the center.
+      # @param [Integer] down_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the top of the center.
       # @param [Symbol || String] device optional name of the PointerInput device to move.
       # @return [ActionBuilder] A self reference.
       #
 
-      def move_to(element, right_by = nil, down_by = nil, device: nil)
-        pointer = get_pointer(device)
-        # New actions offset is from center of element
-        if right_by || down_by
-          size = element.size
-          left_offset = (size[:width] / 2).to_i
-          top_offset = (size[:height] / 2).to_i
-          left = -left_offset + (right_by || 0)
-          top = -top_offset + (down_by || 0)
-        else
-          left = 0
-          top = 0
-        end
-        pointer.create_pointer_move(duration: default_move_duration,
-                                    x: left,
-                                    y: top,
-                                    element: element)
+      def move_to(element, right_by = nil, down_by = nil, **opts)
+        pointer = pointer_input(opts.delete(:device))
+        pointer.create_pointer_move(duration: opts.delete(:duration) || default_move_duration,
+                                    x: right_by || 0,
+                                    y: down_by || 0,
+                                    origin: element,
+                                    **opts)
         tick(pointer)
         self
       end
 
       #
-      # Moves the mouse from its current position by the given offset.
-      # If the coordinates provided are outside the viewport (the mouse will
-      # end up outside the browser window) then the viewport is scrolled to
-      # match.
+      # Moves the pointer from its current position by the given offset.
       #
-      # @example Move the mouse to a certain offset from its current position
+      # The viewport is not scrolled if the coordinates provided are outside the viewport.
+      # MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport
+      #
+      # @example Move the pointer to a certain offset from its current position
       #
       #    driver.action.move_by(100, 100).perform
       #
-      # @param [Integer] right_by horizontal offset. A negative value means moving the mouse left.
-      # @param [Integer] down_by vertical offset. A negative value means moving the mouse up.
+      # @param [Integer] right_by horizontal offset. A negative value means moving the pointer left.
+      # @param [Integer] down_by vertical offset. A negative value means moving the pointer up.
       # @param [Symbol || String] device optional name of the PointerInput device to move
       # @return [ActionBuilder] A self reference.
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
-      def move_by(right_by, down_by, device: nil)
-        pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+      def move_by(right_by, down_by, device: nil, duration: default_move_duration, **opts)
+        pointer = pointer_input(device)
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
-                                    origin: Interactions::PointerMove::POINTER)
+                                    origin: Interactions::PointerMove::POINTER,
+                                    **opts)
         tick(pointer)
         self
       end
 
       #
-      # Moves the mouse to a given location in the viewport.
-      # If the coordinates provided are outside the viewport (the mouse will
-      # end up outside the browser window) then the viewport is scrolled to
-      # match.
+      # Moves the pointer to a given location in the viewport.
       #
-      # @example Move the mouse to a certain position in the viewport
+      # The viewport is not scrolled if the coordinates provided are outside the viewport.
+      # MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport
+      #
+      # @example Move the pointer to a certain position in the viewport
       #
       #    driver.action.move_to_location(100, 100).perform
       #
@@ -160,12 +151,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
-      def move_to_location(x, y, device: nil)
-        pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+      def move_to_location(x, y, device: nil, duration: default_move_duration, **opts)
+        pointer = pointer_input(device)
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(x),
                                     y: Integer(y),
-                                    origin: Interactions::PointerMove::VIEWPORT)
+                                    origin: Interactions::PointerMove::VIEWPORT,
+                                    **opts)
         tick(pointer)
         self
       end
@@ -186,9 +178,9 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def click_and_hold(element = nil, device: nil)
+      def click_and_hold(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
+        pointer_down(button || :left, device: device)
         self
       end
 
@@ -205,8 +197,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def release(device: nil)
-        pointer_up(:left, device: device)
+      def release(button: nil, device: nil)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -232,10 +224,10 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def click(element = nil, device: nil)
+      def click(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
-        pointer_up(:left, device: device)
+        pointer_down(button || :left, device: device)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -290,10 +282,7 @@ module Selenium
       #
 
       def context_click(element = nil, device: nil)
-        move_to(element, device: device) if element
-        pointer_down(:right, device: device)
-        pointer_up(:right, device: device)
-        self
+        click(element, button: :right, device: device)
       end
 
       #
@@ -348,15 +337,15 @@ module Selenium
 
       private
 
-      def button_action(button, action: nil, device: nil)
-        pointer = get_pointer(device)
-        pointer.send(action, button)
+      def button_action(button, action, device: nil, **opts)
+        pointer = pointer_input(device)
+        pointer.send(action, button, **opts)
         tick(pointer)
         self
       end
 
-      def get_pointer(device = nil)
-        get_device(device) || pointer_inputs.first
+      def pointer_input(name = nil)
+        device(name: name, type: Interactions::POINTER) || add_pointer_input(:mouse, 'mouse')
       end
     end # PointerActions
   end # WebDriver

@@ -1,0 +1,52 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
+
+SMALL_TESTS = [
+    "EventFiringWebDriverTest.cs",
+]
+
+dotnet_nunit_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = SMALL_TESTS,
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    deps = [
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver",
+        "//dotnet/test/common:fixtures",
+        framework("nuget", "NUnit"),
+        framework("nuget", "Moq"),
+    ],
+)
+
+dotnet_nunit_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(
+        [
+            "**/*Test.cs",
+            "**/*Tests.cs",
+        ],
+        exclude = SMALL_TESTS,
+    ) + [
+        "//dotnet/test/common:assembly-fixtures",
+    ],
+    browsers = [
+        "firefox",
+    ],
+    data = [
+        "//dotnet/test/common:test-data",
+    ],
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    deps = [
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver",
+        "//dotnet/test/common:fixtures",
+        framework("nuget", "NUnit"),
+    ],
+)

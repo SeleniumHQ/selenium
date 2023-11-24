@@ -1,0 +1,210 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load(
+    "@rules_ruby//ruby:defs.bzl",
+    "rb_binary",
+    "rb_gem_build",
+    "rb_gem_push",
+    "rb_test",
+)
+load("//common:defs.bzl", "copy_file")
+
+package(default_visibility = ["//:__subpackages__"])
+
+GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
+
+exports_files(["ruby_version.bzl"])
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:selenium-manager-linux",
+    out = "bin/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "bin/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "bin/windows/selenium-manager.exe",
+)
+
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "license",
+    src = ":global-license",
+    out = "LICENSE",
+)
+
+copy_file(
+    name = "notice",
+    src = ":global-notice",
+    out = "NOTICE",
+)
+
+rb_gem_build(
+    name = "selenium-webdriver",
+    srcs = [
+        "Gemfile",
+        "selenium-webdriver.gemspec",
+    ],
+    data = [
+        "CHANGES",
+        "README.md",
+        ":license",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
+        ":notice",
+    ],
+    gemspec = "selenium-webdriver.gemspec",
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:bidi",
+        "//rb/lib/selenium/webdriver:chrome",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:edge",
+        "//rb/lib/selenium/webdriver:firefox",
+        "//rb/lib/selenium/webdriver:ie",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/lib/selenium/webdriver:safari",
+        "//rb/lib/selenium/webdriver:version",
+    ],
+)
+
+rb_gem_push(
+    name = "selenium-webdriver-release",
+    gem = ":selenium-webdriver",
+)
+
+rb_gem_build(
+    name = "selenium-devtools",
+    srcs = [
+        "Gemfile",
+        "selenium-devtools.gemspec",
+    ],
+    data = [
+        "CHANGES",
+        "README.md",
+        ":license",
+        ":notice",
+    ],
+    gemspec = "selenium-devtools.gemspec",
+    deps = ["//rb/lib/selenium:devtools"],
+)
+
+rb_gem_push(
+    name = "selenium-devtools-release",
+    gem = ":selenium-devtools",
+)
+
+rb_binary(
+    name = "selenium-webdriver-bump-nightly-version",
+    args = [
+        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/lib/selenium/webdriver/version.rb",
+    ],
+    deps = [
+        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/lib/selenium/webdriver:version",
+    ],
+)
+
+rb_gem_push(
+    name = "selenium-webdriver-release-nightly",
+    args = [
+        "--host",
+        GITHUB_PACKAGES_HOST,
+    ],
+    gem = ":selenium-webdriver",
+)
+
+rb_binary(
+    name = "selenium-devtools-bump-nightly-version",
+    args = [
+        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/lib/selenium/devtools/version.rb",
+    ],
+    deps = [
+        "//rb/lib/selenium/devtools:version",
+        "//rb/lib/selenium/support:nightly_version_generator",
+    ],
+)
+
+rb_gem_push(
+    name = "selenium-devtools-release-nightly",
+    args = [
+        "--host",
+        GITHUB_PACKAGES_HOST,
+    ],
+    gem = ":selenium-devtools",
+)
+
+rb_binary(
+    name = "docs",
+    args = [
+        "doc",
+        "--output-dir=docs/api/rb",
+        "--readme=rb/README.md",
+        "rb/",
+    ],
+    main = "@bundle//:bin/yard",
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "lint",
+    srcs = glob(["**/*.rb"]),
+    args = [
+        "--autocorrect",
+        "--config=rb/.rubocop.yml",
+        "rb/",
+    ],
+    data = [".rubocop.yml"],
+    main = "@bundle//:bin/rubocop",
+    tags = ["no-sandbox"],
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "//rb/lib/selenium/devtools:cdp-generate",
+        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/spec",
+        "@bundle",
+    ],
+)
+
+rb_binary(
+    name = "console",
+    args = [
+        "-rselenium-webdriver",
+        "-rselenium/devtools",
+        "-Irb/lib",
+    ],
+    main = "@bundle//:bin/irb",
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "@bundle",
+    ],
+)

@@ -15,13 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-import pytest
 
-
-def testShouldFireKeyPressEvents(driver, pages):
+def test_should_fire_key_press_events(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("a")
@@ -29,7 +29,7 @@ def testShouldFireKeyPressEvents(driver, pages):
     assert "press:" in result.text
 
 
-def testShouldFireKeyDownEvents(driver, pages):
+def test_should_fire_key_down_events(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("I")
@@ -37,7 +37,7 @@ def testShouldFireKeyDownEvents(driver, pages):
     assert "down" in result.text
 
 
-def testShouldFireKeyUpEvents(driver, pages):
+def test_should_fire_key_up_events(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("a")
@@ -45,56 +45,56 @@ def testShouldFireKeyUpEvents(driver, pages):
     assert "up:" in result.text
 
 
-def testShouldTypeLowerCaseLetters(driver, pages):
+def test_should_type_lower_case_letters(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("abc def")
     assert keyReporter.get_attribute("value") == "abc def"
 
 
-def testShouldBeAbleToTypeCapitalLetters(driver, pages):
+def test_should_be_able_to_type_capital_letters(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("ABC DEF")
     assert keyReporter.get_attribute("value") == "ABC DEF"
 
 
-def testShouldBeAbleToTypeQuoteMarks(driver, pages):
+def test_should_be_able_to_type_quote_marks(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
-    keyReporter.send_keys("\"")
-    assert keyReporter.get_attribute("value") == "\""
+    keyReporter.send_keys('"')
+    assert keyReporter.get_attribute("value") == '"'
 
 
-def testShouldBeAbleToTypeTheAtCharacter(driver, pages):
+def test_should_be_able_to_type_the_at_character(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("@")
     assert keyReporter.get_attribute("value") == "@"
 
 
-def testShouldBeAbleToMixUpperAndLowerCaseLetters(driver, pages):
+def test_should_be_able_to_mix_upper_and_lower_case_letters(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("me@eXample.com")
     assert keyReporter.get_attribute("value") == "me@eXample.com"
 
 
-def testArrowKeysShouldNotBePrintable(driver, pages):
+def test_arrow_keys_should_not_be_printable(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys(Keys.ARROW_LEFT)
     assert keyReporter.get_attribute("value") == ""
 
 
-def testListOfArrowKeysShouldNotBePrintable(driver, pages):
+def test_list_of_arrow_keys_should_not_be_printable(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys([Keys.ARROW_LEFT])
     assert keyReporter.get_attribute("value") == ""
 
 
-def testShouldBeAbleToUseArrowKeys(driver, pages):
+def test_should_be_able_to_use_arrow_keys(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
     keyReporter.send_keys("Tet", Keys.ARROW_LEFT, "s")
@@ -102,7 +102,7 @@ def testShouldBeAbleToUseArrowKeys(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(driver, pages):
+def test_will_simulate_akey_up_when_entering_text_into_input_elements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyUp")
     element.send_keys("I like cheese")
@@ -111,7 +111,7 @@ def testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyDownWhenEnteringTextIntoInputElements(driver, pages):
+def test_will_simulate_akey_down_when_entering_text_into_input_elements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyDown")
     element.send_keys("I like cheese")
@@ -122,7 +122,7 @@ def testWillSimulateAKeyDownWhenEnteringTextIntoInputElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyPressWhenEnteringTextIntoInputElements(driver, pages):
+def test_will_simulate_akey_press_when_entering_text_into_input_elements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyPress")
     element.send_keys("I like cheese")
@@ -133,7 +133,7 @@ def testWillSimulateAKeyPressWhenEnteringTextIntoInputElements(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas(driver, pages):
+def test_will_simulate_akey_up_when_entering_text_into_text_areas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyUpArea")
     element.send_keys("I like cheese")
@@ -142,7 +142,7 @@ def testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas(driver, pages):
+def test_will_simulate_akey_down_when_entering_text_into_text_areas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyDownArea")
     element.send_keys("I like cheese")
@@ -153,7 +153,7 @@ def testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas(driver, pages):
+def test_will_simulate_akey_press_when_entering_text_into_text_areas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyPressArea")
     element.send_keys("I like cheese")
@@ -163,7 +163,7 @@ def testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas(driver, pages):
     assert result.text == "I like chees"
 
 
-def testShouldReportKeyCodeOfArrowKeysUpDownEvents(driver, pages):
+def test_should_report_key_code_of_arrow_keys_up_down_events(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -187,7 +187,7 @@ def testShouldReportKeyCodeOfArrowKeysUpDownEvents(driver, pages):
     assert element.get_attribute("value") == ""
 
 
-def testNumericNonShiftKeys(driver, pages):
+def test_numeric_non_shift_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     numericLineCharsNonShifted = "`1234567890-=[]\\,.'/42"
@@ -195,21 +195,19 @@ def testNumericNonShiftKeys(driver, pages):
     assert element.get_attribute("value") == numericLineCharsNonShifted
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-def testNumericShiftKeys(driver, pages):
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+def test_numeric_shift_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
     element = driver.find_element(by=By.ID, value="keyReporter")
-    numericShiftsEtc = "~!@#$%^&*()_+{}:i\"<>?|END~"
+    numericShiftsEtc = '~!@#$%^&*()_+{}:i"<>?|END~'
     element.send_keys(numericShiftsEtc)
     assert element.get_attribute("value") == numericShiftsEtc
     assert "up: 16" in result.text.strip()
 
 
-def testLowerCaseAlphaKeys(driver, pages):
+def test_lower_case_alpha_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     lowerAlphas = "abcdefghijklmnopqrstuvwxyz"
@@ -217,11 +215,9 @@ def testLowerCaseAlphaKeys(driver, pages):
     assert element.get_attribute("value") == lowerAlphas
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-def testUppercaseAlphaKeys(driver, pages):
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+def test_uppercase_alpha_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -231,11 +227,9 @@ def testUppercaseAlphaKeys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-def testAllPrintableKeys(driver, pages):
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+def test_all_printable_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -246,17 +240,14 @@ def testAllPrintableKeys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-def testArrowKeysAndPageUpAndDown(driver, pages):
+def test_arrow_keys_and_page_up_and_down(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
-    element.send_keys(
-        "a{}b{}{}{}{}{}1"
-        .format(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN, Keys.PAGE_UP, Keys.PAGE_DOWN)
-    )
+    element.send_keys(f"a{Keys.LEFT}b{Keys.RIGHT}{Keys.UP}{Keys.DOWN}{Keys.PAGE_UP}{Keys.PAGE_DOWN}1")
     assert element.get_attribute("value") == "ba1"
 
 
-# def testHomeAndEndAndPageUpAndPageDownKeys(driver, pages):
+# def test_home_and_end_and_page_up_and_page_down_keys(driver, pages):
 #  // FIXME: macs don't have HOME keys, would PGUP work?
 #  if (Platform.getCurrent().is(Platform.MAC)) {
 #    return
@@ -272,7 +263,7 @@ def testArrowKeysAndPageUpAndDown(driver, pages):
 #  assert element.get_attribute("value") == "0000abc1111"
 
 
-def testDeleteAndBackspaceKeys(driver, pages):
+def test_delete_and_backspace_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys("abcdefghi")
@@ -285,31 +276,35 @@ def testDeleteAndBackspaceKeys(driver, pages):
     assert element.get_attribute("value") == "abcdfgi"
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-def testSpecialSpaceKeys(driver, pages):
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+def test_special_space_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij")
     assert element.get_attribute("value") == "abcd fgh ij"
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 @pytest.mark.xfail_safari
-def testNumberpadAndFunctionKeys(driver, pages):
+def test_numberpad_and_function_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd"
-        .format(
-            Keys.MULTIPLY, Keys.SUBTRACT, Keys.ADD, Keys.DECIMAL, Keys.SEPARATOR,
-            Keys.NUMPAD0, Keys.NUMPAD9, Keys.ADD, Keys.SEMICOLON, Keys.EQUALS, Keys.DIVIDE,
-            Keys.NUMPAD3
+        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd".format(
+            Keys.MULTIPLY,
+            Keys.SUBTRACT,
+            Keys.ADD,
+            Keys.DECIMAL,
+            Keys.SEPARATOR,
+            Keys.NUMPAD0,
+            Keys.NUMPAD9,
+            Keys.ADD,
+            Keys.SEMICOLON,
+            Keys.EQUALS,
+            Keys.DIVIDE,
+            Keys.NUMPAD3,
         )
     )
     assert element.get_attribute("value") == "abcd*-+.,09+;=/3abcd"
@@ -321,7 +316,7 @@ def testNumberpadAndFunctionKeys(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShiftSelectionDeletes(driver, pages):
+def test_shift_selection_deletes(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
 
@@ -333,14 +328,14 @@ def testShiftSelectionDeletes(driver, pages):
     assert element.get_attribute("value") == "abcd e"
 
 
-def testShouldTypeIntoInputElementsThatHaveNoTypeAttribute(driver, pages):
+def test_should_type_into_input_elements_that_have_no_type_attribute(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(by=By.ID, value="no-type")
     element.send_keys("Should Say Cheese")
     assert element.get_attribute("value") == "Should Say Cheese"
 
 
-def testShouldTypeAnInteger(driver, pages):
+def test_should_type_an_integer(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(1234)

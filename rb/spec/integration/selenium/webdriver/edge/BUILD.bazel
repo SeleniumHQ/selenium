@@ -1,0 +1,21 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_test")
+load("//rb/spec/integration:configuration.bzl", "ENV", "TAGS")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+[
+    rb_test(
+        name = file[:-8],
+        size = "large",
+        srcs = [file],
+        args = ["rb/spec/"],
+        env = ENV,
+        main = "@bundle//:bin/rspec",
+        tags = TAGS,
+        deps = [
+            "//rb/lib/selenium/webdriver:edge",
+            "//rb/spec/integration/selenium/webdriver:spec_helper",
+        ],
+    )
+    for file in glob(["*_spec.rb"])
+]

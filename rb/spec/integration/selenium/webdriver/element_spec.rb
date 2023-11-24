@@ -22,38 +22,96 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Element do
-      it 'should click' do
+      it 'clicks' do
         driver.navigate.to url_for('formPage.html')
         expect { driver.find_element(id: 'imageButton').click }.not_to raise_error
-        reset_driver!(1) if %i[safari safari_preview].include? GlobalTestEnv.browser
+        reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'should raise if different element receives click', except: {browser: %i[safari safari_preview]} do
+      it 'raises if different element receives click', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'should raise if element is partially covered', except: {browser: %i[safari safari_preview]} do
+      it 'raises if element is partially covered', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'other_contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
-      it 'should submit' do
+      it 'raises if element stale' do
         driver.navigate.to url_for('formPage.html')
-        wait_for_element(id: 'submitButton')
-        expect { driver.find_element(id: 'submitButton').submit }.not_to raise_error
-        reset_driver!
+        button = driver.find_element(id: 'imageButton')
+        driver.navigate.refresh
+
+        expect { button.click }.to raise_exception(Error::StaleElementReferenceError,
+                                                   /errors#stale-element-reference-exception/)
+
+        reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end
 
-      it 'should send string keys' do
+      describe '#submit' do
+        it 'valid submit button' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'submitButton').submit
+
+          sleep 0.5
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'any input element in form' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'checky').submit
+
+          sleep 0.5
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'any element in form' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(css: 'form > p').submit
+
+          sleep 0.5
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'button with id submit' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'submit').submit
+
+          sleep 0.5
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'button with name submit' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(name: 'submit').submit
+
+          sleep 0.5
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'errors with button outside form' do
+          driver.navigate.to url_for('formPage.html')
+          expect { driver.find_element(name: 'SearchableText').submit }.to raise_error(Error::UnsupportedOperationError)
+        end
+      end
+
+      it 'sends empty keys' do
+        driver.navigate.to url_for('formPage.html')
+        element = wait_for_element(id: 'working')
+        element.send_keys
+        expect(element.text).to be_empty
+      end
+
+      it 'sends string keys' do
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'working')
         expect { driver.find_element(id: 'working').send_keys('foo', 'bar') }.not_to raise_error
       end
 
-      it 'should send key presses' do
+      it 'sends key presses' do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -62,7 +120,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'should send key presses chords', except: {browser: %i[firefox safari safari_preview]} do
+      it 'sends key presses chords', except: {browser: %i[firefox safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -70,7 +128,7 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      it 'should handle file uploads' do
+      it 'handles file uploads' do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
@@ -83,27 +141,318 @@ module Selenium
         expect(element.attribute('value')).to include(File.basename(path))
       end
 
-      it 'should get attribute value' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').attribute('rows')).to eq('5')
+      describe 'properties and attributes' do
+        before { driver.navigate.to url_for('formPage.html') }
+
+        context 'when string type' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'type' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'checkbox'
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to eq 'checkbox'
+          end
+
+          it '#attribute returns value' do
+            expect(element.attribute(prop_or_attr)).to eq 'checkbox'
+          end
+        end
+
+        context 'when numeric type' do
+          let(:element) { driver.find_element(id: 'withText') }
+          let(:prop_or_attr) { 'rows' }
+
+          it '#dom_attribute String' do
+            expect(element.dom_attribute(prop_or_attr)).to eq '5'
+          end
+
+          it '#property returns Number' do
+            expect(element.property(prop_or_attr)).to eq 5
+          end
+
+          it '#attribute returns String' do
+            expect(element.attribute(prop_or_attr)).to eq '5'
+          end
+        end
+
+        context 'with boolean type of true' do
+          let(:element) { driver.find_element(id: 'checkedchecky') }
+          let(:prop_or_attr) { 'checked' }
+
+          it '#dom_attribute returns String', except: {browser: :safari} do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns true' do
+            expect(element.property(prop_or_attr)).to be true
+          end
+
+          it '#attribute returns String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#dom_attribute does not update after click', except: {browser: :safari} do
+            element.click
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property updates to false after click' do
+            element.click
+            expect(element.property(prop_or_attr)).to be false
+          end
+
+          it '#attribute updates to nil after click' do
+            element.click
+            expect(element.attribute(prop_or_attr)).to be_nil
+          end
+        end
+
+        context 'with boolean type of false' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'checked' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns false' do
+            expect(element.property(prop_or_attr)).to be false
+          end
+
+          it '#attribute returns nil' do
+            expect(element.attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#dom_attribute does not update after click' do
+            element.click
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property updates to true after click' do
+            element.click
+            expect(element.property(prop_or_attr)).to be true
+          end
+
+          it '#attribute updates to String after click' do
+            element.click
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        context 'when property exists but attribute does not' do
+          let(:element) { driver.find_element(id: 'withText') }
+          let(:prop_or_attr) { 'value' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns default property' do
+            expect(element.property(prop_or_attr)).to eq 'Example text'
+          end
+
+          it '#attribute returns default property' do
+            expect(element.attribute(prop_or_attr)).to eq 'Example text'
+          end
+
+          it '#property returns updated property' do
+            element.clear
+            expect(element.property(prop_or_attr)).to be_empty
+          end
+
+          it '#attribute returns updated property' do
+            element.clear
+            expect(element.attribute(prop_or_attr)).to be_empty
+          end
+        end
+
+        context 'when attribute exists but property does not' do
+          let(:element) { driver.find_element(id: 'vsearchGadget') }
+          let(:prop_or_attr) { 'accesskey' }
+
+          it '#dom_attribute returns attribute' do
+            expect(element.dom_attribute(prop_or_attr)).to eq '4'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns attribute' do
+            expect(element.attribute(prop_or_attr)).to eq '4'
+          end
+        end
+
+        context 'when neither attribute nor property exists' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'nonexistent' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns nil' do
+            expect(element.attribute(prop_or_attr)).to be_nil
+          end
+        end
+
+        describe 'style' do
+          before { driver.navigate.to url_for('clickEventPage.html') }
+
+          let(:element) { driver.find_element(id: 'result') }
+          let(:prop_or_attr) { 'style' }
+
+          it '#dom_attribute attribute with no formatting' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'width:300;height:60'
+          end
+
+          # TODO: This might not be correct behavior
+          it '#property returns object',
+             except: [{browser: :firefox,
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1846'},
+                      {browser: :safari}] do
+            expect(element.property(prop_or_attr)).to eq %w[width height]
+          end
+
+          it '#attribute returns attribute with formatting' do
+            expect(element.attribute(prop_or_attr)).to eq 'width: 300px; height: 60px;'
+          end
+        end
+
+        describe 'incorrect casing' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'nAme' }
+
+          it '#dom_attribute returns correctly cased attribute' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'checky'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns correctly cased attribute' do
+            expect(element.attribute(prop_or_attr)).to eq 'checky'
+          end
+        end
+
+        describe 'property attribute case difference with attribute casing' do
+          let(:element) { driver.find_element(name: 'readonly') }
+          let(:prop_or_attr) { 'readonly' }
+
+          it '#dom_attribute returns a String', except: {browser: :safari} do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns a String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        describe 'property attribute case difference with property casing' do
+          let(:element) { driver.find_element(name: 'readonly') }
+          let(:prop_or_attr) { 'readOnly' }
+
+          it '#dom_attribute returns a String',
+             except: [{browser: :firefox,
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1850'},
+                      {browser: :safari}] do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns property as true' do
+            expect(element.property(prop_or_attr)).to be true
+          end
+
+          it '#attribute returns property as String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        describe 'property attribute name difference with attribute naming' do
+          let(:element) { driver.find_element(id: 'wallace') }
+          let(:prop_or_attr) { 'class' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'gromit'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns attribute value' do
+            expect(element.attribute(prop_or_attr)).to eq 'gromit'
+          end
+        end
+
+        describe 'property attribute name difference with property naming' do
+          let(:element) { driver.find_element(id: 'wallace') }
+          let(:prop_or_attr) { 'className' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to eq 'gromit'
+          end
+
+          it '#attribute returns property value' do
+            expect(element.attribute(prop_or_attr)).to eq 'gromit'
+          end
+        end
+
+        describe 'property attribute value difference' do
+          let(:element) { driver.find_element(tag_name: 'form') }
+          let(:prop_or_attr) { 'action' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'resultPage.html'
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to match(%r{http://(.+)/resultPage\.html})
+          end
+
+          it '#attribute returns property value' do
+            expect(element.attribute(prop_or_attr)).to match(%r{http://(.+)/resultPage\.html})
+          end
+        end
       end
 
-      it 'should return nil for non-existent attributes' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
+      it 'returns ARIA role' do
+        driver.navigate.to 'data:text/html,' \
+                           "<div role='heading' aria-level='1'>Level 1 Header</div>" \
+                           '<h1>Level 1 Header</h1>' \
+                           "<h2 role='alert'>Level 2 Header</h2>"
+        expect(driver.find_element(tag_name: 'div').aria_role).to eq('heading')
+        expect(driver.find_element(tag_name: 'h1').aria_role).to eq('heading')
+        expect(driver.find_element(tag_name: 'h2').aria_role).to eq('alert')
       end
 
-      it 'should get property value' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
+      it 'returns accessible name' do
+        driver.navigate.to 'data:text/html,<h1>Level 1 Header</h1>'
+        expect(driver.find_element(tag_name: 'h1').accessible_name).to eq('Level 1 Header')
       end
 
-      it 'should clear' do
+      it 'clears' do
         driver.navigate.to url_for('formPage.html')
         expect { driver.find_element(id: 'withText').clear }.not_to raise_error
       end
 
-      it 'should get and set selected' do
+      it 'gets and set selected' do
         driver.navigate.to url_for('formPage.html')
 
         cheese = driver.find_element(id: 'cheese')
@@ -120,23 +469,23 @@ module Selenium
         expect(cheese).not_to be_selected
       end
 
-      it 'should get enabled' do
+      it 'gets enabled' do
         driver.navigate.to url_for('formPage.html')
         expect(driver.find_element(id: 'notWorking')).not_to be_enabled
       end
 
-      it 'should get text' do
+      it 'gets text' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
       end
 
-      it 'should get displayed' do
+      it 'gets displayed' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.find_element(class: 'header')).to be_displayed
       end
 
-      context 'size and location' do
-        it 'should get current location' do
+      describe 'size and location' do
+        it 'gets current location' do
           driver.navigate.to url_for('xhtmlTest.html')
           loc = driver.find_element(class: 'header').location
 
@@ -144,7 +493,7 @@ module Selenium
           expect(loc.y).to be >= 1
         end
 
-        it 'should get location once scrolled into view' do
+        it 'gets location once scrolled into view' do
           driver.navigate.to url_for('javascriptPage.html')
           loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
 
@@ -152,7 +501,7 @@ module Selenium
           expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
         end
 
-        it 'should get size' do
+        it 'gets size' do
           driver.navigate.to url_for('xhtmlTest.html')
           size = driver.find_element(class: 'header').size
 
@@ -160,7 +509,7 @@ module Selenium
           expect(size.height).to be_positive
         end
 
-        it 'should get rect' do
+        it 'gets rect' do
           driver.navigate.to url_for('xhtmlTest.html')
           rect = driver.find_element(class: 'header').rect
 
@@ -172,7 +521,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: :ie} do
+      it 'drags and drop', except: {browser: :ie} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')
@@ -185,7 +534,7 @@ module Selenium
         expect(img1.location).to eq(img2.location)
       end
 
-      it 'should get css property' do
+      it 'gets css property' do
         driver.navigate.to url_for('javascriptPage.html')
         element = driver.find_element(id: 'green-parent')
 
@@ -196,7 +545,7 @@ module Selenium
         expect(acceptable).to include(style1, style2)
       end
 
-      it 'should know when two elements are equal' do
+      it 'knows when two elements are equal' do
         driver.navigate.to url_for('simpleTest.html')
 
         body = driver.find_element(tag_name: 'body')
@@ -209,7 +558,7 @@ module Selenium
         expect(body).to eql(jsbody)
       end
 
-      it 'should know when element arrays are equal' do
+      it 'knows when element arrays are equal' do
         driver.navigate.to url_for('simpleTest.html')
 
         tags = driver.find_elements(tag_name: 'div')
@@ -218,7 +567,7 @@ module Selenium
         expect(tags).to eq(jstags)
       end
 
-      it 'should know when two elements are not equal' do
+      it 'knows when two elements are not equal' do
         driver.navigate.to url_for('simpleTest.html')
 
         elements = driver.find_elements(tag_name: 'p')
@@ -229,7 +578,7 @@ module Selenium
         expect(p1).not_to eql(p2)
       end
 
-      it 'should return the same #hash for equal elements when found by Driver#find_element' do
+      it 'returns the same #hash for equal elements when found by Driver#find_element' do
         driver.navigate.to url_for('simpleTest.html')
 
         body = driver.find_element(tag_name: 'body')
@@ -238,7 +587,7 @@ module Selenium
         expect(body.hash).to eq(xbody.hash)
       end
 
-      it 'should return the same #hash for equal elements when found by Driver#find_elements' do
+      it 'returns the same #hash for equal elements when found by Driver#find_elements' do
         driver.navigate.to url_for('simpleTest.html')
 
         body = driver.find_elements(tag_name: 'body').fetch(0)

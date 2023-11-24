@@ -14,15 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-"""
-The Desired Capabilities implementation.
-"""
+"""The Desired Capabilities implementation."""
 
 
-class DesiredCapabilities(object):
-    """
-    Set of default supported desired capabilities.
+class DesiredCapabilities:
+    """Set of default supported desired capabilities.
 
     Use this as a starting point for creating a desired capabilities object for
     requesting remote webdrivers for connecting to selenium server or selenium grid.
@@ -44,42 +40,30 @@ class DesiredCapabilities(object):
 
     Note: Always use '.copy()' on the DesiredCapabilities object to avoid the side
     effects of altering the Global class instance.
-
     """
 
     FIREFOX = {
         "browserName": "firefox",
         "acceptInsecureCerts": True,
+        "moz:debuggerAddress": True,
     }
 
     INTERNETEXPLORER = {
         "browserName": "internet explorer",
-        "version": "",
-        "platform": "WINDOWS",
+        "platformName": "windows",
     }
 
     EDGE = {
         "browserName": "MicrosoftEdge",
-        "version": "",
-        "platform": "ANY"
     }
 
     CHROME = {
         "browserName": "chrome",
-        "version": "",
-        "platform": "ANY",
-    }
-
-    OPERA = {
-        "browserName": "opera",
-        "version": "",
-        "platform": "ANY",
     }
 
     SAFARI = {
         "browserName": "safari",
-        "version": "",
-        "platform": "MAC",
+        "platformName": "mac",
     }
 
     HTMLUNIT = {
@@ -98,13 +82,13 @@ class DesiredCapabilities(object):
     IPHONE = {
         "browserName": "iPhone",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     IPAD = {
         "browserName": "iPad",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     WEBKITGTK = {

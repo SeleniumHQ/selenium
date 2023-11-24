@@ -1,0 +1,6 @@
+# cargo --config Cargo.aarch64-pc-windows-msvc.toml build
+#
+# Workaround ring issues to build on Windows ARM64.
+# See https://github.com/briansmith/ring/issues/1167 for details.
+[patch.crates-io]
+ring = { git = "https://github.com/awakecoding/ring", branch = "0.16.20_alpha" }

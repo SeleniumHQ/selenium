@@ -30,26 +30,26 @@ describe('HttpClient', function () {
     // eslint-disable-next-line node/no-deprecated-api
     const parsedUrl = url.parse(req.url)
 
-    if (req.method == 'GET' && req.url == '/echo') {
+    if (req.method === 'GET' && req.url === '/echo') {
       res.writeHead(200)
       res.end(JSON.stringify(req.headers))
-    } else if (req.method == 'GET' && req.url == '/redirect') {
+    } else if (req.method === 'GET' && req.url === '/redirect') {
       res.writeHead(303, { Location: server.url('/hello') })
       res.end()
-    } else if (req.method == 'GET' && req.url == '/hello') {
+    } else if (req.method === 'GET' && req.url === '/hello') {
       res.writeHead(200, { 'content-type': 'text/plain' })
       res.end('hello, world!')
-    } else if (req.method == 'GET' && req.url == '/chunked') {
+    } else if (req.method === 'GET' && req.url === '/chunked') {
       res.writeHead(200, {
         'content-type': 'text/html; charset=utf-8',
         'transfer-encoding': 'chunked',
       })
       res.write('<!DOCTYPE html>')
       setTimeout(() => res.end('<h1>Hello, world!</h1>'), 20)
-    } else if (req.method == 'GET' && req.url == '/badredirect') {
+    } else if (req.method === 'GET' && req.url === '/badredirect') {
       res.writeHead(303, {})
       res.end()
-    } else if (req.method == 'GET' && req.url == '/protected') {
+    } else if (req.method === 'GET' && req.url === '/protected') {
       const denyAccess = function () {
         res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
         res.end('Access denied')
@@ -74,7 +74,7 @@ describe('HttpClient', function () {
       res.writeHead(200, { 'content-type': 'text/plain' })
       res.end('Access granted!')
     } else if (
-      req.method == 'GET' &&
+      req.method === 'GET' &&
       parsedUrl.pathname &&
       parsedUrl.pathname.endsWith('/proxy')
     ) {
@@ -83,7 +83,7 @@ describe('HttpClient', function () {
       res.writeHead(200, headers)
       res.end()
     } else if (
-      req.method == 'GET' &&
+      req.method === 'GET' &&
       parsedUrl.pathname &&
       parsedUrl.pathname.endsWith('/proxy/redirect')
     ) {
@@ -113,12 +113,12 @@ describe('HttpClient', function () {
 
     const client = new HttpClient(server.url(), agent)
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
+      assert.strictEqual(200, response.status)
 
       const headers = JSON.parse(response.body)
-      assert.equal(headers['content-length'], '0')
-      assert.equal(headers['connection'], 'keep-alive')
-      assert.equal(headers['host'], server.host())
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
 
       const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
       assert.ok(
@@ -126,8 +126,72 @@ describe('HttpClient', function () {
         `${headers['user-agent']} does not match ${regex}`
       )
 
-      assert.equal(request.headers.get('Foo'), 'Bar')
-      assert.equal(
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(
+        request.headers.get('Accept'),
+        'application/json; charset=utf-8'
+      )
+      assert.strictEqual(agent.keepAlive, false)
+    })
+  })
+
+  it('can send a basic HTTP request with custom user-agent via client_options', function () {
+    const request = new HttpRequest('GET', '/echo')
+    request.headers.set('Foo', 'Bar')
+
+    const agent = new http.Agent()
+    agent.maxSockets = 1 // Only making 1 request.
+
+    const client = new HttpClient(server.url(), agent, null, {
+      'user-agent': 'test',
+    })
+
+    return client.send(request).then(function (response) {
+      assert.strictEqual(200, response.status)
+
+      const headers = JSON.parse(response.body)
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
+      assert.strictEqual(headers['user-agent'], 'test')
+
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(agent.keepAlive, false)
+      assert.strictEqual(
+        request.headers.get('Accept'),
+        'application/json; charset=utf-8'
+      )
+    })
+  })
+
+  it('can send a basic HTTP request with keep-alive being set to true via client_options', function () {
+    const request = new HttpRequest('GET', '/echo')
+    request.headers.set('Foo', 'Bar')
+
+    const agent = new http.Agent()
+    agent.maxSockets = 1 // Only making 1 request.
+
+    const client = new HttpClient(server.url(), agent, null, {
+      'keep-alive': 'true',
+    })
+
+    return client.send(request).then(function (response) {
+      assert.strictEqual(200, response.status)
+
+      const headers = JSON.parse(response.body)
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
+
+      const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
+      assert.ok(
+        regex.test(headers['user-agent']),
+        `${headers['user-agent']} does not match ${regex}`
+      )
+
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(agent.keepAlive, true)
+      assert.strictEqual(
         request.headers.get('Accept'),
         'application/json; charset=utf-8'
       )
@@ -139,8 +203,8 @@ describe('HttpClient', function () {
 
     let client = new HttpClient(server.url())
     return client.send(request).then((response) => {
-      assert.equal(200, response.status)
-      assert.equal(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>')
     })
   })
 
@@ -152,9 +216,9 @@ describe('HttpClient', function () {
     const client = new HttpClient(url.format(parsed))
     const request = new HttpRequest('GET', '/protected')
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
-      assert.equal(response.headers.get('content-type'), 'text/plain')
-      assert.equal(response.body, 'Access granted!')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.headers.get('content-type'), 'text/plain')
+      assert.strictEqual(response.body, 'Access granted!')
     })
   })
 
@@ -162,8 +226,8 @@ describe('HttpClient', function () {
     const client = new HttpClient(server.url())
     const request = new HttpRequest('GET', '/protected')
     return client.send(request).then(function (response) {
-      assert.equal(401, response.status)
-      assert.equal(response.body, 'Access denied')
+      assert.strictEqual(401, response.status)
+      assert.strictEqual(response.body, 'Access denied')
     })
   })
 
@@ -171,9 +235,9 @@ describe('HttpClient', function () {
     const request = new HttpRequest('GET', '/redirect')
     const client = new HttpClient(server.url())
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
-      assert.equal(response.headers.get('content-type'), 'text/plain')
-      assert.equal(response.body, 'hello, world!')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.headers.get('content-type'), 'text/plain')
+      assert.strictEqual(response.body, 'hello, world!')
     })
   })
 
@@ -197,9 +261,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy'
         )
@@ -214,9 +278,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy'
         )
@@ -231,9 +295,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy?foo#bar'
         )

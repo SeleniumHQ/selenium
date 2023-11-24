@@ -137,17 +137,17 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(settingName))
             {
-                throw new ArgumentException("Metadata setting name cannot be null or empty", "settingName");
+                throw new ArgumentException("Metadata setting name cannot be null or empty", nameof(settingName));
             }
 
             if (this.reservedSettingNames.Contains(settingName))
             {
-                throw new ArgumentException(string.Format("'{0}' is a reserved name for a metadata setting, and cannot be used as a name.", settingName), "settingName");
+                throw new ArgumentException(string.Format("'{0}' is a reserved name for a metadata setting, and cannot be used as a name.", settingName), nameof(settingName));
             }
 
             if (!this.IsJsonSerializable(settingValue))
             {
-                throw new ArgumentException("Metadata setting value must be JSON serializable.", "settingValue");
+                throw new ArgumentException("Metadata setting value must be JSON serializable.", nameof(settingValue));
             }
 
             this.remoteMetadataSettings[settingName] = settingValue;
@@ -166,7 +166,7 @@ namespace OpenQA.Selenium
                 if (mergeResult.IsMergeConflict)
                 {
                     string msg = string.Format(CultureInfo.InvariantCulture, "You cannot request the same capability in both must-match and first-match capabilities. You are attempting to add a first-match driver options object that defines a capability, '{0}', that is already defined in the must-match driver options.", mergeResult.MergeConflictOptionName);
-                    throw new ArgumentException(msg, "options");
+                    throw new ArgumentException(msg, nameof(options));
                 }
             }
 
@@ -190,7 +190,7 @@ namespace OpenQA.Selenium
                     if (mergeResult.IsMergeConflict)
                     {
                         string msg = string.Format(CultureInfo.InvariantCulture, "You cannot request the same capability in both must-match and first-match capabilities. You are attempting to add a must-match driver options object that defines a capability, '{0}', that is already defined in the first-match driver options with index {1}.", mergeResult.MergeConflictOptionName, driverOptionIndex);
-                        throw new ArgumentException(msg, "options");
+                        throw new ArgumentException(msg, nameof(options));
                     }
 
                     driverOptionIndex++;

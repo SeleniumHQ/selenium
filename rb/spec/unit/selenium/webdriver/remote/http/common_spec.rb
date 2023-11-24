@@ -25,26 +25,28 @@ module Selenium
       module Http
         describe Common do
           it 'sends non-empty body header for POST requests without command data' do
-            common = Common.new
+            common = described_class.new
             common.server_url = URI.parse('http://server')
-
-            expect(common).to receive(:request)
-              .with(:post, URI.parse('http://server/clear'),
-                    hash_including('Content-Length' => '2'), '{}')
+            allow(common).to receive(:request)
 
             common.call(:post, 'clear', nil)
+
+            expect(common).to have_received(:request)
+              .with(:post, URI.parse('http://server/clear'),
+                    hash_including('Content-Length' => '2'), '{}')
           end
 
           it 'sends a standard User-Agent by default' do
-            common = Common.new
+            common = described_class.new
             common.server_url = URI.parse('http://server')
             user_agent_regexp = %r{\Aselenium/#{WebDriver::VERSION} \(ruby #{Platform.os}\)\z}
-
-            expect(common).to receive(:request)
-              .with(:post, URI.parse('http://server/session'),
-                    hash_including('User-Agent' => a_string_matching(user_agent_regexp)), '{}')
+            allow(common).to receive(:request)
 
             common.call(:post, 'session', nil)
+
+            expect(common).to have_received(:request)
+              .with(:post, URI.parse('http://server/session'),
+                    hash_including('User-Agent' => a_string_matching(user_agent_regexp)), '{}')
           end
         end
       end # Http

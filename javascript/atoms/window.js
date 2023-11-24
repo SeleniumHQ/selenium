@@ -54,7 +54,7 @@ bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE;
  * @const
  */
 bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ =
-    !goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533');
+  !goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533');
 
 
 /**
@@ -78,9 +78,9 @@ bot.window.Orientation = {
  * @return {number} The orientation degrees.
  * @private
  */
-bot.window.getOrientationDegrees_ = (function() {
+bot.window.getOrientationDegrees_ = (function () {
   var orientationMap;
-  return function(orientation) {
+  return function (orientation) {
     if (!orientationMap) {
       orientationMap = {};
       if (goog.userAgent.MOBILE) {
@@ -112,11 +112,11 @@ bot.window.getOrientationDegrees_ = (function() {
  *
  * @param {number=} opt_numPages Number of pages to go back.
  */
-bot.window.back = function(opt_numPages) {
+bot.window.back = function (opt_numPages) {
   // Relax the upper bound by one for browsers that do not count
   // newly loaded pages towards the value of window.history.length.
   var maxPages = bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ ?
-      bot.getWindow().history.length - 1 : bot.getWindow().history.length;
+    bot.getWindow().history.length - 1 : bot.getWindow().history.length;
   var numPages = bot.window.checkNumPages_(maxPages, opt_numPages);
   bot.getWindow().history.go(-numPages);
 };
@@ -128,11 +128,11 @@ bot.window.back = function(opt_numPages) {
  *
  * @param {number=} opt_numPages Number of pages to go forward.
  */
-bot.window.forward = function(opt_numPages) {
+bot.window.forward = function (opt_numPages) {
   // Do not check the upper bound (use null for infinity) for browsers that
   // do not count forward pages towards the value of window.history.length.
   var maxPages = bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ ?
-      bot.getWindow().history.length - 1 : null;
+    bot.getWindow().history.length - 1 : null;
   var numPages = bot.window.checkNumPages_(maxPages, opt_numPages);
   bot.getWindow().history.go(numPages);
 };
@@ -144,15 +144,15 @@ bot.window.forward = function(opt_numPages) {
  * @return {number} Correct number of pages to move in history.
  * @private
  */
-bot.window.checkNumPages_ = function(maxPages, opt_numPages) {
+bot.window.checkNumPages_ = function (maxPages, opt_numPages) {
   var numPages = goog.isDef(opt_numPages) ? opt_numPages : 1;
   if (numPages <= 0) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'number of pages must be positive');
+      'number of pages must be positive');
   }
   if (maxPages !== null && numPages > maxPages) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'number of pages must be less than the length of the browser history');
+      'number of pages must be less than the length of the browser history');
   }
   return numPages;
 };
@@ -167,14 +167,14 @@ bot.window.checkNumPages_ = function(maxPages, opt_numPages) {
  *   bot.getWindow().
  * @return {!goog.math.Size} The calculated size.
  */
-bot.window.getInteractableSize = function(opt_win) {
+bot.window.getInteractableSize = function (opt_win) {
   var win = opt_win || bot.getWindow();
   var doc = win.document;
   var elem = doc.documentElement;
   var body = doc.body;
   if (!body) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'No BODY element present');
+      'No BODY element present');
   }
 
   var widths = [
@@ -200,7 +200,7 @@ bot.window.getInteractableSize = function(opt_win) {
  * @return {Element} The frame element if it exists, null otherwise.
  * @private
  */
-bot.window.getFrame_ = function(win) {
+bot.window.getFrame_ = function (win) {
   try {
     // On IE, accessing the frameElement of a popup window results in a "No
     // Such interface" exception.
@@ -218,7 +218,7 @@ bot.window.getFrame_ = function(win) {
  *   bot.getWindow().
  * @return {!goog.math.Size} The calculated size.
  */
-bot.window.getSize = function(opt_win) {
+bot.window.getSize = function (opt_win) {
   var win = opt_win || bot.getWindow();
   var frame = bot.window.getFrame_(win);
   if (bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH) {
@@ -226,7 +226,7 @@ bot.window.getSize = function(opt_win) {
       // Early Android browsers do not account for border width.
       var box = goog.style.getBorderBox(frame);
       return new goog.math.Size(frame.clientWidth - box.left - box.right,
-                                frame.clientHeight);
+        frame.clientHeight);
     } else {
       // A fixed popup size.
       return new goog.math.Size(320, 240);
@@ -237,9 +237,9 @@ bot.window.getSize = function(opt_win) {
     var docElem = win.document.documentElement;
     var body = win.document.body;
     var width = win.outerWidth || (docElem && docElem.clientWidth) ||
-        (body && body.clientWidth) || 0;
+      (body && body.clientWidth) || 0;
     var height = win.outerHeight || (docElem && docElem.clientHeight) ||
-        (body && body.clientHeight) || 0;
+      (body && body.clientHeight) || 0;
     return new goog.math.Size(width, height);
   }
 };
@@ -252,7 +252,7 @@ bot.window.getSize = function(opt_win) {
  * @param {!Window=} opt_win Window to determine the size of. Defaults to
  *   bot.getWindow().
  */
-bot.window.setSize = function(size, opt_win) {
+bot.window.setSize = function (size, opt_win) {
   var win = opt_win || bot.getWindow();
   var frame = bot.window.getFrame_(win);
   if (frame) {
@@ -277,7 +277,7 @@ bot.window.setSize = function(size, opt_win) {
  *   Defaults to bot.getWindow().
  * @return {!goog.math.Coordinate} The scroll position.
  */
-bot.window.getScroll = function(opt_win) {
+bot.window.getScroll = function (opt_win) {
   var win = opt_win || bot.getWindow();
   return new goog.dom.DomHelper(win.document).getDocumentScroll();
 };
@@ -290,7 +290,7 @@ bot.window.getScroll = function(opt_win) {
  * @param {!Window=} opt_win Window to apply position to. Defaults to
  *   bot.getWindow().
  */
-bot.window.setScroll = function(position, opt_win) {
+bot.window.setScroll = function (position, opt_win) {
   var win = opt_win || bot.getWindow();
   win.scrollTo(position.x, position.y);
 };
@@ -303,7 +303,7 @@ bot.window.setScroll = function(position, opt_win) {
  *   bot.getWindow().
  * @return {!goog.math.Coordinate} The position of the window.
  */
-bot.window.getPosition = function(opt_win) {
+bot.window.getPosition = function (opt_win) {
   var win = opt_win || bot.getWindow();
   var x, y;
 
@@ -326,7 +326,7 @@ bot.window.getPosition = function(opt_win) {
  * @param {!Window=} opt_win Window to set the position of. Defaults to
  *   bot.getWindow().
  */
-bot.window.setPosition = function(position, opt_win) {
+bot.window.setPosition = function (position, opt_win) {
   var win = opt_win || bot.getWindow();
   win.moveTo(position.x, position.y);
 };
@@ -340,15 +340,15 @@ bot.window.setPosition = function(position, opt_win) {
  * @param {!Window=} opt_win Window to apply position to. Defaults to
  *   bot.getWindow().
  */
-bot.window.scrollIntoView = function(position, opt_win) {
+bot.window.scrollIntoView = function (position, opt_win) {
   var win = opt_win || bot.getWindow();
   var viewport = goog.dom.getViewportSize(win);
   var scroll = bot.window.getScroll(win);
 
   // Scroll the minimal amount to bring the position into view.
   var targetScroll = new goog.math.Coordinate(
-      newScrollDim(position.x, scroll.x, viewport.width),
-      newScrollDim(position.y, scroll.y, viewport.height));
+    newScrollDim(position.x, scroll.x, viewport.width),
+    newScrollDim(position.y, scroll.y, viewport.height));
   if (!goog.math.Coordinate.equals(targetScroll, scroll)) {
     bot.window.setScroll(targetScroll, win);
   }
@@ -358,7 +358,7 @@ bot.window.scrollIntoView = function(position, opt_win) {
   // assume that the target location is not on the web page.
   if (!goog.math.Coordinate.equals(targetScroll, bot.window.getScroll(win))) {
     throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target scroll location ' + targetScroll + ' is not on the page.');
+      'The target scroll location ' + targetScroll + ' is not on the page.');
   }
 
   function newScrollDim(positionDim, scrollDim, viewportDim) {
@@ -378,7 +378,7 @@ bot.window.scrollIntoView = function(position, opt_win) {
  *     window.
  * @private
  */
-bot.window.getCurrentOrientationDegrees_ = function() {
+bot.window.getCurrentOrientationDegrees_ = function () {
   var win = bot.getWindow();
   if (!goog.isDef(win.orientation)) {
     // If window.orientation is not defined, assume a default orientation of 0.
@@ -396,12 +396,12 @@ bot.window.getCurrentOrientationDegrees_ = function() {
  * @param {!bot.window.Orientation} orientation The new orientation of the
  *     window.
  */
-bot.window.changeOrientation = function(orientation) {
+bot.window.changeOrientation = function (orientation) {
   var win = bot.getWindow();
   var currentOrientationDegrees = bot.window.getCurrentOrientationDegrees_();
   var newOrientationDegrees = bot.window.getOrientationDegrees_(orientation);
   if (currentOrientationDegrees == newOrientationDegrees ||
-      !goog.isDef(newOrientationDegrees)) {
+    !goog.isDef(newOrientationDegrees)) {
     return;
   }
 
@@ -413,7 +413,7 @@ bot.window.changeOrientation = function(orientation) {
     if (descriptor && descriptor.configurable) {
       Object.defineProperty(win, 'orientation', {
         configurable: true,
-        get: function() {
+        get: function () {
           return newOrientationDegrees;
         }
       });
@@ -427,7 +427,7 @@ bot.window.changeOrientation = function(orientation) {
     var shorter = size.getShortest();
     var longer = size.getLongest();
     if (orientation == bot.window.Orientation.PORTRAIT ||
-        orientation == bot.window.Orientation.PORTRAIT_SECONDARY) {
+      orientation == bot.window.Orientation.PORTRAIT_SECONDARY) {
       bot.window.setSize(new goog.math.Size(shorter, longer));
     } else {
       bot.window.setSize(new goog.math.Size(longer, shorter));

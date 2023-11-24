@@ -16,15 +16,8 @@
 # under the License.
 
 import pytest
+
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-
-@pytest.fixture
-def capabilities():
-    capabilities = DesiredCapabilities.FIREFOX.copy()
-    capabilities['marionette'] = False
-    return capabilities
 
 
 @pytest.fixture
@@ -37,9 +30,9 @@ def driver(options):
 @pytest.fixture
 def options():
     options = webdriver.FirefoxOptions()
-    options.set_preference('browser.startup.homepage', 'about:')
+    options.set_preference("browser.startup.homepage", "about:")
     return options
 
 
 def test_profile_is_used(driver):
-    assert 'about:blank' == driver.current_url or 'about:' == driver.current_url
+    assert "about:blank" == driver.current_url or "about:" == driver.current_url

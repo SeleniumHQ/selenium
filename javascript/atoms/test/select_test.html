@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta http-equiv="Expire" content="0"/>
+  <meta http-equiv="Expire" content="0" />
   <title>select_test.html</title>
   <script type="text/javascript" src="test_bootstrap.js"></script>
   <script type="text/javascript" src="jquery.min.js"></script>
@@ -19,10 +20,10 @@
     var gotPointerCaptureCount, lostPointerCaptureCount;
 
     function setUpPage() {
-      singleSelect = bot.locators.findElement({id: 'singleSelect'});
-      multiSelect = bot.locators.findElement({id: 'multiSelect'});
-      checkboxes = bot.locators.findElements({name: 'checkbox'});
-      radioButtons = bot.locators.findElements({name: 'radio'});
+      singleSelect = bot.locators.findElement({ id: 'singleSelect' });
+      multiSelect = bot.locators.findElement({ id: 'multiSelect' });
+      checkboxes = bot.locators.findElements({ name: 'checkbox' });
+      radioButtons = bot.locators.findElements({ name: 'radio' });
     }
 
     function setUp() {
@@ -35,13 +36,13 @@
         goog.events.removeAll(radioButtons[i]);
       }
       singleSelect.selectedIndex = 0;
-      goog.array.forEach(multiSelect.options, function(e) {
+      goog.array.forEach(multiSelect.options, function (e) {
         e.selected = false;
       });
-      goog.array.forEach(checkboxes, function(e) {
+      goog.array.forEach(checkboxes, function (e) {
         e.checked = false;
       });
-      goog.array.forEach(radioButtons, function(e) {
+      goog.array.forEach(radioButtons, function (e) {
         e.checked = false;
       });
     }
@@ -55,7 +56,7 @@
 
     function expectChanges(target) {
       changeCount = 0;
-      goog.events.listen(target, 'change', function(e) {
+      goog.events.listen(target, 'change', function (e) {
         changeCount++;
       });
     }
@@ -68,20 +69,20 @@
       gotPointerCaptureCount = 0;
       lostPointerCaptureCount = 0;
       goog.events.listen(target, goog.events.EventType.MSGOTPOINTERCAPTURE,
-          function(e) {
-        gotPointerCaptureCount++;
-      });
+        function (e) {
+          gotPointerCaptureCount++;
+        });
       goog.events.listen(target, goog.events.EventType.MSLOSTPOINTERCAPTURE,
-          function(e) {
-        lostPointerCaptureCount++;
-      });
+        function (e) {
+          lostPointerCaptureCount++;
+        });
     }
 
     function assertPointerCaptures(expectedCount) {
       assertEquals('Unexpected number of got captures', expectedCount,
-          gotPointerCaptureCount);
+        gotPointerCaptureCount);
       assertEquals('Unexpected number of lost captures', expectedCount,
-          lostPointerCaptureCount);
+        lostPointerCaptureCount);
     }
 
     function canSelectAnOptionFromASingleSelect(action) {
@@ -103,10 +104,10 @@
     }
 
     var testClickCanSelectAnOptionFromASingleSelect =
-        goog.partial(canSelectAnOptionFromASingleSelect, bot.action.click);
+      goog.partial(canSelectAnOptionFromASingleSelect, bot.action.click);
 
     var testTapCanSelectAnOptionFromASingleSelect =
-        goog.partial(canSelectAnOptionFromASingleSelect, bot.action.tap);
+      goog.partial(canSelectAnOptionFromASingleSelect, bot.action.tap);
 
     function cannotDeselectAnOptionFromASingleSelect(action) {
       if (!checkActionCompatibility(action)) {
@@ -122,10 +123,10 @@
     }
 
     var testClickCannotDeselectAnOptionFromASingleSelect =
-        goog.partial(cannotDeselectAnOptionFromASingleSelect, bot.action.click);
+      goog.partial(cannotDeselectAnOptionFromASingleSelect, bot.action.click);
 
     var testTapCannotDeselectAnOptionFromASingleSelect =
-        goog.partial(cannotDeselectAnOptionFromASingleSelect, bot.action.tap);
+      goog.partial(cannotDeselectAnOptionFromASingleSelect, bot.action.tap);
 
     function cannotSelectAnOptionFromADisabledSelect(action) {
       if (!checkActionCompatibility(action)) {
@@ -143,10 +144,10 @@
     }
 
     var testClickCannotSelectAnOptionFromADisabled =
-        goog.partial(cannotSelectAnOptionFromADisabledSelect, bot.action.click);
+      goog.partial(cannotSelectAnOptionFromADisabledSelect, bot.action.click);
 
     var testTapCannotSelectAnOptionFromADisabled =
-        goog.partial(cannotSelectAnOptionFromADisabledSelect, bot.action.tap);
+      goog.partial(cannotSelectAnOptionFromADisabledSelect, bot.action.tap);
 
     function canSelectAnEnabledOptionFromASelectWithADisabledOption(action) {
       if (!checkActionCompatibility(action)) {
@@ -164,12 +165,12 @@
     }
 
     var testClickCanSelectAnEnabledOptionFromASelectWithADisabledOption =
-        goog.partial(canSelectAnEnabledOptionFromASelectWithADisabledOption,
-                     bot.action.click);
+      goog.partial(canSelectAnEnabledOptionFromASelectWithADisabledOption,
+        bot.action.click);
 
     var testTapCanSelectAnEnabledOptionFromASelectWithADisabledOption =
-        goog.partial(canSelectAnEnabledOptionFromASelectWithADisabledOption,
-                     bot.action.tap);
+      goog.partial(canSelectAnEnabledOptionFromASelectWithADisabledOption,
+        bot.action.tap);
 
     function canToggleOptionsInAMultiSelect(action) {
       if (!checkActionCompatibility(action)) {
@@ -189,20 +190,20 @@
     }
 
     var testClickCanToggleOptionsInAMultiSelect =
-        // Disabled on Chrome due to
-        // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+      // Disabled on Chrome due to
+      // https://code.google.com/p/chromedriver/issues/detail?id=1073
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
         goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.click);
 
     var testTapCanToggleOptionsInAMultiSelect =
-        // Disabled on Chrome due to
-        // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+      // Disabled on Chrome due to
+      // https://code.google.com/p/chromedriver/issues/detail?id=1073
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
         goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.tap);
 
@@ -214,7 +215,7 @@
       checkboxes[0].checked = true;
       expectChanges(checkboxes[0]);
       action(checkboxes[0]);
-      assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
+      assertChanges(1);
 
       if (!bot.userAgent.IE_DOC_PRE9) {
         expectChanges(checkboxes[1]);
@@ -222,7 +223,7 @@
       action(checkboxes[1]);
       assertChanges(1);
 
-      expectChanges(checkboxes[bot.userAgent.IE_DOC_PRE9 ? 1 : 2]);
+      expectChanges(checkboxes[2]);
       action(checkboxes[2]);
       assertChanges(1);
 
@@ -232,10 +233,10 @@
     }
 
     var testClickCanToggleCheckboxes =
-        goog.partial(canToggleCheckboxes, bot.action.click);
+      goog.partial(canToggleCheckboxes, bot.action.click);
 
     var testTapCanToggleCheckboxes =
-        goog.partial(canToggleCheckboxes, bot.action.tap);
+      goog.partial(canToggleCheckboxes, bot.action.tap);
 
     function canSelectRadioButtons(action) {
       if (!checkActionCompatibility(action)) {
@@ -244,7 +245,7 @@
       // IE <= 8 fires a change event on the next click after the change.
       expectChanges(radioButtons[0]);
       action(radioButtons[0]);
-      assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
+      assertChanges(1);
 
       assertTrue(bot.dom.isSelected(radioButtons[0]));
 
@@ -255,17 +256,17 @@
       assertChanges(1);
       assertTrue(bot.dom.isSelected(radioButtons[1]));
 
-      expectChanges(radioButtons[bot.userAgent.IE_DOC_PRE9 ? 1 : 2]);
+      expectChanges(radioButtons[2]);
       action(radioButtons[2]);
       assertChanges(1);
       assertTrue(bot.dom.isSelected(radioButtons[2]));
     }
 
     var testClickCanSelectRadioButtons =
-        goog.partial(canSelectRadioButtons, bot.action.click);
+      goog.partial(canSelectRadioButtons, bot.action.click);
 
     var testTapCanSelectRadioButtons =
-        goog.partial(canSelectRadioButtons, bot.action.tap);
+      goog.partial(canSelectRadioButtons, bot.action.tap);
 
     function cannotDeselectRadioButtons(action) {
       if (!checkActionCompatibility(action)) {
@@ -280,10 +281,10 @@
     }
 
     var testClickCannotDeselectRadioButtons =
-        goog.partial(cannotDeselectRadioButtons, bot.action.click);
+      goog.partial(cannotDeselectRadioButtons, bot.action.click);
 
     var testTapCannotDeselectRadioButtons =
-        goog.partial(cannotDeselectRadioButtons, bot.action.tap);
+      goog.partial(cannotDeselectRadioButtons, bot.action.tap);
 
     function cannotSelectDisabledElements(action) {
       if (!checkActionCompatibility(action)) {
@@ -307,17 +308,17 @@
     }
 
     var testClickCannotSelectDisabledElements =
-        goog.partial(cannotSelectDisabledElements, bot.action.click);
+      goog.partial(cannotSelectDisabledElements, bot.action.click);
 
     var testTapCannotSelectDisabledElements =
-        goog.partial(cannotSelectDisabledElements, bot.action.tap);
+      goog.partial(cannotSelectDisabledElements, bot.action.tap);
 
     function canSelectOptionWhenDefaultPrevented(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
       function assertCanSelectWhenDefaultPrevented(elem) {
-        goog.events.listen(elem, 'click', function(e) {
+        goog.events.listen(elem, 'click', function (e) {
           e.preventDefault();
         });
         expectChanges(elem.parentNode);
@@ -333,18 +334,18 @@
     }
 
     var testClickCanSelectOptionWhenDefaultPrevented =
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        goog.userAgent.product.SAFARI ?
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      goog.userAgent.product.SAFARI ?
         goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.click);
 
     var testTapCanSelectOptionWhenDefaultPrevented =
-        // Disabled on Chrome due to
-        // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+      // Disabled on Chrome due to
+      // https://code.google.com/p/chromedriver/issues/detail?id=1073
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
         goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.tap);
 
@@ -353,7 +354,7 @@
         return;
       }
       var elem = checkboxes[0];
-      goog.events.listen(elem, 'click', function(e) {
+      goog.events.listen(elem, 'click', function (e) {
         e.preventDefault();
       });
       expectChanges(elem);
@@ -370,7 +371,7 @@
         // Chrome 45 and above do not fire the change event.
         return false;
       } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ||
-                 goog.userAgent.EDGE) {
+        goog.userAgent.EDGE) {
         // Other browsers with goog.userAgent.WEBKIT fire the change event.
         // IE 9 standards mode fires the change event.
         return true;
@@ -381,18 +382,18 @@
     }
 
     var testClickCannotSelectCheckboxWhenDefaultPrevented =
-        goog.partial(cannotSelectCheckboxWhenDefaultPrevented,
-                     bot.action.click);
+      goog.partial(cannotSelectCheckboxWhenDefaultPrevented,
+        bot.action.click);
 
     var testTapCannotSelectCheckboxWhenDefaultPrevented =
-        goog.partial(cannotSelectCheckboxWhenDefaultPrevented, bot.action.tap);
+      goog.partial(cannotSelectCheckboxWhenDefaultPrevented, bot.action.tap);
 
     function maybeSelectRadioButtonWhenDefaultPrevented(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
       var elem = radioButtons[0];
-      goog.events.listen(elem, 'click', function(e) {
+      goog.events.listen(elem, 'click', function (e) {
         e.preventDefault();
       });
       expectChanges(elem);
@@ -402,8 +403,8 @@
       // Chrome < 39 and WebKit select a radio button even when the handler
       // prevents the default; IE does not.
       if ((goog.userAgent.product.CHROME &&
-           !bot.userAgent.isProductVersion(39)) ||
-          (goog.userAgent.WEBKIT && !goog.userAgent.product.CHROME)) {
+        !bot.userAgent.isProductVersion(39)) ||
+        (goog.userAgent.WEBKIT && !goog.userAgent.product.CHROME)) {
         assertChanges(1);
         assertTrue(bot.dom.isSelected(elem));
       } else {
@@ -414,12 +415,12 @@
     }
 
     var testClickMaybeSelectRadioButtonWhenDefaultPrevented =
-        goog.partial(maybeSelectRadioButtonWhenDefaultPrevented,
-                     bot.action.click);
+      goog.partial(maybeSelectRadioButtonWhenDefaultPrevented,
+        bot.action.click);
 
     var testTapMaybeSelectRadioButtonWhenDefaultPrevented =
-        goog.partial(maybeSelectRadioButtonWhenDefaultPrevented,
-                     bot.action.tap);
+      goog.partial(maybeSelectRadioButtonWhenDefaultPrevented,
+        bot.action.tap);
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
     function canSelectOptionFromTransparentSelect(action) {
@@ -443,17 +444,17 @@
     }
 
     var testClickCanSelectOptionFromTransparentSelect =
-        goog.partial(canSelectOptionFromTransparentSelect, bot.action.click);
+      goog.partial(canSelectOptionFromTransparentSelect, bot.action.click);
 
     var testTapCanSelectOptionFromTransparentSelect =
-        goog.partial(canSelectOptionFromTransparentSelect, bot.action.tap);
+      goog.partial(canSelectOptionFromTransparentSelect, bot.action.tap);
 
     function noErrorAfterSelectWhenOnChangePreventsDefault(action) {
       if (!checkActionCompatibility(action) ||
-          (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
         return;
       }
-      goog.events.listen(radioButtons[1], 'change', function(e) {
+      goog.events.listen(radioButtons[1], 'change', function (e) {
         e.preventDefault();
       });
       action(radioButtons[1]);
@@ -464,19 +465,19 @@
     }
 
     var testClickNoErrorAfterSelectWhenOnChangePreventsDefault =
-        goog.partial(noErrorAfterSelectWhenOnChangePreventsDefault,
-                     bot.action.click);
+      goog.partial(noErrorAfterSelectWhenOnChangePreventsDefault,
+        bot.action.click);
 
     var testTapNoErrorAfterSelectWhenOnChangePreventsDefault =
-        goog.partial(noErrorAfterSelectWhenOnChangePreventsDefault,
-                     bot.action.tap);
+      goog.partial(noErrorAfterSelectWhenOnChangePreventsDefault,
+        bot.action.tap);
 
     function selectOptionTriggersJQueryChangeHandler(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
       var changes = 0;
-      $('#singleSelect').change(function() {
+      $('#singleSelect').change(function () {
         changes++;
       });
 
@@ -487,12 +488,12 @@
     }
 
     var testClickSelectOptionTriggersJQueryChangeHandler =
-        goog.partial(selectOptionTriggersJQueryChangeHandler, bot.action.click);
+      goog.partial(selectOptionTriggersJQueryChangeHandler, bot.action.click);
 
     var testTapSelectOptionTriggersJQueryChangeHandler =
-        goog.partial(selectOptionTriggersJQueryChangeHandler, bot.action.tap);
+      goog.partial(selectOptionTriggersJQueryChangeHandler, bot.action.tap);
 
-   function pointerCaptureFiresOnCheckboxToggle(action) {
+    function pointerCaptureFiresOnCheckboxToggle(action) {
       if (!bot.userAgent.IE_DOC_10) {
         return;
       }
@@ -507,13 +508,13 @@
         assertPointerCaptures(0);
       }
       assertFalse(bot.dom.isSelected(checkboxes[0]));
-   }
+    }
 
     var testClickPointerCaptureFiresOnCheckboxToggle =
-        goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.click);
+      goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.click);
 
     var testTapPointerCaptureFiresOnCheckboxToggle =
-        goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.tap);
+      goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.tap);
 
     function togglesByTheTimeChangeEventFires(action) {
       if (!checkActionCompatibility(action)) {
@@ -535,36 +536,33 @@
       function checkToggleAtChange(action, targetElem, toggleElem) {
         var preState = bot.dom.isSelected(toggleElem);
         var postState = null;
-        goog.events.listen(targetElem, 'change', function(e) {
+        goog.events.listen(targetElem, 'change', function (e) {
           postState = bot.dom.isSelected(toggleElem);
         });
         action(toggleElem);
-        // IE <= 8 fires a change event on the next click after the change.
-        if (bot.userAgent.IE_DOC_PRE9) {
-          bot.action.click(document.body);
-        }
         assertNotNull('change event did not fire', postState);
         assertNotEquals('element did not toggle', postState, preState);
       }
     }
 
     var testClickTogglesByTheTimeChangeEventFires =
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        goog.userAgent.product.SAFARI ?
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      goog.userAgent.product.SAFARI ?
         goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.click);
 
     var testTapTogglesByTheTimeChangeEventFires =
-        // Disabled on Chrome due to
-        // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        // Disabled on Safari due to
-        // https://github.com/SeleniumHQ/selenium/issues/461
-        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+      // Disabled on Chrome due to
+      // https://code.google.com/p/chromedriver/issues/detail?id=1073
+      // Disabled on Safari due to
+      // https://github.com/SeleniumHQ/selenium/issues/461
+      (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
         goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.tap);
   </script>
 </head>
+
 <body>
   <form action="#" method="get">
     <select id="singleSelect">
@@ -588,4 +586,5 @@
     <input type="radio" name="radio" value="bread">bread
   </form>
 </body>
+
 </html>

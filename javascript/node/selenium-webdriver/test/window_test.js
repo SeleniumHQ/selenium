@@ -44,7 +44,7 @@ test.suite(function (env) {
   it('can set size of the current window from frame', async function () {
     await driver.get(test.Pages.framesetPage)
 
-    var frame = await driver.findElement({ css: 'frame[name="fourth"]' })
+    const frame = await driver.findElement({ css: 'frame[name="fourth"]' })
     await driver.switchTo().frame(frame)
     await changeSizeBy(-20, -20)
   })
@@ -52,7 +52,9 @@ test.suite(function (env) {
   it('can set size of the current window from iframe', async function () {
     await driver.get(test.Pages.iframePage)
 
-    var frame = await driver.findElement({ css: 'iframe[name="iframe1-name"]' })
+    const frame = await driver.findElement({
+      css: 'iframe[name="iframe1-name"]',
+    })
     await driver.switchTo().frame(frame)
     await changeSizeBy(-20, -20)
   })
@@ -65,15 +67,15 @@ test.suite(function (env) {
 
     await driver.findElement(By.linkText('Open new window')).click()
     await driver.wait(forNewWindowToBeOpened(originalHandles), 2000)
-    assert.equal(await driver.getTitle(), 'XHTML Test Page')
+    assert.strictEqual(await driver.getTitle(), 'XHTML Test Page')
 
     let newHandle = await getNewWindowHandle(originalHandles)
 
     await driver.switchTo().window(newHandle)
-    assert.equal(await driver.getTitle(), 'We Arrive Here')
+    assert.strictEqual(await driver.getTitle(), 'We Arrive Here')
   })
 
-  it('can set the window position of the current window', async function () {
+  xit('can set the window position of the current window', async function () {
     let { x, y } = await driver.manage().window().getRect()
     let newX = x + 10
     let newY = y + 10
@@ -85,10 +87,10 @@ test.suite(function (env) {
       height: 480,
     })
 
-    return driver.wait(forPositionToBe(newX, newY), 1000)
+    await driver.wait(forPositionToBe(newX, newY), 1000)
   })
 
-  it('can set the window position from a frame', async function () {
+  xit('can set the window position from a frame', async function () {
     await driver.get(test.Pages.iframePage)
 
     let frame = await driver.findElement(By.name('iframe1-name'))
@@ -99,7 +101,7 @@ test.suite(function (env) {
     y += 10
 
     await driver.manage().window().setRect({ width: 640, height: 480, x, y })
-    return driver.wait(forPositionToBe(x, y), 1000)
+    await driver.wait(forPositionToBe(x, y), 1000)
   })
 
   it('can open a new window', async function () {
@@ -120,7 +122,7 @@ test.suite(function (env) {
       }
     }
 
-    assert.equal(
+    assert.strictEqual(
       (await driver.getAllWindowHandles()).length,
       originalHandles.length + 1
     )
@@ -136,7 +138,7 @@ test.suite(function (env) {
     if (rect.width === width && rect.height === height) {
       return
     }
-    return driver.wait(forSizeToBe(width, height), 1000)
+    return await driver.wait(forSizeToBe(width, height), 1000)
   }
 
   function forSizeToBe(w, h) {

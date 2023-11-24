@@ -1,3 +1,532 @@
+v4.15.0
+======
+
+* Do not set binary as empty string (#12738)
+* Store the mutated element for the user not just the target id (#12948)
+* Do not pack Selenium Manager binaries by consumer packages
+* Fix driver service path determination when starting it directly
+* Improve nuget packages metadata (#12873)
+* Add CDP files for v119 and remove v116
+* Implement file downloads (#12979)
+
+v4.14.1
+======
+* Fix add CDP files for v118 and remove v115
+
+v4.14.0
+======
+* Add CDP files for v118 and remove v115
+* Normalize selenium manager path (#12823)
+* Remove IdentityModel nuget from bazel workspace (#12834)
+* Update `rules_dotnet` to the latest version (#12784)
+* Rename strong assembly name (#12861)
+* Fix ci dotnet build on github actions (#12863)
+* Deprecate saving screenshots with different image formats (#12878)
+* Remove tools folder not related to selenium (#12899)
+
+v4.13.1
+======
+* Fix bug in selenium manager paths to work on mac and linux
+* Don't break devtools processing events thread in case of unexpected exception (#12820)
+
+v4.13.0
+======
+* Add CDP files for v117 and remove v114
+* Stabilize cdp network monitoring via increasing default timeout (#12701)
+* Configure await false to all awaitable invocations (#12664)
+* Update cdp default command timeout in inline docs (#12707)
+* Indicate end of output taken from selenium manager (#12744)
+* Declare selenium manager binaries as content (#12711)
+* Add browsing context methods for reload, screenshot and prompt
+* Allow user to start service before creating driver (#12816)
+* Remove Microsoft.IdentityModel.Tokens as dependency (#12777)
+
+v4.12.4
+======
+* No code changes; issue with 4.12.3 release
+
+v4.12.3
+======
+* Fix saving png screenshot as file (#12654)
+* Correcting failures in CDP Network event tests
+* Close dev tools session safely (#12660)
+* Send data over cdp consecutively (#12666)
+* Show output from selenium manager error stream (#12677)
+* Return Task instead of wait it in generated CDP method invocations (#12672)
+* Invoke console log api called event many times depending on count of args (#12669)
+* Allow users to set Selenium Manager path by environment variable (#12752)
+
+v4.12.2
+======
+* No code changes; issue with 4.12.1 release
+
+v4.12.1
+======
+* Only target Netstandard 2.0 for release
+* Fix bug for disposal of ClientWebSocket
+
+v4.12.0
+======
+* Add CDP files for v116 and remove v113
+* Fix bug with driver location parsing as a file when no trailing slash (#12473)
+* Improve performance in DriverFactory (#12497)
+* Avoid async void events in CDP Network session (#12486)
+* Rename methods in Actions class to follow .NET convention (#12439)
+* Fix bug with Selenium Manager executing in new window (#12593)
+* Simplify to only target .NET Standard 2.0 (#12608)
+* DriverFinder executed in Driver constructor not Service constructor (#12534)
+* Refactor WebScocket communication for BiDi (#12614)
+* Avoid potential deadlocks for new dev tools sessions (#12592)
+* Send data over cdp consecutively (#12591)
+
+v4.11.0
+======
+* Add CDP files for v115 and remove v112
+* Improving .NET API docs
+* Implementation of event wrapped shadow root element (#12073)
+* Include generation of support project (#12193)
+* Make WebDriver.csproj file more friendly with native pack command (#12235)
+* Adding ignore process match for IE Mode across bindings (#12279)
+* netcoreapp3.1 is deprecated
+* Allow setting a different pointer, keyboard, or wheel on input device (#11513)
+* Add move to location method to Actions (#11509)
+* Add support for Safari Technology Preview (#12342)
+* Use Selenium Manager to locate drivers on PATH (#12344)
+* Allow running tests with Edge
+* Add browser output from selenium manager to options (#12405)
+* Fix error when we send non-base64 data for fetch command (#12431)
+* Fix continueResponse method in CDP (#12445)
+
+
+v4.10.0
+======
+* Add CDP files for v114 and remove v111
+* Remove Selenium RC and WebDriverBackedSelenium code (#12024)
+* Improve compilation and publishing of Selenium Manager (#12045)
+* Fix version reported by HTTP user agent (#12061)
+* Support proxies for Selenium Manager (#12100)
+* Deprecate UseLegacyProtocol in SafariDriverService
+* Add links to documentation in error messages (#12157)
+* Add custom error class for driver location and improve error logic (#12157)
+
+v4.9.1
+======
+* Add CDP files for v113 and remove v110
+* Fallback result parsing of script execution to expected type (#11930)
+* Using Selenium Manager in default service creation (#11994)
+* Encoding process output (#11947)
+* Generate API documentation (#11968)
+
+v4.9.0
+======
+* Add CDP files for v112 and remove v109
+* Don't listen to error output stream from selenium manager to avoid messing up output (#11863)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Throw a descriptive exception if the current dev tools version is not supported (#11876)
+* Use ChangeType method to convert any object to boolean in WebElement properties (#11913)
+* Use selenium manager in tests (#11871)
+
+v4.8.2
+======
+* Add CDP files for v111 and remove v108
+* InvalidSelectorException now extends WebDriverException
+* Using json output with Selenium Manager
+* Include targets for projects building transitively (#11812)
+
+v4.8.1
+======
+* Add CDP files for v110 and remove v107
+* IJavascriptEngine implements IDisposable where available (#11594)
+* Updating Selenium Manager binaries for 4.8.1 release
+
+v4.8.0
+======
+* Add CDP files for v109 and remove v106
+* Add comment with name of large JS executions (#11038)
+* Extend invalid selenium manager process exit codes (#11361)
+
+v4.7.0
+======
+* Adding CDP files for v108 and removing v105
+* Update Service classes to only use System.Net.Http.HttpClient (#11143)
+* Add .NET 6 support (#11298)
+* Add support for Selenium Manager to work with IE Driver
+* Improve error handling with Selenium Manager
+
+v4.6.0
+======
+* Adding CDP files for v107 and removing v104
+* Initial implementation of Selenium Manager
+* allow select list class to work with disabled select elements again
+* Bundle smg into nuget package and copy binaries to users output
+* fix bug preventing installing addon from directory
+
+v4.5.1
+======
+* Fix bug preventing automatic detection of protocol version
+
+v4.5.0
+======
+* Add CDP support for v105, and remove v102
+* Add CDP support for v106, and remove v103
+* Update Select class to error when elements are disabled
+* Add support for installing unsigned add-ons in Firefox
+* Add return value for installing add-ons in Firefox
+
+v4.4.0
+======
+* Add CDP support for v104, and remove v101
+* Removed obsolete TouchActions class
+* Removed all methods marked obsolete from 4.0
+* Updated Newtonsoft.Json to address security issue
+* Implemented ability to run different versions of browser and driver for Chrome
+* Implemented VirtualAuth support
+* Fixed bug with unsuccessful http requests in session start
+* Fixed bug checking whether driver supports DevTools
+* Marked UseSpecCompliantProtocol obsolete and throwing error when user sets to false
+
+v4.3.0
+======
+* Added CDP support for v103, and remove v100
+* Removed Element `GetProperty()` method
+* Removed execute Chrome command methods
+* Removed AddAdditionalCapability() methods from Browser Options classes
+* Removed IFindsBy locator interfaces
+* Removed HTML5 commands, interfaces and classes since not w3c supported
+* Removed support for moving to top left of element due to inconsistencies
+
+v4.2.0
+======
+* Implement setting pointer event properties
+* Add CDP support for v102, and remove v99
+* Add performance to LogType
+* Removed Opera classes
+* Implemented Action Wheel Input and scrolling methods
+* Allow RemoteWebDriver to access Selenium logs
+* Fix bug where Actions class did not reset sequences after calling perform
+* Add Pause action to Actions class
+
+v4.1.1
+======
+* Add Zenkaku/Hankaku key
+* Allow Cookie name to be empty String when value not empty
+* Only add websocket-port if connectToRunningBrowser is not set
+* Add support for Chromium to cast desktop
+* Add CDP support for v99, v100, v101 and remove v94, v95, v96
+
+v4.1.0
+======
+* add CDP support for v96 and remove v93
+* Adding test configuration for Edge in IE Mode
+* Refactor registration and execution of custom WebDriver commands
+
+
+v4.0.1
+======
+ * Refactored WebSocket handling of CDP. The handling of sending and receiving
+   data via WebSocket for use with Chrome DevTools Protocol (CDP) messages was
+   previously haphazard, and did not follow proper patterns of behavior with
+   the .NET core WebSocket library. This commit reworks the WebSocket code to
+   better fit the .NET processing model. The public API of the DevTools
+   integration is largely unchanged. with the exception of the addition of the
+   HasActiveDevToolsSession property to the IDevTools interface, allowing a
+   user to query whether an active session exists without calling
+   GetDevToolsSession().
+ * Refactored how the driver behaves when a window is closed with
+   driver.Close() that contains the page which is the target to which the
+   DevTools session is attached. This should make that transition more
+   seamless and prevent errors on attaching to a new target when the next
+   DevTools command is issued.
+ * Refactored Cookie constructors to allow SameSite cookies to not necessarily
+   have the Secure flag set. This allows Chromium-based browsers that do not
+   fully comply with SameSite cookies to work.
+
+v4.0.0
+======
+ * Prevented getting bodies of responses for redirects, as this causes an
+   error in the DevTools protocol.
+ * (on behalf of Brandon Walderman) Made adding browser-specific options for
+   Chromium-based browsers more obvious.
+ * (on behalf of Puja Jagani) Added constructor for creating a Cookie instance
+   with all optional arguments. Fixes issue #9361.
+ * Add infratructure for future support of previously unsupported interaction
+   types.
+ * Made SlowLoadableComponent more extensible. Fixes issue #9009.
+ * (on behalf of elgatov) Made SlowLoadableComponent use UnableToLoadMessage
+   property. Fixes issue #8550.
+ * (on behalf of Brandon Walderman) Removed Edge Legacy options.
+ * Added CDP support for Chromium 95.
+ * Added ability to monitor DOM mutations.
+ * Restored protected ElementFactory property for use by downstream projects.
+
+v4.0.0rc3
+=========
+ * Explicitly remove Expect header. When using the HttpClient class, the
+   behavior for an HTTP POST request is different between .NET Framework and
+   .NET Core. In the .NET Framework case, the client automatically adds an
+   `Expect: 100-Continue` header. When the remote end does not send a 100
+   response, the client hangs waiting for it. This change explicitly removes
+   that header for all HTTP requests. Fixes issue #9277.
+
+v4.0.0rc2
+=========
+ * Fix TouchActions Flick overload
+ * Fixing doc string for Network Conditions methods
+ * Adding support for Firefox and Chromium Android options
+ * Coercing return type of GetCastSinks() to proper datatype
+ * implement ability to open Safari inspector
+ * implement getting and setting permissions on Safari
+ * implement getting the context of Firefox commands
+ * implement ability for Chrome and Edge to set applicable permissions on browser
+ * implement ability to launch chromium application
+ * implement chrome and edge support for casting to devices
+ * Add --websocket-port command line argument for geckodriver
+ * Restore ability to add headers to WebDriver HTTP commands
+ * Move UserAgent class to main namespace
+ * mark deprecated chromedriver commands as obsolete and implement new preferred command
+ * Add version-independent method for overriding user agent via CDP
+ * Add Bidi-compliant webSocketUrl capability
+ * Make CDP sessions autodetect close of initial attached target
+ * Update supported version of CDP to 94, remove 92
+ * Rename TerminateDevToolsSession to ResetDevToolsSession
+ * Add ability to disconnect a CDP session
+ * Add transformation for network responses via CDP
+
+v4.0.0rc1
+=========
+ * Set available versions of Chrome DevTools Protocol to 85, 92, and 93.
+ * Enabled script pinning. This allows the user to add a snippet of JavaScript
+   to a page that will be available on all subsquent pages, and not have to
+   pass the script across the wire every time. For exceptionally large blobs
+   of JavaScript, this may represent a significant savings in bandwidth and
+   data sent to the remote end of the WebDriver protocol. This feature is
+   currently only available for browsers that implement the Chrome DevTools
+   Protocol.
+ * Added ability to use By object with relative locators. This change also
+   marks RelativeBy.WithTagName as obsolete. Users should change their calls
+   to `RelativeBy.WithLocator(By.TagName(...))`.
+ * Allow network interception to handle duplicate response headers.
+   Headers in HTTP responses may be repeated. The previous implementation
+   of CDP network response handling did not take this into account. Now, if
+   a response has duplicate headers, the values will be combined into a
+   single header with the correct name, and a comma-separated list for the
+   value. This is complaint with RFC2616. There is an exception for the
+   Set-Cookie header, however, which is allowed to occur multiple times,
+   but is not combinable as to the rules of the aforementioned RFC. To
+   account for this, a new property on HttpResponseData has been added to
+   list the cookie headers (the `CookieHeaders` property) as found in the
+   response.
+ * (on behalf of Nikolay Borisenko) Modified to dispose HttpRequestMessage
+   and HttpResponseMessage when making HTTP calls across the wire.
+ * Updated the InternetExplorerOptions class to match the existing capabilities
+   of the IE driver.
+ * Updatde the events in HttpCommandExecutor to allow the user to capture
+   the commands sent to the remote end of a WebDriver session.
+ * Fixed the PrintOptions class to handle page ranges. Fixes issue #9755.
+
+v4.0.0b4
+========
+ * 4.0.0b3 was skipped for the .NET bindings and not released publicly.
+ * Added support for finding elements in shadow DOM. This feature adds
+   support for the WebDriver protocol commands for finding elements
+   located in a Shadow DOM. Please note that until a driver implementation
+   (chromedriver, geckodriver, etc.) supports the end points documented in
+   the specification, none of these methods will function at all.
+ * (on behalf of doctor-house) Made HttpRequestData properties settable.
+   Fixes issue #9456.
+ * Added proxying of CDP commands via remote/grid.
+ * Updated Chromium-based browsers to correctly inherit Options.
+ * Refactored .NET bindings class inheritance hierarchy. This breaks the
+   assumption that all browser-specific driver (ChromeDriver, FirefoxDriver,
+   EdgeDriver, etc.) are all subclasses of RemoteWebDriver. This is no longer
+   the case. The guidance for all users has always been to write your
+   Selenium code using the IWebDriver interface, rather than the concrete
+   implementation classes. If you have followed this guidance in your Selenium
+   code, this change should be largely transparent to you. If you have used
+   the implementation classes, this might be a breaking change.
+ * (on behalf of Puja Jagani) Removed CDP version support for 86 and 87.
+   Added CDP version support for 90 and 91.
+ * (on behalf of Troy Walsh) Added screenshot support for
+   EventFiringWebElement. Fixes issue #9258.
+ * Made DriverService InitializationTimeout property public, and also allow
+   the property to be settable. Fixes issue #9150.
+
+v4.0.0b2
+========
+ * (on behalf of Artur Nebot) Set EdgeOptions to start Chromium-based Edge
+   by default. Fixes issue #9262.
+ * Added support for CDP in Firefox. This currently only works for Firefox
+   Nightly. To use this feature, set the EnableDevToolsProtocol property of
+   FirefoxOptions to true.
+ * Fixed network interception for use with browsers that support CDP.
+ * Made DriverService.InitializationTimeout a public settable property. Fixes
+   issue #9150.
+
+v4.0.0b1
+========
+ * Added ability to listen for JavaScript exceptions and callbacks for
+   browsers implementing the Chromium DevTools Protocol.
+ * Added the ability of a user to intercept and manipulate network traffic
+   between the browser and the web site being automated. To use this feature
+   at present, the browser being automated must support the Chromium DevTools
+   Protocol, and the driver instance must implement the IDevTools interface.
+   Attempting to use these features will cause an exception to be thrown at
+   runtime if the driver is not capable of this communication. To access this
+   feature, use the following code:
+
+        // Assume "driver" is a valid IWebDriver instance
+        INetwork network = driver.Manage().Network;
+
+        // Set up monitoring information by adding handlers
+        // and subscribing to events.
+
+        // Begin monitoring by starting the monitor.
+        await network.StartMonitoring();
+
+   With this new functionality, users can do the following:
+    * Monitor HTTP requests and responses between browser and web server
+    * Add handlers to modify requests that meet user-defined criteria
+    * Add handlers to supply responses for requests that meet user-defined
+      criteria
+    * Add handlers to supply authentication credentials for sites using
+      basic and digest authentication
+ * Added ISupportsPrint interface to .NET to allow use of Print method.
+ * Exposed command executor on .NET RemoteWebDriver via IHasCommandExecutor
+   interface.
+ * Added support for full-page screenshot command to .NET Firefox driver.
+ * Added support for environment capability to .NET FirefoxOptions.
+ * Added spec-compliant properties and methods to .NET IWebElement. The W3C
+   WebDriver Specification defines additional commands for web elements. This
+   change introduces properties and methods for execution of those commands in
+   the .NET language bindings. The added items on IWebElement are:
+
+    * ComputedAccessibleLabel property: Allows the user to get the result of
+      the accessible name and description computation for the accessible
+      name of the element.
+    * ComputedAccessibleRole property: Allows the user to get the result of
+      the computation of the ARIA role for this element. Note that this
+      property is subject to change its return type, as the specification
+      needs clarification as to the return type.
+    * GetDomProperty method: Allows the user to get the value of an
+      IDL-defined property of the element. These properties are usually
+      accessed via JavaScript. This method replaces the GetProperty method,
+      which is now marked as obsolete, as it is being renamed to
+      GetDomProperty for consistency in the Selenium API.
+    * GetDomAttribute method: Allows the user to get the value of an
+      attribute declared in the HTML markup of the element. This differs
+      from the GetAttribute method, in that it _only_ returns declared
+      attributes, whereas the GetAttribute method will return one of either
+      a declared attribute or an IDL property of the element, without
+      distinction between the two.
+ * Added support for CDP versions 86, 87, 88, and v89.
+ * (on behalf of elgatov) Enabled caching IWebElement before checking TagName
+   is correct. When creating a SelectElement we must first check the
+   WrappedElement tag is a <select> element and throw a
+   UnexpectedTagNameException otherwise. Previously the WrappedElement was not
+   cached so WebDriver API could be called up to three times: first to check
+   the tag is not null, second to check it's value is select (ignoring case)
+   and a third time as a parameter of UnexpectedTagNameException if any of the
+   previous conditions failed. Fixes issue #8904.
+ * Added Content-Type header to POST requests for .NET bindings
+ * Added support for .NET 5
+ * Enabled allowing the user to specify DevTools Protocol verison. his change
+   introduces an overload to the `CreateDevToolsSession` method that will allow
+   a user to request a specific version of the protocol to use instead of
+   automatically detecting the version used by the browser being automated.
+   While using this overload can in theory help a user avoid code changes with
+   every browser update when their code relies on the concrete, browser-
+   specific protocol domains, using this overload is still fraught with peril,
+   and should be avoided in favor of the version-independent API the Selenium
+   library provides. This change also cleans up some API details, removing,
+   among other things, the `Start` method of the DevToolsSession object from
+   the public-facing API. When the `CreateDevToolsSession` method is called,
+   there is no need to start the session, as it is already started.
+
+v4.0.0a7
+========
+ * 4.0.0a6 was skipped for the .NET bindings and not released publicly.
+ * Enabled the ability to push shipping releases to the NuGet repository
+   from the Bazel command line.
+ * Introduced a version-independent implementation of CDP for .NET. This
+   version introduces a facade around Chromium's Developer Tools Protocol,
+   which will present developers with a stable, version-independent API for
+   the use cases most relevant to Selenium. It is still possible for users
+   to have access to the version-specific API by calling the
+   `GetVersionSpecificDomains<T>` method on the DevTools session object
+   created when the user calls `IDevTools::CreateDevToolsSession`. Note
+   that using this method will tie any consuming code to one and only one
+   version of a Chromium-based browser, and the consuming code may need
+   source-code changes and recompilation when new versions of the browser
+   are released. Note that at this time, only local execution of CDP code
+   is supported. Remote proxying of CDP calls through the Selenium Grid
+   is planned, but not yet implemented. Also, certain helper methods to
+   enable common desired scenarios for Selenium users that may be present
+   in other language bindings still need to be created for .NET.
+ * Enabled dynamic generation of the .NET API for the DevTools Protocol
+   during the Bazel build process.
+ * (on behalf of J.D. Purcell) Fixed SendKeys regressions related to multiple
+   file uploading. Fixes issue #8635.
+ * (on behalf of GFHuang) Make FluentWait.Until method cancellable, adding a
+   CancellationToken argument to allow the user to cancel the wait.
+ * (on behalf of Ivan Krutov) Modified to correctly close zip archive in file
+   uploads for .NET.
+ * (on behalf of Dvoryadkin Pavel) Modified to detect all files when uploading
+   multiple files via RemoteWebDriver. Fixes issue #8540.
+ * (on behalf of haqer1) Fixed typo in tests for visibility.
+ * (on behalf of Brandon Walderman) Fixed browserName typo for Edge WebView2.
+   Fixes issue #8455.
+ * Updated custom Firefox profile generation, as the default WebDriver
+   preferences JSON file for creating a custom Firefox profile was being
+   referred to by the wrong resource identifier.
+ * Updated .NET Bazel build process. This version makes changes to the
+   .csproj files in the project to shell out to other Bazel targets for
+   building non-.NET dependencies in the project. It also updates those build
+   steps to be more friendly to non-Windows operating systems. These changes
+   should also allow the .NET bindings to go from a clean directory in a new
+   clone to a fully built and configured .NET bindings with properly embedded
+   resources, providing that the machine is correctly configured to build the
+   project from the command line with Bazel. This eliminates a barrier to
+   entry with respect to using a .NET IDE (Visual Studio and Visual Studio
+   for Mac) to build the bindings without taking some manual steps first
+   (like building the JavaScript automation atoms and the web server for
+   running tests against).
+ * The .NET tests now support being run under both the .NET Framework
+   and .NET Core. This also now allows the user to run the tests using
+   Bazel, and can run against any of the supported browsers. By default,
+   the tests run using .NET Core. On non-Windows OSes, this will use .NET
+   Core by default, but if one explicitly wants to use the .NET Framework,
+   it will use Mono to execute the tests (Mono must be installed for this
+   to work). To run the tests at the command line, use the following command:
+
+       bazel test //dotnet/test/common:<browser> --enable_runfiles
+
+   where <browser> is one of the following values:
+
+    * chrome
+    * chromedev
+    * firefox
+    * firefoxnightly
+    * ie
+    * edge
+    * edgelegacy
+    * safari
+    * safaritechpreview
+
+   To specify to run the driver using the .NET Framework, append:
+
+       --define framework=netfx
+
+   to the command line.
+
+   To specify where the browser driver (chromedriver, geckodriver,
+   IEDriverServer, etc.) can be found, append the following to the
+   command line:
+
+       --test_arg=--params=DriverServiceLocation=<path>
+
+   where <path> is the path to the executable.
+
 v4.0.0a5
 ========
  * Fixed Bazel build process to create correct assemblies.
@@ -155,7 +684,7 @@ v4.0.0a1
    section. The second method adds a capability to a browser's specific set of
    options. Accordingly, these methods are different for each browser's Options
    class (AddAdditionalChromeOption for ChromeOptions,
-   AddAdditionalFirefoxOption for FirefoxOptions, 
+   AddAdditionalFirefoxOption for FirefoxOptions,
    AddAdditionalInternetExplorerOption for InternetExplorerOptions, etc.).
 
    Also, this version completes the removal of the DesiredCapabilities class by
@@ -241,7 +770,7 @@ v4.0.0a1
    life cycle of the executable.
  * Implemented strictFileInteractability capability.
  * Allowed HttpCommandExecutor subclasses to set CommandInfoRepository. This
-   allows subclasses of HttpCommandExecutor to properly update the 
+   allows subclasses of HttpCommandExecutor to properly update the
    CommandInfoRepository upon creating a new session. Please note that making
    the property setter protected should not be assumed as part of the permanent
    API contract. It may be removed at any time, without warning, and without
@@ -513,7 +1042,7 @@ v3.11.1
  * Added BeforeRemoteHttpRequest event to .NET RemoteWebDriver. This commit
    adds the ability for advanced users of the .NET bindings RemoteWebDriver
    class to modify the HTTP command sent from the .NET WebDriver code to the
-   remote WebDriver server. Note carefully that this **DOES NOT** modify the 
+   remote WebDriver server. Note carefully that this **DOES NOT** modify the
    HTTP request between the browser and the web server, and is not a mechanism
    for getting access to that HTTP request. Usage of this new event would look
    something like this:
@@ -831,7 +1360,7 @@ v3.5.0
 
 v3.4.0
 ======
- * Exposed new Interactions framework. This release introduces a new 
+ * Exposed new Interactions framework. This release introduces a new
    Interactions framework using the ActionBuilder class for creating advanced
    user interaction sequences in the .NET bindings. This framework is only
    designed to be used with remote ends that understand the W3C WebDriver
@@ -847,7 +1376,7 @@ v3.4.0
    wants to use the legacy Firefox driver. Starting with Geckodriver 0.16,
    this capability is not recognized as valid, since it violates the spec,
    and will not create a session if it's specified.
- * Updated InternetExplorerOptions to send IE-specific capabilities in a 
+ * Updated InternetExplorerOptions to send IE-specific capabilities in a
    property named "se:ieOptions". This is the correct method for passing
    browser-specific capabilities according to the W3C WebDriver spec. This
    should be transparent for most users, but beginning with 3.4.0.0 of the
@@ -955,15 +1484,15 @@ v3.0.0-beta1
  * The Mozilla-provided Marionette-based FirefoxDriver is now the default
    implementation for automating Firefox. Additionally, this aligns the
    FirefoxDriver class with other browser-specific implementations, using
-   a FirefoxOptions class for setting options for the browser session. 
+   a FirefoxOptions class for setting options for the browser session.
    Constructors of FirefoxDriver directly referencing FirefoxProfile or
-   FirefoxBinary have been marked as deprecated, and will be removed in a 
+   FirefoxBinary have been marked as deprecated, and will be removed in a
    future release.
 
 v2.53.0
 =======
  * This will be the final full release in the 2.x series. There may be
-   small point releases going forward, but future development will 
+   small point releases going forward, but future development will
    concentrate on 3.0.
  * (on behalf of arnonaxelrod) Added an overload of ExecuteJavaScript
    extension method that doesn't accept a generic argument and doesn't
@@ -1011,7 +1540,7 @@ v2.50.1
 v2.50.0
 =======
  * Updated embedded Firefox driver with new click algorithm
- * Added type-safe options .NET for recently added Chrome capabilities. 
+ * Added type-safe options .NET for recently added Chrome capabilities.
    This includes adding type-safe capabilities for 'mobileEmulation',
    'perfLoggingPrefs', and 'windowTypes' to ChromeOptions class.
  * (on behalf Edward Ned Harvey) Updated ChromeDriverService to locate
@@ -1138,21 +1667,21 @@ v2.46.0
    an invalid response. Note that the checks for the validation of the
    repsonses is minimal, checking for the Content-Type header and that the
    response code is a 200.
- * (on behalf of Sergey Tikhomirov) Refactored PageFactory implementation, 
+ * (on behalf of Sergey Tikhomirov) Refactored PageFactory implementation,
    including a number of changes to make it more extensible and more robust.
 
    First, instead of the hand-rolled proxy classes that had been used
    previously, this refactor introduces proxy objects based on
    System.Runtime.Remoting.Proxies.RealProxy, which allows for more
    flexibility in the types of objects proxied.
-    
+
    Second, this refactor now allows users to provide their own implementation
    engines for examining attributes of Page Object classes and determining
    what course to take. To create a new implementation the user must provide
    an implementation of the IPageObjectMemberDecorator interface, which
    determines which attributes to examine fields and properties for, and how
    to create the proxy objects assigned to the members.
-    
+
    Third, this refactor introduces a new IElementLocator interface to Page
    Object implementations, and deprecates the IElementLocatorFactory
    interface. The IElementLocator interface is substantially similar to the
@@ -1165,7 +1694,7 @@ v2.46.0
    constructor, and this technique is demonstrated in the source code to the
    two implementations provided in the regular .NET language bindings
    releases.
-    
+
    Finally, this commit also introduces a breaking change in
    IElementLocatorFactory. Developers of classes that implement this
    interface will now be required to implement the CreateLocator method,
@@ -1340,7 +1869,7 @@ v2.40.0
  * Issue #6870: Updated FirefoxDriver constructor for ICapabilities. This
    allows the user to pass an ICapabilities object to the Firefox driver
    constructor and have specific capabilities used in driver instantiation.
- * Issue #6935: Changing .NET random temp file generation to be truly random. 
+ * Issue #6935: Changing .NET random temp file generation to be truly random.
    The .NET bindings now use GUIDs as part of the file names for files and
    directories created in the temp directory. This is to work around potential
    collisions in random number generation encountered when using the .NET
@@ -1354,7 +1883,7 @@ v2.40.0
  * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
    context. This allows the user to execute PhantomJS-specific commands using
    the PhantomJS JavaScript API.
- * Updated .NET bindings to use webdriver.json for default Firefox profile.    
+ * Updated .NET bindings to use webdriver.json for default Firefox profile.
    Other language bindings have been using a common JSON file containing the
    default profile setting for the anonymous Firefox profile used by the
    Firefox driver. The .NET bindings now do the same.
@@ -1396,13 +1925,13 @@ v2.39.0
    reduce the amount of type casting that must be done to access
    functionality not provided by the base IWebDriver interface. The following
    methods were added:
-    
+
     * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
       support for working directly with instances of RemoteWebDriver.
     * ExecuteJavaScript<T>() - does not require a cast to
       IJavaScriptExecutor, and will automatically cast the result to the type
       specified by the generic type parameter (T).
-    
+
    These extension methods should be considered experimental. To use them
    requires a reference to WebDriver.Support.dll, and adding a using clause
    for OpenQA.Selenium.Support.Extensions.
@@ -1447,7 +1976,7 @@ v2.36.0
  * Changed the command line arguments to chromedriver.exe to include two
    hyphens, instead of one (e.g., "--silent" instead of "-silent").
  * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
- * Added ability to set Chrome extensions by using base64 encoded strings. 
+ * Added ability to set Chrome extensions by using base64 encoded strings.
    Previously, you could only install extensions by using a path to a .crx
    file. Now you can embed the extension as a base64-encoded string, without
    having it persisted to the disk at all.
@@ -1583,7 +2112,7 @@ v2.30.0
  * Updated .NET dependencies. Json.NET to 4.5r11; Castle.Core to 3.2.0.
  * Added more diagnostics for failed HTTP requests in .NET bindings. This is an
    attempt to help diagnose the root cause of issue #3719. Please note that it
-   makes no effort whatsoever to "fix" the issue. This is simply hoping to 
+   makes no effort whatsoever to "fix" the issue. This is simply hoping to
    provide more information for those who have run into that issue, and see if
    all occurrances have the same root cause.
  * Only adding environment variables for Firefox process if they do not already
@@ -1624,12 +2153,12 @@ v2.28.0
    a string argument. To use a custom finder with the FindsByAttribute, use the
    following syntax:
 
-       [FindsBy(How = How.Custom, 
-                Using = "customCriteria", 
+       [FindsBy(How = How.Custom,
+                Using = "customCriteria",
                 CustomFinderType = typeof(MyCustomBySubclass))]
 
    Using How.Custom without specifying a CustomFinderType, or using a
-   CustomFinderType that either does not descend from By or does not have a 
+   CustomFinderType that either does not descend from By or does not have a
    proper constructor will throw an exception.
 
 v2.27.1
@@ -1639,7 +2168,7 @@ v2.27.1
    service executables (IEDriverServer.exe and chromedriver.exe) would not be
    found if placed in the same directory as the WebDriver.dll assembly,
    breaking previous behavior.
-   
+
 v2.27.0
 =======
  * Issues #3508 and #2103: Modified to no longer hang on alerts triggered by
@@ -1670,13 +2199,13 @@ v2.26.0
  * Prevent firefox from updating, checking and warning for extension and plugin
    updates
  * Handled the case where a JSON Wire Protocol error response contains a null
-   value for the message property. Also guarded against null values in other 
+   value for the message property. Also guarded against null values in other
    members of the error response.
  * Added .NET implementation of PhantomJSDriver, as a headless option for .NET
    users. This driver requires PhantomJS and GhostDriver. Since the GhostDriver
-   project isn't ready to be used just yet, these classes are marked with 
+   project isn't ready to be used just yet, these classes are marked with
    "internal" visibility. When the GhostDriver project is ready, these classes
-   will be made public. Also including test enhancements for use with 
+   will be made public. Also including test enhancements for use with
    PhantomJS.
  * Made keep-alive configurable on .NET HttpCommandExecutor and
    DriverServiceCommandExecutor.
@@ -1684,7 +2213,7 @@ v2.26.0
    bindings is called specifically with a null value for element.
  * Added the LibraryExtractionPath propery to InternetExplorerDriverService to
    be able to set the location to which the support library of the
-   IEDriverServer.exe is extracted. 
+   IEDriverServer.exe is extracted.
  * Implementing SuppressInitialDiagnosticInformation property on DriverService
    to allow users of standalone driver servers to suppress the display of the
    initial information from the console via the -silent switch.
@@ -1721,7 +2250,7 @@ v2.25.1
  * Exposed constructors in ChromeDriver and InternetExplorerDriver that allow
    passing a DriverService object. This gives the user more control over the
    properties of the DriverService.
- * Updated exception thrown by .NET SafariDriver when a connection to the 
+ * Updated exception thrown by .NET SafariDriver when a connection to the
    driver is not created within 45 seconds.
  * Cleaned up documentation comment warning on build of the .NET implementation
    of WebDriverBackedSelenium.
@@ -1735,7 +2264,7 @@ v2.25.0
    line switches using strongly-typed properties of the object.
  * Added elementScrollBehavior capability to allow users to specify how
    elements scroll into the viewport for interaction. Default behavior is
-   unchanged (the capability is set to 0), but can be set to scroll to align 
+   unchanged (the capability is set to 0), but can be set to scroll to align
    to the bottom of the viewport by setting the capability to 1. This commit
    includes an addition to the InternetExplorerOptions of the .NET bindings.
  * Fixed element finding and table handling in .NET WebDriverBackedSelenium.
@@ -1747,7 +2276,7 @@ v2.24.0
 
 v2.23.0
 =======
- * Removed the embedded IE server from the .NET bindings. From now on, you 
+ * Removed the embedded IE server from the .NET bindings. From now on, you
    *must* use the IE standalone server with .NET.
  * Removed unneeded polling for parent.lock file on anonymous Firefox profile
    in temp directory.
@@ -1765,11 +2294,11 @@ v2.22.0
    the WebDriver.Support assembly. Also created  additions to the .NET
    PageFactory to allow decorating members with multiple instances of
    FindsByAttribute, including ordering of the attributes.
- * The .NET IE driver implementation now looks for the IE standalone server. 
+ * The .NET IE driver implementation now looks for the IE standalone server.
    Please note that if you do not set the option in InternetExplorerOptions
-   to use the legacy server, the constructor *will* throw an exception. There 
-   is no automatic fallback to using the embedded .dll, because there's no 
-   standard way in the .NET framework to alert the user to a condition that 
+   to use the legacy server, the constructor *will* throw an exception. There
+   is no automatic fallback to using the embedded .dll, because there's no
+   standard way in the .NET framework to alert the user to a condition that
    needs attention at runtime, and guarantee it will be seen.
  * Implemented ability to set page load timeout in the .NET bindings.
  * Added tests to .NET bindings to align more closely with Java.
@@ -1784,14 +2313,14 @@ v2.22.0
    Mono).
  * Updated .NET Safari driver to conform to the new message format in r16716.
  * Implemented an InitialBrowserUrl property in InternetExplorerOptions to
-   allow the user to customize the page loaded when IE launches. This can be 
+   allow the user to customize the page loaded when IE launches. This can be
    used in conjunction with IntroduceInstabilityByIgnoringProtectedModeSettings
    property to set the initial Protected Mode zone of the browser. However,
-   this is still by far a second-best choice, and the first choice should 
-   *always* be to actually set the Protected Mode settings of each zone. If a 
+   this is still by far a second-best choice, and the first choice should
+   *always* be to actually set the Protected Mode settings of each zone. If a
    user is using this property, only a "best effort" at support will be given.
  * Allow user-defined installation path for Safari in the SafariDriver.
- * Changed .NET DesiredCapabilities.Android() to correctly assign a platform 
+ * Changed .NET DesiredCapabilities.Android() to correctly assign a platform
    value of Android.
 
 v2.21.0
@@ -1801,10 +2330,10 @@ v2.21.0
  * Updated NoSuchFrameException, NoSuchWindowException, and
    NoAlertPresentException to properly descend from NotFoundException
    in the .NET bindings.
- * Modifying .NET PageFactory so that elements marked with the FindBy 
+ * Modifying .NET PageFactory so that elements marked with the FindBy
    attribute can be used with the interactions API.
  * Updated Json.NET dependency to 4.5r1 and NuGet.exe to 1.7.
- * Changed the name of the standalone IE driver server from 
+ * Changed the name of the standalone IE driver server from
    InternetExplorerDriver.exe to IEDriverServer.exe
  * Removed recently added restore window command from .NET bindings.
  * Extracted FindFreePort method in .NET to a common utility class.
@@ -1835,9 +2364,9 @@ v2.18.0
 =======
  * Updated .NET WebDriver.Support assembly to depend on Castle Windsor 3.0
  * Updated to JSON.NET to 4.0r6
- * Refactored ChromeDriverService to be a subclass of a base DriverService 
+ * Refactored ChromeDriverService to be a subclass of a base DriverService
    class, designed to allow any JSON Wire Protocol-compliant standalone server
-   executable to be used as a service. This adds all required work for the 
+   executable to be used as a service. This adds all required work for the
    .NET bindings to begin using the standalone IE remote server.
  * Enable CODE_ANALYSIS flag for Debug builds so that standalone FxCop can
    take advantage of GlobalSuppressions.cs.
@@ -1861,13 +2390,13 @@ v2.16.0
  * Made By, Cookie and Screenshot .NET classes serializable.
  * Slightly modifying build output to be more informative when building
    .NET bindings from within the Visual Studio IDE.
- * Explicitly setting socket.ExclusiveAddressUse = true when attempting to 
+ * Explicitly setting socket.ExclusiveAddressUse = true when attempting to
    find a free port for the .NET bindings' FirefoxDriver.
- * Updating the .NET remote Command object to return an empty JSON object 
+ * Updating the .NET remote Command object to return an empty JSON object
    ("{}") instead of an empty string when the command has no parameters.
  * Implementing the /sessions and /status commands for the IE driver and the
    .NET bindings.
- * Check elements' internal IDs for equality before making RPC call to 
+ * Check elements' internal IDs for equality before making RPC call to
    determine IWebElement equality in .NET.
  * Removed unused JSON wire protocol command values from the .NET bindings.
 
@@ -1918,7 +2447,7 @@ v2.9.0
 
 v2.8.0
 ======
-  * Added interactions methods for .Release(), ClickAndHold(), and 
+  * Added interactions methods for .Release(), ClickAndHold(), and
     DoubleClick() which take no arguments
   * Added ClickAt() implementation in WebDriverBackedSelenium
 
@@ -1968,5 +2497,6 @@ v2.2.0
   * Adding first pass at .NET implementation of proxy management.
   * Modifying .NET build process to sign assemblies. Building the .NET bindings
     through the IDE or through the command line will now produce signed
-	assemblies.
+  assemblies.
   * Updating .NET bindings JSON.NET from 3.5 to 4.0.
+

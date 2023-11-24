@@ -20,24 +20,22 @@ from selenium.webdriver.common.options import ArgOptions
 
 
 class Options(ArgOptions):
-    KEY = 'webkitgtk:browserOptions'
+    KEY = "webkitgtk:browserOptions"
 
-    def __init__(self):
-        super(Options, self).__init__()
-        self._binary_location = ''
+    def __init__(self) -> None:
+        super().__init__()
+        self._binary_location = ""
         self._overlay_scrollbars_enabled = True
 
     @property
-    def binary_location(self):
-        """
-        :Returns: The location of the browser binary otherwise an empty string
-        """
+    def binary_location(self) -> str:
+        """:Returns: The location of the browser binary otherwise an empty
+        string."""
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value):
-        """
-        Allows you to set the browser binary to launch
+    def binary_location(self, value: str) -> None:
+        """Allows you to set the browser binary to launch.
 
         :Args:
          - value : path to the browser binary
@@ -46,37 +44,21 @@ class Options(ArgOptions):
 
     @property
     def overlay_scrollbars_enabled(self):
-        """
-        :Returns: Whether overlay scrollbars should be enabled
-        """
+        """:Returns: Whether overlay scrollbars should be enabled."""
         return self._overlay_scrollbars_enabled
 
     @overlay_scrollbars_enabled.setter
-    def overlay_scrollbars_enabled(self, value):
-        """
-        Allows you to enable or disable overlay scrollbars
+    def overlay_scrollbars_enabled(self, value) -> None:
+        """Allows you to enable or disable overlay scrollbars.
 
         :Args:
          - value : True or False
         """
         self._overlay_scrollbars_enabled = value
 
-    @property
-    def page_load_strategy(self):
-        return self._caps["pageLoadStrategy"]
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, strategy):
-        if strategy in ["normal", "eager", "none"]:
-            self.set_capability("pageLoadStrategy", strategy)
-        else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
-
     def to_capabilities(self):
-        """
-        Creates a capabilities with all the options that have been set and
-        returns a dictionary with everything
-        """
+        """Creates a capabilities with all the options that have been set and
+        returns a dictionary with everything."""
         caps = self._caps
 
         browser_options = {}

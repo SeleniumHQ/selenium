@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # @api private
       #
@@ -74,7 +73,7 @@ module Selenium
         end
 
         def backtrace_from_remote(server_trace)
-          server_trace.map { |frame|
+          server_trace.filter_map do |frame|
             next unless frame.is_a?(Hash)
 
             file = frame['fileName']
@@ -87,7 +86,7 @@ module Selenium
             meth = 'unknown' if meth.nil? || meth.empty?
 
             "[remote server] #{file}:#{line}:in `#{meth}'"
-          }.compact
+          end
         end
 
         def process_error

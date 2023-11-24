@@ -74,6 +74,16 @@ std::string WindowUtilities::GetWindowCaption(HWND window_handle) {
   return StringUtilities::ToString(window_caption);
 }
 
+std::string WindowUtilities::GetWindowClass(HWND window_handle) {
+  std::string window_class = "";
+  std::vector<char> buffer(256);
+  int success = ::GetClassNameA(window_handle, &buffer[0], buffer.size());
+  if (success > 0) {
+    window_class = &buffer[0];
+  }
+  return window_class;
+}
+
 void WindowUtilities::GetProcessesByName(const std::wstring& process_name,
                                          std::vector<DWORD>* process_ids) {
   int max_process_id_count = 1024;

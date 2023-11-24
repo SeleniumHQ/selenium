@@ -20,6 +20,7 @@
 #include <ctime>
 #include <vector>
 #include <mutex>
+#include <unordered_set>
 
 #include <iepmapi.h>
 
@@ -118,6 +119,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->command_handlers_ = new CommandHandlerRepository();
 
   this->is_edge_chromium_ = false;
+  this->edge_temp_dir_ = L"";
 
   return 0;
 }
@@ -287,6 +289,101 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
     this->CreateDelayPostMessageThread(static_cast<DWORD>(wParam),
                                        this->m_hWnd,
                                        WD_AFTER_NEW_WINDOW);
+    if (lParam > 0) {
+      // a new window is created from Edge in IEMode
+      BrowserHandle browser_wrapper;
+      this->GetCurrentBrowser(&browser_wrapper);
+      HWND top_level_handle = browser_wrapper->GetTopLevelWindowHandle();
+
+      std::vector<HWND>* current_window_handles =
+          reinterpret_cast<std::vector<HWND>*>(lParam);
+      std::unordered_set<HWND> current_window_set(
+          current_window_handles->begin(),
+          current_window_handles->end());
+      delete current_window_handles;
+
+      // sleep 0.5s then get current window handles
+      clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
+      std::vector<HWND> diff;
+      int loop_count = 0;
+      bool is_processing_wm = false;
+      ::Sleep(1000);
+      while (diff.size() == 0 && clock() < end) {
+        std::vector<HWND> edge_window_handles;
+        ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
+                      reinterpret_cast<LPARAM>(&edge_window_handles));
+
+        std::vector<HWND> new_ie_window_handles;
+        for (auto& edge_window_handle : edge_window_handles) {
+          std::vector<HWND> child_window_handles;
+          ::EnumChildWindows(edge_window_handle,
+                             &BrowserFactory::FindIEBrowserHandles,
+                             reinterpret_cast<LPARAM>(&child_window_handles));
+
+          for (auto& child_window_handle : child_window_handles) {
+            new_ie_window_handles.push_back(child_window_handle);
+          }
+        }
+
+        for (auto& window_handle : new_ie_window_handles) {
+          if (current_window_set.find(window_handle) != current_window_set.end()) {
+            continue;
+          }
+          diff.push_back(window_handle);
+        }
+
+        if (diff.size() == 0) {
+          MSG msg;
+          if (loop_count >= 1 && !is_processing_wm &&::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_REMOVE)) {
+              ::TranslateMessage(&msg);
+              ::DispatchMessage(&msg);
+              is_processing_wm = true;
+              LOG(TRACE) << "process WM_USER";
+              ::Sleep(500);
+          }
+          ::Sleep(500);
+        }
+        loop_count++;
+      }
+
+      if (diff.size() == 0) {
+        LOG(WARN) << "No new window handle found after attempt to open";
+      } else {
+        for (int i = diff.size() - 1; i >= 0; i--) {
+          HWND new_window_window = diff[i];
+
+          DWORD process_id = 0;
+          ::GetWindowThreadProcessId(new_window_window, &process_id);
+          if (process_id) {
+            clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
+            bool is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+            while (!is_ready && clock() < end) {
+              ::Sleep(100);
+              is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+            }
+
+            ProcessWindowInfo info;
+            info.dwProcessId = process_id;
+            info.hwndBrowser = new_window_window;
+            info.pBrowser = NULL;
+            std::string error_message = "";
+            bool attach_flag = this->factory_->AttachToBrowser(&info, &error_message);
+            if (attach_flag) {
+              BrowserHandle new_window_wrapper(new Browser(info.pBrowser,
+                NULL,
+                this->m_hWnd,
+                this->is_edge_chromium_));
+
+              // Force a wait cycle to make sure the browser is finished initializing.
+              new_window_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
+              this->AddManagedBrowser(new_window_wrapper);
+            }
+          } else {
+            LOG(TRACE) << "invalid window " << new_window_window;
+          }
+        }
+      }
+    }
   } else {
     LOG(DEBUG) << "Clearing await new window flag";
     this->is_awaiting_new_window_ = false;
@@ -379,6 +476,60 @@ LRESULT IECommandExecutor::OnBrowserCloseWait(UINT uMsg,
   return 0;
 }
 
+LRESULT IECommandExecutor::OnSessionQuitWait(UINT uMsg,
+                                                 WPARAM wParam,
+                                                 LPARAM lParam,
+                                                 BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnAllBrowserCloseWait";
+  if (this->managed_browsers_.size() > 0) {
+    LOG(TRACE) << "Still have " << this->managed_browsers_.size() << " browsers";
+    BrowserMap::const_iterator it = managed_browsers_.begin();
+    for (; it != managed_browsers_.end(); ++it) {
+      LOG(TRACE) << "Still awaiting close of browser with ID " << it->first;
+      HWND alert_handle;
+      bool is_alert_active = this->IsAlertActive(it->second,
+                                                 &alert_handle);
+      if (is_alert_active) {
+        // If there's an alert window active, the browser's Quit event does
+        // not fire until any alerts are handled. Note that OnBeforeUnload
+        // alerts must be handled here; the driver contains the ability to
+        // handle other standard alerts on the next received command. We rely
+        // on the browser's Quit command to remove the driver from the list of
+        // managed browsers.
+        Alert dialog(it->second, alert_handle);
+        if (!dialog.is_standard_alert()) {
+          dialog.Accept();
+          is_alert_active = false;
+        }
+      }
+    }
+    ::Sleep(WAIT_TIME_IN_MILLISECONDS);
+    ::PostMessage(this->m_hWnd,
+                  WD_SESSION_QUIT_WAIT,
+                  NULL,
+                  NULL);
+  } else {
+    for (auto& chromium_window_handle : this->chromium_window_handles_) {
+      ::PostMessage(chromium_window_handle, WM_CLOSE, NULL, NULL);
+    }
+    this->is_waiting_ = false;
+    Response quit_response;
+    quit_response.SetSuccessResponse(Json::Value::null);
+    this->serialized_response_ = quit_response.Serialize();
+  }
+  return 0;
+}
+
+LRESULT IECommandExecutor::OnAddChromiumWindowHandle(UINT uMsg,
+                                                     WPARAM wParam,
+                                                     LPARAM lParam,
+                                                     BOOL& bHandled) {
+  if (wParam != NULL) {
+    this->chromium_window_handles_.emplace(reinterpret_cast<HWND>(wParam));
+  }
+  return 0;
+}
+
 LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
                                          WPARAM wParam,
                                          LPARAM lParam,
@@ -388,15 +539,20 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
   std::string browser_id(str);
   delete[] str;
-  BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
+  LOG(TRACE) << "Removing browser with ID " << browser_id;
+  BrowserMap::iterator found_iterator =
+      this->managed_browsers_.find(browser_id);
+
   if (found_iterator != this->managed_browsers_.end()) {
     this->managed_browsers_.erase(browser_id);
     if (this->managed_browsers_.size() == 0) {
       this->current_browser_id_ = "";
     }
+    LOG(TRACE) << "Successfully removed browser with ID " << browser_id;
   } else {
     LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;
   }
+
   return 0;
 }
 
@@ -538,6 +694,29 @@ LRESULT IECommandExecutor::OnQuit(UINT uMsg,
                                   WPARAM wParam,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
+
+  // Delete IEDriver temporary folder when IEDriver drvies Edge in IEMode.
+  // Note that the this->factory_ object might have been deleted.
+  if (this->edge_temp_dir_ != L"") {
+    for (int i = 0; i < 100; i++) {
+      // wait for the Edge browser completing read/write work
+      // the delete usually completes in 1 retries
+      ::Sleep(100);
+      if (BrowserFactory::DeleteDirectory(edge_temp_dir_)) {
+        // directory delete failed when some files/folders are locked
+        LOG(TRACE) << "Failed to delete Edge temporary user data directory "
+          << LOGWSTRING(edge_temp_dir_) << ", retrying "
+          << i + 1 << "...";
+      }
+      else {
+        // the temporary folder has been deleted
+        LOG(TRACE) << "Deleted Edge temporary user data directory "
+          << LOGWSTRING(edge_temp_dir_) << ".";
+        break;
+      }
+    }
+    this->edge_temp_dir_ = L"";
+  }
   return 0;
 }
 
@@ -867,8 +1046,8 @@ void IECommandExecutor::DispatchCommand() {
                 return;
               }
             } else {
-                LOG(DEBUG) << "Quit command was issued. Continuing with "
-                           << "command after automatically closing alert.";
+              LOG(DEBUG) << "Quit command was issued. Continuing with "
+                         << "command after automatically closing alert.";
             }
           }
         }
@@ -928,6 +1107,19 @@ void IECommandExecutor::DispatchCommand() {
       if (this->current_command_.command_type() != webdriver::CommandType::Quit) {
         LOG(WARN) << "Unable to get current browser";
       }
+    }
+
+    if (this->is_edge_chromium_ && this->is_quitting_) {
+      // If this is Edge in IE Mode, we need to explicitly wait for the
+      // browsers to be completely deleted before returning for the quit
+      // command.
+      this->is_waiting_ = true;
+      ::Sleep(WAIT_TIME_IN_MILLISECONDS);
+      ::PostMessage(this->m_hWnd,
+                    WD_SESSION_QUIT_WAIT,
+                    NULL,
+                    NULL);
+      return;
     }
   }
 
@@ -1178,7 +1370,7 @@ std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_
 }
 
 std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_type,
-                                                      const std::string& url) {
+  const std::string& url) {
   LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowsingContext";
   std::wstring target_url = StringUtilities::ToWString(url);
   std::string new_browser_id = "";
@@ -1215,7 +1407,10 @@ std::string IECommandExecutor::OpenNewBrowserWindow(const std::wstring& url) {
     return "";
   }
   LOG(DEBUG) << "New browser window was opened.";
-  BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
+  BrowserHandle new_window_wrapper(new Browser(browser,
+                                               NULL,
+                                               this->m_hWnd,
+                                               this->is_edge_chromium_));
   // It is acceptable to set the proxy settings here, as the newly-created
   // browser window has not yet been navigated to any page. Only after the
   // interface has been marshaled back across the thread boundary to the
@@ -1237,9 +1432,41 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   this->GetCurrentBrowser(&browser_wrapper);
   HWND top_level_handle = browser_wrapper->GetTopLevelWindowHandle();
 
+  if (this->is_edge_chromium_) {
+    // This is a hack to account for the case where the currently focused
+    // WebDriver window is a tab without the visual focus. When an IE Mode
+    // tab is sent to the background, it is reparented to a different top-
+    // level window than the Edge window. To detect a new tab being opened,
+    // we must find a top-level Edge window containing and active IE Mode
+    // tab, and use that as our parent window. This is a rare case that
+    // will only happen if the user does not switch WebDriver command focus
+    // to the new window immediately after opening. The Selenium language
+    // bindings do this automatically, but non-Selenium client bindings may
+    // not do so.
+    // ASSUMPTION: The first top-level Edge window we find containing an IE
+    // Mode tab is the top-level window we want.
+    std::string window_class =
+        WindowUtilities::GetWindowClass(top_level_handle);
+    if (window_class != "Chrome_WidgetWin_1") {
+      std::vector<HWND> edge_handles;
+      ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
+                    reinterpret_cast<LPARAM>(&edge_handles));
+      for (auto& edge_handle : edge_handles) {
+        std::vector<HWND> ie_mode_handles;
+        ::EnumChildWindows(edge_handle,
+                           &BrowserFactory::FindIEBrowserHandles,
+                           reinterpret_cast<LPARAM>(&ie_mode_handles));
+        if (ie_mode_handles.size() > 0) {
+          top_level_handle = edge_handle;
+          break;
+        }
+      }
+    }
+  }
+
   std::vector<HWND> original_handles;
   ::EnumChildWindows(top_level_handle,
-                     &IECommandExecutor::FindAllBrowserHandles,
+                     &BrowserFactory::FindIEBrowserHandles,
                      reinterpret_cast<LPARAM>(&original_handles));
   std::sort(original_handles.begin(), original_handles.end());
 
@@ -1256,48 +1483,74 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
                                         NULL);
   ::Sleep(500);
 
-  clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
+  HWND new_tab_window = NULL;
   std::vector<HWND> new_handles;
   ::EnumChildWindows(top_level_handle,
-                     &IECommandExecutor::FindAllBrowserHandles,
+                     &BrowserFactory::FindIEBrowserHandles,
                      reinterpret_cast<LPARAM>(&new_handles));
-  while (new_handles.size() <= original_handles.size() &&
-         clock() < end_time) {
-    ::Sleep(50);
-    ::EnumChildWindows(top_level_handle,
-                       &FindAllBrowserHandles,
-                       reinterpret_cast<LPARAM>(&new_handles));
-  }
-  std::sort(new_handles.begin(), new_handles.end());
-
-  if (new_handles.size() <= original_handles.size()) {
-    LOG(WARN) << "No new window handle found after attempt to open";
-    return "";
-  }
-
-  // We are guaranteed to have at least one HWND difference
-  // between the two vectors if we reach this point, because
-  // we know the vectors are different sizes.
-  std::vector<HWND> diff(new_handles.size());
-  std::vector<HWND>::iterator it = std::set_difference(new_handles.begin(),
-                                                       new_handles.end(),
-                                                       original_handles.begin(),
-                                                       original_handles.end(),
-                                                       diff.begin());
-  diff.resize(it - diff.begin());
-  if (diff.size() > 1) {
-    std::string handle_list = "";
-    std::vector<HWND>::const_iterator it = diff.begin();
-    for (; it != diff.end(); ++it) {
-      if (handle_list.size() > 0) {
-        handle_list.append(", ");
+  clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
+  if (browser_wrapper->is_edge_chromium()) {
+    // It appears that for Chromium-based Edge in IE Mode, there will only
+    // ever be one active child window  of the top-level window with window
+    // class "Internet Explorer_Server", which is the active tab. Inactive
+    // tabs are re-parented until brought back to being the active tab.
+    while ((new_handles.size() == 0 || new_handles[0] == original_handles[0])
+           && clock() < end_time) {
+      if (new_handles.size() != 0) {
+        new_handles.clear();
       }
-      handle_list.append(StringUtilities::Format("0x%08x", *it));
+
+      ::Sleep(50);
+      ::EnumChildWindows(top_level_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&new_handles));
     }
-    LOG(DEBUG) << "Found more than one new window handles! Found "
-               << diff.size() << "windows [" << handle_list << "]";
+
+    if (new_handles.size() == 0 || new_handles[0] == original_handles[0]) {
+      LOG(WARN) << "No new window handle found after attempt to open";
+      return "";
+    }
+
+    new_tab_window = new_handles[0];
+  } else {
+    while (new_handles.size() <= original_handles.size() &&
+           clock() < end_time) {
+      ::Sleep(50);
+      ::EnumChildWindows(top_level_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&new_handles));
+    }
+    std::sort(new_handles.begin(), new_handles.end());
+
+    if (new_handles.size() <= original_handles.size()) {
+      LOG(WARN) << "No new window handle found after attempt to open";
+      return "";
+    }
+
+    // We are guaranteed to have at least one HWND difference
+    // between the two vectors if we reach this point, because
+    // we know the vectors are different sizes.
+    std::vector<HWND> diff(new_handles.size());
+    std::vector<HWND>::iterator it = std::set_difference(new_handles.begin(),
+                                                         new_handles.end(),
+                                                         original_handles.begin(),
+                                                         original_handles.end(),
+                                                         diff.begin());
+    diff.resize(it - diff.begin());
+    if (diff.size() > 1) {
+      std::string handle_list = "";
+      std::vector<HWND>::const_iterator it = diff.begin();
+      for (; it != diff.end(); ++it) {
+        if (handle_list.size() > 0) {
+          handle_list.append(", ");
+        }
+        handle_list.append(StringUtilities::Format("0x%08x", *it));
+      }
+      LOG(DEBUG) << "Found more than one new window handles! Found "
+                 << diff.size() << "windows [" << handle_list << "]";
+    }
+    new_tab_window = diff[0];
   }
-  HWND new_tab_window = diff[0];
 
   DWORD process_id;
   ::GetWindowThreadProcessId(new_tab_window, &process_id);
@@ -1316,29 +1569,12 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   this->factory_->AttachToBrowser(&info, &error_message);
   BrowserHandle new_tab_wrapper(new Browser(info.pBrowser,
                                             NULL,
-                                            this->m_hWnd));
+                                            this->m_hWnd,
+                                            this->is_edge_chromium_));
   // Force a wait cycle to make sure the browser is finished initializing.
   new_tab_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
   this->AddManagedBrowser(new_tab_wrapper);
   return new_tab_wrapper->browser_id();
-}
-
-BOOL CALLBACK IECommandExecutor::FindAllBrowserHandles(HWND hwnd, LPARAM arg) {
-  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
-
-  // Could this be an Internet Explorer Server window?
-  // 25 == "Internet Explorer_Server\0"
-  char name[25];
-  if (::GetClassNameA(hwnd, name, 25) == 0) {
-    // No match found. Skip
-    return TRUE;
-  }
-
-  if (strcmp("Internet Explorer_Server", name) == 0) {
-    handles->push_back(hwnd);
-  }
-
-  return TRUE;
 }
 
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
@@ -1380,6 +1616,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     LOG(WARN) << "Browser was launched and attached to, but is still busy.";
   }
   wrapper->SetFocusToBrowser();
+  this->edge_temp_dir_ = this->factory_->GetEdgeTempDir();
   return WD_SUCCESS;
 }
 

@@ -41,9 +41,8 @@
  *     {name: string}|
  *     {partialLinkText: string}|
  *     {tagName: string}|
- *     {xpath: string})}
+ *     {xpath: string})} ByHash
  */
-var ByHash // eslint-disable-line
 
 /**
  * Error thrown if an invalid character is encountered while escaping a CSS
@@ -190,11 +189,9 @@ class By {
    * @return {function(!./webdriver.WebDriver): !Promise}
    *     A new JavaScript-based locator function.
    */
-  static js(script, var_args) { // eslint-disable-line
-    // eslint-disable-line
-    let args = Array.prototype.slice.call(arguments, 0)
+  static js(script, ...var_args) {
     return function (driver) {
-      return driver.executeScript.apply(driver, args)
+      return driver.executeScript.call(driver, script, ...var_args)
     }
   }
 
@@ -227,7 +224,7 @@ class By {
    * @return {!By} The new locator.
    */
   static tagName(name) {
-    return By.css(name)
+    return new By('tag name', name)
   }
 
   /**
@@ -252,14 +249,42 @@ class By {
   }
 
   toObject() {
-    var tmp = {}
+    const tmp = {}
     tmp[this.using] = this.value
     return tmp
   }
 }
 
+/**
+ * Start Searching for relative objects using the value returned from
+ * `By.tagName()`.
+ *
+ * Note: this method will likely be removed in the future please use
+ * `locateWith`.
+ * @param {By} The value returned from calling By.tagName()
+ * @returns
+ */
 function withTagName(tagName) {
-  return new RelativeBy(tagName)
+  return new RelativeBy({ 'css selector': tagName })
+}
+
+/**
+ * Start searching for relative objects using search criteria with By.
+ * @param {string} A By map that shows how to find the initial element
+ * @returns {RelativeBy}
+ */
+function locateWith(by) {
+  return new RelativeBy(getLocator(by))
+}
+
+function getLocator(locatorOrElement) {
+  let toFind
+  if (locatorOrElement instanceof By) {
+    toFind = locatorOrElement.toObject()
+  } else {
+    toFind = locatorOrElement
+  }
+  return toFind
 }
 
 /**
@@ -269,11 +294,11 @@ function withTagName(tagName) {
  */
 class RelativeBy {
   /**
-   * @param {string} tagName
+   * @param {By} findDetails
    * @param {Array<Object>} filters
    */
-  constructor(tagName, filters = null) {
-    this.root = tagName
+  constructor(findDetails, filters = null) {
+    this.root = findDetails
     this.filters = filters || []
   }
 
@@ -285,7 +310,7 @@ class RelativeBy {
   above(locatorOrElement) {
     this.filters.push({
       kind: 'above',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -298,7 +323,7 @@ class RelativeBy {
   below(locatorOrElement) {
     this.filters.push({
       kind: 'below',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -311,7 +336,7 @@ class RelativeBy {
   toLeftOf(locatorOrElement) {
     this.filters.push({
       kind: 'left',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -324,7 +349,7 @@ class RelativeBy {
   toRightOf(locatorOrElement) {
     this.filters.push({
       kind: 'right',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -337,7 +362,7 @@ class RelativeBy {
   near(locatorOrElement) {
     this.filters.push({
       kind: 'near',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -350,20 +375,10 @@ class RelativeBy {
   marshall() {
     return {
       relative: {
-        root: { 'css selector': this.root },
+        root: this.root,
         filters: this.filters,
       },
     }
-  }
-
-  getLocator(locatorOrElement) {
-    let toFind
-    if (locatorOrElement instanceof By) {
-      toFind = locatorOrElement.toObject()
-    } else {
-      toFind = locatorOrElement
-    }
-    return toFind
   }
 
   /** @override */
@@ -381,7 +396,11 @@ class RelativeBy {
  *     strategy.
  */
 function check(locator) {
-  if (locator instanceof By || typeof locator === 'function') {
+  if (
+    locator instanceof By ||
+    locator instanceof RelativeBy ||
+    typeof locator === 'function'
+  ) {
     return locator
   }
 
@@ -408,8 +427,10 @@ function check(locator) {
 // PUBLIC API
 
 module.exports = {
-  By: By,
-  RelativeBy: RelativeBy,
-  withTagName: withTagName,
+  By,
+  RelativeBy,
+  withTagName,
+  locateWith,
+  escapeCss,
   checkedLocator: check,
 }

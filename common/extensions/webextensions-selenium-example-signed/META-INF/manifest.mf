@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+
+Name: inject.js
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: smWyx4xRjcjf16hcPSMqDQ==
+SHA1-Digest: b2nrco3zOUBDJuyARPlsNEU8O9A=
+
+Name: manifest.json
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: Lg0KzlWjz7XiEJL7d7ZaPA==
+SHA1-Digest: /3TAazkDdAqLGI4xVOib3AN20/0=
+

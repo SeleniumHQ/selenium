@@ -21,29 +21,29 @@ module Selenium
   module WebDriver
     module Support
       class Color
-        RGB_PATTERN = %r{^\s*rgb\(\s*(\d{1,3})\s*,
+        RGB_PATTERN = /^\s*rgb\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(\d{1,3})\s*\)\s*$}x.freeze
-        RGB_PCT_PATTERN = %r{^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+                          \s*(\d{1,3})\s*\)\s*$/x
+        RGB_PCT_PATTERN = /^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
                               \s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
-                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x.freeze
-        RGBA_PATTERN = %r{^\s*rgba\(\s*(\d{1,3})\s*,
+                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$/x
+        RGBA_PATTERN = /^\s*rgba\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
-        RGBA_PCT_PATTERN = %r{^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
+                          \s*(0|1|0\.\d+)\s*\)\s*$/x
+        RGBA_PCT_PATTERN = /^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
-                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
-        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/.freeze
-        HEX3_PATTERN = /#(\h)(\h)(\h)/.freeze
-        HSL_PATTERN = %r{^\s*hsl\(\s*(\d{1,3})\s*,
+                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$/x
+        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/
+        HEX3_PATTERN = /#(\h)(\h)(\h)/
+        HSL_PATTERN = /^\s*hsl\(\s*(\d{1,3})\s*,
                          \s*(\d{1,3})%\s*,
-                         \s*(\d{1,3})%\s*\)\s*$}x.freeze
-        HSLA_PATTERN = %r{^\s*hsla\(\s*(\d{1,3})\s*,
+                         \s*(\d{1,3})%\s*\)\s*$/x
+        HSLA_PATTERN = /^\s*hsla\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})%\s*,
                           \s*(\d{1,3})%\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
+                          \s*(0|1|0\.\d+)\s*\)\s*$/x
 
         attr_reader :red, :green, :blue, :alpha
 
@@ -83,12 +83,12 @@ module Selenium
             g = r
             b = r
           else
-            luminocity2 = l < 0.5 ? l * (1 + s) : l + s - l * s
-            luminocity1 = 2 * l - luminocity2
+            luminocity2 = l < 0.5 ? l * (s + 1) : l + s - (l * s)
+            luminocity1 = (l * 2) - luminocity2
 
-            r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)
+            r = hue_to_rgb(luminocity1, luminocity2, h + (1.0 / 3.0))
             g = hue_to_rgb(luminocity1, luminocity2, h)
-            b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
+            b = hue_to_rgb(luminocity1, luminocity2, h - (1.0 / 3.0))
           end
 
           new (r * 255).round, (g * 255).round, (b * 255).round, a
@@ -99,11 +99,11 @@ module Selenium
           hue -= 1 if hue > 1.0
 
           if hue < 1.0 / 6.0
-            (lum1 + (lum2 - lum1) * 6.0 * hue)
+            (lum1 + ((lum2 - lum1) * 6.0 * hue))
           elsif hue < 1.0 / 2.0
             lum2
           elsif hue < 2.0 / 3.0
-            lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
+            lum1 + ((lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0)
           else
             lum1
           end
@@ -122,10 +122,10 @@ module Selenium
 
           [red, green, blue, alpha] == [other.red, other.green, other.blue, other.alpha]
         end
-        alias_method :eql?, :==
+        alias eql? ==
 
         def hash
-          [red, green, blue, alpha].hash ^ self.class.hash
+          [red, green, blue, alpha, self.class].hash
         end
 
         def rgb

@@ -21,13 +21,7 @@ from selenium.webdriver import Firefox
 
 
 @pytest.fixture
-def capabilities():
-    capabilities = {'marionette': False}
-    return capabilities
-
-
-@pytest.fixture
-def driver(capabilities):
-    driver = Firefox(capabilities=capabilities)
+def driver():
+    driver = Firefox()
     yield driver
     driver.quit()

@@ -37,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldAllowInheritedStylesToBeUsed()
         {
             driver.Url = javascriptPage;

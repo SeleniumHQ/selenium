@@ -39,7 +39,7 @@
 
 const { Builder, By, Key, until } = require('..')
 
-var driver = new Builder().forBrowser('firefox').build()
+const driver = new Builder().forBrowser('firefox').build()
 
 driver
   .get('http://www.google.com/ncr')

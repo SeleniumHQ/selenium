@@ -1,65 +1,70 @@
 {
-	"name": "grid_ui",
-	"version": "0.1.0",
-	"private": true,
-	"type": "module",
-	"dependencies": {
-		"@apollo/react-hooks": "^3.1.5",
-		"@babel/preset-react": "^7.10.4",
-		"@emotion/core": "^10.0.28",
-		"@material-ui/core": "^4.10.2",
-		"@material-ui/icons": "^4.9.1",
-		"@testing-library/jest-dom": "^4.2.4",
-		"@testing-library/react": "^9.5.0",
-		"@testing-library/user-event": "^7.2.1",
-		"@types/react-modal": "^3.10.6",
-		"@types/react-router-dom": "^5.1.5",
-		"@tippyjs/react": "^4.1.0",
-		"@types/jest": "^26.0.0",
-		"@types/keyboardjs": "^2.5.0",
-		"@types/react": "^16.9.38",
-		"@types/react-dom": "^16.9.8",
-		"@types/react-router": "^5.1.8",
-		"apollo-boost": "^0.4.9",
-		"findandreplacedomtext": "^0.4.6",
-		"graphql": "^15.1.0",
-		"graphql.macro": "^1.4.2",
-		"historyjs": "^1.8.0-b2",
-		"keyboardjs": "^2.6.3",
-		"materialize-css": "^1.0.0-rc.2",
-		"progressbar.js": "^1.1.0",
-		"rc-pagination": "^2.4.1",
-		"react": "^16.13.1",
-		"react-apollo": "^3.1.5",
-		"react-dom": "^16.13.1",
-		"react-json-view": "^1.19.1",
-		"react-modal": "^3.11.2",
-		"react-router-dom": "^5.2.0",
-		"react-scripts": "3.4.3",
-		"source-map-explorer": "^2.4.2",
-		"typescript": "^3.9.5"
-	},
-	"scripts": {
-		"start": "node node_modules/react-scripts/bin/react-scripts start",
-		"build": "node node_modules/react-scripts/bin/react-scripts build && python scripts/rmSourcemaps.py",
-		"analyze": "source-map-explorer 'build/static/js/*.js'",
-		"test": "node node_modules/react-scripts/bin/react-scripts test",
-		"eject": "node node_modules/react-scripts/bin/react-scripts eject"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-  "homepage": "/ui",
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	}
+  "name": "grid_ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@apollo/client": "^3.8.6",
+    "@bazel/typescript": "^5.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.14",
+    "@mui/material": "^5.14.14",
+    "@novnc/novnc": "^1.4.0",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.8.7",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.7",
+    "@types/react-modal": "^3.16.0",
+    "@types/react-router-dom": "^5.3.3",
+    "graphql": "^16.7.1",
+    "graphql.macro": "^1.4.2",
+    "pretty-ms": "^7.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.17.0",
+    "source-map-explorer": "^2.5.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && python scripts/rmSourcemaps.py",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "test": "react-scripts test --watchAll=false --transformIgnorePatterns 'node_modules/(?!(@novnc)/)'",
+    "eject": "react-scripts eject",
+    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
+    "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
+  },
+  "homepage": "./ui",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.22.5",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "react-scripts": "5.0.1",
+    "ts-standard": "^12.0.2",
+    "typescript": "^4.9.5"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/src/tests/**/*.test.tsx"
+    ]
+  },
+  "ts-standard": {
+    "ignore": [
+      "src/react-app-env.d.ts"
+    ]
+  }
 }

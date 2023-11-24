@@ -24,11 +24,9 @@ const path = require('path')
 const io = require('../../io')
 const zip = require('../../io/zip')
 const { InvalidArgumentError } = require('../../lib/error')
+const { locate } = require('../../lib/test/resources')
 
-const XPI_PATH = path.join(
-  __dirname,
-  '../../lib/test/data/firefox/webextension.xpi'
-)
+const XPI_PATH = locate('common/extensions/webextensions-selenium-example.xpi')
 
 describe('io/zip', function () {
   describe('unzip', function () {
@@ -94,7 +92,7 @@ describe('io/zip', function () {
             return z.getFile('foo')
           })
           .then((buffer) =>
-            assert.equal(buffer.toString('utf8'), 'hello, world!')
+            assert.strictEqual(buffer.toString('utf8'), 'hello, world!')
           )
       })
 
@@ -120,7 +118,7 @@ describe('io/zip', function () {
             (e) => assert.strictEqual(e.constructor, InvalidArgumentError)
           )
           .then(() => z.getFile('foo/aFile'))
-          .then((b) => assert.equal(b.toString('utf8'), 'hello, world!'))
+          .then((b) => assert.strictEqual(b.toString('utf8'), 'hello, world!'))
       })
     })
   })

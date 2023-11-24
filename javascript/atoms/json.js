@@ -53,8 +53,8 @@ bot.json.SUPPORTS_NATIVE_JSON_ =
     // native JSON (and we can compile away large chunks of code for
     // individual fragments by setting the appropriate compiler flags).
     goog.userAgent.WEBKIT ||
-        (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(3.5)) ||
-        (goog.userAgent.IE && bot.userAgent.isEngineVersion(8));
+    (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(3.5)) ||
+    (goog.userAgent.IE && bot.userAgent.isEngineVersion(8));
 
 
 /**

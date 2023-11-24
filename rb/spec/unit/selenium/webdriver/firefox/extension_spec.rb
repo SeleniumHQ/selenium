@@ -28,7 +28,7 @@ module Selenium
         end
 
         let(:extension) do
-          ext = Extension.new('/foo')
+          ext = described_class.new('/foo')
           def ext.read_id(dir)
             read_id_from_install_rdf(dir)
           end

@@ -20,7 +20,7 @@
 require_relative 'spec_helper'
 
 describe 'Navigation' do
-  it 'should navigate back and forward' do
+  it 'navigates back and forward' do
     form_title   = 'We Leave From Here'
     result_title = 'We Arrive Here'
     form_url     = url_for 'formPage.html'
@@ -45,7 +45,7 @@ describe 'Navigation' do
     expect(driver.title).to eq(result_title)
   end
 
-  it 'should refresh the page' do
+  it 'refreshes the page' do
     changed_title = 'Changed'
 
     driver.navigate.to url_for('javascriptPage.html')

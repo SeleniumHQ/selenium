@@ -25,9 +25,9 @@ module Selenium
       before { quit_driver }
 
       it 'supports listener' do
-        create_driver!(listener: Selenium::WebDriver::Support::AbstractEventListener.new) do
-          # do nothing
-        end
+        expect {
+          create_driver!(listener: Selenium::WebDriver::Support::AbstractEventListener.new) { nil }
+        }.not_to raise_exception
       end
     end
   end # WebDriver

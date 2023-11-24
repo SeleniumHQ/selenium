@@ -1,0 +1,47 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Building and Testing the Python Bindings",
+  "steps": [
+    {
+      "file": "py/BUILD.bazel",
+      "description": "Files, like this, can be found all over this repository and will have all the targets that we need. To access this file with bazel you will need to use bazel build|test|run //py:<targets below>",
+      "line": 7
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "This is how we create the python library that will be used",
+      "line": 69
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "This creates the Selenium wheel that is published. We can upload it with `twine`",
+      "line": 110
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "This creates the targets we need when we want to use \"pinned browsers\". Using \"pinned browsers\" means bazel will download the necessary browser and the corresponding driver. To use this target you will do `bazel test //py:auto-<browser name> --//common:pin_browsers`",
+      "line": 229
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "If you want to use targets that have the installed browser and the driver on the $PATH environment variables",
+      "line": 255
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "This target is called from other targets and will generate the CDP libraries that we use within the Selenium Python Bindings",
+      "line": 186
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "These are the dependencies for building and testing",
+      "line": 17
+    },
+    {
+      "file": "py/BUILD.bazel",
+      "description": "Below are the JavaScript atoms we use for certain features like checking if an element if visible.",
+      "line": 38
+    }
+  ],
+  "ref": "trunk"
+}

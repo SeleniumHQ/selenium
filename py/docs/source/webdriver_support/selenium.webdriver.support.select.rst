@@ -1,4 +1,29 @@
-selenium.webdriver.support.select
+﻿selenium.webdriver.support.select
 =================================
 
 .. automodule:: selenium.webdriver.support.select
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Select
+   
+   
+
+   
+   
+   
+
+
+

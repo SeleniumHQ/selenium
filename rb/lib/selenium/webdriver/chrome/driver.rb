@@ -17,41 +17,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chromium/driver'
+
 module Selenium
   module WebDriver
     module Chrome
-
       #
       # Driver implementation for Chrome.
       # @api private
       #
 
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
+      class Driver < Chromium::Driver
+        include LocalDriver
+
+        def initialize(options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :chrome
         end
 
-        def bridge_class
-          Bridge
-        end
-
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
-
         private
 
-        def debugger_address
-          capabilities['goog:chromeOptions']['debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
         end
       end # Driver
     end # Chrome

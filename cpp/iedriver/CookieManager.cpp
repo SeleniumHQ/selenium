@@ -522,11 +522,21 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
           all_cookies.append(L"\n*\n");
         }
         INTERNETCOOKIE2* current_cookie = cookie_pointer + cookie_index;
-        std::wstring cookie_name = current_cookie->pwszName;
+        std::wstring cookie_name = L"";
+        if (current_cookie->pwszName) {
+          // Note that the spec appears to allow "nameless" cookies,
+          // which clients like Selenium may not support.
+          cookie_name = current_cookie->pwszName;
+        }
         std::wstring cookie_value = L"";
         if (current_cookie->pwszValue) {
           cookie_value = current_cookie->pwszValue;
         }
+
+        // TODO: The spec does not allow a cookie with an empty name
+        // and value. It's unclear what the driver could do in this
+        // case, but we should probably handle it somehow in the off
+        // chance it ever comes up.
         std::wstring cookie_domain = L"";
         if (current_cookie->pwszDomain) {
           cookie_domain = current_cookie->pwszDomain;

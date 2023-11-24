@@ -1,28 +1,34 @@
 workspace(
     name = "selenium",
-    managed_directories = {
-        # Share the node_modules directory between Bazel and other tooling
-        "@npm": ["node_modules"],
-    },
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "platforms",
-    sha256 = "ae95e4bfcd9f66e9dc73a92cee0107fede74163f788e3deefe00f3aaae75c431",
-    strip_prefix = "platforms-681f1ee032566aa2d443cf0335d012925d9c58d4",
-    urls = [
-        "https://github.com/bazelbuild/platforms/archive/681f1ee032566aa2d443cf0335d012925d9c58d4.zip",
-    ],
+    name = "apple_rules_lint",
+    sha256 = "7c3cc45a95e3ef6fbc484a4234789a027e11519f454df63cbb963ac499f103f9",
+    strip_prefix = "apple_rules_lint-0.3.2",
+    url = "https://github.com/apple/apple_rules_lint/archive/refs/tags/0.3.2.tar.gz",
 )
+
+load("@apple_rules_lint//lint:repositories.bzl", "lint_deps")
+
+lint_deps()
+
+load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
+
+# Add your linters here.
+lint_setup({
+    "java-spotbugs": "//java:spotbugs-config",
+    "rust-rustfmt": "//rust:enable-rustfmt",
+})
 
 http_archive(
     name = "bazel_skylib",
-    sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
+    sha256 = "66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz",
     ],
 )
 
@@ -31,24 +37,125 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 
 http_archive(
-    name = "bazel_toolchains",
-    sha256 = "89a053218639b1c5e3589a859bb310e0a402dedbe4ee369560e66026ae5ef1f2",
-    strip_prefix = "bazel-toolchains-3.5.0",
-    urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+    name = "rules_python",
+    sha256 = "5868e73107a8e85d8f323806e60cad7283f34b32163ea6ff1020cf27abef6036",
+    strip_prefix = "rules_python-0.25.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.25.0/rules_python-0.25.0.tar.gz",
+)
+
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_multi_toolchains")
+
+py_repositories()
+
+default_python_version = "3.8"
+
+python_register_multi_toolchains(
+    name = "python",
+    default_version = default_python_version,
+    ignore_root_user_error = True,
+    python_versions = [
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
     ],
 )
 
-load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
+load("@python//:pip.bzl", "multi_pip_parse")
+load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
+load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
+load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
+load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 
-rbe_autoconfig(name = "rbe_default")
+multi_pip_parse(
+    name = "py_dev_requirements",
+    default_version = default_python_version,
+    python_interpreter_target = {
+        "3.11": interpreter_3_11,
+        "3.10": interpreter_3_10,
+        "3.9": interpreter_3_9,
+        "3.8": interpreter_3_8,
+    },
+    requirements_lock = {
+        "3.11": "//py:requirements_lock.txt",
+        "3.10": "//py:requirements_lock.txt",
+        "3.9": "//py:requirements_lock.txt",
+        "3.8": "//py:requirements_lock.txt",
+    },
+)
+
+load("@py_dev_requirements//:requirements.bzl", "install_deps")
+
+install_deps()
+
+# This gets us a pre-compiled `protoc`
+http_archive(
+    name = "rules_proto",
+    sha256 = "dc3fb206a2cb3441b485eb1e423165b231235a1ea9b031b4433cf7bc1fa460dd",
+    strip_prefix = "rules_proto-5.3.0-21.7",
+    urls = [
+        "https://github.com/bazelbuild/rules_proto/archive/refs/tags/5.3.0-21.7.tar.gz",
+    ],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
+# The go rules are often a dependency of _something_, so loading the version
+# we want early
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "6b65cb7917b4d1709f9410ffe00ecf3e160edf674b78c54a894471320862184f",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.39.0/rules_go-v0.39.0.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.39.0/rules_go-v0.39.0.zip",
+    ],
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.19.3")
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "d85951a92c0908c80bd8551002d66cb23c3434409c814179c0ff026b53544dab",
-    strip_prefix = "rules_jvm_external-3.3",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.3.zip",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "//java:rules_jvm_external_javadoc.patch",
+    ],
+    sha256 = "f86fd42a809e1871ca0aabe89db0d440451219c3ce46c58da240c7dcdc00125f",
+    strip_prefix = "rules_jvm_external-5.2",
+    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/5.2/rules_jvm_external-5.2.tar.gz",
 )
+
+load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
+
+rules_jvm_external_deps()
+
+load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
+
+rules_jvm_external_setup()
+
+http_archive(
+    name = "contrib_rules_jvm",
+    sha256 = "4d62589dc6a55e74bbe33930b826d593367fc777449a410604b2ad7c6c625ef7",
+    strip_prefix = "rules_jvm-0.19.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/releases/download/v0.19.0/rules_jvm-v0.19.0.tar.gz",
+)
+
+load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
+
+contrib_rules_jvm_deps()
+
+load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
+
+contrib_rules_jvm_setup()
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
 
@@ -59,158 +166,197 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 pinned_maven_install()
 
 http_archive(
-    name = "io_bazel_rules_closure",
-    sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
-    strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
-    urls = [
-        "https://github.com/bazelbuild/rules_closure/archive/b3d4ec3879620edcadd3422b161cebb37c59b6c5.tar.gz",
-    ],
+    name = "rules_dotnet",
+    sha256 = "718cb2c3431523aaf3df7feed0e997e4ded002abbf56ac37d9c0536a812d6276",
+    strip_prefix = "rules_dotnet-0.12.0",
+    url = "https://github.com/bazelbuild/rules_dotnet/releases/download/v0.12.0/rules_dotnet-v0.12.0.tar.gz",
 )
 
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
+load(
+    "@rules_dotnet//dotnet:repositories.bzl",
+    "dotnet_register_toolchains",
+    "rules_dotnet_dependencies",
+)
 
-closure_repositories()
+rules_dotnet_dependencies()
+
+dotnet_register_toolchains("dotnet", "7.0.400")
+
+load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
+
+rules_dotnet_nuget_packages()
+
+load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
+
+paket2bazel_dependencies()
+
+load("//dotnet:paket.bzl", "paket")
+
+paket()
 
 http_archive(
-    name = "d2l_rules_csharp",
-    sha256 = "efba481723aa48c14751293e28ed00a5bd9fd343eb65c5fb5883e056bf15ba3f",
-    strip_prefix = "rules_csharp-f5fbbd545b1f18efad5e4ce3d06bfabe6b48eeb4",
-    urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/f5fbbd545b1f18efad5e4ce3d06bfabe6b48eeb4.tar.gz",
-    ],
+    name = "rules_rust",
+    sha256 = "50ec4b84a7ec5370f5882d52f4a1e6b8a75de2f8dcc0a4403747b69b2c4ef5b1",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.23.0/rules_rust-v0.23.0.tar.gz"],
 )
 
-load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
 
-selenium_register_dotnet()
+rules_rust_dependencies()
+
+rust_register_toolchains()
+
+load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
+
+crates_repository(
+    name = "crates",
+    cargo_lockfile = "//rust:Cargo.lock",
+    lockfile = "//rust:Cargo.Bazel.lock",
+    manifests = ["//rust:Cargo.toml"],
+)
+
+load("@crates//:defs.bzl", "crate_repositories")
+
+crate_repositories()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "4952ef879704ab4ad6729a29007e7094aef213ea79e9f2e94cbe1c9a753e63ef",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.0/rules_nodejs-2.2.0.tar.gz"],
+    sha256 = "709cc0dcb51cf9028dd57c268066e5bc8f03a119ded410a13b5c3925d6e43c48",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.4/rules_nodejs-5.8.4.tar.gz"],
 )
 
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+
+build_bazel_rules_nodejs_dependencies()
+
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
+
+node_repositories(
+    node_version = "18.12.0",
+)
 
 npm_install(
     name = "npm",
     package_json = "//:package.json",
     package_lock_json = "//:package-lock.json",
+    symlink_node_modules = False,
 )
 
 http_archive(
-    name = "rules_python",
+    name = "io_bazel_rules_closure",
+    patch_args = [
+        "-p1",
+    ],
     patches = [
-        "//py:rules_python_any_version_wheel.patch",
-        "//py:rules_python_wheel_directory_check.patch",
+        "//javascript:rules_closure_shell.patch",
     ],
-    sha256 = "ddb2e1298684defde2f5e466d96e572119f30f9e2a901a7a81474fd4fa9f6d52",
-    strip_prefix = "rules_python-dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f",
+    sha256 = "d66deed38a0bb20581c15664f0ab62270af5940786855c7adc3087b27168b529",
+    strip_prefix = "rules_closure-0.11.0",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f.zip",
+        "https://github.com/bazelbuild/rules_closure/archive/0.11.0.tar.gz",
     ],
 )
 
-# This call should always be present.
-load("@rules_python//python:repositories.bzl", "py_repositories")
+load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
 
-py_repositories()
+rules_closure_dependencies()
 
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_import", "pip_repositories")
-
-pip_import(
-    name = "dev_requirements",
-    requirements = "//py:requirements.txt",
-)
-
-load("@dev_requirements//:requirements.bzl", "pip_install")
-
-pip_repositories()
-
-pip_install()
+rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "aeca78988341a2ee1ba097641056d168320ecc51372ef7ff8e64b139516a4937",
-    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.6-1/rules_pkg-0.2.6.tar.gz",
+    sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
+    ],
 )
 
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
 http_archive(
-    name = "io_bazel_rules_docker",
-    sha256 = "4521794f0fba2e20f3bf15846ab5e01d5332e587e9ce81629c7f96c793bb7036",
-    strip_prefix = "rules_docker-0.14.4",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.4/rules_docker-v0.14.4.tar.gz"],
+    name = "rules_oci",
+    sha256 = "db57efd706f01eb3ce771468366baa1614b5b25f4cce99757e2b8d942155b8ec",
+    strip_prefix = "rules_oci-1.0.0",
+    url = "https://github.com/bazel-contrib/rules_oci/releases/download/v1.0.0/rules_oci-v1.0.0.tar.gz",
+)
+
+load("@rules_oci//oci:dependencies.bzl", "rules_oci_dependencies")
+
+rules_oci_dependencies()
+
+load("@rules_oci//oci:repositories.bzl", "LATEST_CRANE_VERSION", "oci_register_toolchains")
+
+oci_register_toolchains(
+    name = "oci",
+    crane_version = LATEST_CRANE_VERSION,
+    # Uncommenting the zot toolchain will cause it to be used instead of crane for some tasks.
+    # Note that it does not support docker-format images.
+    # zot_version = LATEST_ZOT_VERSION,
+)
+
+load("@rules_oci//oci:pull.bzl", "oci_pull")
+
+# Examine https://console.cloud.google.com/gcr/images/distroless/GLOBAL/java?gcrImageListsize=30 to find
+# the latest version when updating
+oci_pull(
+    name = "java_image_base",
+    digest = "sha256:161a1d97d592b3f1919801578c3a47c8e932071168a96267698f4b669c24c76d",
+    image = "gcr.io/distroless/java17",
+)
+
+oci_pull(
+    name = "firefox_standalone",
+    digest = "sha256:b6d8279268b3183d0d33e667e82fec1824298902f77718764076de763673124f",
+    registry = "index.docker.io",
+    repository = "selenium/standalone-firefox",
+)
+
+oci_pull(
+    name = "chrome_standalone",
+    digest = "sha256:1b809a961a0a77787a7cccac74ddc5570b7e89747f925b8469ddb9a6624d4ece",
+    registry = "index.docker.io",
+    repository = "selenium/standalone-chrome",
+)
+
+load("//common:repositories.bzl", "pin_browsers")
+
+pin_browsers()
+
+http_archive(
+    name = "rules_ruby",
+    sha256 = "34296f8cad46ec10b7eea59f3399feabcfbc33935b7d8bec880ea0ecfadc23b5",
+    strip_prefix = "rules_ruby-9550503e1c1702375e87837d43eb137030edd28a",
+    url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
 )
 
 load(
-    "@io_bazel_rules_docker//repositories:repositories.bzl",
-    container_repositories = "repositories",
+    "@rules_ruby//ruby:deps.bzl",
+    "rb_bundle",
+    "rb_register_toolchains",
 )
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 
-container_repositories()
+rb_register_toolchains(version = RUBY_VERSION)
 
-load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
-
-container_deps()
-
-load("@io_bazel_rules_docker//repositories:pip_repositories.bzl", "pip_deps")
-
-pip_deps()
-
-load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
-
-container_pull(
-    name = "java_image_base",
-    # This pulls the java 11 version of the jave base image
-    digest = "sha256:f9fe0de7f8ded68f757d99e9d165b96e89e00d4cef80d204aa76bc0b8ffc4576",
-    registry = "gcr.io",
-    repository = "distroless/java",
-)
-
-container_pull(
-    name = "firefox_standalone",
-    # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:a77683572022f8139b07eb29dee66f7b34b5df4d9902b7f1e081e112411f683d",
-    registry = "index.docker.io",
-    repository = "selenium/standalone-firefox-debug",
-)
-
-container_pull(
-    name = "chrome_standalone",
-    # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:53812c3d01622148e9ccd79e598c3740804dbfd51594ae592bac5a14380b595e",
-    registry = "index.docker.io",
-    repository = "selenium/standalone-chrome-debug",
+rb_bundle(
+    name = "bundle",
+    srcs = [
+        "//:rb/lib/selenium/devtools/version.rb",
+        "//:rb/lib/selenium/webdriver/version.rb",
+        "//:rb/selenium-devtools.gemspec",
+        "//:rb/selenium-webdriver.gemspec",
+    ],
+    gemfile = "//:rb/Gemfile",
 )
 
 http_archive(
-    name = "io_bazel_rules_k8s",
-    sha256 = "d91aeb17bbc619e649f8d32b65d9a8327e5404f451be196990e13f5b7e2d17bb",
-    strip_prefix = "rules_k8s-0.4",
-    urls = ["https://github.com/bazelbuild/rules_k8s/releases/download/v0.4/rules_k8s-v0.4.tar.gz"],
-)
-
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
-
-k8s_repositories()
-
-load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
-
-k8s_go_deps()
-
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-
-go_rules_dependencies()
-
-go_register_toolchains()
-
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults")
-
-k8s_defaults(
-    name = "k8s_dev",
-    cluster = "docker-desktop",
-    image_chroot = "localhost:5000",
-    kind = "deployment",
-    namespace = "selenium",
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "65391537d1ef528bf772ae25d2c163bd5cee6a929b06cad985e0734f1a12610b",
+    strip_prefix = "buildtools-6.1.2",
+    urls = [
+        "https://github.com/bazelbuild/buildtools/archive/refs/tags/v6.1.2.zip",
+    ],
 )

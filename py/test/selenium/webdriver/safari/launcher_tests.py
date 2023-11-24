@@ -19,49 +19,58 @@ import os
 
 import pytest
 
+from selenium.common.exceptions import NoSuchDriverException
+from selenium.webdriver.safari.service import Service
+
 
 def test_launch(driver):
-    assert driver.capabilities['browserName'] == 'Safari'
+    assert driver.capabilities["browserName"] == "Safari"
 
 
 def test_launch_with_invalid_executable_path_raises_exception(driver_class):
-    path = '/this/path/should/never/exist'
+    path = "/this/path/should/never/exist"
     assert not os.path.exists(path)
-    with pytest.raises(Exception) as e:
-        driver_class(executable_path=path)
-    assert 'are you running Safari 10 or later?' in str(e)
+    service = Service(executable_path=path)
+    with pytest.raises(NoSuchDriverException):
+        driver_class(service=service)
 
 
-@pytest.mark.skipif(not os.path.exists('/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'), reason="Preview not installed")
-class TestTechnologyPreview(object):
-
+@pytest.mark.skipif(
+    not os.path.exists("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver"),
+    reason="Preview not installed",
+)
+class TestTechnologyPreview:
     @pytest.fixture
     def driver_kwargs(self):
-        path = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
-        assert os.path.exists(path), 'Safari Technology Preview required! Download it from https://developer.apple.com/safari/technology-preview/'
-        return {'executable_path': path}
+        path = "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver"
+        assert os.path.exists(
+            path
+        ), "Safari Technology Preview required! Download it from https://developer.apple.com/safari/technology-preview/"
+        return {"executable_path": path}
 
     def test_launch(self, driver):
-        assert driver.capabilities['browserName'] == 'safari'
+        assert driver.capabilities["browserName"] == "safari"
 
 
 def test_launch_safari_with_legacy_flag(mocker, driver_class):
     import subprocess
-    mocker.patch('subprocess.Popen')
+
+    mocker.patch("subprocess.Popen")
     try:
-        driver_class(service_args=['--legacy'])
+        driver_class(service_args=["--legacy"])
     except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
-    assert '--legacy' in args[0]
+    assert "--legacy" in args[0]
 
 
 def test_launch_safari_without_legacy_flag(mocker, driver_class):
     import subprocess
-    mocker.patch('subprocess.Popen')
+
+    mocker.patch("subprocess.Popen")
     try:
         driver_class()
     except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
-    assert '--legacy' not in args[0]
+    assert "--legacy" not in args[0]

@@ -1,4 +1,22 @@
+load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
+
 exports_files([
-    "WebDriver.snk",
     "AssemblyInfo.cs.template",
+    "WebDriver.snk",
 ])
+
+pkg_zip(
+    name = "strongnamed",
+    srcs = [
+        "//dotnet/src/support:support-strongnamed",
+        "//dotnet/src/webdriver:webdriver-strongnamed",
+    ],
+)
+
+pkg_zip(
+    name = "release",
+    srcs = [
+        "//dotnet/src/support",
+        "//dotnet/src/webdriver",
+    ],
+)

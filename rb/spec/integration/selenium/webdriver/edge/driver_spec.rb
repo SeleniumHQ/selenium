@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-      describe Driver, exclusive: {driver: :edge} do
+      describe Driver, exclusive: {browser: :edge} do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -31,12 +31,22 @@ module Selenium
             'download_throughput' => 789,
             'upload_throughput' => 789
           )
+          driver.delete_network_conditions
+        end
+
+        it 'supports default network conditions' do
+          driver.network_conditions = {latency: 56}
+          expect(driver.network_conditions).to eq(
+            'offline' => false,
+            'latency' => 56,
+            'download_throughput' => -1,
+            'upload_throughput' => -1
+          )
+          driver.delete_network_conditions
         end
 
         it 'sets download path' do
-          driver.download_path = File.expand_path(__dir__)
-          # there is no simple way to verify that it's now possible to download
-          # at least it doesn't crash
+          expect { driver.download_path = File.expand_path(__dir__) }.not_to raise_exception
         end
 
         it 'can execute CDP commands' do
@@ -50,6 +60,54 @@ module Selenium
             expect(tw).to eq('TW')
           ensure
             driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
+          end
+        end
+
+        describe '#logs' do
+          before do
+            reset_driver!(logging_prefs: {browser: 'ALL',
+                                          driver: 'ALL',
+                                          performance: 'ALL'})
+            driver.navigate.to url_for('errors.html')
+          end
+
+          after(:all) { reset_driver! }
+
+          it 'can fetch available log types' do
+            expect(driver.logs.available_types).to include(:performance, :browser, :driver)
+          end
+
+          it 'can get the browser log' do
+            driver.find_element(tag_name: 'input').click
+
+            entries = driver.logs.get(:browser)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_a(LogEntry)
+          end
+
+          it 'can get the driver log' do
+            entries = driver.logs.get(:driver)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_a(LogEntry)
+          end
+
+          it 'can get the performance log' do
+            entries = driver.logs.get(:performance)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_a(LogEntry)
+          end
+        end
+
+        # This requires cast sinks to run
+        it 'casts' do
+          # Does not get list correctly the first time for some reason
+          driver.cast_sinks
+          sleep 2
+          sinks = driver.cast_sinks
+          unless sinks.empty?
+            device_name = sinks.first['name']
+            driver.start_cast_tab_mirroring(device_name)
+            expect { driver.stop_casting(device_name) }.not_to raise_exception
           end
         end
       end

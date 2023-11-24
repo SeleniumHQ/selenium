@@ -14,14 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-"""
-The WindowTypes implementation.
-"""
+"""The WindowTypes implementation."""
 
 
-class WindowTypes(object):
+class WindowTypes:
     """Set of supported window types."""
 
-    TAB = u'tab'
-    WINDOW = u'window'
+    TAB = "tab"
+    WINDOW = "window"

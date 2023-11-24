@@ -37,7 +37,7 @@ const httpLib = require('../lib/http')
  *            path: (?string|undefined),
  *            pathname: (?string|undefined)}}
  */
-var RequestOptions // eslint-disable-line
+let RequestOptions // eslint-disable-line
 
 /**
  * @param {string} aUrl The request URL to parse.
@@ -54,6 +54,8 @@ function getRequestOptions(aUrl) {
   options.search = null
   options.hash = null
   options.path = options.pathname
+  options.hostname =
+    options.hostname === 'localhost' ? '127.0.0.1' : options.hostname // To support Node 17 and above. Refer https://github.com/nodejs/node/issues/40702 for details.
   return options
 }
 
@@ -77,8 +79,9 @@ class HttpClient {
    *     Defaults to `http.globalAgent`.
    * @param {?string=} opt_proxy The proxy to use for the connection to the
    *     server. Default is to use no proxy.
+   * @param {?Object.<string,Object>} client_options
    */
-  constructor(serverUrl, opt_agent, opt_proxy) {
+  constructor(serverUrl, opt_agent, opt_proxy, client_options = {}) {
     /** @private {http.Agent} */
     this.agent_ = opt_agent || null
 
@@ -89,9 +92,28 @@ class HttpClient {
     this.options_ = getRequestOptions(serverUrl)
 
     /**
-     * @private {?RequestOptions}
+     * client options, header overrides
      */
+    this.client_options = client_options
+
+    /**
+     * sets keep-alive for the agent
+     * see https://stackoverflow.com/a/58332910
+     */
+    this.keepAlive = this.client_options['keep-alive']
+
+    /**  @private {?RequestOptions} */
     this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null
+  }
+
+  get keepAlive() {
+    return this.agent_.keepAlive
+  }
+
+  set keepAlive(value) {
+    if (value === 'true' || value === true) {
+      this.agent_.keepAlive = true
+    }
   }
 
   /** @override */
@@ -106,7 +128,7 @@ class HttpClient {
       })
     }
 
-    headers['User-Agent'] = USER_AGENT
+    headers['User-Agent'] = this.client_options['user-agent'] || USER_AGENT
     headers['Content-Length'] = 0
     if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
       data = JSON.stringify(httpRequest.data)
@@ -197,9 +219,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
   let requestFn = options.protocol === 'https:' ? https.request : http.request
   var request = requestFn(options, function onResponse(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
+      let location
       try {
         // eslint-disable-next-line node/no-deprecated-api
-        var location = url.parse(response.headers['location'])
+        location = url.parse(response.headers['location'])
       } catch (ex) {
         onError(
           Error(
@@ -218,7 +241,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         location.auth = options.auth
       }
 
-      request.abort()
+      request.destroy()
       sendRequest(
         {
           method: 'GET',
@@ -232,7 +255,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
           hash: location.hash,
           headers: {
             Accept: 'application/json; charset=utf-8',
-            'User-Agent': USER_AGENT,
+            'User-Agent': options.headers['User-Agent'] || USER_AGENT,
           },
         },
         onOk,
@@ -243,10 +266,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       return
     }
 
-    var body = []
+    const body = []
     response.on('data', body.push.bind(body))
     response.on('end', function () {
-      var resp = new httpLib.Response(
+      const resp = new httpLib.Response(
         /** @type {number} */ (response.statusCode),
         /** @type {!Object<string>} */ (response.headers),
         Buffer.concat(body).toString('utf8').replace(/\0/g, '')
@@ -266,7 +289,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries)
       }, 15)
     } else {
-      var message = e.message
+      let message = e.message
       if (e.code) {
         message = e.code + ' ' + message
       }
@@ -317,8 +340,8 @@ function isRetryableNetworkError(err) {
 
 // PUBLIC API
 
-exports.Agent = http.Agent
-exports.Executor = httpLib.Executor
-exports.HttpClient = HttpClient
-exports.Request = httpLib.Request
-exports.Response = httpLib.Response
+module.exports.Agent = http.Agent
+module.exports.Executor = httpLib.Executor
+module.exports.HttpClient = HttpClient
+module.exports.Request = httpLib.Request
+module.exports.Response = httpLib.Response

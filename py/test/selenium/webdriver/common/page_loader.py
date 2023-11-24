@@ -20,7 +20,7 @@ the page models. For example for an action that needs a page to be fully
 loaded, the @require_loaded decorator will make sure the page is loaded
 before the call is invoked.
 This pattern is also useful for waiting for certain asynchronous events
-to happen before excuting certain actions."""
+to happen before executing certain actions."""
 
 
 def require_loaded(func):
@@ -29,4 +29,5 @@ def require_loaded(func):
             page.load()
         assert page.is_loaded(), "page should be loaded by now"
         return func(page, *params, **kwds)
+
     return load_page

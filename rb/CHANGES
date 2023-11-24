@@ -1,3 +1,548 @@
+4.15.0 (unreleased)
+=========================
+
+* Do not set browser binary in selenium manager if it is an empty string (#12738)
+* Add flaky condition to guards to mark unreliable tests
+* Rake update needs to build latest grid for running remote tests
+* Add CDP v119 and remove v116
+* Implement file downloads (#12979)
+
+4.14.0 (2023-10-09)
+=========================
+Ruby:
+  * allow users to access the full script of the atom directly
+
+BiDi:
+  * Released selenium-devtools 0.118.0 (supports CDP v85, v116, v117, v118)
+
+4.13.1 (2023-09-25)
+=========================
+Ruby:
+  * Fix bug preventing logging chromedriver to file
+
+4.13.0 (2023-09-25)
+=========================
+Ruby:
+  * Fix bug preventing using performance logging with chromium
+  * Allow users to set Selenium Manager path by environment variable (#12752)
+  * Allow service to be started before the driver
+  * remove deprecated driver extensions for location and network connection
+
+BiDi:
+  * Released selenium-devtools 0.117.0 (supports CDP v85, v115, v116, v117)
+
+4.12.0 (2023-08-31)
+=========================
+Ruby:
+  * Fix bug preventing good error messages in Selenium Manager when stdout empty
+  * Fix bug with Firefox not loading net/http library by default (#12506)
+  * Remove support for using capabilities in local drivers
+
+BiDi:
+  * Released selenium-devtools 0.116.0 (supports CDP v85, v114, v115, v116)
+
+4.11.0 (2023-07-31)
+=========================
+Ruby:
+  * Made network interception threads fail silently (#12226)
+  * Have Selenium Manager binary locate drivers on PATH (#12345)
+  * Add browser output from selenium manager to options (#12398)
+  * Remove deprecated code (#12417)
+BiDi:
+  * Released selenium-devtools 0.115.0 (supports CDP v85, v113, v114, v115)
+Edge:
+  * Adding ignore process match for IE Mode across bindings (#12279)
+
+4.10.0 (2023-06-07)
+=========================
+Ruby:
+  * Implement proxy support for Selenium Manager
+  * Prevent setting driver log level in Safari
+  * Change all Selenium Manager logging to :debug (#12145)
+  * Error messages include links to documentation
+  * Add custom error class for driver location and improve error logic
+
+BiDi:
+  * Released selenium-devtools 0.114.0 (supports CDP v85, v112, v113, v114)
+
+Edge:
+  * Add support for webview2
+
+4.9.1 (2023-05-08)
+=========================
+Ruby:
+  * Allow users to specify driver process output in Service class (#11964)
+  * Updated minimum required Ruby version to 3.0
+  * Selenium Logger defaults to :info and all debugging is now logged as :debug (#11967)
+  * Every logging entry can be ignored based on ID, not just warnings
+  * Logging entries can be filtered to allow or ignore specific IDs
+
+BiDi:
+  * Fix bug with loading devtools (#11931) (thanks Boris Petrov!)
+  * Released selenium-devtools 0.113.0 (supports CDP v85, v111, v112, v113)
+
+4.9.0 (2023-04-21)
+=========================
+Ruby:
+  * Fix devtools version fallback (#11869)
+  * Fix bug in selenium manager escaping back slashes in Windows (#11884)
+
+BiDi:
+  * Released selenium-devtools 0.112.0 (supports CDP v85, v110, v111, v112)
+
+4.8.6 (2023-03-29)
+=========================
+Ruby:
+  * Properly escape arguments passed to Selenium Manager
+
+4.8.5 (2023-03-28)
+=========================
+Ruby:
+  * Wrapping browser name in quotes when calling Selenium Manager
+
+4.8.4 (2023-03-28)
+=========================
+Ruby:
+  * Update the selenium-manager versions to fix an IE naming issue (#11828)
+
+4.8.3 (2023-03-26)
+=========================
+Ruby:
+  * Still need to use driver finder when using capabilities parameter
+  * Accommodate Driver Finder being sent something other than an Options instance
+
+4.8.2 (2023-03-24)
+=========================
+Ruby:
+  * Ruby driver finder (#11523)
+  * Using json output with Selenium Manager
+
+BiDi:
+  * Released selenium-devtools 0.111.0 (supports CDP v85, v109, v110, v111)
+
+4.8.1 (2023-02-17)
+=========================
+Ruby:
+  * Fix autoload of WebDriver::Remote::Bridge::COMMANDS
+  * Subclass is setting value before the superclass is setting it to nil
+  * Updating Selenium Manager binaries for 4.8.1 release
+
+BiDi:
+  * Released selenium-devtools 0.110.0 (supports CDP v85, v108, v109, v110)
+  * Close BiDi session on closing the last top-level browsing context
+  * Add filtering capability to LogInspector
+
+4.8.0 (2023-01-23)
+=========================
+Ruby:
+  * Allow updating instance variables on service classes
+  * Deprecate extract_service_args processing in service classes
+  * Fix bug preventing sending nil to #send_keys with Remote Driver
+  * Fix bug with IE specific methods not available to IE Driver
+  * Created Chromium superclass for Chrome and Edge
+  * Deprecated platform and version setters/getters in Capabilities class
+  * Revamped driver constructor logic
+  * Fix bug preventing using Safari Technology Preview when using SafariOptions
+  * Fix bug preventing more than one driver type to access Selenium Manager
+  * Defaults to using Options instead of Capabilities
+  * Make Options classes more strict for allowed arguments and types
+  * Removed previously deprecated actions class parameters
+  * Removed Location struct
+  * Add comment with name of large JS executions (#11038)
+  * update logger with link on how to use it (#11478)
+  * Deprecate #add_option for Option classes in favor of constructor and attr_accessor
+  * Deprecate all unrecognized capabilities for Options classes
+  * Deprecate support for :capabilities for local drivers
+  * Deprecate browser class methods for Capabilities
+  * Deprecate #headless! for Chrome and Firefox
+
+BiDi:
+  * Released selenium-devtools 0.109.0 (supports CDP v85, v107, v108, v109)
+  * Add LogInspector (#11368)
+  * Add Browsing context commands (#11446)
+
+4.7.1 (2022-12-02)
+=========================
+Ruby:
+  * Fix bug preventing selenium manager from using Internet Explorer
+
+4.7.0 (2022-12-01)
+=========================
+BiDi:
+  * Released selenium-devtools 0.108.0 (supports CDP v85, v106, v107, v108)
+  * Fix bug with socket stability
+
+Ruby:
+  * Remove dependency on ChildProcess gem in favor of native Process.spawn (#11251)
+  * Add support for Selenium Manager to work with IE Driver
+  * Improve error handling for Selenium Manager
+
+Safari:
+  * Fix bug preventing Safari Options from being used with Safari Technology Preview
+
+4.6.1 (2022-11-04)
+=========================
+Ruby:
+  * fix bug preventing selenium-manager from being executable by default
+
+4.6.0 (2022-11-04)
+=========================
+BiDi:
+  * Released selenium-devtools 0.107.0 (supports CDP v85, v105, v106, v107)
+
+Ruby:
+  * firefox scroll by amount is only failing on mac
+  * add initial support for selenium manager
+  * Revert "[rb] do not allow Select class to work with disabled selects"
+  * Make sure selenium-manager is packed into gem
+  * Fix platform list in #scroll_by guard
+
+4.5.0 (2022-09-28)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.105.0 (supports CDP v85, v103, v104, v105)
+  * Released selenium-devtools 0.106.0 (supports CDP v85, v104, v105, v106)
+  * Add HasBiDi support to Chrome
+
+Ruby:
+  * Fix bug in Platform code
+  * Update Select class to error when elements are disabled (#10812)
+
+Firefox:
+  * Add support for installing unsigned add-ons (#10265, thanks TamsilAmani!)
+  * Change accept_insecure_certificates to true by default (to match other bindings)
+  * Set debugger_address option to true by default
+
+Server:
+  * Add support for initializing server class with arguments and log level
+
+4.4.0 (2022-08-09)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.1 to fix websocket dependency requirement
+  * Released selenium-devtools 0.104.0 (supports CDP v85, v102, v103, v104)
+  * Have network interceptor ignore cancelled requests (#10856)
+  * Improve websocket message handling
+
+Chromium:
+  * Prevent users from setting w3c: false and warn for true (thanks Tamsil Amani!)
+
+Ruby:
+  * Implement Virtual Authenticator (#10903, #10541) (thanks Tamsil Amani!)
+
+4.3.0 (2022-06-23)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.0 (supports CDP v85, v101, v102, v103)
+
+Ruby:
+  * Allow specifying which button is clicked in pointer action class methods
+  * Remove deprecated `Persistent` http class
+  * Remove deprecated HasRemoteStatus module
+  * Remove deprecated `Manager#new_window` and `Manager#logs`
+  * `ActionBuilder#move_to` no longer attempts to move to top left corner of element
+  * Remove deprecated support for sending Service parameters directly to Driver constructor
+  * Remove deprecated setters and getters for driver path on Browser modules
+  * Remove deprecated support for passing in options argument to Options class
+  * Allow `:options` parameter to take `Options` instance argument like other languages
+  * Remove deprecated support for `:desired_capabilities` & `:options` with `Hash` argument
+
+4.2.1 (2022-05-31)
+=========================
+
+Ruby
+  * Fix bug in setting default duration in Actions constructor
+
+4.2.0 (2022-05-27)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.97.0 (supports CDP v85, v95, v96, v97)
+  * Released selenium-devtools 0.98.0 (supports CDP v85, v96, v97, v98)
+  * Released selenium-devtools 0.99.0 (supports CDP v85, v97, v98, v99)
+  * Released selenium-devtools 0.100.0 (supports CDP v85, v98, v99, v100)
+  * Released selenium-devtools 0.101.0 (supports CDP v85, v99, v100, v101)
+  * Released selenium-devtools 0.102.0 (supports CDP v85, v100, v101, v102)
+  * Implement simple BiDi connection
+  * Fix bug in initial BiDi implementation (thanks Boris Petrov!)
+  * Fix bug with mutating headers in request interception (#10574)
+  * Fix bug with empty response headers (thanks Viren Negi!)
+
+Firefox:
+  * Add support to Firefox Options for environment capability
+  * Use addon parameter instead of path parameter to avoid using file detector
+  * Restore #from_name method to Firefox profile (#10146)
+
+Chromium:
+  * Add support for casting desktop
+
+Ruby:
+  * Updated minimum required Ruby version to 2.7
+  * Fix bug by not attempting to stop service process when it's not started (#10015)
+  * Fix bug to not stop service process when it's not started (thanks Atsushi Tatsuma!)
+  * Use driver endpoint to get page source instead of JavaScript
+  * Add zenkaku_hankaku key support
+  * Fix download support of Selenium Server
+  * Do not convert Tag Name to CSS Selector
+
+ActionBuilder:
+  * Raise error if input device not found
+  * Move `TypingInteraction` from `Interactions::KeyInput` to `Interactions` module
+  * Throw better errors for `PointerInput` methods
+  * Allow each action interaction class to validate its own source
+  * Set all Interactions classes to private
+  * Allow device names to use a default id if one is not specified
+  * Deprecate default mouse and keyboard values in constructor, favoring devices parameter
+  * Add support for pointer event properties
+  * Implement scroll wheel support
+  * Deprecate ordered pair parameters for pause method in favor of keywords
+  * Deprecate move to element with offset changing origin to top left of element
+
+4.1.0 (2021-11-22)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.95.0 (supports CDP v85, v93, v94, v95)
+  * Released selenium-devtools 0.96.0 (supports CDP v85, v94, v95, v96)
+  * Added support for secure websockets (#10017)
+
+Ruby:
+  * Execute Script supports ShadowRoots (#10019)
+  * Fixed bug preventing zipping temp files on Windows (#9987)
+  * Sang Pumpkin Carol (thanks Jari!)
+
+4.0.3 (2021-10-20)
+=========================
+
+Firefox:
+  * Fixed bug avoiding camel casing prefs (#9944 thanks @glaszig)
+
+Ruby:
+  * Fixed bug in Select class for finding by index (#9945)
+
+Remote:
+  * Fixed bug preventing sending keys with an empty value
+
+4.0.2 (2021-10-19)
+=========================
+
+Server:
+  * Fixed bug in new download code.
+
+4.0.1 (2021-10-19)
+=========================
+
+Server:
+  * Fixed download by pointing to new storage location.
+    - Only supports Selenium 4 versions
+  * Added default value for Server::get and Server::download to use the latest server version
+
+4.0.0 (2021-10-13)
+=========================
+
+Ruby:
+  * Updated minimum required Ruby version to 2.6
+  * Updated minimum required rexml gem version due to vulnerability
+
+Chrome:
+  * Added default values for Network Conditions so no longer need to specify everything
+
+Firefox:
+  * Fixed bug where Firefox prefs were converting snake case to camel case
+
+4.0.0.rc3 (2021-10-08)
+=========================
+
+Ruby:
+  * Added support for getting timeout values from the driver
+
+4.0.0.rc2 (2021-09-30)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.93.0 (2021-09-01)
+    - adds CDP version 93
+    - removes CDP version 91
+  * Released selenium-devtools 0.94.0 (2021-09-22)
+    - adds CDP version 94
+    - removes CDP version 92
+  * Added support for mutating responses in network interception
+
+Ruby:
+  * Implemented Options#add_option to work for vendor extension capabilities
+  * Fixed bug for requiring uri (#9825 thanks @flanger001)
+  * Moved New Window functionality to TargetLocator#new_window to be used with Driver#switch_to
+  * Deprecated using Manager#new_window
+  * Changed order of logging output (#9850)
+  * Added support for web_socket_url capability
+
+Chromium:
+  * Implemented casting functionality
+  * Implemented ability to launch chromium app
+  * Implemented support for specifying permissions
+  * Added support for Chrome-specific Android functionality with #enable_android
+
+Firefox:
+  * Implemented context functionality
+  * Added support for Firefox-specific Android functionality with #enable_android
+
+Remote:
+  * Added support for file detector to install Firefox addons from client machine
+
+4.0.0.rc1 (2021-09-01)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.92.0 (2021-08-21) which:
+    - adds CDP versions 92
+    - removes CDP versions 88, 89, 90
+
+IE:
+  * Added options for running Microsoft Edge in IE mode with IE Driver
+
+Remote:
+  * Added default file detector for remote driver
+
+Ruby:
+  * Fixed bug for getting valid capability that has not been set
+  * Fixed bug preventing loading of ServerError class
+
+4.0.0.beta4 (2021-06-07)
+=========================
+
+Chrome:
+  * Fixed bug with camel casing of localState object
+
+Firefox:
+  * Added support for Full Page Screenshots
+
+Remote:
+  * Added support for #execute_cdp on Chrome and Edge
+
+Ruby:
+  * Changed capabilities to use alwaysMatch instead of firstMatch by default
+  * Fixed bug preventing Options classes from handling Proxy instances
+
+4.0.0.beta3 (2021-04-13)
+=========================
+
+Chrome:
+  * Fixed a regression with prefs hash keys being converted to camelCase.
+  * Fixed an issue when passing Profile object to Options would fail.
+
+DevTools:
+  * Released selenium-devtools 0.91.0 which:
+    - adds CDP versions 90 and 91
+    - removes CDP versions 86 and 87
+
+Remote:
+  * Added support for setting alwaysMatch/firstMatch capabilities per W3C
+    WebDriver specification. It's done using the following methods where
+    `caps` is either a Ruby hash with desired capabilities or an instance
+    of Remote::Capabilities:
+      * Selenium::WebDriver::Remote::Capabilities.always_match(caps)
+      * Selenium::WebDriver::Remote::Capabilities.first_match(caps)
+  * Added support for Driver#save_print_page.
+  * Fixed an issue with Driver#print_page.
+  * Added support for setting timeouts capabilities in Remote::Capabilities
+    per W3C WebDriver specification.
+  * Added support for Element#aria_role which returns WAI-ARIA role of the element.
+  * Added support for Element#accessible name which returns WAI-ARIA label of the element.
+  * Added support for using DevTools version provided by Grid instead of
+    calculating it manually
+
+Ruby:
+  * Remove JRuby-specific socket poller. Note that this requires JRuby 9.2.8.0+.
+
+4.0.0.beta2 (2021-03-16)
+=========================
+
+DevTools:
+  * Separated out DevTools methods into selenium-devtools gem to better manage versioning
+  * Updated supported versions to 85-89
+  * Add support for intercepting browser requests
+
+Firefox:
+  * Add support for using DevTools commands with Firefox Nightly
+
+Remote:
+  * Provide access to browser specific driver extensions as appropriate for designated browser
+  * Add support for using DevTools commands via Grid
+
+Ruby:
+  * Spec Guard implementation moved into lib directory for other projects to use
+  * Implemented `Element#dom_attribute` to obtain attribute value as defined by w3c specification
+  * Implemented `Options#eq?`
+  * Allow Options subclass instances to be created from class methods in superclass
+
+Safari:
+  * Fix bug that prevented usage of Safari Technology Preview
+
+4.0.0.beta1 (2021-02-15)
+=========================
+
+DevTools:
+  * Updated supported versions to 85-88
+
+Edge:
+  * Removed support for legacy Edge HTML
+
+Firefox:
+  * Fixed support for default profile settings
+  * Added support for Devtools for Firefox v87+
+
+Safari:
+  * Removed default platformName specification so it works with Grid
+
+Ruby:
+  * Added support for httpOnly attribute in Cookies
+  * Implemented `#print_page` method (thanks @raju249)
+  * Fixed support for missing libraries in Ruby 3.0 (thanks @znz)
+  * Deprecated `HTTP::Persistent` class
+  * Fixed support for accessors in options classes
+  * Added support for status endpoint for all browsers
+  * Fix support for Browser, Driver, and Performance Logging in Chrome and Edge
+
+4.0.0.alpha7 (2020-11-10)
+=========================
+
+Chrome:
+  * Fixed a link to download ChromeDriver when it's not found (thanks @masakazutakewaka).
+  * Fixed an issue when passing instance of Profile to an Options in capabilities
+    (thanks @masakazutakewaka).
+
+DevTools:
+  * Added support for multiple version of CDP. Currently supported versions are
+    84-87. The proper version is automatically selected when the browser is started
+    based on its version. The implementation is Chromium-based and is confirmed
+    to work in Chrome and Edge at least.
+  * Added support for basic authentication (see HasAuthentication).
+  * Added support for listening to JavaScript console messages (see HasLogEvents).
+  * Added support for listening to JavaScript exceptions (see HasLogEvents).
+  * Added support for listening to DOM mutations (see HasLogEvents).
+
+Edge:
+  * Switched default Edge implementation to Chromium-based. To use older versions
+    of Edge, pass :edge_html when initializing the driver.
+
+Firefox:
+  * Fixed an issue whereby using the new capabilities structure in local drivers
+    would cause the W3C check to complain that `browser_name` was an invalid
+    capability key name (thanks @luke-hill)
+
+Ruby:
+  * Added support for taking screenshots of individual elements using Element#screenshot
+    (thanks @johndouthat).
+  * Fixed deprecation message of using Net::HTTP::Proxy (thanks @masakazutakewaka).
+  * Fixed false negative detection of Linux on WSL2 (thanks @snsten).
+  * Support ChildProcess 4.x versions (thanks @boutil).
+
+Safari:
+  * Fixed browser name in capabilities for Safari Technology Preview.
+
 4.0.0.alpha6 (2020-05-28)
 =========================
 
@@ -697,11 +1242,11 @@ Ruby:
   * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
 
 W3C:
-  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
-  * Implement element #property method (thanks lmtierney) 
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney)
+  * Implement element #property method (thanks lmtierney)
 
 Chrome:
-  * Fix bug in switches (thanks danvine) 
+  * Fix bug in switches (thanks danvine)
 
 3.0.1 (2016-11-06)
 ===================
@@ -723,7 +1268,7 @@ Ruby:
   * Add support for latest driver options
   * Add support for :port parameter for launching driver
   * Add support for :service_args parameter for driver command line switches
-  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto )
 
 Firefox:
   * Add support for :firefox_options in geckodriver

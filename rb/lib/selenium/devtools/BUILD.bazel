@@ -1,0 +1,49 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_library")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+CDP_VERSIONS = [
+    "v85",
+    "v119",
+    "v117",
+    "v118",
+]
+
+rb_library(
+    name = "devtools",
+    data = [":cdp-" + n for n in CDP_VERSIONS],
+    deps = [":version"],
+)
+
+rb_library(
+    name = "version",
+    srcs = ["version.rb"],
+)
+
+rb_library(
+    name = "cdp-generate",
+    srcs = ["support/cdp_client_generator.rb"],
+)
+
+filegroup(
+    name = "cdp-generate-file",
+    srcs = ["support/cdp_client_generator.rb"],
+)
+
+[
+    genrule(
+        name = "cdp-" + n,
+        srcs = [
+            "//common/devtools/chromium/" + n + ":browser_protocol",
+            "//common/devtools/chromium/" + n + ":js_protocol",
+            ":cdp-generate-file",
+        ],
+        outs = [
+            n,
+            n + ".rb",
+        ],
+        cmd = "$(location @rules_ruby_dist//:ruby) $(location :cdp-generate-file) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $(OUTS) " + n,
+        tools = ["@rules_ruby_dist//:ruby"],
+    )
+    for n in CDP_VERSIONS
+]

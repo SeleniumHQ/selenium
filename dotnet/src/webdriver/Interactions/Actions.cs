@@ -18,37 +18,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    /// <summary>
-    /// Provides values that indicate from where element offsets for MoveToElement
-    /// are calculated.
-    /// </summary>
-    public enum MoveToElementOffsetOrigin
-    {
-        /// <summary>
-        /// Offsets are calculated from the top-left corner of the element.
-        /// </summary>
-        TopLeft,
-
-        /// <summary>
-        /// Offsets are calcuated from the center of the element.
-        /// </summary>
-        Center
-    }
-
     /// <summary>
     /// Provides a mechanism for building advanced interactions with the browser.
     /// </summary>
     public class Actions : IAction
     {
+        private readonly TimeSpan DefaultScrollDuration = TimeSpan.FromMilliseconds(250);
         private readonly TimeSpan DefaultMouseMoveDuration = TimeSpan.FromMilliseconds(250);
         private ActionBuilder actionBuilder = new ActionBuilder();
-        private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
-        private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
+        private PointerInputDevice activePointer;
+        private KeyInputDevice activeKeyboard;
+        private WheelInputDevice activeWheel;
         private IActionExecutor actionExecutor;
 
         /// <summary>
@@ -60,7 +43,7 @@ namespace OpenQA.Selenium.Interactions
             IActionExecutor actionExecutor = GetDriverAs<IActionExecutor>(driver);
             if (actionExecutor == null)
             {
-                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", "driver");
+                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", nameof(driver));
             }
 
             this.actionExecutor = actionExecutor;
@@ -72,6 +55,157 @@ namespace OpenQA.Selenium.Interactions
         protected IActionExecutor ActionExecutor
         {
             get { return this.actionExecutor; }
+        }
+
+        /// <summary>
+        /// Sets the active pointer device for this Actions class.
+        /// </summary>
+        /// <param name="kind">The kind of pointer device to set as active.</param>
+        /// <param name="name">The name of the pointer device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActivePointer(PointerKind kind, string name)
+        {
+            IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
+
+            InputDevice device = null;
+
+            foreach (var sequence in sequences)
+            {
+                Dictionary<string, object> actions = sequence.ToDictionary();
+
+                string id = (string)actions["id"];
+
+                if (id == name)
+                {
+                    device = sequence.inputDevice;
+                    break;
+                }
+            }
+
+            if (device == null)
+            {
+                this.activePointer = new PointerInputDevice(kind, name);
+            }
+            else
+            {
+                this.activePointer = (PointerInputDevice)device;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the keyboard device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveKeyboard(string name)
+        {
+            IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
+
+            InputDevice device = null;
+
+            foreach (var sequence in sequences)
+            {
+                Dictionary<string, object> actions = sequence.ToDictionary();
+
+                string id = (string)actions["id"];
+
+                if (id == name)
+                {
+                    device = sequence.inputDevice;
+                    break;
+                }
+            }
+
+            if (device == null)
+            {
+                this.activeKeyboard = new KeyInputDevice(name);
+            }
+            else
+            {
+                this.activeKeyboard = (KeyInputDevice)device;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the active wheel device for this Actions class.
+        /// </summary>
+        /// <param name="name">The name of the wheel device to set as active.</param>
+        /// <returns>A self-reference to this Actions class.</returns>
+        public Actions SetActiveWheel(string name)
+        {
+            IList<ActionSequence> sequences = this.actionBuilder.ToActionSequenceList();
+
+            InputDevice device = null;
+
+            foreach (var sequence in sequences)
+            {
+                Dictionary<string, object> actions = sequence.ToDictionary();
+
+                string id = (string)actions["id"];
+
+                if (id == name)
+                {
+                    device = sequence.inputDevice;
+                    break;
+                }
+            }
+
+            if (device == null)
+            {
+                this.activeWheel = new WheelInputDevice(name);
+            }
+            else
+            {
+                this.activeWheel = (WheelInputDevice)device;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Gets the active pointer device for this Actions class.
+        /// </summary>
+        /// <returns>The active pointer device for this Actions class.</returns>
+        public PointerInputDevice GetActivePointer()
+        {
+            if (this.activePointer == null)
+            {
+                SetActivePointer(PointerKind.Mouse, "default mouse");
+            }
+
+            return this.activePointer;
+        }
+
+        /// <summary>
+        /// Gets the active keyboard device for this Actions class.
+        /// </summary>
+        /// <returns>The active keyboard device for this Actions class.</returns>
+        public KeyInputDevice GetActiveKeyboard()
+        {
+            if (this.activeKeyboard == null)
+            {
+                SetActiveKeyboard("default keyboard");
+            }
+
+            return this.activeKeyboard;
+        }
+
+        /// <summary>
+        /// Gets the active wheel device for this Actions class.
+        /// </summary>
+        /// <returns>The active wheel device for this Actions class.</returns>
+        public WheelInputDevice GetActiveWheel()
+        {
+            if (this.activeWheel == null)
+            {
+                SetActiveWheel("default wheel");
+            }
+
+            return this.activeWheel;
         }
 
         /// <summary>
@@ -102,19 +236,19 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(theKey))
             {
-                throw new ArgumentException("The key value must not be null or empty", "theKey");
+                throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
             }
 
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(theKey[0]));
-            this.actionBuilder.AddAction(new PauseInteraction(this.defaultKeyboard, TimeSpan.FromMilliseconds(100)));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(theKey[0]));
+            this.actionBuilder.AddAction(new PauseInteraction(this.GetActiveKeyboard(), TimeSpan.FromMilliseconds(100)));
             return this;
         }
 
@@ -146,18 +280,18 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(theKey))
             {
-                throw new ArgumentException("The key value must not be null or empty", "theKey");
+                throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
             }
 
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
-            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(theKey[0]));
+            this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(theKey[0]));
             return this;
         }
 
@@ -181,21 +315,21 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(keysToSend))
             {
-                throw new ArgumentException("The key value must not be null or empty", "keysToSend");
+                throw new ArgumentException("The key value must not be null or empty", nameof(keysToSend));
             }
 
             ILocatable target = GetLocatableFromElement(element);
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             }
 
             foreach (char key in keysToSend)
             {
-                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(key));
-                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyDown(key));
+                this.actionBuilder.AddAction(this.GetActiveKeyboard().CreateKeyUp(key));
             }
 
             return this;
@@ -218,7 +352,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold()
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
             return this;
         }
 
@@ -239,7 +373,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release()
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -260,8 +394,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -282,10 +416,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick()
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Left));
             return this;
         }
 
@@ -298,16 +432,15 @@ namespace OpenQA.Selenium.Interactions
         {
             if (toElement == null)
             {
-                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", "toElement");
+                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", nameof(toElement));
             }
 
-            ILocatable target = GetLocatableFromElement(toElement);
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, DefaultMouseMoveDuration));
-            return this;
+            return this.MoveToElement(toElement, 0, 0);
         }
 
         /// <summary>
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
+        /// In Selenium 4.3 the origin for the offset will be the in-view center point of the element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
@@ -315,34 +448,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            return this.MoveToElement(toElement, offsetX, offsetY, MoveToElementOffsetOrigin.TopLeft);
-        }
-
-        /// <summary>
-        /// Moves the mouse to the specified offset of the top-left corner of the specified element.
-        /// </summary>
-        /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <param name="offsetOrigin">The <see cref="MoveToElementOffsetOrigin"/> value from which to calculate the offset.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
-        {
-            ILocatable target = GetLocatableFromElement(toElement);
-
-            if (offsetOrigin == MoveToElementOffsetOrigin.TopLeft)
-            {
-                Size elementSize = toElement.Size;
-
-                int modifiedOffsetX = offsetX - (elementSize.Width / 2);
-                int modifiedOffsetY = offsetY - (elementSize.Height / 2);
-
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, modifiedOffsetX, modifiedOffsetY, DefaultMouseMoveDuration));
-            }
-            else
-            {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
-            }
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -354,7 +460,19 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
+            return this;
+        }
+
+        /// <summary>
+        /// Moves the mouse from the upper left corner of the current viewport by the provided offset.
+        /// </summary>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions MoveToLocation(int offsetX, int offsetY)
+        {
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -375,8 +493,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick()
         {
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Right));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Right));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerDown(MouseButton.Right));
+            this.actionBuilder.AddAction(this.GetActivePointer().CreatePointerUp(MouseButton.Right));
             return this;
         }
 
@@ -406,6 +524,76 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+        /// </summary>
+        /// <param name="element">Which element to scroll into the viewport.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollToElement(IWebElement element)
+        {
+            this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amounts with the origin in the top left corner of the viewport.
+        /// </summary>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollByAmount(int deltaX, int deltaY)
+        {
+            this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amount based on a provided origin.
+        /// </summary>
+        /// <remarks>
+        /// The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+        /// If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+        /// be scrolled to the bottom of the viewport.
+        /// </remarks>
+        /// <param name="scrollOrigin">Where scroll originates (viewport or element center) plus provided offsets.</param>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="MoveTargetOutOfBoundsException">If the origin with offset is outside the viewport.</exception>
+        public Actions ScrollFromOrigin(WheelInputDevice.ScrollOrigin scrollOrigin, int deltaX, int deltaY)
+        {
+            if (scrollOrigin.Viewport && scrollOrigin.Element != null)
+            {
+                throw new ArgumentException("viewport can not be true if an element is defined.", nameof(scrollOrigin));
+            }
+
+            if (scrollOrigin.Viewport)
+            {
+                this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(CoordinateOrigin.Viewport,
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+            else
+            {
+                this.actionBuilder.AddAction(this.GetActiveWheel().CreateWheelScroll(scrollOrigin.Element,
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Performs a Pause.
+        /// </summary>
+        /// <param name="duration">How long to pause the action chain.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions Pause(TimeSpan duration)
+        {
+            this.actionBuilder.AddAction(new PauseInteraction(this.GetActivePointer(), duration));
+            return this;
+        }
+
+        /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
@@ -420,6 +608,7 @@ namespace OpenQA.Selenium.Interactions
         public void Perform()
         {
             this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+            this.actionBuilder.ClearSequences();
         }
 
         /// <summary>
@@ -457,7 +646,7 @@ namespace OpenQA.Selenium.Interactions
 
             if (target == null)
             {
-                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", "element");
+                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", nameof(element));
             }
 
             return target;

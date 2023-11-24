@@ -24,15 +24,15 @@ const error = require('../../lib/error')
 const util = require('../../http/util')
 
 describe('selenium-webdriver/http/util', function () {
-  var server, baseUrl
+  let server, baseUrl
 
-  var status, value, responseCode
+  let status, value, responseCode
 
   function startServer(done) {
     if (server) return done()
 
     server = http.createServer(function (_req, res) {
-      var data = JSON.stringify({ status: status, value: value })
+      const data = JSON.stringify({ status: status, value: value })
       res.writeHead(responseCode, {
         'Content-Type': 'application/json; charset=utf-8',
         'Content-Length': Buffer.byteLength(data, 'utf8'),
@@ -43,7 +43,7 @@ describe('selenium-webdriver/http/util', function () {
     server.listen(0, '127.0.0.1', function (e) {
       if (e) return done(e)
 
-      var addr = server.address()
+      const addr = server.address()
       baseUrl = 'http://' + addr.address + ':' + addr.port
       done()
     })
@@ -67,7 +67,7 @@ describe('selenium-webdriver/http/util', function () {
   describe('#getStatus', function () {
     it('should return value field on success', function () {
       return util.getStatus(baseUrl).then(function (response) {
-        assert.equal('abc123', response)
+        assert.strictEqual('abc123', response)
       })
     })
 
@@ -79,8 +79,8 @@ describe('selenium-webdriver/http/util', function () {
         },
         function (err) {
           assert.ok(err instanceof error.WebDriverError)
-          assert.equal(err.code, error.WebDriverError.code)
-          assert.equal(err.message, value)
+          assert.strictEqual(err.code, error.WebDriverError.code)
+          assert.strictEqual(err.message, value)
         }
       )
     })
@@ -110,8 +110,8 @@ describe('selenium-webdriver/http/util', function () {
         },
         function (err) {
           assert.ok(err instanceof error.WebDriverError)
-          assert.equal(err.code, error.WebDriverError.code)
-          assert.equal(err.message, value)
+          assert.strictEqual(err.code, error.WebDriverError.code)
+          assert.strictEqual(err.message, value)
         }
       )
     })
@@ -139,7 +139,7 @@ describe('selenium-webdriver/http/util', function () {
     it('can cancel wait', function () {
       status = 1
       let cancel = new Promise((resolve) => {
-        setTimeout((_) => resolve(), 50)
+        setTimeout(() => resolve(), 50)
       })
       return util.waitForServer(baseUrl, 200, cancel).then(
         () => {
@@ -189,7 +189,7 @@ describe('selenium-webdriver/http/util', function () {
     it('can cancel wait', function () {
       responseCode = 404
       let cancel = new Promise((resolve) => {
-        setTimeout((_) => resolve(), 50)
+        setTimeout(() => resolve(), 50)
       })
       return util.waitForUrl(baseUrl, 200, cancel).then(
         () => {

@@ -25,7 +25,7 @@ module Selenium
           @callback = callback
         end
 
-        def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
+        def method_missing(meth, *args) # rubocop:disable Style/MissingRespondToMissing
           @callback.call meth, *args
         end
       end # BlockEventListener

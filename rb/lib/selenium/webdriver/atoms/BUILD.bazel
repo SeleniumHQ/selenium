@@ -1,0 +1,27 @@
+load("//common:defs.bzl", "copy_file")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+copy_file(
+    name = "find-elements",
+    src = "//javascript/atoms/fragments:find-elements.js",
+    out = "findElements.js",
+)
+
+copy_file(
+    name = "get-attribute",
+    src = "//javascript/webdriver/atoms:get-attribute.js",
+    out = "getAttribute.js",
+)
+
+copy_file(
+    name = "is-displayed",
+    src = "//javascript/atoms/fragments:is-displayed.js",
+    out = "isDisplayed.js",
+)
+
+copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "mutationListener.js",
+)

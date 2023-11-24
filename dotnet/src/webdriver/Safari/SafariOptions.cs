@@ -47,10 +47,11 @@ namespace OpenQA.Selenium.Safari
     {
         private const string BrowserNameValue = "safari";
         private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
-        private const string EnableAutomticProfilingSafariOption = "safari:automaticProfiling";
+        private const string EnableAutomaticProfilingSafariOption = "safari:automaticProfiling";
 
         private bool enableAutomaticInspection = false;
         private bool enableAutomaticProfiling = false;
+        private bool technologyPreview = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
@@ -58,8 +59,27 @@ namespace OpenQA.Selenium.Safari
         public SafariOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
+            this.technologyPreview = false;
             this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
-            this.AddKnownCapabilityName(SafariOptions.EnableAutomticProfilingSafariOption, "EnableAutomaticProfiling property");
+            this.AddKnownCapabilityName(SafariOptions.EnableAutomaticProfilingSafariOption, "EnableAutomaticProfiling property");
+        }
+
+        /// <summary>
+        /// Allows the Options class to be used with a Safari Technology Preview driver
+        /// </summary>
+        public void UseTechnologyPreview()
+        {
+            this.technologyPreview = true;
+            this.BrowserName = "Safari Technology Preview";
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to have the driver preload the
+        /// Web Inspector and JavaScript debugger in the background.
+        /// </summary>
+        public bool TechnologyPreview
+        {
+            get { return this.technologyPreview; }
         }
 
         /// <summary>
@@ -83,24 +103,6 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Safari driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method for adding additional options")]
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
-        {
-            this.AddAdditionalOption(capabilityName, capabilityValue);
-        }
-
-        /// <summary>
         /// Returns ICapabilities for Safari with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -116,7 +118,7 @@ namespace OpenQA.Selenium.Safari
 
             if (this.enableAutomaticProfiling)
             {
-                capabilities.SetCapability(EnableAutomticProfilingSafariOption, true);
+                capabilities.SetCapability(EnableAutomaticProfilingSafariOption, true);
             }
 
             return capabilities.AsReadOnly();

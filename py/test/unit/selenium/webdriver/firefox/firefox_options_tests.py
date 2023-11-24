@@ -18,7 +18,8 @@
 import pytest
 
 from selenium.common.exceptions import InvalidArgumentException
-from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options
@@ -30,55 +31,64 @@ def options():
 
 
 def test_set_binary_with_firefox_binary(options):
-    binary = FirefoxBinary('foo')
+    binary = FirefoxBinary("foo")
     options.binary = binary
     assert options._binary == binary
 
 
 def test_set_binary_with_path(options):
-    options.binary = '/foo'
-    assert options._binary._start_cmd == '/foo'
+    options.binary = "/foo"
+    assert options._binary._start_cmd == "/foo"
 
 
 def test_get_binary(options):
-    options.binary = '/foo'
-    assert options.binary._start_cmd == '/foo'
+    options.binary = "/foo"
+    assert options.binary._start_cmd == "/foo"
 
 
 def test_set_binary_location(options):
-    options.binary_location = '/foo'
-    assert options._binary._start_cmd == '/foo'
+    options.binary_location = "/foo"
+    assert options._binary._start_cmd == "/foo"
 
 
 def test_get_binary_location(options):
-    options._binary = FirefoxBinary('/foo')
-    assert options.binary_location == '/foo'
+    options._binary = FirefoxBinary("/foo")
+    assert options.binary_location == "/foo"
 
 
 def test_set_preference(options):
-    options.set_preference('foo', 'bar')
-    assert options._preferences['foo'] == 'bar'
+    options.set_preference("foo", "bar")
+    assert options._preferences["foo"] == "bar"
 
 
 def test_get_preferences(options):
-    options._preferences = {'foo': 'bar'}
-    assert options.preferences['foo'] == 'bar'
+    options._preferences = {"foo": "bar"}
+    assert options.preferences["foo"] == "bar"
 
 
 def test_set_proxy(options):
-    proxy = Proxy({'proxyType': ProxyType.MANUAL})
+    proxy = Proxy({"proxyType": ProxyType.MANUAL})
     options.proxy = proxy
     assert options._proxy == proxy
 
 
+def test_set_proxy_isnt_in_moz_prefix(options):
+    proxy = Proxy({"proxyType": ProxyType.MANUAL})
+    options.proxy = proxy
+
+    caps = options.to_capabilities()
+    assert caps["proxy"]["proxyType"] == "manual"
+    assert caps.get("moz:firefoxOptions") is None
+
+
 def test_raises_exception_if_proxy_is_not_proxy_object(options):
     with pytest.raises(InvalidArgumentException):
-        options.proxy = 'foo'
+        options.proxy = "foo"
 
 
 def test_get_proxy(options):
-    options._proxy = 'foo'
-    assert options.proxy == 'foo'
+    options._proxy = "foo"
+    assert options.proxy == "foo"
 
 
 def test_set_profile_with_firefox_profile(options):
@@ -93,18 +103,18 @@ def test_set_profile_with_path(options):
 
 
 def test_get_profile(options):
-    options._profile = 'foo'
-    assert options.profile == 'foo'
+    options._profile = "foo"
+    assert options.profile == "foo"
 
 
 def test_add_arguments(options):
-    options.add_argument('foo')
-    assert 'foo' in options._arguments
+    options.add_argument("foo")
+    assert "foo" in options._arguments
 
 
 def test_get_arguments(options):
-    options._arguments = ['foo']
-    assert 'foo' in options.arguments
+    options._arguments = ["foo"]
+    assert "foo" in options.arguments
 
 
 def test_raises_exception_if_argument_is_falsy(options):
@@ -113,47 +123,32 @@ def test_raises_exception_if_argument_is_falsy(options):
 
 
 def test_set_log_level(options):
-    options.log.level = 'debug'
-    assert options.log.level == 'debug'
-
-
-def test_set_headless(options):
-    options.headless = True
-    assert '-headless' in options._arguments
-
-
-def test_unset_headless(options):
-    options._arguments = ['-headless']
-    options.headless = False
-    assert '-headless' not in options._arguments
-
-
-def test_get_headless(options):
-    options._arguments = ['-headless']
-    assert options.headless
+    options.log.level = "debug"
+    assert options.log.level == "debug"
 
 
 def test_creates_capabilities(options):
     profile = FirefoxProfile()
-    options._arguments = ['foo']
-    options._binary = FirefoxBinary('/bar')
-    options._preferences = {'foo': 'bar'}
-    options._proxy = Proxy({'proxyType': ProxyType.MANUAL})
+    options._arguments = ["foo"]
+    options._binary = FirefoxBinary("/bar")
+    options._preferences = {"foo": "bar"}
+    options.proxy = Proxy({"proxyType": ProxyType.MANUAL})
     options._profile = profile
-    options.log.level = 'debug'
+    options.log.level = "debug"
     caps = options.to_capabilities()
     opts = caps.get(Options.KEY)
     assert opts
-    assert 'foo' in opts['args']
-    assert opts['binary'] == '/bar'
-    assert opts['prefs']['foo'] == 'bar'
-    assert opts['profile'] == profile.encoded
-    assert caps['proxy']['proxyType'] == ProxyType.MANUAL['string']
-    assert opts['log']['level'] == 'debug'
+    assert "foo" in opts["args"]
+    assert opts["binary"] == "/bar"
+    assert opts["prefs"]["foo"] == "bar"
+    assert opts["profile"] == profile.encoded
+    assert caps["proxy"]["proxyType"] == "manual"
+    assert opts["log"]["level"] == "debug"
 
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
+
     caps = DesiredCapabilities.FIREFOX.copy()
     caps.update({"pageLoadStrategy": "normal"})
     assert options._caps == caps
@@ -161,25 +156,32 @@ def test_starts_with_default_capabilities(options):
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
+
     assert isinstance(options, BaseOptions)
 
 
 def test_raises_exception_with_invalid_page_load_strategy(options):
     with pytest.raises(ValueError):
-        options.page_load_strategy = 'never'
+        options.page_load_strategy = "never"
 
 
 def test_set_page_load_strategy(options):
-    options.page_load_strategy = 'normal'
-    assert options._caps["pageLoadStrategy"] == 'normal'
+    options.page_load_strategy = "normal"
+    assert options._caps["pageLoadStrategy"] == "normal"
 
 
 def test_get_page_load_strategy(options):
-    options._page_load_strategy = 'normal'
-    assert options._caps["pageLoadStrategy"] == 'normal'
+    options._page_load_strategy = "normal"
+    assert options._caps["pageLoadStrategy"] == "normal"
 
 
 def test_creates_capabilities_with_page_load_strategy(options):
-    options.page_load_strategy = 'eager'
+    options.page_load_strategy = "eager"
     caps = options.to_capabilities()
-    assert caps['pageLoadStrategy'] == 'eager'
+    assert caps["pageLoadStrategy"] == "eager"
+
+
+def test_enables_firefox_mobile(options):
+    options.enable_mobile()
+    result_caps = options.to_capabilities()
+    assert result_caps["moz:firefoxOptions"]["androidPackage"] == "org.mozilla.firefox"

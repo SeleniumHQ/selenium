@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+
 exports_files(
     srcs = [
         "browser_protocol.json",
@@ -6,6 +8,7 @@ exports_files(
     visibility = [
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
+        "//rb/lib/selenium/devtools:__pkg__",
     ],
 )
 

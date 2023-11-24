@@ -1,0 +1,33 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "tracing",
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/src/org/openqa/selenium/remote/tracing:__subpackages__",
+        "//java/test/org/openqa/selenium/remote/tracing:__subpackages__",
+    ],
+    exports = [
+        ":tracing-lib",
+        "//java/src/org/openqa/selenium/remote/tracing/empty",
+    ],
+)
+
+java_library(
+    name = "tracing-lib",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/remote/tracing/empty:__pkg__",
+    ],
+    exports = [
+        # Exposed by tracing APIs
+        "//java/src/org/openqa/selenium/remote/http",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-semconv"),
+    ],
+)

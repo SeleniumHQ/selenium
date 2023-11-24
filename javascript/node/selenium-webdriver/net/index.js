@@ -35,10 +35,10 @@ function getLoInterface() {
  * @param {string} family The IP family (IPv4 or IPv6). Defaults to IPv4.
  * @return {(string|undefined)} The located IP address or undefined.
  */
-function getAddress(loopback, family) {
+function getIPAddress(loopback, family) {
   let interfaces
   if (loopback) {
-    let lo = getLoInterface()
+    const lo = getLoInterface()
     interfaces = lo ? [lo] : null
   }
   interfaces = interfaces || os.networkInterfaces()
@@ -48,7 +48,10 @@ function getAddress(loopback, family) {
     }
 
     for (let ipAddress of interfaces[key]) {
-      if (ipAddress.family === family && ipAddress.internal === loopback) {
+      if (
+        (ipAddress.family === family || `IPv${ipAddress.family}` === family) &&
+        ipAddress.internal === loopback
+      ) {
         return ipAddress.address
       }
     }
@@ -63,8 +66,8 @@ function getAddress(loopback, family) {
  * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
  * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getAddress = function (family = 'IPv4') {
-  return getAddress(false, family)
+function getAddress(family = 'IPv4') {
+  return getIPAddress(false, family)
 }
 
 /**
@@ -72,8 +75,8 @@ exports.getAddress = function (family = 'IPv4') {
  * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
  * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getLoopbackAddress = function (family = 'IPv4') {
-  return getAddress(true, family)
+function getLoopbackAddress(family = 'IPv4') {
+  return getIPAddress(true, family)
 }
 
 /**
@@ -84,7 +87,7 @@ exports.getLoopbackAddress = function (family = 'IPv4') {
  * @return {{host: string, port: ?number}} A host and port. If no port is
  *     present in the argument `hostport`, port is null.
  */
-exports.splitHostAndPort = function (hostport) {
+function splitHostAndPort(hostport) {
   let lastIndex = hostport.lastIndexOf(':')
   if (lastIndex < 0) {
     return { host: hostport, port: null }
@@ -104,4 +107,11 @@ exports.splitHostAndPort = function (hostport) {
 
   let port = parseInt(hostport.slice(lastIndex + 1), 10)
   return { host, port }
+}
+
+// PUBLIC API
+module.exports = {
+  splitHostAndPort,
+  getLoopbackAddress,
+  getAddress,
 }

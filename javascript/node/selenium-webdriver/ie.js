@@ -18,7 +18,7 @@
 /**
  * @fileoverview Defines a {@linkplain Driver WebDriver} client for Microsoft's
  * Internet Explorer. Before using the IEDriver, you must download the latest
- * [IEDriverServer](http://selenium-release.storage.googleapis.com/index.html)
+ * [IEDriverServer](https://www.selenium.dev/downloads/)
  * and place it on your
  * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). You must also apply
  * the system configuration outlined on the Selenium project
@@ -27,16 +27,14 @@
 
 'use strict'
 
-const fs = require('fs')
 const http = require('./http')
-const io = require('./io')
 const portprober = require('./net/portprober')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const error = require('./lib/error')
+const { getPath } = require('./common/driverFinder')
 
-const IEDRIVER_EXE = 'IEDriverServer.exe'
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
 const SCROLL_BEHAVIOUR = {
   BOTTOM: 1,
@@ -82,6 +80,7 @@ const Key = {
   FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
   ATTACH_TO_EDGE_CHROMIUM: 'ie.edgechromium',
   EDGE_EXECUTABLE_PATH: 'ie.edgepath',
+  IGNORE_PROCESS_MATCH: 'ie.ignoreprocessmatch',
 }
 
 /**
@@ -370,22 +369,12 @@ class Options extends Capabilities {
       behavior !== SCROLL_BEHAVIOUR.TOP &&
       behavior !== SCROLL_BEHAVIOUR.BOTTOM
     ) {
-      throw new error.InvalidArgumentError(`Element Scroll Behavior out of range. 
+      throw new error.InvalidArgumentError(`Element Scroll Behavior out of range.
       It should be either ${SCROLL_BEHAVIOUR.TOP} or ${SCROLL_BEHAVIOUR.BOTTOM}`)
     }
     this.options_[Key.ELEMENT_SCROLL_BEHAVIOR] = behavior
     return this
   }
-}
-
-/**
- * _Synchronously_ attempts to locate the IE driver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return process.platform === 'win32' ? io.findInPath(IEDRIVER_EXE, true) : null
 }
 
 function createServiceFromCapabilities(capabilities) {
@@ -398,16 +387,7 @@ function createServiceFromCapabilities(capabilities) {
     )
   }
 
-  let exe = locateSynchronously()
-  if (!exe || !fs.existsSync(exe)) {
-    throw Error(
-      `${IEDRIVER_EXE} could not be found on the current PATH. Please ` +
-        `download the latest version of ${IEDRIVER_EXE} from ` +
-        'http://selenium-release.storage.googleapis.com/index.html and ' +
-        'ensure it can be found on your system PATH.'
-    )
-  }
-
+  let exe = null // Let Selenium Manager find it
   var args = []
   if (capabilities.has(Key.HOST)) {
     args.push('--host=' + capabilities.get(Key.HOST))
@@ -447,7 +427,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the IEDriverServer on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || IEDRIVER_EXE)
+    super(opt_exe)
     this.setLoopback(true) // Required.
   }
 }
@@ -474,13 +454,16 @@ class Driver extends webdriver.WebDriver {
     } else {
       service = createServiceFromCapabilities(options)
     }
+    if (!service.getExecutable()) {
+      service.setExecutable(getPath(options).driverPath)
+    }
 
     let client = service.start().then((url) => new http.HttpClient(url))
     let executor = new http.Executor(client)
 
-    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
-      service.kill()
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(executor, options, () => service.kill())
+    )
   }
 
   /**
@@ -500,4 +483,3 @@ exports.ServiceBuilder = ServiceBuilder
 exports.Key = Key
 exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY
 exports.Behavior = SCROLL_BEHAVIOUR
-exports.locateSynchronously = locateSynchronously

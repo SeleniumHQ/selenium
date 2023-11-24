@@ -1,0 +1,16 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["**/*Test.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium/docker",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)

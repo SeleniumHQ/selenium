@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Error
-
       #
       # Returns exception from its string representation.
       # @param [String, nil] error
@@ -29,11 +28,14 @@ module Selenium
       def self.for_error(error)
         return if error.nil?
 
-        klass_name = error.split(' ').map(&:capitalize).join.sub(/Error$/, '')
+        klass_name = error.split.map(&:capitalize).join.sub(/Error$/, '')
         const_get("#{klass_name}Error", false)
       rescue NameError
         WebDriverError
       end
+
+      SUPPORT_MSG = 'For documentation on this error, please visit:'
+      ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
       class WebDriverError < StandardError; end
 
@@ -41,7 +43,11 @@ module Selenium
       # An element could not be located on the page using the given search parameters.
       #
 
-      class NoSuchElementError < WebDriverError; end
+      class NoSuchElementError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#no-such-element-exception")
+        end
+      end
 
       #
       # A command to switch to a frame could not be satisfied because the frame could not be found.
@@ -59,7 +65,17 @@ module Selenium
       # A command failed because the referenced element is no longer attached to the DOM.
       #
 
-      class StaleElementReferenceError < WebDriverError; end
+      class StaleElementReferenceError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#stale-element-reference-exception")
+        end
+      end
+
+      #
+      # A command failed because the referenced shadow root is no longer attached to the DOM.
+      #
+
+      class DetachedShadowRootError < WebDriverError; end
 
       #
       # The target element is in an invalid state, rendering it impossible to interact with, for
@@ -94,6 +110,12 @@ module Selenium
       class NoSuchWindowError < WebDriverError; end
 
       #
+      # The element does not have a shadow root.
+      #
+
+      class NoSuchShadowRootError < WebDriverError; end
+
+      #
       # An illegal attempt was made to set a cookie under a different domain than the current page.
       #
 
@@ -121,7 +143,11 @@ module Selenium
       # Argument was an invalid selector.
       #
 
-      class InvalidSelectorError < WebDriverError; end
+      class InvalidSelectorError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}#invalid-selector-exception")
+        end
+      end
 
       #
       # A new session could not be created.
@@ -202,6 +228,15 @@ module Selenium
 
       class UnsupportedOperationError < WebDriverError; end
 
+      #
+      # Indicates that driver was not specified and could not be located.
+      #
+
+      class NoSuchDriverError < WebDriverError
+        def initialize(msg = '')
+          super("#{msg}; #{SUPPORT_MSG} #{ERROR_URL}/driver_location")
+        end
+      end
     end # Error
   end # WebDriver
 end # Selenium

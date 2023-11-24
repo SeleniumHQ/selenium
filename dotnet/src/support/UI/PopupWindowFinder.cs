@@ -1,4 +1,4 @@
-﻿// <copyright file="PopupWindowFinder.cs" company="WebDriver Committers">
+// <copyright file="PopupWindowFinder.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "element cannot be null");
+                throw new ArgumentNullException(nameof(element), "element cannot be null");
             }
 
             return this.Invoke(() => { element.Click(); });
@@ -127,7 +127,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (popupMethod == null)
             {
-                throw new ArgumentNullException("popupMethod", "popupMethod cannot be null");
+                throw new ArgumentNullException(nameof(popupMethod), "popupMethod cannot be null");
             }
 
             IList<string> existingHandles = this.driver.WindowHandles;

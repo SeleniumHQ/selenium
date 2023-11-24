@@ -16,3 +16,27 @@ then
   echo "Building findElements atom"
   bazel build //javascript/atoms/fragments:find-elements.js
 fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v85/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 85"
+  bazel build //dotnet/src/webdriver/cdp:generate-v85
+fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v119/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 119"
+  bazel build //dotnet/src/webdriver/cdp:generate-v119
+fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v117/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 117"
+  bazel build //dotnet/src/webdriver/cdp:generate-v117
+fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v118/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 118"
+  bazel build //dotnet/src/webdriver/cdp:generate-v118
+fi

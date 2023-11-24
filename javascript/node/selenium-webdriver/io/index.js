@@ -17,10 +17,9 @@
 
 'use strict'
 
-var fs = require('fs'),
-  path = require('path'),
-  rimraf = require('rimraf'),
-  tmp = require('tmp')
+const fs = require('fs')
+const path = require('path')
+const tmp = require('tmp')
 
 /**
  * @param {!Function} fn .
@@ -43,8 +42,6 @@ function checkedCall(fn) {
   })
 }
 
-// PUBLIC API
-
 /**
  * Recursively removes a directory and all of its contents. This is equivalent
  * to {@code rm -rf} on a POSIX system.
@@ -52,24 +49,16 @@ function checkedCall(fn) {
  * @return {!Promise} A promise to be resolved when the operation has
  *     completed.
  */
-exports.rmDir = function (dirPath) {
+function rmDir(dirPath) {
   return new Promise(function (fulfill, reject) {
-    var numAttempts = 0
-    attemptRm()
-    function attemptRm() {
-      numAttempts += 1
-      rimraf(dirPath, function (err) {
-        if (err) {
-          if (err.code && err.code === 'ENOTEMPTY' && numAttempts < 2) {
-            attemptRm()
-            return
-          }
-          reject(err)
-        } else {
-          fulfill()
-        }
-      })
-    }
+    fs.rm(dirPath, { recursive: true, maxRetries: 2 }, function (err) {
+      if (err && err.code === 'ENOENT') {
+        fulfill()
+      } else if (err) {
+        reject(err)
+      }
+      fulfill()
+    })
   })
 }
 
@@ -79,12 +68,12 @@ exports.rmDir = function (dirPath) {
  * @param {string} dst The destination file.
  * @return {!Promise<string>} A promise for the copied file's path.
  */
-exports.copy = function (src, dst) {
+function copy(src, dst) {
   return new Promise(function (fulfill, reject) {
-    var rs = fs.createReadStream(src)
+    const rs = fs.createReadStream(src)
     rs.on('error', reject)
 
-    var ws = fs.createWriteStream(dst)
+    const ws = fs.createWriteStream(dst)
     ws.on('error', reject)
     ws.on('close', () => fulfill(dst))
 
@@ -102,20 +91,19 @@ exports.copy = function (src, dst) {
  * @return {!Promise<string>} A promise for the destination
  *     directory's path once all files have been copied.
  */
-exports.copyDir = function (src, dst, opt_exclude) {
-  var predicate = opt_exclude
+function copyDir(src, dst, opt_exclude) {
+  let predicate = opt_exclude
   if (opt_exclude && typeof opt_exclude !== 'function') {
     predicate = function (p) {
       return !opt_exclude.test(p)
     }
   }
 
-  // TODO(jleyba): Make this function completely async.
   if (!fs.existsSync(dst)) {
     fs.mkdirSync(dst)
   }
 
-  var files = fs.readdirSync(src)
+  let files = fs.readdirSync(src)
   files = files.map(function (file) {
     return path.join(src, file)
   })
@@ -124,18 +112,18 @@ exports.copyDir = function (src, dst, opt_exclude) {
     files = files.filter(/** @type {function(string): boolean} */ (predicate))
   }
 
-  var results = []
+  const results = []
   files.forEach(function (file) {
-    var stats = fs.statSync(file)
-    var target = path.join(dst, path.basename(file))
+    const stats = fs.statSync(file)
+    const target = path.join(dst, path.basename(file))
 
     if (stats.isDirectory()) {
       if (!fs.existsSync(target)) {
         fs.mkdirSync(target, stats.mode)
       }
-      results.push(exports.copyDir(file, target, predicate))
+      results.push(copyDir(file, target, predicate))
     } else {
-      results.push(exports.copy(file, target))
+      results.push(copy(file, target))
     }
   })
 
@@ -147,14 +135,13 @@ exports.copyDir = function (src, dst, opt_exclude) {
  * @param {string} aPath The path to test.
  * @return {!Promise<boolean>} A promise for whether the file exists.
  */
-exports.exists = function (aPath) {
+function exists(aPath) {
   return new Promise(function (fulfill, reject) {
     let type = typeof aPath
     if (type !== 'string') {
       reject(TypeError(`expected string path, but got ${type}`))
     } else {
-      // eslint-disable-next-line node/no-deprecated-api
-      fs.exists(aPath, fulfill)
+      fulfill(fs.existsSync(aPath))
     }
   })
 }
@@ -164,7 +151,7 @@ exports.exists = function (aPath) {
  * @param {string} aPath The path to stat.
  * @return {!Promise<!fs.Stats>} A promise for the file stats.
  */
-exports.stat = function stat(aPath) {
+function stat(aPath) {
   return checkedCall((callback) => fs.stat(aPath, callback))
 }
 
@@ -174,18 +161,16 @@ exports.stat = function stat(aPath) {
  * @param {string} aPath The path to remove.
  * @return {!Promise} A promise for when the file has been removed.
  */
-exports.unlink = function (aPath) {
+function unlink(aPath) {
   return new Promise(function (fulfill, reject) {
-    // eslint-disable-next-line node/no-deprecated-api
-    fs.exists(aPath, function (exists) {
-      if (exists) {
-        fs.unlink(aPath, function (err) {
-          ;(err && reject(err)) || fulfill()
-        })
-      } else {
-        fulfill()
-      }
-    })
+    const exists = fs.existsSync(aPath)
+    if (exists) {
+      fs.unlink(aPath, function (err) {
+        ;(err && reject(err)) || fulfill()
+      })
+    } else {
+      fulfill()
+    }
   })
 }
 
@@ -193,7 +178,7 @@ exports.unlink = function (aPath) {
  * @return {!Promise<string>} A promise for the path to a temporary directory.
  * @see https://www.npmjs.org/package/tmp
  */
-exports.tmpDir = function () {
+function tmpDir() {
   return checkedCall((callback) => tmp.dir({ unsafeCleanup: true }, callback))
 }
 
@@ -202,15 +187,14 @@ exports.tmpDir = function () {
  * @return {!Promise<string>} A promise for the path to a temporary file.
  * @see https://www.npmjs.org/package/tmp
  */
-exports.tmpFile = function (opt_options) {
+function tmpFile(opt_options) {
   return checkedCall((callback) => {
-    // |tmp.file| checks arguments length to detect options rather than doing a
-    // truthy check, so we must only pass options if there are some to pass.
-    if (opt_options) {
-      tmp.file(opt_options, callback)
-    } else {
-      tmp.file(callback)
-    }
+    /**  check fixed in v > 0.2.1 if
+     * (typeof options === 'function') {
+     *     return [{}, options];
+     * }
+     */
+    tmp.file(opt_options, callback)
   })
 }
 
@@ -223,8 +207,8 @@ exports.tmpFile = function (opt_options) {
  * @return {?string} Path to the located file, or {@code null} if it could
  *     not be found.
  */
-exports.findInPath = function (file, opt_checkCwd) {
-  let dirs = []
+function findInPath(file, opt_checkCwd) {
+  const dirs = []
   if (opt_checkCwd) {
     dirs.push(process.cwd())
   }
@@ -250,7 +234,7 @@ exports.findInPath = function (file, opt_checkCwd) {
  * @return {!Promise<!Buffer>} A promise that will resolve with a buffer of the
  *     file contents.
  */
-exports.read = function (aPath) {
+function read(aPath) {
   return checkedCall((callback) => fs.readFile(aPath, callback))
 }
 
@@ -262,7 +246,7 @@ exports.read = function (aPath) {
  * @return {!Promise} A promise that will resolve when the operation has
  *     completed.
  */
-exports.write = function (aPath, data) {
+function write(aPath, data) {
   return checkedCall((callback) => fs.writeFile(aPath, data, callback))
 }
 
@@ -273,7 +257,7 @@ exports.write = function (aPath, data) {
  * @return {!Promise<string>} A promise that will resolve with the path of the
  *     created directory.
  */
-exports.mkdir = function (aPath) {
+function mkdir(aPath) {
   return checkedCall((callback) => {
     fs.mkdir(aPath, undefined, (err) => {
       if (err && err.code !== 'EEXIST') {
@@ -292,7 +276,7 @@ exports.mkdir = function (aPath) {
  * @return {!Promise<string>} A promise that will resolve with the path of the
  *     created directory.
  */
-exports.mkdirp = function mkdirp(dir) {
+function mkdirp(dir) {
   return checkedCall((callback) => {
     fs.mkdir(dir, undefined, (err) => {
       if (!err) {
@@ -328,8 +312,8 @@ exports.mkdirp = function mkdirp(dir) {
  *     resolve with a list of entries seen. For each entry, the recorded path
  *     will be relative to `rootPath`.
  */
-exports.walkDir = function (rootPath) {
-  let seen = []
+function walkDir(rootPath) {
+  const seen = []
   return (function walk(dir) {
     return checkedCall((callback) => fs.readdir(dir, callback)).then((files) =>
       Promise.all(
@@ -346,4 +330,22 @@ exports.walkDir = function (rootPath) {
       )
     )
   })(rootPath).then(() => seen)
+}
+
+// PUBLIC API
+module.exports = {
+  walkDir,
+  rmDir,
+  mkdirp,
+  mkdir,
+  write,
+  read,
+  findInPath,
+  tmpFile,
+  tmpDir,
+  unlink,
+  copy,
+  copyDir,
+  exists,
+  stat,
 }

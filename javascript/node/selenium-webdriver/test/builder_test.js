@@ -53,7 +53,7 @@ test.suite(function (env) {
           driver instanceof want,
           `want ${want.name}, but got ${driver.name}`
         )
-        assert.equal(typeof driver.then, 'function')
+        assert.strictEqual(typeof driver.then, 'function')
 
         return (
           driver
@@ -70,31 +70,54 @@ test.suite(function (env) {
       })
     })
   }
-})
 
-describe('Builder', function () {
-  describe('catches incorrect use of browser options class', function () {
-    function test(key, options) {
-      it(key, async function () {
-        let builder = new Builder().withCapabilities(
-          new Capabilities()
-            .set('browserName', 'fake-browser-should-not-try-to-start')
-            .set(key, new options())
-        )
-        try {
-          let driver = await builder.build()
-          await driver.quit()
-          return Promise.reject(Error('should have failed'))
-        } catch (ex) {
-          if (!(ex instanceof error.InvalidArgumentError)) {
-            throw ex
-          }
-        }
+  if (BROWSER_MAP.has(env.browser.name)) {
+    describe('builder allows to set a single capability', function () {
+      let driver
+
+      after(() => driver && driver.quit())
+
+      it(env.browser.name, async function () {
+        let timeouts = { implicit: 0, pageLoad: 1000, script: 1000 }
+        driver = new Builder()
+          .setCapability('timeouts', timeouts)
+          .forBrowser(env.browser.name)
+          .build()
+
+        let caps = await getCaps(driver)
+        assert.deepEqual(caps.get('timeouts'), timeouts)
       })
-    }
+    })
+  }
 
-    test('chromeOptions', chrome.Options)
-    test('moz:firefoxOptions', firefox.Options)
-    test('safari.options', safari.Options)
+  async function getCaps(driver) {
+    return driver.getCapabilities()
+  }
+
+  describe('Builder', function () {
+    describe('catches incorrect use of browser options class', function () {
+      function test(key, options) {
+        it(key, async function () {
+          let builder = new Builder().withCapabilities(
+            new Capabilities()
+              .set('browserName', 'fake-browser-should-not-try-to-start')
+              .set(key, new options())
+          )
+          try {
+            let driver = await builder.build()
+            await driver.quit()
+            return Promise.reject(Error('should have failed'))
+          } catch (ex) {
+            if (!(ex instanceof error.InvalidArgumentError)) {
+              throw ex
+            }
+          }
+        })
+      }
+
+      test('chromeOptions', chrome.Options)
+      test('moz:firefoxOptions', firefox.Options)
+      test('safari.options', safari.Options)
+    })
   })
 })

@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDebugger
-
         #
         # Attaches debugger to session.
         #
@@ -35,7 +34,6 @@ module Selenium
         def attach_debugger
           @bridge.attach_debugger
         end
-
       end # HasDebugger
     end # DriverExtensions
   end # WebDriver

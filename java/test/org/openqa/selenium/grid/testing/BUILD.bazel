@@ -1,0 +1,16 @@
+load("//java:defs.bzl", "artifact", "java_library")
+
+java_library(
+    name = "testing",
+    testonly = True,
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("org.assertj:assertj-core"),
+    ],
+)

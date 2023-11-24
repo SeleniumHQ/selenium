@@ -77,10 +77,14 @@ describe('until', function () {
       if (typeof expectedId === 'string') {
         expectedId = WebElement.buildId(expectedId)
       } else {
-        assert.equal(typeof expectedId, 'number', 'must be string or number')
+        assert.strictEqual(
+          typeof expectedId,
+          'number',
+          'must be string or number'
+        )
       }
       return (cmd) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           cmd.getParameter('id'),
           expectedId,
           'frame ID not specified'
@@ -125,7 +129,7 @@ describe('until', function () {
 
       return driver
         .wait(until.ableToSwitchToFrame(By.id('foo')), 2000)
-        .then(() => assert.deepEqual(foundResponses, []))
+        .then(() => assert.deepStrictEqual(foundResponses, []))
     })
 
     it('timesOutIfNeverAbletoSwitchFrames', function () {
@@ -151,7 +155,7 @@ describe('until', function () {
     it('failsFastForNonAlertSwitchErrors', function () {
       return driver.wait(until.alertIsPresent(), 100).then(fail, function (e) {
         assert.ok(e instanceof error.UnknownCommandError)
-        assert.equal(e.message, CommandName.GET_ALERT_TEXT)
+        assert.strictEqual(e.message, CommandName.GET_ALERT_TEXT)
       })
     })
 
@@ -168,7 +172,7 @@ describe('until', function () {
         .on(CommandName.DISMISS_ALERT, () => true)
 
       return driver.wait(until.alertIsPresent(), 1000).then(function (alert) {
-        assert.equal(count, 4)
+        assert.strictEqual(count, 4)
         return alert.dismiss()
       })
     })
@@ -189,7 +193,7 @@ describe('until', function () {
           .on(CommandName.DISMISS_ALERT, () => true)
 
         return driver.wait(until.alertIsPresent(), 1000).then(function (alert) {
-          assert.equal(count, 4)
+          assert.strictEqual(count, 4)
           return alert.dismiss()
         })
       })
@@ -206,7 +210,7 @@ describe('until', function () {
             throw new Error('driver did not fail against WebDriverError')
           },
           function (error) {
-            assert.equal(error, webDriverError)
+            assert.strictEqual(error, webDriverError)
           }
         )
       })
@@ -285,7 +289,7 @@ describe('until', function () {
     assert.ok(element instanceof webdriver.WebElementPromise)
     return element.getId().then(function (id) {
       assert.deepStrictEqual(responses, [['end']])
-      assert.equal(id, 'abc123')
+      assert.strictEqual(id, 'abc123')
     })
   })
 
@@ -302,7 +306,7 @@ describe('until', function () {
         .then(expectedFailure, function (error) {
           var expected = 'Waiting for element to be located ' + locatorStr
           var lines = error.message.split(/\n/, 2)
-          assert.equal(lines[0], expected)
+          assert.strictEqual(lines[0], expected)
 
           let regex = /^Wait timed out after \d+ms$/
           assert.ok(
@@ -346,9 +350,9 @@ describe('until', function () {
       })
       .then(function (ids) {
         assert.deepStrictEqual(responses, [['end']])
-        assert.equal(ids.length, 2)
-        assert.equal(ids[0], 'abc123')
-        assert.equal(ids[1], 'foo')
+        assert.strictEqual(ids.length, 2)
+        assert.strictEqual(ids[0], 'abc123')
+        assert.strictEqual(ids[1], 'foo')
       })
   })
 
@@ -366,7 +370,7 @@ describe('until', function () {
           var expected =
             'Waiting for at least one element to be located ' + locatorStr
           var lines = error.message.split(/\n/, 2)
-          assert.equal(lines[0], expected)
+          assert.strictEqual(lines[0], expected)
 
           let regex = /^Wait timed out after \d+ms$/
           assert.ok(
@@ -408,7 +412,7 @@ describe('until', function () {
     var el = new webdriver.WebElement(driver, { ELEMENT: 'foo' })
     return driver
       .wait(until.stalenessOf(el), 2000)
-      .then(() => assert.equal(count, 3))
+      .then(() => assert.strictEqual(count, 3))
   })
 
   describe('element state conditions', function () {
@@ -435,7 +439,7 @@ describe('until', function () {
           return value.getId()
         })
         .then(function (id) {
-          assert.equal('foo', id)
+          assert.strictEqual('foo', id)
           assert.deepStrictEqual(responses, ['end'])
         })
     }
@@ -527,7 +531,7 @@ describe('until', function () {
         () => assert.fail('expected to fail'),
         function (e) {
           assert.ok(e instanceof TypeError)
-          assert.equal(
+          assert.strictEqual(
             'WebElementCondition did not resolve to a WebElement: ' +
               '[object Number]',
             e.message

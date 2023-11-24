@@ -58,12 +58,12 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input", "input cannot be null");
+                throw new ArgumentNullException(nameof(input), "input cannot be null");
             }
 
             if (clock == null)
             {
-                throw new ArgumentNullException("clock", "clock cannot be null");
+                throw new ArgumentNullException(nameof(clock), "clock cannot be null");
             }
 
             this.input = input;
@@ -111,14 +111,14 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (exceptionTypes == null)
             {
-                throw new ArgumentNullException("exceptionTypes", "exceptionTypes cannot be null");
+                throw new ArgumentNullException(nameof(exceptionTypes), "exceptionTypes cannot be null");
             }
 
             foreach (Type exceptionType in exceptionTypes)
             {
                 if (!typeof(Exception).IsAssignableFrom(exceptionType))
                 {
-                    throw new ArgumentException("All types to be ignored must derive from System.Exception", "exceptionTypes");
+                    throw new ArgumentException("All types to be ignored must derive from System.Exception", nameof(exceptionTypes));
                 }
             }
 
@@ -163,13 +163,13 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (condition == null)
             {
-                throw new ArgumentNullException("condition", "condition cannot be null");
+                throw new ArgumentNullException(nameof(condition), "condition cannot be null");
             }
 
             var resultType = typeof(TResult);
             if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
             {
-                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
+                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), nameof(condition));
             }
 
             Exception lastException = null;

@@ -22,10 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
-      after do
-        sleep 1 if ENV['TRAVIS']
-        quit_driver
-      end
+      after(:all) { reset_driver! }
 
       let(:window) { driver.manage.window }
 
@@ -105,7 +102,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window', except: {window_manager: false, browser: %i[ie firefox safari]} do
+      it 'can maximize the current window' do
         window.size = old_size = Dimension.new(700, 700)
 
         window.maximize
@@ -116,11 +113,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can make window full screen', only: {window_manager: true},
-                                        exclude: [{driver: :remote, browser: :firefox, platform: :linux},
-                                                  {browser: %i[chrome edge]}] do
+      it 'can make window full screen', except: {browser: %i[chrome edge], headless: true} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
@@ -131,13 +124,13 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can minimize the window', only: {window_manager: true},
-                                    exclude: [{driver: :remote, browser: :firefox, platform: :linux},
-                                              {driver: :remote, browser: :safari}] do
+      it 'can minimize the window', except: [{browser: %i[chrome edge], headless: true},
+                                             {browser: :safari, ci: :github}],
+                                    flaky: {browser: :chrome, platform: :macosx, ci: :github} do
         window.minimize
-        expect(driver.execute_script('return document.hidden;')).to be true
+        expect {
+          wait.until { driver.execute_script('return document.hidden;') }
+        }.not_to raise_error
       end
     end
   end # WebDriver

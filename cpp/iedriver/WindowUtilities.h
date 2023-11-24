@@ -33,6 +33,7 @@ class WindowUtilities
   static void WaitWithoutMsgPump(long wait_in_milliseconds);
   static HWND GetChildWindow(HWND hwnd, std::wstring name);
   static std::string GetWindowCaption(HWND hwnd);
+  static std::string GetWindowClass(HWND hwnd);
   static void GetProcessesByName(const std::wstring& process_name,
                                  std::vector<DWORD>* process_ids);
 };

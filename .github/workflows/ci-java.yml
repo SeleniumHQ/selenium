@@ -1,0 +1,40 @@
+name: CI - Java
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  browser-tests:
+    name: Browser Tests
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+          - os: macos
+    with:
+      name: Browser Tests (chrome, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: chrome
+      cache-key: java-${{ matrix.os }}-tests
+      run: >
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+
+  remote-tests:
+    name: Remote Tests
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+          - os: macos
+    with:
+      name: Remote Tests (chrome, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: chrome
+      cache-key: java-${{ matrix.os }}-remote-tests
+      run: >
+        bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

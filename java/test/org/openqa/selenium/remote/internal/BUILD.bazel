@@ -1,0 +1,51 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
+
+java_library(
+    name = "test-lib",
+    testonly = True,
+    srcs = [
+        "HttpClientTestBase.java",
+        "WebSocketTestBase.java",
+    ],
+    visibility = [
+        "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-transport"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":test-lib",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium:helpers",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)

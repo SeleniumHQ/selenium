@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDevTools
-
         #
         # Retrieves connection to DevTools.
         #
@@ -29,10 +28,13 @@ module Selenium
         #
 
         def devtools
-          version = Integer(capabilities.browser_version.split('.').first)
-          @devtools ||= DevTools.new(url: debugger_address, version: version)
+          @devtools ||= begin
+            require 'selenium/devtools'
+            Selenium::DevTools.version ||= devtools_version
+            Selenium::DevTools.load_version
+            Selenium::WebDriver::DevTools.new(url: devtools_url)
+          end
         end
-
       end # HasDevTools
     end # DriverExtensions
   end # WebDriver

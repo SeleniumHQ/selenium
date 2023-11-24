@@ -92,7 +92,7 @@
       var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
 
       return new goog.Promise(function(done) {
-        // As the iframe loads asyncronously we need to wait to check out
+        // As the iframe loads asynchronously we need to wait to check out
         // if the url matches the expected one.
         goog.events.listenOnce(iframe, 'load', done);
         action(clickTarget);
@@ -141,7 +141,7 @@
       var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
 
       return new goog.Promise(function(done) {
-        // As the iframe loads asyncronously we need to wait to check out
+        // As the iframe loads asynchronously we need to wait to check out
         // if the url matches the expected one.
         goog.events.listenOnce(iframe, 'load', done);
         action(clickTarget);

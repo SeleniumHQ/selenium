@@ -1,7 +1,0 @@
-
-# CrazyFun automatically pulls in closure and adds it as a dependency, but this
-# rule allows us to have js_* targets that depend on nothing but Closure
-# itself.
-
-js_library(name = "closure",
-  srcs = "goog/base.js")

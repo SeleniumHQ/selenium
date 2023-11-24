@@ -124,7 +124,12 @@ test.suite(function (env) {
   // Proxy support not implemented.
   test
     .ignore(
-      env.browsers(Browser.CHROME, Browser.IE, Browser.SAFARI, Browser.FIREFOX)
+      env.browsers(
+        Browser.CHROME,
+        Browser.INTERNET_EXPLORER,
+        Browser.SAFARI,
+        Browser.FIREFOX
+      )
     )
     .describe('manual proxy settings', function () {
       it('can configure HTTP proxy host', async function () {
@@ -136,8 +141,8 @@ test.suite(function (env) {
         )
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
@@ -152,8 +157,8 @@ test.suite(function (env) {
         )
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Hello')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Hello')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'Hello, world!'
         )
@@ -161,8 +166,8 @@ test.suite(function (env) {
         // For firefox the no proxy settings appear to match on hostname only.
         let url = goodbyeServer.url().replace(/127\.0\.0\.1/, 'localhost')
         await driver.get(url)
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
@@ -175,22 +180,27 @@ test.suite(function (env) {
   // Safari does not support proxies.
   test
     .ignore(
-      env.browsers(Browser.IE, Browser.SAFARI, Browser.CHROME, Browser.FIREFOX)
+      env.browsers(
+        Browser.INTERNET_EXPLORER,
+        Browser.SAFARI,
+        Browser.CHROME,
+        Browser.FIREFOX
+      )
     )
     .describe('pac proxy settings', function () {
       it('can configure proxy through PAC file', async function () {
         await createDriver(proxy.pac(proxyServer.url('/proxy.pac')))
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
 
         await driver.get(goodbyeServer.url())
-        assert.equal(await driver.getTitle(), 'Goodbye')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Goodbye')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'Goodbye, world!'
         )

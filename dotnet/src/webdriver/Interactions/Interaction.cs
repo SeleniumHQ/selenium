@@ -1,4 +1,4 @@
-﻿// <copyright file="Interaction.cs" company="WebDriver Committers">
+// <copyright file="Interaction.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (sourceDevice == null)
             {
-                throw new ArgumentNullException("sourceDevice", "Source device cannot be null");
+                throw new ArgumentNullException(nameof(sourceDevice), "Source device cannot be null");
             }
 
             this.sourceDevice = sourceDevice;

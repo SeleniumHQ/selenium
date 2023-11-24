@@ -51,13 +51,13 @@ describe('input.Actions', function () {
       )
 
       await new input.Actions(executor).perform()
-      assert.deepEqual(executor.commands, [])
+      assert.deepStrictEqual(executor.commands, [])
 
       await new input.Actions(executor).pause().perform()
-      assert.deepEqual(executor.commands, [])
+      assert.deepStrictEqual(executor.commands, [])
 
       await new input.Actions(executor).pause(1).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -73,6 +73,11 @@ describe('input.Actions', function () {
                 parameters: { pointerType: 'mouse' },
                 actions: [{ type: 'pause', duration: 1 }],
               },
+              {
+                id: 'default wheel',
+                type: 'wheel',
+                actions: [{ type: 'pause', duration: 1 }],
+              },
             ],
           },
         },
@@ -81,7 +86,7 @@ describe('input.Actions', function () {
       executor.commands.length = 0
       let actions = new input.Actions(executor)
       await actions.pause(1, actions.keyboard()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -115,10 +120,10 @@ describe('input.Actions', function () {
       }
 
       await actions.perform()
-      assert.deepEqual(executor.commands, [expected])
+      assert.deepStrictEqual(executor.commands, [expected])
 
       await actions.perform()
-      assert.deepEqual(executor.commands, [expected, expected])
+      assert.deepStrictEqual(executor.commands, [expected, expected])
     })
   })
 
@@ -128,7 +133,7 @@ describe('input.Actions', function () {
 
       await new input.Actions(executor).pause(3).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -144,6 +149,16 @@ describe('input.Actions', function () {
                 parameters: { pointerType: 'mouse' },
                 actions: [{ type: 'pause', duration: 3 }],
               },
+              {
+                id: 'default wheel',
+                type: 'wheel',
+                actions: [
+                  {
+                    duration: 3,
+                    type: 'pause',
+                  },
+                ],
+              },
             ],
           },
         },
@@ -155,7 +170,7 @@ describe('input.Actions', function () {
 
       await new input.Actions(executor).pause().pause(3).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -172,6 +187,14 @@ describe('input.Actions', function () {
                 id: 'default mouse',
                 type: 'pointer',
                 parameters: { pointerType: 'mouse' },
+                actions: [
+                  { type: 'pause', duration: 0 },
+                  { type: 'pause', duration: 3 },
+                ],
+              },
+              {
+                id: 'default wheel',
+                type: 'wheel',
                 actions: [
                   { type: 'pause', duration: 0 },
                   { type: 'pause', duration: 3 },
@@ -192,7 +215,7 @@ describe('input.Actions', function () {
         .pause(100, actions.mouse())
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -229,7 +252,7 @@ describe('input.Actions', function () {
         .pause(100, actions.mouse())
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -257,7 +280,7 @@ describe('input.Actions', function () {
 
       await actions.pause(100, actions.keyboard(), actions.keyboard()).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -282,7 +305,7 @@ describe('input.Actions', function () {
       let executor = new StubExecutor(Promise.resolve())
 
       await new input.Actions(executor).keyDown('\u0041\u030a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -313,7 +336,7 @@ describe('input.Actions', function () {
       let executor = new StubExecutor(Promise.resolve())
 
       await new input.Actions(executor).keyUp('\u0041\u030a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -345,7 +368,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -369,7 +392,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a', 'b').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -395,7 +418,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a', 'bc', 'd').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -425,7 +448,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('ab').pause(100, actions.mouse()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -464,7 +487,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor, { async: true })
 
       await actions.sendKeys('ab').pause(100, actions.mouse()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -490,6 +513,21 @@ describe('input.Actions', function () {
         },
       ])
     })
+
+    it('string length > 500', async function () {
+      const executor = new StubExecutor(Promise.resolve())
+      const actions = new input.Actions(executor, { async: true })
+      let str = ''
+      for (let i = 0; i < 501; i++) {
+        str += i
+      }
+      const executionResult = await actions
+        .sendKeys(str)
+        .perform()
+        .then(() => true)
+        .catch(() => false)
+      assert.strictEqual(executionResult, true)
+    })
   })
 
   describe('click()', function () {
@@ -498,7 +536,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.click().perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -508,7 +546,19 @@ describe('input.Actions', function () {
                 type: 'pointer',
                 parameters: { pointerType: 'mouse' },
                 actions: [
-                  { type: 'pointerDown', button: input.Button.LEFT },
+                  {
+                    type: 'pointerDown',
+                    button: input.Button.LEFT,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
+                  },
                   { type: 'pointerUp', button: input.Button.LEFT },
                 ],
               },
@@ -525,7 +575,7 @@ describe('input.Actions', function () {
       const fakeElement = {}
 
       await actions.click(fakeElement).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -541,8 +591,29 @@ describe('input.Actions', function () {
                     duration: 100,
                     x: 0,
                     y: 0,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
-                  { type: 'pointerDown', button: input.Button.LEFT },
+                  {
+                    type: 'pointerDown',
+                    button: input.Button.LEFT,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
+                  },
                   { type: 'pointerUp', button: input.Button.LEFT },
                 ],
               },
@@ -559,7 +630,7 @@ describe('input.Actions', function () {
       const fakeElement = {}
 
       await actions.click(fakeElement).sendKeys('a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -586,8 +657,29 @@ describe('input.Actions', function () {
                     duration: 100,
                     x: 0,
                     y: 0,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
-                  { type: 'pointerDown', button: input.Button.LEFT },
+                  {
+                    type: 'pointerDown',
+                    button: input.Button.LEFT,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
+                  },
                   { type: 'pointerUp', button: input.Button.LEFT },
                   { type: 'pause', duration: 0 },
                   { type: 'pause', duration: 0 },
@@ -609,7 +701,7 @@ describe('input.Actions', function () {
 
       await actions.dragAndDrop(e1, e2).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -625,14 +717,44 @@ describe('input.Actions', function () {
                     origin: e1,
                     x: 0,
                     y: 0,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
-                  { type: 'pointerDown', button: input.Button.LEFT },
+                  {
+                    type: 'pointerDown',
+                    button: input.Button.LEFT,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
+                  },
                   {
                     type: 'pointerMove',
                     duration: 100,
                     origin: e2,
                     x: 0,
                     y: 0,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                   { type: 'pointerUp', button: input.Button.LEFT },
                 ],
@@ -650,7 +772,7 @@ describe('input.Actions', function () {
 
       await actions.dragAndDrop(e1, { x: 30, y: 40 }).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -666,14 +788,44 @@ describe('input.Actions', function () {
                     origin: e1,
                     x: 0,
                     y: 0,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
-                  { type: 'pointerDown', button: input.Button.LEFT },
+                  {
+                    type: 'pointerDown',
+                    button: input.Button.LEFT,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
+                  },
                   {
                     type: 'pointerMove',
                     duration: 100,
                     origin: input.Origin.POINTER,
                     x: 30,
                     y: 40,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                   { type: 'pointerUp', button: input.Button.LEFT },
                 ],
@@ -714,749 +866,6 @@ describe('input.Actions', function () {
         () => actions.dragAndDrop(e, { x: 'a', y: 0 }),
         error.InvalidArgumentError
       )
-    })
-  })
-
-  describe('bridge mode', function () {
-    it('cannot enable async and bridge at the same time', function () {
-      let exe = new StubExecutor()
-      assert.throws(
-        () => new input.Actions(exe, { async: true, bridge: true }),
-        error.InvalidArgumentError
-      )
-    })
-
-    it('behaves as normal if first command succeeds', async function () {
-      const actions = new input.Actions(new StubExecutor(Promise.resolve()))
-      await actions.click().sendKeys('a').perform()
-    })
-
-    it('handles pauses locally', async function () {
-      const start = Date.now()
-      const actions = new input.Actions(
-        new StubExecutor(Promise.reject(new error.UnknownCommandError())),
-        { bridge: true }
-      )
-
-      await actions.pause(100).perform()
-
-      const elapsed = Date.now() - start
-      assert.ok(elapsed >= 100, elapsed)
-    })
-
-    it('requires non-modifier keys to be used in keydown/up sequences', async function () {
-      const actions = new input.Actions(
-        new StubExecutor(Promise.reject(new error.UnknownCommandError())),
-        { bridge: true }
-      )
-
-      try {
-        await actions.keyDown(input.Key.SHIFT).keyDown('a').perform()
-        return Promise.reject(Error('should have failed!'))
-      } catch (err) {
-        if (
-          !(err instanceof error.UnsupportedOperationError) ||
-          !err.message.endsWith('must be followed by a keyup for the same key')
-        ) {
-          throw err
-        }
-      }
-    })
-
-    it('key sequence', async function () {
-      const executor = new StubExecutor(
-        Promise.reject(new error.UnknownCommandError()),
-        Promise.resolve('shift down'),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve('shift up')
-      )
-      const actions = new input.Actions(executor, { bridge: true })
-
-      await actions
-        .keyDown(input.Key.SHIFT)
-        .sendKeys('abc')
-        .keyUp(input.Key.SHIFT)
-        .sendKeys('de')
-        .perform()
-
-      assert.deepEqual(executor.commands, [
-        {
-          name: command.Name.ACTIONS,
-          parameters: {
-            actions: [
-              {
-                id: 'default keyboard',
-                type: 'key',
-                actions: [
-                  { type: 'keyDown', value: input.Key.SHIFT },
-                  { type: 'keyDown', value: 'a' },
-                  { type: 'keyUp', value: 'a' },
-                  { type: 'keyDown', value: 'b' },
-                  { type: 'keyUp', value: 'b' },
-                  { type: 'keyDown', value: 'c' },
-                  { type: 'keyUp', value: 'c' },
-                  { type: 'keyUp', value: input.Key.SHIFT },
-                  { type: 'keyDown', value: 'd' },
-                  { type: 'keyUp', value: 'd' },
-                  { type: 'keyDown', value: 'e' },
-                  { type: 'keyUp', value: 'e' },
-                ],
-              },
-            ],
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_SEND_KEYS,
-          parameters: { value: [input.Key.SHIFT] },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_SEND_KEYS,
-          parameters: { value: ['a', 'b', 'c'] },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_SEND_KEYS,
-          parameters: { value: [input.Key.SHIFT] },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_SEND_KEYS,
-          parameters: { value: ['d', 'e'] },
-        },
-      ])
-    })
-
-    it('mouse movements cannot be relative to the viewport', async function () {
-      const actions = new input.Actions(
-        new StubExecutor(Promise.reject(new error.UnknownCommandError())),
-        { bridge: true }
-      )
-
-      try {
-        await actions.move({ x: 10, y: 15 }).perform()
-        return Promise.reject(Error('should have failed!'))
-      } catch (err) {
-        if (
-          !(err instanceof error.UnsupportedOperationError) ||
-          !err.message.startsWith('pointer movements relative to viewport')
-        ) {
-          throw err
-        }
-      }
-    })
-
-    describe('detects clicks', function () {
-      it('press/release for same button is a click', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions
-          .press(input.Button.LEFT)
-          .release(input.Button.LEFT)
-          .perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-
-      it('not a click if release is a different button', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve(),
-          Promise.resolve(),
-          Promise.resolve(),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions
-          .press(input.Button.LEFT)
-          .press(input.Button.RIGHT)
-          .release(input.Button.LEFT)
-          .release(input.Button.RIGHT)
-          .perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerDown', button: input.Button.RIGHT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.RIGHT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_DOWN,
-            parameters: { button: input.Button.LEFT },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_DOWN,
-            parameters: { button: input.Button.RIGHT },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_UP,
-            parameters: { button: input.Button.LEFT },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_UP,
-            parameters: { button: input.Button.RIGHT },
-          },
-        ])
-      })
-
-      it('click() shortcut', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions.click().perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-
-      it('detects context-clicks', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions
-          .press(input.Button.RIGHT)
-          .release(input.Button.RIGHT)
-          .perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.RIGHT },
-                    { type: 'pointerUp', button: input.Button.RIGHT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.RIGHT },
-          },
-        ])
-      })
-
-      it('contextClick() shortcut', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions.contextClick().perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.RIGHT },
-                    { type: 'pointerUp', button: input.Button.RIGHT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.RIGHT },
-          },
-        ])
-      })
-
-      it('click(element)', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve([0, 0]),
-          Promise.resolve(),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-        const element = new WebElement(null, 'abc123')
-
-        await actions.click(element).perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    {
-                      type: 'pointerMove',
-                      duration: 100,
-                      origin: element,
-                      x: 0,
-                      y: 0,
-                    },
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.EXECUTE_SCRIPT,
-            parameters: {
-              script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
-              args: [element],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-            parameters: {
-              element: 'abc123',
-              xoffset: 0,
-              yoffset: 0,
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-    })
-
-    describe('detects double-clicks', function () {
-      it('press/release x2 for same button is a double-click', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions
-          .press(input.Button.LEFT)
-          .release(input.Button.LEFT)
-          .press(input.Button.LEFT)
-          .release(input.Button.LEFT)
-          .perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-
-      it('doubleClick() shortcut', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions.doubleClick().perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-
-      it('not a double-click if second click is another button', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve(),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-
-        await actions.click().contextClick().perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                    { type: 'pointerDown', button: input.Button.RIGHT },
-                    { type: 'pointerUp', button: input.Button.RIGHT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_CLICK,
-            parameters: { button: input.Button.RIGHT },
-          },
-        ])
-      })
-
-      it('doubleClick(element)', async function () {
-        const executor = new StubExecutor(
-          Promise.reject(new error.UnknownCommandError()),
-          Promise.resolve([7, 10]),
-          Promise.resolve(),
-          Promise.resolve()
-        )
-
-        const actions = new input.Actions(executor, { bridge: true })
-        const element = new WebElement(null, 'abc123')
-
-        await actions.doubleClick(element).perform()
-
-        assert.deepEqual(executor.commands, [
-          {
-            name: command.Name.ACTIONS,
-            parameters: {
-              actions: [
-                {
-                  id: 'default mouse',
-                  type: 'pointer',
-                  parameters: { pointerType: 'mouse' },
-                  actions: [
-                    {
-                      type: 'pointerMove',
-                      duration: 100,
-                      origin: element,
-                      x: 0,
-                      y: 0,
-                    },
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                    { type: 'pointerDown', button: input.Button.LEFT },
-                    { type: 'pointerUp', button: input.Button.LEFT },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            name: command.Name.EXECUTE_SCRIPT,
-            parameters: {
-              script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
-              args: [element],
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-            parameters: {
-              element: 'abc123',
-              xoffset: 7,
-              yoffset: 10,
-            },
-          },
-          {
-            name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
-            parameters: { button: input.Button.LEFT },
-          },
-        ])
-      })
-    })
-
-    it('mouse sequence', async function () {
-      const executor = new StubExecutor(
-        Promise.reject(new error.UnknownCommandError()),
-        Promise.resolve([-6, 9]),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve()
-      )
-
-      const actions = new input.Actions(executor, { bridge: true })
-      const element = new WebElement(null, 'abc123')
-
-      await actions
-        .move({ x: 5, y: 5, origin: element })
-        .click()
-        .move({ x: 10, y: 15, origin: input.Origin.POINTER })
-        .doubleClick()
-        .perform()
-
-      assert.deepEqual(executor.commands, [
-        {
-          name: command.Name.ACTIONS,
-          parameters: {
-            actions: [
-              {
-                id: 'default mouse',
-                type: 'pointer',
-                parameters: { pointerType: 'mouse' },
-                actions: [
-                  {
-                    type: 'pointerMove',
-                    duration: 100,
-                    origin: element,
-                    x: 5,
-                    y: 5,
-                  },
-                  { type: 'pointerDown', button: input.Button.LEFT },
-                  { type: 'pointerUp', button: input.Button.LEFT },
-                  {
-                    type: 'pointerMove',
-                    duration: 100,
-                    origin: input.Origin.POINTER,
-                    x: 10,
-                    y: 15,
-                  },
-                  { type: 'pointerDown', button: input.Button.LEFT },
-                  { type: 'pointerUp', button: input.Button.LEFT },
-                  { type: 'pointerDown', button: input.Button.LEFT },
-                  { type: 'pointerUp', button: input.Button.LEFT },
-                ],
-              },
-            ],
-          },
-        },
-        {
-          name: command.Name.EXECUTE_SCRIPT,
-          parameters: {
-            script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
-            args: [element],
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'abc123',
-            xoffset: -1,
-            yoffset: 14,
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_CLICK,
-          parameters: { button: input.Button.LEFT },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: { xoffset: 10, yoffset: 15 },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
-          parameters: { button: input.Button.LEFT },
-        },
-      ])
-    })
-
-    it('dragAndDrop', async function () {
-      const executor = new StubExecutor(
-        Promise.reject(new error.UnknownCommandError()),
-        Promise.resolve([15, 20]),
-        Promise.resolve(),
-        Promise.resolve(),
-        Promise.resolve([25, 30]),
-        Promise.resolve(),
-        Promise.resolve()
-      )
-
-      const actions = new input.Actions(executor, { bridge: true })
-      const e1 = new WebElement(null, 'abc123')
-      const e2 = new WebElement(null, 'def456')
-
-      await actions.dragAndDrop(e1, e2).perform()
-
-      assert.deepEqual(executor.commands, [
-        {
-          name: command.Name.ACTIONS,
-          parameters: {
-            actions: [
-              {
-                id: 'default mouse',
-                type: 'pointer',
-                parameters: { pointerType: 'mouse' },
-                actions: [
-                  {
-                    type: 'pointerMove',
-                    duration: 100,
-                    origin: e1,
-                    x: 0,
-                    y: 0,
-                  },
-                  { type: 'pointerDown', button: input.Button.LEFT },
-                  {
-                    type: 'pointerMove',
-                    duration: 100,
-                    origin: e2,
-                    x: 0,
-                    y: 0,
-                  },
-                  { type: 'pointerUp', button: input.Button.LEFT },
-                ],
-              },
-            ],
-          },
-        },
-        {
-          name: command.Name.EXECUTE_SCRIPT,
-          parameters: {
-            script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
-            args: [e1],
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'abc123',
-            xoffset: 15,
-            yoffset: 20,
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_DOWN,
-          parameters: { button: input.Button.LEFT },
-        },
-        {
-          name: command.Name.EXECUTE_SCRIPT,
-          parameters: {
-            script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
-            args: [e2],
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'def456',
-            xoffset: 25,
-            yoffset: 30,
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_UP,
-          parameters: { button: input.Button.LEFT },
-        },
-      ])
     })
   })
 })

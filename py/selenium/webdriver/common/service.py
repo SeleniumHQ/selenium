@@ -14,87 +14,89 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 import errno
+import logging
 import os
-import platform
 import subprocess
+import typing
+from abc import ABC
+from abc import abstractmethod
+from io import IOBase
+from platform import system
 from subprocess import PIPE
-import time
+from time import sleep
+from urllib import request
+from urllib.error import URLError
+
 from selenium.common.exceptions import WebDriverException
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
-try:
-    from subprocess import DEVNULL
-    _HAS_NATIVE_DEVNULL = True
-except ImportError:
-    DEVNULL = -3
-    _HAS_NATIVE_DEVNULL = False
+logger = logging.getLogger(__name__)
 
 
-class Service(object):
+class Service(ABC):
+    """The abstract base class for all service objects.  Services typically
+    launch a child program in a new process as an interim process to
+    communicate with a browser.
 
-    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
-        self.path = executable
+    :param executable: install path of the executable.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    """
 
-        self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
+    def __init__(
+        self,
+        executable_path: str = None,
+        port: int = 0,
+        log_output: SubprocessStdAlias = None,
+        env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        **kwargs,
+    ) -> None:
+        if isinstance(log_output, str):
+            self.log_output = open(log_output, "a+", encoding="utf-8")
+        elif log_output == subprocess.STDOUT:
+            self.log_output = None
+        elif log_output is None or log_output == subprocess.DEVNULL:
+            self.log_output = subprocess.DEVNULL
+        else:
+            self.log_output = log_output
 
-        if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL:
-            log_file = open(os.devnull, 'wb')
-
-        self.start_error_message = start_error_message
-        self.log_file = log_file
-        self.creationflags = 0 # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        self._path = executable_path
+        self.port = port or utils.free_port()
+        # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        self.popen_kw = kwargs.pop("popen_kw", {})
+        self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
 
     @property
-    def service_url(self):
-        """
-        Gets the url of the Service
-        """
-        return "http://%s" % utils.join_host_port('localhost', self.port)
+    def service_url(self) -> str:
+        """Gets the url of the Service."""
+        return f"http://{utils.join_host_port('localhost', self.port)}"
 
-    def command_line_args(self):
+    @abstractmethod
+    def command_line_args(self) -> typing.List[str]:
+        """A List of program arguments (excluding the executable)."""
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
-    def start(self):
-        """
-        Starts the Service.
+    @property
+    def path(self) -> str:
+        return self._path
+
+    @path.setter
+    def path(self, value: str) -> None:
+        self._path = str(value)
+
+    def start(self) -> None:
+        """Starts the Service.
 
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
-        try:
-            cmd = [self.path]
-            cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file,
-                                            stderr=self.log_file,
-                                            stdin=PIPE,
-                                            creationflags=self.creationflags)
-        except TypeError:
-            raise
-        except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
-                        os.path.basename(self.path), self.start_error_message)
-                )
-            elif err.errno == errno.EACCES:
-                raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
-                        os.path.basename(self.path), self.start_error_message)
-                )
-            else:
-                raise
-        except Exception as e:
-            raise WebDriverException(
-                "The executable %s needs to be available in the path. %s\n%s" %
-                (os.path.basename(self.path), self.start_error_message, str(e)))
+        self._start_process(self._path)
+
         count = 0
         while True:
             self.assert_process_still_running()
@@ -102,80 +104,130 @@ class Service(object):
                 break
 
             count += 1
-            time.sleep(0.5)
+            sleep(0.5)
             if count == 60:
-                raise WebDriverException("Can not connect to the Service %s" % self.path)
+                raise WebDriverException(f"Can not connect to the Service {self._path}")
 
-    def assert_process_still_running(self):
+    def assert_process_still_running(self) -> None:
+        """Check if the underlying process is still running."""
         return_code = self.process.poll()
-        if return_code is not None:
-            raise WebDriverException(
-                'Service %s unexpectedly exited. Status code was: %s'
-                % (self.path, return_code)
-            )
+        if return_code:
+            raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
-    def is_connectable(self):
+    def is_connectable(self) -> bool:
+        """Establishes a socket connection to determine if the service running
+        on the port is accessible."""
         return utils.is_connectable(self.port)
 
-    def send_remote_shutdown_command(self):
+    def send_remote_shutdown_command(self) -> None:
+        """Dispatch an HTTP request to the shutdown endpoint for the service in
+        an attempt to stop it."""
         try:
-            from urllib import request as url_request
-            URLError = url_request.URLError
-        except ImportError:
-            import urllib2 as url_request
-            import urllib2
-            URLError = urllib2.URLError
-
-        try:
-            url_request.urlopen("%s/shutdown" % self.service_url)
+            request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
             return
 
-        for x in range(30):
+        for _ in range(30):
             if not self.is_connectable():
                 break
-            else:
-                time.sleep(1)
+            sleep(1)
 
-    def stop(self):
-        """
-        Stops the service.
-        """
-        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
+    def stop(self) -> None:
+        """Stops the service."""
+
+        if self.log_output not in {PIPE, subprocess.DEVNULL}:
+            if isinstance(self.log_output, IOBase):
+                self.log_output.close()
+            elif isinstance(self.log_output, int):
+                os.close(self.log_output)
+
+        if self.process is not None:
             try:
-                self.log_file.close()
-            except Exception:
+                self.send_remote_shutdown_command()
+            except TypeError:
                 pass
+            self._terminate_process()
 
-        if self.process is None:
-            return
+    def _terminate_process(self) -> None:
+        """Terminate the child process.
 
+        On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,
+        on a Windows OS kill is an alias to terminate.  Terminating does
+        not raise itself if something has gone wrong but (currently)
+        silently ignores errors here.
+        """
         try:
-            self.send_remote_shutdown_command()
-        except TypeError:
-            pass
-
-        try:
-            if self.process:
-                for stream in [self.process.stdin,
-                               self.process.stdout,
-                               self.process.stderr]:
-                    try:
-                        stream.close()
-                    except AttributeError:
-                        pass
-                self.process.terminate()
-                self.process.wait()
+            stdin, stdout, stderr = (
+                self.process.stdin,
+                self.process.stdout,
+                self.process.stderr,
+            )
+            for stream in stdin, stdout, stderr:
+                try:
+                    stream.close()  # type: ignore
+                except AttributeError:
+                    pass
+            self.process.terminate()
+            try:
+                self.process.wait(60)
+            except subprocess.TimeoutExpired:
+                logger.error(
+                    "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
+                    exc_info=True,
+                )
                 self.process.kill()
-                self.process = None
         except OSError:
-            pass
+            logger.error("Error terminating service process.", exc_info=True)
 
-    def __del__(self):
+    def __del__(self) -> None:
         # `subprocess.Popen` doesn't send signal on `__del__`;
         # so we attempt to close the launched process when `__del__`
         # is triggered.
+        # do not use globals here; interpreter shutdown may have already cleaned them up
+        # and they would be `None`. This goes for anything this method is referencing internally.
         try:
             self.stop()
         except Exception:
             pass
+
+    def _start_process(self, path: str) -> None:
+        """Creates a subprocess by executing the command provided.
+
+        :param cmd: full command to execute
+        """
+        cmd = [path]
+        cmd.extend(self.command_line_args())
+        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
+        try:
+            start_info = None
+            if system() == "Windows":
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
+
+            self.process = subprocess.Popen(
+                cmd,
+                env=self.env,
+                close_fds=close_file_descriptors,
+                stdout=self.log_output,
+                stderr=self.log_output,
+                stdin=PIPE,
+                creationflags=self.creation_flags,
+                startupinfo=start_info,
+                **self.popen_kw,
+            )
+            logger.debug(
+                "Started executable: `%s` in a child process with pid: %s using %s to output %s",
+                self._path,
+                self.process.pid,
+                self.creation_flags,
+                self.log_output,
+            )
+        except TypeError:
+            raise
+        except OSError as err:
+            if err.errno == errno.EACCES:
+                raise WebDriverException(
+                    f"'{os.path.basename(self._path)}' executable may have wrong permissions."
+                ) from err
+            raise

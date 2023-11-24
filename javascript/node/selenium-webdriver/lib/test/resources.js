@@ -30,7 +30,7 @@ const { projectRoot } = require('./build')
  * @throws {Error} If the file does not exist.
  */
 exports.locate = function (filePath) {
-  var fullPath = path.normalize(path.join(projectRoot(), filePath))
+  const fullPath = path.normalize(path.join(projectRoot(), filePath))
   if (!fs.existsSync(fullPath)) {
     throw Error('File does not exist: ' + filePath)
   }

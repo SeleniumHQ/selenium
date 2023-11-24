@@ -99,7 +99,9 @@ namespace OpenQA.Selenium
         private string platformName;
         private Proxy proxy;
         private bool? acceptInsecureCertificates;
+        private bool? useWebSocketUrl;
         private bool useStrictFileInteractability;
+        private bool? enableDownloads;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -118,6 +120,8 @@ namespace OpenQA.Selenium
             this.AddKnownCapabilityName(CapabilityType.UnhandledPromptBehavior, "UnhandledPromptBehavior property");
             this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
             this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
+            this.AddKnownCapabilityName(CapabilityType.WebSocketUrl, "UseWebSocketUrl property");
+            this.AddKnownCapabilityName(CapabilityType.EnableDownloads, "EnableDownloads property");
         }
 
         /// <summary>
@@ -155,6 +159,16 @@ namespace OpenQA.Selenium
         {
             get { return this.acceptInsecureCertificates; }
             set { this.acceptInsecureCertificates = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the driver should request a URL to
+        /// a WebSocket to be used for bidirectional communication.
+        /// </summary>
+        public bool? UseWebSocketUrl
+        {
+            get { return this.useWebSocketUrl; }
+            set { this.useWebSocketUrl = value; }
         }
 
         /// <summary>
@@ -197,6 +211,25 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether files may be downloaded from remote node.
+        /// </summary>
+        public bool? EnableDownloads
+        {
+            get { return this.enableDownloads; }
+            set { this.enableDownloads = value; }
+        }
+
+        /// <summary>
+        /// Set or Get the location of the browser
+        /// Override in subclass
+        /// </summary>
+        public virtual string BinaryLocation
+        {
+            get { return null; }
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the specific browser driver.
         /// </summary>
@@ -215,23 +248,6 @@ namespace OpenQA.Selenium
             this.ValidateCapabilityName(optionName);
             this.additionalCapabilities[optionName] = optionValue;
         }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the specific browser driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/>.
-        /// </remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the browser-specific method for adding additional options")]
-        public abstract void AddAdditionalCapability(string capabilityName, object capabilityValue);
 
         /// <summary>
         /// Returns the <see cref="ICapabilities"/> for the specific browser driver with these
@@ -343,14 +359,14 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(capabilityName))
             {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+                throw new ArgumentException("Capability name may not be null an empty string.", nameof(capabilityName));
             }
 
             if (this.IsKnownCapabilityName(capabilityName))
             {
                 string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-                throw new ArgumentException(message, "capabilityName");
+                throw new ArgumentException(message, nameof(capabilityName));
             }
         }
 
@@ -448,6 +464,16 @@ namespace OpenQA.Selenium
             if (this.acceptInsecureCertificates.HasValue)
             {
                 capabilities.SetCapability(CapabilityType.AcceptInsecureCertificates, this.acceptInsecureCertificates);
+            }
+
+            if (this.useWebSocketUrl.HasValue)
+            {
+                capabilities.SetCapability(CapabilityType.WebSocketUrl, this.useWebSocketUrl);
+            }
+
+            if (this.enableDownloads.HasValue)
+            {
+                capabilities.SetCapability(CapabilityType.EnableDownloads, this.enableDownloads);
             }
 
             if (this.useStrictFileInteractability)

@@ -13,6 +13,8 @@ test-output/
 common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
+dotnet/.idea/
+dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
@@ -20,12 +22,14 @@ javascript/node/selenium-webdriver/node_modules/
 javascript/node/selenium-webdriver/lib/atoms/find-elements.js
 javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
 javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
+javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js
 javascript/safari-driver/node_modules/
 javascript/webdriver/devtools/types/
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/dictionaries/
 .idea/scopes/
+.idea/sonarlint/
 .idea/qaplug_profiles.xml
 out
 cpp/IEDriver/sizzle.h
@@ -71,10 +75,14 @@ py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
 py/build/
 py/LICENSE
+py/selenium/webdriver/common/linux/
+py/selenium/webdriver/common/windows/
+py/selenium/webdriver/common/macos/
 selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
+dotnet/**/bin/
 obj/
 *.opensdf
 *.suo
@@ -96,18 +104,23 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-Gemfile.lock
 /rb/.bundle
 /rb/.idea
+rb/bin/
+rb/lib/selenium/devtools/v1*
+rb/.gem_rbs_collection/
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/inspectionProfiles/Project_Default.xml
 .idea/misc.xml
 third_party/py/googlestorage/client_secrets.json
+.venv
 venv
 venv3
 py/.idea
+rust/target
+rust/.idea
 
 # Bazel stuff
 bazel-bin
@@ -118,3 +131,11 @@ bazel-testlogs
 
 /.vscode/
 /.scannerwork/
+/.bazelrc.local
+
+# Engflow
+*.crt
+*.key
+javascript/node/selenium-webdriver/.vscode/settings.json
+
+dotnet-bin

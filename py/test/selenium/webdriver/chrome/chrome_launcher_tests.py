@@ -15,27 +15,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver import Chrome
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import pytest
 
 
-def test_launch_and_close_browser():
-    driver = Chrome()
+@pytest.mark.no_driver_after_test
+def test_launch_and_close_browser(clean_driver, clean_service):
+    driver = clean_driver(service=clean_service)
     driver.quit()
 
 
-def test_we_can_launch_multiple_chrome_instances():
-    driver1 = Chrome()
-    driver2 = Chrome()
-    driver3 = Chrome()
+@pytest.mark.no_driver_after_test
+def test_we_can_launch_multiple_chrome_instances(clean_driver, clean_service):
+    driver1 = clean_driver(service=clean_service)
+    driver2 = clean_driver(service=clean_service)
+    driver3 = clean_driver(service=clean_service)
     driver1.quit()
     driver2.quit()
     driver3.quit()
-
-
-def test_launch_chrome_do_not_affect_default_capabilities():
-    expected = DesiredCapabilities.CHROME.copy()
-    driver = Chrome()
-    actual = DesiredCapabilities.CHROME.copy()
-    driver.quit()
-    assert actual == expected

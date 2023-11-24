@@ -18,7 +18,7 @@
 from selenium.webdriver.common.by import By
 
 
-def testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoice(driver, pages):
+def test_should_be_possible_to_deselect_asingle_option_from_aselect_which_allows_multiple_choice(driver, pages):
     pages.load("formPage.html")
     multiSelect = driver.find_element(By.ID, "multi")
     options = multiSelect.find_elements(By.TAG_NAME, "option")
@@ -34,7 +34,7 @@ def testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleCho
     assert option.is_selected() is True
 
 
-def testShouldBeAbleToChangeTheSelectedOptionInASelec(driver, pages):
+def test_should_be_able_to_change_the_selected_option_in_aselec(driver, pages):
     pages.load("formPage.html")
     selectBox = driver.find_element(By.XPATH, "//select[@name='selectomatic']")
     options = selectBox.find_elements(By.TAG_NAME, "option")
@@ -48,7 +48,7 @@ def testShouldBeAbleToChangeTheSelectedOptionInASelec(driver, pages):
     assert two.is_selected() is True
 
 
-def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoice(driver, pages):
+def test_should_be_able_to_select_more_than_one_option_from_aselect_which_allows_multiple_choice(driver, pages):
     pages.load("formPage.html")
 
     multiSelect = driver.find_element(By.ID, "multi")
@@ -62,7 +62,7 @@ def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoic
         assert option.is_selected() is True
 
 
-def testShouldSelectFirstOptionIfNoneIsSelected(driver, pages):
+def test_should_select_first_option_if_none_is_selected(driver, pages):
     pages.load("formPage.html")
     selectBox = driver.find_element(By.XPATH, "//select[@name='select-default']")
     options = selectBox.find_elements(By.TAG_NAME, "option")
@@ -76,14 +76,14 @@ def testShouldSelectFirstOptionIfNoneIsSelected(driver, pages):
     assert two.is_selected() is True
 
 
-def testCanSelectElementsInOptGroup(driver, pages):
+def test_can_select_elements_in_opt_group(driver, pages):
     pages.load("selectPage.html")
     element = driver.find_element(By.ID, "two-in-group")
     element.click()
     assert element.is_selected() is True
 
 
-def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist(driver, pages):
+def test_can_get_value_from_option_via_attribute_when_attribute_doesnt_exist(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
     assert element.get_attribute("value") == "One"
@@ -91,7 +91,7 @@ def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist(driver, pages)
     assert element.get_attribute("value") == ""
 
 
-def testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString(driver, pages):
+def test_can_get_value_from_option_via_attribute_when_attribute_is_empty_string(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "optionEmptyValueSet")
     assert element.get_attribute("value") == ""

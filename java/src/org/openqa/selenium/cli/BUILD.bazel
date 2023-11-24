@@ -1,0 +1,13 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "cli",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+    ],
+)

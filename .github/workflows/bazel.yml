@@ -1,0 +1,140 @@
+name: Bazel
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Name of workflow
+        required: false
+        type: string
+      run:
+        description: Bazel command to run
+        required: true
+        type: string
+      os:
+        description: One of ubuntu, windows or macos
+        required: false
+        type: string
+        default: ubuntu
+      browser:
+        description: One of chrome, firefox, or edge
+        required: false
+        type: string
+        default: ''
+      browser-version:
+        description: One of stable, latest, latest-beta or latest-devedition
+        required: false
+        type: string
+        default: ''
+      cache-key:
+        description: Bazel disk cache key
+        required: false
+        type: string
+        default: ''
+      java-version:
+        description: Custom Java version to install
+        required: false
+        type: string
+        default: ''
+      ruby-version:
+        description: Custom Ruby version to use
+        required: false
+        type: string
+        default: ''
+      nightly-release-files:
+        description: Files to upload to the Nightly release tag
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  bazel:
+    name: ${{ inputs.name }}
+    runs-on: ${{ inputs.os }}-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+      - name: Free space
+        if: inputs.os != 'windows'
+        run: ./scripts/github-actions/free-disk-space.sh
+      - name: Remove driver directories Windows
+        if: inputs.os == 'windows'
+        run: |
+          rm "$env:ChromeWebDriver" -r -v
+          rm "$env:EdgeWebDriver" -r -v
+          rm "$env:GeckoWebDriver" -r -v
+      - name: Remove driver directories Non-Windows
+        if: inputs.os != 'windows'
+        run: |
+          sudo rm -rf $CHROMEWEBDRIVER $EDGEWEBDRIVER $GECKOWEBDRIVER
+      - name: Set Ruby version
+        if: inputs.ruby-version != ''
+        run: echo 'RUBY_VERSION = "${{ inputs.ruby-version }}"' > rb/ruby_version.bzl
+      - name: Setup Java
+        if: inputs.java-version != ''
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.2.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ inputs.cache-key }}
+          external-cache: |
+            name: ${{ inputs.cache-key }}
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+      - name: Setup Fluxbox and Xvfb
+        if: inputs.os == 'ubuntu' && inputs.browser != ''
+        run: |
+          sudo apt-get -y install fluxbox
+          Xvfb :99 &
+          fluxbox -display :99 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+      - name: Set resolution
+        if: inputs.os == 'windows' && inputs.browser != ''
+        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Setup Chrome
+        if: inputs.browser == 'chrome'
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: ${{ inputs.browser-version || 'stable' }}
+      - name: Setup Firefox
+        if: inputs.browser == 'firefox'
+        uses: abhi1693/setup-browser@v0.3.5
+        with:
+          browser: firefox
+          version: ${{ inputs.browser-version || 'latest' }}
+      - name: Setup Edge
+        if: inputs.browser == 'edge'
+        uses: browser-actions/setup-edge@latest
+        with:
+          edge-version: ${{ inputs.browser-version || 'stable' }}
+      - name: Setup Safari
+        if: inputs.browser == 'safari'
+        run: sudo safaridriver --enable
+      - name: Run Bazel
+        run: ${{ inputs.run }}
+      - name: Start SSH session
+        if: failure() && runner.debug == '1'
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: false
+      - name: Release Nightly
+        if: inputs.nightly-release-files != ''
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "nightly"
+          title: "Nightly"
+          prerelease: true
+          files: ${{ inputs.nightly-release-files }}

@@ -19,7 +19,7 @@
 from selenium.webdriver.common.by import By
 
 
-class ResultsPage(object):
+class ResultsPage:
     """This class models a google search result page."""
 
     def __init__(self, driver):

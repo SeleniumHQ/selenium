@@ -22,7 +22,6 @@ require 'curb'
 module Selenium
   module WebDriver
     module Remote
-
       module Http
         #
         # An alternative to the default Net::HTTP client.
@@ -38,7 +37,6 @@ module Selenium
         #
 
         class Curb < Common
-
           def quit_errors
             [Curl::Err::RecvError] + super
           end
@@ -85,7 +83,7 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = @timeout if @timeout
-              c.verbose         = WebDriver.logger.info?
+              c.verbose         = WebDriver.logger.debug?
 
               c
             end

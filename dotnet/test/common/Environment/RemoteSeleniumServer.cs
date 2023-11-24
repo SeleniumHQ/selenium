@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar";
+        private string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
         private string projectRootPath;
         private bool autoStart;
 
@@ -29,26 +29,12 @@ namespace OpenQA.Selenium.Environment
                         string.Format(
                             "Selenium server jar at {0} didn't exist - please build it using something like {1}",
                             serverJarName,
-                            "go //java/server/src/org/openqa/grid/selenium:selenium"));
+                            "go //java/src/org/openqa/grid/selenium:selenium"));
                 }
 
-                string serviceDirectory = EnvironmentManager.Instance.DriverServiceDirectory;
-                if (string.IsNullOrEmpty(serviceDirectory))
-                {
-                    serviceDirectory = EnvironmentManager.Instance.CurrentDirectory;
-                }
-
-                string ieDriverExe = System.IO.Path.Combine(serviceDirectory, "IEDriverServer.exe");
-                string chromeDriverExe = System.IO.Path.Combine(serviceDirectory, "chromedriver.exe");
-                string geckoDriverExe = System.IO.Path.Combine(serviceDirectory, "geckodriver.exe");
-                string edgeDriverExe = System.IO.Path.Combine(serviceDirectory, "MicrosoftWebDriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe
-                                                     + " -Dwebdriver.gecko.driver=" + geckoDriverExe
-                                                     + " -Dwebdriver.chrome.driver=" + chromeDriverExe
-                                                     + " -Dwebdriver.edge.driver=" + edgeDriverExe
-                                                     + " -jar " + serverJarName + " -port 6000";
+                webserverProcess.StartInfo.Arguments = " -jar " + serverJarName + " standalone --port 6000 --selenium-manager true --enable-managed-downloads true";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));

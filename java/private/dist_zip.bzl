@@ -64,7 +64,7 @@ java_dist_zip = rule(
         "_zip": attr.label(
             default = "@bazel_tools//tools/zip:zipper",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
 )

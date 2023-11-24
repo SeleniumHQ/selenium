@@ -1,0 +1,10 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "status",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium:__subpackages__",
+        "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+)

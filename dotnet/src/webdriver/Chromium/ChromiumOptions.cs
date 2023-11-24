@@ -61,6 +61,7 @@ namespace OpenQA.Selenium.Chromium
         private string mobileEmulationDeviceName;
         private ChromiumMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
         private ChromiumPerformanceLoggingPreferences perfLoggingPreferences;
+        private ChromiumAndroidOptions androidOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumOptions"/> class.
@@ -104,7 +105,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the location of the Chromium browser's binary executable file.
         /// </summary>
-        public string BinaryLocation
+        public override string BinaryLocation
         {
             get { return this.binaryLocation; }
             set { this.binaryLocation = value; }
@@ -176,14 +177,33 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Gets or sets the options for automating Chromium applications on Android.
+        /// </summary>
+        public ChromiumAndroidOptions AndroidOptions
+        {
+            get { return this.androidOptions; }
+            set { this.androidOptions = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the <see cref="ChromiumDriver"/> instance
         /// should use the legacy OSS protocol dialect or a dialect compliant with the W3C
         /// WebDriver Specification.
         /// </summary>
+        [Obsolete("Spec Compliant Protocol is the only supported protocol")]
         public bool UseSpecCompliantProtocol
         {
             get { return this.useSpecCompliantProtocol; }
-            set { this.useSpecCompliantProtocol = value; }
+            set
+            {
+                if (!value)
+                {
+                    throw new ArgumentException("Only the spec compliant protocol is supported, " +
+                                                "Please update to W3C Syntax: " +
+                                                "https://www.selenium.dev/blog/2022/legacy-protocol-support/");
+                }
+                this.useSpecCompliantProtocol = true;
+            }
         }
 
         /// <summary>
@@ -194,7 +214,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddArguments(argument);
@@ -217,7 +237,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
+                throw new ArgumentNullException(nameof(argumentsToAdd), "argumentsToAdd must not be null");
             }
 
             this.arguments.AddRange(argumentsToAdd);
@@ -232,7 +252,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddExcludedArguments(argument);
@@ -257,7 +277,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (argumentsToExclude == null)
             {
-                throw new ArgumentNullException("argumentsToExclude", "argumentsToExclude must not be null");
+                throw new ArgumentNullException(nameof(argumentsToExclude), "argumentsToExclude must not be null");
             }
 
             this.excludedSwitches.AddRange(argumentsToExclude);
@@ -272,7 +292,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(pathToExtension))
             {
-                throw new ArgumentException("pathToExtension must not be null or empty", "pathToExtension");
+                throw new ArgumentException("pathToExtension must not be null or empty", nameof(pathToExtension));
             }
 
             this.AddExtensions(pathToExtension);
@@ -297,7 +317,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)
@@ -320,7 +340,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(extension))
             {
-                throw new ArgumentException("extension must not be null or empty", "extension");
+                throw new ArgumentException("extension must not be null or empty", nameof(extension));
             }
 
             this.AddEncodedExtensions(extension);
@@ -346,7 +366,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)
@@ -427,7 +447,7 @@ namespace OpenQA.Selenium.Chromium
             this.mobileEmulationDeviceName = null;
             if (deviceSettings != null && string.IsNullOrEmpty(deviceSettings.UserAgent))
             {
-                throw new ArgumentException("Device settings must include a user agent string.", "deviceSettings");
+                throw new ArgumentException("Device settings must include a user agent string.", nameof(deviceSettings));
             }
 
             this.mobileEmulationDeviceSettings = deviceSettings;
@@ -444,7 +464,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(windowType))
             {
-                throw new ArgumentException("windowType must not be null or empty", "windowType");
+                throw new ArgumentException("windowType must not be null or empty", nameof(windowType));
             }
 
             this.AddWindowTypes(windowType);
@@ -469,7 +489,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (windowTypesToAdd == null)
             {
-                throw new ArgumentNullException("windowTypesToAdd", "windowTypesToAdd must not be null");
+                throw new ArgumentNullException(nameof(windowTypesToAdd), "windowTypesToAdd must not be null");
             }
 
             this.windowTypes.AddRange(windowTypesToAdd);
@@ -485,67 +505,15 @@ namespace OpenQA.Selenium.Chromium
         /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalChromeOption(string, object)"/>
+        /// <remarks>Calling <see cref="AddAdditionalChromiumOption(string, object)"/>
         /// where <paramref name="optionName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="optionValue"/>.
-        /// Calling this method adds capabilities to the Chrome-specific options object passed to
-        /// webdriver executable (property name 'goog:chromeOptions').</remarks>
-        public void AddAdditionalChromeOption(string optionName, object optionValue)
+        /// Calling this method adds capabilities to the Chromium-specific options object passed to
+        /// webdriver executable (e.g. property name 'goog:chromeOptions').</remarks>
+        protected void AddAdditionalChromiumOption(string optionName, object optionValue)
         {
             this.ValidateCapabilityName(optionName);
             this.additionalChromeOptions[optionName] = optionValue;
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Chromium driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/>.
-        /// Also, by default, calling this method adds capabilities to the options object passed to
-        /// chromedriver.exe.</remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalChromeOption method for adding additional options")]
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
-        {
-            // Add the capability to the chromeOptions object by default. This is to handle
-            // the 80% case where the chromedriver team adds a new option in chromedriver.exe
-            // and the bindings have not yet had a type safe option added.
-            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Chromium driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
-        /// capability for the driver instead of a Chromium-specific option.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalChromeOption method for adding additional options")]
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
-        {
-            if (isGlobalCapability)
-            {
-                this.AddAdditionalOption(capabilityName, capabilityValue);
-            }
-            else
-            {
-                this.AddAdditionalChromeOption(capabilityName, capabilityValue);
-            }
         }
 
         /// <summary>
@@ -644,6 +612,11 @@ namespace OpenQA.Selenium.Chromium
                 chromeOptions[PerformanceLoggingPreferencesChromeOption] = this.GeneratePerformanceLoggingPreferencesDictionary();
             }
 
+            if (this.androidOptions != null)
+            {
+                this.AddAndroidOptions(chromeOptions);
+            }
+
             if (this.windowTypes.Count > 0)
             {
                 chromeOptions[WindowTypesChromeOption] = this.windowTypes;
@@ -655,6 +628,31 @@ namespace OpenQA.Selenium.Chromium
             }
 
             return chromeOptions;
+        }
+
+        private void AddAndroidOptions(Dictionary<string, object> chromeOptions)
+        {
+            chromeOptions["androidPackage"] = this.androidOptions.AndroidPackage;
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidDeviceSerial))
+            {
+                chromeOptions["androidDeviceSerial"] = this.androidOptions.AndroidDeviceSerial;
+            }
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidActivity))
+            {
+                chromeOptions["androidActivity"] = this.androidOptions.AndroidActivity;
+            }
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidProcess))
+            {
+                chromeOptions["androidProcess"] = this.androidOptions.AndroidProcess;
+            }
+
+            if (this.androidOptions.UseRunningApp)
+            {
+                chromeOptions["androidUseRunningApp"] = this.androidOptions.UseRunningApp;
+            }
         }
 
         private Dictionary<string, object> GeneratePerformanceLoggingPreferencesDictionary()

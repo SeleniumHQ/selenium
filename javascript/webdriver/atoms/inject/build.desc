@@ -1,4 +1,0 @@
-js_library(name = "deps",
-  srcs = "*.js",
-  deps = ["//javascript/atoms:all_js",
-          "//javascript/webdriver/atoms:all_js"])

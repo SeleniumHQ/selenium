@@ -37,7 +37,7 @@ const dataDirectory = path.join(__dirname, 'data')
 const jsDirectory = resources.locate('javascript')
 
 const Pages = (function () {
-  var pages = {}
+  let pages = {}
   function addPage(page, path) {
     pages.__defineGetter__(page, function () {
       return exports.whereIs(path)
@@ -46,6 +46,8 @@ const Pages = (function () {
 
   addPage('ajaxyPage', 'ajaxy_page.html')
   addPage('alertsPage', 'alerts.html')
+  addPage('basicAuth', 'basicAuth')
+  addPage('blankPage', 'blank.html')
   addPage('bodyTypingPage', 'bodyTypingTest.html')
   addPage('booleanAttributes', 'booleanAttributes.html')
   addPage('childPage', 'child/childPage.html')
@@ -87,6 +89,8 @@ const Pages = (function () {
   addPage('redirectPage', 'redirect')
   addPage('resultPage', 'resultPage.html')
   addPage('richTextPage', 'rich_text.html')
+  addPage('printPage', 'printPage.html')
+  addPage('scrollingPage', 'scrollingPage.html')
   addPage('selectableItemsPage', 'selectableItems.html')
   addPage('selectPage', 'selectPage.html')
   addPage('simpleTestPage', 'simpleTest.html')
@@ -100,8 +104,17 @@ const Pages = (function () {
   addPage('unicodeLtrPage', 'utf8/unicode_ltr.html')
   addPage('uploadPage', 'upload.html')
   addPage('veryLargeCanvas', 'veryLargeCanvas.html')
+  addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
+  addPage('userpromptPage', 'userprompt.html')
+  addPage('virtualAuthenticator', 'virtual-authenticator.html')
+  addPage('logEntryAdded', 'bidi/logEntryAdded.html')
+  addPage('scriptTestAccessProperty', 'bidi/scriptTestAccessProperty.html')
+  addPage('scriptTestRemoveProperty', 'bidi/scriptTestRemoveProperty.html')
+  addPage('emptyPage', 'bidi/emptyPage.html')
+  addPage('emptyText', 'bidi/emptyText.txt')
+  addPage('redirectedHttpEquiv', 'bidi/redirected_http_equiv.html')
 
   return pages
 })()
@@ -134,6 +147,7 @@ app
   .get(Path.PAGE + '/*', sendInifinitePage)
   .get(Path.REDIRECT, redirectToResultPage)
   .get(Path.SLEEP, sendDelayedResponse)
+  .get(Path.BASIC_AUTH, sendBasicAuth)
 
 if (isDevMode()) {
   var closureDir = resources.locate('third_party/closure/goog')
@@ -175,6 +189,31 @@ function sendInifinitePage(request, response) {
   response.end(body)
 }
 
+function sendBasicAuth(request, response) {
+  const denyAccess = function () {
+    response.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
+    response.end('Access denied')
+  }
+
+  const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-._~+/]+)=*\s*$/i
+  const auth = request.headers.authorization
+  const match = basicAuthRegExp.exec(auth || '')
+  if (!match) {
+    denyAccess()
+    return
+  }
+
+  const userNameAndPass = Buffer.from(match[1], 'base64').toString()
+  const parts = userNameAndPass.split(':', 2)
+  if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+    denyAccess()
+    return
+  }
+
+  response.writeHead(200, { 'content-type': 'text/plain' })
+  response.end('Access granted!')
+}
+
 function sendDelayedResponse(request, response) {
   var duration = 0
   // eslint-disable-next-line node/no-deprecated-api
@@ -210,9 +249,24 @@ function handleUpload(request, response) {
       response.writeHead(500)
       response.end(err + '')
     } else {
-      response.writeHead(200)
-      response.write(request.files[0].buffer)
-      response.end('<script>window.top.window.onUploadDone();</script>')
+      if (!request.files) {
+        return response.status(400).send('No files were uploaded')
+      }
+
+      let files = []
+      let keys = Object.keys(request.files)
+
+      keys.forEach((file) => {
+        files.push(request.files[file].originalname)
+      })
+
+      response
+        .status(200)
+        .contentType('html')
+        .send(
+          files.join('\n') +
+            '\n<script>window.top.window.onUploadDone();</script>'
+        )
     }
   })
 }

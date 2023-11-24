@@ -5,7 +5,7 @@ module Bazel
     end
 
     def invoke(*_args, &block)
-      self.out = Bazel::execute("build", ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\""], name, &block)
+      self.out = Bazel::execute("build", name, &block)
 
       block&.call(cmd_out)
     end

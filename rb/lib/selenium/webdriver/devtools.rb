@@ -21,110 +21,76 @@ module Selenium
   module WebDriver
     class DevTools
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
+      autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
+      autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
+      autoload :NetworkInterceptor, 'selenium/webdriver/devtools/network_interceptor'
+      autoload :PinnedScript, 'selenium/webdriver/devtools/pinned_script'
+      autoload :Request, 'selenium/webdriver/devtools/request'
+      autoload :Response, 'selenium/webdriver/devtools/response'
 
-      SUPPORTED_VERSIONS = [84, 85, 86].freeze
+      def initialize(url:)
+        @ws = WebSocketConnection.new(url: url)
+        @session_id = nil
+        start_session
+      end
 
-      def initialize(url:, version:)
-        @messages = []
-        @uri = URI("http://#{url}")
-
-        load_devtools_version(version)
-        process_handshake
-        attach_socket_listener
-
-        target.attach_to_target(target_id: page_target['id'])
-        target.set_auto_attach(auto_attach: true, wait_for_debugger_on_start: false)
+      def close
+        @ws.close
       end
 
       def callbacks
-        @callbacks ||= Hash.new { |callbacks, event| callbacks[event] = [] }
+        @ws.callbacks
       end
 
       def send_cmd(method, **params)
-        id = next_id
-        data = JSON.generate(id: id, method: method, params: params.reject { |_, v| v.nil? })
-        WebDriver.logger.debug "DevTools -> #{data}"
-
-        out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
-        socket.write(out_frame.to_s)
-
-        message = wait.until do
-          @messages.find { |m| m['id'] == id }
-        end
-
+        data = {method: method, params: params.compact}
+        data[:sessionId] = @session_id if @session_id
+        message = @ws.send_cmd(**data)
         raise Error::WebDriverError, error_message(message['error']) if message['error']
 
         message
       end
 
-      private
+      def method_missing(method, *_args)
+        namespace = "Selenium::DevTools::V#{Selenium::DevTools.version}"
+        methods_to_classes = "#{namespace}::METHODS_TO_CLASSES"
 
-      def load_devtools_version(version)
-        closest_version = SUPPORTED_VERSIONS.min_by { |v| (version - v).abs }
-        WebDriver.logger.info("Loading DevTools::V#{closest_version} for #{version}.")
-        Dir["#{__dir__}/devtools/v#{closest_version}/*"].sort.each do |f|
-          require f
-        end
-      end
+        desired_class = if Object.const_defined?(methods_to_classes)
+                          # selenium-devtools 0.113 and newer
+                          "#{namespace}::#{Object.const_get(methods_to_classes)[method]}"
+                        else
+                          # selenium-devtools 0.112 and older
+                          "#{namespace}::#{method.capitalize}"
+                        end
 
-      def process_handshake
-        socket.print(ws.to_s)
-        ws << socket.readpartial(1024)
-      end
+        return unless Object.const_defined?(desired_class)
 
-      def attach_socket_listener
-        socket_listener = Thread.new do
-          until socket.eof?
-            incoming_frame << socket.readpartial(1024)
-
-            while (frame = incoming_frame.next)
-              message = JSON.parse(frame.to_s)
-              @messages << message
-              WebDriver.logger.debug "DevTools <- #{message}"
-              next unless message['method']
-
-              callbacks[message['method']].each do |callback|
-                Thread.new { callback.call(message['params']) }
-              end
-            end
+        self.class.class_eval do
+          define_method(method) do
+            Object.const_get(desired_class).new(self)
           end
         end
-        socket_listener.abort_on_exception = true
+
+        send(method)
       end
 
-      def incoming_frame
-        @incoming_frame ||= WebSocket::Frame::Incoming::Client.new(version: ws.version)
+      def respond_to_missing?(method, *_args)
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
+        Object.const_defined?(desired_class)
       end
 
-      def wait
-        @wait ||= Wait.new(timeout: 10, interval: 0.1)
-      end
+      private
 
-      def socket
-        @socket ||= TCPSocket.new(ws.host, ws.port)
-      end
-
-      def ws
-        @ws ||= WebSocket::Handshake::Client.new(url: page_target['webSocketDebuggerUrl'])
-      end
-
-      def page_target
-        @page_target ||= begin
-          response = Net::HTTP.get(@uri.hostname, '/json', @uri.port)
-          targets = JSON.parse(response)
-          targets.find { |target| target['type'] == 'page' }
-        end
-      end
-
-      def next_id
-        @id ||= 0
-        @id += 1
+      def start_session
+        targets = target.get_targets.dig('result', 'targetInfos')
+        page_target = targets.find { |target| target['type'] == 'page' }
+        session = target.attach_to_target(target_id: page_target['targetId'], flatten: true)
+        @session_id = session.dig('result', 'sessionId')
       end
 
       def error_message(error)
         [error['code'], error['message'], error['data']].join(': ')
       end
-
     end # DevTools
   end # WebDriver
 end # Selenium

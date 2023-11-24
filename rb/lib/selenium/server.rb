@@ -17,7 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'childprocess'
+require 'selenium/webdriver/common/child_process'
+require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
 
@@ -57,48 +58,42 @@ module Selenium
 
     CL_RESET = WebDriver::Platform.windows? ? '' : "\r\e[0K"
 
-    def self.get(required_version, opts = {})
-      new(download(required_version), opts)
-    end
-
-    #
-    # Download the given version of the selenium-server-standalone jar.
-    #
-
     class << self
-      def download(required_version)
+      #
+      # Download the given version of the selenium-server jar and return instance
+      #
+      # @param [String, Symbol] required_version X.Y.Z defaults to ':latest'
+      # @param [Hash] opts
+      # @return [Selenium::Server]
+      #
+
+      def get(required_version = :latest, opts = {})
+        new(download(required_version), opts)
+      end
+
+      #
+      # Download the given version of the selenium-server jar and return location
+      #
+      # @param [String, Symbol] required_version X.Y.Z defaults to ':latest'
+      # @return [String] location of downloaded file
+      #
+
+      def download(required_version = :latest)
         required_version = latest if required_version == :latest
-        download_file_name = "selenium-server-standalone-#{required_version}.jar"
+        download_file_name = "selenium-server-#{required_version}.jar"
 
         return download_file_name if File.exist? download_file_name
 
         begin
+          download_location = available_assets[download_file_name]['browser_download_url']
+          released = Net::HTTP.get_response(URI.parse(download_location))
+          redirected = URI.parse released.header['location']
+
           File.open(download_file_name, 'wb') do |destination|
-            net_http_start('selenium-release.storage.googleapis.com') do |http|
-              resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
-                total = response.content_length
-                progress = 0
-                segment_count = 0
-
-                response.read_body do |segment|
-                  progress += segment.length
-                  segment_count += 1
-
-                  if (segment_count % 15).zero?
-                    percent = progress.fdiv(total) * 100
-                    print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
-                    segment_count = 0
-                  end
-
-                  destination.write(segment)
-                end
-              end
-
-              raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
-            end
+            download_server(redirected, destination)
           end
         rescue StandardError
-          FileUtils.rm download_file_name if File.exist? download_file_name
+          FileUtils.rm_rf download_file_name
           raise
         end
 
@@ -106,30 +101,62 @@ module Selenium
       end
 
       #
-      # Ask Google Code what the latest selenium-server-standalone version is.
+      # Ask GitHub what the latest selenium-server version is.
       #
 
       def latest
-        require 'rexml/document'
-        net_http_start('selenium-release.storage.googleapis.com') do |http|
-          versions = REXML::Document.new(http.get('/').body).root.get_elements('//Contents/Key').map do |e|
-            e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
-          end
+        @latest ||= begin
+          available = available_assets.keys.map { |key| key[/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1] }
+          available.map { |asset| Gem::Version.new(asset) }.max.to_s
+        end
+      end
 
-          versions.compact.map { |version| Gem::Version.new(version) }.max.version
+      # @api private
+
+      def available_assets
+        @available_assets ||= net_http_start('api.github.com') do |http|
+          json = http.get('/repos/seleniumhq/selenium/releases').body
+          all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
+          server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
+          server_assets.each_with_object({}) { |asset, hash| hash[asset.delete('name')] = asset }
         end
       end
 
       def net_http_start(address, &block)
-        http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-
+        http_proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
           Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP.start(address, &block)
+          Net::HTTP.start(address, use_ssl: true, &block)
+        end
+      end
+
+      def download_server(uri, destination)
+        net_http_start('github-releases.githubusercontent.com') do |http|
+          request = Net::HTTP::Get.new uri
+          resp = http.request(request) do |response|
+            total = response.content_length
+            progress = 0
+            segment_count = 0
+
+            response.read_body do |segment|
+              progress += segment.length
+              segment_count += 1
+
+              if (segment_count % 15).zero?
+                percent = progress.fdiv(total) * 100
+                print "#{CL_RESET}Downloading #{destination.path}: #{percent.to_i}% (#{progress} / #{total})"
+                segment_count = 0
+              end
+
+              destination.write(segment)
+            end
+          end
+
+          raise Error, "#{resp.code} for #{destination.path}" unless resp.is_a? Net::HTTPSuccess
         end
       end
     end
@@ -139,31 +166,7 @@ module Selenium
     # :standalone, #hub, #node
     #
 
-    attr_accessor :role
-
-    #
-    # The server port
-    #
-
-    attr_accessor :port
-
-    #
-    # The server timeout
-    #
-
-    attr_accessor :timeout
-
-    #
-    # Whether to launch the server in the background
-    #
-
-    attr_accessor :background
-
-    #
-    # Path to log file, or 'true' for stdout.
-    #
-
-    attr_accessor :log
+    attr_accessor :role, :host, :port, :timeout, :background, :log
 
     #
     # @param [String] jar Path to the server jar.
@@ -180,15 +183,21 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
-      @jar        = jar
-      @host       = '127.0.0.1'
-      @role       = opts.fetch(:role, 'standalone')
-      @port       = opts.fetch(:port, 4444)
-      @timeout    = opts.fetch(:timeout, 30)
+      @jar = jar
+      @host = '127.0.0.1'
+      @role = opts.fetch(:role, 'standalone')
+      @port = opts.fetch(:port, WebDriver::PortProber.above(4444))
+      @timeout = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
-      @log        = opts[:log]
-      @log_file   = nil
-      @additional_args = []
+      @additional_args = opts.fetch(:args, [])
+      @log = opts[:log]
+      if opts[:log_level]
+        @log ||= true
+        @additional_args << '--log-level'
+        @additional_args << opts[:log_level].to_s
+      end
+
+      @log_file = nil
     end
 
     def start
@@ -199,11 +208,6 @@ module Selenium
     end
 
     def stop
-      begin
-        Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
-      rescue Errno::ECONNREFUSED
-      end
-
       stop_process if @process
       poll_for_shutdown
 
@@ -224,18 +228,8 @@ module Selenium
 
     private
 
-    def selenium4?
-      @jar.match?(/[^\.][4]\./) || @jar.include?('deploy')
-    end
-
     def stop_process
-      return unless @process.alive?
-
-      begin
-        @process.poll_for_exit(5)
-      rescue ChildProcess::TimeoutError
-        @process.stop
-      end
+      @process.stop
     rescue Errno::ECHILD
       # already dead
     ensure
@@ -246,21 +240,14 @@ module Selenium
       @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
-        args = ['-jar', @jar]
-        args << @role if selenium4?
-        args << (selenium4? ? '--port' : '-port')
-        args << @port.to_s
+        args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
-        cp = ChildProcess.build(*server_command)
-        WebDriver.logger.debug("Executing Process #{server_command}")
-
-        io = cp.io
+        cp = WebDriver::ChildProcess.build(*server_command)
 
         if @log.is_a?(String)
-          @log_file = File.open(@log, 'w')
-          io.stdout = io.stderr = @log_file
+          cp.io = @log
         elsif @log
-          io.inherit!
+          cp.io = :out
         end
 
         cp.detach = @background

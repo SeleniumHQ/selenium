@@ -1,0 +1,42 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+
+MEDIUM_TESTS = [
+    "UsingPageFactoryTest.java",
+]
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(
+        [
+            "*Test.java",
+            "internal/*Test.java",
+        ],
+        exclude = MEDIUM_TESTS,
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/support/ui:clock",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = MEDIUM_TESTS,
+    browsers = ["firefox"],
+    deps = [
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

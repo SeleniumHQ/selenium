@@ -89,6 +89,10 @@ namespace OpenQA.Selenium.IE
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
         private const string FileUploadDialogTimeoutCapability = "ie.fileUploadDialogTimeout";
         private const string EnableFullPageScreenshotCapability = "ie.enableFullPageScreenshot";
+        private const string EdgeExecutablePathCapability = "ie.edgepath";
+        private const string LegacyFileUploadDialogHandlingCapability = "ie.useLegacyFileUploadDialogHandling";
+        private const string AttachToEdgeChromeCapability = "ie.edgechromium";
+        private const string IgnoreProcessMatchCapability = "ie.ignoreprocessmatch";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -100,10 +104,14 @@ namespace OpenQA.Selenium.IE
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
         private bool enableFullPageScreenshot = true;
+        private bool legacyFileUploadDialogHandling;
+        private bool attachToEdgeChrome;
+        private bool ignoreProcessMatch;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
+        private string edgeExecutablePath = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
@@ -131,6 +139,10 @@ namespace OpenQA.Selenium.IE
             this.AddKnownCapabilityName(EnsureCleanSessionCapability, "EnsureCleanSession property");
             this.AddKnownCapabilityName(FileUploadDialogTimeoutCapability, "FileUploadDialogTimeout property");
             this.AddKnownCapabilityName(EnableFullPageScreenshotCapability, "EnableFullPageScreenshot property");
+            this.AddKnownCapabilityName(LegacyFileUploadDialogHandlingCapability, "LegacyFileUploadDialogHanlding property");
+            this.AddKnownCapabilityName(AttachToEdgeChromeCapability, "AttachToEdgeChrome property");
+            this.AddKnownCapabilityName(EdgeExecutablePathCapability, "EdgeExecutablePath property");
+            this.AddKnownCapabilityName(IgnoreProcessMatchCapability, "IgnoreProcessMatch property");
         }
 
         /// <summary>
@@ -283,6 +295,42 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to use the legacy handling for file upload dialogs.
+        /// </summary>
+        public bool LegacyFileUploadDialogHanlding
+        {
+            get { return this.legacyFileUploadDialogHandling; }
+            set { this.legacyFileUploadDialogHandling = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to attach to Edge Chrome browser.
+        /// </summary>
+        public bool AttachToEdgeChrome
+        {
+            get { return this.attachToEdgeChrome; }
+            set { this.attachToEdgeChrome = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore process id match with IE Mode on Edge.
+        /// </summary>
+        public bool IgnoreProcessMatch
+        {
+            get { return this.ignoreProcessMatch; }
+            set { this.ignoreProcessMatch = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path to the Edge Browser Executable.
+        /// </summary>
+        public string EdgeExecutablePath
+        {
+            get { return this.edgeExecutablePath; }
+            set { this.edgeExecutablePath = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Internet Explorer driver.
         /// </summary>
@@ -301,57 +349,6 @@ namespace OpenQA.Selenium.IE
         {
             this.ValidateCapabilityName(optionName);
             this.additionalInternetExplorerOptions[optionName] = optionValue;
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Internet Explorer driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/>.
-        /// Also, by default, calling this method adds capabilities to the options object passed to
-        /// IEDriverServer.exe.</remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalInternetExplorerOption method for adding additional options")]
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
-        {
-            // Add the capability to the ieOptions object by default. This is to handle
-            // the 80% case where the IE driver adds a new option in IEDriverServer.exe
-            // and the bindings have not yet had a type safe option added.
-            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Internet Explorer driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
-        /// capability for the driver instead of a IE-specific option.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalInternetExplorerOption method for adding additional options")]
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
-        {
-            if (isGlobalCapability)
-            {
-                this.AddAdditionalOption(capabilityName, capabilityValue);
-            }
-            else
-            {
-                this.AddAdditionalInternetExplorerOption(capabilityName, capabilityValue);
-            }
         }
 
         /// <summary>
@@ -445,6 +442,26 @@ namespace OpenQA.Selenium.IE
             if (!this.enableFullPageScreenshot)
             {
                 internetExplorerOptionsDictionary[EnableFullPageScreenshotCapability] = false;
+            }
+
+            if (this.legacyFileUploadDialogHandling)
+            {
+                internetExplorerOptionsDictionary[LegacyFileUploadDialogHandlingCapability] = true;
+            }
+
+            if (this.attachToEdgeChrome)
+            {
+                internetExplorerOptionsDictionary[AttachToEdgeChromeCapability] = true;
+            }
+
+            if (this.ignoreProcessMatch)
+            {
+                internetExplorerOptionsDictionary[IgnoreProcessMatchCapability] = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.edgeExecutablePath))
+            {
+                internetExplorerOptionsDictionary[EdgeExecutablePathCapability] = this.edgeExecutablePath;
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalInternetExplorerOptions)

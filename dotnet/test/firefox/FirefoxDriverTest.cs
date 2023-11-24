@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Firefox
 
             driver.Url = formsPage;
             IWebElement textarea = driver.FindElement(By.Id("withText"));
-            string expectedText = "I like cheese" + System.Environment.NewLine 
+            string expectedText = "I like cheese" + System.Environment.NewLine
                 + System.Environment.NewLine + "It's really nice";
             textarea.Clear();
             textarea.SendKeys(expectedText);
@@ -250,6 +250,108 @@ namespace OpenQA.Selenium.Firefox
             {
                 driver2.Quit();
             }
+        }
+
+        [Test]
+        public void ShouldInstallAndUninstallXpiAddon()
+        {
+            FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+
+            string extension = GetPath("webextensions-selenium-example.xpi");
+            string id = firefoxDriver.InstallAddOnFromFile(extension);
+
+            driver.Url = blankPage;
+
+            IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
+            Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
+
+            firefoxDriver.UninstallAddOn(id);
+
+            driver.Navigate().Refresh();
+            Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        }
+
+        [Test]
+        public void ShouldInstallAndUninstallUnSignedZipAddon()
+        {
+            FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+
+            string extension = GetPath("webextensions-selenium-example-unsigned.zip");
+            string id = firefoxDriver.InstallAddOnFromFile(extension, true);
+
+            driver.Url = blankPage;
+
+            IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
+            Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
+
+            firefoxDriver.UninstallAddOn(id);
+
+            driver.Navigate().Refresh();
+            Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        }
+
+        [Test]
+        public void ShouldInstallAndUninstallSignedZipAddon()
+        {
+            FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+
+            string extension = GetPath("webextensions-selenium-example.zip");
+            string id = firefoxDriver.InstallAddOnFromFile(extension);
+
+            driver.Url = blankPage;
+
+            IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
+            Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
+
+            firefoxDriver.UninstallAddOn(id);
+
+            driver.Navigate().Refresh();
+            Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        }
+
+        [Test]
+        public void ShouldInstallAndUninstallSignedDirAddon()
+        {
+            FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+
+            string extension = GetPath("webextensions-selenium-example-signed");
+            string id = firefoxDriver.InstallAddOnFromDirectory(extension);
+
+            driver.Url = blankPage;
+
+            IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
+            Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
+
+            firefoxDriver.UninstallAddOn(id);
+
+            driver.Navigate().Refresh();
+            Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        }
+
+        [Test]
+        public void ShouldInstallAndUninstallUnSignedDirAddon()
+        {
+            FirefoxDriver firefoxDriver = driver as FirefoxDriver;
+
+            string extension = GetPath("webextensions-selenium-example");
+            string id = firefoxDriver.InstallAddOnFromDirectory(extension, true);
+
+            driver.Url = blankPage;
+
+            IWebElement injected = firefoxDriver.FindElement(By.Id("webextensions-selenium-example"));
+            Assert.That(injected.Text, Is.EqualTo("Content injected by webextensions-selenium-example"));
+
+            firefoxDriver.UninstallAddOn(id);
+
+            driver.Navigate().Refresh();
+            Assert.That(driver.FindElements(By.Id("webextensions-selenium-example")).Count, Is.Zero);
+        }
+
+        private string GetPath(string name)
+        {
+            string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string sFile = Path.Combine(sCurrentDirectory, "../../../../common/extensions/" + name);
+            return Path.GetFullPath(sFile);
         }
 
         private static bool PlatformHasNativeEvents()

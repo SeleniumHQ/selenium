@@ -1,0 +1,56 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+SMALL_TEST_SRCS = [
+    "RequestConverterTest.java",
+]
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = SMALL_TEST_SRCS,
+    deps = [
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(
+        ["*.java"],
+        exclude = SMALL_TEST_SRCS,
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_library(
+    name = "test-server",
+    testonly = True,
+    srcs = glob(["SimpleHttpServer.java"]),
+    visibility = ["//java/test:__subpackages__"],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+    ],
+)

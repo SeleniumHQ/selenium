@@ -16,28 +16,22 @@
 # under the License.
 
 import uuid
+from typing import Optional
 
 
-class InputDevice(object):
-    """
-        Describes the input device being used for the action.
-    """
-    def __init__(self, name=None):
-        if name is None:
-            self.name = uuid.uuid4()
-        else:
-            self.name = name
+class InputDevice:
+    """Describes the input device being used for the action."""
 
+    def __init__(self, name: Optional[str] = None):
+        self.name = name or uuid.uuid4()
         self.actions = []
 
     def add_action(self, action):
-        """
-
-        """
+        """"""
         self.actions.append(action)
 
     def clear_actions(self):
         self.actions = []
 
-    def create_pause(self, duration=0):
+    def create_pause(self, duration: int = 0):
         pass

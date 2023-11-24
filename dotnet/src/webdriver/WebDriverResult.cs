@@ -221,6 +221,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The click on the element was intercepted by a different element.
         /// </summary>
-        ElementClickIntercepted = 64
+        ElementClickIntercepted = 64,
+
+        /// <summary>
+        /// The element does not have a shadow root.
+        /// </summary>
+        NoSuchShadowRoot = 65
     }
 }

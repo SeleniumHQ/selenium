@@ -21,155 +21,104 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    describe Service do
-      describe '#new' do
-        let(:service_path) { "/path/to/#{Safari::Service::EXECUTABLE}" }
+    module Safari
+      describe Service do
+        describe '#new' do
+          let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
-        before do
-          allow(Platform).to receive(:assert_executable).and_return(true)
+          before do
+            allow(Platform).to receive(:assert_executable)
+          end
+
+          it 'does not allow log' do
+            expect {
+              described_class.new(log: 'anywhere')
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
+          end
+
+          it 'uses default port and nil path' do
+            service = described_class.new
+
+            expect(service.port).to eq Service::DEFAULT_PORT
+            expect(service.host).to eq Platform.localhost
+            expect(service.executable_path).to be_nil
+          end
+
+          it 'uses provided path and port' do
+            path = 'foo'
+            port = 5678
+
+            service = described_class.new(path: path, port: port)
+
+            expect(service.executable_path).to eq path
+            expect(service.port).to eq port
+            expect(service.host).to eq Platform.localhost
+          end
+
+          it 'does not create args by default' do
+            service = described_class.new
+
+            expect(service.extra_args).to be_empty
+          end
+
+          it 'does not allow log=' do
+            service = described_class.new
+            expect {
+              service.log = 'anywhere'
+            }.to raise_exception(Error::WebDriverError, 'Safari Service does not support setting log output')
+          end
+
+          it 'uses provided args' do
+            service = described_class.new(args: ['--foo', '--bar'])
+
+            expect(service.extra_args).to eq ['--foo', '--bar']
+          end
         end
 
-        it 'uses default path and port' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
+        context 'when initializing driver' do
+          let(:driver) { Safari::Driver }
+          let(:service) do
+            instance_double(described_class, launch: service_manager, executable_path: nil, 'executable_path=': nil,
+                                             class: described_class)
+          end
+          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
+          let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
-          service = Service.safari
+          before do
+            allow(Remote::Bridge).to receive(:new).and_return(bridge)
+            allow(ServiceManager).to receive(:new).and_return(service_manager)
+            allow(bridge).to receive(:browser).and_return(:safari)
+          end
 
-          expect(service.executable_path).to include Safari::Service::EXECUTABLE
-          expected_port = Safari::Service::DEFAULT_PORT
-          expect(service.port).to eq expected_port
-          expect(service.host).to eq Platform.localhost
-        end
+          it 'is not created when :url is provided' do
+            expect {
+              driver.new(url: 'http://example.com:4321')
+            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Safari::Driver with :url")
+          end
 
-        it 'uses provided path and port' do
-          path = 'foo'
-          port = 5678
+          it 'is created when :url is not provided' do
+            allow(DriverFinder).to receive(:path).and_return('/path/to/safaridriver')
+            allow(Platform).to receive(:assert_file)
+            allow(Platform).to receive(:assert_executable)
+            allow(described_class).to receive(:new).and_return(service)
 
-          service = Service.safari(path: path, port: port)
+            driver.new
 
-          expect(service.executable_path).to eq path
-          expect(service.port).to eq port
-          expect(service.host).to eq Platform.localhost
-        end
+            expect(described_class).to have_received(:new).with(no_args)
+          end
 
-        it 'allows #driver_path= with String value' do
-          path = '/path/to/driver'
-          Safari::Service.driver_path = path
+          it 'accepts :service without creating a new instance' do
+            allow(DriverFinder).to receive(:path).and_return('/path/to/safaridriver')
+            allow(Platform).to receive(:assert_file)
+            allow(Platform).to receive(:assert_executable)
+            allow(described_class).to receive(:new)
 
-          service = Service.safari
+            driver.new(service: service)
 
-          expect(service.executable_path).to eq path
-        end
-
-        it 'allows #driver_path= with Proc value' do
-          path = '/path/to/driver'
-          proc = proc { path }
-          Safari::Service.driver_path = proc
-
-          service = Service.safari
-
-          expect(service.executable_path).to eq path
-        end
-
-        it 'accepts Safari#driver_path= but throws deprecation notice' do
-          path = '/path/to/driver'
-
-          expect {
-            Selenium::WebDriver::Safari.driver_path = path
-          }.to have_deprecated(:driver_path)
-
-          expect {
-            expect(Selenium::WebDriver::Safari.driver_path).to eq path
-          }.to have_deprecated(:driver_path)
-
-          service = Service.safari
-
-          expect(service.executable_path).to eq path
-        end
-
-        it 'does not create args by default' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-
-          service = Service.safari
-
-          expect(service.extra_args).to be_empty
-        end
-
-        it 'uses provided args' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-
-          service = Service.safari(args: ['--foo', '--bar'])
-
-          expect(service.extra_args).to eq ['--foo', '--bar']
-        end
-      end
-
-      context 'when initializing driver' do
-        let(:driver) { Safari::Driver }
-        let(:service) { instance_double(Service, launch: service_manager) }
-        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
-        let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
-
-        before do
-          allow(Remote::Bridge).to receive(:new).and_return(bridge)
-          allow(ServiceManager).to receive(:new).and_return(service_manager)
-        end
-
-        it 'is not created when :url is provided' do
-          expect(Service).not_to receive(:new)
-          expect(ServiceManager).not_to receive(:new)
-
-          driver.new(url: 'http://example.com:4321')
-        end
-
-        it 'is created when :url is not provided' do
-          expect(Service).to receive(:new).and_return(service)
-
-          driver.new
-        end
-
-        it 'accepts :driver_path but throws deprecation notice' do
-          driver_path = '/path/to/driver'
-
-          allow(Service).to receive(:new).with(path: driver_path,
-                                               port: nil,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(driver_path: driver_path)
-          }.to have_deprecated(:service_driver_path)
-        end
-
-        it 'accepts :port but throws deprecation notice' do
-          driver_port = 1234
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: driver_port,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(port: driver_port)
-          }.to have_deprecated(:service_port)
-        end
-
-        it 'accepts :driver_opts but throws deprecation notice' do
-          driver_opts = {foo: 'bar',
-                         bar: ['--foo', '--bar']}
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: nil,
-                                               args: driver_opts).and_return(service)
-
-          expect {
-            driver.new(driver_opts: driver_opts)
-          }.to have_deprecated(:service_driver_opts)
-        end
-
-        it 'accepts :service without creating a new instance' do
-          expect(Service).not_to receive(:new)
-
-          driver.new(service: service)
+            expect(described_class).not_to have_received(:new)
+          end
         end
       end
-    end
+    end # Safari
   end # WebDriver
 end # Selenium

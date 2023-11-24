@@ -27,12 +27,18 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.0.0a6post2",
+    'version': "4.15.2",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
-    'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
+    'project_urls': {
+        'Bug Tracker': 'https://github.com/SeleniumHQ/selenium/issues',
+        'Changes': 'https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES',
+        'Documentation': 'https://www.selenium.dev/documentation/overview/',
+        'Source Code': 'https://github.com/SeleniumHQ/selenium/tree/trunk/py',
+    },
+    'python_requires': '~=3.7',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
@@ -42,9 +48,9 @@ setup_args = {
                     'Topic :: Software Development :: Testing',
                     'Topic :: Software Development :: Libraries',
                     'Programming Language :: Python',
-                    'Programming Language :: Python :: 2.7',
-                    'Programming Language :: Python :: 3.5',
-                    'Programming Language :: Python :: 3.6'],
+                    'Programming Language :: Python :: 3.7',
+                    'Programming Language :: Python :: 3.8',
+                    'Programming Language :: Python :: 3.9'],
     'package_dir': {
         'selenium': 'selenium',
         'selenium.common': 'selenium/common',
@@ -61,11 +67,15 @@ setup_args = {
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
                  'selenium.webdriver.edge',
-                 'selenium.webdriver.opera',
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
-    'install_requires': ['urllib3[secure]'],
+    'install_requires': [
+        "urllib3[socks]>=1.26,<3",
+        "trio~=0.17",
+        "trio-websocket~=0.9",
+        "certifi>=2021.10.8",
+    ],
     'zip_safe': False
 }
 
