@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -56,7 +57,7 @@ public class BiDiCommandExecutor implements CommandExecutor {
   // Each browsing context has an associated id, maintains state
   // We will need to maintain a map of all the browsingContext to run further commands
   // Switching between tabs etc might be tricky
-  private final Map<String, BrowsingContext> browsingContextMap = new HashMap<>();
+  private final Map<String, BrowsingContext> browsingContextMap = new ConcurrentHashMap<>();
 
   public BiDiCommandExecutor(RemoteWebDriver driver) {
     this.driver = driver;
@@ -96,6 +97,19 @@ public class BiDiCommandExecutor implements CommandExecutor {
 
   @Override
   public Response execute(Command command) throws IOException {
+    // This is not optimal
+    // But each time Classic calls switchTo, we need to identify the current browsing context to run
+    // commands
+    // Maybe we need a way where every time switchTo commands are called, only then we update the
+    // current browsing context
+
+    String currentWindowHandle = driver.getWindowHandle();
+    BrowsingContext browsingContext =
+        browsingContextMap.computeIfAbsent(
+            currentWindowHandle, windowHandle -> new BrowsingContext(driver, windowHandle));
+
+    browsingContextMap.putIfAbsent(currentWindowHandle, browsingContext);
+    currentContext.set(browsingContext);
     if (commandHandlerMap.containsKey(command.getName())) {
       return commandHandlerMap.get(command.getName()).apply(command, driver);
     } else {
