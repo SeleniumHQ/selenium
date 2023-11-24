@@ -36,6 +36,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * Classes that implement this interface are intended to be used with {@link EventFiringDecorator},
@@ -311,6 +312,19 @@ public interface WebDriverListener {
    */
   default void afterPerform(WebDriver driver, Collection<Sequence> actions) {}
 
+  /**
+   * This method will be called before {@link RemoteWebDriver#resetInputState()} is called.
+   *
+   * @param driver - decorated WebDriver instance
+   */
+  default void beforeResetInputState(WebDriver driver) {}
+
+  /**
+   * This method will be called after {@link RemoteWebDriver#resetInputState()} is called.
+   *
+   * @param driver - decorated WebDriver instance
+   */
+  default void afterResetInputState(WebDriver driver) {}
   // WebElement
 
   /**
