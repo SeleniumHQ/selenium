@@ -50,41 +50,41 @@ public interface WebDriverListener {
   // Global
 
   /**
-   * This method is called before the execution of any method on the 'target' object.
-   * It provides a hook for performing actions or logging before any method call.
+   * This method is called before the execution of any method on the 'target' object. It provides a
+   * hook for performing actions or logging before any method call.
    *
    * @param target The original object on which methods will be invoked.
    * @param method The method that will be called on the 'target' object.
-   * @param args   The arguments that will be passed to the method.
+   * @param args The arguments that will be passed to the method.
    */
   default void beforeAnyCall(Object target, Method method, Object[] args) {}
 
   /**
-   * This method is called after the execution of any instance methods on the 'target' object.
-   * It provides a hook for performing actions or logging after any instance method call.
+   * This method is called after the execution of any instance methods on the 'target' object. It
+   * provides a hook for performing actions or logging after any instance method call.
    *
    * @param target The original object on which instance methods were invoked.
    * @param method The method that was called on the 'target' object.
-   * @param args   The arguments passed to the method.
-   * @param result    The result returned by the method.
+   * @param args The arguments passed to the method.
+   * @param result The result returned by the method.
    */
   default void afterAnyCall(Object target, Method method, Object[] args, Object result) {}
 
   /**
-   * Notifies registered listeners about an error that occurred during the execution of a decorated method.
+   * Notifies registered listeners about an error that occurred during the execution of a decorated
+   * method.
    *
    * @param target The original object on which the decorated method was invoked.
    * @param method The method that encountered an error.
-   * @param args   The arguments passed to the method.
-   * @param e      The InvocationTargetException containing the error details.
+   * @param args The arguments passed to the method.
+   * @param e The InvocationTargetException containing the error details.
    */
   default void onError(Object target, Method method, Object[] args, InvocationTargetException e) {}
 
   // WebDriver
 
   /**
-   * This method will be called before any method of a {@link WebDriver} instance is
-   * called.
+   * This method will be called before any method of a {@link WebDriver} instance is called.
    *
    * @param driver - decorated WebDriver instance
    * @param method - method that will be called
@@ -93,8 +93,7 @@ public interface WebDriverListener {
   default void beforeAnyWebDriverCall(WebDriver driver, Method method, Object[] args) {}
 
   /**
-   * This method will be called after any method of a {@link WebDriver} instance is
-   * called.
+   * This method will be called after any method of a {@link WebDriver} instance is called.
    *
    * @param driver - decorated WebDriver instance
    * @param method - method that was called
@@ -102,7 +101,7 @@ public interface WebDriverListener {
    * @param result - result of the method call
    */
   default void afterAnyWebDriverCall(
-    WebDriver driver, Method method, Object[] args, Object result) {}
+      WebDriver driver, Method method, Object[] args, Object result) {}
 
   /**
    * This method will be called before {@link WebDriver#get(String)} is called.
@@ -258,7 +257,8 @@ public interface WebDriverListener {
   default void afterGetWindowHandle(WebDriver driver, String result) {}
 
   /**
-   * This method will be called before {@link JavascriptExecutor#executeScript(ScriptKey, Object...)} is called.
+   * This method will be called before {@link JavascriptExecutor#executeScript(ScriptKey,
+   * Object...)} is called.
    *
    * @param driver - decorated WebDriver instance
    * @param script - script to be executed
@@ -267,7 +267,8 @@ public interface WebDriverListener {
   default void beforeExecuteScript(WebDriver driver, String script, Object[] args) {}
 
   /**
-   * This method will be called after {@link JavascriptExecutor#executeScript(ScriptKey, Object...)} is called.
+   * This method will be called after {@link JavascriptExecutor#executeScript(ScriptKey, Object...)}
+   * is called.
    *
    * @param driver - decorated WebDriver instance
    * @param script - script to be executed
@@ -277,7 +278,8 @@ public interface WebDriverListener {
   default void afterExecuteScript(WebDriver driver, String script, Object[] args, Object result) {}
 
   /**
-   * This method will be called before {@link JavascriptExecutor#executeAsyncScript(String, Object...)}is called.
+   * This method will be called before {@link JavascriptExecutor#executeAsyncScript(String,
+   * Object...)}is called.
    *
    * @param driver - decorated WebDriver instance
    * @param script - script to be executed
@@ -286,7 +288,8 @@ public interface WebDriverListener {
   default void beforeExecuteAsyncScript(WebDriver driver, String script, Object[] args) {}
 
   /**
-   * This method will be called after {@link JavascriptExecutor#executeAsyncScript(String, Object...)} is called.
+   * This method will be called after {@link JavascriptExecutor#executeAsyncScript(String,
+   * Object...)} is called.
    *
    * @param driver - decorated WebDriver instance
    * @param script - script to be executed
@@ -294,10 +297,10 @@ public interface WebDriverListener {
    * @param result - result of the script execution
    */
   default void afterExecuteAsyncScript(
-    WebDriver driver, String script, Object[] args, Object result) {}
+      WebDriver driver, String script, Object[] args, Object result) {}
 
   /**
-   * This method will be called before {@link Actions#perform()}  } is called.
+   * This method will be called before {@link Actions#perform()} } is called.
    *
    * @param driver - decorated WebDriver instance
    * @param actions - sequence of actions to be performed
@@ -305,7 +308,7 @@ public interface WebDriverListener {
   default void beforePerform(WebDriver driver, Collection<Sequence> actions) {}
 
   /**
-   * This method will be called after {@link Actions#perform()}  } is called.
+   * This method will be called after {@link Actions#perform()} } is called.
    *
    * @param driver - decorated WebDriver instance
    * @param actions - sequence of actions to be performed
@@ -325,11 +328,11 @@ public interface WebDriverListener {
    * @param driver - decorated WebDriver instance
    */
   default void afterResetInputState(WebDriver driver) {}
+
   // WebElement
 
   /**
-   * This method will be called before any method of a {@link WebElement} instance is
-   * called.
+   * This method will be called before any method of a {@link WebElement} instance is called.
    *
    * @param element - decorated WebElement instance
    * @param method - method that will be called
@@ -338,8 +341,7 @@ public interface WebDriverListener {
   default void beforeAnyWebElementCall(WebElement element, Method method, Object[] args) {}
 
   /**
-   * This method will be called after any method of a {@link WebElement} instance is
-   * called.
+   * This method will be called after any method of a {@link WebElement} instance is called.
    *
    * @param element - decorated WebElement instance
    * @param method - method that was called
@@ -347,7 +349,7 @@ public interface WebDriverListener {
    * @param result - result of the method call
    */
   default void afterAnyWebElementCall(
-    WebElement element, Method method, Object[] args, Object result) {}
+      WebElement element, Method method, Object[] args, Object result) {}
 
   /**
    * This action will be performed each time before {@link WebElement#click()} is called.
@@ -378,7 +380,8 @@ public interface WebDriverListener {
   default void afterSubmit(WebElement element) {}
 
   /**
-   * This action will be performed each time before {@link WebElement#sendKeys(CharSequence...)} is called.
+   * This action will be performed each time before {@link WebElement#sendKeys(CharSequence...)} is
+   * called.
    *
    * @param element - decorated WebElement instance
    * @param keysToSend - keys to send
@@ -417,7 +420,8 @@ public interface WebDriverListener {
   default void afterGetTagName(WebElement element, String result) {}
 
   /**
-   * This action will be performed each time before {@link WebElement#getAttribute(String)} is called.
+   * This action will be performed each time before {@link WebElement#getAttribute(String)} is
+   * called.
    *
    * @param element - decorated WebElement instance
    * @param name - name of the attribute
@@ -425,7 +429,8 @@ public interface WebDriverListener {
   default void beforeGetAttribute(WebElement element, String name) {}
 
   /**
-   * This action will be performed each time after {@link WebElement#getAttribute(String)} is called.
+   * This action will be performed each time after {@link WebElement#getAttribute(String)} is
+   * called.
    *
    * @param element - decorated WebElement instance
    * @param name - name of the attribute
@@ -558,7 +563,8 @@ public interface WebDriverListener {
   default void afterGetSize(WebElement element, Dimension result) {}
 
   /**
-   * This action will be performed each time before {@link WebElement#getCssValue(String)} is called.
+   * This action will be performed each time before {@link WebElement#getCssValue(String)} is
+   * called.
    *
    * @param element - decorated WebElement instance
    * @param propertyName - name of the css property
@@ -585,7 +591,7 @@ public interface WebDriverListener {
    * @param args - arguments for the method
    */
   default void beforeAnyNavigationCall(
-    WebDriver.Navigation navigation, Method method, Object[] args) {}
+      WebDriver.Navigation navigation, Method method, Object[] args) {}
 
   /**
    * This method will be called after any method of a {@link WebDriver.Navigation} instance is
@@ -597,7 +603,7 @@ public interface WebDriverListener {
    * @param result - result of the method call
    */
   default void afterAnyNavigationCall(
-    WebDriver.Navigation navigation, Method method, Object[] args, Object result) {}
+      WebDriver.Navigation navigation, Method method, Object[] args, Object result) {}
 
   /**
    * This action will be performed each time before {@link WebDriver.Navigation#to(String)} is
@@ -618,8 +624,7 @@ public interface WebDriverListener {
   default void afterTo(WebDriver.Navigation navigation, String url) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Navigation#to(URL)} is
-   * called.
+   * This action will be performed each time before {@link WebDriver.Navigation#to(URL)} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    * @param url - url to navigate to (can be relative)
@@ -627,8 +632,7 @@ public interface WebDriverListener {
   default void beforeTo(WebDriver.Navigation navigation, URL url) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Navigation#to(URL)} is
-   * called.
+   * This action will be performed each time after {@link WebDriver.Navigation#to(URL)} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    * @param url - url to navigate to (can be relative)
@@ -636,16 +640,14 @@ public interface WebDriverListener {
   default void afterTo(WebDriver.Navigation navigation, URL url) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Navigation#back()} is
-   * called.
+   * This action will be performed each time before {@link WebDriver.Navigation#back()} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    */
   default void beforeBack(WebDriver.Navigation navigation) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Navigation#back()} is
-   * called.
+   * This action will be performed each time after {@link WebDriver.Navigation#back()} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    */
@@ -660,8 +662,7 @@ public interface WebDriverListener {
   default void beforeForward(WebDriver.Navigation navigation) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Navigation#forward()} is
-   * called.
+   * This action will be performed each time after {@link WebDriver.Navigation#forward()} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    */
@@ -676,8 +677,7 @@ public interface WebDriverListener {
   default void beforeRefresh(WebDriver.Navigation navigation) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Navigation#refresh()} is
-   * called.
+   * This action will be performed each time after {@link WebDriver.Navigation#refresh()} is called.
    *
    * @param navigation - decorated WebDriver.Navigation instance
    */
@@ -768,7 +768,7 @@ public interface WebDriverListener {
    * @param result The result of the method call
    */
   default void afterAnyOptionsCall(
-    WebDriver.Options options, Method method, Object[] args, Object result) {}
+      WebDriver.Options options, Method method, Object[] args, Object result) {}
 
   /**
    * This action will be performed each time before {@link WebDriver.Options#addCookie(Cookie)}
@@ -787,7 +787,8 @@ public interface WebDriverListener {
   default void afterAddCookie(WebDriver.Options options, Cookie cookie) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Options#deleteCookieNamed(String)}
+   * This action will be performed each time before {@link
+   * WebDriver.Options#deleteCookieNamed(String)}
    *
    * @param options - options to delete cookie from
    * @param name - name of the cookie to delete
@@ -795,7 +796,8 @@ public interface WebDriverListener {
   default void beforeDeleteCookieNamed(WebDriver.Options options, String name) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Options#deleteCookieNamed(String)}
+   * This action will be performed each time after {@link
+   * WebDriver.Options#deleteCookieNamed(String)}
    *
    * @param options - options to delete cookie from
    * @param name - name of the cookie to delete
@@ -884,10 +886,11 @@ public interface WebDriverListener {
    * @param result The result of the method call
    */
   default void afterAnyTimeoutsCall(
-    WebDriver.Timeouts timeouts, Method method, Object[] args, Object result) {}
+      WebDriver.Timeouts timeouts, Method method, Object[] args, Object result) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Timeouts#implicitlyWait(Duration)} is called.
+   * This action will be performed each time before {@link
+   * WebDriver.Timeouts#implicitlyWait(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -895,7 +898,8 @@ public interface WebDriverListener {
   default void beforeImplicitlyWait(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Timeouts#implicitlyWait(Duration)} is called.
+   * This action will be performed each time after {@link
+   * WebDriver.Timeouts#implicitlyWait(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -903,7 +907,8 @@ public interface WebDriverListener {
   default void afterImplicitlyWait(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
+   * This action will be performed each time before {@link
+   * WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -911,7 +916,8 @@ public interface WebDriverListener {
   default void beforeSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
+   * This action will be performed each time after {@link
+   * WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -919,7 +925,8 @@ public interface WebDriverListener {
   default void afterSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Timeouts#pageLoadTimeout(Duration)} is called.
+   * This action will be performed each time before {@link
+   * WebDriver.Timeouts#pageLoadTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -927,7 +934,8 @@ public interface WebDriverListener {
   default void beforePageLoadTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Timeouts#pageLoadTimeout(Duration)} is called.
+   * This action will be performed each time after {@link
+   * WebDriver.Timeouts#pageLoadTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
@@ -954,7 +962,7 @@ public interface WebDriverListener {
    * @param result The result of the method call
    */
   default void afterAnyWindowCall(
-    WebDriver.Window window, Method method, Object[] args, Object result) {}
+      WebDriver.Window window, Method method, Object[] args, Object result) {}
 
   /**
    * This action will be performed each time before {@link WebDriver.Window#getSize()} is called.
@@ -972,7 +980,8 @@ public interface WebDriverListener {
   default void afterGetSize(WebDriver.Window window, Dimension result) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Window#setSize(Dimension)} is called.
+   * This action will be performed each time before {@link WebDriver.Window#setSize(Dimension)} is
+   * called.
    *
    * @param window The window object that will be called
    * @param size The size that will be passed to the method
@@ -980,7 +989,8 @@ public interface WebDriverListener {
   default void beforeSetSize(WebDriver.Window window, Dimension size) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Window#setSize(Dimension)} is called.
+   * This action will be performed each time after {@link WebDriver.Window#setSize(Dimension)} is
+   * called.
    *
    * @param window The window object that will be called
    * @param size The size that will be passed to the method
@@ -988,7 +998,8 @@ public interface WebDriverListener {
   default void afterSetSize(WebDriver.Window window, Dimension size) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Window#getPosition()} is called.
+   * This action will be performed each time before {@link WebDriver.Window#getPosition()} is
+   * called.
    *
    * @param window The window object that will be called
    */
@@ -1003,7 +1014,8 @@ public interface WebDriverListener {
   default void afterGetPosition(WebDriver.Window window, Point result) {}
 
   /**
-   * This action will be performed each time before {@link WebDriver.Window#setPosition(Point)} is called.
+   * This action will be performed each time before {@link WebDriver.Window#setPosition(Point)} is
+   * called.
    *
    * @param window The window object that will be called
    * @param position The position that will be passed to the method
@@ -1011,7 +1023,8 @@ public interface WebDriverListener {
   default void beforeSetPosition(WebDriver.Window window, Point position) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.Window#setPosition(Point)} is called.
+   * This action will be performed each time after {@link WebDriver.Window#setPosition(Point)} is
+   * called.
    *
    * @param window The window object that will be called
    * @param position The position that will be passed to the method
