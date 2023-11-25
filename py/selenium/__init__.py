@@ -16,6 +16,4 @@
 # under the License.
 from ..version import SE_VERSION
 
-
-
 __version__ = SE_VERSION
