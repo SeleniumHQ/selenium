@@ -41,8 +41,8 @@ module Selenium
 
           output = run(*command)
 
-          browser_path = output['browser_path']
-          driver_path = output['driver_path']
+          browser_path = Platform.cygwin? ? Platform.cygwin_path(output['browser_path']) : output['browser_path']
+          driver_path = Platform.cygwin? ? Platform.cygwin_path(output['driver_path']) : output['driver_path']
           Platform.assert_executable driver_path
 
           if options.respond_to?(:binary) && browser_path && !browser_path.empty?
