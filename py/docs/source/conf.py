@@ -56,7 +56,6 @@ copyright = '2009-2023 Software Freedom Conservancy'
 # built documents.
 #
 # The short X.Y version.
-
 version = '4.15'
 # The full version, including alpha/beta/rc tags.
 release = '4.15.1'
