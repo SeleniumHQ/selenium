@@ -19,7 +19,6 @@ from distutils.command.install import INSTALL_SCHEMES
 from os.path import dirname, join, abspath
 from setuptools import setup
 from setuptools.command.install import install
-from version import SE_VERSION
 
 
 for scheme in INSTALL_SCHEMES.values():
@@ -28,7 +27,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': SE_VERSION,
+    'version': "4.15.1",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
