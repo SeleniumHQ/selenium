@@ -46,6 +46,7 @@ on:
         required: false
         type: string
         default: ''
+
 jobs:
   bazel:
     name: ${{ inputs.name }}
