@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    class Window
+      attr_reader bridge: untyped
+
+      def initialize: (untyped bridge) -> void
+
+      def size=: (Dimension dimension) -> untyped
+
+      def size: () -> Dimension
+
+      def position=: (Point point) -> untyped
+
+      def position: () -> Point
+
+      def rect=: (Rectangle rectangle) -> untyped
+
+      def rect: () -> Rectangle
+
+      def resize_to: (Integer width, Integer height) -> untyped
+
+      def move_to: (Integer x, Integer y) -> untyped
+
+      def maximize: () -> untyped
+
+      def minimize: () -> untyped
+
+      def full_screen: () -> untyped
+    end
+  end
+end

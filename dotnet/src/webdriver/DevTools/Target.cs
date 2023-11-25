@@ -33,6 +33,11 @@ namespace OpenQA.Selenium.DevTools
         public event EventHandler<TargetDetachedEventArgs> TargetDetached;
 
         /// <summary>
+        /// Occurs when a target is attached.
+        /// </summary>
+        public event EventHandler<TargetAttachedEventArgs> TargetAttached;
+
+        /// <summary>
         /// Asynchronously gets the targets available for this session.
         /// </summary>
         /// <returns>
@@ -77,6 +82,18 @@ namespace OpenQA.Selenium.DevTools
             if (this.TargetDetached != null)
             {
                 this.TargetDetached(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the TargetAttached event.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnTargetAttached(TargetAttachedEventArgs e)
+        {
+            if (this.TargetAttached != null)
+            {
+                this.TargetAttached(this, e);
             }
         }
     }

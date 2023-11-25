@@ -23,6 +23,7 @@ import pkgutil
 import types
 import typing
 import warnings
+import zipfile
 from abc import ABCMeta
 from base64 import b64decode
 from base64 import urlsafe_b64encode
@@ -1161,6 +1162,9 @@ class WebDriver(BaseWebDriver):
         target_file = os.path.join(target_directory, file_name)
         with open(target_file, "wb") as file:
             file.write(base64.b64decode(contents))
+
+        with zipfile.ZipFile(target_file, "r") as zip_ref:
+            zip_ref.extractall(target_directory)
 
     def delete_downloadable_files(self) -> None:
         """Deletes all downloadable files."""

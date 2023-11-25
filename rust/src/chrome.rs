@@ -55,6 +55,7 @@ pub struct ChromeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub download_browser: bool,
     pub driver_url: Option<String>,
     pub browser_url: Option<String>,
 }
@@ -72,6 +73,7 @@ impl ChromeManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            download_browser: false,
             driver_url: None,
             browser_url: None,
         }))
@@ -220,19 +222,19 @@ impl SeleniumManager for ChromeManager {
         HashMap::from([
             (
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Google\Chrome\Application\chrome.exe"#,
+                r"Google\Chrome\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, BETA),
-                r#"Google\Chrome Beta\Application\chrome.exe"#,
+                r"Google\Chrome Beta\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, DEV),
-                r#"Google\Chrome Dev\Application\chrome.exe"#,
+                r"Google\Chrome Dev\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(WINDOWS, NIGHTLY),
-                r#"Google\Chrome SxS\Application\chrome.exe"#,
+                r"Google\Chrome SxS\Application\chrome.exe",
             ),
             (
                 BrowserPath::new(MACOS, STABLE),
@@ -261,7 +263,7 @@ impl SeleniumManager for ChromeManager {
 
     fn discover_browser_version(&mut self) -> Result<Option<String>, Error> {
         self.general_discover_browser_version(
-            r#"HKCU\Software\Google\Chrome\BLBeacon"#,
+            r"HKCU\Software\Google\Chrome\BLBeacon",
             REG_VERSION_ARG,
             DASH_DASH_VERSION,
         )
@@ -555,6 +557,14 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<Option<&str>, Error> {
         Ok(None)
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }
 

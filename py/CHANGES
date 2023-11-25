@@ -1,3 +1,6 @@
+Selenium 4.15.2
+* Fix bug for unzipping downloaded files
+
 Selenium 4.15.1
 * Fix bug in using SE_MANAGER_PATH
 * Fix inadvertent code change in mutation_event
