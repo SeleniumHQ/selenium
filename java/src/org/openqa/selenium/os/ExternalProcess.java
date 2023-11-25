@@ -213,7 +213,9 @@ public class ExternalProcess {
                         Level.WARNING, "failed to copy the output of process " + process.pid(), ex);
                   }
                   LOG.log(Level.FINE, "completed to copy the output of process " + process.pid());
-                });
+                },
+                "External Process Output Forwarder - "
+                    + (builder.command().isEmpty() ? "N/A" : builder.command().get(0)));
 
         worker.start();
 
