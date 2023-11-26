@@ -51,7 +51,7 @@ class SeleniumManager:
             "cygwin": "windows",
             "linux": "linux",
             "freebsd": "linux",
-            "openbsd": "linux"
+            "openbsd": "linux",
         }
 
         directory = dirs.get(sys.platform)
