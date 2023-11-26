@@ -39,6 +39,7 @@ class SeleniumManager:
         """Determines the path of the correct Selenium Manager binary.
 
         :Returns: The Selenium Manager executable location
+
         :Raises: WebDriverException if the platform is unsupported
         """
 
