@@ -712,9 +712,11 @@ class EventFiringDecoratorTest {
                 "afterAnyCall switchTo",
                 "beforeAnyCall alert",
                 "afterAnyCall alert",
+                "beforeAnyCall dismiss",
                 "beforeAnyAlertCall dismiss",
                 "beforeDismiss",
                 "afterDismiss",
+                "afterAnyAlertCall dismiss",
                 "afterAnyCall dismiss"));
   }
 
