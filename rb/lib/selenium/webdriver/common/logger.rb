@@ -103,7 +103,7 @@ module Selenium
       #
       # @param [Array, Symbol] ids
       #
-      def allow(ids)
+      def allow(*ids)
         @allowed += Array(ids).flatten
       end
 
