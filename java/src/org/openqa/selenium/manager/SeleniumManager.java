@@ -183,7 +183,10 @@ public class SeleniumManager {
         } else if (current.is(LINUX)) {
           folder = "linux";
         } else if (current.is(UNIX)) {
-          LOG.warning(String.format("Selenium Manager binary may not be compatible with %s; verify settings", current));
+          LOG.warning(
+              String.format(
+                  "Selenium Manager binary may not be compatible with %s; verify settings",
+                  current));
           folder = "linux";
         } else {
           throw new WebDriverException("Unsupported platform: " + current);
