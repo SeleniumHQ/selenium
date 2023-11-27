@@ -39,23 +39,32 @@ class SeleniumManager:
         """Determines the path of the correct Selenium Manager binary.
 
         :Returns: The Selenium Manager executable location
+
+        :Raises: WebDriverException if the platform is unsupported
         """
 
         if (path := os.getenv("SE_MANAGER_PATH")) is not None:
             return Path(path)
-        else:
-            platform = sys.platform
 
-            dirs = {
-                "darwin": "macos",
-                "win32": "windows",
-                "cygwin": "windows",
-            }
+        dirs = {
+            "darwin": "macos",
+            "win32": "windows",
+            "cygwin": "windows",
+            "linux": "linux",
+            "freebsd": "linux",
+            "openbsd": "linux",
+        }
 
-            directory = dirs.get(platform) if dirs.get(platform) else platform
-            file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+        directory = dirs.get(sys.platform)
+        if directory is None:
+            raise WebDriverException(f"Unsupported platform: {sys.platform}")
 
-            path = Path(__file__).parent.joinpath(directory, file)
+        if sys.platform in ["freebsd", "openbsd"]:
+            logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
+
+        file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
+
+        path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
