@@ -16,12 +16,10 @@
 // under the License.
 
 use crate::format_one_arg;
-use crate::logger::Logger;
 use reqwest::header::CONTENT_TYPE;
 use reqwest::header::USER_AGENT;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 use std::time::Duration;
 
 const PLAUSIBLE_URL: &str = "https://plausible.io/api/event";
@@ -51,7 +49,7 @@ pub struct Props {
 }
 
 #[tokio::main]
-pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &Logger) {
+pub async fn send_stats_to_plausible(http_client: Client, props: Props) {
     let user_agent = format_one_arg(SM_USER_AGENT, &props.selenium_version);
     let sm_stats_url = format_one_arg(SM_STATS_URL, SELENIUM_DOMAIN);
 
@@ -62,23 +60,13 @@ pub async fn send_stats_to_plausible(http_client: &Client, props: Props, log: &L
         props,
     };
     let body = serde_json::to_string(&data).unwrap_or_default();
-    log.trace(format!("Sending props to plausible: {}", body));
 
-    let request = http_client
+    let _ = http_client
         .post(PLAUSIBLE_URL)
         .header(USER_AGENT, user_agent)
         .header(CONTENT_TYPE, APP_JSON)
         .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
-        .body(body);
-
-    let handle = tokio::spawn(async move { request.send().await });
-    match handle.await {
-        Ok(Err(err)) => log_warn(log, Box::new(err)),
-        Err(err) => log_warn(log, Box::new(err)),
-        _ => {}
-    }
-}
-
-fn log_warn(log: &Logger, err: Box<dyn Error>) {
-    log.warn(format!("Error sending stats to {}: {}", PLAUSIBLE_URL, err));
+        .body(body)
+        .send()
+        .await;
 }
