@@ -483,7 +483,7 @@ pub trait SeleniumManager {
                     } else {
                         self.set_browser_version(discovered_version);
                     }
-                    if self.is_webview2() {
+                    if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
                         let browser_path = format!(
                             r#"{}\{}\msedge{}"#,
                             self.get_browser_path(),
@@ -1029,7 +1029,7 @@ pub trait SeleniumManager {
         let mut commands = Vec::new();
 
         if WINDOWS.is(self.get_os()) {
-            if !escaped_browser_path.is_empty() && !self.is_webview2() {
+            if !escaped_browser_path.is_empty() {
                 let wmic_command =
                     Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
                 commands.push(wmic_command);
