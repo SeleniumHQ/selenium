@@ -66,6 +66,13 @@ public class RouterFlags implements HasRoles {
   @ConfigValue(section = NETWORK, name = "sub-path", example = "my_company/selenium_grid")
   public String subPath;
 
+  @Parameter(
+    names = {"--disable-ui"},
+    arity = 1,
+    description = "Disable the UI on the Hub/Router/Standalone")
+  @ConfigValue(section = NETWORK, name = "disable-ui", example = "true")
+  public boolean disableUi = false;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(ROUTER_ROLE);

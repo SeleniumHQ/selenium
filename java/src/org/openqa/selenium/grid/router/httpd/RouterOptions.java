@@ -46,4 +46,8 @@ public class RouterOptions {
             })
         .orElse("");
   }
+
+  public boolean disableUi() {
+    return config.get(NETWORK,"disable-ui").map(Boolean::parseBoolean).orElse(false);
+  }
 }

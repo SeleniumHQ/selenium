@@ -141,6 +141,10 @@ public class RouterServer extends TemplateGridServerCommand {
         new GraphqlHandler(
             tracer, distributor, queue, serverOptions.getExternalUri(), getServerVersion());
 
+    Boolean disableUi = new RouterOptions(config).disableUi();
+    if (disableUi) {
+      return new Handlers(graphqlRoute("", () -> graphqlHandler), new ProxyWebsocketsIntoGrid(clientFactory, sessions));
+    }
     String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);

@@ -182,6 +182,12 @@ public class Hub extends TemplateGridServerCommand {
 
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
+    Boolean disableUi = new RouterOptions(config).disableUi();
+    if (disableUi) {
+      LOG.info("UI disabled");
+      return new Handlers(routerWithSpecChecks, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
+    }
+
     String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
 
