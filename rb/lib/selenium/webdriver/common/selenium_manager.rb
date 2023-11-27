@@ -83,7 +83,13 @@ module Selenium
                 "#{directory}/macos/selenium-manager"
               elsif Platform.linux?
                 "#{directory}/linux/selenium-manager"
+              elsif Platform.unix?
+                WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix; verify settings',
+                                      id: %i[selenium_manager unix_binary])
+                "#{directory}/linux/selenium-manager"
               end
+            rescue Error::WebDriverError => e
+              raise Error::WebDriverError, "Unable to obtain Selenium Manager binary for #{e.message}"
             end)
 
             validate_location(location)
