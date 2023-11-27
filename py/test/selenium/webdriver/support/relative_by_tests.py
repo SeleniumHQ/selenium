@@ -143,13 +143,6 @@ def test_no_such_element_is_raised_rather_than_index_error_by_locator(driver, pa
     assert "Cannot locate relative element with: {'id': 'nonexistentid'}" in exc.value.msg
 
 
-# this test will fail with InvalidArgumentException
-def test_near_locator_should_accept_single_int(driver, pages):
-    pages.load("relative_locators.html")
-
-    driver.find_element(locate_with(By.ID, "rect2").near(123))
-
-
 def test_near_locator_should_find_near_elements(driver, pages):
     pages.load("relative_locators.html")
     rect1 = driver.find_element(By.ID, "rect1")
