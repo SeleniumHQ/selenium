@@ -309,6 +309,60 @@ class EventFiringDecoratorTest {
                 "afterAnyCall executeScript"));
   }
 
+
+  @Test
+  void shouldFireTargetLocatorEvents() {
+    WebDriver driver = mock(WebDriver.class);
+    WebDriver.TargetLocator targetLocator = mock(WebDriver.TargetLocator.class);
+    when(driver.switchTo()).thenReturn(targetLocator);
+
+    CollectorListener listener =
+      new CollectorListener() {
+        @Override
+        public void beforeAnyTargetLocatorCall(WebDriver.TargetLocator targetLocator, Method method, Object[] args) {
+          acc.append("beforeAnyTargetLocatorCall ").append(method.getName()).append("\n");
+        }
+
+        @Override
+        public void afterAnyTargetLocatorCall(WebDriver.TargetLocator targetLocator, Method method, Object[] args,
+                                              Object result) {
+          acc.append("afterAnyTargetLocatorCall ").append(method.getName()).append("\n");
+        }
+
+        @Override
+        public void beforeWindow(WebDriver.TargetLocator targetLocator, String windowName) {
+          acc.append("beforeWindow").append(windowName).append("\n");
+        }
+
+        @Override
+        public void afterWindow(WebDriver.TargetLocator targetLocator, String windowName) {
+          acc.append("afterWindow").append(windowName).append("\n");
+        }
+      }
+
+    WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
+
+    decorated.switchTo().window("windowName");
+
+    assertThat(listener.acc.toString().trim())
+      .isEqualTo(
+        String.join(
+          "\n",
+          "beforeAnyCall switchTo",
+          "beforeAnyWebDriverCall switchTo",
+          "beforeAnyTargetLocatorCall switchTo",
+          "afterAnyTargetLocatorCall switchTo",
+          "afterAnyWebDriverCall switchTo",
+          "afterAnyCall switchTo",
+          "beforeAnyCall window",
+          "beforeAnyTargetLocatorCall window",
+          "beforeWindow windowName",
+          "afterWindow windowName",
+          "afterAnyTargetLocatorCall window",
+          "afterAnyCall window"));
+  }
+
+
   @Test
   void shouldSuppressExceptionInBeforeAnyCall() {
     WebDriver driver = mock(WebDriver.class);
