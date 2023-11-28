@@ -18,5 +18,10 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             Console.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levelMap[logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
         }
+
+        public ILogHandler Clone()
+        {
+            return this;
+        }
     }
 }

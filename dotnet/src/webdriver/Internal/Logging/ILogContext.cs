@@ -1,17 +1,20 @@
 using System;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
-    public interface ILogContext : ICloneable
+    public interface ILogContext : IDisposable
     {
+        ILogContext CreateContext();
+
         ILogger GetLogger<T>();
 
         ILogger GetLogger(Type type);
 
         void LogMessage(ILogger logger, LogEventLevel level, string message);
 
-        ILogContext SetLevel(LogEventLevel level);
+        LogEventLevel Level { get; set; }
 
-        ILogContext AddHandler(ILogHandler handler);
+        IList<ILogHandler> Handlers { get; }
     }
 }

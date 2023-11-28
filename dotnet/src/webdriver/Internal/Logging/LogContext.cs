@@ -7,20 +7,33 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     internal class LogContext : ILogContext
     {
-        protected readonly ConcurrentDictionary<Type, ILogger> _loggers = new ConcurrentDictionary<Type, ILogger>();
-
-        protected readonly IList<ILogHandler> _handlers;
+        protected ConcurrentDictionary<Type, ILogger> _loggers;
 
         protected LogEventLevel _level;
 
-        public LogContext(LogEventLevel level, IList<ILogHandler> handlers)
+        protected ILogContext _parentLogContext;
+
+        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers)
         {
             _level = level;
 
-            if (handlers != null)
+            _parentLogContext = parentLogContext;
+
+            _loggers = loggers;
+
+            if (parentLogContext != null && parentLogContext.Handlers != null)
             {
-                _handlers = new List<ILogHandler>(handlers);
+                Handlers = new List<ILogHandler>(parentLogContext.Handlers.Select(h => h.Clone()));
             }
+            else
+            {
+                Handlers = new List<ILogHandler>();
+            }
+        }
+
+        public ILogContext CreateContext()
+        {
+            return new LogContext(_level, this, _loggers);
         }
 
         public ILogger GetLogger<T>()
@@ -35,44 +48,54 @@ namespace OpenQA.Selenium.Internal.Logging
                 throw new ArgumentNullException(nameof(type));
             }
 
+            if (_loggers is null)
+            {
+                _loggers = new ConcurrentDictionary<Type, ILogger>();
+            }
+
             return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
         public void LogMessage(ILogger logger, LogEventLevel level, string message)
         {
-            if (_handlers != null && logger.Level >= level && logger.Level >= _level)
+            if (Handlers != null && level >= logger.Level && level >= _level)
             {
                 var logEvent = new LogEvent(logger.Issuer, DateTime.Now, level, message);
 
-                foreach (var handler in _handlers)
+                foreach (var handler in Handlers)
                 {
                     handler.Handle(logEvent);
                 }
             }
+
+            _parentLogContext?.LogMessage(logger, level, message);
         }
 
-        public ILogContext SetLevel(LogEventLevel level)
+        public LogEventLevel Level
         {
-            _level = level;
-
-            return this;
-        }
-
-        public ILogContext AddHandler(ILogHandler handler)
-        {
-            if (handler is null)
+            get
             {
-                throw new ArgumentNullException(nameof(handler));
+                return _level;
             }
+            set
+            {
+                _level = value;
 
-            _handlers.Add(handler);
-
-            return this;
+                if (_loggers != null)
+                {
+                    foreach (var logger in _loggers.Values)
+                    {
+                        logger.Level = _level;
+                    }
+                }
+            }
         }
 
-        public object Clone()
+        public IList<ILogHandler> Handlers { get; internal set; }
+
+        public void Dispose()
         {
-            return new LogContext(_level, _handlers?.ToList());
+            Log.CurrentContext = _parentLogContext;
         }
     }
 }

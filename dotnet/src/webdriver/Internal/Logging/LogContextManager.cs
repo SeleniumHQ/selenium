@@ -1,11 +1,10 @@
-using System;
 using System.Threading;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
     internal class LogContextManager
     {
-        private readonly ILogContext _globalLogContext = new LogContext(LogEventLevel.None, Array.Empty<ILogHandler>());
+        private readonly ILogContext _globalLogContext = new LogContext(LogEventLevel.None, null, null);
 
         private readonly AsyncLocal<ILogContext> _currentAmbientLogContext = new AsyncLocal<ILogContext>();
 

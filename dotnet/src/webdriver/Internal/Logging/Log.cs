@@ -6,7 +6,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public static ILogContext CreateContext()
         {
-            var context = (ILogContext)_logContextManager.GlobalContext.Clone();
+            var context = _logContextManager.CurrentContext.CreateContext();
 
             _logContextManager.CurrentContext = context;
 
@@ -19,16 +19,24 @@ namespace OpenQA.Selenium.Internal.Logging
             {
                 return _logContextManager.CurrentContext;
             }
+            set
+            {
+                _logContextManager.CurrentContext = value;
+            }
         }
 
         public static ILogContext SetLevel(LogEventLevel level)
         {
-            return _logContextManager.GlobalContext.SetLevel(level);
+            _logContextManager.GlobalContext.Level = level;
+
+            return _logContextManager.GlobalContext;
         }
 
         public static ILogContext AddHandler(ILogHandler handler)
         {
-            return _logContextManager.GlobalContext.AddHandler(handler);
+            _logContextManager.GlobalContext.Handlers.Add(handler);
+
+            return _logContextManager.GlobalContext;
         }
     }
 }
