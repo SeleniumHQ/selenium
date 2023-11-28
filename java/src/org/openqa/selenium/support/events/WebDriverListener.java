@@ -316,7 +316,6 @@ public interface WebDriverListener {
 
   // Target Locator
 
-
   /**
    * Called before any method in {@link WebDriver.TargetLocator} class.
    *
@@ -324,7 +323,8 @@ public interface WebDriverListener {
    * @param method the method being invoked
    * @param args the arguments to the method
    */
-  default void beforeAnyTargetLocatorCall(WebDriver.TargetLocator targetLocator, Method method, Object[] args) {}
+  default void beforeAnyTargetLocatorCall(
+      WebDriver.TargetLocator targetLocator, Method method, Object[] args) {}
 
   /**
    * Called after any method in {@link WebDriver.TargetLocator} class.
@@ -334,7 +334,8 @@ public interface WebDriverListener {
    * @param args the arguments to the method
    * @param result the result of the method call
    */
-  default void afterAnyTargetLocatorCall(WebDriver.TargetLocator targetLocator, Method method, Object[] args, Object result) {}
+  default void afterAnyTargetLocatorCall(
+      WebDriver.TargetLocator targetLocator, Method method, Object[] args, Object result) {}
 
   /**
    * This action will be performed each time before {@link
@@ -350,9 +351,10 @@ public interface WebDriverListener {
   /**
    * @param targetLocator the target locator being used for the action
    * @param nameOrHandle The name of the window or the handle as returned by {@link
-   *    org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
-   *    window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   *     org.openqa.selenium.WebDriver#getWindowHandle()} or <code>null</code> if switching to a new
+   *     window created by {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
    * @param driver WebDriver
    */
-  default void afterWindow(WebDriver.TargetLocator targetLocator, String nameOrHandle, WebDriver driver) {}
+  default void afterWindow(
+      WebDriver.TargetLocator targetLocator, String nameOrHandle, WebDriver driver) {}
 }
