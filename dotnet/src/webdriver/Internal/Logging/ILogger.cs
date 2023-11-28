@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Internal.Logging
     /// <summary>
     /// Defines the interface through which log messages are emitted.
     /// </summary>
-    internal interface ILogger
+    public interface ILogger
     {
         /// <summary>
         /// Writes a trace-level log message.

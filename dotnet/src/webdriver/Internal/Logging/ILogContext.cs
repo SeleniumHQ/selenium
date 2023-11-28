@@ -43,14 +43,14 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <typeparam name="T">The type for which to retrieve the logger.</typeparam>
         /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-        internal ILogger GetLogger<T>();
+        ILogger GetLogger<T>();
 
         /// <summary>
         /// Gets a logger for the specified type.
         /// </summary>
         /// <param name="type">The type for which to retrieve the logger.</param>
         /// <returns>An instance of <see cref="ILogger"/> for the specified type.</returns>
-        internal ILogger GetLogger(Type type);
+        ILogger GetLogger(Type type);
 
         /// <summary>
         /// Emits a log message using the specified logger, log level, and message.
@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="logger">The logger to emit the log message.</param>
         /// <param name="level">The log level of the message.</param>
         /// <param name="message">The log message.</param>
-        internal void EmitMessage(ILogger logger, LogEventLevel level, string message);
+        void EmitMessage(ILogger logger, LogEventLevel level, string message);
 
         /// <summary>
         /// Sets the minimum log level for the current context.
