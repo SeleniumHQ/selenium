@@ -7,6 +7,8 @@ namespace OpenQA.Selenium.Internal.Logging
     {
         ILogContext CreateContext();
 
+        ILogContext CreateContext(LogEventLevel minimumLevel);
+
         ILogger GetLogger<T>();
 
         ILogger GetLogger(Type type);

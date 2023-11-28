@@ -26,11 +26,16 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public ILogContext CreateContext()
         {
+            return CreateContext(_level);
+        }
+
+        public ILogContext CreateContext(LogEventLevel minimumLevel)
+        {
             ConcurrentDictionary<Type, ILogger> loggers = null;
 
             if (_loggers != null)
             {
-                loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, l.Value.Level))));
+                loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, minimumLevel))));
             }
 
             IList<ILogHandler> handlers = null;
@@ -44,7 +49,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 handlers = new List<ILogHandler>();
             }
 
-            return new LogContext(_level, this, loggers, handlers);
+            return new LogContext(minimumLevel, this, loggers, handlers);
         }
 
         public ILogger GetLogger<T>()

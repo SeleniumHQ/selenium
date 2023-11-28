@@ -13,6 +13,15 @@ namespace OpenQA.Selenium.Internal.Logging
             return context;
         }
 
+        public static ILogContext CreateContext(LogEventLevel minimumLevel)
+        {
+            var context = _logContextManager.CurrentContext.CreateContext(minimumLevel);
+
+            _logContextManager.CurrentContext = context;
+
+            return context;
+        }
+
         internal static ILogContext CurrentContext
         {
             get
