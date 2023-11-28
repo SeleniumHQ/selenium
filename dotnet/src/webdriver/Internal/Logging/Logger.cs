@@ -20,7 +20,10 @@ using System;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
-    /// <inheritdoc cref="ILogger" />
+    /// <summary>
+    /// The implementation of the <see cref="ILogger"/> interface through which log messages are emitted.
+    /// </summary>
+    /// <inheritdoc />
     internal class Logger : ILogger
     {
         public Logger(Type issuer, LogEventLevel level)
