@@ -8,18 +8,18 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public static ILogContext CreateContext()
         {
-            var context = _logContextManager.CurrentContext.CreateContext();
+            var context = CurrentContext.CreateContext();
 
-            _logContextManager.CurrentContext = context;
+            CurrentContext = context;
 
             return context;
         }
 
         public static ILogContext CreateContext(LogEventLevel minimumLevel)
         {
-            var context = _logContextManager.CurrentContext.CreateContext(minimumLevel);
+            var context = CurrentContext.CreateContext(minimumLevel);
 
-            _logContextManager.CurrentContext = context;
+            CurrentContext = context;
 
             return context;
         }
@@ -36,19 +36,29 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
+        internal static ILogger GetLogger<T>()
+        {
+            return CurrentContext.GetLogger<T>();
+        }
+
+        internal static ILogger GetLogger(Type type)
+        {
+            return CurrentContext.GetLogger(type);
+        }
+
         public static ILogContext SetMinimumLevel(LogEventLevel level)
         {
-            return _logContextManager.CurrentContext.SetMinimumLevel(level);
+            return CurrentContext.SetMinimumLevel(level);
         }
 
         public static ILogContext SetMinimumLevel(Type issuer, LogEventLevel level)
         {
-            return _logContextManager.CurrentContext.SetMinimumLevel(issuer, level);
+            return CurrentContext.SetMinimumLevel(issuer, level);
         }
 
         public static ILogContext WithHandler(ILogHandler handler)
         {
-            return _logContextManager.CurrentContext.WithHandler(handler);
+            return CurrentContext.WithHandler(handler);
         }
     }
 }

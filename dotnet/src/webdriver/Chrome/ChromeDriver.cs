@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Chrome
     /// </example>
     public class ChromeDriver : ChromiumDriver
     {
-        private static readonly ILogger _logger = Log.CurrentContext.GetLogger(typeof(ChromeDriver));
+        private static readonly ILogger _logger = Log.GetLogger<ChromeDriver>();
 
         private static Dictionary<string, CommandInfo> chromeCustomCommands = new Dictionary<string, CommandInfo>()
         {
