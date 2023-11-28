@@ -7,11 +7,11 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     internal class LogContext : ILogContext
     {
-        protected ConcurrentDictionary<Type, ILogger> _loggers;
+        private ConcurrentDictionary<Type, ILogger> _loggers;
 
-        protected LogEventLevel _level;
+        private LogEventLevel _level;
 
-        protected ILogContext _parentLogContext;
+        private readonly ILogContext _parentLogContext;
 
         public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, IList<ILogHandler> handlers)
         {
