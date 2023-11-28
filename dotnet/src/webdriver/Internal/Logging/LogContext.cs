@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Internal.Logging
             return this;
         }
 
-        public ILogContext AddHandler(ILogHandler handler)
+        public ILogContext WithHandler(ILogHandler handler)
         {
             _handlers.Add(handler);
 

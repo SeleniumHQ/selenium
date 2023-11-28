@@ -39,9 +39,9 @@ namespace OpenQA.Selenium.Internal.Logging
             return _logContextManager.CurrentContext.SetMinimumLevel(level);
         }
 
-        public static ILogContext AddHandler(ILogHandler handler)
+        public static ILogContext WithHandler(ILogHandler handler)
         {
-            return _logContextManager.CurrentContext.AddHandler(handler);
+            return _logContextManager.CurrentContext.WithHandler(handler);
         }
     }
 }
