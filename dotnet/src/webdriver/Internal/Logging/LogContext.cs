@@ -67,8 +67,6 @@ namespace OpenQA.Selenium.Internal.Logging
                     handler.Handle(logEvent);
                 }
             }
-
-            _parentLogContext?.EmitMessage(logger, level, message);
         }
 
         public LogEventLevel Level
