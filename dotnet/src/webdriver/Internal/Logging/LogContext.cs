@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.Internal.Logging
             return _loggers.GetOrAdd(type, _ => new Logger(type, _level));
         }
 
-        public void LogMessage(ILogger logger, LogEventLevel level, string message)
+        public void EmitMessage(ILogger logger, LogEventLevel level, string message)
         {
             if (Handlers != null && level >= logger.Level && level >= _level)
             {
@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 }
             }
 
-            _parentLogContext?.LogMessage(logger, level, message);
+            _parentLogContext?.EmitMessage(logger, level, message);
         }
 
         public LogEventLevel Level

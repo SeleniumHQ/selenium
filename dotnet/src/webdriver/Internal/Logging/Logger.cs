@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         private void LogMessage(LogEventLevel level, string message)
         {
-            Log.CurrentContext.LogMessage(this, level, message);
+            Log.CurrentContext.EmitMessage(this, level, message);
         }
     }
 }
