@@ -25,18 +25,18 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public static ILogContext SetLevel(LogEventLevel level)
+        public static ILogContext SetMinimumLevel(LogEventLevel level)
         {
-            _logContextManager.GlobalContext.Level = level;
+            _logContextManager.CurrentContext.Level = level;
 
-            return _logContextManager.GlobalContext;
+            return _logContextManager.CurrentContext;
         }
 
         public static ILogContext AddHandler(ILogHandler handler)
         {
-            _logContextManager.GlobalContext.Handlers.Add(handler);
+            _logContextManager.CurrentContext.Handlers.Add(handler);
 
-            return _logContextManager.GlobalContext;
+            return _logContextManager.CurrentContext;
         }
     }
 }
