@@ -75,12 +75,6 @@ namespace OpenQA.Selenium.Internal.Logging
 
             Assert.That(testLogHandler.Events, Has.Count.EqualTo(0));
         }
-
-        [Test]
-        public void A()
-        {
-            Log.CurrentContext.
-        }
     }
 
     class TestLogHandler : ILogHandler
