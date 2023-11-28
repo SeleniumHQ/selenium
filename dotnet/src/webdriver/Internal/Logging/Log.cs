@@ -36,16 +36,12 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public static ILogContext SetMinimumLevel(LogEventLevel level)
         {
-            _logContextManager.CurrentContext.Level = level;
-
-            return _logContextManager.CurrentContext;
+            return _logContextManager.CurrentContext.SetMinimumLevel(level);
         }
 
         public static ILogContext AddHandler(ILogHandler handler)
         {
-            _logContextManager.CurrentContext.Handlers.Add(handler);
-
-            return _logContextManager.CurrentContext;
+            return _logContextManager.CurrentContext.AddHandler(handler);
         }
     }
 }

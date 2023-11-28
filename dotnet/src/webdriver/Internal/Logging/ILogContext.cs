@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
@@ -15,8 +14,8 @@ namespace OpenQA.Selenium.Internal.Logging
 
         void EmitMessage(ILogger logger, LogEventLevel level, string message);
 
-        LogEventLevel Level { get; set; }
+        ILogContext SetMinimumLevel(LogEventLevel level);
 
-        IList<ILogHandler> Handlers { get; }
+        ILogContext AddHandler(ILogHandler handler);
     }
 }

@@ -9,6 +9,8 @@ namespace OpenQA.Selenium.Internal.Logging
     {
         private ConcurrentDictionary<Type, ILogger> _loggers;
 
+        private IList<ILogHandler> _handlers;
+
         private LogEventLevel _level;
 
         private readonly ILogContext _parentLogContext;
@@ -21,7 +23,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
             _loggers = loggers;
 
-            Handlers = handlers ?? new List<ILogHandler>();
+            _handlers = handlers ?? new List<ILogHandler>();
         }
 
         public ILogContext CreateContext()
@@ -40,9 +42,9 @@ namespace OpenQA.Selenium.Internal.Logging
 
             IList<ILogHandler> handlers = null;
 
-            if (Handlers != null)
+            if (_handlers != null)
             {
-                handlers = new List<ILogHandler>(Handlers.Select(h => h.Clone()));
+                handlers = new List<ILogHandler>(_handlers.Select(h => h.Clone()));
             }
             else
             {
@@ -74,38 +76,38 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void EmitMessage(ILogger logger, LogEventLevel level, string message)
         {
-            if (Handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
+            if (_handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
             {
                 var logEvent = new LogEvent(logger.Issuer, DateTime.Now, level, message);
 
-                foreach (var handler in Handlers)
+                foreach (var handler in _handlers)
                 {
                     handler.Handle(logEvent);
                 }
             }
         }
 
-        public LogEventLevel Level
+        public ILogContext SetMinimumLevel(LogEventLevel level)
         {
-            get
-            {
-                return _level;
-            }
-            set
-            {
-                _level = value;
+            _level = level;
 
-                if (_loggers != null)
+            if (_loggers != null)
+            {
+                foreach (var logger in _loggers.Values)
                 {
-                    foreach (var logger in _loggers.Values)
-                    {
-                        logger.Level = _level;
-                    }
+                    logger.Level = _level;
                 }
             }
+
+            return this;
         }
 
-        public IList<ILogHandler> Handlers { get; internal set; }
+        public ILogContext AddHandler(ILogHandler handler)
+        {
+            _handlers.Add(handler);
+
+            return this;
+        }
 
         public void Dispose()
         {
