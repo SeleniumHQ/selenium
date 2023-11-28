@@ -16,6 +16,8 @@ namespace OpenQA.Selenium.Internal.Logging
 
         ILogContext SetMinimumLevel(LogEventLevel level);
 
+        ILogContext SetMinimumLevel(Type issuer, LogEventLevel level);
+
         ILogContext WithHandler(ILogHandler handler);
     }
 }

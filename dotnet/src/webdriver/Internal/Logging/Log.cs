@@ -1,3 +1,5 @@
+using System;
+
 namespace OpenQA.Selenium.Internal.Logging
 {
     public static class Log
@@ -37,6 +39,11 @@ namespace OpenQA.Selenium.Internal.Logging
         public static ILogContext SetMinimumLevel(LogEventLevel level)
         {
             return _logContextManager.CurrentContext.SetMinimumLevel(level);
+        }
+
+        public static ILogContext SetMinimumLevel(Type issuer, LogEventLevel level)
+        {
+            return _logContextManager.CurrentContext.SetMinimumLevel(issuer, level);
         }
 
         public static ILogContext WithHandler(ILogHandler handler)
