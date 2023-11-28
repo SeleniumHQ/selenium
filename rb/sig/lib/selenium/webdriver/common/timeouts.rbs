@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class Timeouts
+      attr_reader bridge: untyped
+
+      def initialize: (untyped bridge) -> void
+
+      def implicit_wait: () -> Float
+
+      def implicit_wait=: (Float seconds) -> void
+
+      def script: () -> Float
+
+      alias script_timeout script
+
+      def script=: (Float seconds) -> void
+
+      alias script_timeout= script=
+
+      def page_load: () -> Float
+
+      def page_load=: (Float seconds) -> void
+    end
+  end
+end

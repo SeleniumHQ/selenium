@@ -289,6 +289,18 @@ public enum Platform {
     }
   },
 
+  SONOMA("sonoma", "os x 14.0", "macos 14.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+
+    @Override
+    public String toString() {
+      return "macOS 14.0";
+    }
+  },
+
   /** Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD. */
   UNIX("solaris", "bsd") {
     @Override

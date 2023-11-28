@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Edge
+      self.@path: untyped
+
+      def self.path=: (untyped path) -> untyped
+
+      def self.path: () -> untyped
+    end
+  end
+end
