@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         protected ILogContext _parentLogContext;
 
-        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers)
+        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, IList<ILogHandler> handlers)
         {
             _level = level;
 
@@ -21,19 +21,30 @@ namespace OpenQA.Selenium.Internal.Logging
 
             _loggers = loggers;
 
-            if (parentLogContext != null && parentLogContext.Handlers != null)
-            {
-                Handlers = new List<ILogHandler>(parentLogContext.Handlers.Select(h => h.Clone()));
-            }
-            else
-            {
-                Handlers = new List<ILogHandler>();
-            }
+            Handlers = handlers ?? new List<ILogHandler>();
         }
 
         public ILogContext CreateContext()
         {
-            return new LogContext(_level, this, _loggers);
+            ConcurrentDictionary<Type, ILogger> loggers = null;
+
+            if (_loggers != null)
+            {
+                loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, l.Value.Level))));
+            }
+
+            IList<ILogHandler> handlers = null;
+
+            if (Handlers != null)
+            {
+                handlers = new List<ILogHandler>(Handlers.Select(h => h.Clone()));
+            }
+            else
+            {
+                handlers = new List<ILogHandler>();
+            }
+
+            return new LogContext(_level, this, loggers, handlers);
         }
 
         public ILogger GetLogger<T>()
@@ -58,7 +69,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void EmitMessage(ILogger logger, LogEventLevel level, string message)
         {
-            if (Handlers != null && level >= logger.Level && level >= _level)
+            if (Handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
             {
                 var logEvent = new LogEvent(logger.Issuer, DateTime.Now, level, message);
 
