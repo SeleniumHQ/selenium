@@ -20,6 +20,7 @@ use reqwest::header::CONTENT_TYPE;
 use reqwest::header::USER_AGENT;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use std::sync::mpsc::Sender;
 use std::time::Duration;
 
 const PLAUSIBLE_URL: &str = "https://plausible.io/api/event";
@@ -49,10 +50,9 @@ pub struct Props {
 }
 
 #[tokio::main]
-pub async fn send_stats_to_plausible(http_client: Client, props: Props) {
+pub async fn send_stats_to_plausible(http_client: Client, props: Props, sender: Sender<String>) {
     let user_agent = format_one_arg(SM_USER_AGENT, &props.selenium_version);
     let sm_stats_url = format_one_arg(SM_STATS_URL, SELENIUM_DOMAIN);
-
     let data = Data {
         name: PAGE_VIEW.to_string(),
         url: sm_stats_url,
@@ -61,12 +61,16 @@ pub async fn send_stats_to_plausible(http_client: Client, props: Props) {
     };
     let body = serde_json::to_string(&data).unwrap_or_default();
 
-    let _ = http_client
+    let request = http_client
         .post(PLAUSIBLE_URL)
         .header(USER_AGENT, user_agent)
         .header(CONTENT_TYPE, APP_JSON)
         .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
-        .body(body)
-        .send()
-        .await;
+        .body(body);
+
+    if let Err(err) = request.send().await {
+        sender
+            .send(format!("Error sending stats to Plausible: {}", err))
+            .unwrap_or_default();
+    }
 }

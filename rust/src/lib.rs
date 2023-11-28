@@ -45,6 +45,7 @@ use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use std::{env, fs, thread};
 use walkdir::DirEntry;
@@ -152,6 +153,10 @@ pub trait SeleniumManager {
     fn get_logger(&self) -> &Logger;
 
     fn set_logger(&mut self, log: Logger);
+
+    fn get_sender(&self) -> &Sender<String>;
+
+    fn get_receiver(&self) -> &Receiver<String>;
 
     fn get_platform_label(&self) -> &str;
 
@@ -839,9 +844,10 @@ pub trait SeleniumManager {
                 lang: self.get_language_binding().to_string(),
                 selenium_version: self.get_selenium_version().to_string(),
             };
-            let http_client = self.get_http_client().clone();
+            let http_client = self.get_http_client().to_owned();
+            let sender = self.get_sender().to_owned();
             thread::spawn(move || {
-                send_stats_to_plausible(http_client, props);
+                send_stats_to_plausible(http_client, props, sender);
             });
         }
         Ok(())
