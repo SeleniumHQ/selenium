@@ -100,7 +100,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             if (_handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
             {
-                var logEvent = new LogEvent(logger.Issuer, DateTime.Now, level, message);
+                var logEvent = new LogEvent(logger.Issuer, DateTimeOffset.Now, level, message);
 
                 foreach (var handler in _handlers)
                 {
