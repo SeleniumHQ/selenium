@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    module Safari
+      self.@use_technology_preview: untyped
+
+      self.@path: untyped
+
+      attr_accessor self.use_technology_preview: untyped
+
+      def self.technology_preview: () -> String
+
+      def self.technology_preview!: () -> untyped
+
+      def self.technology_preview?: () -> untyped
+
+      def self.path=: (untyped path) -> untyped
+
+      def self.path: () -> untyped
+    end
+  end
+end

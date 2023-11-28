@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasLaunching
+        def launch_app: (String id) -> String
+      end
+    end
+  end
+end

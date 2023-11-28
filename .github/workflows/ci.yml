@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 50
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.2.0
+        uses: p0deje/setup-bazel@0.3.2
         with:
           bazelisk-cache: true
           external-cache: |

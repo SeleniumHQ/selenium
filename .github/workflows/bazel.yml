@@ -81,7 +81,7 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.2.0
+        uses: p0deje/setup-bazel@0.3.2
         with:
           bazelisk-cache: true
           disk-cache: ${{ inputs.cache-key }}
