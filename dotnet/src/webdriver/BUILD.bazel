@@ -43,6 +43,7 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    langversion = "10.0",
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
@@ -77,6 +78,7 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    langversion = "10.0",
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
