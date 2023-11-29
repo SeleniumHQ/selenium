@@ -25,8 +25,8 @@ namespace OpenQA.Selenium.Internal.Logging
     /// </summary>
     public class ConsoleLogHandler : ILogHandler
     {
-        // performance trick to avoid expensive Enum.ToString()
-        private static readonly string[] _levels = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR" };
+        // performance trick to avoid expensive Enum.ToString() with fixed length
+        private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
 
         /// <summary>
         /// Handles a log event by writing it to the console.
