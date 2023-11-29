@@ -68,6 +68,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -78,7 +79,6 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    langversion = "10.0",
     targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
