@@ -20,6 +20,8 @@ package org.openqa.selenium.bidi.browsingcontext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -43,6 +45,7 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -496,6 +499,41 @@ class BrowsingContextTest extends JupiterTestBase {
     // Trusting the browsers to do the right thing.
     // Hence, just checking if the response is base64 encoded string.
     assertThat(printPage).contains("JVBER");
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
+  public void canNavigateBackInTheBrowserHistory() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
+
+    wait.until(visibilityOfElementLocated(By.id("imageButton"))).submit();
+    wait.until(titleIs("We Arrive Here"));
+
+    browsingContext.back();
+    wait.until(titleIs("We Leave From Here"));
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
+  void canNavigateForwardInTheBrowserHistory() {
+    BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+    browsingContext.navigate(pages.formPage, ReadinessState.COMPLETE);
+
+    wait.until(visibilityOfElementLocated(By.id("imageButton"))).submit();
+    wait.until(titleIs("We Arrive Here"));
+
+    browsingContext.back();
+    wait.until(titleIs("We Leave From Here"));
+
+    browsingContext.forward();
+    wait.until(titleIs("We Arrive Here"));
   }
 
   private String alertPage() {
