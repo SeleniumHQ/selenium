@@ -75,6 +75,127 @@ namespace OpenQA.Selenium.Internal.Logging
 
             Assert.That(testLogHandler.Events, Has.Count.EqualTo(0));
         }
+
+        [Test]
+        public void ShouldGetProperLogger()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            var logger = Log.GetLogger<LogTest>();
+
+            Assert.That(logger.Issuer, Is.EqualTo(typeof(LogTest)));
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
+        }
+
+        [Test]
+        public void ShouldCacheLogger()
+        {
+            var logger1 = Log.GetLogger<LogTest>();
+            var logger2 = Log.GetLogger<LogTest>();
+
+            Assert.That(logger1, Is.SameAs(logger2));
+        }
+
+        [Test]
+        public void ShouldCreateContext()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext();
+
+            var logger = context.GetLogger<LogTest>();
+
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
+        }
+
+        [Test]
+        public void ShouldCreateContextWithCustomLevel()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext(LogEventLevel.Warn);
+
+            var logger = context.GetLogger<LogTest>();
+
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Warn));
+        }
+
+        [Test]
+        public void ContextShouldChangeLevel()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext();
+
+            context.SetMinimumLevel(LogEventLevel.Warn);
+
+            var logger = context.GetLogger<LogTest>();
+
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Warn));
+        }
+
+        [Test]
+        public void ShouldCreateContextWithCustomHandler()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext().WithHandler(testLogHandler);
+
+            var logger = context.GetLogger<LogTest>();
+
+            logger.Info("test message");
+
+            Assert.That(testLogHandler.Events, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void ShouldCreateSubContext()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext();
+
+            Assert.That(Log.CurrentContext, Is.SameAs(context));
+
+            using var subContext = context.CreateContext();
+
+            Assert.That(Log.CurrentContext, Is.SameAs(subContext));
+
+            var logger = subContext.GetLogger<LogTest>();
+
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
+        }
+
+        [Test]
+        public void ShouldCreateSubContextFromCurrentContext()
+        {
+            Log.SetMinimumLevel(LogEventLevel.Info);
+
+            using var context = Log.CreateContext();
+
+            Assert.That(Log.CurrentContext, Is.SameAs(context));
+
+            using var subContext = Log.CreateContext();
+
+            Assert.That(Log.CurrentContext, Is.SameAs(subContext));
+
+            var logger = subContext.GetLogger<LogTest>();
+
+            Assert.That(logger.Level, Is.EqualTo(LogEventLevel.Info));
+        }
+
+        [Test]
+        public void ShouldCapturePreviousContextWhenCurrentFinishes()
+        {
+            using var globalContext = Log.CurrentContext;
+
+            using (var subContext = Log.CreateContext())
+            {
+                Assert.That(Log.CurrentContext, Is.SameAs(subContext));
+            }
+
+            Assert.That(Log.CurrentContext, Is.SameAs(globalContext));
+        }
     }
 
     class TestLogHandler : ILogHandler

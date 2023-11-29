@@ -73,7 +73,11 @@ namespace OpenQA.Selenium.Internal.Logging
                 handlers = new List<ILogHandler>();
             }
 
-            return new LogContext(minimumLevel, this, loggers, handlers);
+            var context = new LogContext(minimumLevel, this, loggers, handlers);
+
+            Log.CurrentContext = context;
+
+            return context;
         }
 
         public ILogger GetLogger<T>()

@@ -48,11 +48,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <returns>The created log context.</returns>
         public static ILogContext CreateContext()
         {
-            var context = _logContextManager.CurrentContext.CreateContext();
-
-            _logContextManager.CurrentContext = context;
-
-            return context;
+            return _logContextManager.CurrentContext.CreateContext();
         }
 
         /// <summary>
@@ -62,11 +58,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <returns>The created log context.</returns>
         public static ILogContext CreateContext(LogEventLevel minimumLevel)
         {
-            var context = _logContextManager.CurrentContext.CreateContext(minimumLevel);
-
-            _logContextManager.CurrentContext = context;
-
-            return context;
+            return _logContextManager.CurrentContext.CreateContext(minimumLevel);
         }
 
         /// <summary>
