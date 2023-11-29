@@ -101,9 +101,9 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="level">The minimum log event level.</param>
         /// <returns>The current log context.</returns>
-        public static ILogContext SetMinimumLevel(LogEventLevel level)
+        public static ILogContext SetLevel(LogEventLevel level)
         {
-            return _logContextManager.CurrentContext.SetMinimumLevel(level);
+            return _logContextManager.CurrentContext.SetLevel(level);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="issuer">The issuer type.</param>
         /// <param name="level">The minimum log event level.</param>
         /// <returns>The current log context.</returns>
-        public static ILogContext SetMinimumLevel(Type issuer, LogEventLevel level)
+        public static ILogContext SetLevel(Type issuer, LogEventLevel level)
         {
-            return _logContextManager.CurrentContext.SetMinimumLevel(issuer, level);
+            return _logContextManager.CurrentContext.SetLevel(issuer, level);
         }
 
         /// <summary>

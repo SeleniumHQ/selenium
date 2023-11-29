@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
-        public ILogContext SetMinimumLevel(LogEventLevel level)
+        public ILogContext SetLevel(LogEventLevel level)
         {
             _level = level;
 
@@ -128,7 +128,7 @@ namespace OpenQA.Selenium.Internal.Logging
             return this;
         }
 
-        public ILogContext SetMinimumLevel(Type issuer, LogEventLevel level)
+        public ILogContext SetLevel(Type issuer, LogEventLevel level)
         {
             GetLogger(issuer).Level = level;
 
