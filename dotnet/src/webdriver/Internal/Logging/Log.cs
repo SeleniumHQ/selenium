@@ -118,13 +118,8 @@ namespace OpenQA.Selenium.Internal.Logging
         }
 
         /// <summary>
-        /// Adds a log handler to the current log context.
+        /// Gets a list of log handlers for the current log context.
         /// </summary>
-        /// <param name="handler">The log handler to add.</param>
-        /// <returns>The current log context.</returns>
-        public static ILogContext AddHandler(ILogHandler handler)
-        {
-            return _logContextManager.CurrentContext.AddHandler(handler);
-        }
+        public static ILogHandlerList Handlers => _logContextManager.CurrentContext.Handlers;
     }
 }

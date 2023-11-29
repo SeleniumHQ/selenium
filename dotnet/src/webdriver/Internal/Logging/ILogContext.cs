@@ -76,10 +76,8 @@ namespace OpenQA.Selenium.Internal.Logging
         ILogContext SetLevel(Type issuer, LogEventLevel level);
 
         /// <summary>
-        /// Adds a log handler to the current context.
+        /// Gets a list of log handlers.
         /// </summary>
-        /// <param name="handler">The log handler to add.</param>
-        /// <returns>The current instance of <see cref="ILogContext"/> with the log handler added.</returns>
-        ILogContext AddHandler(ILogHandler handler);
+        ILogHandlerList Handlers { get; }
     }
 }
