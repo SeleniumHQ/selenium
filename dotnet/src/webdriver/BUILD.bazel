@@ -53,6 +53,9 @@ csharp_library(
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
     ],
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
 )
 
 csharp_library(
