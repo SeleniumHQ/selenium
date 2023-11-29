@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
@@ -26,14 +25,8 @@ namespace OpenQA.Selenium.Internal.Logging
     /// </summary>
     public class ConsoleLogHandler : ILogHandler
     {
-        private static readonly Dictionary<LogEventLevel, string> _levelMap = new Dictionary<LogEventLevel, string>
-        {
-            { LogEventLevel.Trace, "TRC" },
-            { LogEventLevel.Debug, "DBG" },
-            { LogEventLevel.Info, "INF" },
-            { LogEventLevel.Warn, "WRN" },
-            { LogEventLevel.Error, "ERR" }
-        };
+        // performance trick to avoid expensive Enum.ToString()
+        private static readonly string[] _levels = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR" };
 
         /// <summary>
         /// Handles a log event by writing it to the console.
@@ -41,7 +34,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="logEvent">The log event to handle.</param>
         public void Handle(LogEvent logEvent)
         {
-            Console.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levelMap[logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
+            Console.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
         }
 
         /// <summary>
