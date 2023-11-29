@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void LoggerShouldEmitEvent()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info).WithHandler(testLogHandler);
+            Log.SetMinimumLevel(LogEventLevel.Info).AddHandler(testLogHandler);
 
             logger.Info("test message");
 
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [TestCase(LogEventLevel.Error)]
         public void LoggerShouldEmitEventWithProperLevel(LogEventLevel level)
         {
-            Log.SetMinimumLevel(level).WithHandler(testLogHandler);
+            Log.SetMinimumLevel(level).AddHandler(testLogHandler);
 
             switch (level)
             {
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void LoggerShouldNotEmitEventWhenLevelIsLess()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info).WithHandler(testLogHandler);
+            Log.SetMinimumLevel(LogEventLevel.Info).AddHandler(testLogHandler);
 
             logger.Trace("test message");
 
@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             Log.SetMinimumLevel(LogEventLevel.Info);
 
-            using var context = Log.CreateContext().WithHandler(testLogHandler);
+            using var context = Log.CreateContext().AddHandler(testLogHandler);
 
             var logger = context.GetLogger<LogTest>();
 

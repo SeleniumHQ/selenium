@@ -80,6 +80,6 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="handler">The log handler to add.</param>
         /// <returns>The current instance of <see cref="ILogContext"/> with the log handler added.</returns>
-        ILogContext WithHandler(ILogHandler handler);
+        ILogContext AddHandler(ILogHandler handler);
     }
 }
