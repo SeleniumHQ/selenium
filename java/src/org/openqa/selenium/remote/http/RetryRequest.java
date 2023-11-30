@@ -56,16 +56,7 @@ public class RetryRequest implements Filter {
                       "Connection failure #{0}. Retrying.",
                       e.getAttemptCount()))
           .build();
-
-  // Retry on read timeout.
-  private static final RetryPolicy<HttpResponse> readTimeoutPolicy =
-      RetryPolicy.<HttpResponse>builder()
-          .handle(TimeoutException.class)
-          .withMaxRetries(3)
-          .onRetry(
-              e -> LOG.log(getDebugLogLevel(), "Read timeout #{0}. Retrying.", e.getAttemptCount()))
-          .build();
-
+  
   // Retry if server is unavailable or an internal server error occurs without response body.
   private static final RetryPolicy<HttpResponse> serverErrorPolicy =
       RetryPolicy.<HttpResponse>builder()
@@ -88,7 +79,6 @@ public class RetryRequest implements Filter {
     return req ->
         Failsafe.with(fallback)
             .compose(serverErrorPolicy)
-            .compose(readTimeoutPolicy)
             .compose(connectionFailurePolicy)
             .get(() -> next.execute(req));
   }
@@ -102,11 +92,6 @@ public class RetryRequest implements Filter {
             .setStatus(HTTP_CLIENT_TIMEOUT)
             .setContent(
                 asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Connection failure"))));
-      } else if (exception instanceof TimeoutException) {
-        return new HttpResponse()
-            .setStatus(HTTP_GATEWAY_TIMEOUT)
-            .setContent(
-                asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Read timeout"))));
       } else throw exception;
     } else if (executionAttemptedEvent.getLastResult() != null) {
       HttpResponse response = executionAttemptedEvent.getLastResult();
