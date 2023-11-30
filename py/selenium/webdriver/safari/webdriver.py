@@ -16,7 +16,6 @@
 # under the License.
 
 import http.client as http_client
-import warnings
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -32,7 +31,6 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        reuse_service=False,
         keep_alive=True,
         options: Options = None,
         service: Service = None,
@@ -41,26 +39,17 @@ class WebDriver(RemoteWebDriver):
         safaridriver service.
 
         :Args:
-         - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
          - keep_alive - Whether to configure SafariRemoteConnection to use
              HTTP keep-alive. Defaults to True.
          - options - Instance of ``options.Options``.
          - service - Service object for handling the browser driver if you need to pass extra details
         """
-        if reuse_service:
-            warnings.warn(
-                "reuse_service has been deprecated, please use the Service class to set it",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
         self.service = service if service else Service()
         options = options if options else Options()
 
         self.service.path = DriverFinder.get_path(self.service, options)
 
-        self._reuse_service = reuse_service and self.service.reuse_service
-        if not self._reuse_service:
+        if not self.service.reuse_service:
             self.service.start()
 
         executor = SafariRemoteConnection(
@@ -81,7 +70,7 @@ class WebDriver(RemoteWebDriver):
         except http_client.BadStatusLine:
             pass
         finally:
-            if not self._reuse_service:
+            if not self.service.reuse_service:
                 self.service.stop()
 
     # safaridriver extension commands. The canonical command support matrix is here:
