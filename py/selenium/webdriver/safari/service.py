@@ -50,7 +50,7 @@ class Service(service.Service):
                 stacklevel=2,
             )
 
-        self._reuse_service = reuse_service
+        self.reuse_service = reuse_service
         super().__init__(
             executable_path=executable_path,
             port=port,
