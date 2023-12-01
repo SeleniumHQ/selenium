@@ -55,9 +55,20 @@ class WebDriver(RemoteWebDriver):
             ignore_proxy=options._ignore_local_proxy,
         )
 
-        super().__init__(command_executor=executor, options=options)
+        try:
+            super().__init__(command_executor=executor, options=options)
+        except Exception:
+            self.quit()
+            raise
+
         self._is_remote = False
 
     def quit(self) -> None:
-        super().quit()
-        self.service.stop()
+        """Closes the browser and shuts down the IEServerDriver executable."""
+        try:
+            super().quit()
+        except Exception:
+            # We don't care about the message because something probably has gone wrong
+            pass
+        finally:
+            self.service.stop()
