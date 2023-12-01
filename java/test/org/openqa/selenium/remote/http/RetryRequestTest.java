@@ -263,7 +263,7 @@ class RetryRequestTest {
 
     server.stop();
   }
-  
+
   @Test
   void shouldBeAbleToRetryARequestOnConnectionFailure() {
     AppServer server = new NettyAppServer(req -> new HttpResponse());

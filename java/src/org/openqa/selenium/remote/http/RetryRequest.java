@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
@@ -33,7 +32,6 @@ import dev.failsafe.event.ExecutionAttemptedEvent;
 import dev.failsafe.function.CheckedFunction;
 import java.net.ConnectException;
 import java.util.logging.Logger;
-import org.openqa.selenium.TimeoutException;
 
 public class RetryRequest implements Filter {
 
@@ -56,7 +54,7 @@ public class RetryRequest implements Filter {
                       "Connection failure #{0}. Retrying.",
                       e.getAttemptCount()))
           .build();
-  
+
   // Retry if server is unavailable or an internal server error occurs without response body.
   private static final RetryPolicy<HttpResponse> serverErrorPolicy =
       RetryPolicy.<HttpResponse>builder()
