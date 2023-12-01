@@ -28,11 +28,11 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name,
-        vendor_prefix,
-        options: ArgOptions,
-        service: Service,
-        keep_alive=True,
+        browser_name: str = None,
+        vendor_prefix: str = None,
+        options: ArgOptions = ArgOptions(),
+        service: Service = None,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
