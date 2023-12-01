@@ -59,22 +59,18 @@ namespace OpenQA.Selenium.Environment
             this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = null;
-            try
-            {
-                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
-            }
-            catch (FileNotFoundException)
-            {
-                driverAssembly = Assembly.GetExecutingAssembly();
-            }
-
+            // Search for the driver type in the all assemblies,
+            // bazel uses unpredictable assembly names to execute tests
             driverType = AppDomain.CurrentDomain.GetAssemblies()
                 .Reverse()
                 .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
                 .FirstOrDefault(t => t != null);
 
-            //driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
+            if (driverType == null)
+            {
+                throw new ArgumentOutOfRangeException($"Unable to find driver type {driverConfig.DriverTypeName}");
+            }
+
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
 
