@@ -5,22 +5,27 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     public class FileLogHandler : ILogHandler, IDisposable
     {
-        private readonly FileStream _writerStream;
-        private readonly StreamWriter _writer;
+        private const string DEFAULT_FILE_NAME = "Selenium.WebDriver.log";
 
-        private readonly static object _lock = new object();
+        // performance trick to avoid expensive Enum.ToString() with fixed length
+        private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
+
+        private readonly FileStream _fileStream;
+        private readonly StreamWriter _streamWriter;
+
+        private readonly object _lockObj = new object();
 
         public FileLogHandler()
-            : this("Selenium.WebDriver.log")
+            : this(DEFAULT_FILE_NAME)
         {
 
         }
 
         public FileLogHandler(string path)
         {
-            _writerStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-            _writerStream.Seek(0, SeekOrigin.End);
-            _writer = new StreamWriter(_writerStream, System.Text.Encoding.UTF8)
+            _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+            _fileStream.Seek(0, SeekOrigin.End);
+            _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
             {
                 AutoFlush = true
             };
@@ -33,16 +38,16 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void Handle(LogEvent logEvent)
         {
-            lock (_lock)
+            lock (_lockObj)
             {
-                _writer.WriteLine($"{logEvent.Message}");
+                _streamWriter.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
             }
         }
 
         public void Dispose()
         {
-            _writer?.Dispose();
-            _writerStream?.Dispose();
+            _streamWriter.Dispose();
+            _fileStream.Dispose();
         }
     }
 }
