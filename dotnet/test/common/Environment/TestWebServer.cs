@@ -156,34 +156,8 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")) as HttpWebRequest;
-            try
-            {
-                request.GetResponse();
-            }
-            catch (WebException)
-            {
-            }
-
-            if (webserverProcess != null)
-            {
-                try
-                {
-                    webserverProcess.WaitForExit(10000);
-                    if (!webserverProcess.HasExited)
-                    {
-                        webserverProcess.Kill();
-                    }
-                }
-                catch (Exception)
-                {
-                }
-                finally
-                {
-                    webserverProcess.Dispose();
-                    webserverProcess = null;
-                }
-            }
+            webserverProcess.Dispose();
+            webserverProcess = null;
         }
     }
 }
