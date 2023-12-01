@@ -65,7 +65,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="level">The minimum log level.</param>
         /// <returns>The current instance of <see cref="ILogContext"/> with the minimum log level set.</returns>
-        ILogContext SetMinimumLevel(LogEventLevel level);
+        ILogContext SetLevel(LogEventLevel level);
 
         /// <summary>
         /// Sets the minimum log level for the specified type in the current context.
@@ -73,13 +73,11 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="issuer">The type for which to set the minimum log level.</param>
         /// <param name="level">The minimum log level.</param>
         /// <returns>The current instance of <see cref="ILogContext"/> with the minimum log level set for the specified type.</returns>
-        ILogContext SetMinimumLevel(Type issuer, LogEventLevel level);
+        ILogContext SetLevel(Type issuer, LogEventLevel level);
 
         /// <summary>
-        /// Adds a log handler to the current context.
+        /// Gets a list of log handlers.
         /// </summary>
-        /// <param name="handler">The log handler to add.</param>
-        /// <returns>The current instance of <see cref="ILogContext"/> with the log handler added.</returns>
-        ILogContext WithHandler(ILogHandler handler);
+        ILogHandlerList Handlers { get; }
     }
 }

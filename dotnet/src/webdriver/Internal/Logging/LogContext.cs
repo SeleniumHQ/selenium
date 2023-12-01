@@ -31,13 +31,11 @@ namespace OpenQA.Selenium.Internal.Logging
     {
         private ConcurrentDictionary<Type, ILogger> _loggers;
 
-        private readonly IList<ILogHandler> _handlers;
-
         private LogEventLevel _level;
 
         private readonly ILogContext _parentLogContext;
 
-        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, IList<ILogHandler> handlers)
+        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, ILogHandlerList handlers)
         {
             _level = level;
 
@@ -45,7 +43,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
             _loggers = loggers;
 
-            _handlers = handlers ?? new List<ILogHandler>();
+            Handlers = handlers ?? new LogHandlerList(this);
         }
 
         public ILogContext CreateContext()
@@ -64,16 +62,16 @@ namespace OpenQA.Selenium.Internal.Logging
 
             IList<ILogHandler> handlers = null;
 
-            if (_handlers != null)
+            if (Handlers != null)
             {
-                handlers = new List<ILogHandler>(_handlers.Select(h => h.Clone()));
+                handlers = new List<ILogHandler>(Handlers.Select(h => h.Clone()));
             }
             else
             {
                 handlers = new List<ILogHandler>();
             }
 
-            var context = new LogContext(minimumLevel, this, loggers, handlers);
+            var context = new LogContext(minimumLevel, this, loggers, Handlers);
 
             Log.CurrentContext = context;
 
@@ -102,18 +100,18 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void EmitMessage(ILogger logger, LogEventLevel level, string message)
         {
-            if (_handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
+            if (Handlers != null && level >= _level && level >= GetLogger(logger.Issuer).Level)
             {
                 var logEvent = new LogEvent(logger.Issuer, DateTimeOffset.Now, level, message);
 
-                foreach (var handler in _handlers)
+                foreach (var handler in Handlers)
                 {
                     handler.Handle(logEvent);
                 }
             }
         }
 
-        public ILogContext SetMinimumLevel(LogEventLevel level)
+        public ILogContext SetLevel(LogEventLevel level)
         {
             _level = level;
 
@@ -128,19 +126,14 @@ namespace OpenQA.Selenium.Internal.Logging
             return this;
         }
 
-        public ILogContext SetMinimumLevel(Type issuer, LogEventLevel level)
+        public ILogContext SetLevel(Type issuer, LogEventLevel level)
         {
             GetLogger(issuer).Level = level;
 
             return this;
         }
 
-        public ILogContext WithHandler(ILogHandler handler)
-        {
-            _handlers.Add(handler);
-
-            return this;
-        }
+        public ILogHandlerList Handlers { get; }
 
         public void Dispose()
         {

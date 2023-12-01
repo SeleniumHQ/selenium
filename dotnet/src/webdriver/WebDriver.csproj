@@ -43,6 +43,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
+    
     <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="cdp\**" />

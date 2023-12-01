@@ -1,4 +1,4 @@
-// <copyright file="IHasDownloads.cs" company="WebDriver Committers">
+// <copyright file="ILogHandlerList.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,29 +18,31 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium.Internal.Logging
 {
     /// <summary>
-    /// Interface indicating the driver can handle downloading remote files.
+    /// Represents a list of log handlers.
     /// </summary>
-    public interface IHasDownloads
+    public interface ILogHandlerList : IEnumerable<ILogHandler>
     {
         /// <summary>
-        /// Retrieves the downloadable files.
+        /// Adds a log handler to the list.
         /// </summary>
-        /// <returns>A list of file names available for download.</returns>
-        List<string> GetDownloadableFiles();
+        /// <param name="handler">The log handler to add.</param>
+        /// <returns>The log context.</returns>
+        ILogContext Add(ILogHandler handler);
 
         /// <summary>
-        /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
+        /// Removes a log handler from the list.
         /// </summary>
-        /// <param name="fileName">The name of the file to be downloaded.</param>
-        /// <param name="targetDirectory">The location to save the downloaded file.</param>
-        void DownloadFile(string fileName, string targetDirectory);
+        /// <param name="handler">The log handler to remove.</param>
+        /// <returns>The log context.</returns>
+        ILogContext Remove(ILogHandler handler);
 
         /// <summary>
-        /// Deletes the downloadable files.
+        /// Clears all log handlers from the list.
         /// </summary>
-        void DeleteDownloadableFiles();
+        /// <returns>The log context.</returns>
+        ILogContext Clear();
     }
 }

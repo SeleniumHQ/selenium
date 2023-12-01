@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void LoggerShouldEmitEvent()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info).WithHandler(testLogHandler);
+            Log.SetLevel(LogEventLevel.Info).Handlers.Add(testLogHandler);
 
             logger.Info("test message");
 
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [TestCase(LogEventLevel.Error)]
         public void LoggerShouldEmitEventWithProperLevel(LogEventLevel level)
         {
-            Log.SetMinimumLevel(level).WithHandler(testLogHandler);
+            Log.SetLevel(level).Handlers.Add(testLogHandler);
 
             switch (level)
             {
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void LoggerShouldNotEmitEventWhenLevelIsLess()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info).WithHandler(testLogHandler);
+            Log.SetLevel(LogEventLevel.Info).Handlers.Add(testLogHandler);
 
             logger.Trace("test message");
 
@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldGetProperLogger()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             var logger = Log.GetLogger<LogTest>();
 
@@ -99,7 +99,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldCreateContext()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             using var context = Log.CreateContext();
 
@@ -111,7 +111,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldCreateContextWithCustomLevel()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             using var context = Log.CreateContext(LogEventLevel.Warn);
 
@@ -123,11 +123,11 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ContextShouldChangeLevel()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             using var context = Log.CreateContext();
 
-            context.SetMinimumLevel(LogEventLevel.Warn);
+            context.SetLevel(LogEventLevel.Warn);
 
             var logger = context.GetLogger<LogTest>();
 
@@ -137,9 +137,9 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldCreateContextWithCustomHandler()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
-            using var context = Log.CreateContext().WithHandler(testLogHandler);
+            using var context = Log.CreateContext().Handlers.Add(testLogHandler);
 
             var logger = context.GetLogger<LogTest>();
 
@@ -151,7 +151,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldCreateSubContext()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             using var context = Log.CreateContext();
 
@@ -169,7 +169,7 @@ namespace OpenQA.Selenium.Internal.Logging
         [Test]
         public void ShouldCreateSubContextFromCurrentContext()
         {
-            Log.SetMinimumLevel(LogEventLevel.Info);
+            Log.SetLevel(LogEventLevel.Info);
 
             using var context = Log.CreateContext();
 
