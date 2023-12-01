@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
+using System.Linq;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -68,7 +69,12 @@ namespace OpenQA.Selenium.Environment
                 driverAssembly = Assembly.GetExecutingAssembly();
             }
 
-            driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
+            driverType = AppDomain.CurrentDomain.GetAssemblies()
+                .Reverse()
+                .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
+                .FirstOrDefault(t => t != null);
+
+            //driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
 
