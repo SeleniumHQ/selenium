@@ -1,12 +1,10 @@
 using Bazel;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Text;
-using OpenQA.Selenium.Internal;
-using NUnit.Framework;
+using System.Net.Http;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -150,14 +148,8 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")) as HttpWebRequest;
-            try
-            {
-                request.GetResponse();
-            }
-            catch (WebException)
-            {
-            }
+            using var httpClient = new HttpClient();
+            using var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult();
 
             if (webserverProcess != null)
             {
@@ -166,11 +158,8 @@ namespace OpenQA.Selenium.Environment
                     webserverProcess.WaitForExit(10000);
                     if (!webserverProcess.HasExited)
                     {
-                        webserverProcess.Kill();
+                        webserverProcess.Kill(entireProcessTree: true);
                     }
-                }
-                catch (Exception)
-                {
                 }
                 finally
                 {
