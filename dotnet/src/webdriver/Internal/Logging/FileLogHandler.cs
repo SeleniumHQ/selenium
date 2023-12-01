@@ -23,12 +23,15 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public FileLogHandler(string path)
         {
-            _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-            _fileStream.Seek(0, SeekOrigin.End);
-            _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
+            lock (_lockObj)
             {
-                AutoFlush = true
-            };
+                _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+                _fileStream.Seek(0, SeekOrigin.End);
+                _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
+                {
+                    AutoFlush = true
+                };
+            }
         }
 
         public ILogHandler Clone()
