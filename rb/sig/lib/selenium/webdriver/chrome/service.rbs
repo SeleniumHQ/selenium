@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    module Chrome
+      class Service < WebDriver::Service
+        @log: untyped
+
+        DEFAULT_PORT: 9515
+
+        EXECUTABLE: "chromedriver"
+
+        SHUTDOWN_SUPPORTED: true
+
+        def log: () -> untyped
+      end
+    end
+  end
+end

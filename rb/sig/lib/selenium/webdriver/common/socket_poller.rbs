@@ -1,0 +1,39 @@
+module Selenium
+  module WebDriver
+    class SocketPoller
+      @host: untyped
+
+      @port: untyped
+
+      @timeout: untyped
+
+      @interval: untyped
+
+      def initialize: (untyped host, untyped port, ?::Integer timeout, ?::Float interval) -> void
+
+      def connected?: () -> untyped
+
+      def closed?: () -> untyped
+
+      private
+
+      CONNECT_TIMEOUT: 5
+
+      NOT_CONNECTED_ERRORS: untyped
+
+      CONNECTED_ERRORS: untyped
+
+      # we use a plain TCPSocket here since JRuby has issues closing socket
+      # see https://github.com/jruby/jruby/issues/5709
+      def listening?: () -> untyped
+
+      def socket_writable?: (untyped sock) -> untyped
+
+      def conn_completed?: (untyped sock) -> untyped
+
+      def with_timeout: () { () -> untyped } -> (true | false)
+
+      def current_time: () -> untyped
+    end
+  end
+end

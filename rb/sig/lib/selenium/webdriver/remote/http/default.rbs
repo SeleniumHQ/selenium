@@ -1,0 +1,53 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Http
+        # @api private
+        class Default < Common
+          @open_timeout: untyped
+
+          @read_timeout: untyped
+
+          @http: untyped
+
+          @proxy: untyped
+
+          attr_writer proxy: untyped
+
+          attr_accessor open_timeout: untyped
+
+          attr_accessor read_timeout: untyped
+
+          # Initializes object.
+          # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
+          # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
+          # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
+          # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
+          def initialize: (?open_timeout: untyped?, ?read_timeout: untyped?) -> void
+
+          def close: () -> untyped
+
+          private
+
+          def http: () -> untyped
+
+          def start: (untyped http) -> untyped
+
+          MAX_RETRIES: 3
+
+          def request: (untyped verb, untyped url, untyped headers, untyped payload, ?::Integer redirects) -> untyped
+
+          def new_request_for: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
+
+          def response_for: (untyped request) -> untyped
+
+          def new_http_client: () -> untyped
+
+          def proxy: () -> untyped
+
+          def use_proxy?: () -> (false | untyped)
+        end
+      end
+    end
+  end
+end

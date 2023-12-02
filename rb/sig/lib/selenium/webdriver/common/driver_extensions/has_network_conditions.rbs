@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasNetworkConditions
+        def network_conditions: () -> untyped
+
+        def network_conditions=: (untyped conditions) -> untyped
+
+        def delete_network_conditions: () -> untyped
+      end
+    end
+  end
+end

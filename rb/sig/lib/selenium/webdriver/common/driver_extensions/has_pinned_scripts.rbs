@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasPinnedScripts
+        @pinned_scripts: untyped
+
+        def pinned_scripts: () -> untyped
+
+        def pin_script: (untyped script) -> untyped
+
+        def unpin_script: (untyped script) -> untyped
+      end
+    end
+  end
+end

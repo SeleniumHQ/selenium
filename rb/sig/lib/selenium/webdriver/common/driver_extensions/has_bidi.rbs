@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasBiDi
+        @bidi: untyped
+
+        def bidi: () -> untyped
+      end
+    end
+  end
+end

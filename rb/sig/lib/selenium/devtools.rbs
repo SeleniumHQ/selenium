@@ -1,0 +1,14 @@
+module Selenium
+  module DevTools
+    attr_accessor self.version: untyped
+
+    def self.load_version: () -> untyped
+
+    private
+
+    # Try to load up to 2 versions back
+    def self.load_older_version: () -> untyped
+
+    def self.load_old_version: (untyped version) -> untyped
+  end
+end

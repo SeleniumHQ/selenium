@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      module PointerEventProperties
+        VALID: { width: ::Hash[::String, { min: ::Float }], height: ::Hash[::String, { min: ::Float }], pressure: ::Hash[::String, { min: ::Float, max: ::Float }], tangential_pressure: ::Hash[::String, { min: ::Float, max: ::Float }], tilt_x: ::Hash[::String, { min: -90, max: 90 }], tilt_y: ::Hash[::String, { min: -90, max: 90 }], twist: ::Hash[::String, { min: 0, max: 359 }], altitude_angle: ::Hash[::String, { min: ::Float, max: untyped }], azimuth_angle: ::Hash[::String, { min: ::Float, max: untyped }] }
+
+        def process_opts: () -> untyped
+
+        private
+
+        def assert_number: (untyped num, untyped min, ?untyped? max) -> (nil | untyped)
+      end
+    end
+  end
+end

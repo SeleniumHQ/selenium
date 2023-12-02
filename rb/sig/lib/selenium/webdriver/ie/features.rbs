@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module IE
+      module Features
+        def command_list: () -> untyped
+
+        def commands: (untyped command) -> untyped
+      end
+    end
+  end
+end

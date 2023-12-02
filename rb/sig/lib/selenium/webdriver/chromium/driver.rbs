@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Chromium
+      class Driver < WebDriver::Driver
+        EXTENSIONS: ::Array[untyped]
+
+        def devtools_url: () -> untyped
+
+        def devtools_version: () -> untyped
+      end
+    end
+  end
+end

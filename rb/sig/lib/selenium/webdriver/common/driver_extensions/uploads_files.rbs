@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module UploadsFiles
+        def file_detector=: (untyped detector) -> untyped
+      end
+    end
+  end
+end

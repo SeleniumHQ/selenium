@@ -1,0 +1,36 @@
+module Selenium
+  module DevTools
+    module Support
+      class CDPClientGenerator
+        @domain_template: untyped
+
+        @loader_template: untyped
+
+        @output_dir: untyped
+
+        @loader_path: untyped
+
+        @version: untyped
+
+        # Input JSON files are generated from PDL tasks.
+        DOMAIN_TEMPLATE_PATH: untyped
+
+        LOADER_TEMPLATE_PATH: untyped
+
+        RESERVED_KEYWORDS: ::Array["end"]
+
+        def call: (output_dir: untyped, version: untyped, **untyped opts) -> untyped
+
+        def process_domain: (untyped domain) -> untyped
+
+        def snake_case: (untyped string) -> untyped
+
+        def kwargs: (untyped parameters) -> untyped
+
+        def remove_empty_lines: (untyped string) -> untyped
+
+        def process_loader: (untyped domains) -> untyped
+      end
+    end
+  end
+end

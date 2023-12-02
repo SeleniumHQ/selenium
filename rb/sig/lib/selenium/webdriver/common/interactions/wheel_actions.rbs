@@ -1,0 +1,68 @@
+module Selenium
+  module WebDriver
+    module WheelActions
+      @default_scroll_duration: untyped
+
+      attr_writer default_scroll_duration: untyped
+
+      def default_scroll_duration: () -> untyped
+
+      #
+      # If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+      #
+      # @example Scroll to element
+      #    el = driver.find_element(id: "some_id")
+      #    driver.action.scroll_to(element).perform
+      #
+      # @param [Object] Which element to scroll into the viewport.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      def scroll_to: (untyped element, ?device: untyped?) -> untyped
+
+      #
+      # Scrolls by provided amounts with the origin in the top left corner of the viewport.
+      #
+      # @example Scroll viewport by a specified amount
+      #    el = driver.find_element(id: "some_id")
+      #    driver.action.scroll_by(100, 200).perform
+      #
+      # @param [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
+      # @param [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      def scroll_by: (untyped delta_x, untyped delta_y, ?device: untyped?) -> untyped
+
+      #
+      # Scrolls by provided amount based on a provided origin.
+      #
+      # The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+      # If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+      #   be scrolled to the bottom of the viewport.
+      #
+      # @example Scroll from element by a specified amount
+      #    el = driver.find_element(id: "some_id")
+      #    origin = WheelActions::ScrollOrigin.element(el)
+      #    driver.action.scroll_from(origin, 0, 200).perform
+      #
+      # @example Scroll from element by a specified amount with an offset
+      #    el = driver.find_element(id: "some_id")
+      #    origin = WheelActions::ScrollOrigin.element(el, 10, 10)
+      #    driver.action.scroll_from(origin, 100, 200).perform
+      #
+      # @example Scroll viewport by a specified amount with an offset
+      #    origin = WheelActions::ScrollOrigin.viewport(10, 10)
+      #    driver.action.scroll_from(origin, 0, 200).perform
+      #
+      # @param [ScrollOrigin] scroll_origin Where scroll originates (viewport or element center) plus provided offsets.
+      # @param [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
+      # @param [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      # @raise [Error::MoveTargetOutOfBoundsError] If the origin with offset is outside the viewport.
+      def scroll_from: (untyped scroll_origin, untyped delta_x, untyped delta_y, ?device: untyped?) -> untyped
+
+      private
+
+      def scroll: (**untyped opts) -> self
+
+      def wheel_input: (?untyped? name) -> untyped
+    end
+  end
+end

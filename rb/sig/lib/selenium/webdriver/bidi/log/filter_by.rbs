@@ -1,0 +1,15 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class FilterBy
+        @level: untyped
+
+        attr_accessor level: untyped
+
+        def initialize: (untyped level) -> void
+
+        def self.log_level: (?untyped? level) -> untyped
+      end
+    end
+  end
+end

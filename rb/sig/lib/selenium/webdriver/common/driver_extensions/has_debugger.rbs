@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasDebugger
+        def attach_debugger: () -> untyped
+      end
+    end
+  end
+end

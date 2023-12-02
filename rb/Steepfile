@@ -1,4 +1,15 @@
 target :lib do
   signature 'sig' # Signature directory
   check 'lib' # Directory name
+
+  library(
+    'base64',
+    'date',
+    'erb',
+    'forwardable',
+    'ipaddr',
+    'net-http',
+    'openssl',
+    'uri',
+    'securerandom') # Standard libraries used
 end

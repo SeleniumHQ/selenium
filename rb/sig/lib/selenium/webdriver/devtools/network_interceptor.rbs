@@ -1,0 +1,67 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class NetworkInterceptor
+        @devtools: untyped
+
+        @lock: untyped
+
+        @pending_response_requests: untyped
+
+        @cancelled_requests: untyped
+
+        # CDP fails to get body on certain responses (301) and raises:
+        # "Can only get response body on requests captured after headers received."
+        CANNOT_GET_BODY_ON_REDIRECT_ERROR_CODE: "-32000"
+
+        # CDP fails to operate with intercepted requests.
+        # Typical reason is browser cancelling intercepted requests/responses.
+        INVALID_INTERCEPTION_ID_ERROR_CODE: "-32602"
+
+        def initialize: (untyped devtools) -> void
+
+        def intercept: () { () -> untyped } -> untyped
+
+        private
+
+        attr_accessor devtools: untyped
+
+        attr_accessor lock: untyped
+
+        # We should be thread-safe to use the hash without synchronization
+        # because its keys are interception job identifiers and they should be
+        # unique within a devtools session.
+        def pending_response_requests: () -> untyped
+
+        # Ensure usage of cancelled_requests is thread-safe via synchronization!
+        def cancelled_requests: () -> untyped
+
+        def track_cancelled_request: (untyped data) -> (nil | untyped)
+
+        def request_paused: (untyped data) { () -> untyped } -> untyped
+
+        # The presence of any of these fields indicate we're at the response stage.
+        # @see https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
+        def response?: (untyped params) -> untyped
+
+        def intercept_request: (untyped id, untyped params) { () -> untyped } -> untyped
+
+        def intercept_response: (untyped id, untyped params) ?{ (untyped) -> untyped } -> untyped
+
+        def continue_request: (untyped id) -> untyped
+
+        alias continue_response continue_request
+
+        def mutate_request: (untyped request) -> untyped
+
+        def mutate_response: (untyped response) -> untyped
+
+        def fetch_response_body: (untyped id) -> untyped
+
+        def with_cancellable_request: (untyped network_id) { () -> untyped } -> untyped
+
+        def cancelled?: (untyped network_id) -> untyped
+      end
+    end
+  end
+end

@@ -1,0 +1,5 @@
+module Selenium
+  module WebDriver
+    VERSION: "4.16.0.nightly"
+  end
+end

@@ -1,0 +1,27 @@
+module Selenium
+  module WebDriver
+    module Remote
+      module Features
+        @command_list: untyped
+
+        REMOTE_COMMANDS: { upload_file: ::Array[:post | "session/:session_id/se/file"], get_downloadable_files: ::Array[:get | "session/:session_id/se/files"], download_file: ::Array[:post | "session/:session_id/se/files"], delete_downloadable_files: ::Array[:delete | "session/:session_id/se/files"] }
+
+        def add_commands: (untyped commands) -> untyped
+
+        def command_list: () -> untyped
+
+        def commands: (untyped command) -> untyped
+
+        def upload: (untyped local_file) -> untyped
+
+        def upload_if_necessary: (untyped keys) -> untyped
+
+        def downloadable_files: () -> untyped
+
+        def download_file: (untyped name) -> untyped
+
+        def delete_downloadable_files: () -> untyped
+      end
+    end
+  end
+end

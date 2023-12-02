@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasApplePermissions
+        def permissions: () -> untyped
+
+        def permissions=: (untyped permissions) -> untyped
+      end
+    end
+  end
+end
