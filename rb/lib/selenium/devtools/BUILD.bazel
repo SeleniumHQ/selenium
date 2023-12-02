@@ -1,4 +1,5 @@
-load("@rules_ruby//ruby:defs.bzl", "rb_library")
+load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
+load("@rules_ruby//ruby:defs.bzl", "rb_binary", "rb_library")
 
 package(default_visibility = ["//rb:__subpackages__"])
 
@@ -20,30 +21,35 @@ rb_library(
     srcs = ["version.rb"],
 )
 
-rb_library(
+rb_binary(
     name = "cdp-generate",
     srcs = ["support/cdp_client_generator.rb"],
-)
-
-filegroup(
-    name = "cdp-generate-file",
-    srcs = ["support/cdp_client_generator.rb"],
+    data = [
+        "support/cdp/domain.rb.erb",
+        "support/cdp/loader.rb.erb",
+    ],
+    main = "support/cdp_client_generator.rb",
 )
 
 [
-    genrule(
-        name = "cdp-" + n,
+    run_binary(
+        name = "cdp-" + version,
         srcs = [
-            "//common/devtools/chromium/" + n + ":browser_protocol",
-            "//common/devtools/chromium/" + n + ":js_protocol",
-            ":cdp-generate-file",
+            "//common/devtools/chromium/" + version + ":browser_protocol",
+            "//common/devtools/chromium/" + version + ":js_protocol",
         ],
         outs = [
-            n,
-            n + ".rb",
+            version,
+            version + ".rb",
         ],
-        cmd = "$(location @rules_ruby_dist//:ruby) $(location :cdp-generate-file) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $(OUTS) " + n,
-        tools = ["@rules_ruby_dist//:ruby"],
+        args = [
+            "$(location //common/devtools/chromium/" + version + ":browser_protocol)",
+            "$(location //common/devtools/chromium/" + version + ":js_protocol)",
+            "$(location :" + version + ")/",
+            "$(location :" + version + ".rb)",
+            version,
+        ],
+        tool = ":cdp-generate",
     )
-    for n in CDP_VERSIONS
+    for version in CDP_VERSIONS
 ]
