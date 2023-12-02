@@ -10,10 +10,11 @@ namespace OpenQA.Selenium.Internal.Logging
         // performance trick to avoid expensive Enum.ToString() with fixed length
         private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
 
-        private readonly FileStream _fileStream;
-        private readonly StreamWriter _streamWriter;
+        private FileStream _fileStream;
+        private StreamWriter _streamWriter;
 
         private readonly object _lockObj = new object();
+        private bool _isDisposed;
 
         public FileLogHandler()
             : this(DEFAULT_FILE_NAME)
@@ -32,6 +33,8 @@ namespace OpenQA.Selenium.Internal.Logging
                     AutoFlush = true
                 };
             }
+
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
         }
 
         public ILogHandler Clone()
@@ -47,10 +50,31 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            Dispose(true);
+        }
+
         public void Dispose()
         {
-            _streamWriter.Dispose();
-            _fileStream.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    _streamWriter?.Dispose();
+                    _streamWriter = null;
+                    _fileStream?.Dispose();
+                    _fileStream = null;
+                }
+
+                _isDisposed = true;
+            }
         }
     }
 }
