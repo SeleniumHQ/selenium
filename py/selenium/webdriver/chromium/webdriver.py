@@ -28,11 +28,11 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name,
-        vendor_prefix,
-        options: ArgOptions,
-        service: Service,
-        keep_alive=True,
+        browser_name: str = None,
+        vendor_prefix: str = None,
+        options: ArgOptions = ArgOptions(),
+        service: Service = None,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
         service and then creates new WebDriver instance of ChromiumDriver.
@@ -44,28 +44,25 @@ class ChromiumDriver(RemoteWebDriver):
          - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        self.vendor_prefix = vendor_prefix
-
         self.service = service
 
         self.service.path = DriverFinder.get_path(self.service, options)
-
         self.service.start()
 
+        executor = ChromiumRemoteConnection(
+            remote_server_addr=self.service.service_url,
+            browser_name=browser_name,
+            vendor_prefix=vendor_prefix,
+            keep_alive=keep_alive,
+            ignore_proxy=options._ignore_local_proxy,
+        )
+
         try:
-            super().__init__(
-                command_executor=ChromiumRemoteConnection(
-                    remote_server_addr=self.service.service_url,
-                    browser_name=browser_name,
-                    vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive,
-                    ignore_proxy=options._ignore_local_proxy,
-                ),
-                options=options,
-            )
+            super().__init__(command_executor=executor, options=options)
         except Exception:
             self.quit()
             raise
+
         self._is_remote = False
 
     def launch_app(self, id):
@@ -181,8 +178,7 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute("stopCasting", {"sinkName": sink_name})
 
     def quit(self) -> None:
-        """Closes the browser and shuts down the ChromiumDriver executable that
-        is started when starting the ChromiumDriver."""
+        """Closes the browser and shuts down the ChromiumDriver executable."""
         try:
             super().quit()
         except Exception:

@@ -39,6 +39,7 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     ffi (1.16.3)
+    ffi (1.16.3-x64-mingw32)
     fileutils (1.7.2)
     hashdiff (1.0.1)
     i18n (1.14.1)
@@ -75,7 +76,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rbs (3.3.0)
+    rbs (3.3.2)
       abbrev
     rdoc (6.6.0)
       psych (>= 4.0.0)
@@ -124,7 +125,7 @@ GEM
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     securerandom (0.3.0)
-    steep (1.6.0)
+    steep (1.5.3)
       activesupport (>= 5.1)
       concurrent-ruby (>= 1.1.10)
       csv (>= 3.0.9)
@@ -172,10 +173,10 @@ DEPENDENCIES
   rubocop-rspec (~> 2.16)
   selenium-devtools!
   selenium-webdriver!
-  steep (~> 1.6.0)
+  steep (~> 1.5.0)
   webmock (~> 3.5)
   webrick (~> 1.7)
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   2.4.10
+   2.3.11

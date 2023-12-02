@@ -1,4 +1,4 @@
-// <copyright file="IHasDownloads.cs" company="WebDriver Committers">
+// <copyright file="TargetAttachedEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,31 +16,26 @@
 // limitations under the License.
 // </copyright>
 
-using System.Collections.Generic;
+using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Interface indicating the driver can handle downloading remote files.
+    /// Event arguments present when the TargetAttached event is raised.
     /// </summary>
-    public interface IHasDownloads
+    public class TargetAttachedEventArgs : EventArgs
     {
         /// <summary>
-        /// Retrieves the downloadable files.
+        /// Gets the ID of the session of the target attached.
         /// </summary>
-        /// <returns>A list of file names available for download.</returns>
-        List<string> GetDownloadableFiles();
-
+        public string SessionId { get; internal set; }
         /// <summary>
-        /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
+        /// Gets the target which is attached.
         /// </summary>
-        /// <param name="fileName">The name of the file to be downloaded.</param>
-        /// <param name="targetDirectory">The location to save the downloaded file.</param>
-        void DownloadFile(string fileName, string targetDirectory);
-
+        public TargetInfo TargetInfo { get; internal set; }
         /// <summary>
-        /// Deletes the downloadable files.
+        /// Gets if the target is waiting on the debugger. Target continues after invoking Runtime.runIfWaitingForDebugger.
         /// </summary>
-        void DeleteDownloadableFiles();
+        public bool WaitingForDebugger { get; internal set; }
     }
 }

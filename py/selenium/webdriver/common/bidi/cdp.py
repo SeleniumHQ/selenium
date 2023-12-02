@@ -453,6 +453,11 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
             else:
                 self._handle_data(data)
 
+        for _, session in self.sessions.items():
+            for _, senders in session.channels.items():
+                for sender in senders:
+                    sender.close()
+
 
 @asynccontextmanager
 async def open_cdp(url) -> typing.AsyncIterator[CdpConnection]:

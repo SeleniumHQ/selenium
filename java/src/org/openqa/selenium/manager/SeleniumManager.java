@@ -16,7 +16,9 @@
 // under the License.
 package org.openqa.selenium.manager;
 
+import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.IOException;
@@ -171,13 +173,23 @@ public class SeleniumManager {
     if (binary == null) {
       try {
         Platform current = Platform.getCurrent();
-        String folder = "linux";
+        String folder = "";
         String extension = "";
         if (current.is(WINDOWS)) {
           extension = EXE;
           folder = "windows";
         } else if (current.is(MAC)) {
           folder = "macos";
+        } else if (current.is(LINUX)) {
+          folder = "linux";
+        } else if (current.is(UNIX)) {
+          LOG.warning(
+              String.format(
+                  "Selenium Manager binary may not be compatible with %s; verify settings",
+                  current));
+          folder = "linux";
+        } else {
+          throw new WebDriverException("Unsupported platform: " + current);
         }
 
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
