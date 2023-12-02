@@ -29,7 +29,7 @@ class WebDriver(ChromiumDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive=True,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the edge driver. Starts the service and
         then creates new instance of edge driver.
@@ -43,9 +43,9 @@ class WebDriver(ChromiumDriver):
         options = options if options else Options()
 
         super().__init__(
-            DesiredCapabilities.EDGE["browserName"],
-            "ms",
-            options,
-            service,
-            keep_alive,
+            browser_name=DesiredCapabilities.EDGE["browserName"],
+            vendor_prefix="ms",
+            options=options,
+            service=service,
+            keep_alive=keep_alive,
         )
