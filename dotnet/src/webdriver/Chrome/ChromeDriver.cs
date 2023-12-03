@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chromium;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Chrome
 {
