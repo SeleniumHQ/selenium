@@ -27,7 +27,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         keep_alive: bool = True,
         ignore_proxy: bool = False,
     ) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy)
         self.browser_name = browser_name
         commands = self._remote_commands(vendor_prefix)
         for key, value in commands.items():

@@ -31,7 +31,7 @@ class WebDriver(RemoteWebDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive=True,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Ie driver.
 
@@ -40,7 +40,7 @@ class WebDriver(RemoteWebDriver):
         :Args:
          - options - IE Options instance, providing additional IE options
          - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.
+         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
 
         self.service = service if service else Service()
@@ -55,9 +55,20 @@ class WebDriver(RemoteWebDriver):
             ignore_proxy=options._ignore_local_proxy,
         )
 
-        super().__init__(command_executor=executor, options=options)
+        try:
+            super().__init__(command_executor=executor, options=options)
+        except Exception:
+            self.quit()
+            raise
+
         self._is_remote = False
 
     def quit(self) -> None:
-        super().quit()
-        self.service.stop()
+        """Closes the browser and shuts down the IEServerDriver executable."""
+        try:
+            super().quit()
+        except Exception:
+            # We don't care about the message because something probably has gone wrong
+            pass
+        finally:
+            self.service.stop()

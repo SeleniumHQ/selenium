@@ -43,9 +43,9 @@ class WebDriver(ChromiumDriver):
         options = options if options else Options()
 
         super().__init__(
-            DesiredCapabilities.CHROME["browserName"],
-            "goog",
-            options,
-            service,
-            keep_alive,
+            browser_name=DesiredCapabilities.CHROME["browserName"],
+            vendor_prefix="goog",
+            options=options,
+            service=service,
+            keep_alive=keep_alive,
         )
