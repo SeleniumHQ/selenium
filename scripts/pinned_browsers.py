@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import urllib3
 
 from packaging.version import parse
@@ -20,7 +21,7 @@ def calculate_hash(url):
     return h.hexdigest()
 
 def get_chrome_milestone():
-    channel = "Stable"
+    channel = os.getenv("CHROME_CHANNEL", "Stable")
     r = http.request('GET', f'https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux')
     all_versions = json.loads(r.data)
     # use the same milestone for all chrome releases, so pick the lowest
