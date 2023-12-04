@@ -42,7 +42,7 @@
             TypeEnumTemplate = new CodeGenerationTemplateSettings
             {
                 TemplatePath = "type-enum.hbs",
-                OutputPath = "{{domainName}}{{separator}}{{className}}.cs",
+                OutputPath = "{{domainName}}\\{{className}}.cs",
             };
         }
 
