@@ -28,11 +28,5 @@ namespace OpenQA.Selenium.Internal.Logging
         /// </summary>
         /// <param name="logEvent">The log event to handle.</param>
         void Handle(LogEvent logEvent);
-
-        /// <summary>
-        /// Creates a clone of the log handler.
-        /// </summary>
-        /// <returns>A clone of the log handler.</returns>
-        ILogHandler Clone();
     }
 }

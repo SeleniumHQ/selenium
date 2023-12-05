@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
             if (Handlers != null)
             {
-                handlers = new List<ILogHandler>(Handlers.Select(h => h.Clone()));
+                handlers = new List<ILogHandler>(Handlers);
             }
             else
             {
