@@ -35,7 +35,7 @@ def get_chrome_milestone():
         key=lambda v: parse(v['version'])
     )[-1]
 
-def chromedriver():
+def chromedriver(selected_version):
     content = ""
 
     selected_version = get_chrome_milestone()
@@ -69,9 +69,7 @@ def chromedriver():
 
     return content
 
-def chrome():
-    selected_version = get_chrome_milestone()
-
+def chrome(selected_version):
     chrome_downloads = selected_version["downloads"]["chrome"]
 
     linux = [d["url"] for d in chrome_downloads if d["platform"] == "linux64"][0]
@@ -212,19 +210,48 @@ def geckodriver():
         """ % (url, sha)
     return content
 
-def firefox(version_key, workspace_name):
-    r = http.request('GET', 'https://product-details.mozilla.org/1.0/firefox_versions.json')
-    v = json.loads(r.data)[version_key]
+def firefox():
+    firefox_versions = json.loads(firefox_version_data())
 
+    latest_firefox = firefox_versions["LATEST_FIREFOX_VERSION"]
+    sha_linux = calculate_hash(firefox_linux(latest_firefox))
+    sha_mac = calculate_hash(firefox_mac(latest_firefox))
+    content = print_firefox(latest_firefox, "", sha_linux, sha_mac)
+
+    beta_firefox = firefox_versions["LATEST_FIREFOX_RELEASED_DEVEL_VERSION"]
+    if latest_firefox != beta_firefox:
+        sha_linux = calculate_hash(firefox_linux(beta_firefox))
+        sha_mac = calculate_hash(firefox_mac(beta_firefox))
+    content = content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
+
+    dev_firefox = firefox_versions["FIREFOX_DEVEDITION"]
+    if beta_firefox != dev_firefox:
+        sha_linux = calculate_hash(firefox_linux(dev_firefox))
+        sha_mac = calculate_hash(firefox_mac(dev_firefox))
+    return content + print_firefox(dev_firefox, "dev_", sha_linux, sha_mac)
+
+
+def firefox_version_data():
+    versions = http.request("GET", "https://product-details.mozilla.org/1.0/firefox_versions.json")
+    return versions.data
+
+
+def firefox_linux(version):
+    return "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.bz2" % (version, version)
+
+
+def firefox_mac(version):
+    return "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg" % (version, version)
+
+
+def print_firefox(version, workspace_name, sha_linux, sha_mac):
     content = ""
 
-    linux = "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.bz2" % (v, v)
-    sha = calculate_hash(linux)
     content = content + f"""
     http_archive(
         name = "linux_{workspace_name}firefox",
-        url = "{linux}",
-        sha256 = "{sha}",
+        url = "{firefox_linux(version)}",
+        sha256 = "{sha_linux}",
         build_file_content = \"\"\"
 filegroup(
     name = "files",
@@ -240,13 +267,11 @@ exports_files(
 
 """
 
-    mac = "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg" % (v, v)
-    sha = calculate_hash(mac)
     content = content + f"""
     dmg_archive(
         name = "mac_{workspace_name}firefox",
-        url = "{mac}",
-        sha256 = "{sha}",
+        url = "{firefox_mac(version)}",
+        sha256 = "{sha_mac}",
         build_file_content = "exports_files([\\"Firefox.app\\"])",
     )
 
@@ -266,14 +291,13 @@ load("//common/private:pkg_archive.bzl", "pkg_archive")
 def pin_browsers():
     local_drivers()
 """
-    content = content + firefox("LATEST_FIREFOX_VERSION", "")
-    content = content + firefox("LATEST_FIREFOX_RELEASED_DEVEL_VERSION", "beta_")
-    content = content + firefox("FIREFOX_DEVEDITION", "dev_")
+    content = content + firefox()
     content = content + geckodriver()
     content = content + edge()
     content = content + edgedriver()
-    content = content + chrome()
-    content = content + chromedriver()
+    chrome_milestone = get_chrome_milestone()
+    content = content + chrome(chrome_milestone)
+    content = content + chromedriver(chrome_milestone)
 
     current_script_dir = Path(os.path.realpath(__file__)).parent
     target_file_path = current_script_dir.parent / 'common/repositories.bzl'
