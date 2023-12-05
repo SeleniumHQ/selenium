@@ -232,7 +232,6 @@ public class JdkHttpClient implements HttpClient {
                     LOG.log(
                         Level.FINE, error, () -> "An error has occurred: " + error.getMessage());
                     listener.onError(error);
-                    webSocket.request(1);
                   }
                 });
 

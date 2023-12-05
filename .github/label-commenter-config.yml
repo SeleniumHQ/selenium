@@ -129,3 +129,11 @@ labels:
           This issue is looking for contributors.
 
           Please comment below or reach out to us through our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) if you are interested.
+  - name: I-logging
+    labeled:
+      issue:
+        body: |
+          We need more information about this issue in order to troubleshoot.
+
+          Please turn on logging and re-run your code. Information on how to adjust logs for your language can be found in our
+          [Troubleshooting documentation](https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/).
