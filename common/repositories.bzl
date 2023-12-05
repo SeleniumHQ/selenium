@@ -120,8 +120,8 @@ exports_files(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/119.0.6045.105/linux64/chrome-linux64.zip",
-        sha256 = "aa2cb76a385bf0694987e9b697a315973afae946191b0d9cf31ce05ca1d44d7f",
+        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.62/linux64/chrome-linux64.zip",
+        sha256 = "7c46272b3533c0ab089e8a6b7c1a381f5358fe47b023a52c4e080f674221eb3b",
         build_file_content = """
 filegroup(
     name = "files",
@@ -137,8 +137,8 @@ exports_files(
 
     http_archive(
         name = "mac_chrome",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/119.0.6045.105/mac-x64/chrome-mac-x64.zip",
-        sha256 = "d5ea4d9bcb6ad2465717f690e6f44ef9de27cf22ebfd7d7d987cabfd4d476cd6",
+        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.62/mac-x64/chrome-mac-x64.zip",
+        sha256 = "82c861281d1cd3df72dcdf0fefa5949d332553c74cc2db871c07e55ffd9a61b1",
         strip_prefix = "chrome-mac-x64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -149,16 +149,16 @@ exports_files(
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/119.0.6045.105/linux64/chromedriver-linux64.zip",
-        sha256 = "da8e8b028da912c0a2d5ec4fbf59c4324d93925861e3d53259a628c90ec37ff6",
+        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.62/linux64/chromedriver-linux64.zip",
+        sha256 = "25703b095d8a0586413fe3529ea62ae94dbc313e5320e8041fb443ba16e5a01a",
         strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/119.0.6045.105/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "b11014f51240373f92a2fea86a865ab0ca1aa8cfa62194836da83ddb05ec5422",
+        url = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.62/mac-x64/chromedriver-mac-x64.zip",
+        sha256 = "4a3fc328f55245ef956b85db9f834cdf0ce8ab49748495e00842d333d1a1dc9b",
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
