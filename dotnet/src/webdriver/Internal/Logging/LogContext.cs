@@ -137,6 +137,19 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void Dispose()
         {
+            // Dispose log handlers associated with this context
+            // if they are hot handled by parent context
+            if (Handlers != null && _parentLogContext != null && _parentLogContext.Handlers != null)
+            {
+                foreach (var logHandler in Handlers)
+                {
+                    if (!_parentLogContext.Handlers.Contains(logHandler))
+                    {
+                        (logHandler as IDisposable)?.Dispose();
+                    }
+                }
+            }
+
             Log.CurrentContext = _parentLogContext;
         }
     }
