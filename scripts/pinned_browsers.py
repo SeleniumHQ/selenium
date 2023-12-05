@@ -6,6 +6,7 @@ import os
 import urllib3
 
 from packaging.version import parse
+from pathlib import Path
 
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
@@ -274,4 +275,8 @@ def pin_browsers():
     content = content + chrome()
     content = content + chromedriver()
 
-    print(content)
+    current_script_dir = Path(os.path.realpath(__file__)).parent
+    target_file_path = current_script_dir.parent / 'common/repositories.bzl'
+
+    with open(target_file_path, 'w') as file:
+        file.write(content)
