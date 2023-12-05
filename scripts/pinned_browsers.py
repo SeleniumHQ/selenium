@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import hashlib
 import json
 import os
@@ -26,7 +27,11 @@ def calculate_hash(url):
 
 
 def get_chrome_milestone():
-    channel = os.getenv("CHROME_CHANNEL", "Stable")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--chrome_channel', default='Stable', help='Set the Chrome channel')
+    args = parser.parse_args()
+    channel = args.chrome_channel
+
     r = http.request(
         "GET", f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux"
     )
