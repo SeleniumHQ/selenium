@@ -60,18 +60,15 @@ namespace OpenQA.Selenium.Internal.Logging
                 loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, minimumLevel))));
             }
 
-            IList<ILogHandler> handlers = null;
+            var context = new LogContext(minimumLevel, this, loggers, null);
 
             if (Handlers != null)
             {
-                handlers = new List<ILogHandler>(Handlers);
+                foreach (var handler in Handlers)
+                {
+                    context.Handlers.Add(handler);
+                }
             }
-            else
-            {
-                handlers = new List<ILogHandler>();
-            }
-
-            var context = new LogContext(minimumLevel, this, loggers, Handlers);
 
             Log.CurrentContext = context;
 
