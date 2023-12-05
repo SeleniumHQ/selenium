@@ -1,4 +1,4 @@
-﻿namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
+namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
     using Newtonsoft.Json;
 
@@ -42,7 +42,7 @@
             TypeEnumTemplate = new CodeGenerationTemplateSettings
             {
                 TemplatePath = "type-enum.hbs",
-                OutputPath = "{{domainName}}\\{{className}}.cs",
+                OutputPath = "{{domainName}}{{separator}}{{className}}.cs",
             };
         }
 
