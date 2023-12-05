@@ -3,10 +3,11 @@
 import hashlib
 import json
 import os
-import urllib3
-
-from packaging.version import parse
+import sys
 from pathlib import Path
+
+import urllib3
+from packaging.version import parse
 
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
@@ -14,50 +15,60 @@ from pathlib import Path
 
 http = urllib3.PoolManager()
 
+
 def calculate_hash(url):
+    print("Calculate hash for %s" % url, file=sys.stderr)
     h = hashlib.sha256()
-    r = http.request('GET', url, preload_content=False)
+    r = http.request("GET", url, preload_content=False)
     for b in iter(lambda: r.read(4096), b""):
         h.update(b)
     return h.hexdigest()
 
+
 def get_chrome_milestone():
     channel = os.getenv("CHROME_CHANNEL", "Stable")
-    r = http.request('GET', f'https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux')
+    r = http.request(
+        "GET", f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux"
+    )
     all_versions = json.loads(r.data)
     # use the same milestone for all chrome releases, so pick the lowest
     milestone = min([version["milestone"] for version in all_versions if version["milestone"]])
-    r = http.request('GET', 'https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
+    r = http.request(
+        "GET", "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+    )
     versions = json.loads(r.data)["versions"]
 
     return sorted(
-        filter(lambda v: v['version'].split('.')[0] == str(milestone), versions),
-        key=lambda v: parse(v['version'])
+        filter(lambda v: v["version"].split(".")[0] == str(milestone), versions), key=lambda v: parse(v["version"])
     )[-1]
+
 
 def chromedriver(selected_version):
     content = ""
-
-    selected_version = get_chrome_milestone()
 
     drivers = selected_version["downloads"]["chromedriver"]
 
     linux = [d["url"] for d in drivers if d["platform"] == "linux64"][0]
     sha = calculate_hash(linux)
 
-    content = content + """
-    http_archive(
+    content = (
+        content
+        + """    http_archive(
         name = "linux_chromedriver",
         url = "%s",
         sha256 = "%s",
         strip_prefix = "chromedriver-linux64",
         build_file_content = "exports_files([\\"chromedriver\\"])",
     )
-    """ % (linux, sha)
+"""
+        % (linux, sha)
+    )
 
     mac = [d["url"] for d in drivers if d["platform"] == "mac-x64"][0]
     sha = calculate_hash(mac)
-    content = content + """
+    content = (
+        content
+        + """
     http_archive(
         name = "mac_chromedriver",
         url = "%s",
@@ -65,9 +76,12 @@ def chromedriver(selected_version):
         strip_prefix = "chromedriver-mac-x64",
         build_file_content = "exports_files([\\"chromedriver\\"])",
     )
-    """ % (mac, sha)
+"""
+        % (mac, sha)
+    )
 
     return content
+
 
 def chrome(selected_version):
     chrome_downloads = selected_version["downloads"]["chrome"]
@@ -93,13 +107,15 @@ exports_files(
 \"\"\",
     )
 
-""" % (linux, sha)
+""" % (
+        linux,
+        sha,
+    )
 
     mac = [d["url"] for d in chrome_downloads if d["platform"] == "mac-x64"][0]
     sha = calculate_hash(mac)
 
-    content += """
-    http_archive(
+    content += """    http_archive(
         name = "mac_chrome",
         url = "%s",
         sha256 = "%s",
@@ -111,12 +127,16 @@ exports_files(
         build_file_content = "exports_files([\\"Chrome.app\\"])",
     )
 
-""" % (mac, sha)
+""" % (
+        mac,
+        sha,
+    )
 
     return content
 
+
 def edge():
-    r = http.request('GET', 'https://edgeupdates.microsoft.com/api/products')
+    r = http.request("GET", "https://edgeupdates.microsoft.com/api/products")
     all_data = json.loads(r.data)
 
     edge = None
@@ -145,70 +165,90 @@ def edge():
         },
         build_file_content = "exports_files([\\"Edge.app\\"])",
     )
-""" % (edge, hash.lower(), version)
+""" % (
+            edge,
+            hash.lower(),
+            version,
+        )
 
     return ""
 
+
 def edgedriver():
-    r = http.request('GET', 'https://msedgedriver.azureedge.net/LATEST_STABLE')
-    v = r.data.decode('utf-16').strip()
+    r = http.request("GET", "https://msedgedriver.azureedge.net/LATEST_STABLE")
+    v = r.data.decode("utf-16").strip()
 
     content = ""
 
     linux = "https://msedgedriver.azureedge.net/%s/edgedriver_linux64.zip" % v
     sha = calculate_hash(linux)
-    content = content + """
+    content = (
+        content
+        + """
     http_archive(
         name = "linux_edgedriver",
         url = "%s",
         sha256 = "%s",
         build_file_content = "exports_files([\\"msedgedriver\\"])",
     )
-    """ % (linux, sha)
+"""
+        % (linux, sha)
+    )
 
     mac = "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % v
     sha = calculate_hash(mac)
-    content = content + """
+    content = (
+        content
+        + """
     http_archive(
         name = "mac_edgedriver",
         url = "%s",
         sha256 = "%s",
         build_file_content = "exports_files([\\"msedgedriver\\"])",
     )
-    """ % (mac, sha)
+"""
+        % (mac, sha)
+    )
     return content
+
 
 def geckodriver():
     content = ""
 
-    r = http.request('GET', 'https://api.github.com/repos/mozilla/geckodriver/releases/latest')
-    for a in json.loads(r.data)['assets']:
-        if a['name'].endswith('-linux64.tar.gz'):
-            url = a['browser_download_url']
+    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest")
+    for a in json.loads(r.data)["assets"]:
+        if a["name"].endswith("-linux64.tar.gz"):
+            url = a["browser_download_url"]
             sha = calculate_hash(url)
-            content = content + \
-                  """
-    http_archive(
+            content = (
+                content
+                + """    http_archive(
         name = "linux_geckodriver",
         url = "%s",
         sha256 = "%s",
         build_file_content = "exports_files([\\"geckodriver\\"])",
     )
-    """ % (url, sha)
+"""
+                % (url, sha)
+            )
 
-        if a['name'].endswith('-macos.tar.gz'):
-            url = a['browser_download_url']
+        if a["name"].endswith("-macos.tar.gz"):
+            url = a["browser_download_url"]
             sha = calculate_hash(url)
-            content = content + \
-                  """
+            content = (
+                content
+                + """
     http_archive(
         name = "mac_geckodriver",
         url = "%s",
         sha256 = "%s",
         build_file_content = "exports_files([\\"geckodriver\\"])",
     )
-        """ % (url, sha)
+"""
+                % (url, sha)
+            )
     return content
+
 
 def firefox():
     firefox_versions = json.loads(firefox_version_data())
@@ -247,8 +287,9 @@ def firefox_mac(version):
 def print_firefox(version, workspace_name, sha_linux, sha_mac):
     content = ""
 
-    content = content + f"""
-    http_archive(
+    content = (
+        content
+        + f"""    http_archive(
         name = "linux_{workspace_name}firefox",
         url = "{firefox_linux(version)}",
         sha256 = "{sha_linux}",
@@ -266,9 +307,11 @@ exports_files(
     )
 
 """
+    )
 
-    content = content + f"""
-    dmg_archive(
+    content = (
+        content
+        + f"""    dmg_archive(
         name = "mac_{workspace_name}firefox",
         url = "{firefox_mac(version)}",
         sha256 = "{sha_mac}",
@@ -276,12 +319,13 @@ exports_files(
     )
 
 """
+    )
 
     return content
 
-if __name__ == '__main__':
-    content = """
-# This file has been generated using `bazel run scripts:pinned_browsers`
+
+if __name__ == "__main__":
+    content = """# This file has been generated using `bazel run scripts:pinned_browsers`
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//common/private:dmg_archive.bzl", "dmg_archive")
@@ -290,6 +334,7 @@ load("//common/private:pkg_archive.bzl", "pkg_archive")
 
 def pin_browsers():
     local_drivers()
+
 """
     content = content + firefox()
     content = content + geckodriver()
@@ -300,7 +345,7 @@ def pin_browsers():
     content = content + chromedriver(chrome_milestone)
 
     current_script_dir = Path(os.path.realpath(__file__)).parent
-    target_file_path = current_script_dir.parent / 'common/repositories.bzl'
+    target_file_path = current_script_dir.parent / "common/repositories.bzl"
 
-    with open(target_file_path, 'w') as file:
+    with open(target_file_path, "w") as file:
         file.write(content)
