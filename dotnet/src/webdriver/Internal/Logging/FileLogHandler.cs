@@ -13,7 +13,9 @@ namespace OpenQA.Selenium.Internal.Logging
         private FileStream _fileStream;
         private StreamWriter _streamWriter;
 
-        private readonly object _lockObj = new object();
+        // this is global object for locking writing to the disk
+        // probably we can lock writing per file path
+        private readonly static object _lockObj = new object();
         private bool _isDisposed;
 
         public FileLogHandler()
@@ -33,13 +35,6 @@ namespace OpenQA.Selenium.Internal.Logging
                     AutoFlush = true
                 };
             }
-
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
-        }
-
-        public ILogHandler Clone()
-        {
-            return this;
         }
 
         public void Handle(LogEvent logEvent)
@@ -48,11 +43,6 @@ namespace OpenQA.Selenium.Internal.Logging
             {
                 _streamWriter.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
             }
-        }
-
-        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
-        {
-            Dispose(true);
         }
 
         public void Dispose()
