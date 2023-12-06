@@ -12,8 +12,6 @@ package(default_visibility = ["//:__subpackages__"])
 
 GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
 
-exports_files(["ruby_version.bzl"])
-
 copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",

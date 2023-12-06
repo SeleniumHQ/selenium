@@ -55,6 +55,8 @@ namespace OpenQA.Selenium.Environment
 
         public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions, bool logging = false)
         {
+            Console.WriteLine($"Creating new driver of {driverType} type...");
+
             Browser browser = Browser.All;
             DriverService service = null;
             DriverOptions options = null;

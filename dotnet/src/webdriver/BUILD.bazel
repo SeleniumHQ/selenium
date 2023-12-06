@@ -33,6 +33,10 @@ csharp_library(
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -64,6 +68,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
