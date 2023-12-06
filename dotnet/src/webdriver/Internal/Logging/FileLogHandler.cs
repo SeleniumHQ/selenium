@@ -54,6 +54,9 @@ namespace OpenQA.Selenium.Internal.Logging
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Finalizes the file log handler instance.
+        /// </summary>
         ~FileLogHandler()
         {
             Dispose(false);
