@@ -51,7 +51,6 @@ namespace OpenQA.Selenium.Internal.Logging
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -60,17 +59,20 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="disposing">A flag indicating whether to dispose managed resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!_isDisposed)
+            lock (_lockObj)
             {
-                if (disposing)
+                if (!_isDisposed)
                 {
-                    _streamWriter?.Dispose();
-                    _streamWriter = null;
-                    _fileStream?.Dispose();
-                    _fileStream = null;
-                }
+                    if (disposing)
+                    {
+                        _streamWriter?.Dispose();
+                        _streamWriter = null;
+                        _fileStream?.Dispose();
+                        _fileStream = null;
+                    }
 
-                _isDisposed = true;
+                    _isDisposed = true;
+                }
             }
         }
     }
