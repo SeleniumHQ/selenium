@@ -50,12 +50,10 @@ $DEBUG = true if ENV['debug'] == 'true'
 
 verbose($DEBUG)
 
-def release_version
-  '4.16'
-end
-
-def version
-  "#{release_version}.0-SNAPSHOT"
+def java_version
+  File.foreach('java/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -332,21 +330,21 @@ task 'prep-release-zip': [
   '//java/src/org/openqa/selenium/grid:executable-grid',
 ] do
   [
-    "build/dist/selenium-server-#{version}.zip",
-    "build/dist/selenium-java-#{version}.zip",
-    "build/dist/selenium-server-#{version}.jar"
+    "build/dist/selenium-server-#{java-version}.zip",
+    "build/dist/selenium-java-#{java-version}.zip",
+    "build/dist/selenium-server-#{java-version}.jar"
   ].each do |f|
     rm_f(f) if File.exists?(f)
   end
 
   mkdir_p 'build/dist'
   File.delete
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{version}.jar", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.jar"
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{java-version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-server-#{java-version}.zip"
+  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{java-version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-java-#{java-version}.zip"
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{java-version}.jar", preserve: false
+  chmod 0777, "build/dist/selenium-server-#{java-version}.jar"
 end
 
 task 'release-java': %i[prep-release-zip publish-maven]
@@ -387,7 +385,7 @@ end
 
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
-  if version.end_with?('-SNAPSHOT')
+  if java-version.end_with?('-SNAPSHOT')
     JAVA_RELEASE_TARGETS.each do |p|
       Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
     end
