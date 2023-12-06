@@ -48,18 +48,18 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities : Dictionary object with desired capabilities
          - service_log_path : Path to write service stdout and stderr output.
         """
-        if options:
-            capabilities = options.to_capabilities()
-            capabilities.update(desired_capabilities)
-            desired_capabilities = capabilities
-        else:
+        if not options:
             options = Options()
+
+        if desired_capabilities:
+            for name, value in desired_capabilities.items():
+                options.set_capability(name, value)
 
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
-        super().__init__(command_executor=self.service.service_url, desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=self.service.service_url, options=options)
         self._is_remote = False
 
     def quit(self):
