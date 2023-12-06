@@ -3,29 +3,28 @@ using System.IO;
 
 namespace OpenQA.Selenium.Internal.Logging
 {
+    /// <summary>
+    /// Represents a log handler that writes log events to a file.
+    /// </summary>
     public class FileLogHandler : ILogHandler, IDisposable
     {
-        private const string DEFAULT_FILE_NAME = "Selenium.WebDriver.log";
-
         // performance trick to avoid expensive Enum.ToString() with fixed length
         private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
 
         private FileStream _fileStream;
         private StreamWriter _streamWriter;
 
-        // this is global object for locking writing to the disk
-        // probably we can lock writing per file path
-        private readonly static object _lockObj = new object();
+        private readonly object _lockObj = new object();
         private bool _isDisposed;
 
-        public FileLogHandler()
-            : this(DEFAULT_FILE_NAME)
-        {
-
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileLogHandler"/> class with the specified file path.
+        /// </summary>
+        /// <param name="path">The path of the log file.</param>
         public FileLogHandler(string path)
         {
+            if (path is null) throw new ArgumentNullException(nameof(path));
+
             _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
             _fileStream.Seek(0, SeekOrigin.End);
             _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
@@ -34,6 +33,10 @@ namespace OpenQA.Selenium.Internal.Logging
             };
         }
 
+        /// <summary>
+        /// Handles a log event by writing it to the log file.
+        /// </summary>
+        /// <param name="logEvent">The log event to handle.</param>
         public void Handle(LogEvent logEvent)
         {
             lock (_lockObj)
@@ -42,12 +45,19 @@ namespace OpenQA.Selenium.Internal.Logging
             }
         }
 
+        /// <summary>
+        /// Disposes the file log handler and releases any resources used.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes the file log handler and releases any resources used.
+        /// </summary>
+        /// <param name="disposing">A flag indicating whether to dispose managed resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed)
