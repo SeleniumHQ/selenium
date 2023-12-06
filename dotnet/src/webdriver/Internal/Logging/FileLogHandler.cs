@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <param name="path">The path of the log file.</param>
         public FileLogHandler(string path)
         {
-            if (path is null) throw new ArgumentNullException(nameof(path));
+            if (string.IsNullOrEmpty(path)) throw new ArgumentException("File log path cannot be null or empty.", nameof(path));
 
             _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
             _fileStream.Seek(0, SeekOrigin.End);
