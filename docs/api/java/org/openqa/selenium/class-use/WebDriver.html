@@ -640,7 +640,9 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after any method of a <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#afterChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)" class="member-name-link">afterChangeValueOf</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
@@ -671,19 +673,26 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterClose(org.openqa.selenium.WebDriver)" class="member-name-link">afterClose</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#close()"><code>close()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterExecuteAsyncScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterExecuteAsyncScript</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterExecuteScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterExecuteScript</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../JavascriptExecutor.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)"><code>JavascriptExecutor.executeScript(ScriptKey, Object...)</code></a>
+ is called.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterFindBy</a><wbr>(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
  <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -703,24 +712,34 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterFindElement(org.openqa.selenium.WebDriver,org.openqa.selenium.By,org.openqa.selenium.WebElement)" class="member-name-link">afterFindElement</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
  <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterFindElements(org.openqa.selenium.WebDriver,org.openqa.selenium.By,java.util.List)" class="member-name-link">afterFindElements</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;result)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGet</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#get(java.lang.String)"><code>get(String)</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCurrentUrl(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterGetCurrentUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result,
- <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCurrentUrl(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetCurrentUrl</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#getCurrentUrl()"><code>getCurrentUrl()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetPageSource(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetPageSource</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#getPageSource()"><code>getPageSource()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetText</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
@@ -739,15 +758,21 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetTitle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetTitle</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#getTitle()"><code>getTitle()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetWindowHandle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetWindowHandle</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#getWindowHandle()"><code>getWindowHandle()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetWindowHandles(org.openqa.selenium.WebDriver,java.util.Set)" class="member-name-link">afterGetWindowHandles</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;result)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#getWindowHandles()"><code>getWindowHandles()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#afterNavigateBack(org.openqa.selenium.WebDriver)" class="member-name-link">afterNavigateBack</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last even-row-color">
@@ -797,13 +822,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterPerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">afterPerform</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterQuit(org.openqa.selenium.WebDriver)" class="member-name-link">afterQuit</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called after <a href="../WebDriver.html#quit()"><code>quit()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">afterResetInputState</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called after <a href="../remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#afterScript(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
@@ -856,7 +887,9 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebDriverCall</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before any method of a <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#beforeChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)" class="member-name-link">beforeChangeValueOf</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
@@ -887,17 +920,23 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeClose(org.openqa.selenium.WebDriver)" class="member-name-link">beforeClose</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#close()"><code>close()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeExecuteAsyncScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D)" class="member-name-link">beforeExecuteAsyncScript</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a>is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeExecuteScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D)" class="member-name-link">beforeExecuteScript</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;args)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../JavascriptExecutor.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)"><code>JavascriptExecutor.executeScript(ScriptKey, Object...)</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">beforeFindBy</a><wbr>(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
  <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -916,21 +955,31 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElement(org.openqa.selenium.WebDriver,org.openqa.selenium.By)" class="member-name-link">beforeFindElement</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#findElement(org.openqa.selenium.By)"><code>findElement(By)</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeFindElements(org.openqa.selenium.WebDriver,org.openqa.selenium.By)" class="member-name-link">beforeFindElements</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#findElements(org.openqa.selenium.By)"><code>findElements(By)</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">beforeGet</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#get(java.lang.String)"><code>get(String)</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetCurrentUrl(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetCurrentUrl</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#getCurrentUrl()"><code>getCurrentUrl()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetPageSource(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetPageSource</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#getPageSource()"><code>getPageSource()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetText</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
@@ -946,13 +995,19 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetTitle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetTitle</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#getTitle()"><code>getTitle()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetWindowHandle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandle</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#getWindowHandle()"><code>getWindowHandle()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetWindowHandles(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandles</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#getWindowHandles()"><code>getWindowHandles()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#beforeNavigateBack(org.openqa.selenium.WebDriver)" class="member-name-link">beforeNavigateBack</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
 <div class="col-last odd-row-color">
@@ -1002,13 +1057,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforePerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">beforePerform</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="../interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeQuit(org.openqa.selenium.WebDriver)" class="member-name-link">beforeQuit</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This method will be called before <a href="../WebDriver.html#quit()"><code>quit()</code></a> is called.</div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">beforeResetInputState</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This method will be called before <a href="../remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AbstractWebDriverEventListener.</span><code><a href="../support/events/AbstractWebDriverEventListener.html#beforeScript(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">beforeScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;script,
  <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>

@@ -329,7 +329,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/safari/AddHasPermissions.html#%3Cinit%3E()" class="member-name-link">AddHasPermissions()</a> - Constructor for class org.openqa.selenium.safari.<a href="org/openqa/selenium/safari/AddHasPermissions.html" title="class in org.openqa.selenium.safari">AddHasPermissions</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#addHeader(java.lang.String,java.lang.String)" class="member-name-link">addHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#addHeader(java.lang.String,java.lang.String)" class="member-name-link">addHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Adds a header with the <code>name</code> and <code>value</code>, headers with the same (case-insensitive)
  name will be preserved.</div>
@@ -428,9 +428,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.When.html#AFTER" class="member-name-link">AFTER</a> - Enum constant in enum class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum class in org.openqa.selenium.remote">RemoteWebDriver.When</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAccept(org.openqa.selenium.Alert)" class="member-name-link">afterAccept(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/Alert.html#accept()"><code>Alert.accept()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterAddCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterAlertAccept(org.openqa.selenium.WebDriver)" class="member-name-link">afterAlertAccept(WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -452,21 +456,36 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyAlertCall(Alert, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyCall(java.lang.Object,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyCall(Object, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method is called after the execution of any instance methods on the 'target' object.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyNavigationCall(org.openqa.selenium.WebDriver.Navigation,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyNavigationCall(WebDriver.Navigation, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>WebDriver.Navigation</code></a> instance is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyOptionsCall(WebDriver.Options, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyTimeoutsCall(WebDriver.Timeouts, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebDriverCall(WebDriver, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWebElementCall(WebElement, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> instance is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyWindowCall(WebDriver.Window, Method, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after any method of a <a href="org/openqa/selenium/WebDriver.Window.html" title="interface in org.openqa.selenium"><code>WebDriver.Window</code></a> instance is</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterBack(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#back()"><code>WebDriver.Navigation.back()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/decorators/Decorated.html#afterCall(java.lang.reflect.Method,java.lang.Object,java.lang.Object%5B%5D)" class="member-name-link">afterCall(Method, Object, Object[])</a> - Method in interface org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/decorators/DefaultDecorated.html#afterCall(java.lang.reflect.Method,java.lang.Object,java.lang.Object%5B%5D)" class="member-name-link">afterCall(Method, Object, Object[])</a> - Method in class org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/DefaultDecorated.html" title="class in org.openqa.selenium.support.decorators">DefaultDecorated</a></dt>
@@ -485,9 +504,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after <a href="org/openqa/selenium/WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>}.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterClear(org.openqa.selenium.WebElement)" class="member-name-link">afterClear(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#clear()"><code>WebElement.clear()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterClick(org.openqa.selenium.WebElement)" class="member-name-link">afterClick(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#click()"><code>WebElement.click()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterClickOn(WebElement, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -498,19 +521,34 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after <a href="org/openqa/selenium/WebElement.html#click()"><code>WebElement.click()</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterClose(org.openqa.selenium.WebDriver)" class="member-name-link">afterClose(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">afterDeleteAllCookies(WebDriver.Options)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#deleteAllCookies()"><code>WebDriver.Options.deleteAllCookies()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDeleteCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterDeleteCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#deleteCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.deleteCookie(Cookie)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDeleteCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">afterDeleteCookieNamed(WebDriver.Options, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#deleteCookieNamed(java.lang.String)"><code>WebDriver.Options.deleteCookieNamed(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterDismiss(org.openqa.selenium.Alert)" class="member-name-link">afterDismiss(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterExecuteAsyncScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterExecuteAsyncScript(WebDriver, String, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterExecuteScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterExecuteScript(WebDriver, String, Object[], Object)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/JavascriptExecutor.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)"><code>JavascriptExecutor.executeScript(ScriptKey, Object...)</code></a>
+ is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">afterFindBy(By, WebElement, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -521,35 +559,66 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after <a href="org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or <a href="org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFindElement(org.openqa.selenium.WebDriver,org.openqa.selenium.By,org.openqa.selenium.WebElement)" class="member-name-link">afterFindElement(WebDriver, By, WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFindElement(org.openqa.selenium.WebElement,org.openqa.selenium.By,org.openqa.selenium.WebElement)" class="member-name-link">afterFindElement(WebElement, By, WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFindElements(org.openqa.selenium.WebDriver,org.openqa.selenium.By,java.util.List)" class="member-name-link">afterFindElements(WebDriver, By, List&lt;WebElement&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFindElements(org.openqa.selenium.WebElement,org.openqa.selenium.By,java.util.List)" class="member-name-link">afterFindElements(WebElement, By, List&lt;WebElement&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterForward(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterForward(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#forward()"><code>WebDriver.Navigation.forward()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterFullscreen(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGet(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetAttribute(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetAttribute(WebElement, String, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String,org.openqa.selenium.Cookie)" class="member-name-link">afterGetCookieNamed(WebDriver.Options, String, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>WebDriver.Options.getCookieNamed(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetCookies(org.openqa.selenium.WebDriver.Options,java.util.Set)" class="member-name-link">afterGetCookies(WebDriver.Options, Set&lt;Cookie&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Options.html#getCookies()"><code>WebDriver.Options.getCookies()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetCssValue(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">afterGetCssValue(WebElement, String, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetCurrentUrl(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterGetCurrentUrl(String, WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getCssValue(java.lang.String)"><code>WebElement.getCssValue(String)</code></a> is called.</div>
+</dd>
+<dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetCurrentUrl(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetCurrentUrl(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#getCurrentUrl()"><code>WebDriver.getCurrentUrl()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetLocation(org.openqa.selenium.WebElement,org.openqa.selenium.Point)" class="member-name-link">afterGetLocation(WebElement, Point)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getLocation()"><code>WebElement.getLocation()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetPageSource(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetPageSource(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#getPageSource()"><code>WebDriver.getPageSource()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterGetPosition(WebDriver.Window, Point)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterGetScreenshotAs(org.openqa.selenium.OutputType,X)" class="member-name-link">afterGetScreenshotAs(OutputType&lt;X&gt;, X)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -561,15 +630,25 @@ loadScripts(document, 'script');</script>
  implementation to determine which type of output was generated and to access the output itself</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize(WebDriver.Window, Dimension)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#getSize()"><code>WebDriver.Window.getSize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetSize(org.openqa.selenium.WebElement,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize(WebElement, Dimension)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getSize()"><code>WebElement.getSize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetTagName(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetTagName(WebElement, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getTagName()"><code>WebElement.getTagName()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetText(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterGetText(Alert, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/Alert.html#getText()"><code>Alert.getText()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetText(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">afterGetText(WebElement, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#getText()"><code>WebElement.getText()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetText(WebElement, WebDriver, String)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -580,21 +659,37 @@ loadScripts(document, 'script');</script>
 <div class="block">Called right after <a href="org/openqa/selenium/WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetTitle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetTitle(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#getTitle()"><code>WebDriver.getTitle()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetWindowHandle(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">afterGetWindowHandle(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterGetWindowHandles(org.openqa.selenium.WebDriver,java.util.Set)" class="member-name-link">afterGetWindowHandles(WebDriver, Set&lt;String&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#getWindowHandles()"><code>WebDriver.getWindowHandles()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterImplicitlyWait(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterIsDisplayed(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsDisplayed(WebElement, boolean)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#isDisplayed()"><code>WebElement.isDisplayed()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterIsEnabled(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsEnabled(WebElement, boolean)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#isEnabled()"><code>WebElement.isEnabled()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterIsSelected(org.openqa.selenium.WebElement,boolean)" class="member-name-link">afterIsSelected(WebElement, boolean)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#isSelected()"><code>WebElement.isSelected()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">afterMaximize(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterNavigateBack(org.openqa.selenium.WebDriver)" class="member-name-link">afterNavigateBack(WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -632,15 +727,25 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after <a href="org/openqa/selenium/WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterPageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterPageLoadTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterPerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">afterPerform(WebDriver, Collection&lt;Sequence&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterQuit(org.openqa.selenium.WebDriver)" class="member-name-link">afterQuit(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/WebDriver.html#quit()"><code>WebDriver.quit()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">afterRefresh(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#refresh()"><code>WebDriver.Navigation.refresh()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">afterResetInputState(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called after <a href="org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterScript(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterScript(String, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -651,17 +756,29 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after <a href="org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">afterSendKeys(Alert, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/Alert.html#sendKeys(java.lang.String)"><code>Alert.sendKeys(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">afterSendKeys(WebElement, CharSequence...)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">afterSetPosition(WebDriver.Window, Point)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#setPosition(org.openqa.selenium.Point)"><code>WebDriver.Window.setPosition(Point)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">afterSetScriptTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterSetSize(WebDriver.Window, Dimension)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)"><code>WebDriver.Window.setSize(Dimension)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterSubmit(org.openqa.selenium.WebElement)" class="member-name-link">afterSubmit(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebElement.html#submit()"><code>WebElement.submit()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">afterSwitchToWindow(String, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -672,9 +789,14 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">afterTo(WebDriver.Navigation, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#afterTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">afterTo(WebDriver.Navigation, URL)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time after <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html#AIRPLANE_MODE" class="member-name-link">AIRPLANE_MODE</a> - Static variable in class org.openqa.selenium.mobile.<a href="org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/pagefactory/AjaxElementLocator.html" class="type-name-link" title="class in org.openqa.selenium.support.pagefactory">AjaxElementLocator</a> - Class in <a href="org/openqa/selenium/support/pagefactory/package-summary.html">org.openqa.selenium.support.pagefactory</a></dt>
@@ -990,6 +1112,8 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
+<dt><a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html#back()" class="member-name-link">back()</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContext</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/WebDriver.Navigation.html#back()" class="member-name-link">back()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></dt>
 <dd>
 <div class="block">Move back a single "item" in the browser's history.</div>
@@ -1041,9 +1165,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/UserPromptType.html#BEFORE_UNLOAD" class="member-name-link">BEFORE_UNLOAD</a> - Enum constant in enum class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/UserPromptType.html" title="enum class in org.openqa.selenium.bidi.browsingcontext">UserPromptType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAccept(org.openqa.selenium.Alert)" class="member-name-link">beforeAccept(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/Alert.html#accept()"><code>Alert.accept()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeAddCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.addCookie(Cookie)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeAlertAccept(org.openqa.selenium.WebDriver)" class="member-name-link">beforeAlertAccept(WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1065,21 +1193,36 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyAlertCall(org.openqa.selenium.Alert,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyAlertCall(Alert, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyCall(java.lang.Object,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyCall(Object, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method is called before the execution of any method on the 'target' object.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyNavigationCall(org.openqa.selenium.WebDriver.Navigation,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyNavigationCall(WebDriver.Navigation, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>WebDriver.Navigation</code></a> instance is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyOptionsCall(WebDriver.Options, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyTimeoutsCall(org.openqa.selenium.WebDriver.Timeouts,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyTimeoutsCall(WebDriver.Timeouts, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><code>WebDriver.Timeouts</code></a> instance is</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyWebDriverCall(org.openqa.selenium.WebDriver,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebDriverCall(WebDriver, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWebElementCall(WebElement, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> instance is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeAnyWindowCall(org.openqa.selenium.WebDriver.Window,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyWindowCall(WebDriver.Window, Method, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before any method of a <a href="org/openqa/selenium/WebDriver.Window.html" title="interface in org.openqa.selenium"><code>WebDriver.Window</code></a> instance is</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeBack(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeBack(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#back()"><code>WebDriver.Navigation.back()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/decorators/Decorated.html#beforeCall(java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeCall(Method, Object[])</a> - Method in interface org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/decorators/DefaultDecorated.html#beforeCall(java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeCall(Method, Object[])</a> - Method in class org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/DefaultDecorated.html" title="class in org.openqa.selenium.support.decorators">DefaultDecorated</a></dt>
@@ -1098,9 +1241,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeClear(org.openqa.selenium.WebElement)" class="member-name-link">beforeClear(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#clear()"><code>WebElement.clear()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeClick(org.openqa.selenium.WebElement)" class="member-name-link">beforeClick(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#click()"><code>WebElement.click()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">beforeClickOn(WebElement, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1111,19 +1258,33 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/WebElement.html#click()"><code>WebElement.click()</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeClose(org.openqa.selenium.WebDriver)" class="member-name-link">beforeClose(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#close()"><code>WebDriver.close()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeDeleteAllCookies(WebDriver.Options)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#deleteAllCookies()"><code>WebDriver.Options.deleteAllCookies()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDeleteCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeDeleteCookie(WebDriver.Options, Cookie)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#deleteCookie(org.openqa.selenium.Cookie)"><code>WebDriver.Options.deleteCookie(Cookie)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDeleteCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeDeleteCookieNamed(WebDriver.Options, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#deleteCookieNamed(java.lang.String)"><code>WebDriver.Options.deleteCookieNamed(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeDismiss(org.openqa.selenium.Alert)" class="member-name-link">beforeDismiss(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeExecuteAsyncScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D)" class="member-name-link">beforeExecuteAsyncScript(WebDriver, String, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a>is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeExecuteScript(org.openqa.selenium.WebDriver,java.lang.String,java.lang.Object%5B%5D)" class="member-name-link">beforeExecuteScript(WebDriver, String, Object[])</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/JavascriptExecutor.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)"><code>JavascriptExecutor.executeScript(ScriptKey, Object...)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">beforeFindBy(By, WebElement, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1134,35 +1295,69 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or <a href="org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFindElement(org.openqa.selenium.WebDriver,org.openqa.selenium.By)" class="member-name-link">beforeFindElement(WebDriver, By)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFindElement(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElement(WebElement, By)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFindElements(org.openqa.selenium.WebDriver,org.openqa.selenium.By)" class="member-name-link">beforeFindElements(WebDriver, By)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFindElements(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">beforeFindElements(WebElement, By)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeForward(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeForward(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#forward()"><code>WebDriver.Navigation.forward()</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeFullscreen(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeFullscreen(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#fullscreen()"><code>WebDriver.Window.fullscreen()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGet(org.openqa.selenium.WebDriver,java.lang.String)" class="member-name-link">beforeGet(WebDriver, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#get(java.lang.String)"><code>WebDriver.get(String)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetAttribute(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetAttribute(WebElement, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getAttribute(java.lang.String)"><code>WebElement.getAttribute(String)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeGetCookieNamed(WebDriver.Options, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>WebDriver.Options.getCookieNamed(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeGetCookies(WebDriver.Options)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Options.html#getCookies()"><code>WebDriver.Options.getCookies()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetCssValue(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">beforeGetCssValue(WebElement, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getCssValue(java.lang.String)"><code>WebElement.getCssValue(String)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetCurrentUrl(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetCurrentUrl(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#getCurrentUrl()"><code>WebDriver.getCurrentUrl()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetLocation(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetLocation(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getLocation()"><code>WebElement.getLocation()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetPageSource(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetPageSource(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#getPageSource()"><code>WebDriver.getPageSource()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetPosition(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetPosition(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeGetScreenshotAs(org.openqa.selenium.OutputType)" class="member-name-link">beforeGetScreenshotAs(OutputType&lt;X&gt;)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1174,15 +1369,25 @@ loadScripts(document, 'script');</script>
  the implementation to determine which type of output will be generated</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetSize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetSize(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#getSize()"><code>WebDriver.Window.getSize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetSize(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetSize(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getSize()"><code>WebElement.getSize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetTagName(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetTagName(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getTagName()"><code>WebElement.getTagName()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetText(org.openqa.selenium.Alert)" class="member-name-link">beforeGetText(Alert)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/Alert.html#getText()"><code>Alert.getText()</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetText(org.openqa.selenium.WebElement)" class="member-name-link">beforeGetText(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#getText()"><code>WebElement.getText()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetText(WebElement, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1193,21 +1398,37 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetTitle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetTitle(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#getTitle()"><code>WebDriver.getTitle()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetWindowHandle(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandle(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeGetWindowHandles(org.openqa.selenium.WebDriver)" class="member-name-link">beforeGetWindowHandles(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#getWindowHandles()"><code>WebDriver.getWindowHandles()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeImplicitlyWait(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeImplicitlyWait(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeIsDisplayed(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsDisplayed(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#isDisplayed()"><code>WebElement.isDisplayed()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeIsEnabled(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsEnabled(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#isEnabled()"><code>WebElement.isEnabled()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeIsSelected(org.openqa.selenium.WebElement)" class="member-name-link">beforeIsSelected(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#isSelected()"><code>WebElement.isSelected()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeMaximize(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeMaximize(WebDriver.Window)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#maximize()"><code>WebDriver.Window.maximize()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeNavigateBack(org.openqa.selenium.WebDriver)" class="member-name-link">beforeNavigateBack(WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1245,17 +1466,28 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforePageLoadTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforePageLoadTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforePerform(org.openqa.selenium.WebDriver,java.util.Collection)" class="member-name-link">beforePerform(WebDriver, Collection&lt;Sequence&gt;)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/interactions/Actions.html#perform()"><code>Actions.perform()</code></a> } is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeQuit(org.openqa.selenium.WebDriver)" class="member-name-link">beforeQuit(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/WebDriver.html#quit()"><code>WebDriver.quit()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeRefresh(org.openqa.selenium.WebDriver.Navigation)" class="member-name-link">beforeRefresh(WebDriver.Navigation)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#refresh()"><code>WebDriver.Navigation.refresh()</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/bidi/network/BeforeRequestSent.html" class="type-name-link" title="class in org.openqa.selenium.bidi.network">BeforeRequestSent</a> - Class in <a href="org/openqa/selenium/bidi/network/package-summary.html">org.openqa.selenium.bidi.network</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeResetInputState(org.openqa.selenium.WebDriver)" class="member-name-link">beforeResetInputState(WebDriver)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This method will be called before <a href="org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState()"><code>RemoteWebDriver.resetInputState()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeScript(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">beforeScript(String, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1266,17 +1498,32 @@ loadScripts(document, 'script');</script>
 <div class="block">Called before <a href="org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a></div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSendKeys(org.openqa.selenium.Alert,java.lang.String)" class="member-name-link">beforeSendKeys(Alert, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/Alert.html#sendKeys(java.lang.String)"><code>Alert.sendKeys(String)</code></a></div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)" class="member-name-link">beforeSendKeys(WebElement, CharSequence...)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSetPosition(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Point)" class="member-name-link">beforeSetPosition(WebDriver.Window, Point)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#setPosition(org.openqa.selenium.Point)"><code>WebDriver.Window.setPosition(Point)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSetScriptTimeout(org.openqa.selenium.WebDriver.Timeouts,java.time.Duration)" class="member-name-link">beforeSetScriptTimeout(WebDriver.Timeouts, Duration)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">beforeSetSize(WebDriver.Window, Dimension)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)"><code>WebDriver.Window.setSize(Dimension)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeSubmit(org.openqa.selenium.WebElement)" class="member-name-link">beforeSubmit(WebElement)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebElement.html#submit()"><code>WebElement.submit()</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)" class="member-name-link">beforeSwitchToWindow(String, WebDriver)</a> - Method in class org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -1287,9 +1534,14 @@ loadScripts(document, 'script');</script>
 <div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.lang.String)" class="member-name-link">beforeTo(WebDriver.Navigation, String)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a> is
+ called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#beforeTo(org.openqa.selenium.WebDriver.Navigation,java.net.URL)" class="member-name-link">beforeTo(WebDriver.Navigation, URL)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">This action will be performed each time before <a href="org/openqa/selenium/WebDriver.Navigation.html#to(java.net.URL)"><code>WebDriver.Navigation.to(URL)</code></a> is called.</div>
+</dd>
 <dt><a href="org/openqa/selenium/json/JsonInput.html#beginArray()" class="member-name-link">beginArray()</a> - Method in class org.openqa.selenium.json.<a href="org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></dt>
 <dd>
 <div class="block">Process the opening square bracket of a JSON array.</div>
@@ -2006,6 +2258,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/bidi/LogInspector.html#close()" class="member-name-link">close()</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/LogInspector.html" title="class in org.openqa.selenium.bidi">LogInspector</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/Network.html#close()" class="member-name-link">close()</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Script.html#close()" class="member-name-link">close()</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Script.html" title="class in org.openqa.selenium.bidi">Script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/Connection.html#close()" class="member-name-link">close()</a> - Method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/Connection.html" title="class in org.openqa.selenium.devtools">Connection</a></dt>
 <dd>&nbsp;</dd>
@@ -3556,6 +3810,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">An expectation for checking if the given element is selected.</div>
 </dd>
+<dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html#empty()" class="member-name-link">empty()</a> - Static method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/ConverterFunctions.html" title="class in org.openqa.selenium.devtools">ConverterFunctions</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/Contents.html#empty()" class="member-name-link">empty()</a> - Static method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/Contents.html" title="class in org.openqa.selenium.remote.http">Contents</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/log/Log.html#enable()" class="member-name-link">enable()</a> - Method in interface org.openqa.selenium.devtools.idealized.log.<a href="org/openqa/selenium/devtools/idealized/log/Log.html" title="interface in org.openqa.selenium.devtools.idealized.log">Log</a></dt>
@@ -4105,12 +4361,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="org/openqa/selenium/chromium/ChromiumDriver.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)" class="member-name-link">executeScript(ScriptKey, Object...)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/JavascriptExecutor.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)" class="member-name-link">executeScript(ScriptKey, Object...)</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></dt>
 <dd>
 <div class="block">Calls a script by the <a href="org/openqa/selenium/ScriptKey.html" title="class in org.openqa.selenium"><code>ScriptKey</code></a> returned by <a href="org/openqa/selenium/JavascriptExecutor.html#pin(java.lang.String)"><code>JavascriptExecutor.pin(String)</code></a>.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(org.openqa.selenium.ScriptKey,java.lang.Object...)" class="member-name-link">executeScript(ScriptKey, Object...)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/node/local/LocalNode.html#executeWebDriverCommand(org.openqa.selenium.remote.http.HttpRequest)" class="member-name-link">executeWebDriverCommand(HttpRequest)</a> - Method in class org.openqa.selenium.grid.node.local.<a href="org/openqa/selenium/grid/node/local/LocalNode.html" title="class in org.openqa.selenium.grid.node.local">LocalNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/node/Node.html#executeWebDriverCommand(org.openqa.selenium.remote.http.HttpRequest)" class="member-name-link">executeWebDriverCommand(HttpRequest)</a> - Method in class org.openqa.selenium.grid.node.<a href="org/openqa/selenium/grid/node/Node.html" title="class in org.openqa.selenium.grid.node">Node</a></dt>
@@ -4140,7 +4396,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/os/ExternalProcess.html" class="type-name-link" title="class in org.openqa.selenium.os">ExternalProcess</a> - Class in <a href="org/openqa/selenium/os/package-summary.html">org.openqa.selenium.os</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/os/ExternalProcess.html#%3Cinit%3E(java.lang.Process,org.openqa.selenium.io.CircularOutputStream)" class="member-name-link">ExternalProcess(Process, CircularOutputStream)</a> - Constructor for class org.openqa.selenium.os.<a href="org/openqa/selenium/os/ExternalProcess.html" title="class in org.openqa.selenium.os">ExternalProcess</a></dt>
+<dt><a href="org/openqa/selenium/os/ExternalProcess.html#%3Cinit%3E(java.lang.Process,org.openqa.selenium.io.CircularOutputStream,java.lang.Thread)" class="member-name-link">ExternalProcess(Process, CircularOutputStream, Thread)</a> - Constructor for class org.openqa.selenium.os.<a href="org/openqa/selenium/os/ExternalProcess.html" title="class in org.openqa.selenium.os">ExternalProcess</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/os/ExternalProcess.Builder.html" class="type-name-link" title="class in org.openqa.selenium.os">ExternalProcess.Builder</a> - Class in <a href="org/openqa/selenium/os/package-summary.html">org.openqa.selenium.os</a></dt>
 <dd>&nbsp;</dd>
@@ -4521,7 +4777,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Capability that defines launch API of IE used by IEDriverServer.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#forEachHeader(java.util.function.BiConsumer)" class="member-name-link">forEachHeader(BiConsumer&lt;String, String&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#forEachHeader(java.util.function.BiConsumer)" class="member-name-link">forEachHeader(BiConsumer&lt;String, String&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Calls the <code>action</code> for all headers set.</div>
 </dd>
@@ -4534,6 +4790,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/remote/http/FormEncodedData.html" class="type-name-link" title="class in org.openqa.selenium.remote.http">FormEncodedData</a> - Class in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/FormEncodedData.html#%3Cinit%3E()" class="member-name-link">FormEncodedData()</a> - Constructor for class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/FormEncodedData.html" title="class in org.openqa.selenium.remote.http">FormEncodedData</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html#forward()" class="member-name-link">forward()</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/WebDriver.Navigation.html#forward()" class="member-name-link">forward()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></dt>
 <dd>
@@ -4637,11 +4895,15 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/ExceptionDetails.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/ExceptionDetails.html" title="class in org.openqa.selenium.bidi.script">ExceptionDetails</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RealmInfo.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RealmInfo.html" title="class in org.openqa.selenium.bidi.script">RealmInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RegExpValue.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RegExpValue.html" title="class in org.openqa.selenium.bidi.script">RegExpValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/RemoteValue.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/RemoteValue.html" title="class in org.openqa.selenium.bidi.script">RemoteValue</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Source.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/StackFrame.html#fromJson(org.openqa.selenium.json.JsonInput)" class="member-name-link">fromJson(JsonInput)</a> - Static method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/StackFrame.html" title="class in org.openqa.selenium.bidi.script">StackFrame</a></dt>
 <dd>&nbsp;</dd>
@@ -5078,7 +5340,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/grid/jmx/MBean.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.grid.jmx.<a href="org/openqa/selenium/grid/jmx/MBean.html" title="class in org.openqa.selenium.grid.jmx">MBean</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getAttribute(java.lang.String)" class="member-name-link">getAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Retrieves a user-defined attribute of this message.</div>
 </dd>
@@ -5090,7 +5352,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/devtools/events/DomMutationEvent.html#getAttributeName()" class="member-name-link">getAttributeName()</a> - Method in class org.openqa.selenium.devtools.events.<a href="org/openqa/selenium/devtools/events/DomMutationEvent.html" title="class in org.openqa.selenium.devtools.events">DomMutationEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getAttributeNames()" class="member-name-link">getAttributeNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getAttributeNames()" class="member-name-link">getAttributeNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/jmx/MBean.html#getAttributes(java.lang.String%5B%5D)" class="member-name-link">getAttributes(String[])</a> - Method in class org.openqa.selenium.grid.jmx.<a href="org/openqa/selenium/grid/jmx/MBean.html" title="class in org.openqa.selenium.grid.jmx">MBean</a></dt>
 <dd>&nbsp;</dd>
@@ -5158,6 +5420,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/manager/SeleniumManagerOutput.Result.html#getBrowserPath()" class="member-name-link">getBrowserPath()</a> - Method in class org.openqa.selenium.manager.<a href="org/openqa/selenium/manager/SeleniumManagerOutput.Result.html" title="class in org.openqa.selenium.manager">SeleniumManagerOutput.Result</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Capabilities.html#getBrowserVersion()" class="member-name-link">getBrowserVersion()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Source.html#getBrowsingContext()" class="member-name-link">getBrowsingContext()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/WindowRealmInfo.html#getBrowsingContext()" class="member-name-link">getBrowsingContext()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/WindowRealmInfo.html" title="class in org.openqa.selenium.bidi.script">WindowRealmInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -5262,6 +5526,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/docker/Device.html#getCgroupPermissions()" class="member-name-link">getCgroupPermissions()</a> - Method in class org.openqa.selenium.docker.<a href="org/openqa/selenium/docker/Device.html" title="class in org.openqa.selenium.docker">Device</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html#getChannel()" class="member-name-link">getChannel()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContextInfo.html#getChildren()" class="member-name-link">getChildren()</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContextInfo.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContextInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/config/Config.html#getClass(java.lang.String,java.lang.String,java.lang.Class,java.lang.String)" class="member-name-link">getClass(String, String, Class&lt;X&gt;, String)</a> - Method in interface org.openqa.selenium.grid.config.<a href="org/openqa/selenium/grid/config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a></dt>
@@ -5335,9 +5601,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Pdf.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.<a href="org/openqa/selenium/Pdf.html" title="class in org.openqa.selenium">Pdf</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getContent()" class="member-name-link">getContent()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getContentEncoding()" class="member-name-link">getContentEncoding()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getContentEncoding()" class="member-name-link">getContentEncoding()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/ContextAware.html#getContext()" class="member-name-link">getContext()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></dt>
 <dd>
@@ -5410,6 +5676,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Get a string representing the current URL that the browser is looking at.</div>
 </dd>
 <dt><a href="org/openqa/selenium/devtools/events/DomMutationEvent.html#getCurrentValue()" class="member-name-link">getCurrentValue()</a> - Method in class org.openqa.selenium.devtools.events.<a href="org/openqa/selenium/devtools/events/DomMutationEvent.html" title="class in org.openqa.selenium.devtools.events">DomMutationEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html#getData()" class="member-name-link">getData()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.RejectedEvent.html#getData()" class="member-name-link">getData()</a> - Method in class org.openqa.selenium.events.zeromq.<a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -5834,11 +6102,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/logging/LocalLogs.html#getHandlerBasedLoggerInstance(org.openqa.selenium.logging.LoggingHandler,java.util.Set)" class="member-name-link">getHandlerBasedLoggerInstance(LoggingHandler, Set&lt;String&gt;)</a> - Static method in class org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeader(java.lang.String)" class="member-name-link">getHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeader(java.lang.String)" class="member-name-link">getHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Returns the value of the first header with the <code>name</code> (case-insensitive).</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeaderNames()" class="member-name-link">getHeaderNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeaderNames()" class="member-name-link">getHeaderNames()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Returns an iterable with all the names of the headers set.</div>
 </dd>
@@ -5846,7 +6114,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/ResponseData.html#getHeaders()" class="member-name-link">getHeaders()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/ResponseData.html" title="class in org.openqa.selenium.bidi.network">ResponseData</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#getHeaders(java.lang.String)" class="member-name-link">getHeaders(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#getHeaders(java.lang.String)" class="member-name-link">getHeaders(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Returns an iterable of the values of headers with the <code>name</code> (case-insensitive).</div>
 </dd>
@@ -5962,6 +6230,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/virtualauthenticator/Credential.html#getId()" class="member-name-link">getId()</a> - Method in class org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/Credential.html" title="class in org.openqa.selenium.virtualauthenticator">Credential</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html#getId()" class="member-name-link">getId()</a> - Method in interface org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/ScriptKey.html#getIdentifier()" class="member-name-link">getIdentifier()</a> - Method in class org.openqa.selenium.<a href="org/openqa/selenium/ScriptKey.html" title="class in org.openqa.selenium">ScriptKey</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/distributor/local/LocalDistributor.html#getIdleSlots()" class="member-name-link">getIdleSlots()</a> - Method in class org.openqa.selenium.grid.distributor.local.<a href="org/openqa/selenium/grid/distributor/local/LocalDistributor.html" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor</a></dt>
 <dd>&nbsp;</dd>
@@ -6516,6 +6786,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/federatedcredentialmanagement/FederatedCredentialManagementAccount.html#getPictureUrl()" class="member-name-link">getPictureUrl()</a> - Method in class org.openqa.selenium.federatedcredentialmanagement.<a href="org/openqa/selenium/federatedcredentialmanagement/FederatedCredentialManagementAccount.html" title="class in org.openqa.selenium.federatedcredentialmanagement">FederatedCredentialManagementAccount</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/chromium/ChromiumDriver.html#getPinnedScripts()" class="member-name-link">getPinnedScripts()</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/JavascriptExecutor.html#getPinnedScripts()" class="member-name-link">getPinnedScripts()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Capabilities.html#getPlatformName()" class="member-name-link">getPlatformName()</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></dt>
@@ -6595,6 +6867,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/bidi/log/ConsoleLogEntry.html#getRealm()" class="member-name-link">getRealm()</a> - Method in class org.openqa.selenium.bidi.log.<a href="org/openqa/selenium/bidi/log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/network/AuthChallenge.html#getRealm()" class="member-name-link">getRealm()</a> - Method in class org.openqa.selenium.bidi.network.<a href="org/openqa/selenium/bidi/network/AuthChallenge.html" title="class in org.openqa.selenium.bidi.network">AuthChallenge</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Source.html#getRealm()" class="member-name-link">getRealm()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Source.html" title="class in org.openqa.selenium.bidi.script">Source</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/script/EvaluateResult.html#getRealmId()" class="member-name-link">getRealmId()</a> - Method in interface org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/EvaluateResult.html" title="interface in org.openqa.selenium.bidi.script">EvaluateResult</a></dt>
 <dd>&nbsp;</dd>
@@ -6910,6 +7184,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets the SOCKS version (4 or 5).</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/Interaction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/opentelemetry/SeleniumSpanExporter.html#getSpanProcessor()" class="member-name-link">getSpanProcessor()</a> - Static method in class org.openqa.selenium.remote.tracing.opentelemetry.<a href="org/openqa/selenium/remote/tracing/opentelemetry/SeleniumSpanExporter.html" title="class in org.openqa.selenium.remote.tracing.opentelemetry">SeleniumSpanExporter</a></dt>
@@ -8997,6 +9273,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map(String, Type)</a> - Static method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/ConverterFunctions.html" title="class in org.openqa.selenium.devtools">ConverterFunctions</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html#map(java.lang.String,java.util.function.Function)" class="member-name-link">map(String, Function&lt;JsonInput, X&gt;)</a> - Static method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/ConverterFunctions.html" title="class in org.openqa.selenium.devtools">ConverterFunctions</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/internal/Either.html#map(java.util.function.Function)" class="member-name-link">map(Function&lt;? super B, ? extends R&gt;)</a> - Method in class org.openqa.selenium.internal.<a href="org/openqa/selenium/internal/Either.html" title="class in org.openqa.selenium.internal">Either</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/docker/ContainerConfig.html#map(org.openqa.selenium.docker.Port,org.openqa.selenium.docker.Port)" class="member-name-link">map(Port, Port)</a> - Method in class org.openqa.selenium.docker.<a href="org/openqa/selenium/docker/ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a></dt>
@@ -9145,11 +9423,15 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumOptions.html#mergeInPlace(org.openqa.selenium.Capabilities)" class="member-name-link">mergeInPlace(Capabilities)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">Message</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/Message.html" class="type-name-link" title="class in org.openqa.selenium.devtools">Message</a> - Class in <a href="org/openqa/selenium/devtools/package-summary.html">org.openqa.selenium.devtools</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/Message.html" class="type-name-link" title="interface in org.openqa.selenium.remote.http">Message</a> - Interface in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/Message.html#%3Cinit%3E(long,java.lang.Object)" class="member-name-link">Message(long, Object)</a> - Constructor for class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/Message.html" title="class in org.openqa.selenium.devtools">Message</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Message.html#%3Cinit%3E(java.lang.String,org.openqa.selenium.bidi.script.RemoteValue,org.openqa.selenium.bidi.script.Source)" class="member-name-link">Message(String, RemoteValue, Source)</a> - Constructor for class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Message.html" title="class in org.openqa.selenium.bidi.script">Message</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Keys.html#META" class="member-name-link">META</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></dt>
 <dd>&nbsp;</dd>
@@ -9852,7 +10134,10 @@ loadScripts(document, 'script');</script>
  the arguments given to this method.</div>
 </dd>
 <dt><a href="org/openqa/selenium/support/events/WebDriverListener.html#onError(java.lang.Object,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)" class="member-name-link">onError(Object, Method, Object[], InvocationTargetException)</a> - Method in interface org.openqa.selenium.support.events.<a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Notifies registered listeners about an error that occurred during the execution of a decorated
+ method.</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/decorators/Decorated.html#onError(java.lang.reflect.Method,java.lang.reflect.InvocationTargetException,java.lang.Object%5B%5D)" class="member-name-link">onError(Method, InvocationTargetException, Object[])</a> - Method in interface org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/decorators/DefaultDecorated.html#onError(java.lang.reflect.Method,java.lang.reflect.InvocationTargetException,java.lang.Object%5B%5D)" class="member-name-link">onError(Method, InvocationTargetException, Object[])</a> - Method in class org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/DefaultDecorated.html" title="class in org.openqa.selenium.support.decorators">DefaultDecorated</a></dt>
@@ -9892,12 +10177,18 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/logging/HasLogEvents.html#onLogEvent(org.openqa.selenium.logging.EventType)" class="member-name-link">onLogEvent(EventType&lt;X&gt;)</a> - Method in interface org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Script.html#onMessage(java.util.function.Consumer)" class="member-name-link">onMessage(Consumer&lt;Message&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Script.html" title="class in org.openqa.selenium.bidi">Script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/BrowsingContextInspector.html#onNavigationStarted(java.util.function.Consumer)" class="member-name-link">onNavigationStarted(Consumer&lt;NavigationInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/BrowsingContextInspector.html" title="class in org.openqa.selenium.bidi">BrowsingContextInspector</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/Coordinates.html#onPage()" class="member-name-link">onPage()</a> - Method in interface org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Coordinates.html" title="interface in org.openqa.selenium.interactions">Coordinates</a></dt>
 <dd>
 <div class="block">Gets coordinates on the element relative to the top-left corner of the page.</div>
 </dd>
+<dt><a href="org/openqa/selenium/bidi/Script.html#onRealmCreated(java.util.function.Consumer)" class="member-name-link">onRealmCreated(Consumer&lt;RealmInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Script.html" title="class in org.openqa.selenium.bidi">Script</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/Script.html#onRealmDestroyed(java.util.function.Consumer)" class="member-name-link">onRealmDestroyed(Consumer&lt;RealmInfo&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Script.html" title="class in org.openqa.selenium.bidi">Script</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.html#onRejectedEvent(java.util.function.Consumer)" class="member-name-link">onRejectedEvent(Consumer&lt;ZeroMqEventBus.RejectedEvent&gt;)</a> - Static method in class org.openqa.selenium.events.zeromq.<a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/Network.html#onResponseCompleted(java.util.function.Consumer)" class="member-name-link">onResponseCompleted(Consumer&lt;ResponseDetails&gt;)</a> - Method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/Network.html" title="class in org.openqa.selenium.bidi">Network</a></dt>
@@ -10349,14 +10640,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#PERU" class="member-name-link">PERU</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/chromium/ChromiumDriver.html#pin(java.lang.String)" class="member-name-link">pin(String)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/JavascriptExecutor.html#pin(java.lang.String)" class="member-name-link">pin(String)</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></dt>
 <dd>
 <div class="block">Commonly used scripts may be "pinned" to the WebDriver session, allowing them to be called
  efficiently by their handle rather than sending the entire script across the wire for every
  call.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#pin(java.lang.String)" class="member-name-link">pin(String)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/Javascript.html#pin(java.lang.String,java.lang.String)" class="member-name-link">pin(String, String)</a> - Method in class org.openqa.selenium.devtools.idealized.<a href="org/openqa/selenium/devtools/idealized/Javascript.html" title="class in org.openqa.selenium.devtools.idealized">Javascript</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#PINK" class="member-name-link">PINK</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
@@ -10955,7 +11246,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Removes all the credentials from the authenticator.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#removeAttribute(java.lang.String)" class="member-name-link">removeAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#removeAttribute(java.lang.String)" class="member-name-link">removeAttribute(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html#removeCredential(byte%5B%5D)" class="member-name-link">removeCredential(byte[])</a> - Method in interface org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">VirtualAuthenticator</a></dt>
 <dd>
@@ -10967,7 +11258,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/openqa/selenium/grid/sessionqueue/RemoveFromSessionQueue.html" class="type-name-link" title="class in org.openqa.selenium.grid.sessionqueue">RemoveFromSessionQueue</a> - Class in <a href="org/openqa/selenium/grid/sessionqueue/package-summary.html">org.openqa.selenium.grid.sessionqueue</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#removeHeader(java.lang.String)" class="member-name-link">removeHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#removeHeader(java.lang.String)" class="member-name-link">removeHeader(String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Removes all headers with the <code>name</code> (case-insensitive).</div>
 </dd>
@@ -11751,7 +12042,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/Span.html#setAttribute(java.lang.String,java.lang.Number)" class="member-name-link">setAttribute(String, Number)</a> - Method in interface org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/Span.html" title="interface in org.openqa.selenium.remote.tracing">Span</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setAttribute(java.lang.String,java.lang.Object)" class="member-name-link">setAttribute(String, Object)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setAttribute(java.lang.String,java.lang.Object)" class="member-name-link">setAttribute(String, Object)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html#setAttribute(java.lang.String,java.lang.String)" class="member-name-link">setAttribute(String, String)</a> - Method in class org.openqa.selenium.remote.tracing.empty.<a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html" title="class in org.openqa.selenium.remote.tracing.empty">NullSpan</a></dt>
 <dd>&nbsp;</dd>
@@ -11819,7 +12110,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)" class="member-name-link">setCommandExecutor(CommandExecutor)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setContent(java.util.function.Supplier)" class="member-name-link">setContent(Supplier&lt;InputStream&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setContent(java.util.function.Supplier)" class="member-name-link">setContent(Supplier&lt;InputStream&gt;)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/firefox/FirefoxDriver.html#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)" class="member-name-link">setContext(FirefoxCommandContext)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
 <dd>&nbsp;</dd>
@@ -11889,7 +12180,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticatorOptions.html#setHasUserVerification(boolean)" class="member-name-link">setHasUserVerification(boolean)</a> - Method in class org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/VirtualAuthenticatorOptions.html" title="class in org.openqa.selenium.virtualauthenticator">VirtualAuthenticatorOptions</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpResponse.html#setHeader(java.lang.String,java.lang.String)" class="member-name-link">setHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></dt>
+<dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#setHeader(java.lang.String,java.lang.String)" class="member-name-link">setHeader(String, String)</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
 <dd>
 <div class="block">Removes all headers with the <code>name</code> (case-insensitive) and adds a header with the <code>
  value</code>.</div>
@@ -11994,6 +12285,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/print/PrintOptions.html#setPageMargin(org.openqa.selenium.print.PageMargin)" class="member-name-link">setPageMargin(PageMargin)</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/print/PrintOptions.html#setPageRanges(java.lang.String,java.lang.String...)" class="member-name-link">setPageRanges(String, String...)</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/print/PrintOptions.html#setPageRanges(java.util.List)" class="member-name-link">setPageRanges(List&lt;String&gt;)</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/print/PrintOptions.html#setPageSize(org.openqa.selenium.print.PageSize)" class="member-name-link">setPageSize(PageSize)</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -12286,6 +12579,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/openqa/selenium/support/Colors.html#SNOW" class="member-name-link">SNOW</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Platform.html#SNOW_LEOPARD" class="member-name-link">SNOW_LEOPARD</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" title="enum class in org.openqa.selenium">Platform</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/Platform.html#SONOMA" class="member-name-link">SONOMA</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" title="enum class in org.openqa.selenium">Platform</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/script/Source.html" class="type-name-link" title="class in org.openqa.selenium.bidi.script">Source</a> - Class in <a href="org/openqa/selenium/bidi/script/package-summary.html">org.openqa.selenium.bidi.script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/SourceType.html" class="type-name-link" title="enum class in org.openqa.selenium.interactions">SourceType</a> - Enum Class in <a href="org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</a></dt>
 <dd>
@@ -12816,6 +13113,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/logging/LogLevelMapping.html#toLevel(java.lang.String)" class="member-name-link">toLevel(String)</a> - Static method in class org.openqa.selenium.logging.<a href="org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging">LogLevelMapping</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/print/PageMargin.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PageMargin.html" title="class in org.openqa.selenium.print">PageMargin</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/print/PageSize.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PageSize.html" title="class in org.openqa.selenium.print">PageSize</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/print/PrintOptions.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.print.<a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/virtualauthenticator/Credential.html#toMap()" class="member-name-link">toMap()</a> - Method in class org.openqa.selenium.virtualauthenticator.<a href="org/openqa/selenium/virtualauthenticator/Credential.html" title="class in org.openqa.selenium.virtualauthenticator">Credential</a></dt>
@@ -13099,6 +13400,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#TRANSPARENT" class="member-name-link">TRANSPARENT</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html#traverseHistory(long)" class="member-name-link">traverseHistory(long)</a> - Method in class org.openqa.selenium.bidi.browsingcontext.<a href="org/openqa/selenium/bidi/browsingcontext/BrowsingContext.html" title="class in org.openqa.selenium.bidi.browsingcontext">BrowsingContext</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/support/Colors.html#TURQUOISE" class="member-name-link">TURQUOISE</a> - Enum constant in enum class org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum class in org.openqa.selenium.support">Colors</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/config/DescribedOption.html#type" class="member-name-link">type</a> - Variable in class org.openqa.selenium.grid.config.<a href="org/openqa/selenium/grid/config/DescribedOption.html" title="class in org.openqa.selenium.grid.config">DescribedOption</a></dt>
@@ -13196,12 +13499,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/ErrorCodes.html#UNKNOWN_COMMAND" class="member-name-link">UNKNOWN_COMMAND</a> - Static variable in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/chromium/ChromiumDriver.html#unpin(org.openqa.selenium.ScriptKey)" class="member-name-link">unpin(ScriptKey)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/JavascriptExecutor.html#unpin(org.openqa.selenium.ScriptKey)" class="member-name-link">unpin(ScriptKey)</a> - Method in interface org.openqa.selenium.<a href="org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></dt>
 <dd>
 <div class="block">Deletes the reference to a script that has previously been pinned.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#unpin(org.openqa.selenium.ScriptKey)" class="member-name-link">unpin(ScriptKey)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/UnpinnedScriptKey.html" class="type-name-link" title="class in org.openqa.selenium">UnpinnedScriptKey</a> - Class in <a href="org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/UnpinnedScriptKey.html#%3Cinit%3E(java.lang.String)" class="member-name-link">UnpinnedScriptKey(String)</a> - Constructor for class org.openqa.selenium.<a href="org/openqa/selenium/UnpinnedScriptKey.html" title="class in org.openqa.selenium">UnpinnedScriptKey</a></dt>

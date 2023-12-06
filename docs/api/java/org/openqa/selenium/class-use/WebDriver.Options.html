@@ -150,7 +150,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterAddCookie</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>addCookie(Cookie)</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)" class="member-name-link">afterAnyOptionsCall</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
@@ -159,28 +161,40 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">afterDeleteAllCookies</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#deleteAllCookies()"><code>deleteAllCookies()</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterDeleteCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">afterDeleteCookie</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#deleteCookie(org.openqa.selenium.Cookie)"><code>deleteCookie(Cookie)</code></a></div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterDeleteCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">afterDeleteCookieNamed</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#deleteCookieNamed(java.lang.String)"><code>deleteCookieNamed(String)</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String,org.openqa.selenium.Cookie)" class="member-name-link">afterGetCookieNamed</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;result)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>getCookieNamed(String)</code></a></div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#afterGetCookies(org.openqa.selenium.WebDriver.Options,java.util.Set)" class="member-name-link">afterGetCookies</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&gt;&nbsp;result)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time after <a href="../WebDriver.Options.html#getCookies()"><code>getCookies()</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeAddCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeAddCookie</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)"><code>addCookie(Cookie)</code></a></div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeAnyOptionsCall(org.openqa.selenium.WebDriver.Options,java.lang.reflect.Method,java.lang.Object%5B%5D)" class="member-name-link">beforeAnyOptionsCall</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link">Method</a>&nbsp;method,
@@ -188,22 +202,32 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeDeleteAllCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeDeleteAllCookies</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#deleteAllCookies()"><code>deleteAllCookies()</code></a></div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeDeleteCookie(org.openqa.selenium.WebDriver.Options,org.openqa.selenium.Cookie)" class="member-name-link">beforeDeleteCookie</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="../Cookie.html" title="class in org.openqa.selenium">Cookie</a>&nbsp;cookie)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#deleteCookie(org.openqa.selenium.Cookie)"><code>deleteCookie(Cookie)</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeDeleteCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeDeleteCookieNamed</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#deleteCookieNamed(java.lang.String)"><code>deleteCookieNamed(String)</code></a></div>
+</div>
 <div class="col-first even-row-color"><code>default void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetCookieNamed(org.openqa.selenium.WebDriver.Options,java.lang.String)" class="member-name-link">beforeGetCookieNamed</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#getCookieNamed(java.lang.String)"><code>getCookieNamed(String)</code></a></div>
+</div>
 <div class="col-first odd-row-color"><code>default void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">WebDriverListener.</span><code><a href="../support/events/WebDriverListener.html#beforeGetCookies(org.openqa.selenium.WebDriver.Options)" class="member-name-link">beforeGetCookies</a><wbr>(<a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;options)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">This action will be performed each time before <a href="../WebDriver.Options.html#getCookies()"><code>getCookies()</code></a></div>
+</div>
 </div>
 </section>
 </li>
