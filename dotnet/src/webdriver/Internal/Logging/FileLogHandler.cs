@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             lock (_lockObj)
             {
-                _streamWriter.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
+                _streamWriter.WriteLine($"{logEvent.Timestamp:r} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
             }
         }
 
