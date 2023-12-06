@@ -51,6 +51,12 @@ namespace OpenQA.Selenium.Internal.Logging
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~FileLogHandler()
+        {
+            Dispose(false);
         }
 
         /// <summary>
