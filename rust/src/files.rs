@@ -35,6 +35,7 @@ use std::io::{BufReader, Cursor, Read};
 use std::path::{Path, PathBuf};
 use tar::Archive;
 use tempfile::Builder;
+use walkdir::{DirEntry, WalkDir};
 use zip::ZipArchive;
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -554,4 +555,21 @@ pub fn find_bytes(buffer: &[u8], bytes: &[u8]) -> Option<usize> {
     buffer
         .windows(bytes.len())
         .position(|window| window == bytes)
+}
+
+pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: PathBuf,
+    filter: F,
+) -> Result<Option<PathBuf>, Error> {
+    let files_in_cache: Vec<PathBuf> = WalkDir::new(&cache_path)
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| filter(entry))
+        .map(|entry| entry.path().to_owned())
+        .collect();
+    if !files_in_cache.is_empty() {
+        Ok(Some(files_in_cache.iter().last().unwrap().to_owned()))
+    } else {
+        Ok(None)
+    }
 }
