@@ -1,4 +1,4 @@
-// <copyright file="V117Domains.cs" company="WebDriver Committers">
+// <copyright file="V120Domains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -19,20 +19,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools.V117
+namespace OpenQA.Selenium.DevTools.V120
 {
     /// <summary>
-    /// Class containing the domain implementation for version 117 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 120 of the DevTools Protocol.
     /// </summary>
-    public class V117Domains : DevToolsDomains
+    public class V120Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
         /// <summary>
-        /// Initializes a new instance of the V117Domains class.
+        /// Initializes a new instance of the V120Domains class.
         /// </summary>
         /// <param name="session">The DevToolsSession to use with this set of domains.</param>
-        public V117Domains(DevToolsSession session)
+        public V120Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
         }
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.DevTools.V117
         /// <summary>
         /// Gets the DevTools Protocol version for which this class is valid.
         /// </summary>
-        public static int DevToolsVersion => 117;
+        public static int DevToolsVersion => 120;
 
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
@@ -50,21 +50,21 @@ namespace OpenQA.Selenium.DevTools.V117
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V117Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V120Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V117JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V120JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V117Target(domains.Target);
+        public override DevTools.Target Target => new V120Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V117Log(domains.Log);
+        public override DevTools.Log Log => new V120Log(domains.Log);
     }
 }
