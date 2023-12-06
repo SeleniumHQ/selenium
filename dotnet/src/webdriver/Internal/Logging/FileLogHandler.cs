@@ -25,6 +25,12 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             if (string.IsNullOrEmpty(path)) throw new ArgumentException("File log path cannot be null or empty.", nameof(path));
 
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
             _fileStream.Seek(0, SeekOrigin.End);
             _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
