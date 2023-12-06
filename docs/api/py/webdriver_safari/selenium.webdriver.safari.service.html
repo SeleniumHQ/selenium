@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.safari.service &#8212; Selenium 4.15.2 documentation</title>
+    <title>selenium.webdriver.safari.service &#8212; Selenium 4.16.0 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.15.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.16.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -45,14 +45,14 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.safari.service.Service" title="selenium.webdriver.safari.service.Service"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Service</span></code></a>(executable_path,&nbsp;port,&nbsp;quiet,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.safari.service.Service" title="selenium.webdriver.safari.service.Service"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Service</span></code></a>(executable_path,&nbsp;port,&nbsp;service_args,&nbsp;…)</td>
 <td>A Service class that is responsible for the starting and stopping of <cite>safaridriver</cite>  This is only supported on MAC OSX.</td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.safari.service.Service">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.safari.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = None, port: int = 0, quiet: bool = None, service_args: Optional[List[str], None] = None, env: Optional[Mapping[str, str], None] = None, reuse_service=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.service.Service" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.safari.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = None, port: int = 0, service_args: Optional[List[str], None] = None, env: Optional[Mapping[str, str], None] = None, reuse_service=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.service.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Service class that is responsible for the starting and stopping of
 <cite>safaridriver</cite>  This is only supported on MAC OSX.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -62,7 +62,6 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>executable_path</strong> – install path of the safaridriver executable, defaults to <cite>/usr/bin/safaridriver</cite>.</li>
 <li><strong>port</strong> – Port for the service to run on, defaults to 0 where the operating system will decide.</li>
-<li><strong>quiet</strong> – (Deprecated) Suppress driver stdout &amp; stderr, redirects to os.devnull if enabled.</li>
 <li><strong>service_args</strong> – (Optional) List of args to be passed to the subprocess when launching the executable.</li>
 <li><strong>env</strong> – (Optional) Mapping of environment variables for the new process, defaults to <cite>os.environ</cite>.</li>
 </ul>
@@ -178,7 +177,7 @@ or when it can’t connect to the service</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.15.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.16.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

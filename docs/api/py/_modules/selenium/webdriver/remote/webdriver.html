@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.15.2 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.16.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.15.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.16.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -133,11 +133,12 @@
 
 
 <div class="viewcode-block" id="get_remote_connection"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.get_remote_connection">[docs]</a><span class="k">def</span> <span class="nf">get_remote_connection</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_local_proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="kn">import</span> <span class="n">ChromiumRemoteConnection</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.remote_connection</span> <span class="kn">import</span> <span class="n">ChromeRemoteConnection</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.edge.remote_connection</span> <span class="kn">import</span> <span class="n">EdgeRemoteConnection</span>
     <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
     <span class="kn">from</span> <span class="nn">selenium.webdriver.safari.remote_connection</span> <span class="kn">import</span> <span class="n">SafariRemoteConnection</span>
 
-    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">RemoteConnection</span><span class="p">,</span> <span class="n">ChromiumRemoteConnection</span><span class="p">,</span> <span class="n">SafariRemoteConnection</span><span class="p">,</span> <span class="n">FirefoxRemoteConnection</span><span class="p">]</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ChromeRemoteConnection</span><span class="p">,</span> <span class="n">EdgeRemoteConnection</span><span class="p">,</span> <span class="n">SafariRemoteConnection</span><span class="p">,</span> <span class="n">FirefoxRemoteConnection</span><span class="p">]</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">browser_name</span> <span class="o">==</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;browserName&quot;</span><span class="p">)),</span> <span class="n">RemoteConnection</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">handler</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">ignore_local_proxy</span><span class="p">)</span></div>
@@ -1206,7 +1207,6 @@
         <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
             <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="WebDriver.delete_downloadable_files"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_downloadable_files">[docs]</a>    <span class="k">def</span> <span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deletes all downloadable files.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;se:downloadsEnabled&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
@@ -1245,7 +1245,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.15.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.16.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
