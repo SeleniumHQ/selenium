@@ -2,14 +2,14 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
-cdp_version = "v117"
+cdp_version = "v120"
 
 java_export(
     name = cdp_version,
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-%s:%s" % (cdp_version, SE_VERSION),
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     visibility = [

@@ -45,11 +45,9 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.6.0)
-    io-console (0.6.0-java)
     irb (1.9.0)
       rdoc
       reline (>= 0.3.8)
-    jar-dependencies (0.4.1)
     json (2.6.3)
     json (2.6.3-java)
     language_server-protocol (3.17.0.3)
@@ -65,8 +63,6 @@ GEM
       racc
     psych (5.1.1.1)
       stringio
-    psych (5.1.1.1-java)
-      jar-dependencies (>= 0.1.7)
     public_suffix (5.0.4)
     racc (1.7.3)
     racc (1.7.3-java)

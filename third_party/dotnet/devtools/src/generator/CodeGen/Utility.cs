@@ -26,6 +26,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             path = path.Replace("{{templatePath}}", settings.TemplatesPath);
             path = path.Replace("{{domainName}}", context.Domain.Name);
             path = path.Replace('\\', System.IO.Path.DirectorySeparatorChar);
+            path = path.Replace("{{separator}}", System.IO.Path.DirectorySeparatorChar.ToString());
             return path;
         }
 

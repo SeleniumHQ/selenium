@@ -498,6 +498,7 @@ experimental domain Audits
       WarnAttributeValueExceedsMaxSize
       WarnDomainNonASCII
       WarnThirdPartyPhaseout
+      WarnCrossSiteRedirectDowngradeChangesInclusion
 
   type CookieOperation extends string
     enum
@@ -770,6 +771,15 @@ experimental domain Audits
     properties
       array of string trackingSites
 
+  # This issue warns about third-party sites that are accessing cookies on the
+  # current page, and have been permitted due to having a global metadata grant.
+  # Note that in this context 'site' means eTLD+1. For example, if the URL
+  # `https://example.test:80/web_page` was accessing cookies, the site reported
+  # would be `example.test`.
+  type CookieDeprecationMetadataIssueDetails extends object
+    properties
+      array of string allowedSites
+
   type ClientHintIssueReason extends string
     enum
       # Items in the accept-ch meta tag allow list must be valid origins.
@@ -817,6 +827,8 @@ experimental domain Audits
       IdTokenHttpNotFound
       IdTokenNoResponse
       IdTokenInvalidResponse
+      IdTokenIdpErrorResponse
+      IdTokenCrossSiteIdpErrorResponse
       IdTokenInvalidRequest
       IdTokenInvalidContentType
       ErrorIdToken
@@ -824,6 +836,7 @@ experimental domain Audits
       RpPageNotVisible
       SilentMediationFailure
       ThirdPartyCookiesBlocked
+      NotSignedInWithIdp
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -874,6 +887,24 @@ experimental domain Audits
       # Contains additional info when the failure was due to a request.
       optional FailedRequestInfo failedRequestInfo
 
+  type PropertyRuleIssueReason extends string
+    enum
+      InvalidSyntax
+      InvalidInitialValue
+      InvalidInherits
+      InvalidName
+
+  # This issue warns about errors in property rules that lead to property
+  # registrations being ignored.
+  type PropertyRuleIssueDetails extends object
+    properties
+      # Source code position of the property rule.
+      SourceCodeLocation sourceCodeLocation
+      # Reason why the property rule was discarded.
+      PropertyRuleIssueReason propertyRuleIssueReason
+      # The value of the property rule property that failed to parse
+      optional string propertyValue
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -896,8 +927,10 @@ experimental domain Audits
       ClientHintIssue
       FederatedAuthRequestIssue
       BounceTrackingIssue
+      CookieDeprecationMetadataIssue
       StylesheetLoadingIssue
       FederatedAuthUserInfoRequestIssue
+      PropertyRuleIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -920,7 +953,9 @@ experimental domain Audits
       optional ClientHintIssueDetails clientHintIssueDetails
       optional FederatedAuthRequestIssueDetails federatedAuthRequestIssueDetails
       optional BounceTrackingIssueDetails bounceTrackingIssueDetails
+      optional CookieDeprecationMetadataIssueDetails cookieDeprecationMetadataIssueDetails
       optional StylesheetLoadingIssueDetails stylesheetLoadingIssueDetails
+      optional PropertyRuleIssueDetails propertyRuleIssueDetails
       optional FederatedAuthUserInfoRequestIssueDetails federatedAuthUserInfoRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -1002,13 +1037,60 @@ experimental domain Autofill
     properties
       # address field name, for example GIVEN_NAME.
       string name
-      # address field name, for example Jon Doe.
+      # address field value, for example Jon Doe.
       string value
+
+  # A list of address fields.
+  type AddressFields extends object
+    properties
+      array of AddressField fields
 
   type Address extends object
     properties
-      # fields and values defining a test address.
+      # fields and values defining an address.
       array of AddressField fields
+
+  # Defines how an address can be displayed like in chrome://settings/addresses.
+  # Address UI is a two dimensional array, each inner array is an "address information line", and when rendered in a UI surface should be displayed as such.
+  # The following address UI for instance:
+  # [[{name: "GIVE_NAME", value: "Jon"}, {name: "FAMILY_NAME", value: "Doe"}], [{name: "CITY", value: "Munich"}, {name: "ZIP", value: "81456"}]]
+  # should allow the receiver to render:
+  # Jon Doe
+  # Munich 81456
+  type AddressUI extends object
+    properties
+      # A two dimension array containing the repesentation of values from an address profile.
+      array of AddressFields addressFields
+
+  # Specified whether a filled field was done so by using the html autocomplete attribute or autofill heuristics.
+  type FillingStrategy extends string
+    enum
+      autocompleteAttribute
+      autofillInferred
+
+  type FilledField extends object
+    properties
+      # The type of the field, e.g text, password etc.
+      string htmlType
+      # the html id
+      string id
+      # the html name
+      string name
+      # the field value
+      string value
+      # The actual field type, e.g FAMILY_NAME
+      string autofillType
+      # The filling strategy
+      FillingStrategy fillingStrategy
+
+  # Emitted when an address form is filled.
+  event addressFormFilled
+    parameters
+      # Information about the fields that were filled
+      array of FilledField filledFields
+      # An UI representation of the address used to fill the form.
+      # Consists of a 2D array where each child represents an address/profile line.
+      AddressUI addressUi
 
   # Trigger autofill on a form identified by the fieldId.
   # If the field and related form cannot be autofilled, returns an error.
@@ -1027,6 +1109,11 @@ experimental domain Autofill
     parameters
       array of Address addresses
 
+  # Disables autofill domain notifications.
+  command disable
+
+  # Enables autofill domain notifications.
+  command enable
 
 # Defines events for background web platform features.
 experimental domain BackgroundService
@@ -1830,6 +1917,28 @@ experimental domain CSS
       # List of keyframes.
       array of CSSKeyframeRule keyframes
 
+  # Representation of a custom property registration through CSS.registerProperty
+  type CSSPropertyRegistration extends object
+    properties
+      string propertyName
+      optional Value initialValue
+      boolean inherits
+      string syntax
+
+
+  # CSS property at-rule representation.
+  type CSSPropertyRule extends object
+    properties
+      # The css style sheet identifier (absent for user agent stylesheet and user-specified
+      # stylesheet rules) this rule came from.
+      optional StyleSheetId styleSheetId
+      # Parent stylesheet's origin.
+      StyleSheetOrigin origin
+      # Associated property name.
+      Value propertyName
+      # Associated style declaration.
+      CSSStyle style
+
   # CSS keyframe rule representation.
   type CSSKeyframeRule extends object
     properties
@@ -1957,6 +2066,10 @@ experimental domain CSS
       optional array of CSSKeyframesRule cssKeyframesRules
       # A list of CSS position fallbacks matching this node.
       optional array of CSSPositionFallbackRule cssPositionFallbackRules
+      # A list of CSS at-property rules matching this node.
+      optional array of CSSPropertyRule cssPropertyRules
+      # A list of CSS property registrations matching this node.
+      optional array of CSSPropertyRegistration cssPropertyRegistrations
       # Id of the first parent element that does not have display: contents.
       experimental optional DOM.NodeId parentLayoutNodeId
 
@@ -2016,6 +2129,16 @@ experimental domain CSS
       DOM.NodeId nodeId
       string propertyName
       string value
+
+  # Modifies the property rule property name.
+  command setPropertyRulePropertyName
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string propertyName
+    returns
+      # The resulting key text after modification.
+      Value propertyName
 
   # Modifies the keyframe rule key text.
   command setKeyframeKey
@@ -3160,7 +3283,6 @@ domain DOM
 # execution will stop on these operations as if there was a regular breakpoint set.
 domain DOMDebugger
   depends on DOM
-  depends on Debugger
   depends on Runtime
 
   # DOM breakpoint type.
@@ -3232,7 +3354,8 @@ domain DOMDebugger
       experimental optional string targetName
 
   # Removes breakpoint on particular native event.
-  experimental command removeInstrumentationBreakpoint
+  experimental deprecated command removeInstrumentationBreakpoint
+    redirect EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
@@ -3267,7 +3390,8 @@ domain DOMDebugger
       experimental optional string targetName
 
   # Sets breakpoint on particular native event.
-  experimental command setInstrumentationBreakpoint
+  experimental deprecated command setInstrumentationBreakpoint
+    redirect EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
@@ -3278,10 +3402,9 @@ domain DOMDebugger
       # Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
       string url
 
-# EventBreakpoints permits setting breakpoints on particular operations and
-# events in targets that run JavaScript but do not have a DOM.
-# JavaScript execution will stop on these operations as if there was a regular
-# breakpoint set.
+# EventBreakpoints permits setting JavaScript breakpoints on operations and events
+# occurring in native code invoked from JavaScript. Once breakpoint is hit, it is
+# reported through Debugger domain, similarly to regular breakpoints being hit.
 experimental domain EventBreakpoints
   # Sets breakpoint on particular native event.
   command setInstrumentationBreakpoint
@@ -3294,6 +3417,9 @@ experimental domain EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
+
+  # Removes all breakpoints
+  command disable
 
 # This domain facilitates obtaining document snapshots with DOM, layout, and style information.
 experimental domain DOMSnapshot
@@ -3811,6 +3937,49 @@ domain Emulation
       optional string bitness
       optional boolean wow64
 
+  # Used to specify sensor types to emulate.
+  # See https://w3c.github.io/sensors/#automation for more information.
+  experimental type SensorType extends string
+    enum
+      absolute-orientation
+      accelerometer
+      ambient-light
+      gravity
+      gyroscope
+      linear-acceleration
+      magnetometer
+      proximity
+      relative-orientation
+
+  experimental type SensorMetadata extends object
+    properties
+      optional boolean available
+      optional number minimumFrequency
+      optional number maximumFrequency
+
+  experimental type SensorReadingSingle extends object
+    properties
+      number value
+
+  experimental type SensorReadingXYZ extends object
+    properties
+      number x
+      number y
+      number z
+
+  experimental type SensorReadingQuaternion extends object
+    properties
+      number x
+      number y
+      number z
+      number w
+
+  experimental type SensorReading extends object
+    properties
+      optional SensorReadingSingle single
+      optional SensorReadingXYZ xyz
+      optional SensorReadingQuaternion quaternion
+
   # Tells whether emulation is supported.
   command canEmulate
     returns
@@ -3939,6 +4108,30 @@ domain Emulation
       optional number longitude
       # Mock accuracy
       optional number accuracy
+
+  experimental command getOverriddenSensorInformation
+    parameters
+      SensorType type
+    returns
+      number requestedSamplingFrequency
+
+  # Overrides a platform sensor of a given type. If |enabled| is true, calls to
+  # Sensor.start() will use a virtual sensor as backend rather than fetching
+  # data from a real hardware sensor. Otherwise, existing virtual
+  # sensor-backend Sensor objects will fire an error event and new calls to
+  # Sensor.start() will attempt to use a real sensor instead.
+  experimental command setSensorOverrideEnabled
+    parameters
+      boolean enabled
+      SensorType type
+      optional SensorMetadata metadata
+
+  # Updates the sensor readings reported by a sensor type previously overriden
+  # by setSensorOverrideEnabled.
+  experimental command setSensorOverrideReadings
+    parameters
+      SensorType type
+      SensorReading reading
 
   # Overrides the Idle state.
   experimental command setIdleOverride
@@ -4387,9 +4580,9 @@ domain Input
       # The normalized tangential pressure, which has a range of [-1,1] (default: 0).
       experimental optional number tangentialPressure
       # The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
-      experimental optional integer tiltX
+      optional number tiltX
       # The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-      experimental optional integer tiltY
+      optional number tiltY
       # The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
       experimental optional integer twist
       # Identifier used to track touch sources between events, must be unique within an event.
@@ -4555,9 +4748,9 @@ domain Input
       # The normalized tangential pressure, which has a range of [-1,1] (default: 0).
       experimental optional number tangentialPressure
       # The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
-      experimental optional integer tiltX
+      optional number tiltX
       # The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-      experimental optional integer tiltY
+      optional number tiltY
       # The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
       experimental optional integer twist
       # X delta in CSS pixels for mouse wheel event (default: 0).
@@ -5648,6 +5841,8 @@ domain Network
       SameSiteNoneInsecure
       # The cookie was not stored due to user preferences.
       UserPreferences
+      # The cookie was blocked due to third-party cookie phaseout.
+      ThirdPartyPhaseout
       # The cookie was blocked by third-party cookie blocking between sites in
       # the same First-Party Set.
       ThirdPartyBlockedInFirstPartySet
@@ -5693,6 +5888,8 @@ domain Network
       # character if it appears in the middle of the cookie name, value, an
       # attribute name, or an attribute value.
       DisallowedCharacter
+      # Cookie contains no content or only whitespace.
+      NoCookieContent
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -5719,6 +5916,8 @@ domain Network
       SameSiteNoneInsecure
       # The cookie was not sent due to user preferences.
       UserPreferences
+      # The cookie was blocked due to third-party cookie phaseout.
+      ThirdPartyPhaseout
       # The cookie was blocked by third-party cookie blocking between sites in
       # the same First-Party Set.
       ThirdPartyBlockedInFirstPartySet
@@ -6993,6 +7192,16 @@ experimental domain Overlay
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
 
+  # Configuration for Window Controls Overlay
+  type WindowControlsOverlayConfig extends object
+    properties
+      # Whether the title bar CSS should be shown when emulating the Window Controls Overlay.
+      boolean showCSS
+      # Seleted platforms to show the overlay.
+      string selectedPlatform
+      # The theme color defined in app manifest.
+      string themeColor
+
   type ContainerQueryHighlightConfig extends object
     properties
       # A descriptor for the highlight appearance of container query containers.
@@ -7243,6 +7452,12 @@ experimental domain Overlay
       # An array of node identifiers and descriptors for the highlight appearance.
       array of IsolatedElementHighlightConfig isolatedElementHighlightConfigs
 
+  # Show Window Controls Overlay for PWA
+  command setShowWindowControlsOverlay
+    parameters
+      # Window Controls Overlay data, null means hide Window Controls Overlay
+      optional WindowControlsOverlayConfig windowControlsOverlayConfig
+
   # Fired when the node should be inspected. This happens after call to `setInspectMode` or when
   # user manually inspects an element.
   event inspectNodeRequested
@@ -7352,6 +7567,7 @@ domain Page
       ch-ect
       ch-prefers-color-scheme
       ch-prefers-reduced-motion
+      ch-prefers-reduced-transparency
       ch-rtt
       ch-save-data
       ch-ua
@@ -8672,6 +8888,17 @@ domain Page
       PageSupportNeeded
       Circumstantial
 
+  experimental type BackForwardCacheBlockingDetails extends object
+    properties
+      # Url of the file where blockage happened. Optional because of tests.
+      optional string url
+      # Function name where blockage happened. Optional because of anonymous functions and tests.
+      optional string function
+      # Line number in the script (0-based).
+      integer lineNumber
+      # Column number in the script (0-based).
+      integer columnNumber
+
   experimental type BackForwardCacheNotRestoredExplanation extends object
     properties
       # Type of the reason
@@ -8683,6 +8910,7 @@ domain Page
       # - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
       #
       optional string context
+      optional array of BackForwardCacheBlockingDetails details
 
   experimental type BackForwardCacheNotRestoredExplanationTree extends object
     properties
@@ -9242,11 +9470,14 @@ experimental domain Storage
       loaded
       bid
       win
+      additionalBid
+      additionalBidWin
+      clear
 
   # Ad advertising element inside an interest group.
   type InterestGroupAd extends object
     properties
-      string renderUrl
+      string renderURL
       optional string metadata
 
   # The full details of an interest group.
@@ -9256,10 +9487,10 @@ experimental domain Storage
       string name
       Network.TimeSinceEpoch expirationTime
       string joiningOrigin
-      optional string biddingUrl
-      optional string biddingWasmHelperUrl
-      optional string updateUrl
-      optional string trustedBiddingSignalsUrl
+      optional string biddingLogicURL
+      optional string biddingWasmHelperURL
+      optional string updateURL
+      optional string trustedBiddingSignalsURL
       array of string trustedBiddingSignalsKeys
       optional string userBiddingSignals
       array of InterestGroupAd ads
@@ -9691,15 +9922,26 @@ experimental domain Storage
       string key
       UnsignedInt128AsBase16 value
 
+  experimental type AttributionReportingEventReportWindows extends object
+    properties
+      # duration in seconds
+      integer start
+      # duration in seconds
+      array of integer ends
+
+  experimental type AttributionReportingTriggerDataMatching extends string
+    enum
+      exact
+      modulus
+
   experimental type AttributionReportingSourceRegistration extends object
     properties
       Network.TimeSinceEpoch time
       # duration in seconds
-      optional integer expiry
+      integer expiry
+      AttributionReportingEventReportWindows eventReportWindows
       # duration in seconds
-      optional integer eventReportWindow
-      # duration in seconds
-      optional integer aggregatableReportWindow
+      integer aggregatableReportWindow
       AttributionReportingSourceType type
       string sourceOrigin
       string reportingOrigin
@@ -9709,6 +9951,7 @@ experimental domain Storage
       array of AttributionReportingFilterDataEntry filterData
       array of AttributionReportingAggregationKeysEntry aggregationKeys
       optional UnsignedInt64AsBase10 debugKey
+      AttributionReportingTriggerDataMatching triggerDataMatching
 
   experimental type AttributionReportingSourceRegistrationResult extends string
     enum
@@ -11196,7 +11439,6 @@ experimental domain Preload
       LowEndDevice
       InvalidSchemeRedirect
       InvalidSchemeNavigation
-      InProgressNavigation
       NavigationRequestBlockedByCsp
       MainFrameNavigation
       MojoBinderPolicy
@@ -11208,7 +11450,6 @@ experimental domain Preload
       NavigationBadHttpStatus
       ClientCertRequested
       NavigationRequestNetworkError
-      MaxNumOfRunningPrerendersExceeded
       CancelAllHostsForTesting
       DidFailLoad
       Stop
@@ -11220,11 +11461,8 @@ experimental domain Preload
       MixedContent
       TriggerBackgrounded
       MemoryLimitExceeded
-      # Prerenders can be cancelled when Chrome uses excessive memory. This is
-      # recorded when it fails to get the memory usage.
-      FailToGetMemoryUsage
       DataSaverEnabled
-      HasEffectiveUrl
+      TriggerUrlHasEffectiveUrl
       ActivatedBeforeStarted
       InactivePageRestriction
       StartFailed
@@ -11253,21 +11491,14 @@ experimental domain Preload
       MemoryPressureOnTrigger
       MemoryPressureAfterTriggered
       PrerenderingDisabledByDevTools
-      ResourceLoadBlockedByClient
       SpeculationRuleRemoved
       ActivatedWithAuxiliaryBrowsingContexts
-
-  # Fired when a prerender attempt is completed.
-  event prerenderAttemptCompleted
-    parameters
-      PreloadingAttemptKey key
-      # The frame id of the frame initiating prerendering.
-      Page.FrameId initiatingFrameId
-      string prerenderingUrl
-      PrerenderFinalStatus finalStatus
-      # This is used to give users more information about the name of the API call
-      # that is incompatible with prerender and has caused the cancellation of the attempt
-      optional string disallowedApiMethod
+      MaxNumOfRunningEagerPrerendersExceeded
+      MaxNumOfRunningNonEagerPrerendersExceeded
+      MaxNumOfRunningEmbedderPrerendersExceeded
+      PrerenderingUrlHasEffectiveUrl
+      RedirectedPrerenderingUrlHasEffectiveUrl
+      ActivationUrlHasEffectiveUrl
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated
@@ -11372,6 +11603,7 @@ experimental domain FedCm
     enum
       AccountChooser
       AutoReauthn
+      ConfirmIdpLogin
 
   # Corresponds to IdentityRequestAccount
   type Account extends object
@@ -11382,7 +11614,7 @@ experimental domain FedCm
       string givenName
       string pictureUrl
       string idpConfigUrl
-      string idpSigninUrl
+      string idpLoginUrl
       LoginState loginState
       # These two are only set if the loginState is signUp
       optional string termsOfServiceUrl
@@ -11411,6 +11643,12 @@ experimental domain FedCm
     parameters
       string dialogId
       integer accountIndex
+
+  # Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
+  # clicked the continue button.
+  command confirmIdpLogin
+    parameters
+      string dialogId
 
   command dismissDialog
     parameters

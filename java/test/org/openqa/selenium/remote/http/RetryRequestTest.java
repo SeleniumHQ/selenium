@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.http;
 
 import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
@@ -56,7 +55,8 @@ class RetryRequestTest {
         ClientConfig.defaultConfig()
             .baseUrl(URI.create("http://localhost:2345").toURL())
             .withRetries()
-            .readTimeout(Duration.ofSeconds(1));
+            .readTimeout(Duration.ofSeconds(1))
+            .connectionTimeout(Duration.ofSeconds(1));
     client = HttpClient.Factory.createDefault().createClient(config);
   }
 
@@ -82,8 +82,8 @@ class RetryRequestTest {
                   throw new TimeoutException();
                 });
 
-    Assertions.assertEquals(
-        HTTP_GATEWAY_TIMEOUT, handler1.execute(new HttpRequest(GET, "/")).getStatus());
+    Assertions.assertThrows(
+        TimeoutException.class, () -> handler1.execute(new HttpRequest(GET, "/")));
 
     HttpHandler handler2 =
         new RetryRequest()
@@ -96,12 +96,11 @@ class RetryRequestTest {
   @Test
   void canReturnAppropriateFallbackResponseWithMultipleThreads()
       throws InterruptedException, ExecutionException {
-    HttpHandler handler1 =
-        new RetryRequest()
-            .andFinally(
-                (HttpRequest request) -> {
-                  throw new TimeoutException();
-                });
+    AppServer server = new NettyAppServer(req -> new HttpResponse());
+
+    URI uri = URI.create(server.whereIs("/"));
+    HttpRequest connectionTimeoutRequest =
+        new HttpRequest(GET, String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
 
     HttpHandler handler2 =
         new RetryRequest()
@@ -110,12 +109,12 @@ class RetryRequestTest {
     ExecutorService executorService = Executors.newFixedThreadPool(2);
     List<Callable<HttpResponse>> tasks = new ArrayList<>();
 
-    tasks.add(() -> handler1.execute(new HttpRequest(GET, "/")));
+    tasks.add(() -> client.execute(connectionTimeoutRequest));
     tasks.add(() -> handler2.execute(new HttpRequest(GET, "/")));
 
     List<Future<HttpResponse>> results = executorService.invokeAll(tasks);
 
-    Assertions.assertEquals(HTTP_GATEWAY_TIMEOUT, results.get(0).get().getStatus());
+    Assertions.assertEquals(HTTP_CLIENT_TIMEOUT, results.get(0).get().getStatus());
 
     Assertions.assertEquals(HTTP_UNAVAILABLE, results.get(1).get().getStatus());
   }
@@ -261,70 +260,6 @@ class RetryRequestTest {
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_UNAVAILABLE);
     assertThat(count.get()).isEqualTo(3);
-
-    server.stop();
-  }
-
-  @Test
-  void shouldBeAbleToRetryARequestOnTimeout() {
-    AtomicInteger count = new AtomicInteger(0);
-    AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              if (count.get() <= 3) {
-                try {
-                  Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
-              }
-              return new HttpResponse();
-            });
-    server.start();
-
-    URI uri = URI.create(server.whereIs("/"));
-    HttpRequest request =
-        new HttpRequest(GET, String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
-
-    HttpResponse response = client.execute(request);
-    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
-    assertThat(count.get()).isEqualTo(4);
-
-    server.stop();
-  }
-
-  @Test
-  void shouldBeAbleToGetErrorResponseOnRequestTimeout() {
-    AtomicInteger count = new AtomicInteger(0);
-    AppServer server =
-        new NettyAppServer(
-            req -> {
-              count.incrementAndGet();
-              throw new TimeoutException();
-            });
-    server.start();
-
-    URI uri = URI.create(server.whereIs("/"));
-    HttpRequest request =
-        new HttpRequest(GET, String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
-
-    HttpResponse response = client.execute(request);
-
-    // The NettyAppServer passes the request through ErrorFilter.
-    // This maps the timeout exception to HTTP response code 500 and HTTP response body containing
-    // "timeout".
-    // RetryRequest retries if it gets a TimeoutException only.
-    // Parsing and inspecting the response body each time if HTTP response code 500 is not
-    // efficient.
-    // A potential solution can be updating the ErrorCodec to reflect the appropriate HTTP code
-    // (this is a breaking change).
-    // RetryRequest can then inspect just the HTTP response status code and retry.
-
-    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_INTERNAL_ERROR);
-
-    // This should ideally be more than the number of retries configured i.e. greater than 3
-    assertThat(count.get()).isEqualTo(1);
 
     server.stop();
   }
