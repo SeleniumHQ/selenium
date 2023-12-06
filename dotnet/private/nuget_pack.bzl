@@ -13,7 +13,7 @@ def _guess_dotnet_version(label, assembly_info):
     # The dirname will be something like `bazel-out/darwin_arm64-fastbuild-ST-5c013bc87029/bin/dotnet/src/webdriver/bazelout/net5.0`
     # Note that the last segment of the path is the framework we're
     # targeting. Happy days!
-    return assembly_info.libs[0].dirname.split('/')[::-1][0]
+    return assembly_info.libs[0].dirname.split("/")[::-1][0]
 
 def nuget_pack_impl(ctx):
     nuspec = ctx.actions.declare_file("%s-generated.nuspec" % ctx.label.name)
