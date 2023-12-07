@@ -133,7 +133,7 @@ task all: [
   :"selenium-java",
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
-task all_zip: [:'java-release-zip']
+task all_zip: [:'java-release-zip', :'dotnet-release-zip']
 task tests: [
   '//java/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/test/org/openqa/selenium/firefox:test-synthesized',
@@ -401,6 +401,26 @@ def read_m2_user_pass
   end
 
   return [user, pass]
+end
+
+task :prepare_release do
+    RELEASE_TARGETS = [
+      '//java/src/org/openqa/selenium:client-zip',
+      '//java/src/org/openqa/selenium/grid:server-zip',
+      '//java/src/org/openqa/selenium/grid:executable-grid',
+      '//dotnet/src/webdriver:webdriver-pack',
+      '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+      '//dotnet/src/support:support-pack',
+      '//dotnet/src/support:support-strongnamed-pack',
+      '//javascript/node/selenium-webdriver:selenium-webdriver',
+      '//py:selenium-wheel',
+      '//py:selenium-sdist',
+    ]
+
+    RELEASE_TARGETS.each do |target|
+        Bazel::execute('build', ['--config', 'release'], target)
+    end
+    Bazel::execute('build', ['--stamp'], '//rb:selenium-webdriver')
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
