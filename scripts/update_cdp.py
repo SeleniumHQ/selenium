@@ -168,6 +168,7 @@ def update_ruby(chrome_milestone):
     file = root_dir / "rb/lib/selenium/devtools/version.rb"
     replace_in_file(file, rf"{previous_chrome(chrome_milestone)}\.[0-9]*", f"{new_chrome(chrome_milestone)}.0", True)
 
+    subprocess.run(["bundle", "install"], cwd=root_dir / "rb", check=True)
 
 def update_python(chrome_milestone):
     file = root_dir / "py/BUILD.bazel"
