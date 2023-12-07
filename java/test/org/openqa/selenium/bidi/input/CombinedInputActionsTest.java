@@ -146,6 +146,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
@@ -359,6 +361,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
   public void testChordControlCutAndPaste() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");

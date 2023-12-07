@@ -49,8 +49,6 @@ class DefaultWheelTest extends JupiterTestBase {
   @BeforeEach
   public void setUp() {
     windowHandle = driver.getWindowHandle();
-    // For cases where we have switched to iframe before the test ends
-    driver.switchTo().window(windowHandle);
     input = new Input(driver);
   }
 
@@ -96,6 +94,7 @@ class DefaultWheelTest extends JupiterTestBase {
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
     assertTrue(inViewport(checkbox));
+    driver.switchTo().window(windowHandle);
   }
 
   @Test
