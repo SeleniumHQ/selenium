@@ -28,8 +28,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Retrieves the downloadable files.
         /// </summary>
-        /// <returns>A list of file names available for download.</returns>
-        List<string> GetDownloadableFiles();
+        /// <returns>A read-only list of file names available for download.</returns>
+        IReadOnlyList<string> GetDownloadableFiles();
 
         /// <summary>
         /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
