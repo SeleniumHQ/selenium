@@ -56,6 +56,12 @@ def java_version
   end
 end
 
+def dotnet_version
+  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
+
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
 
@@ -127,7 +133,7 @@ task all: [
   :"selenium-java",
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
-task all_zip: [:'prep-release-zip']
+task all_zip: [:'java-release-zip']
 task tests: [
   '//java/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/test/org/openqa/selenium/firefox:test-synthesized',
@@ -324,7 +330,28 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-task 'prep-release-zip': [
+task 'dotnet-release-zip': [
+  '//dotnet/src/webdriver:webdriver-pack',
+  '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+  '//dotnet/src/support:support-pack',
+  '//dotnet/src/support:support-strongnamed-pack',
+] do
+  [
+      "build/dist/selenium-dotnet-#{dotnet_version}.zip",
+      "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip",
+  ].each do |f|
+    rm_f(f) if File.exists?(f)
+  end
+    mkdir_p 'build/dist'
+    File.delete
+
+    cp "bazel-bin/dotnet/release.zip", "build/dist/selenium-dotnet-#{dotnet_version}.zip", preserve: false
+    chmod 0666, "build/dist/selenium-dotnet-#{dotnet_version}.zip"
+    cp "bazel-bin/dotnet/strongnamed.zip", "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip", preserve: false
+    chmod 0666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip"
+end
+
+task 'java-release-zip': [
   '//java/src/org/openqa/selenium:client-zip',
   '//java/src/org/openqa/selenium/grid:server-zip',
   '//java/src/org/openqa/selenium/grid:executable-grid',
@@ -347,7 +374,7 @@ task 'prep-release-zip': [
   chmod 0777, "build/dist/selenium-server-#{java_version}.jar"
 end
 
-task 'release-java': %i[prep-release-zip publish-maven]
+task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
   # First check env vars, then the settings.xml config inside .m2
