@@ -430,6 +430,17 @@ task 'publish-maven': JAVA_RELEASE_TARGETS do
   end
 end
 
+NUGET_RELEASE_ASSETS = [
+  "./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
+  "./bazel-bin/dotnet/src/webdriver/Selenium.Support.#{dotnet_version}.nupkg"
+]
+
+task 'publish-nuget' do
+  NUGET_RELEASE_ASSETS.each do |asset|
+    sh "dotnet nuget push #{asset} --api-key #{ENV[:NUGET_API_KEY]} --source https://api.nuget.org/v3/index.json"
+  end
+end
+
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
   if java_version.end_with?('-SNAPSHOT')
