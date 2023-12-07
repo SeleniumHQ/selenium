@@ -62,6 +62,12 @@ def dotnet_version
   end
 end
 
+def python_version
+  File.foreach('py/BUILD.bazel') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
+
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
 
@@ -421,6 +427,17 @@ task :prepare_release do
         Bazel::execute('build', ['--config', 'release'], target)
     end
     Bazel::execute('build', ['--stamp'], '//rb:selenium-webdriver')
+end
+
+PYPI_ASSETS = [
+    "bazel-bin/py/selenium-#{python_version}-py3-none-any.whl",
+    "bazel-bin/py/selenium-#{python_version}.tar.gz"
+]
+
+task 'publish-pypi' do
+    PYPI_ASSETS.each do |asset|
+        sh "python3 -m twine upload #{asset}"
+    end
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS do
