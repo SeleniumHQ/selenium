@@ -146,8 +146,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
