@@ -168,6 +168,7 @@ class DefaultWheelTest extends JupiterTestBase {
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
     assertTrue(inViewport(checkbox));
+    driver.switchTo().window(windowHandle);
   }
 
   @Test
