@@ -22,6 +22,7 @@ import pytest
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.remote import webdriver
@@ -77,7 +78,7 @@ def test_always_match_if_2_of_the_same_options():
         "capabilities": {
             "alwaysMatch": {
                 "browserName": "chrome",
-                "pageLoadStrategy": "normal",
+                "pageLoadStrategy": PageLoadStrategy.normal,
             },
             "firstMatch": [
                 {"goog:chromeOptions": {"args": ["foo"], "extensions": []}},
@@ -95,7 +96,7 @@ def test_first_match_when_2_different_option_types():
 
     expected = {
         "capabilities": {
-            "alwaysMatch": {"pageLoadStrategy": "normal"},
+            "alwaysMatch": {"pageLoadStrategy": PageLoadStrategy.normal},
             "firstMatch": [
                 {"browserName": "chrome", "goog:chromeOptions": {"extensions": [], "args": []}},
                 {
