@@ -6,7 +6,6 @@ namespace OpenQA.Selenium.Internal.Logging
 {
     public class FileLogHandlerTest
     {
-        [Test]
         [TestCase(null)]
         [TestCase("")]
         public void ShouldNotAcceptIncorrectPath(string path)
@@ -29,10 +28,6 @@ namespace OpenQA.Selenium.Internal.Logging
                 }
 
                 Assert.That(File.ReadAllText(tempFile), Does.Contain("test message"));
-            }
-            catch (Exception)
-            {
-                throw;
             }
             finally
             {

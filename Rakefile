@@ -411,16 +411,16 @@ end
 
 task :prepare_release do
     RELEASE_TARGETS = [
-      '//java/src/org/openqa/selenium:client-zip',
-      '//java/src/org/openqa/selenium/grid:server-zip',
-      '//java/src/org/openqa/selenium/grid:executable-grid',
-      '//dotnet/src/webdriver:webdriver-pack',
-      '//dotnet/src/webdriver:webdriver-strongnamed-pack',
-      '//dotnet/src/support:support-pack',
-      '//dotnet/src/support:support-strongnamed-pack',
-      '//javascript/node/selenium-webdriver:selenium-webdriver',
-      '//py:selenium-wheel',
-      '//py:selenium-sdist',
+        '//java/src/org/openqa/selenium:client-zip',
+        '//java/src/org/openqa/selenium/grid:server-zip',
+        '//java/src/org/openqa/selenium/grid:executable-grid',
+        '//dotnet/src/webdriver:webdriver-pack',
+        '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+        '//dotnet/src/support:support-pack',
+        '//dotnet/src/support:support-strongnamed-pack',
+        '//javascript/node/selenium-webdriver:selenium-webdriver',
+        '//py:selenium-wheel',
+        '//py:selenium-sdist',
     ]
 
     RELEASE_TARGETS.each do |target|
@@ -440,13 +440,6 @@ task 'publish-pypi' do
     end
 end
 
-task 'publish-maven': JAVA_RELEASE_TARGETS do
-  creds = read_m2_user_pass
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
-  end
-end
-
 NUGET_RELEASE_ASSETS = [
   "./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
   "./bazel-bin/dotnet/src/webdriver/Selenium.Support.#{dotnet_version}.nupkg"
@@ -455,6 +448,13 @@ NUGET_RELEASE_ASSETS = [
 task 'publish-nuget' do
   NUGET_RELEASE_ASSETS.each do |asset|
     sh "dotnet nuget push #{asset} --api-key #{ENV[:NUGET_API_KEY]} --source https://api.nuget.org/v3/index.json"
+  end
+end
+
+task 'publish-maven': JAVA_RELEASE_TARGETS do
+  creds = read_m2_user_pass
+  JAVA_RELEASE_TARGETS.each do |p|
+    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
   end
 end
 
