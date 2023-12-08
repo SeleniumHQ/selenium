@@ -20,18 +20,18 @@ namespace OpenQA.Selenium.Internal.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="FileLogHandler"/> class with the specified file path.
         /// </summary>
-        /// <param name="path">The path of the log file.</param>
-        public FileLogHandler(string path)
+        /// <param name="filePath">The path of the log file.</param>
+        public FileLogHandler(string filePath)
         {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentException("File log path cannot be null or empty.", nameof(path));
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentException("File log path cannot be null or empty.", nameof(filePath));
 
-            var directory = Path.GetDirectoryName(path);
+            var directory = Path.GetDirectoryName(filePath);
             if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            _fileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+            _fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
             _fileStream.Seek(0, SeekOrigin.End);
             _streamWriter = new StreamWriter(_fileStream, System.Text.Encoding.UTF8)
             {
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             lock (_lockObj)
             {
-                _streamWriter.WriteLine($"{logEvent.Timestamp:r} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
+                _streamWriter.WriteLine($"{logEvent.Timestamp:yyyy-MM-dd HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
             }
         }
 
