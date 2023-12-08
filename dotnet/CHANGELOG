@@ -1,3 +1,11 @@
+v4.16.2
+======
+
+* Allow output ofinternal log messages to file (#13249)
+* Change a list of downloadable files to IReadOnlyList (#13265)
+* Change date format for file log
+* Improve file logging code smell (#13249)
+
 v4.16.1
 ======
 
