@@ -469,7 +469,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="method_missing-instance_method">
   
-    #<strong>method_missing</strong>(meth, *args, &amp;blk)  &#x21d2; <tt>Object</tt>  <span class="extras">(private)</span>
+    #<strong>method_missing</strong>(meth)  &#x21d2; <tt>Object</tt>  <span class="extras">(private)</span>
   
 
   
@@ -503,8 +503,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 123</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Style/MissingRespondToMissing
-</span>  <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>...</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Style/MissingRespondToMissing
+</span>  <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>...</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1040,7 +1040,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Nov  1 09:32:37 2023 by
+  Generated on Fri Dec  8 09:04:33 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>

@@ -158,7 +158,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#allow-instance_method" title="#allow (instance method)">#<strong>allow</strong>(ids)  &#x21d2; Object </a>
+      <a href="#allow-instance_method" title="#allow (instance method)">#<strong>allow</strong>(*ids)  &#x21d2; Object </a>
     
 
     
@@ -460,7 +460,7 @@
       
         &mdash;
         <div class='inline'>
-<p>Allow child projects to use Selenium&#39;s Logger pattern</p>
+<p>Allow child projects to use Selenium’s Logger pattern</p>
 </div>
       
     </li>
@@ -509,7 +509,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="allow-instance_method">
   
-    #<strong>allow</strong>(ids)  &#x21d2; <tt>Object</tt> 
+    #<strong>allow</strong>(*ids)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -554,7 +554,7 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/logger.rb', line 106</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_allow'>allow</span><span class='lparen'>(</span><span class='id identifier rubyid_ids'>ids</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_allow'>allow</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ids'>ids</span><span class='rparen'>)</span>
   <span class='ivar'>@allowed</span> <span class='op'>+=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_ids'>ids</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -599,7 +599,7 @@
         <span class='name'>id</span>
       
       
-        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Sybmol&gt;</tt>)</span>
+        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Symbol&gt;</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>[]</tt>)</em>
@@ -825,7 +825,7 @@
         <span class='name'>id</span>
       
       
-        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Sybmol&gt;</tt>)</span>
+        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Symbol&gt;</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>[]</tt>)</em>
@@ -968,7 +968,7 @@
         <span class='name'>id</span>
       
       
-        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Sybmol&gt;</tt>)</span>
+        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Symbol&gt;</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>[]</tt>)</em>
@@ -1198,7 +1198,7 @@
         <span class='name'>id</span>
       
       
-        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Sybmol&gt;</tt>)</span>
+        <span class='type'>(<tt>Symbol</tt>, <tt>Array&lt;Symbol&gt;</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>[]</tt>)</em>
@@ -1253,7 +1253,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Nov  1 09:32:31 2023 by
+  Generated on Fri Dec  8 09:04:32 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.34 (ruby-3.0.6).
 </div>
