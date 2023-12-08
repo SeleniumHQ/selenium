@@ -12,7 +12,7 @@ py)
   ;;
 rb)
   bazel run //rb:docs || exit
-  docs="$(bazel cquery --output=files //rb:docs 2> /dev/null).runfiles/selenium/docs/api/rb"
+  docs="bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb"
   ;;
 dotnet)
   # dotnet sdk should be installed
@@ -61,7 +61,7 @@ dotnet)
   ;;
 esac
 
-git add -A docs/api
+git add -A docs/api || exit
 
 read -p "Do you want to commit the changes? (Y/n):" changes </dev/tty
 
