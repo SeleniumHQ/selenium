@@ -471,10 +471,10 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Retrieves the downloadable files as a map of file names and their corresponding URLs.
+        /// Retrieves the downloadable files.
         /// </summary>
-        /// <returns>A list containing file names as keys and URLs as values.</returns>
-        public List<string> GetDownloadableFiles()
+        /// <returns>A read-only list of file names available for download.</returns>
+        public IReadOnlyList<string> GetDownloadableFiles()
         {
             var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
             if (enableDownloads == null || !(bool) enableDownloads) {

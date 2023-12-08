@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 API_DOCS_LANGUAGE=$1
+BRANCH_NAME=${2:-trunk}
 
 case ${API_DOCS_LANGUAGE} in
 java)
@@ -75,10 +76,10 @@ N | n) exit ;;
 esac
 
 echo "Committing changes"
-git commit -am "updating API docs"
+git commit -am "updating API docs for $API_DOCS_LANGUAGE"
 
 echo "pushing to origin gh-pages"
 git push origin gh-pages
 
-echo "switching back to trunk branch"
-git checkout trunk
+echo "switching back to designated branch"
+git checkout $BRANCH_NAME

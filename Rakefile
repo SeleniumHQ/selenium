@@ -50,12 +50,22 @@ $DEBUG = true if ENV['debug'] == 'true'
 
 verbose($DEBUG)
 
-def release_version
-  '4.16'
+def java_version
+  File.foreach('java/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
 end
 
-def version
-  "#{release_version}.0-SNAPSHOT"
+def dotnet_version
+  File.foreach('dotnet/selenium-dotnet-version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
+end
+
+def python_version
+  File.foreach('py/BUILD.bazel') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
+  end
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -129,7 +139,7 @@ task all: [
   :"selenium-java",
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
-task all_zip: [:'prep-release-zip']
+task all_zip: [:'java-release-zip', :'dotnet-release-zip']
 task tests: [
   '//java/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/test/org/openqa/selenium/firefox:test-synthesized',
@@ -326,30 +336,51 @@ task ios_driver: [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-task 'prep-release-zip': [
+task 'dotnet-release-zip': [
+  '//dotnet/src/webdriver:webdriver-pack',
+  '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+  '//dotnet/src/support:support-pack',
+  '//dotnet/src/support:support-strongnamed-pack',
+] do
+  [
+      "build/dist/selenium-dotnet-#{dotnet_version}.zip",
+      "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip",
+  ].each do |f|
+    rm_f(f) if File.exists?(f)
+  end
+    mkdir_p 'build/dist'
+    File.delete
+
+    cp "bazel-bin/dotnet/release.zip", "build/dist/selenium-dotnet-#{dotnet_version}.zip", preserve: false
+    chmod 0666, "build/dist/selenium-dotnet-#{dotnet_version}.zip"
+    cp "bazel-bin/dotnet/strongnamed.zip", "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip", preserve: false
+    chmod 0666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip"
+end
+
+task 'java-release-zip': [
   '//java/src/org/openqa/selenium:client-zip',
   '//java/src/org/openqa/selenium/grid:server-zip',
   '//java/src/org/openqa/selenium/grid:executable-grid',
 ] do
   [
-    "build/dist/selenium-server-#{version}.zip",
-    "build/dist/selenium-java-#{version}.zip",
-    "build/dist/selenium-server-#{version}.jar"
+    "build/dist/selenium-server-#{java_version}.zip",
+    "build/dist/selenium-java-#{java_version}.zip",
+    "build/dist/selenium-server-#{java_version}.jar"
   ].each do |f|
     rm_f(f) if File.exists?(f)
   end
 
   mkdir_p 'build/dist'
   File.delete
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{version}.zip", preserve: false
-  chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{version}.jar", preserve: false
-  chmod 0666, "build/dist/selenium-server-#{version}.jar"
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/server-zip.zip", "build/dist/selenium-server-#{java_version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-server-#{java_version}.zip"
+  cp "bazel-bin/java/src/org/openqa/selenium/client-zip.zip", "build/dist/selenium-java-#{java_version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-java-#{java_version}.zip"
+  cp "bazel-bin/java/src/org/openqa/selenium/grid/selenium", "build/dist/selenium-server-#{java_version}.jar", preserve: false
+  chmod 0777, "build/dist/selenium-server-#{java_version}.jar"
 end
 
-task 'release-java': %i[prep-release-zip publish-maven]
+task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
   # First check env vars, then the settings.xml config inside .m2
@@ -378,6 +409,37 @@ def read_m2_user_pass
   return [user, pass]
 end
 
+task :prepare_release do
+    RELEASE_TARGETS = [
+      '//java/src/org/openqa/selenium:client-zip',
+      '//java/src/org/openqa/selenium/grid:server-zip',
+      '//java/src/org/openqa/selenium/grid:executable-grid',
+      '//dotnet/src/webdriver:webdriver-pack',
+      '//dotnet/src/webdriver:webdriver-strongnamed-pack',
+      '//dotnet/src/support:support-pack',
+      '//dotnet/src/support:support-strongnamed-pack',
+      '//javascript/node/selenium-webdriver:selenium-webdriver',
+      '//py:selenium-wheel',
+      '//py:selenium-sdist',
+    ]
+
+    RELEASE_TARGETS.each do |target|
+        Bazel::execute('build', ['--config', 'release'], target)
+    end
+    Bazel::execute('build', ['--stamp'], '//rb:selenium-webdriver')
+end
+
+PYPI_ASSETS = [
+    "bazel-bin/py/selenium-#{python_version}-py3-none-any.whl",
+    "bazel-bin/py/selenium-#{python_version}.tar.gz"
+]
+
+task 'publish-pypi' do
+    PYPI_ASSETS.each do |asset|
+        sh "python3 -m twine upload #{asset}"
+    end
+end
+
 task 'publish-maven': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
   JAVA_RELEASE_TARGETS.each do |p|
@@ -385,9 +447,20 @@ task 'publish-maven': JAVA_RELEASE_TARGETS do
   end
 end
 
+NUGET_RELEASE_ASSETS = [
+  "./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
+  "./bazel-bin/dotnet/src/webdriver/Selenium.Support.#{dotnet_version}.nupkg"
+]
+
+task 'publish-nuget' do
+  NUGET_RELEASE_ASSETS.each do |asset|
+    sh "dotnet nuget push #{asset} --api-key #{ENV[:NUGET_API_KEY]} --source https://api.nuget.org/v3/index.json"
+  end
+end
+
 task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
   creds = read_m2_user_pass
-  if version.end_with?('-SNAPSHOT')
+  if java_version.end_with?('-SNAPSHOT')
     JAVA_RELEASE_TARGETS.each do |p|
       Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=false'], p)
     end

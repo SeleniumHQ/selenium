@@ -1,3 +1,20 @@
+v4.16.1
+======
+
+* Fix nuget target framework (#13253)
+
+v4.16.0
+======
+
+* Update rules_dotnet  (#13117)
+* Fix WSS scheme determination for DevTools connection (#13131)
+* Remove System.Drawing.Common as package dependency (#12781)
+* Add Runfiles support to bazel
+* Added TargetAttached datastructure to DevTools Target (#13175)
+* Allow overriding default Actions duration (#13229)
+* Add internal logging (#13140)
+* Add Chrome 120 and remove 117
+
 v4.15.0
 ======
 
