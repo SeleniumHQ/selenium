@@ -1,9 +1,10 @@
 require "open-uri"
 require "rake"
 
-version = "9.2.8.0"
+version = "9.4.5.0"
 gems = {
-  "inifile" => "3.0.0"
+  "inifile" => "3.0.0",
+  "net-telnet" => "0.2.0",
 }
 
 jar_name = ARGV.first

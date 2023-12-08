@@ -32,7 +32,6 @@ namespace OpenQA.Selenium.Internal.Logging
             Assert.That(logEvent.Timestamp, Is.EqualTo(DateTimeOffset.Now).Within(100).Milliseconds);
         }
 
-        [Test]
         [TestCase(LogEventLevel.Trace)]
         [TestCase(LogEventLevel.Debug)]
         [TestCase(LogEventLevel.Info)]
