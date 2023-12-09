@@ -19,7 +19,4 @@ jobs:
           process-only: 'issues'
           issue-inactive-days: '30'
           issue-lock-reason: ''
-          issue-comment: >
-            This issue has been automatically locked since there
-            has not been any recent activity after it was closed.
-            Please open a new issue for related bugs.
+
