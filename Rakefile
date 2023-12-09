@@ -337,10 +337,7 @@ task ios_driver: [
 ]
 
 task 'dotnet-release-zip': [
-  '//dotnet/src/webdriver:webdriver-pack',
-  '//dotnet/src/webdriver:webdriver-strongnamed-pack',
-  '//dotnet/src/support:support-pack',
-  '//dotnet/src/support:support-strongnamed-pack',
+  '//dotnet:all'
 ] do
   [
       "build/dist/selenium-dotnet-#{dotnet_version}.zip",
@@ -442,12 +439,12 @@ end
 
 NUGET_RELEASE_ASSETS = [
   "./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
-  "./bazel-bin/dotnet/src/webdriver/Selenium.Support.#{dotnet_version}.nupkg"
+  "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"
 ]
 
-task 'publish-nuget' do
+task 'publish-nuget': '//dotnet:all' do
   NUGET_RELEASE_ASSETS.each do |asset|
-    sh "dotnet nuget push #{asset} --api-key #{ENV[:NUGET_API_KEY]} --source https://api.nuget.org/v3/index.json"
+    sh "dotnet nuget push #{asset} --api-key #{ENV['NUGET_API_KEY']} --source https://api.nuget.org/v3/index.json"
   end
 end
 
