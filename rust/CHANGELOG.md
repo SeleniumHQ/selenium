@@ -1,3 +1,14 @@
+0.4.16
+======
+* Use online mapping to discover proper geckodriver version (#11671) (#13133)
+* Refactor logic to discover driver version in Firefox module using match
+* Refactor logic to discover driver version and download browser if necessary
+* Replace function for creating parent path if not exists
+* Fix condition to download browser in discover local browser logic
+* Use drivers found in PATH only when browser version is not specified (#13159)
+* Panic if JSON output is used but no entries are collected (#13101)
+* Fix webview2 support when browser path is set (#13204)
+
 0.4.15
 ======
 * Include mirror arguments to change default online repository URLs (#11687)

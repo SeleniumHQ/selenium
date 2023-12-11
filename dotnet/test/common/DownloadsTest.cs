@@ -41,7 +41,7 @@ namespace OpenQA.Selenium
         {
             DownloadWithBrowser();
 
-            List<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
+            IReadOnlyList<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
             Assert.That(names, Contains.Item("file_1.txt"));
             Assert.That(names, Contains.Item("file_2.jpg"));
         }
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium
         {
             DownloadWithBrowser();
 
-            List<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
+            IReadOnlyList<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
             string fileName = names[0];
             string targetDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -72,7 +72,7 @@ namespace OpenQA.Selenium
 
             ((RemoteWebDriver)driver).DeleteDownloadableFiles();
 
-            List<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
+            IReadOnlyList<string> names = ((RemoteWebDriver) driver).GetDownloadableFiles();
             Assert.IsEmpty(names, "The names list should be empty.");
         }
 

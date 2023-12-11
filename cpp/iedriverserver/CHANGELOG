@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.16.0.0
+========
+* Fixed typos in logged messages (#13120)
+
+
 v4.14.0.0
 ========
 * Fix potential null pointer access in CookieManager

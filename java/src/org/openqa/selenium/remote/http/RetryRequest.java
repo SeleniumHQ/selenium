@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
@@ -33,7 +32,6 @@ import dev.failsafe.event.ExecutionAttemptedEvent;
 import dev.failsafe.function.CheckedFunction;
 import java.net.ConnectException;
 import java.util.logging.Logger;
-import org.openqa.selenium.TimeoutException;
 
 public class RetryRequest implements Filter {
 
@@ -55,15 +53,6 @@ public class RetryRequest implements Filter {
                       getDebugLogLevel(),
                       "Connection failure #{0}. Retrying.",
                       e.getAttemptCount()))
-          .build();
-
-  // Retry on read timeout.
-  private static final RetryPolicy<HttpResponse> readTimeoutPolicy =
-      RetryPolicy.<HttpResponse>builder()
-          .handle(TimeoutException.class)
-          .withMaxRetries(3)
-          .onRetry(
-              e -> LOG.log(getDebugLogLevel(), "Read timeout #{0}. Retrying.", e.getAttemptCount()))
           .build();
 
   // Retry if server is unavailable or an internal server error occurs without response body.
@@ -88,7 +77,6 @@ public class RetryRequest implements Filter {
     return req ->
         Failsafe.with(fallback)
             .compose(serverErrorPolicy)
-            .compose(readTimeoutPolicy)
             .compose(connectionFailurePolicy)
             .get(() -> next.execute(req));
   }
@@ -102,11 +90,6 @@ public class RetryRequest implements Filter {
             .setStatus(HTTP_CLIENT_TIMEOUT)
             .setContent(
                 asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Connection failure"))));
-      } else if (exception instanceof TimeoutException) {
-        return new HttpResponse()
-            .setStatus(HTTP_GATEWAY_TIMEOUT)
-            .setContent(
-                asJson(ImmutableMap.of("value", ImmutableMap.of("message", "Read timeout"))));
       } else throw exception;
     } else if (executionAttemptedEvent.getLastResult() != null) {
       HttpResponse response = executionAttemptedEvent.getLastResult();
