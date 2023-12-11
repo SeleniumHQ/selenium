@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.router.httpd;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.router.httpd.RouterOptions.NETWORK;
+import static org.openqa.selenium.grid.router.httpd.RouterOptions.NETWORK_SECTION;
+import static org.openqa.selenium.grid.router.httpd.RouterOptions.ROUTER_SECTION;
 
 import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
@@ -38,7 +39,7 @@ public class RouterFlags implements HasRoles {
           "Relax checks on origin header and content type of incoming requests,"
               + " in contravention of strict W3C spec compliance.",
       arity = 1)
-  @ConfigValue(section = "network", name = "relax-checks", example = "true")
+  @ConfigValue(section = NETWORK_SECTION, name = "relax-checks", example = "true")
   private Boolean relaxChecks = false;
 
   @Parameter(
@@ -46,7 +47,7 @@ public class RouterFlags implements HasRoles {
       description =
           "User name clients must use to connect to the server. "
               + "Both this and password need to be set in order to be used.")
-  @ConfigValue(section = "router", name = "username", example = "admin")
+  @ConfigValue(section = ROUTER_SECTION, name = "username", example = "admin")
   private String username;
 
   @Parameter(
@@ -54,7 +55,7 @@ public class RouterFlags implements HasRoles {
       description =
           "Password clients must use to connect to the server. "
               + "Both this and the username need to be set in order to be used.")
-  @ConfigValue(section = "router", name = "password", example = "hunter2")
+  @ConfigValue(section = ROUTER_SECTION, name = "password", example = "hunter2")
   private String password;
 
   @Parameter(
@@ -63,8 +64,15 @@ public class RouterFlags implements HasRoles {
       description =
           "A sub-path that should be considered for all user facing routes on the"
               + " Hub/Router/Standalone")
-  @ConfigValue(section = NETWORK, name = "sub-path", example = "my_company/selenium_grid")
+  @ConfigValue(section = NETWORK_SECTION, name = "sub-path", example = "my_company/selenium_grid")
   public String subPath;
+
+  @Parameter(
+      names = {"--disable-ui"},
+      arity = 1,
+      description = "Disable the Grid UI")
+  @ConfigValue(section = ROUTER_SECTION, name = "disable-ui", example = "true")
+  public boolean disableUi = false;
 
   @Override
   public Set<Role> getRoles() {
