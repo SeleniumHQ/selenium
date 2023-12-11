@@ -21,8 +21,9 @@ use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
-    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    get_binary_extension, path_to_string,
+    capitalize, collect_files_from_cache, create_parent_path_if_not_exists,
+    create_path_if_not_exists, default_cache_folder, find_latest_from_cache, get_binary_extension,
+    path_to_string,
 };
 use crate::files::{parse_version, uncompress, BrowserPath};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
@@ -45,7 +46,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use std::{env, fs};
-use walkdir::{DirEntry, WalkDir};
+use walkdir::DirEntry;
 
 pub mod chrome;
 pub mod config;
@@ -842,13 +843,34 @@ pub trait SeleniumManager {
         }
     }
 
+    fn is_browser(&self, entry: &DirEntry) -> bool {
+        if MACOS.is(self.get_os()) && !self.is_firefox() {
+            let entry_path = path_to_string(entry.path());
+            self.is_in_cache(entry, &capitalize(self.get_browser_name()))
+                && entry_path.contains(".app/Contents/MacOS")
+                && !entry_path.contains("Framework")
+        } else {
+            self.is_in_cache(entry, &self.get_browser_name_with_extension())
+        }
+    }
+
     fn is_driver(&self, entry: &DirEntry) -> bool {
+        self.is_in_cache(entry, &self.get_driver_name_with_extension())
+    }
+
+    fn is_in_cache(&self, entry: &DirEntry, file_name: &str) -> bool {
         let is_file = entry.path().is_file();
 
-        let is_driver = entry
+        let is_file_name = entry
             .file_name()
             .to_str()
-            .map(|s| s.contains(&self.get_driver_name_with_extension()))
+            .map(|s| {
+                if MACOS.is(self.get_os()) && !self.is_firefox() {
+                    s.contains(file_name)
+                } else {
+                    s.ends_with(file_name)
+                }
+            })
             .unwrap_or(false);
 
         let match_os = entry
@@ -857,7 +879,7 @@ pub trait SeleniumManager {
             .map(|s| s.contains(self.get_platform_label()))
             .unwrap_or(false);
 
-        is_file && is_driver && match_os
+        is_file && is_file_name && match_os
     }
 
     fn is_driver_and_matches_browser_version(&self, entry: &DirEntry) -> bool {
@@ -876,14 +898,34 @@ pub trait SeleniumManager {
         self.is_driver(entry) && match_driver_version
     }
 
+    fn get_browser_path_or_latest_from_cache(&self) -> String {
+        let mut browser_path = self.get_browser_path().to_string();
+        if browser_path.is_empty() {
+            let best_browser_from_cache = &self
+                .find_best_browser_from_cache()
+                .unwrap_or_default()
+                .unwrap_or_default();
+            if best_browser_from_cache.exists() {
+                self.get_logger().warn(format!(
+                    "There was an error managing {}; using browser found in the cache",
+                    self.get_browser_name()
+                ));
+                browser_path = path_to_string(best_browser_from_cache);
+            }
+        }
+        browser_path
+    }
+
+    fn find_best_browser_from_cache(&self) -> Result<Option<PathBuf>, Error> {
+        let cache_path = self.get_cache_path()?.unwrap_or_default();
+        find_latest_from_cache(&cache_path, |entry| self.is_browser(entry))
+    }
+
     fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Error> {
         let cache_path = self.get_cache_path()?.unwrap_or_default();
-        let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
-            .into_iter()
-            .filter_map(|entry| entry.ok())
-            .filter(|entry| self.is_driver_and_matches_browser_version(entry))
-            .map(|entry| entry.path().to_owned())
-            .collect();
+        let drivers_in_cache_matching_version = collect_files_from_cache(&cache_path, |entry| {
+            self.is_driver_and_matches_browser_version(entry)
+        });
 
         // First we look for drivers in cache that matches browser version (should work for Chrome and Edge)
         if !drivers_in_cache_matching_version.is_empty() {
@@ -896,17 +938,7 @@ pub trait SeleniumManager {
             ))
         } else {
             // If not available, we look for the latest available driver in the cache
-            let drivers_in_cache: Vec<PathBuf> = WalkDir::new(&cache_path)
-                .into_iter()
-                .filter_map(|entry| entry.ok())
-                .filter(|entry| self.is_driver(entry))
-                .map(|entry| entry.path().to_owned())
-                .collect();
-            if !drivers_in_cache.is_empty() {
-                Ok(Some(drivers_in_cache.iter().last().unwrap().to_owned()))
-            } else {
-                Ok(None)
-            }
+            find_latest_from_cache(&cache_path, |entry| self.is_driver(entry))
         }
     }
 

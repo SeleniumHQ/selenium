@@ -211,7 +211,11 @@ fn main() {
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
-            log_driver_and_browser_path(log, &driver_path, selenium_manager.get_browser_path());
+            log_driver_and_browser_path(
+                log,
+                &driver_path,
+                &selenium_manager.get_browser_path_or_latest_from_cache(),
+            );
             flush_and_exit(OK, log, None);
         })
         .unwrap_or_else(|err| {
@@ -221,13 +225,13 @@ fn main() {
             {
                 log.warn(format!(
                     "There was an error managing {} ({}); using driver found in the cache",
-                    selenium_manager.get_browser_name(),
+                    selenium_manager.get_driver_name(),
                     err
                 ));
                 log_driver_and_browser_path(
                     log,
                     &best_driver_from_cache,
-                    selenium_manager.get_browser_path(),
+                    &selenium_manager.get_browser_path_or_latest_from_cache(),
                 );
                 flush_and_exit(OK, log, Some(err));
             } else if selenium_manager.is_offline() {
