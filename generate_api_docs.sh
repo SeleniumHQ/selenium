@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 API_DOCS_LANGUAGE=$1
+BRANCH_NAME=${2:-trunk}
 
 case ${API_DOCS_LANGUAGE} in
 java)
@@ -11,7 +12,7 @@ py)
   ;;
 rb)
   bazel run //rb:docs || exit
-  docs="$(bazel cquery --output=files //rb:docs 2> /dev/null).runfiles/selenium/docs/api/rb"
+  docs="bazel-bin/rb/docs.rb.sh.runfiles/selenium/docs/api/rb"
   ;;
 dotnet)
   # dotnet sdk should be installed
@@ -60,7 +61,7 @@ dotnet)
   ;;
 esac
 
-git add -A docs/api
+git add -A docs/api || exit
 
 read -p "Do you want to commit the changes? (Y/n):" changes </dev/tty
 
@@ -75,10 +76,10 @@ N | n) exit ;;
 esac
 
 echo "Committing changes"
-git commit -am "updating API docs"
+git commit -am "updating API docs for $API_DOCS_LANGUAGE"
 
 echo "pushing to origin gh-pages"
 git push origin gh-pages
 
-echo "switching back to trunk branch"
-git checkout trunk
+echo "switching back to designated branch"
+git checkout $BRANCH_NAME

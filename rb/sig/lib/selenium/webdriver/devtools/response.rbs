@@ -1,0 +1,31 @@
+module Selenium
+  module WebDriver
+    class DevTools
+      class Response
+        @id: untyped
+
+        @code: untyped
+
+        @body: untyped
+
+        @headers: untyped
+
+        attr_accessor code: untyped
+
+        attr_accessor body: untyped
+
+        attr_accessor headers: untyped
+
+        attr_reader id: untyped
+
+        def self.from: (untyped id, untyped encoded_body, untyped params) -> untyped
+
+        def initialize: (id: untyped, code: untyped, body: untyped, headers: untyped) -> void
+
+        def ==: (untyped other) -> untyped
+
+        def inspect: () -> ::String
+      end
+    end
+  end
+end

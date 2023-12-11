@@ -36,7 +36,7 @@ public class ResponseData {
   private final long bytesReceived;
   private final long headersSize;
   private final long bodySize;
-  private final long content;
+  private final Optional<Long> content;
   private final Optional<AuthChallenge> authChallenge;
 
   private ResponseData(
@@ -50,7 +50,7 @@ public class ResponseData {
       long bytesReceived,
       long headersSize,
       long bodySize,
-      long content,
+      Optional<Long> content,
       Optional<AuthChallenge> authChallenge) {
     this.url = url;
     this.protocol = protocol;
@@ -77,7 +77,7 @@ public class ResponseData {
     long bytesReceived = 0;
     long headersSize = 0;
     long bodySize = 0;
-    long content = 0;
+    Optional<Long> content = Optional.empty();
     Optional<AuthChallenge> authChallenge = Optional.empty();
     input.beginObject();
     while (input.hasNext()) {
@@ -98,7 +98,7 @@ public class ResponseData {
           fromCache = input.read(Boolean.class);
           break;
         case "headers":
-          headers = input.read(String.class);
+          headers = input.read(new TypeToken<List<Header>>() {}.getType());
           break;
         case "mimeType":
           mimeType = input.read(String.class);
@@ -115,7 +115,7 @@ public class ResponseData {
         case "content":
           Map<String, Long> responseContent =
               input.read(new TypeToken<Map<String, Long>>() {}.getType());
-          content = responseContent.get("size");
+          content = Optional.ofNullable(responseContent.get("size"));
           break;
         case "authChallenge":
           authChallenge = Optional.of(input.read(AuthChallenge.class));
@@ -182,7 +182,7 @@ public class ResponseData {
     return bodySize;
   }
 
-  public long getContent() {
+  public Optional<Long> getContent() {
     return content;
   }
 

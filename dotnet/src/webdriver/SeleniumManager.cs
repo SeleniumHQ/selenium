@@ -18,6 +18,7 @@
 
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,8 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
+        private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
+
         private static readonly string BinaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
 
         static SeleniumManager()
@@ -115,7 +118,11 @@ namespace OpenQA.Selenium
                 // Cannot set Browser Location for this driver and that is ok
             }
 
-            return (string)output["driver_path"];
+            var driverPath = (string)output["driver_path"];
+
+            _logger.Trace($"Driver path: {driverPath}");
+
+            return driverPath;
         }
 
         /// <summary>

@@ -1,0 +1,5 @@
+module Selenium
+  module DevTools
+    VERSION: String
+  end
+end

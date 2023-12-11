@@ -1,0 +1,25 @@
+module Selenium
+  module WebDriver
+    class LogEntry
+      @level: String
+
+      @timestamp: Integer
+
+      @message: String
+
+      attr_reader level: String
+
+      attr_reader timestamp: Integer
+
+      attr_reader message: String
+
+      def initialize: (String level, Integer timestamp, String message) -> void
+
+      def as_json: (*untyped?) -> Hash[String, Integer | String]
+
+      def to_s: () -> String
+
+      def time: () -> Time
+    end
+  end
+end

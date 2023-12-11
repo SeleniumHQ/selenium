@@ -17,11 +17,10 @@
 import pytest
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver import Chrome
 
 
-def test_network_conditions_emulation():
-    driver = Chrome()
+@pytest.mark.no_driver_after_test
+def test_network_conditions_emulation(driver):
     driver.set_network_conditions(offline=False, latency=56, throughput=789)  # additional latency (ms)
     conditions = driver.get_network_conditions()
     assert conditions["offline"] is False

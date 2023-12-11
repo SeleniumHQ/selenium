@@ -38,7 +38,7 @@ module Selenium
         it 'can fall back to an older devtools if necessary' do
           msg1 = /Could not load selenium-devtools v#{version}. Trying older versions/
           msg2 = /Using selenium-devtools version v#{current_version}, some features may not work as expected/
-          expect { described_class.load_version }.to output(match(msg1).and(match(msg2))).to_stdout_from_any_process
+          expect { described_class.load_version }.to output(match(msg1).and(match(msg2))).to_stderr_from_any_process
         end
       end
     end

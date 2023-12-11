@@ -61,6 +61,7 @@ pub struct EdgeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub download_browser: bool,
     pub browser_url: Option<String>,
 }
 
@@ -81,6 +82,7 @@ impl EdgeManager {
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            download_browser: false,
             browser_url: None,
         }))
     }
@@ -107,25 +109,25 @@ impl SeleniumManager for EdgeManager {
         if self.is_webview2() {
             HashMap::from([(
                 BrowserPath::new(WINDOWS, STABLE),
-                r#"Microsoft\EdgeWebView\Application"#,
+                r"Microsoft\EdgeWebView\Application",
             )])
         } else {
             HashMap::from([
                 (
                     BrowserPath::new(WINDOWS, STABLE),
-                    r#"Microsoft\Edge\Application\msedge.exe"#,
+                    r"Microsoft\Edge\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, BETA),
-                    r#"Microsoft\Edge Beta\Application\msedge.exe"#,
+                    r"Microsoft\Edge Beta\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, DEV),
-                    r#"Microsoft\Edge Dev\Application\msedge.exe"#,
+                    r"Microsoft\Edge Dev\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(WINDOWS, NIGHTLY),
-                    r#"Microsoft\Edge SxS\Application\msedge.exe"#,
+                    r"Microsoft\Edge SxS\Application\msedge.exe",
                 ),
                 (
                     BrowserPath::new(MACOS, STABLE),
@@ -158,20 +160,20 @@ impl SeleniumManager for EdgeManager {
             let arch = self.get_arch();
             if X32.is(arch) {
                 (
-                    r#"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             } else {
                 (
-                    r#"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"#,
+                    r"HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
                     REG_PV_ARG,
                     "",
                 )
             }
         } else {
             (
-                r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
+                r"HKCU\Software\Microsoft\Edge\BLBeacon",
                 REG_VERSION_ARG,
                 DASH_DASH_VERSION,
             )
@@ -518,6 +520,14 @@ impl SeleniumManager for EdgeManager {
             "msedge"
         };
         Ok(Some(browser_label))
+    }
+
+    fn is_download_browser(&self) -> bool {
+        self.download_browser
+    }
+
+    fn set_download_browser(&mut self, download_browser: bool) {
+        self.download_browser = download_browser;
     }
 }
 

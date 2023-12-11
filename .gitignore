@@ -99,7 +99,6 @@ ipch/
 geckodriver.log
 ghostdriver.log
 .tags
-.ruby-version
 GPATH
 GRTAGS
 GSYMS
@@ -108,6 +107,7 @@ GTAGS
 /rb/.idea
 rb/bin/
 rb/lib/selenium/devtools/v1*
+rb/.gem_rbs_collection/
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml
@@ -136,3 +136,5 @@ bazel-testlogs
 *.crt
 *.key
 javascript/node/selenium-webdriver/.vscode/settings.json
+
+dotnet-bin

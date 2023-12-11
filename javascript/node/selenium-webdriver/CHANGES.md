@@ -1,3 +1,31 @@
+## 4.16.0
+
+#### :bug: Bug fix
+
+* Fix logging levels in http.js and webdriver.js (#13098)
+* Remove unused targets from the JS tree (#13129)
+
+* #### :nail_care: Polish
+
+* Add CDP v120 and remove v117
+
+
+## 4.15.0
+
+#### :bug: Bug fix
+
+* Replace calls to console.log with managed loggers (#12909)
+
+#### :nail_care: Polish
+
+* Add CDP v119 and remove v116
+
+#### :rocket: New Feature
+
+* Add BiDi captureScreenshot command (#12510)
+* Add BiDi browsing context activate command, handle user prompt command and reload command
+* Add BiDi browsing context commands and events (#13078)
+
 ## 4.14.0
 
 #### :nail_care: Polish

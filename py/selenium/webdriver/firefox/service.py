@@ -45,7 +45,7 @@ class Service(service.Service):
         self.service_args = service_args or []
 
         super().__init__(
-            executable=executable_path,
+            executable_path=executable_path,
             port=port,
             log_output=log_output,
             env=env,

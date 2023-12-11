@@ -165,11 +165,11 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
       ctx.fireChannelRead(close);
     } else if (frame instanceof PingWebSocketFrame) {
       ctx.write(new PongWebSocketFrame(frame.isFinalFragment(), frame.rsv(), frame.content()));
-    } else if (frame instanceof ContinuationWebSocketFrame) {
-      ctx.write(frame);
     } else if (frame instanceof PongWebSocketFrame) {
       frame.release();
-    } else if (frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame) {
+    } else if (frame instanceof BinaryWebSocketFrame
+        || frame instanceof TextWebSocketFrame
+        || frame instanceof ContinuationWebSocketFrame) {
       // Allow the rest of the pipeline to deal with this.
       ctx.fireChannelRead(frame);
     } else {

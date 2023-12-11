@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
+using System.Linq;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -22,8 +23,16 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
-            var runfiles = Runfiles.Create();
-            var dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+            string dataFilePath;
+            try
+            {
+                var runfiles = Runfiles.Create();
+                dataFilePath = runfiles.Rlocation("selenium/dotnet/test/common/appconfig.json");
+            }
+            catch (FileNotFoundException)
+            {
+                dataFilePath = "appconfig.json";
+            }
             string currentDirectory = this.CurrentDirectory;
 
             string content = File.ReadAllText(dataFilePath);
@@ -50,17 +59,18 @@ namespace OpenQA.Selenium.Environment
             this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = null;
-            try
+            // Search for the driver type in the all assemblies,
+            // bazel uses unpredictable assembly names to execute tests
+            driverType = AppDomain.CurrentDomain.GetAssemblies()
+                .Reverse()
+                .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
+                .FirstOrDefault(t => t != null);
+
+            if (driverType == null)
             {
-                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
-            }
-            catch (FileNotFoundException)
-            {
-                driverAssembly = Assembly.GetExecutingAssembly();
+                throw new ArgumentOutOfRangeException($"Unable to find driver type {driverConfig.DriverTypeName}");
             }
 
-            driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
 

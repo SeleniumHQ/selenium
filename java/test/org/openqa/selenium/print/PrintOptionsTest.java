@@ -19,6 +19,7 @@ package org.openqa.selenium.print;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,14 @@ class PrintOptionsTest {
   }
 
   @Test
+  void setsPageRanges() {
+    PrintOptions printOptions = new PrintOptions();
+
+    printOptions.setPageRanges(List.of("1-2", "6-7"));
+    assertThat(printOptions.getPageRanges().length).isEqualTo(2);
+  }
+
+  @Test
   void toMapContainsProperKey() {
     PrintOptions printOptions = new PrintOptions();
 
@@ -63,5 +72,10 @@ class PrintOptionsTest {
     assertThat(map.containsKey("background")).isTrue();
     assertThat(map.containsKey("pageRanges")).isTrue();
     assertThat(map.containsKey("margin")).isTrue();
+
+    Map<String, Double> margin = (Map<String, Double>) map.get("margin");
+    assertThat(margin.size()).isEqualTo(4);
+    Map<String, Double> page = (Map<String, Double>) map.get("page");
+    assertThat(page.size()).isEqualTo(2);
   }
 }

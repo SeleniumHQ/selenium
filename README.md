@@ -260,9 +260,10 @@ Supported environment variables:
 - `EDGE_BINARY` - path to test specific Edge browser
 - `FIREFOX_BINARY` - path to test specific Firefox browser
 
-To run with a specific version of Ruby you can change the version in `rb/ruby_version.bzl` or from command line:
+To run with a specific version of Ruby you can change the version in `rb/.ruby-version` or from command line:
+
 ```sh
-echo 'RUBY_VERSION = "<X.Y.Z>"' > rb/ruby_version.bzl
+echo '<X.Y.Z>' > rb/.ruby-version
 ```
 
 If you want to debug code in tests, you can do it via [`debug`](https://github.com/ruby/debug) gem:
