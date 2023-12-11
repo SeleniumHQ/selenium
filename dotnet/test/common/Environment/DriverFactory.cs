@@ -21,15 +21,7 @@ namespace OpenQA.Selenium.Environment
 
         public DriverFactory(string driverPath, string browserBinaryLocation)
         {
-            if (string.IsNullOrEmpty(driverPath))
-            {
-                this.driverPath = TestContext.CurrentContext.TestDirectory;
-            }
-            else
-            {
-                this.driverPath = driverPath;
-            }
-
+            this.driverPath = driverPath;
             this.browserBinaryLocation = browserBinaryLocation;
 
             this.PopulateServiceTypes();
@@ -63,6 +55,8 @@ namespace OpenQA.Selenium.Environment
 
         public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions, bool logging = false)
         {
+            Console.WriteLine($"Creating new driver of {driverType} type...");
+
             Browser browser = Browser.All;
             DriverService service = null;
             DriverOptions options = null;

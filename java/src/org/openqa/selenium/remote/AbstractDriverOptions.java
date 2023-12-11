@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
@@ -98,6 +99,11 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions>
 
   public DO setProxy(Proxy proxy) {
     setCapability(PROXY, Require.nonNull("Proxy", proxy));
+    return (DO) this;
+  }
+
+  public DO setEnableDownloads(boolean enableDownloads) {
+    setCapability(ENABLE_DOWNLOADS, enableDownloads);
     return (DO) this;
   }
 

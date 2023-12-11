@@ -1,3 +1,39 @@
+v4.16.2
+======
+
+* Allow output ofinternal log messages to file (#13249)
+* Change a list of downloadable files to IReadOnlyList (#13265)
+* Change date format for file log
+* Improve file logging code smell (#13249)
+
+v4.16.1
+======
+
+* Fix nuget target framework (#13253)
+
+v4.16.0
+======
+
+* Update rules_dotnet  (#13117)
+* Fix WSS scheme determination for DevTools connection (#13131)
+* Remove System.Drawing.Common as package dependency (#12781)
+* Add Runfiles support to bazel
+* Added TargetAttached datastructure to DevTools Target (#13175)
+* Allow overriding default Actions duration (#13229)
+* Add internal logging (#13140)
+* Add Chrome 120 and remove 117
+
+v4.15.0
+======
+
+* Do not set binary as empty string (#12738)
+* Store the mutated element for the user not just the target id (#12948)
+* Do not pack Selenium Manager binaries by consumer packages
+* Fix driver service path determination when starting it directly
+* Improve nuget packages metadata (#12873)
+* Add CDP files for v119 and remove v116
+* Implement file downloads (#12979)
+
 v4.14.1
 ======
 * Fix add CDP files for v118 and remove v115

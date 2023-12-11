@@ -13,10 +13,10 @@ dotnet_nunit_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = SMALL_TESTS,
-    private_deps = [
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
-    target_frameworks = ["net7.0"],
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver",
@@ -44,10 +44,10 @@ dotnet_nunit_test_suite(
     data = [
         "//dotnet/test/common:test-data",
     ],
-    private_deps = [
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
         framework("nuget", "NETStandard.Library"),
     ],
-    target_frameworks = ["net7.0"],
     deps = [
         "//dotnet/src/support",
         "//dotnet/src/webdriver",

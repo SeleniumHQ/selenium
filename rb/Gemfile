@@ -6,3 +6,4 @@ Dir["#{__dir__}/*.gemspec"].each do |spec|
 end
 
 gem 'debug', '~> 1.7', require: false, platforms: %i[mri mingw x64_mingw]
+gem 'steep', '~> 1.5.0', require: false, platforms: %i[mri mingw x64_mingw]

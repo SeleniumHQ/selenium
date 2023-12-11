@@ -60,7 +60,7 @@ module Selenium
           @capabilities = Capabilities.json_create(capabilities)
 
           case @capabilities[:browser_name]
-          when 'chrome'
+          when 'chrome', 'chrome-headless-shell'
             extend(WebDriver::Chrome::Features)
           when 'firefox'
             extend(WebDriver::Firefox::Features)
@@ -82,7 +82,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
+            name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -391,28 +391,9 @@ module Selenium
         end
 
         def send_keys_to_element(element, keys)
-          # TODO: rework file detectors before Selenium 4.0
-          if @file_detector
-            local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
-            if local_files&.any?
-              keys = local_files.map { |local_file| upload(local_file) }
-              keys = Array(keys.join("\n"))
-            end
-          end
-
-          # Keep .split(//) for backward compatibility for now
+          keys = upload_if_necessary(keys) if @file_detector
           text = keys.join
           execute :element_send_keys, {id: element}, {value: text.chars, text: text}
-        end
-
-        def upload(local_file)
-          unless File.file?(local_file)
-            WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!",
-                                   id: :file_detector)
-            raise Error::WebDriverError, "You are trying to work with something that isn't a file."
-          end
-
-          execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
         end
 
         def clear_element(element)

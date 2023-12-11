@@ -17,9 +17,26 @@
 import typing
 from abc import ABCMeta
 from abc import abstractmethod
+from enum import Enum
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
+
+
+class PageLoadStrategy(str, Enum):
+    """Enum of possible page load strategies.
+
+    Selenium support following strategies:
+        * normal (default) - waits for all resources to download
+        * eager - DOM access is ready, but other resources like images may still be loading
+        * none - does not block `WebDriver` at all
+
+    Docs: https://www.selenium.dev/documentation/webdriver/drivers/options/#pageloadstrategy.
+    """
+
+    normal = "normal"
+    eager = "eager"
+    none = "none"
 
 
 class _BaseOptionsDescriptor:
@@ -27,7 +44,7 @@ class _BaseOptionsDescriptor:
         self.name = name
 
     def __get__(self, obj, cls):
-        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect"):
+        if self.name in ("acceptInsecureCerts", "strictFileInteractability", "setWindowRect", "se:downloadsEnabled"):
             return obj._caps.get(self.name, False)
         return obj._caps.get(self.name)
 
@@ -322,11 +339,33 @@ class BaseOptions(metaclass=ABCMeta):
         - `None`
     """
 
+    enable_downloads = _BaseOptionsDescriptor("se:downloadsEnabled")
+    """Gets and Sets whether session can download files.
+
+    Usage
+    -----
+    - Get
+        - `self.enable_downloads`
+    - Set
+        - `self.enable_downloads` = `value`
+
+    Parameters
+    ----------
+    `value`: `bool`
+
+    Returns
+    -------
+    - Get
+        - `bool`
+    - Set
+        - `None`
+    """
+
     def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities
         self._proxy = None
-        self.set_capability("pageLoadStrategy", "normal")
+        self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
         self.mobile_options = None
 
     @property

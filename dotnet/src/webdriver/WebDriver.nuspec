@@ -4,31 +4,27 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2023 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>Selenium WebDriver</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>.NET bindings for the Selenium WebDriver API</summary>
     <description>
-      Selenium is a set of different software tools each with a different approach
-      to supporting browser automation. These tools are highly flexible, allowing
-      many options for locating and manipulating elements within a browser, and one
-      of its key features is the support for automating multiple browser platforms.
-      This package contains the .NET bindings for the concise and object-based
-      Selenium WebDriver API, which uses native OS-level events to manipulate the
-      browser, bypassing the JavaScript sandbox, and does not require the Selenium
-      Server to automate the browser.
+      Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.
     </description>
     <projectUrl>https://selenium.dev</projectUrl>
-    <repository url="https://github.com/SeleniumHQ/selenium" />
+    <repository type="GitHub" url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
     <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
-    <icon>images\icon.png</icon>
+    <icon>icon.png</icon>
     <tags>selenium webdriver browser automation</tags>
+    <readme>README.md</readme>
+    <releaseNotes>
+      See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG.
+    </releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
-        <dependency id="System.Drawing.Common" version="7.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <frameworkAssemblies>

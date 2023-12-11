@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,6 +43,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
+    
     <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="cdp\**" />
@@ -61,7 +64,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,19 +95,16 @@
 
   <PropertyGroup>
     <BaseSeleniumManagerPath>..\..\..\common\manager</BaseSeleniumManagerPath>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <BaseImagePath>..\..\..\common\images</BaseImagePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
-    <None Include="build\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
+    <None Include="assets\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
+    <None Include="assets\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
 
-    <None Include="$(BaseImagePath)\selenium_logo_small.png" Pack="true" PackagePath="\logo.png" Visible="false" />
+    <None Include="$(BaseImagePath)\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
 
-    <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="\manager\linux" Visible="false" />
+    <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="manager\linux" Visible="false" />
     <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="manager\macos" Visible="false" />
     <None Include="$(BaseSeleniumManagerPath)\windows\selenium-manager.exe" Pack="true" PackagePath="manager\windows" Visible="false" />
   </ItemGroup>

@@ -33,6 +33,8 @@ module Selenium
           'security.csp.enable' => false
         }.freeze
 
+        LOCK_FILES = %w[.parentlock parent.lock lock].freeze
+
         attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :load_no_focus_lib
 
@@ -176,7 +178,7 @@ module Selenium
         end
 
         def delete_lock_files(directory)
-          %w[.parentlock parent.lock].each do |name|
+          LOCK_FILES.each do |name|
             FileUtils.rm_f File.join(directory, name)
           end
         end

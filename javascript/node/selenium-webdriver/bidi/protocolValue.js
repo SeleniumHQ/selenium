@@ -25,7 +25,7 @@ const TYPE_CONSTANT = 'type'
 const VALUE_CONSTANT = 'value'
 const RemoteReferenceType = {
   HANDLE: 'handle',
-  SHARED_ID: 'shareId',
+  SHARED_ID: 'sharedId',
 }
 
 class LocalValue {
@@ -165,12 +165,12 @@ class RemoteValue {
 }
 
 class ReferenceValue {
-  constructor(handle, shareId) {
+  constructor(handle, sharedId) {
     if (handle === RemoteReferenceType.HANDLE) {
-      this.handle = shareId
+      this.handle = sharedId
     } else {
       this.handle = handle
-      this.shareId = shareId
+      this.sharedId = sharedId
     }
   }
 
@@ -180,8 +180,8 @@ class ReferenceValue {
       toReturn[RemoteReferenceType.HANDLE] = this.handle
     }
 
-    if (this.shareId != null) {
-      toReturn[RemoteReferenceType.SHARED_ID] = this.shareId
+    if (this.sharedId != null) {
+      toReturn[RemoteReferenceType.SHARED_ID] = this.sharedId
     }
 
     return toReturn

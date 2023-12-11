@@ -107,6 +107,7 @@ const Pages = (function () {
   addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
+  addPage('userpromptPage', 'userprompt.html')
   addPage('virtualAuthenticator', 'virtual-authenticator.html')
   addPage('logEntryAdded', 'bidi/logEntryAdded.html')
   addPage('scriptTestAccessProperty', 'bidi/scriptTestAccessProperty.html')
