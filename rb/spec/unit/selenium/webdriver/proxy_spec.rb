@@ -118,10 +118,6 @@ module Selenium
 
         expect(proxy).to eq(other)
       end
-
-      it 'deserializes to nil if proxyType is UNSPECIFIED' do
-        expect(described_class.json_create('proxyType' => 'UNSPECIFIED')).to be_nil
-      end
     end
   end # WebDriver
 end # Selenium

@@ -21,11 +21,11 @@ module Selenium
   module WebDriver
     class Proxy
       TYPES = {
-        direct: 'DIRECT', # Direct connection, no proxy (default on Windows).
+        direct: 'DIRECT', # Direct connection, no proxy.
         manual: 'MANUAL', # Manual proxy settings (e.g., for httpProxy).
         pac: 'PAC', # Proxy autoconfiguration from URL.
-        auto_detect: 'AUTODETECT', # Proxy autodetection (presumably with WPAD).
-        system: 'SYSTEM' # Use system settings (default on Linux).
+        auto_detect: 'AUTODETECT', # Proxy auto-detection (presumably with WPAD).
+        system: 'SYSTEM' # Use system settings.
       }.freeze
 
       ALLOWED = {type: 'proxyType',
@@ -44,7 +44,6 @@ module Selenium
 
       def self.json_create(data)
         data['proxyType'] = data['proxyType'].downcase.to_sym
-        return if data['proxyType'] == :unspecified
 
         proxy = new
 
