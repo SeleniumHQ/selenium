@@ -561,7 +561,7 @@ pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
     cache_path: PathBuf,
     filter: F,
 ) -> Result<Option<PathBuf>, Error> {
-    let files_in_cache: Vec<PathBuf> = WalkDir::new(&cache_path)
+    let files_in_cache: Vec<PathBuf> = WalkDir::new(cache_path)
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| filter(entry))
@@ -571,5 +571,13 @@ pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
         Ok(Some(files_in_cache.iter().last().unwrap().to_owned()))
     } else {
         Ok(None)
+    }
+}
+
+pub fn capitalize(s: &str) -> String {
+    let mut chars = s.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
     }
 }

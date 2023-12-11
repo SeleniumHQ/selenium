@@ -21,7 +21,7 @@ use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
-    create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
+    capitalize, create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
     find_latest_from_cache, get_binary_extension, path_to_string,
 };
 use crate::files::{parse_version, uncompress, BrowserPath};
@@ -843,7 +843,14 @@ pub trait SeleniumManager {
     }
 
     fn is_browser(&self, entry: &DirEntry) -> bool {
-        self.is_in_cache(entry, &self.get_browser_name_with_extension())
+        if MACOS.is(self.get_os()) && !self.is_firefox() {
+            let entry_path = path_to_string(entry.path());
+            self.is_in_cache(entry, &capitalize(self.get_browser_name()))
+                && entry_path.contains(".app/Contents/MacOS")
+                && !entry_path.contains("Framework")
+        } else {
+            self.is_in_cache(entry, &self.get_browser_name_with_extension())
+        }
     }
 
     fn is_driver(&self, entry: &DirEntry) -> bool {
@@ -853,10 +860,16 @@ pub trait SeleniumManager {
     fn is_in_cache(&self, entry: &DirEntry, file_name: &str) -> bool {
         let is_file = entry.path().is_file();
 
-        let is_driver = entry
+        let is_file_name = entry
             .file_name()
             .to_str()
-            .map(|s| s.ends_with(file_name))
+            .map(|s| {
+                if MACOS.is(self.get_os()) && !self.is_firefox() {
+                    s.contains(file_name)
+                } else {
+                    s.ends_with(file_name)
+                }
+            })
             .unwrap_or(false);
 
         let match_os = entry
@@ -865,7 +878,7 @@ pub trait SeleniumManager {
             .map(|s| s.contains(self.get_platform_label()))
             .unwrap_or(false);
 
-        is_file && is_driver && match_os
+        is_file && is_file_name && match_os
     }
 
     fn is_driver_and_matches_browser_version(&self, entry: &DirEntry) -> bool {
@@ -896,7 +909,7 @@ pub trait SeleniumManager {
                     "There was an error managing {}; using browser found in the cache",
                     self.get_browser_name()
                 ));
-                browser_path = path_to_string(&best_browser_from_cache);
+                browser_path = path_to_string(best_browser_from_cache);
             }
         }
         browser_path
