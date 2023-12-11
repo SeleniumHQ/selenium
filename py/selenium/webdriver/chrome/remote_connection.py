@@ -18,6 +18,7 @@ import typing
 
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.remote.client_config import ClientConfig
 
 
 class ChromeRemoteConnection(ChromiumRemoteConnection):
@@ -28,6 +29,7 @@ class ChromeRemoteConnection(ChromiumRemoteConnection):
         remote_server_addr: str,
         keep_alive: bool = True,
         ignore_proxy: typing.Optional[bool] = False,
+        client_config: ClientConfig = None,
     ) -> None:
         super().__init__(
             remote_server_addr=remote_server_addr,
@@ -35,4 +37,5 @@ class ChromeRemoteConnection(ChromiumRemoteConnection):
             browser_name=ChromeRemoteConnection.browser_name,
             keep_alive=keep_alive,
             ignore_proxy=ignore_proxy,
+            client_config=client_config,
         )

@@ -16,14 +16,26 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class SafariRemoteConnection(RemoteConnection):
     browser_name = DesiredCapabilities.SAFARI["browserName"]
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = True, ignore_proxy: bool = False) -> None:
-        super().__init__(remote_server_addr, keep_alive, ignore_proxy)
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: bool = True,
+        ignore_proxy: bool = False,
+        client_config: ClientConfig = None,
+    ) -> None:
+        super().__init__(
+            remote_server_addr=remote_server_addr,
+            keep_alive=keep_alive,
+            ignore_proxy=ignore_proxy,
+            client_config=client_config,
+        )
 
         self._commands["GET_PERMISSIONS"] = ("GET", "/session/$sessionId/apple/permissions")
         self._commands["SET_PERMISSIONS"] = ("POST", "/session/$sessionId/apple/permissions")

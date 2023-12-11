@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
+import warnings
 from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
@@ -432,6 +433,15 @@ class ArgOptions(BaseOptions):
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
         being picked up and used."""
+        warnings.warn(
+            "using ignore_local_proxy_environment_variables in Options has been deprecated, "
+            "instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, "
+            "pass the proxy instance into a ClientConfig constructor, "
+            "pass the client config instance into the Webdriver constructor",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         self._ignore_local_proxy = True
 
     def to_capabilities(self):

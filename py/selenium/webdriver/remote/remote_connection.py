@@ -20,6 +20,7 @@ import os
 import platform
 import socket
 import string
+import warnings
 from base64 import b64encode
 from urllib import parse
 
@@ -29,6 +30,7 @@ import urllib3
 from selenium import __version__
 
 from . import utils
+from .client_config import ClientConfig
 from .command import Command
 from .errorhandler import ErrorCode
 
@@ -211,12 +213,6 @@ class RemoteConnection:
 
         return headers
 
-    def _get_proxy_url(self):
-        if self._url.startswith("https://"):
-            return os.environ.get("https_proxy", os.environ.get("HTTPS_PROXY"))
-        if self._url.startswith("http://"):
-            return os.environ.get("http_proxy", os.environ.get("HTTP_PROXY"))
-
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
         url = url[url.find(":") + 3 :]
@@ -248,31 +244,40 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
-        self.keep_alive = keep_alive
-        self._url = remote_server_addr
+    def __init__(
+        self,
+        remote_server_addr: str,
+        keep_alive: bool = True,
+        ignore_proxy: bool = False,
+        client_config: ClientConfig = None,
+    ):
+        self._client_config = client_config or ClientConfig(remote_server_addr, keep_alive)
 
-        # Env var NO_PROXY will override this part of the code
-        _no_proxy = os.environ.get("no_proxy", os.environ.get("NO_PROXY"))
-        if _no_proxy:
-            for npu in _no_proxy.split(","):
-                npu = npu.strip()
-                if npu == "*":
-                    ignore_proxy = True
-                    break
-                n_url = parse.urlparse(npu)
-                remote_add = parse.urlparse(self._url)
-                if n_url.netloc:
-                    if remote_add.netloc == n_url.netloc:
-                        ignore_proxy = True
-                        break
-                else:
-                    if n_url.path in remote_add.netloc:
-                        ignore_proxy = True
-                        break
+        if remote_server_addr:
+            warnings.warn(
+                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
-        self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
-        if keep_alive:
+        if not keep_alive:
+            warnings.warn(
+                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if ignore_proxy:
+            warnings.warn(
+                "setting keep_alive in RemoteConnection() is deprecated, " "set in ClientConfig instance insttead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            self._proxy_url = None
+        else:
+            self._proxy_url = self._client_config.get_proxy_url()
+
+        if self._client_config.keep_alive:
             self._conn = self._get_connection_manager()
         self._commands = remote_commands
 
@@ -296,7 +301,7 @@ class RemoteConnection:
             for word in substitute_params:
                 del params[word]
         data = utils.dump_json(params)
-        url = f"{self._url}{path}"
+        url = f"{self._client_config.remote_server_addr}{path}"
         return self._request(command_info[0], url, body=data)
 
     def _request(self, method, url, body=None):
@@ -312,12 +317,11 @@ class RemoteConnection:
         """
         LOGGER.debug("%s %s %s", method, url, body)
         parsed_url = parse.urlparse(url)
-        headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
-        response = None
+        headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
         if body and method not in ("POST", "PUT"):
             body = None
 
-        if self.keep_alive:
+        if self._client_config.keep_alive:
             response = self._conn.request(method, url, body=body, headers=headers)
             statuscode = response.status
         else:
