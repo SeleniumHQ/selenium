@@ -10,6 +10,15 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "update_cdp",
+    srcs = ["update_cdp.py"],
+    deps = [
+        requirement("packaging"),
+        requirement("urllib3"),
+    ],
+)
+
 java_binary(
     name = "google-java-format",
     jvm_flags = [

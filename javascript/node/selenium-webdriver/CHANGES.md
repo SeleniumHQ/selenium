@@ -1,3 +1,15 @@
+## 4.16.0
+
+#### :bug: Bug fix
+
+* Fix logging levels in http.js and webdriver.js (#13098)
+* Remove unused targets from the JS tree (#13129)
+
+* #### :nail_care: Polish
+
+* Add CDP v120 and remove v117
+
+
 ## 4.15.0
 
 #### :bug: Bug fix

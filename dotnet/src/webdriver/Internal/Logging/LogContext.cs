@@ -60,18 +60,15 @@ namespace OpenQA.Selenium.Internal.Logging
                 loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, minimumLevel))));
             }
 
-            IList<ILogHandler> handlers = null;
+            var context = new LogContext(minimumLevel, this, loggers, null);
 
             if (Handlers != null)
             {
-                handlers = new List<ILogHandler>(Handlers.Select(h => h.Clone()));
+                foreach (var handler in Handlers)
+                {
+                    context.Handlers.Add(handler);
+                }
             }
-            else
-            {
-                handlers = new List<ILogHandler>();
-            }
-
-            var context = new LogContext(minimumLevel, this, loggers, Handlers);
 
             Log.CurrentContext = context;
 
@@ -137,6 +134,19 @@ namespace OpenQA.Selenium.Internal.Logging
 
         public void Dispose()
         {
+            // Dispose log handlers associated with this context
+            // if they are hot handled by parent context
+            if (Handlers != null && _parentLogContext != null && _parentLogContext.Handlers != null)
+            {
+                foreach (var logHandler in Handlers)
+                {
+                    if (!_parentLogContext.Handlers.Contains(logHandler))
+                    {
+                        (logHandler as IDisposable)?.Dispose();
+                    }
+                }
+            }
+
             Log.CurrentContext = _parentLogContext;
         }
     }
