@@ -59,7 +59,7 @@ module Selenium
 
       private
 
-      attr_reader bridge: Remote::Bridge
+      attr_reader bridge: Support::EventFiringBridge | Remote::Bridge
 
       def create_bridge: (caps: untyped caps, url: String url, ?http_client: untyped? http_client) -> untyped
 
@@ -67,7 +67,7 @@ module Selenium
 
       def screenshot: () -> untyped
 
-      def add_extensions: (Symbol browser) -> untyped
+      def add_extensions: (String browser) -> void
     end
   end
 end

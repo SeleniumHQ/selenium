@@ -2,15 +2,17 @@ module Selenium
   module WebDriver
     module Remote
       module Features
+        include Bridge::_BridgeInterface
+
         @command_list: untyped
 
-        REMOTE_COMMANDS: { upload_file: ::Array[:post | "session/:session_id/se/file"], get_downloadable_files: ::Array[:get | "session/:session_id/se/files"], download_file: ::Array[:post | "session/:session_id/se/files"], delete_downloadable_files: ::Array[:delete | "session/:session_id/se/files"] }
+        REMOTE_COMMANDS: Hash[Symbol, Array[Symbol | String]]
 
         def add_commands: (untyped commands) -> untyped
 
-        def command_list: () -> untyped
+        def command_list: () -> Hash[Symbol, Array[Symbol | String]]
 
-        def commands: (untyped command) -> untyped
+        def commands: (Symbol command) -> Array[Symbol | String]?
 
         def upload: (untyped local_file) -> untyped
 

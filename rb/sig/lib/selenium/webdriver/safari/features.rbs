@@ -2,7 +2,11 @@ module Selenium
   module WebDriver
     module Safari
       module Features
+        include Remote::Bridge::_BridgeInterface
+
         SAFARI_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def command_list: -> untyped
 
         def commands: (untyped command) -> untyped
 

@@ -25,9 +25,9 @@ module Selenium
 
       def info: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
 
-      def error: (String message, ?id: Symbol | Array[Symbol] id) { () -> void } -> void
+      def error: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
 
-      def warn: (String message, ?id: Symbol | Array[Symbol] id) { () -> void } -> void
+      def warn: (String message, ?id: Symbol | Array[Symbol] id) ?{ () -> void } -> void
 
       def deprecate: (String old, ?String? new, ?id: Symbol | Array[Symbol] id, ?reference: ::String reference) { () -> void } -> (void)
 

@@ -4,7 +4,7 @@ module Selenium
       class SessionStorage
         @bridge: untyped
 
-        include Enumerable
+        include Enumerable[untyped]
 
         include SharedWebStorage
 

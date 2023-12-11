@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module HTML5
       module SharedWebStorage
-        include Enumerable
+        include Enumerable[untyped]
 
         def key?: (untyped key) -> untyped
 
