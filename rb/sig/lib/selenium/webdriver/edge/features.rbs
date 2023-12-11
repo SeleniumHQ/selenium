@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Edge
+      module Features
+        include WebDriver::Chromium::Features
+
+        EDGE_COMMANDS: Hash[Symbol, Array[Symbol | String]]
+
+        def commands: (untyped command) -> untyped
+      end
+    end
+  end
+end

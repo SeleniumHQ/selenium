@@ -24,7 +24,7 @@ const { Browser, By, WebElement } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
-const BrowsingConextInspector = require('../../bidi/browsingContextInspector')
+const BrowsingContextInspector = require('../../bidi/browsingContextInspector')
 const NetworkInspector = require('../../bidi/networkInspector')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
@@ -646,7 +646,7 @@ suite(
         assert.equal(result.includes(userText), false)
       })
 
-      it.skip('can reload a browsing context', async function () {
+      xit('can reload a browsing context', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -662,7 +662,7 @@ suite(
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
 
-      it.skip('can reload with readiness state', async function () {
+      xit('can reload with readiness state', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
           browsingContextId: id,
@@ -677,13 +677,52 @@ suite(
         assert.notEqual(result.navigationId, null)
         assert(result.url.includes('/bidi/logEntryAdded.html'))
       })
+
+      it('can set viewport', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.blankPage)
+
+        await browsingContext.setViewport(250, 300)
+
+        const result = await driver.executeScript(
+          'return [window.innerWidth, window.innerHeight];'
+        )
+        assert.equal(result[0], 250)
+        assert.equal(result[1], 300)
+      })
+
+      xit('can set viewport with device pixel ratio', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+
+        await driver.get(Pages.blankPage)
+
+        await browsingContext.setViewport(250, 300, 5)
+
+        const result = await driver.executeScript(
+          'return [window.innerWidth, window.innerHeight];'
+        )
+        assert.equal(result[0], 250)
+        assert.equal(result[1], 300)
+
+        const devicePixelRatio = await driver.executeScript(
+          'return window.devicePixelRatio;'
+        )
+        assert.equal(devicePixelRatio, 5)
+      })
     })
 
     describe('Browsing Context Inspector', function () {
       it('can listen to window browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
-        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
 
@@ -697,8 +736,8 @@ suite(
 
       it('can listen to tab browsing context created event', async function () {
         let contextInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
-        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
+        await browsingcontextInspector.onBrowsingContextCreated((entry) => {
           contextInfo = entry
         })
 
@@ -712,9 +751,9 @@ suite(
       })
 
       it('can listen to dom content loaded event', async function () {
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
         let navigationInfo = null
-        await browsingConextInspector.onDomContentLoaded((entry) => {
+        await browsingcontextInspector.onDomContentLoaded((entry) => {
           navigationInfo = entry
         })
 
@@ -729,9 +768,9 @@ suite(
 
       it('can listen to browsing context loaded event', async function () {
         let navigationInfo = null
-        const browsingConextInspector = await BrowsingConextInspector(driver)
+        const browsingcontextInspector = await BrowsingContextInspector(driver)
 
-        await browsingConextInspector.onBrowsingContextLoaded((entry) => {
+        await browsingcontextInspector.onBrowsingContextLoaded((entry) => {
           navigationInfo = entry
         })
         const browsingContext = await BrowsingContext(driver, {
@@ -741,6 +780,93 @@ suite(
 
         assert.equal(navigationInfo.browsingContextId, browsingContext.id)
         assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      xit('can listen to navigation started event', async function () {
+        let navigationInfo = null
+        const browsingConextInspector = await BrowsingContextInspector(driver)
+
+        await browsingConextInspector.onNavigationStarted((entry) => {
+          navigationInfo = entry
+        })
+
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+
+        await browsingContext.navigate(Pages.logEntryAdded, 'complete')
+
+        assert.equal(navigationInfo.browsingContextId, browsingContext.id)
+        assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      it('can listen to fragment navigated event', async function () {
+        let navigationInfo = null
+        const browsingConextInspector = await BrowsingContextInspector(driver)
+
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+        await browsingContext.navigate(Pages.linkedImage, 'complete')
+
+        await browsingConextInspector.onFragmentNavigated((entry) => {
+          navigationInfo = entry
+        })
+
+        await browsingContext.navigate(
+          Pages.linkedImage + '#linkToAnchorOnThisPage',
+          'complete'
+        )
+
+        assert.equal(navigationInfo.browsingContextId, browsingContext.id)
+        assert(navigationInfo.url.includes('linkToAnchorOnThisPage'))
+      })
+
+      xit('can listen to user prompt opened event', async function () {
+        let userpromptOpened = null
+        const browsingConextInspector = await BrowsingContextInspector(driver)
+
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+
+        await driver.get(Pages.alertsPage)
+
+        await driver.findElement(By.id('alert')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        await browsingConextInspector.onUserPromptOpened((entry) => {
+          userpromptOpened = entry
+        })
+
+        assert.equal(userpromptOpened.browsingContextId, browsingContext.id)
+        assert.equal(userpromptOpened.type, 'alert')
+      })
+
+      xit('can listen to user prompt closed event', async function () {
+        let userpromptClosed = null
+        const browsingConextInspector = await BrowsingContextInspector(driver)
+
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+
+        await driver.get(Pages.alertsPage)
+
+        await driver.findElement(By.id('prompt')).click()
+
+        await driver.wait(until.alertIsPresent())
+
+        await browsingConextInspector.onUserPromptClosed((entry) => {
+          userpromptClosed = entry
+        })
+
+        await browsingContext.handleUserPrompt(true, 'selenium')
+
+        assert.equal(userpromptClosed.browsingContextId, browsingContext.id)
+        assert.equal(userpromptClosed.accepted, true)
+        assert.equal(userpromptClosed.userText, 'selenium')
       })
     })
 
@@ -2038,7 +2164,10 @@ suite(
 
         assert.equal(beforeRequestEvent.request.method, 'GET')
         assert.equal(beforeRequestEvent.request.cookies[0].name, 'north')
-        assert.equal(beforeRequestEvent.request.cookies[0].value.value, 'biryani')
+        assert.equal(
+          beforeRequestEvent.request.cookies[0].value.value,
+          'biryani'
+        )
         const url = beforeRequestEvent.request.url
         assert.equal(url, await driver.getCurrentUrl())
 

@@ -1,3 +1,36 @@
+Selenium 4.16.0
+* Fix inadvertent code change in mutation_event
+* Fix bug in using SE_MANAGER_PATH
+* Fix bug where downloaded file was not getting unzipped
+* Add more logging to driver startup
+* Fix WebDriverWait type hints for WebElement (#13108)
+* Clean up of usage of executable path in services
+* Don't leak a file descriptor to os.devnull by default (#13162)
+* Allow bsd operating systems to use the linux binary
+* Close trio memory channel sender after the driver is quit (#13151)
+* Remote webdriver cannot match Chromium browser name for remote connection
+* Remove deprecated reuse_service parameter from Safari driver constructor
+* Remove deprecated quiet parameter from Safari service constructor
+* Ensure all drivers stop service during driver quit
+* Update chromium driver constructors for readability
+* Add CDP for Chrome 120 and remove 117
+
+
+Selenium 4.15.2
+* Fix bug for unzipping downloaded files
+
+Selenium 4.15.1
+* Fix bug in using SE_MANAGER_PATH
+* Fix inadvertent code change in mutation_event
+
+Selenium 4.15.0
+* Return a `pathlib.Path` when `SE_MANAGER_PATH` is set. closes #12929
+* Do not set browser binary in selenium manager if it is an empty string (#12738)
+* Add CDP v119 and remove v116
+* Remove selenium manager accommodation for Conda
+* Implement file downloads (#12979)
+* Add some type hints to selenium.webdriver.support (#13070)
+
 Selenium 4.14.0
 * add CDP files for v118 and remove v115
 * use lazy string interpolation for logging calls
@@ -67,9 +100,6 @@ Selenium 4.11.0
 * Added type checks in `setter` methods of different browser options (#12328)
 * Add creation flag for windows in selenium_manager (#12435)
 * Fix checking window handles for current
-
-
-
 
 Selenium 4.10.0
 * Add CDP files for v114 and remove v111

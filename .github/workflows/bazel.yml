@@ -70,10 +70,10 @@ jobs:
       - name: Remove driver directories Non-Windows
         if: inputs.os != 'windows'
         run: |
-          sudo rm -rf $CHROMEWEBDRIVER $EDGEWEBDRIVER $GECKOWEBDRIVER
+          sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
       - name: Set Ruby version
         if: inputs.ruby-version != ''
-        run: echo 'RUBY_VERSION = "${{ inputs.ruby-version }}"' > rb/ruby_version.bzl
+        run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
       - name: Setup Java
         if: inputs.java-version != ''
         uses: actions/setup-java@v3
@@ -81,9 +81,10 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.2.0
+        uses: p0deje/setup-bazel@0.3.2
         with:
           bazelisk-cache: true
+          bazelrc: common --color=yes
           disk-cache: ${{ inputs.cache-key }}
           external-cache: |
             name: ${{ inputs.cache-key }}
@@ -99,7 +100,7 @@ jobs:
           sudo apt-get -y install fluxbox
           Xvfb :99 &
           fluxbox -display :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
+          echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force

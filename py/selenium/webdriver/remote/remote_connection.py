@@ -59,7 +59,6 @@ remote_commands = {
     Command.CLEAR_ELEMENT: ("POST", "/session/$sessionId/element/$id/clear"),
     Command.GET_ELEMENT_TEXT: ("GET", "/session/$sessionId/element/$id/text"),
     Command.SEND_KEYS_TO_ELEMENT: ("POST", "/session/$sessionId/element/$id/value"),
-    Command.UPLOAD_FILE: ("POST", "/session/$sessionId/se/file"),
     Command.GET_ELEMENT_TAG_NAME: ("GET", "/session/$sessionId/element/$id/name"),
     Command.IS_ELEMENT_SELECTED: ("GET", "/session/$sessionId/element/$id/selected"),
     Command.IS_ELEMENT_ENABLED: ("GET", "/session/$sessionId/element/$id/enabled"),
@@ -122,6 +121,10 @@ remote_commands = {
         "/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials",
     ),
     Command.SET_USER_VERIFIED: ("POST", "/session/$sessionId/webauthn/authenticator/$authenticatorId/uv"),
+    Command.UPLOAD_FILE: ("POST", "/session/$sessionId/se/file"),
+    Command.GET_DOWNLOADABLE_FILES: ("GET", "/session/$sessionId/se/files"),
+    Command.DOWNLOAD_FILE: ("POST", "/session/$sessionId/se/files"),
+    Command.DELETE_DOWNLOADABLE_FILES: ("DELETE", "/session/$sessionId/se/files"),
 }
 
 

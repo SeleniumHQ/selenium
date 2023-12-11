@@ -81,7 +81,7 @@ class Log:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}]")
+        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}")
         if not elements:
             elements.append(None)
         event["element"] = elements[0]

@@ -27,17 +27,17 @@ if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v85\DevToolsSession
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v116\DevToolsSessionDomains.cs" (
-  echo Generating CDP code for version 116
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v119\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 119
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v116
+  bazel build //dotnet/src/webdriver/cdp:generate-v119
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v117\DevToolsSessionDomains.cs" (
-  echo Generating CDP code for version 117
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v120\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 120
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v117
+  bazel build //dotnet/src/webdriver/cdp:generate-v120
   popd
 )
 

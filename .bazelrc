@@ -47,20 +47,20 @@ build --test_output=errors
 
 # pass environment variables to the test environment
 
-build --test_env=CI
-build --test_env=DASHBOARD_URL
-build --test_env=DISPLAY
-build --test_env=FIREFOX_NIGHTLY_BINARY
-build --test_env=GITHUB_ACTIONS
-build --test_env=MOZ_HEADLESS
-build --test_env=PATH  # Remove once browser pinning works
-build --test_env=SELENIUM_BROWSER
-build --test_env=TRAVIS
-build --test_env=PYTHON_VERSION
+test --test_env=CI
+test --test_env=DASHBOARD_URL
+test --test_env=DISPLAY
+test --test_env=FIREFOX_NIGHTLY_BINARY
+test --test_env=GITHUB_ACTIONS
+test --test_env=MOZ_HEADLESS
+test --test_env=PATH  # Remove once browser pinning works
+test --test_env=SELENIUM_BROWSER
+test --test_env=TRAVIS
+test --test_env=PYTHON_VERSION
 
 # Remove once rules_ruby support proper $LOAD_PATH expansion.
 
-build --test_env=RUBYOPT="-Irb/lib -w"
+test --test_env=RUBYOPT="-Irb/lib -w"
 
 # JRuby/TruffleRuby: https://github.com/jruby/jruby/issues/5661
 
@@ -113,11 +113,12 @@ build:remote --disk_cache=
 build:remote --incompatible_enable_cc_toolchain_resolution
 build:remote --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 test:remote --test_env=DISPLAY=:99.0
-test:remote --test_tag_filters=-edge,-safari,-remote
+test:remote --test_tag_filters=-skip-remote,-remote
 
 # Env vars we can hard code
 build:remote --action_env=HOME=/home/dev
 build:remote --action_env=PATH=/bin:/usr/bin:/usr/local/bin
+test:remote --test_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=HOME=/home/dev
 
 # Make sure we sniff credentials properly
@@ -146,3 +147,7 @@ build:remote-ci --bes_upload_mode=wait_for_upload_complete
 # Configuration changes suggested by EngFlow
 build:remote --grpc_keepalive_time=30s
 build:remote --nolegacy_important_outputs
+
+build:release --config=remote
+build:release --stamp
+build:release --remote_download_outputs=toplevel

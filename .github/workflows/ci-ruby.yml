@@ -43,13 +43,13 @@ jobs:
             os: ubuntu
           - ruby-version: 3.0.6
             os: windows
-          - ruby-version: 3.2.0
-            os: ubuntu
-          - ruby-version: 3.2.0
+          - ruby-version: 3.0.6
             os: macos
-          - ruby-version: jruby-9.4.3.0
+          - ruby-version: 3.2.2
             os: ubuntu
-          - ruby-version: truffleruby-22.3.0
+          - ruby-version: jruby-9.4.5.0
+            os: ubuntu
+          - ruby-version: truffleruby-23.1.1
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})

@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module TakesScreenshot
+      def save_screenshot: (String png_path, ?full_page: bool full_page) -> untyped
+
+      def screenshot_as: (Symbol format, ?full_page: bool full_page) -> String
+    end
+  end
+end

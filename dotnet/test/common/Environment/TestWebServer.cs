@@ -1,12 +1,11 @@
 using Bazel;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Text;
-using OpenQA.Selenium.Internal;
-using NUnit.Framework;
+using System.Runtime.InteropServices;
+using System.Net.Http;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -36,8 +35,21 @@ namespace OpenQA.Selenium.Environment
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
-                var runfiles = Runfiles.Create();
-                standaloneTestJar = runfiles.Rlocation(standaloneTestJar);
+                try
+                {
+                    var runfiles = Runfiles.Create();
+                    standaloneTestJar = runfiles.Rlocation(standaloneTestJar);
+                }
+                catch (FileNotFoundException)
+                {
+                    var baseDirectory = AppContext.BaseDirectory;
+                    standaloneTestJar = Path.Combine(baseDirectory, "../../../../../../bazel-bin/java/test/org/openqa/selenium/environment/appserver");
+                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    standaloneTestJar += ".exe";
+                }
 
                 Console.Write("Standalone jar is " + standaloneTestJar);
 
@@ -142,13 +154,12 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")) as HttpWebRequest;
-            try
+            using (var httpClient = new HttpClient())
             {
-                request.GetResponse();
-            }
-            catch (WebException)
-            {
+                using (var quitResponse = httpClient.GetAsync(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")).GetAwaiter().GetResult())
+                {
+
+                }
             }
 
             if (webserverProcess != null)
@@ -158,11 +169,8 @@ namespace OpenQA.Selenium.Environment
                     webserverProcess.WaitForExit(10000);
                     if (!webserverProcess.HasExited)
                     {
-                        webserverProcess.Kill();
+                        webserverProcess.Kill(entireProcessTree: true);
                     }
-                }
-                catch (Exception)
-                {
                 }
                 finally
                 {

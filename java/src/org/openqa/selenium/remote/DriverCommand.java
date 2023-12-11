@@ -171,6 +171,9 @@ public interface DriverCommand {
   String GET_FEDCM_DIALOG_TYPE = "getFedCmDialogType";
   String SET_DELAY_ENABLED = "setDelayEnabled";
   String RESET_COOLDOWN = "resetCooldown";
+  String GET_DOWNLOADABLE_FILES = "getDownloadableFiles";
+  String DOWNLOAD_FILE = "downloadFile";
+  String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);

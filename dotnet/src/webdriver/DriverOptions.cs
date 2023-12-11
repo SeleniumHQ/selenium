@@ -101,6 +101,7 @@ namespace OpenQA.Selenium
         private bool? acceptInsecureCertificates;
         private bool? useWebSocketUrl;
         private bool useStrictFileInteractability;
+        private bool? enableDownloads;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -120,6 +121,7 @@ namespace OpenQA.Selenium
             this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
             this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
             this.AddKnownCapabilityName(CapabilityType.WebSocketUrl, "UseWebSocketUrl property");
+            this.AddKnownCapabilityName(CapabilityType.EnableDownloads, "EnableDownloads property");
         }
 
         /// <summary>
@@ -206,6 +208,15 @@ namespace OpenQA.Selenium
         {
             get { return this.useStrictFileInteractability; }
             set { this.useStrictFileInteractability = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether files may be downloaded from remote node.
+        /// </summary>
+        public bool? EnableDownloads
+        {
+            get { return this.enableDownloads; }
+            set { this.enableDownloads = value; }
         }
 
         /// <summary>
@@ -458,6 +469,11 @@ namespace OpenQA.Selenium
             if (this.useWebSocketUrl.HasValue)
             {
                 capabilities.SetCapability(CapabilityType.WebSocketUrl, this.useWebSocketUrl);
+            }
+
+            if (this.enableDownloads.HasValue)
+            {
+                capabilities.SetCapability(CapabilityType.EnableDownloads, this.enableDownloads);
             }
 
             if (this.useStrictFileInteractability)

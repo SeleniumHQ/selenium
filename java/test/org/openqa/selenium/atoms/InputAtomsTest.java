@@ -20,10 +20,10 @@ package org.openqa.selenium.atoms;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
-import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import org.htmlunit.corejs.javascript.Context;
+import org.htmlunit.corejs.javascript.ContextAction;
+import org.htmlunit.corejs.javascript.ContextFactory;
+import org.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.jupiter.api.Test;
 
 /** Sanity tests against the //javascript/webdriver/atoms:inputs target. */

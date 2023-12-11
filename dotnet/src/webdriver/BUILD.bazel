@@ -26,16 +26,17 @@ generated_assembly_info(
 )
 
 csharp_library(
-    name = "webdriver-lib",
+    name = "webdriver",
     srcs = [
         ":assembly-info",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
     out = "WebDriver",
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
     ],
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -46,15 +47,20 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Drawing.Common"),
     ],
 )
 
 csharp_library(
-    name = "webdriver-strongnamed-lib",
+    name = "webdriver-strongnamed",
     srcs = [
         ":assembly-info",
     ] + glob([
@@ -62,9 +68,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:WebDriver.snk",
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
-    ],
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -75,38 +79,50 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
         framework("nuget", "NETStandard.Library"),
         framework("nuget", "Newtonsoft.Json"),
-        framework("nuget", "System.Drawing.Common"),
     ],
 )
 
 copy_file(
+    name = "readme",
+    src = "//dotnet/src/webdriver/assets:README.md",
+    out = "README.md",
+)
+
+copy_file(
     name = "props",
-    src = "//dotnet/src/webdriver/build:Selenium.WebDriver.targets",
+    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
     out = "Selenium.WebDriver.targets",
 )
 
 copy_file(
     name = "transitive-props",
-    src = "//dotnet/src/webdriver/build:Selenium.WebDriver.targets",
+    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
     out = "transitive.Selenium.WebDriver.targets",
 )
 
 nuget_pack(
-    name = "webdriver",
+    name = "webdriver-pack",
     files = {
-        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":readme": "README.md",
         ":props": "build/Selenium.WebDriver.targets",
         ":transitive-props": "buildTransitive/Selenium.WebDriver.targets",
     },
     id = "Selenium.WebDriver",
     libs = {
-        ":webdriver-lib": "WebDriver",
+        ":webdriver": "WebDriver",
     },
     nuspec_template = "WebDriver.nuspec",
     tags = [
@@ -119,18 +135,19 @@ nuget_pack(
 )
 
 nuget_pack(
-    name = "webdriver-strongnamed",
+    name = "webdriver-strongnamed-pack",
     files = {
-        "//common/images:selenium_logo_small.png": "images/icon.png",
+        "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":readme": "README.md",
         ":props": "build/Selenium.WebDriver.StrongNamed.targets",
         ":transitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
-        ":webdriver-strongnamed-lib": "WebDriver.StrongNamed",
+        ":webdriver-strongnamed": "WebDriver.StrongNamed",
     },
     nuspec_template = "WebDriver.StrongNamed.nuspec",
     property_group_vars = {

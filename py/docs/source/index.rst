@@ -119,20 +119,15 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
     if __name__ == '__main__':
         unittest.main(verbosity=2)
 
-Selenium Server (optional)
+Selenium Grid (optional)
 ==========================
 
-For normal WebDriver scripts (non-Remote), the Java server is not needed.
+For local Selenium scripts, the Java server is not needed.
 
-However, to use Selenium Webdriver Remote , you need to also run the Selenium server. The server requires a Java Runtime Environment (JRE).
+To use Selenium remotely, you need to also run the Selenium grid.
+For information on running Selenium Grid: https://www.selenium.dev/documentation/grid/getting_started/
 
-Download the server separately, from: https://www.selenium.dev/downloads/
-
-Run the server from the command line::
-
-    java -jar selenium-server-4.14.0.jar
-
-Then run your Python client scripts.
+To use Remote WebDriver see: https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
 
 Use The Source Luke!
 ====================

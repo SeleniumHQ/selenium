@@ -39,10 +39,10 @@ csharp_library(
             "**/*Tests.cs",
         ],
     ),
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
+    target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
     ],
-    target_frameworks = ["netstandard2.0"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -63,6 +63,7 @@ dotnet_nunit_test_suite(
     ]) + [
         ":assembly-fixtures",
     ],
+    out = "WebDriver.Common.Tests",
     browsers = [
         # The first browser in this list is assumed to be the one that should
         # be used by default.
@@ -75,10 +76,10 @@ dotnet_nunit_test_suite(
     data = [
         ":test-data",
     ],
-    private_deps = [
-        framework("nuget", "NETStandard.Library"),
-    ],
     target_frameworks = ["net7.0"],
+    targeting_packs = [
+        framework("nuget", "Microsoft.NETCore.App.Ref"),
+    ],
     deps = [
         ":fixtures",
         "//dotnet/src/webdriver",

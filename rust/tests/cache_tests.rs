@@ -40,7 +40,7 @@ fn cache_path_test() {
 
     let driver_path = get_driver_path(&mut cmd);
     println!("*** Custom cache path: {}", driver_path);
-    assert!(!driver_path.contains(r#"cache\selenium"#));
+    assert!(!driver_path.contains(r"cache\selenium"));
 
     let tmp_cache_path = Path::new(tmp_cache_folder_name);
     fs::remove_dir_all(tmp_cache_path).unwrap();

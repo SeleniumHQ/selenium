@@ -23,6 +23,7 @@ require 'selenium/webdriver/remote/server_error'
 module Selenium
   module WebDriver
     module Remote
+      autoload :Features,     'selenium/webdriver/remote/features'
       autoload :Bridge,       'selenium/webdriver/remote/bridge'
       autoload :Driver,       'selenium/webdriver/remote/driver'
       autoload :Response,     'selenium/webdriver/remote/response'

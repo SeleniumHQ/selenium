@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
 
             string filename = Path.Combine(Path.GetTempPath(), "snapshot" + new Random().Next().ToString() + ".png");
             Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
-            screenImage.SaveAsFile(filename, ScreenshotImageFormat.Png);
+            screenImage.SaveAsFile(filename);
             Assert.That(File.Exists(filename), Is.True);
             Assert.That(new FileInfo(filename).Length, Is.GreaterThan(0));
             File.Delete(filename);
