@@ -60,7 +60,7 @@ module Selenium
           @capabilities = Capabilities.json_create(capabilities)
 
           case @capabilities[:browser_name]
-          when 'chrome'
+          when 'chrome', 'chrome-headless-shell'
             extend(WebDriver::Chrome::Features)
           when 'firefox'
             extend(WebDriver::Firefox::Features)
@@ -82,7 +82,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
+            name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
           end
         end
 
