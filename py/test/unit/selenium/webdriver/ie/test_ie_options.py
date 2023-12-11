@@ -18,6 +18,7 @@
 
 import pytest
 
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.ie.options import ElementScrollBehavior
 from selenium.webdriver.ie.options import Options
 
@@ -193,7 +194,7 @@ def test_starts_with_default_capabilities(opts):
     from selenium.webdriver import DesiredCapabilities
 
     caps = DesiredCapabilities.INTERNETEXPLORER.copy()
-    caps.update({"pageLoadStrategy": "normal"})
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
     assert opts._caps == caps
 
 

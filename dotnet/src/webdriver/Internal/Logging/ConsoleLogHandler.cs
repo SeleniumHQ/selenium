@@ -36,14 +36,5 @@ namespace OpenQA.Selenium.Internal.Logging
         {
             Console.Error.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
         }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="ConsoleLogHandler"/> class.
-        /// </summary>
-        /// <returns>A new instance of the <see cref="ConsoleLogHandler"/> class.</returns>
-        public ILogHandler Clone()
-        {
-            return this;
-        }
     }
 }

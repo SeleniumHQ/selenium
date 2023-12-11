@@ -51,7 +51,7 @@ def selenium_java_deps():
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
             "net.bytebuddy:byte-buddy:1.14.5",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
+            "org.htmlunit:htmlunit-core-js:3.9.0",
             "org.apache.commons:commons-exec:1.3",
             "org.apache.logging.log4j:log4j-core:2.20.0",
             "org.assertj:assertj-core:3.24.2",
