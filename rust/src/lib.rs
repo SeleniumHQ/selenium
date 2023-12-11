@@ -21,8 +21,9 @@ use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
 use crate::files::{
-    capitalize, create_parent_path_if_not_exists, create_path_if_not_exists, default_cache_folder,
-    find_latest_from_cache, get_binary_extension, path_to_string,
+    capitalize, collect_files_from_cache, create_parent_path_if_not_exists,
+    create_path_if_not_exists, default_cache_folder, find_latest_from_cache, get_binary_extension,
+    path_to_string,
 };
 use crate::files::{parse_version, uncompress, BrowserPath};
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
@@ -45,7 +46,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use std::{env, fs};
-use walkdir::{DirEntry, WalkDir};
+use walkdir::DirEntry;
 
 pub mod chrome;
 pub mod config;
@@ -917,17 +918,14 @@ pub trait SeleniumManager {
 
     fn find_best_browser_from_cache(&self) -> Result<Option<PathBuf>, Error> {
         let cache_path = self.get_cache_path()?.unwrap_or_default();
-        find_latest_from_cache(cache_path, |entry| self.is_browser(entry))
+        find_latest_from_cache(&cache_path, |entry| self.is_browser(entry))
     }
 
     fn find_best_driver_from_cache(&self) -> Result<Option<PathBuf>, Error> {
         let cache_path = self.get_cache_path()?.unwrap_or_default();
-        let drivers_in_cache_matching_version: Vec<PathBuf> = WalkDir::new(&cache_path)
-            .into_iter()
-            .filter_map(|entry| entry.ok())
-            .filter(|entry| self.is_driver_and_matches_browser_version(entry))
-            .map(|entry| entry.path().to_owned())
-            .collect();
+        let drivers_in_cache_matching_version = collect_files_from_cache(&cache_path, |entry| {
+            self.is_driver_and_matches_browser_version(entry)
+        });
 
         // First we look for drivers in cache that matches browser version (should work for Chrome and Edge)
         if !drivers_in_cache_matching_version.is_empty() {
@@ -940,7 +938,7 @@ pub trait SeleniumManager {
             ))
         } else {
             // If not available, we look for the latest available driver in the cache
-            find_latest_from_cache(cache_path, |entry| self.is_driver(entry))
+            find_latest_from_cache(&cache_path, |entry| self.is_driver(entry))
         }
     }
 

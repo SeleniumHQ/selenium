@@ -557,16 +557,24 @@ pub fn find_bytes(buffer: &[u8], bytes: &[u8]) -> Option<usize> {
         .position(|window| window == bytes)
 }
 
-pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
-    cache_path: PathBuf,
+pub fn collect_files_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
     filter: F,
-) -> Result<Option<PathBuf>, Error> {
-    let files_in_cache: Vec<PathBuf> = WalkDir::new(cache_path)
+) -> Vec<PathBuf> {
+    WalkDir::new(cache_path)
+        .sort_by_file_name()
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| filter(entry))
         .map(|entry| entry.path().to_owned())
-        .collect();
+        .collect()
+}
+
+pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
+    filter: F,
+) -> Result<Option<PathBuf>, Error> {
+    let files_in_cache = collect_files_from_cache(cache_path, filter);
     if !files_in_cache.is_empty() {
         Ok(Some(files_in_cache.iter().last().unwrap().to_owned()))
     } else {
