@@ -55,7 +55,7 @@ class WebDriver(RemoteWebDriver):
             for name, value in desired_capabilities.items():
                 options.set_capability(name, value)
 
-        self.service = Service(executable_path, port=port, log_path=service_log_path)
+        self.service = Service(executable_path, port=port, log_output=service_log_path)
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
