@@ -213,6 +213,7 @@ class DefaultMouseTest extends JupiterTestBase {
     assertThat(toContextClick.getAttribute("value")).isEqualTo("ContextClicked");
   }
 
+  @NeedsFreshDriver
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
