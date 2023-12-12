@@ -37,6 +37,7 @@ import org.openqa.selenium.bidi.Input;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.WheelInput;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 /** Tests operations that involve scroll wheel. */
@@ -139,6 +140,7 @@ class DefaultWheelTest extends JupiterTestBase {
         });
   }
 
+  @NeedsFreshDriver
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
@@ -149,10 +151,18 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement footer = driver.findElement(By.tagName("footer"));
     int deltaY = footer.getRect().y;
 
-    input.perform(windowHandle, getBuilder(driver).scrollByAmount(0, deltaY).getSequences());
+    input.perform(
+        windowHandle,
+        new Actions(driver)
+            .setActiveWheel("huh")
+            .scrollByAmount(0, deltaY)
+            .pause(3000)
+            .getSequences());
+
     assertTrue(inViewport(footer));
   }
 
+  @NeedsFreshDriver
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(IE)
@@ -162,7 +172,12 @@ class DefaultWheelTest extends JupiterTestBase {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
 
     input.perform(
-        windowHandle, getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).getSequences());
+        windowHandle,
+        new Actions(driver)
+            .setActiveWheel("blsh")
+            .scrollFromOrigin(scrollOrigin, 0, 200)
+            .pause(3000)
+            .getSequences());
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
