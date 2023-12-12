@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.internal;
 
 import static java.util.stream.Collectors.toList;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +51,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     if (arg instanceof RemoteWebElement) {
-      return ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
+      return Map.of(Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
     }
 
     if (arg.getClass().isArray()) {
