@@ -835,7 +835,7 @@ pub trait SeleniumManager {
     }
 
     fn stats(&self) -> Result<(), Error> {
-        if !self.is_avoid_stats() {
+        if !self.is_avoid_stats() && !self.is_offline() {
             let props = Props {
                 browser: self.get_browser_name().to_string(),
                 browser_version: self.get_browser_version().to_string(),
