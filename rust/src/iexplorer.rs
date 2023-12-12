@@ -134,7 +134,7 @@ impl SeleniumManager for IExplorerManager {
 
                 let selenium_releases = parse_json_from_url::<Vec<SeleniumRelease>>(
                     self.get_http_client(),
-                    MIRROR_URL.to_string(),
+                    MIRROR_URL,
                 )?;
 
                 let filtered_releases: Vec<SeleniumRelease> = selenium_releases

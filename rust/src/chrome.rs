@@ -96,15 +96,19 @@ impl ChromeManager {
         )
     }
 
-    fn create_cft_url(&self, endpoint: &str) -> String {
-        format!(
-            "{}{}",
-            self.get_browser_mirror_url_or_default(CFT_URL),
-            endpoint
-        )
+    fn create_cft_url(&self, base_url: &str, endpoint: &str) -> String {
+        format!("{}{}", base_url, endpoint)
     }
 
-    fn request_driver_version_from_latest(&self, driver_url: String) -> Result<String, Error> {
+    fn create_cft_url_for_browsers(&self, endpoint: &str) -> String {
+        self.create_cft_url(&self.get_browser_mirror_url_or_default(CFT_URL), endpoint)
+    }
+
+    fn create_cft_url_for_drivers(&self, endpoint: &str) -> String {
+        self.create_cft_url(&self.get_driver_mirror_url_or_default(CFT_URL), endpoint)
+    }
+
+    fn request_driver_version_from_latest(&self, driver_url: &str) -> Result<String, Error> {
         self.log.debug(format!(
             "Reading {} version from {}",
             &self.driver_name, driver_url
@@ -112,7 +116,7 @@ impl ChromeManager {
         read_version_from_link(self.get_http_client(), driver_url, self.get_logger())
     }
 
-    fn request_versions_from_online<T>(&self, driver_url: String) -> Result<T, Error>
+    fn request_versions_from_online<T>(&self, driver_url: &str) -> Result<T, Error>
     where
         T: Serialize + for<'a> Deserialize<'a>,
     {
@@ -128,9 +132,9 @@ impl ChromeManager {
             driver_name
         ));
 
-        let latest_versions_url = self.create_cft_url(LATEST_VERSIONS_ENDPOINT);
+        let latest_versions_url = self.create_cft_url_for_drivers(LATEST_VERSIONS_ENDPOINT);
         let versions_with_downloads =
-            self.request_versions_from_online::<LatestVersionsWithDownloads>(latest_versions_url)?;
+            self.request_versions_from_online::<LatestVersionsWithDownloads>(&latest_versions_url)?;
         let stable_channel = versions_with_downloads.channels.stable;
         let chromedriver = stable_channel.downloads.chromedriver;
         if chromedriver.is_none() {
@@ -138,7 +142,7 @@ impl ChromeManager {
                 "Latest stable version of {} not found using CfT endpoints. Trying with {}",
                 &self.driver_name, LATEST_RELEASE
             ));
-            return self.request_driver_version_from_latest(self.create_latest_release_url());
+            return self.request_driver_version_from_latest(&self.create_latest_release_url());
         }
 
         let platform_url: Vec<&PlatformUrl> = chromedriver
@@ -168,9 +172,9 @@ impl ChromeManager {
             "Driver version used to request CfT: {version_for_filtering}"
         ));
 
-        let good_versions_url = self.create_cft_url(GOOD_VERSIONS_ENDPOINT);
+        let good_versions_url = self.create_cft_url_for_drivers(GOOD_VERSIONS_ENDPOINT);
         let all_versions =
-            self.request_versions_from_online::<VersionsWithDownloads>(good_versions_url)?;
+            self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
         let filtered_versions: Vec<Version> = all_versions
             .versions
             .into_iter()
@@ -308,7 +312,7 @@ impl SeleniumManager for ChromeManager {
                     // For old versions (chromedriver 114-), the traditional method should work:
                     // https://chromedriver.chromium.org/downloads
                     self.request_driver_version_from_latest(
-                        self.create_latest_release_with_version_url(),
+                        &self.create_latest_release_with_version_url(),
                     )?
                 } else {
                     // As of chromedriver 115+, the metadata for version discovery are published
@@ -442,9 +446,9 @@ impl SeleniumManager for ChromeManager {
             browser_name
         ));
 
-        let latest_versions_url = self.create_cft_url(LATEST_VERSIONS_ENDPOINT);
+        let latest_versions_url = self.create_cft_url_for_browsers(LATEST_VERSIONS_ENDPOINT);
         let versions_with_downloads =
-            self.request_versions_from_online::<LatestVersionsWithDownloads>(latest_versions_url)?;
+            self.request_versions_from_online::<LatestVersionsWithDownloads>(&latest_versions_url)?;
         let stable_channel = versions_with_downloads.channels.stable;
         let chrome = stable_channel.downloads.chrome;
 
@@ -476,9 +480,11 @@ impl SeleniumManager for ChromeManager {
         ));
 
         if self.is_browser_version_unstable() {
-            let latest_versions_url = self.create_cft_url(LATEST_VERSIONS_ENDPOINT);
+            let latest_versions_url = self.create_cft_url_for_browsers(LATEST_VERSIONS_ENDPOINT);
             let versions_with_downloads = self
-                .request_versions_from_online::<LatestVersionsWithDownloads>(latest_versions_url)?;
+                .request_versions_from_online::<LatestVersionsWithDownloads>(
+                    &latest_versions_url,
+                )?;
             let channel = if browser_version.eq_ignore_ascii_case(BETA) {
                 versions_with_downloads.channels.beta
             } else if browser_version.eq_ignore_ascii_case(DEV) {
@@ -497,9 +503,9 @@ impl SeleniumManager for ChromeManager {
 
             Ok(browser_version)
         } else {
-            let good_versions_url = self.create_cft_url(GOOD_VERSIONS_ENDPOINT);
+            let good_versions_url = self.create_cft_url_for_browsers(GOOD_VERSIONS_ENDPOINT);
             let all_versions =
-                self.request_versions_from_online::<VersionsWithDownloads>(good_versions_url)?;
+                self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
             let filtered_versions: Vec<Version> = all_versions
                 .versions
                 .into_iter()
