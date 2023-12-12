@@ -21,7 +21,6 @@ use anyhow::anyhow;
 use anyhow::Error;
 use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::fs::File;
 use std::io::copy;
 use std::io::Cursor;
@@ -76,14 +75,14 @@ pub async fn download_to_tmp_folder(
 
 pub fn read_version_from_link(
     http_client: &Client,
-    url: String,
+    url: &str,
     log: &Logger,
 ) -> Result<String, Error> {
     parse_version(read_content_from_link(http_client, url)?, log)
 }
 
 #[tokio::main]
-pub async fn read_content_from_link(http_client: &Client, url: String) -> Result<String, Error> {
+pub async fn read_content_from_link(http_client: &Client, url: &str) -> Result<String, Error> {
     Ok(http_client.get(url).send().await?.text().await?)
 }
 
@@ -99,17 +98,16 @@ pub async fn read_redirect_from_link(
     )
 }
 
-pub fn parse_json_from_url<T>(http_client: &Client, url: String) -> Result<T, Error>
+pub fn parse_json_from_url<T>(http_client: &Client, url: &str) -> Result<T, Error>
 where
     T: Serialize + for<'a> Deserialize<'a>,
 {
     let content = read_content_from_link(http_client, url)?;
-    let response: T = serde_json::from_str(&content)?;
-    Ok(response)
-}
-
-pub fn parse_generic_json_from_url(http_client: &Client, url: String) -> Result<Value, Error> {
-    let content = read_content_from_link(http_client, url)?;
-    let response: Value = serde_json::from_str(&content)?;
-    Ok(response)
+    match serde_json::from_str(&content) {
+        Ok(json) => Ok(json),
+        Err(err) => Err(anyhow!(format!(
+            "Error parsing JSON from URL {} {}",
+            url, err
+        ))),
+    }
 }

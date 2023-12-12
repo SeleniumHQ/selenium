@@ -220,11 +220,10 @@ impl SeleniumManager for EdgeManager {
                     ));
                     let latest_driver_version = read_version_from_link(
                         self.get_http_client(),
-                        latest_stable_url,
+                        &latest_stable_url,
                         self.get_logger(),
                     )?;
-                    major_browser_version =
-                        self.get_major_version(latest_driver_version.as_str())?;
+                    major_browser_version = self.get_major_version(&latest_driver_version)?;
                     self.log.debug(format!(
                         "Latest {} major version is {}",
                         &self.driver_name, major_browser_version
@@ -242,7 +241,7 @@ impl SeleniumManager for EdgeManager {
                     &self.driver_name, driver_url
                 ));
                 let driver_version =
-                    read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
+                    read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
 
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() {
@@ -365,7 +364,7 @@ impl SeleniumManager for EdgeManager {
         ));
 
         let edge_products =
-            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), edge_updates_url)?;
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), &edge_updates_url)?;
 
         let edge_channel = if self.is_beta(browser_version) {
             "Beta"
