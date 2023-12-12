@@ -138,9 +138,6 @@ class Log:
         async with session.wait_for(self.devtools.runtime.ConsoleAPICalled) as messages:
             yield console
 
-        if event_type == Console.ERROR:
-            console["message"] = messages.value.args[0].value
-            console["level"] = messages.value.args[0].type_
-        if event_type == Console.ALL:
+        if event_type == Console.ALL or event_type.value == messages.value.type_:
             console["message"] = messages.value.args[0].value
             console["level"] = messages.value.args[0].type_
