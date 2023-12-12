@@ -35,9 +35,8 @@ class ProxyType:
             value = value["string"]
         value = str(value).upper()
         for attr in dir(cls):
-            attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and "string" in attr_value and attr_value["string"] == value:
-                return attr_value
+            if getattr(cls, attr) == value:
+                return value
         raise Exception(f"No proxy type is found for {value}")
 
 
@@ -278,7 +277,7 @@ class Proxy:
     def to_capabilities(self):
         if not self.proxyType:
             raise ValueError("proxyType must be specified before use")
-        proxy_caps = {"proxyType": self.proxyType["string"].lower()}
+        proxy_caps = {"proxyType": self.proxyType.lower()}
         proxies = [
             "autodetect",
             "ftpProxy",
