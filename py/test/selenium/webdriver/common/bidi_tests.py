@@ -46,8 +46,8 @@ async def test_check_error_console_messages(driver, pages):
         from selenium.webdriver.common.bidi.console import Console
 
         async with log.add_listener(Console.ERROR) as messages:
-            driver.execute_script("console.log('I love cheese')")
             driver.execute_script('console.error("I don\'t cheese")')
+            driver.execute_script("console.log('I love cheese')")
         assert messages["message"] == "I don't cheese"
 
 
