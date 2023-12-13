@@ -36,6 +36,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
 use std::path::PathBuf;
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
 
 pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
@@ -55,6 +57,8 @@ pub struct ChromeManager {
     pub config: ManagerConfig,
     pub http_client: Client,
     pub log: Logger,
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
     pub download_browser: bool,
     pub driver_url: Option<String>,
     pub browser_url: Option<String>,
@@ -67,12 +71,15 @@ impl ChromeManager {
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(ChromeManager {
             browser_name,
             driver_name,
             http_client: create_http_client(default_timeout, default_proxy)?,
             config,
             log: Logger::new(),
+            tx,
+            rx,
             download_browser: false,
             driver_url: None,
             browser_url: None,
@@ -414,6 +421,14 @@ impl SeleniumManager for ChromeManager {
 
     fn set_logger(&mut self, log: Logger) {
         self.log = log;
+    }
+
+    fn get_sender(&self) -> &Sender<String> {
+        &self.tx
+    }
+
+    fn get_receiver(&self) -> &Receiver<String> {
+        &self.rx
     }
 
     fn get_platform_label(&self) -> &str {

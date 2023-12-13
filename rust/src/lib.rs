@@ -38,14 +38,16 @@ use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 use crate::shell::{
     run_shell_command, run_shell_command_by_os, run_shell_command_with_log, split_lines, Command,
 };
+use crate::stats::{send_stats_to_plausible, Props};
 use anyhow::anyhow;
 use anyhow::Error;
 use is_executable::IsExecutable;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{env, fs};
+use std::{env, fs, thread};
 use walkdir::DirEntry;
 
 pub mod chrome;
@@ -62,6 +64,7 @@ pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 pub mod shell;
+pub mod stats;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -112,6 +115,7 @@ pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
 pub const UNC_PREFIX: &str = r"\\?\";
+pub const SM_BETA_LABEL: &str = "0.";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -149,6 +153,10 @@ pub trait SeleniumManager {
     fn get_logger(&self) -> &Logger;
 
     fn set_logger(&mut self, log: Logger);
+
+    fn get_sender(&self) -> &Sender<String>;
+
+    fn get_receiver(&self) -> &Receiver<String>;
 
     fn get_platform_label(&self) -> &str;
 
@@ -826,6 +834,25 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
+    fn stats(&self) -> Result<(), Error> {
+        if !self.is_avoid_stats() && !self.is_offline() {
+            let props = Props {
+                browser: self.get_browser_name().to_ascii_lowercase(),
+                browser_version: self.get_browser_version().to_ascii_lowercase(),
+                os: self.get_os().to_ascii_lowercase(),
+                arch: self.get_arch().to_ascii_lowercase(),
+                lang: self.get_language_binding().to_ascii_lowercase(),
+                selenium_version: self.get_selenium_version().to_ascii_lowercase(),
+            };
+            let http_client = self.get_http_client().to_owned();
+            let sender = self.get_sender().to_owned();
+            thread::spawn(move || {
+                send_stats_to_plausible(http_client, props, sender);
+            });
+        }
+        Ok(())
+    }
+
     fn check_error_with_driver_in_path(
         &mut self,
         is_driver_in_path: &bool,
@@ -1425,6 +1452,36 @@ pub trait SeleniumManager {
     fn set_cache_path(&mut self, cache_path: String) {
         if !cache_path.is_empty() {
             self.get_config_mut().cache_path = cache_path;
+        }
+    }
+
+    fn get_language_binding(&self) -> &str {
+        self.get_config().language_binding.as_str()
+    }
+
+    fn set_language_binding(&mut self, language_binding: String) {
+        if !language_binding.is_empty() {
+            self.get_config_mut().language_binding = language_binding;
+        }
+    }
+
+    fn get_selenium_version(&self) -> &str {
+        self.get_config().selenium_version.as_str()
+    }
+
+    fn set_selenium_version(&mut self, selenium_version: String) {
+        if !selenium_version.is_empty() {
+            self.get_config_mut().selenium_version = selenium_version;
+        }
+    }
+
+    fn is_avoid_stats(&self) -> bool {
+        self.get_config().avoid_stats
+    }
+
+    fn set_avoid_stats(&mut self, avoid_stats: bool) {
+        if avoid_stats {
+            self.get_config_mut().avoid_stats = true;
         }
     }
 }
