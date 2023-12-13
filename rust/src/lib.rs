@@ -837,12 +837,12 @@ pub trait SeleniumManager {
     fn stats(&self) -> Result<(), Error> {
         if !self.is_avoid_stats() && !self.is_offline() {
             let props = Props {
-                browser: self.get_browser_name().to_string(),
-                browser_version: self.get_browser_version().to_string(),
-                os: self.get_os().to_string(),
-                arch: self.get_arch().to_string(),
-                lang: self.get_language_binding().to_string(),
-                selenium_version: self.get_selenium_version().to_string(),
+                browser: self.get_browser_name().to_ascii_lowercase(),
+                browser_version: self.get_browser_version().to_ascii_lowercase(),
+                os: self.get_os().to_ascii_lowercase(),
+                arch: self.get_arch().to_ascii_lowercase(),
+                lang: self.get_language_binding().to_ascii_lowercase(),
+                selenium_version: self.get_selenium_version().to_ascii_lowercase(),
             };
             let http_client = self.get_http_client().to_owned();
             let sender = self.get_sender().to_owned();
