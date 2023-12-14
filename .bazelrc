@@ -120,6 +120,7 @@ build:remote --action_env=HOME=/home/dev
 build:remote --action_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=PATH=/bin:/usr/bin:/usr/local/bin
 test:remote --test_env=HOME=/home/dev
+test --test_env=SE_AVOID_STATS=true
 
 # Make sure we sniff credentials properly
 build:remote --credential_helper=%workspace%/scripts/credential-helper.sh
