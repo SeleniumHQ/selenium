@@ -31,7 +31,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;

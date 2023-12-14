@@ -31,7 +31,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +57,8 @@ class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
+    try (NewSessionPayload payload =
+        NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
       assertEquals(singleton(Dialect.W3C), payload.getDownstreamDialects());
     }
   }
@@ -264,7 +264,8 @@ class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(source);
-    try (NewSessionPayload payload = NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
+    try (NewSessionPayload payload =
+        NewSessionPayload.create(Contents.string(json, StandardCharsets.UTF_8))) {
       fromDisk = payload.stream().collect(toList());
     }
 
