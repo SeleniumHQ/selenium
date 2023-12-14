@@ -23,11 +23,17 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 7050
         EXECUTABLE = 'safaridriver'
-        MISSING_TEXT = <<~ERROR
-          Unable to find Apple's safaridriver which comes with Safari 10.
-          More info at https://webkit.org/blog/6900/webdriver-support-in-safari-10/
-        ERROR
         SHUTDOWN_SUPPORTED = false
+
+        def initialize(path: nil, port: nil, log: nil, args: nil)
+          raise Error::WebDriverError, 'Safari Service does not support setting log output' if log
+
+          super
+        end
+
+        def log=(*)
+          raise Error::WebDriverError, 'Safari Service does not support setting log output'
+        end
       end # Service
     end # Safari
   end # WebDriver

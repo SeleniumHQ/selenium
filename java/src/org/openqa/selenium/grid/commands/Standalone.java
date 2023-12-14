@@ -17,9 +17,24 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
-
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
@@ -38,13 +53,13 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeWebsockets;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.router.httpd.RouterOptions;
 import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.router.httpd.RouterOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -63,23 +78,6 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.remote.http.Route.combine;
-
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridServerCommand {
 
@@ -97,7 +95,8 @@ public class Standalone extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(
+        DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -137,71 +136,80 @@ public class Standalone extends TemplateGridServerCommand {
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     CombinedHandler combinedHandler = new CombinedHandler();
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      localhostUrl,
-      combinedHandler,
-      networkOptions.getHttpClientFactory(tracer));
+    HttpClient.Factory clientFactory =
+        new RoutableHttpClientFactory(
+            localhostUrl, combinedHandler, networkOptions.getHttpClientFactory(tracer));
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
     NewSessionQueueOptions newSessionRequestOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      distributorOptions.getSlotMatcher(),
-      newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
-      newSessionRequestOptions.getSessionRequestTimeout(),
-      registrationSecret,
-      newSessionRequestOptions.getBatchSize());
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            distributorOptions.getSlotMatcher(),
+            newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
+            newSessionRequestOptions.getSessionRequestTimeout(),
+            registrationSecret,
+            newSessionRequestOptions.getBatchSize());
     combinedHandler.addHandler(queue);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queue,
-      distributorOptions.getSlotSelector(),
-      registrationSecret,
-      distributorOptions.getHealthCheckInterval(),
-      distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionRequestOptions.getSessionRequestRetryInterval(),
-      distributorOptions.getNewSessionThreadPoolSize());
+    Distributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            clientFactory,
+            sessions,
+            queue,
+            distributorOptions.getSlotSelector(),
+            registrationSecret,
+            distributorOptions.getHealthCheckInterval(),
+            distributorOptions.shouldRejectUnsupportedCaps(),
+            newSessionRequestOptions.getSessionRequestRetryInterval(),
+            distributorOptions.getNewSessionThreadPoolSize(),
+            distributorOptions.getSlotMatcher());
     combinedHandler.addHandler(distributor);
 
-    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
-      .with(networkOptions.getSpecComplianceChecks());
+    Routable router =
+        new Router(tracer, clientFactory, sessions, queue, distributor)
+            .with(networkOptions.getSpecComplianceChecks());
 
-    HttpHandler readinessCheck = req -> {
-      boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
-      return new HttpResponse()
-        .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
-        .setContent(Contents.utf8String("Standalone is " + ready));
-    };
+    HttpHandler readinessCheck =
+        req -> {
+          boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
+          return new HttpResponse()
+              .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
+              .setContent(Contents.utf8String("Standalone is " + ready));
+        };
 
-    GraphqlHandler graphqlHandler = new GraphqlHandler(
-      tracer,
-      distributor,
-      queue,
-      serverOptions.getExternalUri(),
-      getFormattedVersion());
+    GraphqlHandler graphqlHandler =
+        new GraphqlHandler(
+            tracer, distributor, queue, serverOptions.getExternalUri(), getFormattedVersion());
 
-    String subPath = new RouterOptions(config).subPath();
-    Routable ui = new GridUiRoute(subPath);
+    RouterOptions routerOptions = new RouterOptions(config);
+    String subPath = routerOptions.subPath();
 
-    Routable appendRoute = Stream.of(
-        router,
-        hubRoute(subPath, combine(router)),
-        graphqlRoute(subPath, () -> graphqlHandler)
-      ).reduce(Route::combine)
-      .get();
+    Routable appendRoute =
+        Stream.of(
+                router,
+                hubRoute(subPath, combine(router)),
+                graphqlRoute(subPath, () -> graphqlHandler))
+            .reduce(Route::combine)
+            .get();
 
     if (!subPath.isEmpty()) {
       appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(router)));
     }
 
-    Routable httpHandler = combine(ui, appendRoute);
+    Routable httpHandler;
+    if (routerOptions.disableUi()) {
+      LOG.info("Grid UI has been disabled.");
+      httpHandler = appendRoute;
+    } else {
+      Routable ui = new GridUiRoute(subPath);
+      httpHandler = combine(ui, appendRoute);
+    }
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
@@ -209,33 +217,10 @@ public class Standalone extends TemplateGridServerCommand {
       httpHandler = httpHandler.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
     }
 
-    // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
+    // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate
+    // these checks
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
-
-    Node node = new NodeOptions(config).getNode();
-    combinedHandler.addHandler(node);
-    distributor.add(node);
-
-    bus.addListener(NodeDrainComplete.listener(nodeId -> {
-      if (!node.getId().equals(nodeId)) {
-        return;
-      }
-
-      // Wait a beat before shutting down so the final response from the
-      // node can escape.
-      new Thread(
-        () -> {
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            // Swallow, the next thing we're doing is shutting down
-          }
-          LOG.info("Shutting down");
-          System.exit(0);
-        },
-        "Standalone shutdown: " + nodeId)
-        .start();
-    }));
+    Node node = createNode(config, bus, distributor, combinedHandler);
 
     return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
@@ -244,23 +229,57 @@ public class Standalone extends TemplateGridServerCommand {
   protected void execute(Config config) {
     Require.nonNull("Config", config);
 
-    config.get("server", "max-threads")
-      .ifPresent(value -> LOG.log(Level.WARNING,
-                                  () ->
-                                    "Support for max-threads flag is deprecated. " +
-                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
-                                    "Please use newsession-threadpool-size flag instead."));
+    config
+        .get("server", "max-threads")
+        .ifPresent(
+            value ->
+                LOG.log(
+                    Level.WARNING,
+                    () ->
+                        "Support for max-threads flag is deprecated. The intent of the flag is to"
+                            + " set the thread pool size in the Distributor. Please use"
+                            + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config).start();
 
-    LOG.info(String.format(
-      "Started Selenium Standalone %s: %s",
-      getFormattedVersion(),
-      server.getUrl()));
+    LOG.info(
+        String.format(
+            "Started Selenium Standalone %s: %s", getFormattedVersion(), server.getUrl()));
   }
 
   private String getFormattedVersion() {
     BuildInfo info = new BuildInfo();
     return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
+  }
+
+  private Node createNode(
+      Config config, EventBus bus, Distributor distributor, CombinedHandler combinedHandler) {
+    Node node = new NodeOptions(config).getNode();
+    combinedHandler.addHandler(node);
+    distributor.add(node);
+
+    bus.addListener(
+        NodeDrainComplete.listener(
+            nodeId -> {
+              if (!node.getId().equals(nodeId)) {
+                return;
+              }
+
+              // Wait a beat before shutting down so the final response from the
+              // node can escape.
+              new Thread(
+                      () -> {
+                        try {
+                          Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                          // Swallow, the next thing we're doing is shutting down
+                        }
+                        LOG.info("Shutting down");
+                        System.exit(0);
+                      },
+                      "Standalone shutdown: " + nodeId)
+                  .start();
+            }));
+    return node;
   }
 }

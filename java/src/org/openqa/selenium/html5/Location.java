@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.html5;
 
-/**
- * Represents the physical location of the browser.
- */
+/** Represents the physical location of the browser. */
 public class Location {
 
   private final double latitude;
@@ -46,7 +44,7 @@ public class Location {
 
   @Override
   public String toString() {
-    return String.format("Latitude: %s, Longitude: %s, Altitude: %s",
-        latitude, longitude, altitude);
+    return String.format(
+        "Latitude: %s, Longitude: %s, Altitude: %s", latitude, longitude, altitude);
   }
 }

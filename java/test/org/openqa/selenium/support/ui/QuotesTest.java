@@ -20,8 +20,8 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.support.ui.Quotes.escape;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class QuotesTest {
@@ -46,12 +46,12 @@ class QuotesTest {
   }
 
   /**
-   * Tests that Quotes.escape returns concatenated strings when the given
-   * string contains a tick and and ends with a quote.
+   * Tests that Quotes.escape returns concatenated strings when the given string contains a tick and
+   * and ends with a quote.
    */
   @Test
   void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    assertThat(escape(
-        "Bar \"Rock'n'Roll\"")).isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
+    assertThat(escape("Bar \"Rock'n'Roll\""))
+        .isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
   }
 }

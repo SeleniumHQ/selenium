@@ -17,30 +17,40 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.util.Map;
 
 /**
  * {@link DriverCommandExecutor} that understands ChromiumDriver specific commands.
  *
- * @see <a href="https://chromium.googlesource.com/chromium/src/+/master/chrome/test/chromedriver/client/command_executor.py">List of ChromeWebdriver commands</a>
+ * @see <a
+ *     href="https://chromium.googlesource.com/chromium/src/+/master/chrome/test/chromedriver/client/command_executor.py">List
+ *     of ChromeWebdriver commands</a>
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  public ChromiumDriverCommandExecutor(DriverService service, Map<String, CommandInfo> extraCommands) {
-    super(service, getExtraCommands(extraCommands));
+  public ChromiumDriverCommandExecutor(
+      DriverService service, Map<String, CommandInfo> extraCommands) {
+    this(service, extraCommands, ClientConfig.defaultConfig());
+  }
+
+  public ChromiumDriverCommandExecutor(
+      DriverService service, Map<String, CommandInfo> extraCommands, ClientConfig clientConfig) {
+    super(service, getExtraCommands(extraCommands), clientConfig);
   }
 
   private static Map<String, CommandInfo> getExtraCommands(Map<String, CommandInfo> commands) {
-    return ImmutableMap.<String, CommandInfo>builder()
-      .putAll(commands)
-      .putAll(new AddHasNetworkConditions().getAdditionalCommands())
-      .putAll(new AddHasPermissions().getAdditionalCommands())
-      .putAll(new AddHasLaunchApp().getAdditionalCommands())
-      .build();
+    return Stream.of(
+            commands,
+            new AddHasNetworkConditions().getAdditionalCommands(),
+            new AddHasPermissions().getAdditionalCommands(),
+            new AddHasLaunchApp().getAdditionalCommands())
+        .flatMap((m) -> m.entrySet().stream())
+        .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

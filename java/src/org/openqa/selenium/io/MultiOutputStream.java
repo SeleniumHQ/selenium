@@ -20,9 +20,7 @@ package org.openqa.selenium.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
- * Output stream demultiplexer
- */
+/** Output stream demultiplexer */
 public class MultiOutputStream extends OutputStream {
 
   private final OutputStream mandatory;
@@ -31,6 +29,14 @@ public class MultiOutputStream extends OutputStream {
   public MultiOutputStream(OutputStream mandatory, OutputStream optional) {
     this.mandatory = mandatory;
     this.optional = optional;
+  }
+
+  @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    mandatory.write(b, off, len);
+    if (optional != null) {
+      optional.write(b, off, len);
+    }
   }
 
   @Override

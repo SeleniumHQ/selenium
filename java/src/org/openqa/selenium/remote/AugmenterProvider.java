@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 
-import java.util.function.Predicate;
-
 /**
- * Describes and provides an implementation for a particular interface for use with the
- * {@link org.openqa.selenium.remote.Augmenter}. Think of this as a simulacrum of mixins.
+ * Describes and provides an implementation for a particular interface for use with the {@link
+ * org.openqa.selenium.remote.Augmenter}. Think of this as a simulacrum of mixins.
  */
 public interface AugmenterProvider<X> {
 

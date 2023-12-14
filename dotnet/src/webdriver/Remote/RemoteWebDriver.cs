@@ -19,8 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -57,9 +60,16 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : WebDriver, IDevTools
+    public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     {
+        /// <summary>
+        /// The name of the Selenium grid remote DevTools end point capability.
+        /// </summary>
         public readonly string RemoteDevToolsEndPointCapabilityName = "se:cdp";
+
+        /// <summary>
+        /// The name of the Selenium remote DevTools version capability.
+        /// </summary>
         public readonly string RemoteDevToolsVersionCapabilityName = "se:cdpVersion";
 
         private const string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
@@ -121,7 +131,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
-            :base(commandExecutor, desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
         {
         }
 
@@ -408,11 +418,20 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("css selector", cssSelector);
         }
 
+        /// <summary>
+        /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
+        /// </summary>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
             return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
         }
 
+        /// <summary>
+        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
+        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession(int protocolVersion)
         {
             if (this.devToolsSession == null)
@@ -439,7 +458,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    Task.Run(async () => await session.StartSession(devToolsProtocolVersion)).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -452,16 +471,87 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Retrieves the downloadable files.
+        /// </summary>
+        /// <returns>A read-only list of file names available for download.</returns>
+        public IReadOnlyList<string> GetDownloadableFiles()
+        {
+            var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
+            if (enableDownloads == null || !(bool) enableDownloads) {
+                throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
+            }
+
+            Response commandResponse = this.Execute(DriverCommand.GetDownloadableFiles, null);
+            Dictionary<string, object> value = (Dictionary<string, object>)commandResponse.Value;
+            object[] namesArray = (object[])value["names"];
+            return namesArray.Select(obj => obj.ToString()).ToList();
+        }
+
+        /// <summary>
+        /// Downloads a file with the specified file name.
+        /// </summary>
+        /// <param name="fileName">the name of the file to be downloaded</param>
+        public void DownloadFile(string fileName, string targetDirectory)
+        {
+            var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
+            if (enableDownloads == null || !(bool) enableDownloads) {
+                throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "name", fileName }
+            };
+
+            Response commandResponse = this.Execute(DriverCommand.DownloadFile, parameters);
+            string contents = ((Dictionary<string, object>)commandResponse.Value)["contents"].ToString();
+            byte[] fileData = Convert.FromBase64String(contents);
+
+            Directory.CreateDirectory(targetDirectory);
+            string tempFile = Path.Combine(targetDirectory, "temp.zip");
+            File.WriteAllBytes(tempFile, fileData);
+
+            using (ZipArchive archive = ZipFile.OpenRead(tempFile))
+            {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    string destinationPath = Path.Combine(targetDirectory, entry.FullName);
+
+                    entry.ExtractToFile(destinationPath);
+                }
+            }
+
+            File.Delete(tempFile);
+        }
+
+        /// <summary>
+        /// Deletes all downloadable files.
+        /// </summary>
+        public void DeleteDownloadableFiles()
+        {
+            var enableDownloads = this.Capabilities.GetCapability(CapabilityType.EnableDownloads);
+            if (enableDownloads == null || !(bool) enableDownloads) {
+                throw new WebDriverException("You must enable downloads in order to work with downloadable files.");
+            }
+
+            this.Execute(DriverCommand.DeleteDownloadableFiles, null);
+        }
+
+        /// <summary>
         /// Closes a DevTools session.
         /// </summary>
         public void CloseDevToolsSession()
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
+                Task.Run(async () => await this.devToolsSession.StopSession(true)).GetAwaiter().GetResult();
             }
         }
 
+        /// <summary>
+        /// Releases all resources associated with this <see cref="RemoteWebDriver"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

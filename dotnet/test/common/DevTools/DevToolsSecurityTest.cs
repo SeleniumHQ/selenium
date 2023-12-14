@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -9,6 +6,8 @@ using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
 {
+    using CurrentCdpVersion = V120;
+
     [TestFixture]
     public class DevToolsSecurityTest : DevToolsTestFixture
     {
@@ -18,17 +17,17 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadInsecureWebsite()
         {
-            var domains = session.GetVersionSpecificDomains<V110.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
             await domains.Security.Enable();
 
-            await domains.Security.SetIgnoreCertificateErrors(new V110.Security.SetIgnoreCertificateErrorsCommandSettings()
+            await domains.Security.SetIgnoreCertificateErrors(new CurrentCdpVersion.Security.SetIgnoreCertificateErrorsCommandSettings()
             {
                 Ignore = false
             });
 
             string summary = null;
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V110.Security.SecurityStateChangedEventArgs> securityStateChangedHandler = (sender, e) =>
+            EventHandler<CurrentCdpVersion.Security.SecurityStateChangedEventArgs> securityStateChangedHandler = (sender, e) =>
             {
                 summary = e.Summary;
                 sync.Set();
@@ -50,10 +49,10 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadSecureWebsite()
         {
-            var domains = session.GetVersionSpecificDomains<V110.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
             await domains.Security.Enable();
 
-            await domains.Security.SetIgnoreCertificateErrors(new V110.Security.SetIgnoreCertificateErrorsCommandSettings()
+            await domains.Security.SetIgnoreCertificateErrors(new CurrentCdpVersion.Security.SetIgnoreCertificateErrorsCommandSettings()
             {
                 Ignore = true
             });

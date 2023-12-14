@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System;
-using OpenQA.Selenium.Remote;
+using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium
 {
@@ -25,6 +25,8 @@ namespace OpenQA.Selenium
         public string formsTitle = "We Leave From Here";
 
         public string javascriptPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("javascriptPage.html");
+
+        public string loginPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("login.html");
 
         public string clickEventPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clickEventPage.html");
 
@@ -70,6 +72,7 @@ namespace OpenQA.Selenium
         public string mapVisibilityPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("map_visibility.html");
         public string mouseTrackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mousePositionTracker.html");
         public string mouseOverPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mouseOver.html");
+        public string mouseInteractionPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mouse_interaction.html");
         public string readOnlyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("readOnlyPage.html");
         public string clicksPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
         public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");
@@ -113,10 +116,13 @@ namespace OpenQA.Selenium
             driver = EnvironmentManager.Instance.GetCurrentDriver();
         }
 
-        [OneTimeTearDown]
-        public void TearDown()
+        [TearDown]
+        public void ResetOnError()
         {
-            // EnvironmentManager.Instance.CloseCurrentDriver();
+            if (TestContext.CurrentContext.Result.Outcome == Error)
+            {
+                driver = EnvironmentManager.Instance.CreateFreshDriver();
+            }
         }
 
         /*

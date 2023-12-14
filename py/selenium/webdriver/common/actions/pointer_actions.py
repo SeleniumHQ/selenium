@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Optional
 
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -24,7 +25,7 @@ from .pointer_input import PointerInput
 
 
 class PointerActions(Interaction):
-    def __init__(self, source=None, duration=250):
+    def __init__(self, source: Optional[PointerInput] = None, duration: int = 250):
         """
         Args:
         - source: PointerInput instance
@@ -165,17 +166,17 @@ class PointerActions(Interaction):
         )
         return self
 
-    def click(self, element=None, button=MouseButton.LEFT):
+    def click(self, element: Optional[WebElement] = None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
         self.pointer_down(button)
         self.pointer_up(button)
         return self
 
-    def context_click(self, element=None):
+    def context_click(self, element: Optional[WebElement] = None):
         return self.click(element=element, button=MouseButton.RIGHT)
 
-    def click_and_hold(self, element=None, button=MouseButton.LEFT):
+    def click_and_hold(self, element: Optional[WebElement] = None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
         self.pointer_down(button=button)
@@ -185,7 +186,7 @@ class PointerActions(Interaction):
         self.pointer_up(button=button)
         return self
 
-    def double_click(self, element=None):
+    def double_click(self, element: Optional[WebElement] = None):
         if element:
             self.move_to(element)
         self.pointer_down(MouseButton.LEFT)

@@ -21,7 +21,8 @@ import org.openqa.selenium.grid.config.Config;
 
 public class RouterOptions {
 
-  static final String NETWORK = "network";
+  static final String NETWORK_SECTION = "network";
+  static final String ROUTER_SECTION = "router";
 
   private final Config config;
 
@@ -30,15 +31,24 @@ public class RouterOptions {
   }
 
   public String subPath() {
-    return config.get(NETWORK, "sub-path").map(prefix -> {
-      prefix = prefix.trim();
-      if (!prefix.startsWith("/")) {
-        prefix = "/" + prefix; //Prefix with a '/' if absent.
-      }
-      if (prefix.endsWith("/")) {
-        prefix = prefix.substring(0, prefix.length() -1); //Remove the trailing '/' if present.
-      }
-      return prefix;
-    }).orElse("");
+    return config
+        .get(NETWORK_SECTION, "sub-path")
+        .map(
+            prefix -> {
+              prefix = prefix.trim();
+              if (!prefix.startsWith("/")) {
+                prefix = "/" + prefix; // Prefix with a '/' if absent.
+              }
+              if (prefix.endsWith("/")) {
+                prefix =
+                    prefix.substring(0, prefix.length() - 1); // Remove the trailing '/' if present.
+              }
+              return prefix;
+            })
+        .orElse("");
+  }
+
+  public boolean disableUi() {
+    return config.get(ROUTER_SECTION, "disable-ui").map(Boolean::parseBoolean).orElse(false);
   }
 }

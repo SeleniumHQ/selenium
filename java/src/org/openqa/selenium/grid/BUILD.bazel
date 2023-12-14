@@ -32,14 +32,14 @@ java_binary(
     name = "pinned-grid",
     data = select({
         "//common:linux": [
+            "@linux_chrome//:chrome-linux64/chrome",
             "@linux_chromedriver//:chromedriver",
-            "@linux_chrome//:chrome-linux",
+            "@linux_firefox//:firefox/firefox",
             "@linux_geckodriver//:geckodriver",
-            "@linux_firefox//:firefox",
         ],
         "//common:macos": [
+            "@mac_chrome//:Chrome.app",
             "@mac_chromedriver//:chromedriver",
-            "@mac_chrome//:Chromium.app",
             "@mac_firefox//:Firefox.app",
             "@mac_geckodriver//:geckodriver",
         ],
@@ -48,13 +48,13 @@ java_binary(
     jvm_flags = select({
         "//common:linux": [
             "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
-            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux64/chrome)",
             "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
-            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
         ],
         "//common:macos": [
             "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
-            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",
             "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
         ],
@@ -108,9 +108,7 @@ maven_bom(
         "//java/src/org/openqa/selenium/grid:grid",
         "//java/src/org/openqa/selenium/ie:ie",
         "//java/src/org/openqa/selenium/json:json",
-        "//java/src/org/openqa/selenium/lift:lift",
         "//java/src/org/openqa/selenium/manager:manager",
-        "//java/src/org/openqa/selenium/remote/http/jdk:jdk",
         "//java/src/org/openqa/selenium/remote/http:http",
         "//java/src/org/openqa/selenium/remote:remote",
         "//java/src/org/openqa/selenium/safari:safari",
@@ -129,7 +127,7 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     uses = [
@@ -145,11 +143,9 @@ java_export(
     runtime_deps = [
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/edge",
-        "//java/src/org/openqa/selenium/firefox",
-        "//java/src/org/openqa/selenium/ie",
-        "//java/src/org/openqa/selenium/safari",
         "//java/src/org/openqa/selenium/events/local",
         "//java/src/org/openqa/selenium/events/zeromq",
+        "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid/commands",
         "//java/src/org/openqa/selenium/grid/distributor/httpd",
         "//java/src/org/openqa/selenium/grid/node/httpd",
@@ -157,8 +153,11 @@ java_export(
         "//java/src/org/openqa/selenium/grid/session",
         "//java/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/safari",
         "//javascript/grid-ui:react_jar",
-    ] + CDP_DEPS,
+    ],
     deps = [
         ":base-command",
         "//java/src/org/openqa/selenium/cli",
@@ -215,7 +214,6 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
-    javadocopts = ["--no-module-directories"],
     third_party_prefixes = [
         "@maven//",
         "//third_party",

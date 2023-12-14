@@ -19,12 +19,11 @@ package org.openqa.selenium.grid.graphql;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import java.util.Set;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
-
-import java.util.Set;
 
 public class SessionData implements DataFetcher {
 
@@ -50,16 +49,16 @@ public class SessionData implements DataFetcher {
       org.openqa.selenium.grid.data.Session session = currentSession.session;
 
       return new org.openqa.selenium.grid.graphql.Session(
-        session.getId().toString(),
-        session.getCapabilities(),
-        session.getStartTime(),
-        session.getUri(),
-        currentSession.node.getNodeId().toString(),
-        currentSession.node.getExternalUri(),
-        currentSession.slot);
+          session.getId().toString(),
+          session.getCapabilities(),
+          session.getStartTime(),
+          session.getUri(),
+          currentSession.node.getNodeId().toString(),
+          currentSession.node.getExternalUri(),
+          currentSession.slot);
     } else {
-      throw new SessionNotFoundException("No ongoing session found with the requested session id.",
-        sessionId);
+      throw new SessionNotFoundException(
+          "No ongoing session found with the requested session id.", sessionId);
     }
   }
 
@@ -68,7 +67,7 @@ public class SessionData implements DataFetcher {
       for (Slot slot : status.getSlots()) {
         org.openqa.selenium.grid.data.Session session = slot.getSession();
 
-        if (session!=null && sessionId.equals(session.getId().toString())) {
+        if (session != null && sessionId.equals(session.getId().toString())) {
           return new SessionInSlot(session, status, slot);
         }
       }

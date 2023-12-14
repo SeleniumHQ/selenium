@@ -20,8 +20,8 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 
 /**
- * An encapsulation of
- * {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String, Object...)}.
+ * An encapsulation of {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String,
+ * Object...)}.
  */
 public interface ExecuteMethod {
   /**

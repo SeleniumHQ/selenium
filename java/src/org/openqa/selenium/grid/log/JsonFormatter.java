@@ -20,9 +20,6 @@ package org.openqa.selenium.grid.log;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -30,6 +27,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 class JsonFormatter extends Formatter {
 

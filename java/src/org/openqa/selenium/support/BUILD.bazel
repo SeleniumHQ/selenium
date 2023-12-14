@@ -10,12 +10,13 @@ java_export(
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-support:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":page-factory",
+        "//java/src/org/openqa/selenium/support/decorators",
         "//java/src/org/openqa/selenium/support/events",
         "//java/src/org/openqa/selenium/support/locators",
         "//java/src/org/openqa/selenium/support/ui:clock",

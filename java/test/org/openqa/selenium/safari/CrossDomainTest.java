@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.safari;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,9 +33,6 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.Pages;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class CrossDomainTest extends JupiterTestBase {
 
@@ -62,8 +62,7 @@ class CrossDomainTest extends JupiterTestBase {
     assertThat(driver.getCurrentUrl()).isEqualTo(otherPages.iframePage);
     driver.findElement(By.tagName("body"));
 
-    assertThatExceptionOfType(StaleElementReferenceException.class)
-      .isThrownBy(body1::getTagName);
+    assertThatExceptionOfType(StaleElementReferenceException.class).isThrownBy(body1::getTagName);
   }
 
   @Test
@@ -80,20 +79,24 @@ class CrossDomainTest extends JupiterTestBase {
     setupCrossDomainFrameTest();
 
     assertThatExceptionOfType(WebDriverException.class)
-      .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
-        "return window.top.document.body.tagName"));
+        .isThrownBy(
+            () ->
+                ((JavascriptExecutor) driver)
+                    .executeScript("return window.top.document.body.tagName"));
 
     // Make sure we can recover from the above.
-    assertThat(((JavascriptExecutor) driver).executeScript(
-      "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
+    assertThat(
+            ((JavascriptExecutor) driver)
+                .executeScript("return window.document.body.tagName.toLowerCase();"))
+        .isEqualTo("body");
   }
 
   private void setupCrossDomainFrameTest() {
     driver.get(pages.iframePage);
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
-    ((JavascriptExecutor) driver).executeScript(
-      "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
+    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
 
     assertThat(isTop()).isTrue();
     driver.switchTo().frame(iframe);

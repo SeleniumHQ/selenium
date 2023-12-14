@@ -21,12 +21,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
-class UnpinnedScriptKey extends ScriptKey {
+public class UnpinnedScriptKey extends ScriptKey {
 
-  private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts = new WeakHashMap<>();
+  private static final WeakHashMap<JavascriptExecutor, Set<UnpinnedScriptKey>> pinnedScripts =
+      new WeakHashMap<>();
   private final String script;
+  private String scriptId;
+  private final String scriptHandle;
 
   static UnpinnedScriptKey pin(JavascriptExecutor executor, String script) {
     UnpinnedScriptKey toReturn = new UnpinnedScriptKey(script);
@@ -50,14 +54,40 @@ class UnpinnedScriptKey extends ScriptKey {
     return Collections.unmodifiableSet(toReturn);
   }
 
-  private UnpinnedScriptKey(String script) {
+  public UnpinnedScriptKey(String script) {
     super(script);
 
+    this.scriptHandle = UUID.randomUUID().toString().replace("-", "");
     this.script = script;
   }
 
-  String getScript() {
+  public void setScriptId(String id) {
+    this.scriptId = id;
+  }
+
+  public String getScriptId() {
+    return this.scriptId;
+  }
+
+  public String getScript() {
     return script;
+  }
+
+  public String getScriptHandle() {
+    return scriptHandle;
+  }
+
+  public String creationScript() {
+    return String.format(
+        "function __webdriver_%s(arguments) { %s }", this.scriptHandle, this.script);
+  }
+
+  public String executionScript() {
+    return String.format("return __webdriver_%s(arguments)", this.scriptHandle);
+  }
+
+  public String removalScript() {
+    return String.format("__webdriver_%s = undefined", this.scriptHandle);
   }
 
   @Override

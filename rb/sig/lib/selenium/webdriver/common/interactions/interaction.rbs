@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    module Interactions
+      class Interaction
+        attr_reader type: untyped
+
+        def initialize: (untyped source) -> void
+
+        def assert_source: (untyped _source) -> untyped
+      end
+    end
+  end
+end

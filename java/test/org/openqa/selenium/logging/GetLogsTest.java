@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.logging;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -24,17 +32,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-@Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
@@ -82,8 +79,10 @@ class GetLogsTest extends JupiterTestBase {
       for (Map.Entry<String, LogEntries> nested : logTypeToEntriesMap.entrySet()) {
         if (!entry.getKey().equals(nested.getKey())) {
           assertThat(hasOverlappingLogEntries(entry.getValue(), nested.getValue()))
-            .describedAs("Two different log types (%s, %s) should not  contain the same log entries", entry.getKey(), nested.getKey())
-            .isFalse();
+              .describedAs(
+                  "Two different log types (%s, %s) should not  contain the same log entries",
+                  entry.getKey(), nested.getKey())
+              .isFalse();
         }
       }
     }
@@ -99,14 +98,13 @@ class GetLogsTest extends JupiterTestBase {
   private static boolean hasOverlappingLogEntries(LogEntries firstLog, LogEntries secondLog) {
     for (LogEntry firstEntry : firstLog) {
       for (LogEntry secondEntry : secondLog) {
-        if (firstEntry.getLevel().getName().equals(secondEntry.getLevel().getName()) &&
-            firstEntry.getMessage().equals(secondEntry.getMessage()) &&
-            firstEntry.getTimestamp() == secondEntry.getTimestamp()) {
+        if (firstEntry.getLevel().getName().equals(secondEntry.getLevel().getName())
+            && firstEntry.getMessage().equals(secondEntry.getMessage())
+            && firstEntry.getTimestamp() == secondEntry.getTimestamp()) {
           return true;
         }
       }
     }
     return false;
   }
-
 }

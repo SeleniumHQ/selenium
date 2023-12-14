@@ -22,10 +22,28 @@ import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
-
+import java.io.Closeable;
+import java.io.StringReader;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -36,42 +54,25 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.Closeable;
-import java.io.StringReader;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(r -> {
-    Thread thread = new Thread(r, "BiDi Connection");
-    thread.setDaemon(true);
-    return thread;
-  });
+  private static final Executor EXECUTOR =
+      Executors.newCachedThreadPool(
+          r -> {
+            Thread thread = new Thread(r, "BiDi Connection");
+            thread.setDaemon(true);
+            return thread;
+          });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
+  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
+      new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
+  private final Map<Event<?>, List<Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
+  private final AtomicBoolean underlyingSocketClosed;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
@@ -79,6 +80,7 @@ public class Connection implements Closeable {
 
     this.client = client;
     socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    underlyingSocketClosed = new AtomicBoolean();
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -111,33 +113,39 @@ public class Connection implements Closeable {
 
     CompletableFuture<X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
-      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
-        if (inputOrException.isRight()) {
-          try {
-            X value = command.getMapper().apply(inputOrException.right());
-            result.complete(value);
-          } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    String.format("Unable to map result for %s", command.getMethod()),
-                    e);
-            result.completeExceptionally(e);
-          }
-        } else {
-          result.completeExceptionally(inputOrException.left());
-        }
-      }));
+      methodCallbacks.put(
+          id,
+          NamedConsumer.of(
+              command.getMethod(),
+              inputOrException -> {
+                if (inputOrException.isRight()) {
+                  try {
+                    X value = command.getMapper().apply(inputOrException.right());
+                    result.complete(value);
+                  } catch (Exception e) {
+                    LOG.log(
+                        Level.WARNING,
+                        String.format("Unable to map result for %s", command.getMethod()),
+                        e);
+                    result.completeExceptionally(e);
+                  }
+                } else {
+                  result.completeExceptionally(inputOrException.left());
+                }
+              }));
     }
 
-    ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
-    serialized.put("id", id);
-    serialized.put("method", command.getMethod());
-    serialized.put("params", command.getParams());
+    Map<String, Object> serialized =
+        Map.of(
+            "id", id,
+            "method", command.getMethod(),
+            "params", command.getParams());
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(json).writeClassName(false)) {
-      out.write(serialized.build());
+      out.write(serialized);
     }
-    LOG.log(getDebugLogLevel(), () -> String.format("-> %s", json));
+    LOG.log(getDebugLogLevel(), "-> {0}", json);
     socket.sendText(json);
 
     if (!command.getSendsResponse()) {
@@ -172,7 +180,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.put(event, handler);
+      eventCallbacks.computeIfAbsent(event, (key) -> new ArrayList<>()).add(handler);
     } finally {
       lock.unlock();
     }
@@ -182,7 +190,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.removeAll(event);
+      eventCallbacks.remove(event);
     } finally {
       lock.unlock();
     }
@@ -202,13 +210,17 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      List<String> events = eventCallbacks.keySet()
-        .stream()
-        .map(Event::getMethod)
-        .collect(Collectors.toList());
+      List<String> events =
+          eventCallbacks.keySet().stream().map(Event::getMethod).collect(Collectors.toList());
 
-      send(new Command<>("session.unsubscribe",
-                         ImmutableMap.of("events", events)));
+      // If WebDriver close() is called, it closes the session if it is the last browsing context.
+      // It also closes the WebSocket from the remote end.
+      // If we try to now send commands, depending on the underlying web socket implementation, it
+      // will throw errors.
+      // Ideally, such errors should not prevent freeing up resources.
+      if (!underlyingSocketClosed.get()) {
+        send(new Command<>("session.unsubscribe", Map.of("events", events)));
+      }
 
       eventCallbacks.clear();
     } finally {
@@ -226,13 +238,20 @@ public class Connection implements Closeable {
 
     @Override
     public void onText(CharSequence data) {
-      EXECUTOR.execute(() -> {
-        try {
-          handle(data);
-        } catch (Exception e) {
-          throw new BiDiException("Unable to process: " + data, e);
-        }
-      });
+      EXECUTOR.execute(
+          () -> {
+            try {
+              handle(data);
+            } catch (Exception e) {
+              throw new BiDiException("Unable to process: " + data, e);
+            }
+          });
+    }
+
+    @Override
+    public void onClose(int code, String reason) {
+      LOG.fine("BiDi connection websocket closed");
+      underlyingSocketClosed.set(true);
     }
   }
 
@@ -242,7 +261,7 @@ public class Connection implements Closeable {
     // TODO: decode once, and once only
 
     String asString = String.valueOf(data);
-    LOG.log(getDebugLogLevel(), () -> String.format("<- %s", asString));
+    LOG.log(getDebugLogLevel(), "<- {0}", asString);
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
@@ -256,13 +275,14 @@ public class Connection implements Closeable {
   }
 
   private void handleResponse(String rawDataString, Map<String, Object> rawDataMap) {
-    Consumer<Either<Throwable, JsonInput>> consumer = methodCallbacks.remove(((Number) rawDataMap.get("id")).longValue());
+    Consumer<Either<Throwable, JsonInput>> consumer =
+        methodCallbacks.remove(((Number) rawDataMap.get("id")).longValue());
     if (consumer == null) {
       return;
     }
 
     try (StringReader reader = new StringReader(rawDataString);
-         JsonInput input = JSON.newInput(reader)) {
+        JsonInput input = JSON.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         switch (input.nextName()) {
@@ -285,40 +305,55 @@ public class Connection implements Closeable {
 
   private void handleEventResponse(Map<String, Object> rawDataMap) {
     LOG.log(
-      getDebugLogLevel(),
-      () -> "Method" + rawDataMap.get("method") + "called with" + eventCallbacks.keySet().size()
-            + "callbacks available");
+        getDebugLogLevel(),
+        () ->
+            "Method"
+                + rawDataMap.get("method")
+                + "called with"
+                + eventCallbacks.size()
+                + "callbacks available");
     Lock lock = callbacksLock.readLock();
-    lock.lock();
+    // A waiting writer will block a reader to enter the lock, even if there are currently other
+    // readers holding the lock. TryLock will bypass the waiting writers and acquire the read lock.
+    // A thread processing an event (and holding the read-lock) might wait for another event before
+    // continue processing the event (and releasing the read-lock). Without tryLock this would end
+    // in a deadlock, as soon as a writer will try to acquire a write-lock.
+    if (!lock.tryLock()) {
+      lock.lock();
+    }
     try {
-      eventCallbacks.keySet().stream()
-        .filter(event -> {
-          LOG.log(
-            getDebugLogLevel(),
-            String.format("Matching %s with %s", rawDataMap.get("method"), event.getMethod()));
-          return rawDataMap.get("method").equals(event.getMethod());
-        })
-        .forEach(event -> {
-          Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
-          Object value = null;
-          if (params != null) {
-            value = event.getMapper().apply(params);
-          }
-          if (value == null) {
-            return;
-          }
+      eventCallbacks.entrySet().stream()
+          .filter(
+              event -> {
+                LOG.log(
+                    getDebugLogLevel(),
+                    "Matching {0} with {1}",
+                    new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
+                return rawDataMap.get("method").equals(event.getKey().getMethod());
+              })
+          .forEach(
+              event -> {
+                Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
+                Object value = null;
+                if (params != null) {
+                  value = event.getKey().getMapper().apply(params);
+                }
+                if (value == null) {
+                  return;
+                }
 
-          final Object finalValue = value;
+                final Object finalValue = value;
 
-          for (Consumer<?> action : eventCallbacks.get(event)) {
-            @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
-            LOG.log(
-              getDebugLogLevel(),
-              String.format("Calling callback for %s using %s being passed %s", event, obj,
-                            finalValue));
-            obj.accept(finalValue);
-          }
-        });
+                for (Consumer<?> action : event.getValue()) {
+                  @SuppressWarnings("unchecked")
+                  Consumer<Object> obj = (Consumer<Object>) action;
+                  LOG.log(
+                      getDebugLogLevel(),
+                      "Calling callback for {0} using {1} being passed {2}",
+                      new Object[] {event.getKey(), obj, finalValue});
+                  obj.accept(finalValue);
+                }
+              });
     } finally {
       lock.unlock();
     }

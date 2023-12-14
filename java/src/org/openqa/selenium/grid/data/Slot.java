@@ -19,16 +19,15 @@ package org.openqa.selenium.grid.data;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class Slot implements Serializable {
 
@@ -36,14 +35,12 @@ public class Slot implements Serializable {
   private final Capabilities stereotype;
   private final Session session;
   private final Instant lastStarted;
-  private final SlotMatcher slotMatcher;
 
   public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
     this.session = session;
-    this.slotMatcher = new DefaultSlotMatcher();
   }
 
   private static Slot fromJson(JsonInput input) {
@@ -107,7 +104,7 @@ public class Slot implements Serializable {
     return session;
   }
 
-  public boolean isSupporting(Capabilities caps) {
+  public boolean isSupporting(Capabilities caps, SlotMatcher slotMatcher) {
     return slotMatcher.matches(getStereotype(), caps);
   }
 
@@ -118,10 +115,10 @@ public class Slot implements Serializable {
     }
 
     Slot that = (Slot) o;
-    return Objects.equals(this.id, that.id) &&
-           Objects.equals(this.stereotype, that.stereotype) &&
-           Objects.equals(this.session, that.session) &&
-           Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
+    return Objects.equals(this.id, that.id)
+        && Objects.equals(this.stereotype, that.stereotype)
+        && Objects.equals(this.session, that.session)
+        && Objects.equals(this.lastStarted.toEpochMilli(), that.lastStarted.toEpochMilli());
   }
 
   @Override

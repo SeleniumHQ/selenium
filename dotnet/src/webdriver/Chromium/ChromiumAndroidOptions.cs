@@ -46,8 +46,7 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Gets or sets the process name of the Activity hosting the app. If not given, it
-        /// is assumed to be the same as <see cref="AndroidActivity"/>.
+        /// Gets or sets the process name of the Activity hosting the app.
         /// </summary>
         public string AndroidProcess
         {

@@ -23,8 +23,19 @@ namespace OpenQA.Selenium.DevTools
     /// </summary>
     public class UserAgent
     {
+        /// <summary>
+        /// Gets or sets the user agent string.
+        /// </summary>
         public string UserAgentString { get; set; }
+
+        /// <summary>
+        /// Gets or sets the language to accept in headers.
+        /// </summary>
         public string AcceptLanguage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value of the platform.
+        /// </summary>
         public string Platform { get; set; }
     }
 }

@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.safari.options import Options
 
 
@@ -25,31 +26,11 @@ def options():
     return Options()
 
 
-def test_set_binary_location(options):
-    options.binary_location = "/foo/bar"
-    assert options._binary_location == "/foo/bar"
-
-
-def test_get_binary_location(options):
-    options._binary_location = "/foo/bar"
-    assert options.binary_location == "/foo/bar"
-
-
-def test_creates_capabilities(options):
-    options._arguments = ["foo"]
-    options._binary_location = "/bar"
-    caps = options.to_capabilities()
-    opts = caps.get(Options.KEY)
-    assert opts
-    assert "foo" in opts["args"]
-    assert opts["binary"] == "/bar"
-
-
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
 
     caps = DesiredCapabilities.SAFARI.copy()
-    caps.update({"pageLoadStrategy": "normal"})
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
     assert options._caps == caps
 
 

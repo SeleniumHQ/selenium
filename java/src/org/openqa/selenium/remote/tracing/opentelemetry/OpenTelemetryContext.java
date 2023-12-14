@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.Tracer;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.tracing.TraceContext;
-
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.Scope;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.TraceContext;
 
 public class OpenTelemetryContext implements TraceContext {
   private final Tracer tracer;
@@ -65,7 +62,7 @@ public class OpenTelemetryContext implements TraceContext {
     return new OpenTelemetrySpan(tracer, Context.current(), span, scope);
   }
 
-  @VisibleForTesting
+  /** visible for testing only */
   Context getContext() {
     return context;
   }
@@ -96,11 +93,15 @@ public class OpenTelemetryContext implements TraceContext {
 
   @Override
   public String toString() {
-    return "OpenTelemetryContext{" +
-      "tracer=" + tracer +
-      ", context=" + this.context +
-      ", span id=" + spanContext.getSpanId() +
-      ", trace id=" + spanContext.getTraceId() +
-      '}';
+    return "OpenTelemetryContext{"
+        + "tracer="
+        + tracer
+        + ", context="
+        + this.context
+        + ", span id="
+        + spanContext.getSpanId()
+        + ", trace id="
+        + spanContext.getTraceId()
+        + '}';
   }
 }

@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
-
-/**
- * Models a SELECT tag, providing helper methods to select and deselect options.
- */
+/** Models a SELECT tag, providing helper methods to select and deselect options. */
 public class Select implements ISelect, WrapsElement {
 
   private final WebElement element;
@@ -64,7 +61,7 @@ public class Select implements ISelect, WrapsElement {
 
   /**
    * @return Whether this select element support selecting multiple options at the same time? This
-   *         is done by checking the value of the "multiple" attribute.
+   *     is done by checking the value of the "multiple" attribute.
    */
   @Override
   public boolean isMultiple() {
@@ -89,12 +86,14 @@ public class Select implements ISelect, WrapsElement {
 
   /**
    * @return The first selected option in this select tag (or the currently selected option in a
-   *         normal select)
+   *     normal select)
    * @throws NoSuchElementException If no option is selected
    */
   @Override
   public WebElement getFirstSelectedOption() {
-    return getOptions().stream().filter(WebElement::isSelected).findFirst()
+    return getOptions().stream()
+        .filter(WebElement::isSelected)
+        .findFirst()
         .orElseThrow(() -> new NoSuchElementException("No options are selected"));
   }
 
@@ -102,7 +101,7 @@ public class Select implements ISelect, WrapsElement {
    * Select all options that display text matching the argument. That is, when given "Bar" this
    * would select an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
@@ -113,7 +112,8 @@ public class Select implements ISelect, WrapsElement {
 
     // try to find the option via XPATH ...
     List<WebElement> options =
-      element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+        element.findElements(
+            By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     for (WebElement option : options) {
       setSelected(option, true);
@@ -132,8 +132,8 @@ public class Select implements ISelect, WrapsElement {
       } else {
         // get candidates via XPATH ...
         candidates =
-          element.findElements(By.xpath(".//option[contains(., " +
-                                        Quotes.escape(subStringWithoutSpace) + ")]"));
+            element.findElements(
+                By.xpath(".//option[contains(., " + Quotes.escape(subStringWithoutSpace) + ")]"));
       }
 
       String trimmed = text.trim();
@@ -183,7 +183,7 @@ public class Select implements ISelect, WrapsElement {
    * Select all options that have a value matching the argument. That is, when given "foo" this
    * would select an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param value The value to match against
    * @throws NoSuchElementException If no matching option elements are found
@@ -208,7 +208,7 @@ public class Select implements ISelect, WrapsElement {
   public void deselectAll() {
     if (!isMultiple()) {
       throw new UnsupportedOperationException(
-        "You may only deselect all options of a multi-select");
+          "You may only deselect all options of a multi-select");
     }
 
     for (WebElement option : getOptions()) {
@@ -220,7 +220,7 @@ public class Select implements ISelect, WrapsElement {
    * Deselect all options that have a value matching the argument. That is, when given "foo" this
    * would deselect an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param value The value to match against
    * @throws NoSuchElementException If no matching option elements are found
@@ -229,8 +229,7 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public void deselectByValue(String value) {
     if (!isMultiple()) {
-      throw new UnsupportedOperationException(
-        "You may only deselect options of a multi-select");
+      throw new UnsupportedOperationException("You may only deselect options of a multi-select");
     }
 
     for (WebElement option : findOptionsByValue(value)) {
@@ -249,8 +248,7 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public void deselectByIndex(int index) {
     if (!isMultiple()) {
-      throw new UnsupportedOperationException(
-        "You may only deselect options of a multi-select");
+      throw new UnsupportedOperationException("You may only deselect options of a multi-select");
     }
 
     setSelectedByIndex(index, false);
@@ -260,7 +258,7 @@ public class Select implements ISelect, WrapsElement {
    * Deselect all options that display text matching the argument. That is, when given "Bar" this
    * would deselect an option like:
    *
-   * &lt;option value="foo"&gt;Bar&lt;/option&gt;
+   * <p>&lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
@@ -269,12 +267,12 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public void deselectByVisibleText(String text) {
     if (!isMultiple()) {
-      throw new UnsupportedOperationException(
-        "You may only deselect options of a multi-select");
+      throw new UnsupportedOperationException("You may only deselect options of a multi-select");
     }
 
-    List<WebElement> options = element.findElements(By.xpath(
-      ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+    List<WebElement> options =
+        element.findElements(
+            By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
     if (options.isEmpty()) {
       throw new NoSuchElementException("Cannot locate option with text: " + text);
     }
@@ -285,8 +283,8 @@ public class Select implements ISelect, WrapsElement {
   }
 
   private List<WebElement> findOptionsByValue(String value) {
-    List<WebElement> options = element.findElements(By.xpath(
-        ".//option[@value = " + Quotes.escape(value) + "]"));
+    List<WebElement> options =
+        element.findElements(By.xpath(".//option[@value = " + Quotes.escape(value) + "]"));
     if (options.isEmpty()) {
       throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
@@ -308,11 +306,8 @@ public class Select implements ISelect, WrapsElement {
   /**
    * Select or deselect specified option
    *
-   * @param option
-   *          The option which state needs to be changed
-   * @param select
-   *          Indicates whether the option needs to be selected (true) or
-   *          deselected (false)
+   * @param option The option which state needs to be changed
+   * @param select Indicates whether the option needs to be selected (true) or deselected (false)
    */
   private void setSelected(WebElement option, boolean select) {
     assertOptionIsEnabled(option, select);

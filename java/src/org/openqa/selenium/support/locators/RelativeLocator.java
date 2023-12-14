@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.support.locators;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
@@ -27,53 +32,46 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
-
 /**
- * Used for finding elements by their location on a page, rather than their
- * position on the DOM. Elements are returned ordered by their proximity to
- * the last anchor element used for finding them. As an example:
+ * Used for finding elements by their location on a page, rather than their position on the DOM.
+ * Elements are returned ordered by their proximity to the last anchor element used for finding
+ * them. As an example:
+ *
  * <pre>
  *   List<WebElement> elements = driver.findElements(with(tagName("p")).above(lowest));
  * </pre>
- * Would return all {@code p} elements above the {@link WebElement}
- * {@code lowest} sorted by the proximity to {@code lowest}.
- * <p>
- * Proximity is determined by simply comparing the distance to the center
- * point of each of the elements in turn. For some non-rectangular shapes
- * (such as paragraphs of text that take more than one line), this may lead
- * to some surprising results.
- * <p>
- * In addition, be aware that the relative locators all use the "client
- * bounding rect" of elements to determine whether something is "left",
- * "right", "above" or "below" of another. Given the example:
+ *
+ * Would return all {@code p} elements above the {@link WebElement} {@code lowest} sorted by the
+ * proximity to {@code lowest}.
+ *
+ * <p>Proximity is determined by simply comparing the distance to the center point of each of the
+ * elements in turn. For some non-rectangular shapes (such as paragraphs of text that take more than
+ * one line), this may lead to some surprising results.
+ *
+ * <p>In addition, be aware that the relative locators all use the "client bounding rect" of
+ * elements to determine whether something is "left", "right", "above" or "below" of another. Given
+ * the example:
+ *
  * <pre>
  *   +-----+
  *   |  a  |---+
  *   +-----+ b |
  *       +-----+
  * </pre>
- * Where {@code a} partially overlaps {@code b}, {@code b} is none of
- * "above", "below", "left" or "right" of {@code a}. This is because of
- * how these are calculated using the box model. {@code b}'s bounding
- * rect has it's left-most edge to the right of {@code a}'s bounding
- * rect's right-most edge, so it is not considered to be "right" of
- * {@code a}. Similar logic applies for the other directions.
+ *
+ * Where {@code a} partially overlaps {@code b}, {@code b} is none of "above", "below", "left" or
+ * "right" of {@code a}. This is because of how these are calculated using the box model. {@code
+ * b}'s bounding rect has it's left-most edge to the right of {@code a}'s bounding rect's right-most
+ * edge, so it is not considered to be "right" of {@code a}. Similar logic applies for the other
+ * directions.
  */
 public class RelativeLocator {
 
   private static final Json JSON = new Json();
 
-  private static final int CLOSE_IN_PIXELS = 100;
+  private static final int CLOSE_IN_PIXELS = 50;
 
-  /**
-   * Start of a relative locator, finding elements by tag name.
-   */
-
+  /** Start of a relative locator, finding elements by tag name. */
   public static RelativeBy with(By by) {
     Require.nonNull("By to look for", by);
     return new RelativeBy(by);
@@ -84,7 +82,7 @@ public class RelativeLocator {
     private final List<Map<String, Object>> filters;
 
     private RelativeBy(Object rootLocator) {
-      this(rootLocator, ImmutableList.of());
+      this(rootLocator, List.of());
     }
 
     private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
@@ -94,14 +92,15 @@ public class RelativeLocator {
       } else if (rootLocator instanceof Map) {
         if (((Map<?, ?>) rootLocator).keySet().size() != 1) {
           throw new IllegalArgumentException(
-            "Root locators as find element payload must only have a single key: " + rootLocator);
+              "Root locators as find element payload must only have a single key: " + rootLocator);
         }
       } else if (!(rootLocator instanceof WebElement)) {
-        throw new IllegalArgumentException("Root locator must be an element or a locator: " + rootLocator);
+        throw new IllegalArgumentException(
+            "Root locator must be an element or a locator: " + rootLocator);
       }
 
       this.root = Require.nonNull("Root locator", rootLocator);
-      this.filters = ImmutableList.copyOf(Require.nonNull("Filters", filters));
+      this.filters = List.copyOf(Require.nonNull("Filters", filters));
     }
 
     public RelativeBy above(WebElement element) {
@@ -177,10 +176,13 @@ public class RelativeLocator {
       Require.positive("Distance", atMostDistanceInPixels);
 
       return new RelativeBy(
-        root,
-        amend(ImmutableMap.of(
-          "kind", "near",
-          "args", ImmutableList.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
+          root,
+          amend(
+              Map.of(
+                  "kind",
+                  "near",
+                  "args",
+                  List.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
     }
 
     @Override
@@ -188,7 +190,8 @@ public class RelativeLocator {
       JavascriptExecutor js = getJavascriptExecutor(context);
 
       @SuppressWarnings("unchecked")
-      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
+      List<WebElement> elements =
+          (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
       return elements;
     }
 
@@ -197,30 +200,21 @@ public class RelativeLocator {
       Require.nonNull("Locator", locator);
 
       return new RelativeBy(
-        root,
-        amend(ImmutableMap.of(
-          "kind", direction,
-          "args", ImmutableList.of(asAtomLocatorParameter(locator)))));
+          root, amend(Map.of("kind", direction, "args", List.of(asAtomLocatorParameter(locator)))));
     }
 
     private List<Map<String, Object>> amend(Map<String, Object> toAdd) {
-      return ImmutableList.<Map<String, Object>>builder()
-        .addAll(filters)
-        .add(toAdd)
-        .build();
+      return Stream.concat(filters.stream(), Stream.of(toAdd))
+          .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public Parameters getRemoteParameters() {
-      return new Parameters(
-        "relative",
-        ImmutableMap.of("root", root, "filters", filters));
+      return new Parameters("relative", Map.of("root", root, "filters", filters));
     }
 
     private Map<String, Object> toJson() {
-      return ImmutableMap.of(
-        "using", "relative",
-        "value", ImmutableMap.of("root", root, "filters", filters));
+      return Map.of("using", "relative", "value", Map.of("root", root, "filters", filters));
     }
   }
 
@@ -230,7 +224,8 @@ public class RelativeLocator {
     }
 
     if (!(object instanceof By)) {
-      throw new IllegalArgumentException("Expected locator to be either an element or a By: " + object);
+      throw new IllegalArgumentException(
+          "Expected locator to be either an element or a By: " + object);
     }
 
     assertLocatorCanBeSerialized(object);
@@ -238,13 +233,15 @@ public class RelativeLocator {
     Map<String, Object> raw = JSON.toType(JSON.toJson(object), MAP_TYPE);
 
     if (!(raw.get("using") instanceof String)) {
-      throw new JsonException("Expected JSON encoded form of locator to have a 'using' field. " + raw);
+      throw new JsonException(
+          "Expected JSON encoded form of locator to have a 'using' field. " + raw);
     }
     if (!raw.containsKey("value")) {
-      throw new JsonException("Expected JSON encoded form of locator to have a 'value' field: " + raw);
+      throw new JsonException(
+          "Expected JSON encoded form of locator to have a 'value' field: " + raw);
     }
 
-    return ImmutableMap.of((String) raw.get("using"), raw.get("value"));
+    return Map.of((String) raw.get("using"), raw.get("value"));
   }
 
   private static void assertLocatorCanBeSerialized(Object locator) {
@@ -263,6 +260,6 @@ public class RelativeLocator {
     }
 
     throw new IllegalArgumentException(
-      "Locator must be serializable to JSON using a `toJson` method. " + locator);
+        "Locator must be serializable to JSON using a `toJson` method. " + locator);
   }
 }

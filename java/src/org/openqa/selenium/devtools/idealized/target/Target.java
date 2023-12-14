@@ -17,20 +17,17 @@
 
 package org.openqa.selenium.devtools.idealized.target;
 
+import java.util.List;
+import java.util.Optional;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface Target {
 
-  /**
-   * Detaches session with given id.
-   */
+  /** Detaches session with given id. */
   Command<Void> detachFromTarget(Optional<SessionID> sessionId, Optional<TargetID> targetId);
 
   Command<List<TargetInfo>> getTargets();

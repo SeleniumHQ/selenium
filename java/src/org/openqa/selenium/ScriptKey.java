@@ -17,9 +17,8 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class ScriptKey {
 
@@ -27,6 +26,10 @@ public class ScriptKey {
 
   public ScriptKey(String identifier) {
     this.identifier = Require.nonNull("Script ID", identifier);
+  }
+
+  public String getIdentifier() {
+    return identifier;
   }
 
   @Override

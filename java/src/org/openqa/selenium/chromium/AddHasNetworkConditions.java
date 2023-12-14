@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.chromium;
 
+import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+import java.time.Duration;
+import java.util.Map;
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -27,24 +31,24 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
-import java.time.Duration;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
-
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkConditions>, AdditionalHttpCommands {
+public class AddHasNetworkConditions
+    implements AugmenterProvider<HasNetworkConditions>, AdditionalHttpCommands {
 
   public static final String GET_NETWORK_CONDITIONS = "getNetworkConditions";
   public static final String SET_NETWORK_CONDITIONS = "setNetworkConditions";
   public static final String DELETE_NETWORK_CONDITIONS = "deleteNetworkConditions";
 
-
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    GET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
-    SET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
-    DELETE_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE));
+  private static final Map<String, CommandInfo> COMMANDS =
+      Map.of(
+          GET_NETWORK_CONDITIONS,
+              new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
+          SET_NETWORK_CONDITIONS,
+              new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
+          DELETE_NETWORK_CONDITIONS,
+              new CommandInfo(
+                  "/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -62,17 +66,25 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
   }
 
   @Override
-  public HasNetworkConditions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  public HasNetworkConditions getImplementation(
+      Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasNetworkConditions() {
       @Override
       public ChromiumNetworkConditions getNetworkConditions() {
         @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) executeMethod.execute(GET_NETWORK_CONDITIONS, null);
+        Map<String, Object> result =
+            (Map<String, Object>) executeMethod.execute(GET_NETWORK_CONDITIONS, null);
         ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-        networkConditions.setOffline((Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));
-        networkConditions.setLatency(Duration.ofMillis((Long) result.getOrDefault(ChromiumNetworkConditions.LATENCY, 0)));
-        networkConditions.setDownloadThroughput(((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1)).intValue());
-        networkConditions.setDownloadThroughput(((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1)).intValue());
+        networkConditions.setOffline(
+            (Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));
+        networkConditions.setLatency(
+            Duration.ofMillis((Long) result.getOrDefault(ChromiumNetworkConditions.LATENCY, 0)));
+        networkConditions.setDownloadThroughput(
+            ((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1))
+                .intValue());
+        networkConditions.setUploadThroughput(
+            ((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1))
+                .intValue());
         return networkConditions;
       }
 
@@ -80,11 +92,17 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
       public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
         Require.nonNull("Network Conditions", networkConditions);
 
-        Map<String, Object> conditions = ImmutableMap.of(ChromiumNetworkConditions.OFFLINE, networkConditions.getOffline(),
-          ChromiumNetworkConditions.LATENCY, networkConditions.getLatency().toMillis(),
-          ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, networkConditions.getDownloadThroughput(),
-          ChromiumNetworkConditions.UPLOAD_THROUGHPUT, networkConditions.getUploadThroughput());
-        executeMethod.execute(SET_NETWORK_CONDITIONS, ImmutableMap.of("network_conditions", conditions));
+        Map<String, Object> conditions =
+            Map.of(
+                ChromiumNetworkConditions.OFFLINE,
+                networkConditions.getOffline(),
+                ChromiumNetworkConditions.LATENCY,
+                networkConditions.getLatency().toMillis(),
+                ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT,
+                networkConditions.getDownloadThroughput(),
+                ChromiumNetworkConditions.UPLOAD_THROUGHPUT,
+                networkConditions.getUploadThroughput());
+        executeMethod.execute(SET_NETWORK_CONDITIONS, Map.of("network_conditions", conditions));
       }
 
       @Override

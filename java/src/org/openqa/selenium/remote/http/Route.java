@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableMap;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -39,6 +27,16 @@ import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.openqa.selenium.internal.Require;
 
 public abstract class Route implements HttpHandler, Routable {
@@ -57,12 +55,15 @@ public abstract class Route implements HttpHandler, Routable {
   public final HttpResponse execute(HttpRequest req) {
     if (!matches(req)) {
       return new HttpResponse()
-        .setStatus(HTTP_NOT_FOUND)
-        .setContent(asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "error", "unknown command",
-            "message", "Unable to find handler for " + req,
-            "stacktrace", ""))));
+          .setStatus(HTTP_NOT_FOUND)
+          .setContent(
+              asJson(
+                  Map.of(
+                      "value",
+                      Map.of(
+                          "error", "unknown command",
+                          "message", "Unable to find handler for " + req,
+                          "stacktrace", ""))));
     }
 
     HttpResponse res = handle(req);
@@ -72,14 +73,18 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     return new HttpResponse()
-      .setStatus(HTTP_INTERNAL_ERROR)
-      .addHeader("WebDriver-Error", "unsupported operation")
-      .addHeader("Selenium-Route", "NULL_RES")
-      .setContent(asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
-          "error", "unsupported operation",
-          "message", String.format("Found handler for %s, but nothing was returned", req),
-          "stacktrace", ""))));
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .addHeader("WebDriver-Error", "unsupported operation")
+        .addHeader("Selenium-Route", "NULL_RES")
+        .setContent(
+            asJson(
+                Map.of(
+                    "value",
+                    Map.of(
+                        "error", "unsupported operation",
+                        "message",
+                            String.format("Found handler for %s, but nothing was returned", req),
+                        "stacktrace", ""))));
   }
 
   protected abstract HttpResponse handle(HttpRequest req);
@@ -92,32 +97,28 @@ public abstract class Route implements HttpHandler, Routable {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(DELETE).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+        new MatchesHttpMethod(DELETE).and(new MatchesTemplate(urlTemplate)), urlTemplate);
   }
 
   public static TemplatizedRouteConfig get(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(GET).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+        new MatchesHttpMethod(GET).and(new MatchesTemplate(urlTemplate)), urlTemplate);
   }
 
   public static TemplatizedRouteConfig post(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+        new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)), urlTemplate);
   }
 
   public static TemplatizedRouteConfig options(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-      new MatchesHttpMethod(OPTIONS).and(new MatchesTemplate(urlTemplate)),
-      urlTemplate);
+        new MatchesHttpMethod(OPTIONS).and(new MatchesTemplate(urlTemplate)), urlTemplate);
   }
 
   public static NestedRouteConfig prefix(String prefix) {
@@ -180,8 +181,7 @@ public abstract class Route implements HttpHandler, Routable {
     @Override
     protected HttpResponse handle(HttpRequest req) {
       UrlTemplate.Match match = template.match(req.getUri());
-      HttpHandler handler = handlerFunction.apply(
-          match == null ? ImmutableMap.of() : match.getParameters());
+      HttpHandler handler = handlerFunction.apply(match == null ? Map.of() : match.getParameters());
 
       if (handler == null) {
         return new HttpResponse()
@@ -272,35 +272,41 @@ public abstract class Route implements HttpHandler, Routable {
 
     private HttpRequest transform(HttpRequest request) {
       // Strip the prefix from the existing request and forward it.
-      String unprefixed = hasPrefix(request) ?
-                          request.getUri().substring(prefix.length()) :
-                          request.getUri();
+      String unprefixed =
+          hasPrefix(request) ? request.getUri().substring(prefix.length()) : request.getUri();
 
       HttpRequest toForward = new HttpRequest(request.getMethod(), unprefixed);
 
-      request.getHeaderNames().forEach(name -> {
-        if (name == null) {
-          return;
-        }
-        request.getHeaders(name).forEach(value -> toForward.addHeader(name, value));
-      });
+      request.forEachHeader(
+          (name, value) -> {
+            if (name == null) {
+              return;
+            }
+            toForward.addHeader(name, value);
+          });
 
-      request.getAttributeNames().forEach(
-          attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
+      request
+          .getAttributeNames()
+          .forEach(attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
 
       // Don't forget to register our prefix
       Object rawPrefixes = request.getAttribute(ROUTE_PREFIX_KEY);
       if (!(rawPrefixes instanceof List)) {
         rawPrefixes = new LinkedList<>();
       }
-      List<String> prefixes = Stream.concat(((List<?>) rawPrefixes).stream(), Stream.of(prefix))
-        .map(String::valueOf)
-        .collect(toImmutableList());
+      List<String> prefixes =
+          Stream.concat(((List<?>) rawPrefixes).stream(), Stream.of(prefix))
+              .map(String::valueOf)
+              .collect(Collectors.toUnmodifiableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
-      request.getQueryParameterNames().forEach(name ->
-        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value))
-      );
+      request
+          .getQueryParameterNames()
+          .forEach(
+              name ->
+                  request
+                      .getQueryParameters(name)
+                      .forEach(value -> toForward.addQueryParameter(name, value)));
 
       toForward.setContent(request.getContent());
 
@@ -315,7 +321,9 @@ public abstract class Route implements HttpHandler, Routable {
     private CombinedRoute(Stream<Routable> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
-      allRoutes = routes.collect(toImmutableList()).reverse();
+      List<Routable> routables = routes.collect(Collectors.toList());
+      Collections.reverse(routables);
+      allRoutes = List.copyOf(routables);
       Require.stateCondition(!allRoutes.isEmpty(), "At least one route must be specified.");
     }
 
@@ -330,9 +338,11 @@ public abstract class Route implements HttpHandler, Routable {
           .filter(route -> route.matches(req))
           .findFirst()
           .map(route -> (HttpHandler) route)
-          .orElse(request -> new HttpResponse()
-              .setStatus(HTTP_NOT_FOUND)
-              .setContent(utf8String("No handler found for " + request)))
+          .orElse(
+              request ->
+                  new HttpResponse()
+                      .setStatus(HTTP_NOT_FOUND)
+                      .setContent(utf8String("No handler found for " + request)))
           .execute(req);
     }
   }
@@ -341,7 +351,7 @@ public abstract class Route implements HttpHandler, Routable {
     private final Predicate<HttpRequest> predicate;
 
     private PredicatedConfig(Predicate<HttpRequest> predicate) {
-        this.predicate = Require.nonNull("Predicate", predicate);
+      this.predicate = Require.nonNull("Predicate", predicate);
     }
 
     public Route to(Supplier<HttpHandler> handler) {

@@ -17,26 +17,23 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Collections.unmodifiableMap;
 
 import java.util.Base64;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class CreateSessionResponse {
 
   private final Session session;
   private final byte[] downstreamEncodedResponse;
 
-  public CreateSessionResponse(
-      Session session,
-      byte[] downstreamEncodedResponse) {
+  public CreateSessionResponse(Session session, byte[] downstreamEncodedResponse) {
     this.session = Require.nonNull("Session", session);
-    this.downstreamEncodedResponse = Require
-        .nonNull("Downstream encoded response", downstreamEncodedResponse);
+    this.downstreamEncodedResponse =
+        Require.nonNull("Downstream encoded response", downstreamEncodedResponse);
   }
 
   public Session getSession() {
@@ -49,7 +46,8 @@ public class CreateSessionResponse {
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
+    toReturn.put(
+        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
     toReturn.put("session", session);
     return unmodifiableMap(toReturn);
   }

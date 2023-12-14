@@ -27,17 +27,45 @@ namespace OpenQA.Selenium.VirtualAuth
     /// </summary>
     public class VirtualAuthenticatorOptions
     {
+        /// <summary>
+        /// The protocol to use for the virtual authenticator.
+        /// </summary>
         public static class Protocol
         {
+            /// <summary>
+            /// Value representing the CTAP2 protocol.
+            /// </summary>
             public static readonly string CTAP2 = "ctap2";
+
+            /// <summary>
+            /// Value representing the U2F protocol.
+            /// </summary>
             public static readonly string U2F = "ctap1/u2f";
         }
 
+        /// <summary>
+        /// The transport to use for the virtual authenticator.
+        /// </summary>
         public static class Transport
         {
+            /// <summary>
+            /// Value representing the BLE transport.
+            /// </summary>
             public static readonly string BLE = "ble";
+
+            /// <summary>
+            /// Value representing the "internal" transport.
+            /// </summary>
             public static readonly string INTERNAL = "internal";
+
+            /// <summary>
+            /// Value representing the near-field communications transport.
+            /// </summary>
             public static readonly string NFC = "nfc";
+
+            /// <summary>
+            /// Value representing the USB transport.
+            /// </summary>
             public static readonly string USB = "usb";
         }
 
@@ -74,10 +102,7 @@ namespace OpenQA.Selenium.VirtualAuth
         /// <returns>VirtualAuthenticatorOptions</returns>
         public VirtualAuthenticatorOptions SetTransport(string transport)
         {
-            if (Transport.BLE.Equals(transport) ||
-            Transport.INTERNAL.Equals(transport) ||
-            Transport.NFC.Equals(transport) ||
-            Transport.USB.Equals(transport))
+            if (Transport.BLE == transport || Transport.INTERNAL == transport || Transport.NFC == transport || Transport.USB == transport)
             {
                 this.transport = transport;
                 return this;
@@ -137,6 +162,10 @@ namespace OpenQA.Selenium.VirtualAuth
             return this;
         }
 
+        /// <summary>
+        /// Serializes this set of options to a dictionary of key-value pairs.
+        /// </summary>
+        /// <returns>The dictionary containing the values of this set of options.</returns>
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> toReturn = new Dictionary<string, object>();

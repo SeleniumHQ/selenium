@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import java.util.UUID;
+import java.util.concurrent.Callable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.TraceContext;
-
-import java.util.UUID;
-import java.util.concurrent.Callable;
 
 public class NullContext implements TraceContext {
 

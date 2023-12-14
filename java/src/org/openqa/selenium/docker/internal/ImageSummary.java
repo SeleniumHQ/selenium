@@ -18,18 +18,16 @@
 package org.openqa.selenium.docker.internal;
 
 import com.google.common.collect.ImmutableSet;
-
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.docker.ImageId;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.docker.ImageId;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 @Beta
 public class ImageSummary {

@@ -57,7 +57,7 @@ module Selenium
         end
       end
 
-      attr_accessor :host, :executable_path, :port, :args
+      attr_accessor :host, :executable_path, :port, :log, :args
       alias extra_args args
 
       #
@@ -66,53 +66,36 @@ module Selenium
       # @api private
       #
 
-      def initialize(path: nil, port: nil, args: nil)
-        path ||= self.class.driver_path
+      def initialize(path: nil, port: nil, log: nil, args: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
 
-        @executable_path = binary_path(path)
+        @executable_path = path
         @host = Platform.localhost
         @port = Integer(port)
-
-        @args = args.is_a?(Hash) ? extract_service_args(args) : args
+        @log = case log
+               when :stdout
+                 $stdout
+               when :stderr
+                 $stderr
+               else
+                 log
+               end
+        @args = args
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
 
       def launch
+        @executable_path ||= begin
+          default_options = WebDriver.const_get("#{self.class.name.split('::')[2]}::Options").new
+          DriverFinder.path(default_options, self.class)
+        end
         ServiceManager.new(self).tap(&:start)
       end
 
       def shutdown_supported
         self.class::SHUTDOWN_SUPPORTED
-      end
-
-      protected
-
-      def extract_service_args(driver_opts)
-        WebDriver.logger.deprecate('initializing Service class with :args using Hash',
-                                   ':args parameter with an Array of String values',
-                                   id: :driver_opts)
-        driver_opts.key?(:args) ? driver_opts.delete(:args) : []
-      end
-
-      private
-
-      def binary_path(path = nil)
-        path = path.call if path.is_a?(Proc)
-        path ||= Platform.find_binary(self.class::EXECUTABLE)
-
-        begin
-          path ||= SeleniumManager.driver_path(self.class::EXECUTABLE)
-        rescue Error::WebDriverError => e
-          WebDriver.logger.debug("Unable obtain driver using Selenium Manager\n #{e.message}")
-        end
-
-        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
-
-        Platform.assert_executable path
-        path
       end
     end # Service
   end # WebDriver

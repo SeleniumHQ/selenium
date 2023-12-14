@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.docker;
 
+import java.util.Set;
 import org.openqa.selenium.docker.internal.ImageSummary;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-
-import java.util.Set;
 
 public class Image {
 
@@ -48,8 +47,6 @@ public class Image {
   @Override
   public String toString() {
     new Json().toJson(summary);
-    return "Image{" +
-      "summary=" + summary +
-      '}';
+    return "Image{" + "summary=" + summary + '}';
   }
 }

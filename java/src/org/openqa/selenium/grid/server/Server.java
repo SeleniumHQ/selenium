@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.server;
 
-import org.openqa.selenium.grid.component.HasLifecycle;
-
 import java.net.URL;
+import org.openqa.selenium.grid.component.HasLifecycle;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 

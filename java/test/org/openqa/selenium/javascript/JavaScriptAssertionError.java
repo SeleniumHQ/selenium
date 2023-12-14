@@ -25,7 +25,7 @@ class JavaScriptAssertionError extends AssertionError {
 
   @Override
   public Throwable fillInStackTrace() {
-    return this;  // No java stack traces.
+    return this; // No java stack traces.
   }
 
   @Override

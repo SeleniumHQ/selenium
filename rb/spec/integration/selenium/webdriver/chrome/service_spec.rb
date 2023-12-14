@@ -29,7 +29,12 @@ module Selenium
         after { service_manager.stop }
 
         it 'auto uses chromedriver' do
-          allow(Platform).to receive(:find_binary)
+          service.executable_path = DriverFinder.path(Options.new, described_class)
+
+          expect(service_manager.uri).to be_a(URI)
+        end
+
+        it 'can be started outside driver' do
           expect(service_manager.uri).to be_a(URI)
         end
       end

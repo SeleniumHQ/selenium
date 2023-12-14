@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpRequest;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -39,11 +35,14 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 public class SessionRequest {
 
@@ -63,9 +62,10 @@ public class SessionRequest {
     Require.nonNull("Request", request);
 
     try (NewSessionPayload payload = NewSessionPayload.create(Contents.reader(request))) {
-      desiredCapabilities = payload.stream()
-        .filter(capabilities -> !capabilities.asMap().isEmpty())
-        .collect(Collectors.toSet());
+      desiredCapabilities =
+          payload.stream()
+              .filter(capabilities -> !capabilities.asMap().isEmpty())
+              .collect(Collectors.toSet());
       downstreamDialects = payload.getDownstreamDialects();
       metadata = payload.getMetadata();
     }
@@ -77,20 +77,22 @@ public class SessionRequest {
   }
 
   public SessionRequest(
-    RequestId requestId,
-    Instant enqueued,
-    Set<Dialect> downstreamDialects,
-    Set<Capabilities> desiredCapabilities,
-    Map<String, Object> metadata,
-    Map<String, String> traceHeaders) {
+      RequestId requestId,
+      Instant enqueued,
+      Set<Dialect> downstreamDialects,
+      Set<Capabilities> desiredCapabilities,
+      Map<String, Object> metadata,
+      Map<String, String> traceHeaders) {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.enqueued = Require.nonNull("Enqueued time", enqueued);
-    this.downstreamDialects = unmodifiableSet(
-      new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
-    this.desiredCapabilities = unmodifiableSet(
-      new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
-    this.metadata = Collections.unmodifiableMap(new TreeMap<>(Require.nonNull("Metadata", metadata)));
-    this.traceHeaders = unmodifiableMap(new HashMap<>(Require.nonNull("Trace HTTP headers", traceHeaders)));
+    this.downstreamDialects =
+        unmodifiableSet(new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
+    this.desiredCapabilities =
+        unmodifiableSet(new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
+    this.metadata =
+        Collections.unmodifiableMap(new TreeMap<>(Require.nonNull("Metadata", metadata)));
+    this.traceHeaders =
+        unmodifiableMap(new HashMap<>(Require.nonNull("Trace HTTP headers", traceHeaders)));
   }
 
   public RequestId getRequestId() {
@@ -124,12 +126,12 @@ public class SessionRequest {
   @Override
   public String toString() {
     return new StringJoiner(", ", SessionRequest.class.getSimpleName() + "[", "]")
-      .add("requestId=" + requestId)
-      .add("desiredCapabilities=" + desiredCapabilities)
-      .add("downstreamDialects=" + downstreamDialects)
-      .add("metadata=" + metadata)
-      .add("traceHeaders=" + traceHeaders)
-      .toString();
+        .add("requestId=" + requestId)
+        .add("desiredCapabilities=" + desiredCapabilities)
+        .add("downstreamDialects=" + downstreamDialects)
+        .add("metadata=" + metadata)
+        .add("traceHeaders=" + traceHeaders)
+        .toString();
   }
 
   @Override
@@ -139,16 +141,17 @@ public class SessionRequest {
     }
     SessionRequest that = (SessionRequest) o;
 
-    return this.requestId.equals(that.requestId) &&
-      this.desiredCapabilities.equals(that.desiredCapabilities) &&
-      this.downstreamDialects.equals(that.downstreamDialects) &&
-      this.metadata.equals(that.metadata) &&
-      this.traceHeaders.equals(that.traceHeaders);
+    return this.requestId.equals(that.requestId)
+        && this.desiredCapabilities.equals(that.desiredCapabilities)
+        && this.downstreamDialects.equals(that.downstreamDialects)
+        && this.metadata.equals(that.metadata)
+        && this.traceHeaders.equals(that.traceHeaders);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, enqueued, desiredCapabilities, downstreamDialects, metadata, traceHeaders);
+    return Objects.hash(
+        requestId, enqueued, desiredCapabilities, downstreamDialects, metadata, traceHeaders);
   }
 
   private Map<String, Object> toJson() {

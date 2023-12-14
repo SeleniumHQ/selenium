@@ -21,11 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.auto.service.AutoService;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class HttpClientFactoryTest {
@@ -49,13 +48,15 @@ class HttpClientFactoryTest {
   @Test
   void canCreateDefaultHttpClientFactory() {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
+    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value())
+        .isEqualTo("jdk-http-client");
   }
 
   @Test
   void canCreateHttpClientFactoryByName() {
-    HttpClient.Factory factory = HttpClient.Factory.create("netty");
-    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
+    HttpClient.Factory factory = HttpClient.Factory.create("jdk-http-client");
+    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value())
+        .isEqualTo("jdk-http-client");
   }
 
   @Test
@@ -83,14 +84,14 @@ class HttpClientFactoryTest {
 
   @Test
   void shouldNotCreateHttpClientFactoryByInvalidName() {
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> HttpClient.Factory.create("orange"));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> HttpClient.Factory.create("orange"));
   }
 
   @Test
   void canDetectHttpClientFactoriesWithSameName() {
-    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> HttpClient.Factory.create("duplicated"));
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> HttpClient.Factory.create("duplicated"));
   }
 
   @AutoService(HttpClient.Factory.class)
@@ -112,5 +113,4 @@ class HttpClientFactoryTest {
       return null;
     }
   }
-
 }

@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.function.Predicate;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.internal.Require;
@@ -28,18 +31,17 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
-import java.util.Map;
-import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
+@SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPageScreenshot>, AdditionalHttpCommands {
+public class AddHasFullPageScreenshot<X>
+    implements AugmenterProvider<HasFullPageScreenshot>, AdditionalHttpCommands {
 
   public static final String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";
 
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    FULL_PAGE_SCREENSHOT, new CommandInfo("/session/:sessionId/moz/screenshot/full", HttpMethod.GET));
+  private static final Map<String, CommandInfo> COMMANDS =
+      Map.of(
+          FULL_PAGE_SCREENSHOT,
+          new CommandInfo("/session/:sessionId/moz/screenshot/full", HttpMethod.GET));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -57,7 +59,8 @@ public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPag
   }
 
   @Override
-  public HasFullPageScreenshot getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  public HasFullPageScreenshot getImplementation(
+      Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasFullPageScreenshot() {
       @Override
       public <X> X getFullPageScreenshotAs(OutputType<X> outputType) {
@@ -71,10 +74,11 @@ public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPag
         } else if (result instanceof byte[]) {
           return outputType.convertFromPngBytes((byte[]) result);
         } else {
-          throw new RuntimeException(String.format(
-            "Unexpected result for %s command: %s",
-            FULL_PAGE_SCREENSHOT,
-            result == null ? "null" : result.getClass().getName() + " instance"));
+          throw new RuntimeException(
+              String.format(
+                  "Unexpected result for %s command: %s",
+                  FULL_PAGE_SCREENSHOT,
+                  result == null ? "null" : result.getClass().getName() + " instance"));
         }
       }
     };

@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.mobile;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 class NetworkConnectionTest extends JupiterTestBase {
 
@@ -50,12 +50,11 @@ class NetworkConnectionTest extends JupiterTestBase {
       modified = networkConnectionDriver.setNetworkConnection(NetworkConnection.ConnectionType.ALL);
     } else {
       modified =
-        networkConnectionDriver
-          .setNetworkConnection(NetworkConnection.ConnectionType.AIRPLANE_MODE);
+          networkConnectionDriver.setNetworkConnection(
+              NetworkConnection.ConnectionType.AIRPLANE_MODE);
     }
     assertThat(modified.isAirplaneMode())
-      .describedAs("airplane mode should have been toggled")
-      .isNotEqualTo(current.isAirplaneMode());
+        .describedAs("airplane mode should have been toggled")
+        .isNotEqualTo(current.isAirplaneMode());
   }
-
 }

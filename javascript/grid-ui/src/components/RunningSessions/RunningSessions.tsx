@@ -174,7 +174,7 @@ function RunningSessions (props) {
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchFilter, setSearchFilter] = useState('')
   const [searchBarHelpOpen, setSearchBarHelpOpen] = useState(false)
 

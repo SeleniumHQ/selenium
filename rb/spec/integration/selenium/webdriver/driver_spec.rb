@@ -24,18 +24,18 @@ module Selenium
     describe Driver do
       it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
-      it 'creates default capabilities' do
+      it 'creates default capabilities', exclude: {browser: %i[safari safari_preview]} do
         reset_driver! do |driver|
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
           expect(caps.browser_version).to match(/^\d\d\d?\./)
           expect(caps.platform_name).not_to be_nil
 
-          expect(caps.accept_insecure_certs).to be == (caps.browser_name == 'firefox')
-          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.accept_insecure_certs).to eq(caps.browser_name == 'firefox')
+          expect(caps.page_load_strategy).to eq 'normal'
           expect(caps.implicit_timeout).to be_zero
-          expect(caps.page_load_timeout).to be == 300000
-          expect(caps.script_timeout).to be == 30000
+          expect(caps.page_load_timeout).to eq 300000
+          expect(caps.script_timeout).to eq 30000
         end
       end
 
@@ -138,6 +138,21 @@ module Selenium
 
           expect(driver[:id1]).to be_a(WebDriver::Element)
           expect(driver[xpath: '//h1']).to be_a(WebDriver::Element)
+        end
+
+        it 'raises if element not found' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            driver.find_element(id: 'not-there')
+          }.to raise_error(Error::NoSuchElementError, /errors#no-such-element-exception/)
+        end
+
+        it 'raises if invalid locator',
+           exclude: {browser: %i[safari safari_preview], reason: 'Safari raises TimeoutError'} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect {
+            driver.find_element(xpath: '*?//-')
+          }.to raise_error(Error::InvalidSelectorError, /errors#invalid-selector-exception/)
         end
       end
 

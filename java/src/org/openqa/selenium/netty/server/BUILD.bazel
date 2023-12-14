@@ -26,5 +26,6 @@ java_library(
         artifact("io.netty:netty-common"),
         artifact("io.netty:netty-handler"),
         artifact("io.netty:netty-transport"),
+        artifact("org.bouncycastle:bcpkix-jdk18on"),
     ],
 )

@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.support.pagefactory.internal;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.pagefactory.ElementLocator;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 public class LocatingElementListHandler implements InvocationHandler {
   private final ElementLocator locator;

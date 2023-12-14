@@ -18,17 +18,14 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -36,8 +33,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.Set;
 
 class ClickTest extends JupiterTestBase {
 
@@ -66,8 +61,8 @@ class ClickTest extends JupiterTestBase {
 
     driver.findElement(By.id("anchor")).click();
 
-    Boolean samePage = (Boolean) ((JavascriptExecutor) driver)
-        .executeScript("return document.latch");
+    Boolean samePage =
+        (Boolean) ((JavascriptExecutor) driver).executeScript("return document.latch");
 
     assertThat(samePage).as("Latch was reset").isTrue();
   }
@@ -88,9 +83,10 @@ class ClickTest extends JupiterTestBase {
   void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
-    WebElement toClick = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return document.getElementById('otherframe');"
-    );
+    WebElement toClick =
+        (WebElement)
+            ((JavascriptExecutor) driver)
+                .executeScript("return document.getElementById('otherframe');");
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
@@ -106,9 +102,10 @@ class ClickTest extends JupiterTestBase {
     driver.findElement(By.id("otherframe"));
 
     // This _should_ return the same element
-    WebElement toClick = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return document.getElementById('otherframe');"
-    );
+    WebElement toClick =
+        (WebElement)
+            ((JavascriptExecutor) driver)
+                .executeScript("return document.getElementById('otherframe');");
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
@@ -197,9 +194,10 @@ class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "block can't be scrolled into view",
-    issue = "https://github.com/mozilla/geckodriver/issues/653")
+  @Ignore(
+      value = FIREFOX,
+      reason = "block can't be scrolled into view",
+      issue = "https://github.com/mozilla/geckodriver/issues/653")
   @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
@@ -232,9 +230,10 @@ class ClickTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = FIREFOX,
-    reason = "imagemap can't be scrolled into view",
-    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
+  @Ignore(
+      value = FIREFOX,
+      reason = "imagemap can't be scrolled into view",
+      issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
   @NotYetImplemented(SAFARI)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
@@ -251,9 +250,10 @@ class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX,
-    reason = "Large element can't be scrolled into view",
-    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
+  @Ignore(
+      value = FIREFOX,
+      reason = "Large element can't be scrolled into view",
+      issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");

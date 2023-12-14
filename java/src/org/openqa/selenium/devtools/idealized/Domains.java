@@ -21,9 +21,9 @@ import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
 /**
- * The idealized set of CDP domains that Selenium itself needs. Should you
- * need domains from a specific version of the CDP, then depend upon that
- * version of the CDP and use the domains directly.
+ * The idealized set of CDP domains that Selenium itself needs. Should you need domains from a
+ * specific version of the CDP, then depend upon that version of the CDP and use the domains
+ * directly.
  */
 public interface Domains {
 

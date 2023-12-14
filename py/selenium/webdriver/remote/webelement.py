@@ -109,8 +109,8 @@ class WebElement(BaseWebElement):
 
         try:
             self._parent.execute_script(script, self)
-        except JavascriptException:
-            raise WebDriverException("To submit an element, it must be nested inside a form element")
+        except JavascriptException as exc:
+            raise WebDriverException("To submit an element, it must be nested inside a form element") from exc
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
@@ -148,7 +148,7 @@ class WebElement(BaseWebElement):
         """
         return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
 
-    def get_attribute(self, name) -> str:
+    def get_attribute(self, name) -> str | None:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -235,21 +235,12 @@ class WebElement(BaseWebElement):
     @property
     def shadow_root(self) -> ShadowRoot:
         """Returns a shadow root of the element if there is one or an error.
-        Only works from Chromium 96 onwards. Previous versions of Chromium
-        based browsers will throw an assertion exception.
+        Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
 
         :Returns:
           - ShadowRoot object or
           - NoSuchShadowRoot - if no shadow root was attached to element
         """
-        browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
-        assert self._parent.caps["browserName"].lower() not in [
-            "firefox",
-            "safari",
-        ], "This only currently works in Chromium based browsers"
-        assert (
-            browser_main_version > 95
-        ), f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
         return self._execute(Command.GET_SHADOW_ROOT)["value"]
 
     # RenderedWebElement Items
@@ -266,8 +257,8 @@ class WebElement(BaseWebElement):
         on the screen an element is so that we can click it. This method should
         cause the element to be scrolled into view.
 
-        Returns the top lefthand corner location on the screen, or
-        ``None`` if the element is not visible.
+        Returns the top lefthand corner location on the screen, or zero
+        coordinates if the element is not visible.
         """
         old_loc = self._execute(
             Command.W3C_EXECUTE_SCRIPT,
@@ -350,7 +341,7 @@ class WebElement(BaseWebElement):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.screenshot_as_png

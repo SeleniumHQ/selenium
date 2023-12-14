@@ -1,4 +1,3 @@
-load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
 load("@d2l_rules_csharp//csharp/private:actions/misc.bzl", "write_runtimeconfig")
 load(
@@ -8,6 +7,7 @@ load(
     "is_debug",
     "is_standard_framework",
 )
+load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("//dotnet/private:copy_files.bzl", "copy_files")
 
 def _generate_execution_script_file(ctx, target):

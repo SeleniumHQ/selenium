@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import pytest
 
 from selenium.webdriver.common.print_page_options import PrintOptions
 
@@ -22,6 +23,7 @@ END_INDEX = 5
 PDF_MAGIC_NUMBER = "JVBER"
 
 
+@pytest.mark.xfail_safari(reason="no endpoint for print in safari")
 def test_pdf_with_2_pages(driver, pages):
     print_options = PrintOptions()
     print_options.page_ranges = ["1-2"]
@@ -33,6 +35,7 @@ def test_pdf_with_2_pages(driver, pages):
     assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
 
 
+@pytest.mark.xfail_safari(reason="no endpoint for print in safari")
 def test_pdf_with_all_pages(driver, pages):
     pages.load("printPage.html")
     base64code = driver.print_page()
@@ -40,6 +43,7 @@ def test_pdf_with_all_pages(driver, pages):
     assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
 
 
+@pytest.mark.xfail_safari(reason="no endpoint for print in safari")
 def test_valid_params(driver, pages):
     print_options = PrintOptions()
 
@@ -53,6 +57,7 @@ def test_valid_params(driver, pages):
     assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
 
 
+@pytest.mark.xfail_safari(reason="no endpoint for print in safari")
 def test_session_id_is_not_preserved_after_page_is_printed(driver, pages):
     print_options = PrintOptions()
     print_options.margin_bottom = print_options.margin_top = print_options.margin_left = print_options.margin_right = 0

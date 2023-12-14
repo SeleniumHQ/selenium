@@ -20,14 +20,13 @@ package org.openqa.selenium.logging;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
-import org.openqa.selenium.Beta;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.Beta;
 
 /**
- * Represent a pool of {@link LogEntry}.  This class also provides filtering mechanisms based on
+ * Represent a pool of {@link LogEntry}. This class also provides filtering mechanisms based on
  * levels.
  */
 @Beta
@@ -36,8 +35,8 @@ public class LogEntries implements Iterable<LogEntry> {
   private final List<LogEntry> entries;
 
   public LogEntries(Iterable<LogEntry> entries) {
-    this.entries = unmodifiableList(
-        StreamSupport.stream(entries.spliterator(), false).collect(toList()));
+    this.entries =
+        unmodifiableList(StreamSupport.stream(entries.spliterator(), false).collect(toList()));
   }
 
   /**

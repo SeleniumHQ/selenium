@@ -19,17 +19,15 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.Beta;
 
-/**
- * Used by classes to indicate that they can change the context commands operate in.
- */
+/** Used by classes to indicate that they can change the context commands operate in. */
 @Beta
 public interface HasContext {
 
   /**
    * Context commands are operating on.
    *
-   * @param context {@link FirefoxCommandContext} operating on page loaded in the browser or on browser elements hosting the page.
-   *
+   * @param context {@link FirefoxCommandContext} operating on page loaded in the browser or on
+   *     browser elements hosting the page.
    */
   void setContext(FirefoxCommandContext context);
 
@@ -39,5 +37,4 @@ public interface HasContext {
    * @return {@link FirefoxCommandContext} value currently operating on commands
    */
   FirefoxCommandContext getContext();
-
 }

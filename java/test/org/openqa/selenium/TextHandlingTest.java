@@ -17,17 +17,16 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 class TextHandlingTest extends JupiterTestBase {
 
@@ -48,10 +47,8 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
 
-    assertThat(text).contains(
-        "A div containing",
-        "More than one line of text",
-        "and block level elements");
+    assertThat(text)
+        .contains("A div containing", "More than one line of text", "and block level elements");
   }
 
   @Test
@@ -162,10 +159,12 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
 
-    assertThat(text).isEqualTo("   This section has a preformatted\n" +
-                               "    text block    \n" +
-                               "  split in four lines\n" +
-                               "         ");
+    assertThat(text)
+        .isEqualTo(
+            "   This section has a preformatted\n"
+                + "    text block    \n"
+                + "  split in four lines\n"
+                + "         ");
   }
 
   @Test
@@ -174,12 +173,14 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("div-with-pre")).getText();
 
-    assertThat(text).isEqualTo("before pre\n" +
-                               "   This section has a preformatted\n" +
-                               "    text block    \n" +
-                               "  split in four lines\n" +
-                               "         \n" +
-                               "after pre");
+    assertThat(text)
+        .isEqualTo(
+            "before pre\n"
+                + "   This section has a preformatted\n"
+                + "    text block    \n"
+                + "  split in four lines\n"
+                + "         \n"
+                + "after pre");
   }
 
   @Test
@@ -259,8 +260,16 @@ class TextHandlingTest extends JupiterTestBase {
     String text = driver.findElement(By.id("nestedblocks")).getText();
 
     assertThat(text)
-        .isEqualTo("Cheese" + NEW_LINE + "Some text" + NEW_LINE + "Some more text" + NEW_LINE
-                   + "and also" + NEW_LINE + "Brie");
+        .isEqualTo(
+            "Cheese"
+                + NEW_LINE
+                + "Some text"
+                + NEW_LINE
+                + "Some more text"
+                + NEW_LINE
+                + "and also"
+                + NEW_LINE
+                + "Brie");
   }
 
   @Test
@@ -347,7 +356,8 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
     String oldText = area.getAttribute("value");
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, "New Text");
+    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].value = arguments[1]", area, "New Text");
     assertThat(area.getText()).isEqualTo(oldText);
   }
 
@@ -366,14 +376,15 @@ class TextHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
     String text = element.getText();
     String expected = "Some notes";
-    assertThat(text.codePointAt(0)).describedAs("RTL mark should not be present").isNotEqualTo(8206);
+    assertThat(text.codePointAt(0))
+        .describedAs("RTL mark should not be present")
+        .isNotEqualTo(8206);
     // Note: If this assertion fails but the content of the strings *looks* the same
     // it may be because of hidden unicode LTR character being included in the string.
     // That's the reason for the previous assert.
@@ -391,10 +402,13 @@ class TextHandlingTest extends JupiterTestBase {
 
   @Test
   void canHandleTextThatLooksLikeANumber() {
-    driver.get(appServer.create(new Page()
-        .withBody("<div id='point'>12.345</div>",
-                  "<div id='comma'>12,345</div>",
-                  "<div id='space'>12 345</div>")));
+    driver.get(
+        appServer.create(
+            new Page()
+                .withBody(
+                    "<div id='point'>12.345</div>",
+                    "<div id='comma'>12,345</div>",
+                    "<div id='space'>12 345</div>")));
 
     assertThat(driver.findElement(By.id("point")).getText()).isEqualTo("12.345");
     assertThat(driver.findElement(By.id("comma")).getText()).isEqualTo("12,345");
@@ -402,16 +416,14 @@ class TextHandlingTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText())
-      .isEqualTo("Hello, World! Bla-Bla-BLA");
+        .isEqualTo("Hello, World! Bla-Bla-BLA");
     assertThat(driver.findElement(By.id("lowercased")).getText())
-      .isEqualTo("hello, world! bla-bla-bla");
+        .isEqualTo("hello, world! bla-bla-bla");
     assertThat(driver.findElement(By.id("uppercased")).getText())
         .isEqualTo("HELLO, WORLD! BLA-BLA-BLA");
   }
-
 }

@@ -17,6 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
+import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -31,26 +46,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
-import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-/**
- * Tests combined input actions.
- */
+/** Tests combined input actions. */
 class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
@@ -62,10 +58,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeOptions = actions.click(options.get(1))
-      .click(options.get(2))
-      .click(options.get(3))
-      .build();
+    Action selectThreeOptions =
+        actions.click(options.get(1)).click(options.get(2)).click(options.get(3)).build();
 
     selectThreeOptions.perform();
 
@@ -74,7 +68,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-      .describedAs("Should have picked the third option only").isEqualTo("cheddar");
+        .describedAs("Should have picked the third option only")
+        .isEqualTo("cheddar");
   }
 
   @Test
@@ -86,11 +81,13 @@ class CombinedInputActionsTest extends JupiterTestBase {
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeOptions = actions.click(options.get(1))
-      .keyDown(Keys.SHIFT)
-      .click(options.get(3))
-      .keyUp(Keys.SHIFT)
-      .build();
+    Action selectThreeOptions =
+        actions
+            .click(options.get(1))
+            .keyDown(Keys.SHIFT)
+            .click(options.get(3))
+            .keyUp(Keys.SHIFT)
+            .build();
 
     selectThreeOptions.perform();
 
@@ -99,8 +96,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-      .describedAs("Should have picked the last three options")
-      .isEqualTo("roquefort parmigiano cheddar");
+        .describedAs("Should have picked the last three options")
+        .isEqualTo("roquefort parmigiano cheddar");
   }
 
   @Test
@@ -112,14 +109,16 @@ class CombinedInputActionsTest extends JupiterTestBase {
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeOptions = actions.setActivePointer(PointerInput.Kind.PEN, "default pen")
-      .click(options.get(1))
-      .keyDown(Keys.SHIFT)
-      .click(options.get(1))
-      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
-      .click(options.get(3))
-      .keyUp(Keys.SHIFT)
-      .build();
+    Action selectThreeOptions =
+        actions
+            .setActivePointer(PointerInput.Kind.PEN, "default pen")
+            .click(options.get(1))
+            .keyDown(Keys.SHIFT)
+            .click(options.get(1))
+            .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+            .click(options.get(3))
+            .keyUp(Keys.SHIFT)
+            .build();
 
     selectThreeOptions.perform();
 
@@ -128,26 +127,28 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-      .describedAs("Should have picked the last three options")
-      .isEqualTo("roquefort parmigiano cheddar");
+        .describedAs("Should have picked the last three options")
+        .isEqualTo("roquefort parmigiano cheddar");
   }
 
   @Test
   @Ignore(IE)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
-    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
-      "FIXME: macs don't have CONTROL key");
+    assumeFalse(
+        getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeOptions = actions.click(options.get(1))
-      .keyDown(Keys.CONTROL)
-      .click(options.get(3))
-      .keyUp(Keys.CONTROL)
-      .build();
+    Action selectThreeOptions =
+        actions
+            .click(options.get(1))
+            .keyDown(Keys.CONTROL)
+            .click(options.get(3))
+            .keyUp(Keys.CONTROL)
+            .build();
 
     selectThreeOptions.perform();
 
@@ -156,8 +157,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-      .describedAs("Should have picked the first and the third options")
-      .isEqualTo("roquefort cheddar");
+        .describedAs("Should have picked the first and the third options")
+        .isEqualTo("roquefort cheddar");
   }
 
   @Test
@@ -174,12 +175,14 @@ class CombinedInputActionsTest extends JupiterTestBase {
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeItems = actions.keyDown(key)
-      .click(listItems.get(1))
-      .click(listItems.get(3))
-      .click(listItems.get(5))
-      .keyUp(key)
-      .build();
+    Action selectThreeItems =
+        actions
+            .keyDown(key)
+            .click(listItems.get(1))
+            .click(listItems.get(3))
+            .click(listItems.get(5))
+            .keyUp(key)
+            .build();
 
     selectThreeItems.perform();
 
@@ -205,16 +208,17 @@ class CombinedInputActionsTest extends JupiterTestBase {
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeItems = actions
-      .keyDown(key)
-      .setActivePointer(PointerInput.Kind.PEN, "default pen")
-      .click(listItems.get(1))
-      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
-      .click(listItems.get(3))
-      .setActivePointer(PointerInput.Kind.PEN, "default pen")
-      .click(listItems.get(5))
-      .keyUp(key)
-      .build();
+    Action selectThreeItems =
+        actions
+            .keyDown(key)
+            .setActivePointer(PointerInput.Kind.PEN, "default pen")
+            .click(listItems.get(1))
+            .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+            .click(listItems.get(3))
+            .setActivePointer(PointerInput.Kind.PEN, "default pen")
+            .click(listItems.get(5))
+            .keyUp(key)
+            .build();
 
     selectThreeItems.perform();
 
@@ -227,9 +231,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
     wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
-    new Actions(driver)
-      .click(link)
-      .perform();
+    new Actions(driver).click(link).perform();
 
     wait.until(titleIs("XHTML Test Page"));
   }
@@ -244,10 +246,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
     WebElement link = driver.findElement(By.id("link"));
 
-    new Actions(driver)
-      .moveToElement(link)
-      .click()
-      .perform();
+    new Actions(driver).moveToElement(link).click().perform();
 
     wait.until(titleIs("Submitted Successfully!"));
   }
@@ -258,23 +257,18 @@ class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
     wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
-    new Actions(driver)
-      .moveToElement(link, 1, 1)
-      .click()
-      .perform();
+    new Actions(driver).moveToElement(link, 1, 1).click().perform();
 
     wait.until(titleIs("XHTML Test Page"));
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -283,9 +277,9 @@ class CombinedInputActionsTest extends JupiterTestBase {
     Point location = element.getLocation();
 
     new Actions(driver)
-      .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
-      .click()
-      .perform();
+        .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
+        .click()
+        .perform();
 
     wait.until(presenceOfElementLocated(By.id("pageX")));
 
@@ -305,25 +299,20 @@ class CombinedInputActionsTest extends JupiterTestBase {
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
     // Everything within 5 pixels range is OK
     final int ALLOWED_DEVIATION = 5;
-    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&
-      Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
+    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION
+        && Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
-   * This test demonstrates the following problem: When the representation of
-   * the mouse in the driver keeps the wrong state, mouse movement will end
-   * up at the wrong coordinates.
+   * This test demonstrates the following problem: When the representation of the mouse in the
+   * driver keeps the wrong state, mouse movement will end up at the wrong coordinates.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
     WebElement linkId = driver.findElement(By.id("linkId"));
-    new Actions(driver)
-      .moveToElement(linkId, 1, 1)
-      .click()
-      .perform();
+    new Actions(driver).moveToElement(linkId, 1, 1).click().perform();
 
     wait.until(titleIs("We Arrive Here"));
   }
@@ -332,36 +321,30 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
-    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
-    assumeFalse(getEffectivePlatform(driver).is(Platform.WINDOWS) &&
-                isInternetExplorer(driver),
-                "Windows: native events library  does not support storing modifiers state yet");
+    assumeFalse(
+        getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
+    assumeFalse(
+        getEffectivePlatform(driver).is(Platform.WINDOWS) && isInternetExplorer(driver),
+        "Windows: native events library  does not support storing modifiers state yet");
 
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    new Actions(driver)
-      .sendKeys(element, "abc def")
-      .perform();
+    new Actions(driver).sendKeys(element, "abc def").perform();
 
     wait.until(elementValueToEqual(element, "abc def"));
 
-    //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
-    //sendKeys("x") does not work on Linux.
-    new Actions(driver)
-      .sendKeys(Keys.CONTROL + "a" + "x")
-      .perform();
+    // TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
+    // sendKeys("x") does not work on Linux.
+    new Actions(driver).sendKeys(Keys.CONTROL + "a" + "x").perform();
 
     // Release keys before next step.
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
     wait.until(elementValueToEqual(element, ""));
 
-    new Actions(driver)
-      .sendKeys(Keys.CONTROL + "v")
-      .sendKeys("v")
-      .perform();
+    new Actions(driver).sendKeys(Keys.CONTROL + "v").sendKeys("v").perform();
 
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
@@ -377,16 +360,12 @@ class CombinedInputActionsTest extends JupiterTestBase {
     String originalTitle = driver.getTitle();
 
     int nWindows = driver.getWindowHandles().size();
-    new Actions(driver)
-      .moveToElement(link)
-      .keyDown(Keys.SHIFT)
-      .click()
-      .keyUp(Keys.SHIFT)
-      .perform();
+    new Actions(driver).moveToElement(link).keyDown(Keys.SHIFT).click().keyUp(Keys.SHIFT).perform();
 
     wait.until(windowHandleCountToBe(nWindows + 1));
     assertThat(driver.getTitle())
-      .describedAs("Should not have navigated away").isEqualTo(originalTitle);
+        .describedAs("Should not have navigated away")
+        .isEqualTo(originalTitle);
   }
 
   @Test
@@ -445,5 +424,4 @@ class CombinedInputActionsTest extends JupiterTestBase {
     String text = driver.findElement(By.id("result")).getText();
     assertThat(text).contains("item 1");
   }
-
 }

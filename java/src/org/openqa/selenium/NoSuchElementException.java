@@ -18,13 +18,12 @@
 package org.openqa.selenium;
 
 /**
- * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)} and
- * {@link WebElement#findElement(By by) WebElement.findElement(By by)}.
+ * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)} and {@link
+ * WebElement#findElement(By by) WebElement.findElement(By by)}.
  */
 public class NoSuchElementException extends NotFoundException {
 
-  private static final String SUPPORT_URL =
-    BASE_SUPPORT_URL + "#no_such_element";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#no-such-element-exception";
 
   public NoSuchElementException(String reason) {
     super(reason);

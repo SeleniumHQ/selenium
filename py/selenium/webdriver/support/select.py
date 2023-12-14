@@ -15,13 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import List
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import UnexpectedTagNameException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class Select:
-    def __init__(self, webelement) -> None:
+    def __init__(self, webelement: WebElement) -> None:
         """Constructor. A check is made that the given element is, indeed, a
         SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.
 
@@ -39,18 +42,18 @@ class Select:
         self.is_multiple = multi and multi != "false"
 
     @property
-    def options(self):
+    def options(self) -> List[WebElement]:
         """Returns a list of all options belonging to this select tag."""
         return self._el.find_elements(By.TAG_NAME, "option")
 
     @property
-    def all_selected_options(self):
+    def all_selected_options(self) -> List[WebElement]:
         """Returns a list of all selected options belonging to this select
         tag."""
         return [opt for opt in self.options if opt.is_selected()]
 
     @property
-    def first_selected_option(self):
+    def first_selected_option(self) -> WebElement:
         """The first selected option in this select tag (or the currently
         selected option in a normal select)"""
         for opt in self.options:
@@ -58,7 +61,7 @@ class Select:
                 return opt
         raise NoSuchElementException("No options are selected")
 
-    def select_by_value(self, value):
+    def select_by_value(self, value: str) -> None:
         """Select all options that have a value matching the argument. That is,
         when given "foo" this would select an option like:
 
@@ -80,7 +83,7 @@ class Select:
         if not matched:
             raise NoSuchElementException(f"Cannot locate option with value: {value}")
 
-    def select_by_index(self, index):
+    def select_by_index(self, index: int) -> None:
         """Select the option at the given index. This is done by examining the
         "index" attribute of an element, and not merely by counting.
 
@@ -96,7 +99,7 @@ class Select:
                 return
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
-    def select_by_visible_text(self, text):
+    def select_by_visible_text(self, text: str) -> None:
         """Select all options that display text matching the argument. That is,
         when given "Bar" this would select an option like:
 
@@ -145,7 +148,7 @@ class Select:
         for opt in self.options:
             self._unset_selected(opt)
 
-    def deselect_by_value(self, value):
+    def deselect_by_value(self, value: str) -> None:
         """Deselect all options that have a value matching the argument. That
         is, when given "foo" this would deselect an option like:
 
@@ -167,7 +170,7 @@ class Select:
         if not matched:
             raise NoSuchElementException(f"Could not locate element with value: {value}")
 
-    def deselect_by_index(self, index):
+    def deselect_by_index(self, index: int) -> None:
         """Deselect the option at the given index. This is done by examining
         the "index" attribute of an element, and not merely by counting.
 
@@ -184,7 +187,7 @@ class Select:
                 return
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
-    def deselect_by_visible_text(self, text):
+    def deselect_by_visible_text(self, text: str) -> None:
         """Deselect all options that display text matching the argument. That
         is, when given "Bar" this would deselect an option like:
 

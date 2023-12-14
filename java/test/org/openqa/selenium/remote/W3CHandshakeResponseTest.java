@@ -21,14 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-
-import java.util.Map;
 
 @Tag("UnitTests")
 class W3CHandshakeResponseTest {
@@ -38,13 +36,9 @@ class W3CHandshakeResponseTest {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
-            "value", ImmutableMap.of(
-            "capabilities", caps.asMap(),
-            "sessionId", "cheese is opaque"));
-    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+            "value",
+            ImmutableMap.of("capabilities", caps.asMap(), "sessionId", "cheese is opaque"));
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
@@ -63,14 +57,8 @@ class W3CHandshakeResponseTest {
   void shouldIgnoreAJsonWireProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
-        ImmutableMap.of(
-            "status", 0,
-            "value", caps.asMap(),
-            "sessionId", "cheese is opaque");
-    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+        ImmutableMap.of("status", 0, "value", caps.asMap(), "sessionId", "cheese is opaque");
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
@@ -82,13 +70,8 @@ class W3CHandshakeResponseTest {
   void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
-        ImmutableMap.of(
-            "value", caps.asMap(),
-            "sessionId", "cheese is opaque");
-    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+        ImmutableMap.of("value", caps.asMap(), "sessionId", "cheese is opaque");
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 200, payload);
 
     ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
@@ -98,21 +81,22 @@ class W3CHandshakeResponseTest {
 
   @Test
   void shouldProperlyPopulateAnError() {
-    Map<String, ?> payload = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            "error", "session not created",
-            "message", "me no likey",
-            "stacktrace", "I have no idea what went wrong"));
+    Map<String, ?> payload =
+        ImmutableMap.of(
+            "value",
+            ImmutableMap.of(
+                "error", "session not created",
+                "message", "me no likey",
+                "stacktrace", "I have no idea what went wrong"));
 
-    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        500,
-        payload);
-
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(0, 500, payload);
 
     assertThatExceptionOfType(SessionNotCreatedException.class)
         .isThrownBy(() -> new W3CHandshakeResponse().getResponseFunction().apply(initialResponse))
         .withMessageContaining("me no likey")
-        .satisfies(e -> assertThat(e.getAdditionalInformation()).contains("I have no idea what went wrong"));
+        .satisfies(
+            e ->
+                assertThat(e.getAdditionalInformation())
+                    .contains("I have no idea what went wrong"));
   }
 }

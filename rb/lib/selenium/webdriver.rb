@@ -23,6 +23,7 @@ require 'date'
 require 'json'
 require 'set'
 require 'uri'
+require 'net/http'
 
 require 'selenium/webdriver/atoms'
 require 'selenium/webdriver/common'
@@ -95,7 +96,8 @@ module Selenium
     #
 
     def self.logger(**opts)
-      @logger ||= WebDriver::Logger.new('Selenium', **opts)
+      level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
+      @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **opts)
     end
   end # WebDriver
 end # Selenium

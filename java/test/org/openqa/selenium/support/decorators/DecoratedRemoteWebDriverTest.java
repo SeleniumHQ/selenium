@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.support.decorators;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,15 +38,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.Map;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 @Tag("UnitTests")
 class DecoratedRemoteWebDriverTest {
 
@@ -48,11 +47,13 @@ class DecoratedRemoteWebDriverTest {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    RemoteWebDriver decoratedDriver = new WebDriverDecorator<>(RemoteWebDriver.class).decorate(originalDriver);
+    RemoteWebDriver decoratedDriver =
+        new WebDriverDecorator<>(RemoteWebDriver.class).decorate(originalDriver);
 
     assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
 
-    RemoteWebDriver underlying = (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
+    RemoteWebDriver underlying =
+        (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
     assertThat(underlying.getSessionId()).isEqualTo(sessionId);
   }
 
@@ -110,5 +111,4 @@ class DecoratedRemoteWebDriverTest {
 
     assertThat(result.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(elementId);
   }
-
 }

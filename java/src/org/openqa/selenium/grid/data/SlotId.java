@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Collections.unmodifiableMap;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.UUID;
-
-import static java.util.Collections.unmodifiableMap;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class SlotId implements Serializable {
 
@@ -57,8 +56,7 @@ public class SlotId implements Serializable {
       return false;
     }
     SlotId that = (SlotId) o;
-    return Objects.equals(this.nodeId, that.nodeId) &&
-      Objects.equals(this.uuid, that.uuid);
+    return Objects.equals(this.nodeId, that.nodeId) && Objects.equals(this.uuid, that.uuid);
   }
 
   @Override

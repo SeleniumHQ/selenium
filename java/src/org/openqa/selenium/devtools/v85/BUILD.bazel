@@ -1,4 +1,3 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
@@ -8,7 +7,7 @@ java_export(
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-v85:%s" % SE_VERSION,
     opens_to = [
-        "org.openqa.selenium.json",
+        "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     visibility = [
@@ -23,7 +22,6 @@ java_export(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -39,7 +37,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        artifact("com.google.guava:guava"),
     ],
 )
 

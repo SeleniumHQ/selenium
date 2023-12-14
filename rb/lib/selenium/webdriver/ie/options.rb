@@ -41,7 +41,8 @@ module Selenium
           use_per_process_proxy: 'ie.usePerProcessProxy',
           use_legacy_file_upload_dialog_handling: 'ie.useLegacyFileUploadDialogHandling',
           attach_to_edge_chrome: 'ie.edgechromium',
-          edge_executable_path: 'ie.edgepath'
+          edge_executable_path: 'ie.edgepath',
+          ignore_process_match: 'ie.ignoreprocessmatch'
         }.freeze
         BROWSER = 'internet explorer'
 
@@ -52,12 +53,12 @@ module Selenium
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new(args: ['--host=127.0.0.1'])
-        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
+        #   driver = Selenium::WebDriver.for(:ie, options: options)
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new
         #   options.element_scroll_behavior = Selenium::WebDriver::IE::Options::SCROLL_BOTTOM
-        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
+        #   driver = Selenium::WebDriver.for(:ie, options: options)
         #
         # @param [Hash] opts the pre-defined options
         # @option opts [Array<String>] args

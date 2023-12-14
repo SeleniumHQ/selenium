@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.internal.Require;
+import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 
 import java.io.Closeable;
 import java.net.URL;
@@ -25,12 +25,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.internal.Require;
 
-import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
-
-/**
- * Defines a simple client for making HTTP requests.
- */
+/** Defines a simple client for making HTTP requests. */
 public interface HttpClient extends Closeable, HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
@@ -40,25 +37,29 @@ public interface HttpClient extends Closeable, HttpHandler {
   interface Factory {
 
     /**
-     * Creates a new instance of {@link HttpClient.Factory} with the given name. It uses
-     * {@link ServiceLoader} to find all available implementations and selects the class
-     * that has an {@link @HttpClientName} annotation with the given name as the value.
+     * Creates a new instance of {@link HttpClient.Factory} with the given name. It uses {@link
+     * ServiceLoader} to find all available implementations and selects the class that has an
+     * {@link @HttpClientName} annotation with the given name as the value.
      *
      * @throws IllegalArgumentException if no implementation with the given name can be found
-     * @throws IllegalStateException if more than one implementation with the given name can be found
+     * @throws IllegalStateException if more than one implementation with the given name can be
+     *     found
      */
     static Factory create(String name) {
-      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
-      Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
-          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
-          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
-          .collect(Collectors.toSet());
+      ServiceLoader<HttpClient.Factory> loader =
+          ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
+      Set<Factory> factories =
+          StreamSupport.stream(loader.spliterator(), true)
+              .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+              .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
+              .collect(Collectors.toSet());
       if (factories.isEmpty()) {
         throw new IllegalArgumentException("Unknown HttpClient factory " + name);
       }
       if (factories.size() > 1) {
-        throw new IllegalStateException(String.format(
-            "There are multiple HttpClient factories by name %s, check your classpath", name));
+        throw new IllegalStateException(
+            String.format(
+                "There are multiple HttpClient factories by name %s, check your classpath", name));
       }
       return factories.iterator().next();
     }
@@ -67,10 +68,10 @@ public interface HttpClient extends Closeable, HttpHandler {
      * Use the {@code webdriver.http.factory} system property to determine which implementation of
      * {@link HttpClient.Factory} should be used.
      *
-     * {@see create}
+     * <p>{@see create}
      */
     static Factory createDefault() {
-      return create(System.getProperty("webdriver.http.factory", "netty"));
+      return create(System.getProperty("webdriver.http.factory", "jdk-http-client"));
     }
 
     /**
@@ -85,9 +86,7 @@ public interface HttpClient extends Closeable, HttpHandler {
 
     HttpClient createClient(ClientConfig config);
 
-    /**
-     * Closes idle clients.
-     */
+    /** Closes idle clients. */
     default void cleanupIdleClients() {
       // do nothing by default.
     }

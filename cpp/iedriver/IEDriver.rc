@@ -50,8 +50,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,8,1,0
- PRODUCTVERSION 4,8,1,0
+ FILEVERSION 4,14,0,0
+ PRODUCTVERSION 4,14,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Software Freedom Conservancy"
             VALUE "FileDescription", "Driver library for the IE driver"
-            VALUE "FileVersion", "4.8.1.0"
+            VALUE "FileVersion", "4.14.0.0"
             VALUE "InternalName", "IEDriver.dll"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "IEDriver.dll"
             VALUE "ProductName", "Selenium WebDriver"
-            VALUE "ProductVersion", "4.8.1.0"
+            VALUE "ProductVersion", "4.14.0.0"
         END
     END
     BLOCK "VarFileInfo"

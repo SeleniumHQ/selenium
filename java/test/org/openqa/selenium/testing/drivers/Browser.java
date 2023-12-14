@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
@@ -29,13 +34,6 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariOptions;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
@@ -50,20 +48,18 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.addArguments("--headless=chrome");
+        options.addArguments("--headless=new");
       }
 
       options.addArguments(
-        "disable-extensions",
-        "disable-infobars",
-        "disable-breakpad",
-        "disable-dev-shm-usage",
-        "no-sandbox");
+          "disable-infobars", "disable-breakpad", "disable-dev-shm-usage", "no-sandbox");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }
@@ -83,22 +79,27 @@ public enum Browser {
       }
 
       options.addArguments(
-        "disable-extensions",
-        "disable-infobars",
-        "disable-breakpad",
-        "disable-dev-shm-usage",
-        "no-sandbox");
+          "disable-extensions",
+          "disable-infobars",
+          "disable-breakpad",
+          "disable-dev-shm-usage",
+          "no-sandbox");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
 
+      options.setCapability("webSocketUrl", true);
+
       return options;
     }
   },
   HTMLUNIT(
-    new ImmutableCapabilities(BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()), "HtmlUnit", false),
+      new ImmutableCapabilities(
+          BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()),
+      "HtmlUnit",
+      false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
@@ -128,12 +129,14 @@ public enum Browser {
         options.addArguments("-headless");
       }
 
+      options.setCapability("webSocketUrl", true);
+
       return options;
     }
   },
   SAFARI(new SafariOptions(), new SafariDriverInfo().getDisplayName(), false);
 
-  private static final Logger log = Logger.getLogger(Browser.class.getName());
+  private static final Logger LOG = Logger.getLogger(Browser.class.getName());
   private final Capabilities canonicalCapabilities;
   private final String displayName;
   private final boolean supportsCdp;
@@ -147,7 +150,7 @@ public enum Browser {
   public static Browser detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-      log.info("No browser detected, returning null");
+      LOG.info("No browser detected, returning null");
       return null;
     }
 
@@ -162,7 +165,8 @@ public enum Browser {
     try {
       return Browser.valueOf(browserName.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName), e);
+      throw new RuntimeException(
+          String.format("Cannot determine driver from name %s", browserName), e);
     }
   }
 

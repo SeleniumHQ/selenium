@@ -38,6 +38,7 @@ struct BrowserFactorySettings {
   std::string browser_command_line_switches;
   bool attach_to_edge_ie; // Used to attach to EdgeChromium IE processes
   std::string edge_executable_path;
+  bool ignore_process_match; // Ignores window handle process id match on IE Mode.
 };
 
 class BrowserFactory {
@@ -62,6 +63,7 @@ class BrowserFactory {
   bool force_createprocess_api(void) const { return this->force_createprocess_api_; }
   bool force_shell_windows_api(void) const { return this->force_shell_windows_api_; }
   int browser_attach_timeout(void) const { return this->browser_attach_timeout_; }
+  bool ignore_process_match(void) const { return this->ignore_process_match_;  }
   std::string initial_browser_url(void);
   std::string browser_command_line_switches(void);
 
@@ -81,6 +83,7 @@ class BrowserFactory {
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
   static BOOL CALLBACK FindEdgeWindow(HWND hwnd, LPARAM param);
+  static BOOL CALLBACK FindEdgeWindowIgnoringProcessMatch(HWND hwnd, LPARAM param);
   static bool IsWindowsVersionOrGreater(unsigned short major_version,
                                         unsigned short minor_version,
                                         unsigned short service_pack);
@@ -136,6 +139,7 @@ class BrowserFactory {
   bool ie_redirects_edge_;
 
   bool edge_ie_mode_;
+  bool ignore_process_match_;
   std::wstring edge_executable_location_;
   std::wstring edge_user_data_dir_;
 };

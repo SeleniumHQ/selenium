@@ -30,13 +30,16 @@ import java.util.regex.Pattern;
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
 public enum Platform {
 
-  /**
-   * Never returned, but can be used to request a browser running on any version of Windows.
-   */
+  /** Never returned, but can be used to request a browser running on any version of Windows. */
   WINDOWS("") {
     @Override
     public Platform family() {
       return null;
+    }
+
+    @Override
+    public String toString() {
+      return "windows";
     }
   },
 
@@ -49,20 +52,20 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows XP";
     }
   },
 
-  /**
-   * For versions of Windows that "feel like" Windows Vista.
-   */
+  /** For versions of Windows that "feel like" Windows Vista. */
   VISTA("windows vista", "Windows Server 2008") {
     @Override
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows Vista";
@@ -74,20 +77,20 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 7";
     }
   },
 
-  /**
-   * For versions of Windows that "feel like" Windows 8.
-   */
+  /** For versions of Windows that "feel like" Windows 8. */
   WIN8("Windows Server 2012", "windows 8", "win8") {
     @Override
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 8";
@@ -99,6 +102,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 8.1";
@@ -110,6 +114,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 10";
@@ -121,6 +126,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 11";
@@ -132,6 +138,11 @@ public enum Platform {
     public Platform family() {
       return null;
     }
+
+    @Override
+    public String toString() {
+      return "mac";
+    }
   },
 
   SNOW_LEOPARD("snow leopard", "os x 10.6", "macos 10.6") {
@@ -139,6 +150,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.6";
@@ -150,6 +162,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.8";
@@ -161,6 +174,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.9";
@@ -172,6 +186,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.10";
@@ -183,6 +198,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.11";
@@ -194,6 +210,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.12";
@@ -205,6 +222,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.13";
@@ -216,6 +234,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.14";
@@ -227,6 +246,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.15";
@@ -257,9 +277,31 @@ public enum Platform {
     }
   },
 
-  /**
-   * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
-   */
+  VENTURA("ventura", "os x 13.0", "macos 13.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+
+    @Override
+    public String toString() {
+      return "macOS 13.0";
+    }
+  },
+
+  SONOMA("sonoma", "os x 14.0", "macos 14.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+
+    @Override
+    public String toString() {
+      return "macOS 14.0";
+    }
+  },
+
+  /** Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD. */
   UNIX("solaris", "bsd") {
     @Override
     public Platform family() {
@@ -272,6 +314,11 @@ public enum Platform {
     public Platform family() {
       return UNIX;
     }
+
+    @Override
+    public String toString() {
+      return "linux";
+    }
   },
 
   ANDROID("android", "dalvik") {
@@ -283,12 +330,12 @@ public enum Platform {
 
   IOS("iOS") {
     @Override
-    public Platform family() { return null; }
+    public Platform family() {
+      return null;
+    }
   },
 
-  /**
-   * Never returned, but can be used to request a browser running on any operating system.
-   */
+  /** Never returned, but can be used to request a browser running on any operating system. */
   ANY("") {
     @Override
     public Platform family() {
@@ -298,6 +345,11 @@ public enum Platform {
     @Override
     public boolean is(Platform compareWith) {
       return this == compareWith;
+    }
+
+    @Override
+    public String toString() {
+      return "any";
     }
   };
 
@@ -342,7 +394,7 @@ public enum Platform {
 
   /**
    * Extracts platforms based on system properties in Java and uses a heuristic to determine the
-   * most likely operating system.  If unable to determine the operating system, it will default to
+   * most likely operating system. If unable to determine the operating system, it will default to
    * UNIX.
    *
    * @param osName the operating system name to determine the platform of
@@ -354,7 +406,7 @@ public enum Platform {
 
   /**
    * Extracts platforms based on system properties in Java and uses a heuristic to determine the
-   * most likely operating system.  If unable to determine the operating system, it will default to
+   * most likely operating system. If unable to determine the operating system, it will default to
    * UNIX.
    *
    * @param osName the operating system name to determine the platform of
@@ -369,11 +421,11 @@ public enum Platform {
     }
     // Windows 8 can't be detected by osName alone
     if (osVersion.equals("6.2") && osName.startsWith("windows nt")) {
-        return WIN8;
+      return WIN8;
     }
     // Windows 8 can't be detected by osName alone
     if (osVersion.equals("6.3") && osName.startsWith("windows nt")) {
-        return WIN8_1;
+      return WIN8_1;
     }
     Platform mostLikely = UNIX;
     String previousMatch = null;
@@ -421,7 +473,7 @@ public enum Platform {
   }
 
   /**
-   * Decides whether the previous match is better or not than the current match.  If previous match
+   * Decides whether the previous match is better or not than the current match. If previous match
    * is null, the newer match is always better.
    *
    * @param previous the previous match
@@ -437,8 +489,8 @@ public enum Platform {
   }
 
   /**
-   * Heuristic for comparing two platforms.  If platforms (which is not the same thing as operating
-   * systems) are found to be approximately similar in nature, this will return true.  For instance
+   * Heuristic for comparing two platforms. If platforms (which is not the same thing as operating
+   * systems) are found to be approximately similar in nature, this will return true. For instance
    * the LINUX platform is similar to UNIX, and will give a positive result if compared.
    *
    * @param compareWith the platform to compare with
@@ -446,20 +498,22 @@ public enum Platform {
    */
   public boolean is(Platform compareWith) {
     return
-        // Any platform is itself
-        this == compareWith ||
+    // Any platform is itself
+    this == compareWith
+        ||
         // Any platform is also ANY platform
-        compareWith == ANY ||
+        compareWith == ANY
+        ||
         // And any Platform which is not a platform type belongs to the same family
         (this.family() != null && this.family().is(compareWith));
   }
 
   /**
-   * Returns a platform that represents a family for the current platform.  For instance
-   * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
+   * Returns a platform that represents a family for the current platform. For instance the LINUX if
+   * a part of the UNIX family, the XP is a part of the WINDOWS family.
    *
    * @return the family platform for the current one, or {@code null} if this {@code Platform}
-   *         represents a platform family (such as Windows, or MacOS)
+   *     represents a platform family (such as Windows, or MacOS)
    */
   public abstract Platform family();
 
@@ -488,5 +542,4 @@ public enum Platform {
   public int getMinorVersion() {
     return minorVersion;
   }
-
 }

@@ -60,7 +60,7 @@ module Selenium
           @capabilities = Capabilities.json_create(capabilities)
 
           case @capabilities[:browser_name]
-          when 'chrome'
+          when 'chrome', 'chrome-headless-shell'
             extend(WebDriver::Chrome::Features)
           when 'firefox'
             extend(WebDriver::Firefox::Features)
@@ -82,7 +82,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
+            name ? name.tr(' -', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -391,27 +391,9 @@ module Selenium
         end
 
         def send_keys_to_element(element, keys)
-          # TODO: rework file detectors before Selenium 4.0
-          if @file_detector
-            local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
-            if local_files&.any?
-              keys = local_files.map { |local_file| upload(local_file) }
-              keys = Array(keys.join("\n"))
-            end
-          end
-
-          # Keep .split(//) for backward compatibility for now
+          keys = upload_if_necessary(keys) if @file_detector
           text = keys.join
           execute :element_send_keys, {id: element}, {value: text.chars, text: text}
-        end
-
-        def upload(local_file)
-          unless File.file?(local_file)
-            WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
-            raise Error::WebDriverError, "You are trying to work with something that isn't a file."
-          end
-
-          execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
         end
 
         def clear_element(element)
@@ -443,7 +425,7 @@ module Selenium
         end
 
         def element_attribute(element, name)
-          WebDriver.logger.info "Using script for :getAttribute of #{name}"
+          WebDriver.logger.debug "Using script for :getAttribute of #{name}", id: :script
           execute_atom :getAttribute, element, name
         end
 
@@ -503,7 +485,7 @@ module Selenium
         end
 
         def element_displayed?(element)
-          WebDriver.logger.info 'Using script for :isDisplayed'
+          WebDriver.logger.debug 'Using script for :isDisplayed', id: :script
           execute_atom :isDisplayed, element
         end
 
@@ -615,7 +597,7 @@ module Selenium
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
-          WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
+          WebDriver.logger.debug("-> #{verb.to_s.upcase} #{path}", id: :command)
           http.call(verb, path, command_hash)['value']
         end
 
@@ -682,7 +664,7 @@ module Selenium
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.

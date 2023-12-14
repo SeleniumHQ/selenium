@@ -1,0 +1,28 @@
+group nuget
+framework: net7.0,netstandard2.0
+source https://api.nuget.org/v3/index.json
+
+nuget BenderProxy 1.0.0
+nuget CommandLineParser 2.8.0
+nuget Handlebars.Net 1.11.5
+nuget Humanizer.Core 2.8.26
+nuget Microsoft.AspNetCore.App.Ref 6.0.9
+nuget Microsoft.CSharp 4.5.0
+nuget Microsoft.Extensions.DependencyInjection 3.1.9
+nuget Microsoft.Extensions.DependencyInjection.Abstractions 3.1.9
+nuget Microsoft.NETCore.App.Runtime.linux-x64 6.0.15
+nuget Microsoft.NETCore.App.Runtime.osx-arm64 6.0.15
+nuget Microsoft.NETCore.App.Runtime.osx-x64 6.0.15
+nuget Microsoft.NETCore.App.Runtime.win-x64 6.0.15
+nuget Microsoft.NETCore.App.Ref 6.0.9
+nuget Moq 4.12.0
+nuget NETStandard.Library 2.0.3
+nuget Newtonsoft.Json 13.0.1
+nuget NUnit 3.13.2
+nuget NUnitLite 3.13.2
+nuget System.Diagnostics.Tools 4.3.0
+nuget System.Drawing.Common 7.0.0
+nuget System.Runtime 4.3.1
+nuget System.Runtime.InteropServices 4.3.0
+nuget System.Text.Json 6.0.9
+nuget Runfiles 0.12.0

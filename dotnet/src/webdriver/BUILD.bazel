@@ -1,13 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
-load(
-    "//dotnet:defs.bzl",
-    "devtools_version_targets",
-    "generated_assembly_info",
-    "merged_assembly",
-    "nuget_package",
-    "nuget_push",
-)
+load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "nuget_pack")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -16,9 +8,11 @@ load(
     "ASSEMBLY_PRODUCT",
     "ASSEMBLY_VERSION",
     "SE_VERSION",
-    "SUPPORTED_NET_FRAMEWORKS",
-    "SUPPORTED_NET_STANDARD_VERSIONS",
 )
+
+exports_files([
+    "WebDriver.csproj",
+])
 
 generated_assembly_info(
     name = "assembly-info",
@@ -31,26 +25,18 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-[csharp_library(
-    name = "{}assembly".format(framework),
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
+csharp_library(
+    name = "webdriver",
+    srcs = [
         ":assembly-info",
-    ] + devtools_version_targets(),
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
     out = "WebDriver",
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -59,46 +45,30 @@ generated_assembly_info(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "{}".format(framework),
+        "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-        "@net//:System",
-        "@net//:System.Core",
-        "@net//:System.Data",
-        "@net//:System.Drawing",
-        "@net//:System.IO.Compression",
-        "@net//:System.IO.Compression.FileSystem",
-        "@net//:System.Net.Http",
-        "@net//:System.Runtime.Serialization",
-        "@net//:System.Xml",
+        framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Newtonsoft.Json"),
     ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
+)
 
-[csharp_library(
-    name = "{}".format(standard_version),
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
+csharp_library(
+    name = "webdriver-strongnamed",
+    srcs = [
         ":assembly-info",
-    ] + devtools_version_targets(),
-    out = "WebDriver",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    keyfile = "//dotnet:WebDriver.snk",
+    langversion = "10.0",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -107,215 +77,88 @@ generated_assembly_info(
         "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
-        "{}".format(standard_version),
+        "netstandard2.0",
     ],
-    visibility = ["//visibility:public"],
+    targeting_packs = [
+        framework("nuget", "NETStandard.Library"),
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
     deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
+        framework("nuget", "NETStandard.Library"),
+        framework("nuget", "Newtonsoft.Json"),
     ],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
-
-[csharp_library(
-    name = "{}assembly-strongnamed".format(framework),
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
-        ":assembly-info",
-    ] + devtools_version_targets(),
-    out = "strongnamed/WebDriver",
-    keyfile = "//dotnet:WebDriver.snk",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
-    target_frameworks = [
-        "{}".format(framework),
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-        "@net//:System",
-        "@net//:System.Core",
-        "@net//:System.Data",
-        "@net//:System.Drawing",
-        "@net//:System.IO.Compression",
-        "@net//:System.IO.Compression.FileSystem",
-        "@net//:System.Net.Http",
-        "@net//:System.Runtime.Serialization",
-        "@net//:System.Xml",
-    ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
-
-[csharp_library(
-    name = "{}-strongnamed".format(standard_version),
-    srcs = glob([
-        "*.cs",
-        "Chrome/*.cs",
-        "Chromium/*.cs",
-        "DevTools/**/*.cs",
-        "Edge/*.cs",
-        "Firefox/**/*.cs",
-        "IE/*.cs",
-        "Interactions/*.cs",
-        "Internal/*.cs",
-        "Remote/**/*.cs",
-        "Safari/*.cs",
-        "Support/*.cs",
-        "VirtualAuth/*.cs",
-    ]) + [
-        ":assembly-info",
-    ] + devtools_version_targets(),
-    out = "strongnamed/WebDriver",
-    keyfile = "//dotnet:WebDriver.snk",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
-    target_frameworks = [
-        "{}".format(standard_version),
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-    ],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
-
-[merged_assembly(
-    name = "{}".format(framework),
-    src_assembly = ":{}assembly".format(framework),
-    target_framework = "{}".format(framework),
-    visibility = ["//visibility:public"],
-    deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-    ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
-
-[merged_assembly(
-    name = "{}-strongnamed".format(framework),
-    keyfile = "//dotnet:WebDriver.snk",
-    src_assembly = ":{}assembly-strongnamed".format(framework),
-    target_framework = "{}".format(framework),
-    visibility = ["//visibility:public"],
-    deps = [
-        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@json.net//:Newtonsoft.Json",
-    ],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
+)
 
 copy_file(
-    name = "logo",
-    src = "//common/images:selenium_logo_small.png",
-    out = "icon.png",
+    name = "readme",
+    src = "//dotnet/src/webdriver/assets:README.md",
+    out = "README.md",
 )
 
 copy_file(
     name = "props",
-    src = "build/Selenium.WebDriver.targets",
+    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
     out = "Selenium.WebDriver.targets",
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
-    out = "manager/linux/selenium-manager",
+    name = "transitive-props",
+    src = "//dotnet/src/webdriver/assets:Selenium.WebDriver.targets",
+    out = "transitive.Selenium.WebDriver.targets",
 )
 
-copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "manager/macos/selenium-manager",
-)
-
-copy_file(
-    name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
-    out = "manager/windows/selenium-manager.exe",
-)
-
-nuget_package(
-    name = "package",
-    src = "WebDriver.nuspec",
-    create_symbol_package = True,
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.WebDriver",
-    package_version = "{}".format(SE_VERSION),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":logo",
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
-        ":net45",
-        ":net46",
-        ":net47",
-        ":net48",
-        ":net5.0",
-        ":net6.0",
-        ":netstandard2.0",
-        ":netstandard2.1",
-        ":props",
+nuget_pack(
+    name = "webdriver-pack",
+    files = {
+        "//common/images:selenium_logo_small.png": "icon.png",
+        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
+        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":readme": "README.md",
+        ":props": "build/Selenium.WebDriver.targets",
+        ":transitive-props": "buildTransitive/Selenium.WebDriver.targets",
+    },
+    id = "Selenium.WebDriver",
+    libs = {
+        ":webdriver": "WebDriver",
+    },
+    nuspec_template = "WebDriver.nuspec",
+    tags = [
+        "block-network",
+    ],
+    version = SE_VERSION,
+    visibility = [
+        "//dotnet:__subpackages__",
     ],
 )
 
-nuget_package(
-    name = "package-strongnamed",
-    src = "WebDriver.StrongNamed.nuspec",
-    is_windows = select({
-        "@bazel_tools//src/conditions:host_windows": True,
-        "//conditions:default": False,
-    }),
-    package_id = "Selenium.WebDriver.StrongNamed",
-    package_version = "{}".format(SE_VERSION),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":net45-strongnamed",
-        ":net46-strongnamed",
-        ":net47-strongnamed",
-        ":net48-strongnamed",
-        ":net5.0-strongnamed",
-        ":net6.0-strongnamed",
-        ":netstandard2.0-strongnamed",
-        ":netstandard2.1-strongnamed",
+nuget_pack(
+    name = "webdriver-strongnamed-pack",
+    files = {
+        "//common/images:selenium_logo_small.png": "icon.png",
+        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
+        "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
+        "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":readme": "README.md",
+        ":props": "build/Selenium.WebDriver.StrongNamed.targets",
+        ":transitive-props": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
+    },
+    id = "Selenium.WebDriver.StrongNamed",
+    libs = {
+        ":webdriver-strongnamed": "WebDriver.StrongNamed",
+    },
+    nuspec_template = "WebDriver.StrongNamed.nuspec",
+    property_group_vars = {
+        "BaseImagePath": "images",
+        "BaseSeleniumManagerPath": "manager",
+    },
+    tags = [
+        "block-network",
     ],
-)
-
-nuget_push(
-    name = "publish",
-    src = ":package",
-    api_key = "//dotnet:nuget-api-key",
+    version = SE_VERSION,
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
 )

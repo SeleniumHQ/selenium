@@ -33,9 +33,9 @@ namespace OpenQA.Selenium
         /// <returns>The value returned by the script.</returns>
         /// <remarks>
         /// <para>
-        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
-        /// the currently selected frame or window. This means that "document" will refer
-        /// to the current document. If the script has a return value, then the following
+        /// The ExecuteScript method executes JavaScript
+        /// in the context of the currently selected frame or window. This means that "document"
+        /// will refer to the current document. If the script has a return value, then the following
         /// steps will be taken:
         /// </para>
         /// <para>
@@ -70,13 +70,13 @@ namespace OpenQA.Selenium
         /// <returns>The value returned by the script.</returns>
         /// <remarks>
         /// <para>
-        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
-        /// the currently selected frame or window. This means that "document" will refer
-        /// to the current document. If the script has a return value, then the following
+        /// The ExecuteScript method executes JavaScript
+        /// in the context of the currently selected frame or window. This means that "document"
+        /// will refer to the current document. If the script has a return value, then the following
         /// steps will be taken:
         /// </para>
         /// <para>
-        /// <list type="bullet">
+        /// <list type="bullet"> 
         /// <item><description>For an HTML element, this method returns a <see cref="IWebElement"/></description></item>
         /// <item><description>For a number, a <see cref="long"/> is returned</description></item>
         /// <item><description>For a boolean, a <see cref="bool"/> is returned</description></item>

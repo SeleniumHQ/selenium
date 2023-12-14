@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
-import org.openqa.selenium.internal.Require;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 public class HttpRequest extends HttpMessage<HttpRequest> {
 
   private final HttpMethod method;
   private final String uri;
-  private final Multimap<String, String> queryParameters = ArrayListMultimap.create();
+  private final Map<String, List<String>> queryParameters = new LinkedHashMap<>();
 
   public HttpRequest(HttpMethod method, String uri) {
     this.method = method;
@@ -60,9 +60,9 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
    * that the name and value are properly encoded.
    */
   public HttpRequest addQueryParameter(String name, String value) {
-    queryParameters.put(
-        Require.nonNull("Name", name),
-        Require.nonNull("Value", value));
+    queryParameters
+        .computeIfAbsent(Require.nonNull("Name", name), (n) -> new ArrayList<>())
+        .add(Require.nonNull("Value", value));
     return this;
   }
 

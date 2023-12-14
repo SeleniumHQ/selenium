@@ -17,34 +17,27 @@
 
 package org.openqa.selenium.json;
 
+import static java.lang.Integer.valueOf;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.SessionId;
-
-import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -62,20 +55,26 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-
-import static java.lang.Integer.valueOf;
-import static java.time.format.DateTimeFormatter.ISO_INSTANT;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.SessionId;
 
 @Tag("UnitTests")
 class JsonOutputTest {
@@ -144,10 +143,10 @@ class JsonOutputTest {
   @Test
   void shouldConvertNumbersAsLongs() {
     String json = convert(new Exception());
-    Map<?,?> map = new Json().toType(json, Map.class);
+    Map<?, ?> map = new Json().toType(json, Map.class);
 
     List<?> stack = (List<?>) map.get("stackTrace");
-    Map<?,?> line = (Map<?,?>) stack.get(0);
+    Map<?, ?> line = (Map<?, ?>) stack.get(0);
 
     Object o = line.get("lineNumber");
     assertThat(o).isInstanceOf(Long.class);
@@ -365,10 +364,11 @@ class JsonOutputTest {
         assertThat(json).contains("\"fileName\": \"" + e.getFileName() + "\"");
       }
       assertThat(json)
-        .contains("\"lineNumber\": " + e.getLineNumber() + "",
-                  "\"class\": \"" + e.getClass().getName() + "\"",
-                  "\"className\": \"" + e.getClassName() + "\"",
-                  "\"methodName\": \"" + e.getMethodName() + "\"");
+          .contains(
+              "\"lineNumber\": " + e.getLineNumber() + "",
+              "\"class\": \"" + e.getClass().getName() + "\"",
+              "\"className\": \"" + e.getClassName() + "\"",
+              "\"methodName\": \"" + e.getMethodName() + "\"");
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
       assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement);
@@ -380,9 +380,11 @@ class JsonOutputTest {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String json = convert(clientError);
-    assertThat(json).contains("\"message\": \"foo bar baz!\"",
-                              "\"class\": \"java.lang.RuntimeException\"",
-                              "\"stackTrace\"");
+    assertThat(json)
+        .contains(
+            "\"message\": \"foo bar baz!\"",
+            "\"class\": \"java.lang.RuntimeException\"",
+            "\"stackTrace\"");
     verifyStackTraceInJson(json, stackTrace);
   }
 
@@ -413,7 +415,6 @@ class JsonOutputTest {
     assertThat(obj).containsKey("alert");
     assertThat(obj.get("alert")).isEqualTo(ImmutableMap.of("text", "cheese!"));
   }
-
 
   @Test
   void shouldConvertDatesToMillisecondsInUtcTime() {
@@ -587,10 +588,7 @@ class JsonOutputTest {
     StringBuilder builder = new StringBuilder();
 
     try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
-      jsonOutput.beginArray()
-          .write("brie")
-          .write("peas")
-          .endArray();
+      jsonOutput.beginArray().write("brie").write("peas").endArray();
     }
 
     assertThat((Object) new Json().toType(builder.toString(), Object.class))
@@ -602,9 +600,12 @@ class JsonOutputTest {
     StringBuilder builder = new StringBuilder();
 
     try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
-      jsonOutput.beginObject()
-          .name("cheese").write("brie")
-          .name("vegetable").write("peas")
+      jsonOutput
+          .beginObject()
+          .name("cheese")
+          .write("brie")
+          .name("vegetable")
+          .write("peas")
           .endObject();
     }
 
@@ -625,10 +626,11 @@ class JsonOutputTest {
 
   @Test
   void canDisablePrettyPrintingToGetSingleLineOutput() {
-    Map<String, Object> toEncode = ImmutableMap.of(
-        "ary", Arrays.asList("one", "two"),
-        "map", ImmutableMap.of("cheese", "cheddar"),
-        "string", "This has a \nnewline in it");
+    Map<String, Object> toEncode =
+        ImmutableMap.of(
+            "ary", Arrays.asList("one", "two"),
+            "map", ImmutableMap.of("cheese", "cheddar"),
+            "string", "This has a \nnewline in it");
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(json)) {
@@ -649,7 +651,8 @@ class JsonOutputTest {
 
   @Test
   void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
-    String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+    String json =
+        convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
@@ -715,9 +718,59 @@ class JsonOutputTest {
     assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
   }
 
+  @Test
+  void shouldRespectDefaultMaxDepth() {
+    StringBuilder builder = new StringBuilder();
+
+    JsonOutput jsonOutput = new Json().newOutput(builder);
+    jsonOutput.beginArray();
+
+    Object value = emptyList();
+
+    for (int i = 0; i < 100; i++) {
+      jsonOutput.write(value);
+
+      value = singletonList(value);
+    }
+
+    Object finalValue = value;
+
+    assertThatExceptionOfType(JsonException.class).isThrownBy(() -> jsonOutput.write(finalValue));
+  }
+
+  @Test
+  void shouldRespectCustomHigherMaxDepth() {
+    shouldRespectMaxDepth(16);
+  }
+
+  @Test
+  void shouldRespectCustomLowerMaxDepth() {
+    shouldRespectMaxDepth(8);
+  }
+
+  void shouldRespectMaxDepth(int maxDepth) {
+    StringBuilder builder = new StringBuilder();
+
+    JsonOutput jsonOutput = new Json().newOutput(builder);
+    jsonOutput.beginArray();
+
+    Object value = emptyList();
+
+    for (int i = 0; i < maxDepth; i++) {
+      jsonOutput.write(value, maxDepth);
+
+      value = singletonList(value);
+    }
+
+    Object finalValue = value;
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> jsonOutput.write(finalValue, maxDepth));
+  }
+
   private String convert(Object toConvert) {
     try (Writer writer = new StringWriter();
-         JsonOutput jsonOutput = new Json().newOutput(writer)) {
+        JsonOutput jsonOutput = new Json().newOutput(writer)) {
       jsonOutput.write(toConvert);
       return writer.toString();
     } catch (IOException e) {
@@ -726,14 +779,12 @@ class JsonOutputTest {
   }
 
   public enum State {
-
     GOOD,
     BAD,
     INDIFFERENT
   }
 
   public enum WithMethods {
-
     CHEESE() {
       @Override
       public void eat(String foodStuff) {

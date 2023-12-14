@@ -18,18 +18,20 @@
 package org.openqa.selenium.grid.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
-
-import java.util.Map;
 
 class BaseServerOptionsTest {
 
   @Test
   void readingThePortTwiceShouldGiveTheSameResult() {
-    BaseServerOptions options = new BaseServerOptions(
-      new MapConfig(Map.of("server", Map.of("port", -1))));
+    BaseServerOptions options =
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", -1))));
 
     int first = options.getPort();
     int second = options.getPort();
@@ -39,11 +41,59 @@ class BaseServerOptionsTest {
 
   @Test
   void serverConfigBindsToHostByDefault() {
-    BaseServerOptions options = new BaseServerOptions(
-      new MapConfig(Map.of("server", Map.of("port", 4444))));
+    BaseServerOptions options =
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", 4444))));
 
     assertThat(options.getBindHost()).isEqualTo(true);
   }
 
+  @Test
+  void externalUriFailsForNonUriStrings() {
+    BaseServerOptions options =
+        new BaseServerOptions(new MapConfig(Map.of("server", Map.of("external-url", "not a URL"))));
 
+    Exception exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              options.getExternalUri();
+            });
+
+    assertThat(exception.getMessage())
+        .as("External URI must be parseable as URI.")
+        .isEqualTo(
+            "Supplied external URI is invalid: Illegal character in path at index 3: not a URL");
+  }
+
+  @Test
+  void externalUriTakesPriorityOverDefaults() throws URISyntaxException {
+    URI expected = new URI("http://10.0.1.1:33333");
+
+    BaseServerOptions options =
+        new BaseServerOptions(
+            new MapConfig(
+                Map.of(
+                    "server",
+                    Map.of(
+                        "external-url", expected.toString(), "host", "localhost", "port", 5555))));
+
+    assertThat(options.getExternalUri()).isEqualTo(expected);
+  }
+
+  @Test
+  void externalUriDefaultsToValueDerivedFromHostnameAndPortWhenNotDefined()
+      throws URISyntaxException {
+    URI expected = new URI("http://localhost:5555");
+
+    BaseServerOptions options =
+        new BaseServerOptions(
+            new MapConfig(
+                Map.of(
+                    "server",
+                    Map.of(
+                        "host", expected.getHost(),
+                        "port", expected.getPort()))));
+
+    assertThat(options.getExternalUri()).isEqualTo(expected);
+  }
 }

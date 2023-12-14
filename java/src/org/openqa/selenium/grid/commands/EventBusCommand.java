@@ -17,10 +17,21 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.Event;
@@ -40,19 +51,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 @AutoService(CliCommand.class)
 public class EventBusCommand extends TemplateGridCommand {
@@ -90,13 +88,14 @@ public class EventBusCommand extends TemplateGridCommand {
 
   @Override
   protected Config getDefaultConfig() {
-    return new MapConfig(ImmutableMap.of(
-      "events", ImmutableMap.of(
-        "bind", true,
-        "publish", "tcp://*:4442",
-        "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
-        "port", 5557)));
+    return new MapConfig(
+        ImmutableMap.of(
+            "events",
+                ImmutableMap.of(
+                    "bind", true,
+                    "publish", "tcp://*:4442",
+                    "subscribe", "tcp://*:4443"),
+            "server", ImmutableMap.of("port", 5557)));
   }
 
   public Server<?> asServer(Config initialConfig) {
@@ -110,58 +109,69 @@ public class EventBusCommand extends TemplateGridCommand {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     return new NettyServer(
-      serverOptions,
-      Route.combine(
-        Route.get("/status").to(() -> req -> {
-          CountDownLatch latch = new CountDownLatch(1);
+        serverOptions,
+        Route.combine(
+            Route.get("/status")
+                .to(
+                    () ->
+                        req -> {
+                          CountDownLatch latch = new CountDownLatch(1);
 
-          EventName healthCheck = new EventName("healthcheck");
-          bus.addListener(new EventListener<>(healthCheck, Object.class, obj -> latch.countDown()));
-          bus.fire(new Event(healthCheck, "ping"));
+                          EventName healthCheck = new EventName("healthcheck");
+                          bus.addListener(
+                              new EventListener<>(
+                                  healthCheck, Object.class, obj -> latch.countDown()));
+                          bus.fire(new Event(healthCheck, "ping"));
 
-          try {
-            if (latch.await(5, TimeUnit.SECONDS)) {
-              return httpResponse(true, "Event bus running");
-            } else {
-              return httpResponse(false, "Event bus could not deliver a test message in 5 seconds");
-            }
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return httpResponse(false, "Status checking was interrupted");
-          }
-        }),
-        Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)))
-    );
+                          try {
+                            if (latch.await(5, TimeUnit.SECONDS)) {
+                              return httpResponse(true, "Event bus running");
+                            } else {
+                              return httpResponse(
+                                  false, "Event bus could not deliver a test message in 5 seconds");
+                            }
+                          } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            return httpResponse(false, "Status checking was interrupted");
+                          }
+                        }),
+            Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))));
   }
 
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
 
-    config.get("server", "max-threads")
-      .ifPresent(value -> LOG.log(Level.WARNING,
-                                  () ->
-                                    "Support for max-threads flag is deprecated. " +
-                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
-                                    "Please use newsession-threadpool-size flag instead."));
+    config
+        .get("server", "max-threads")
+        .ifPresent(
+            value ->
+                LOG.log(
+                    Level.WARNING,
+                    () ->
+                        "Support for max-threads flag is deprecated. The intent of the flag is to"
+                            + " set the thread pool size in the Distributor. Please use"
+                            + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();
 
     BuildInfo info = new BuildInfo();
-    LOG.info(String.format(
-      "Started Selenium EventBus %s (revision %s): %s",
-      info.getReleaseLabel(),
-      info.getBuildRevision(),
-      server.getUrl()));
+    LOG.info(
+        String.format(
+            "Started Selenium EventBus %s (revision %s): %s",
+            info.getReleaseLabel(), info.getBuildRevision(), server.getUrl()));
   }
 
   private HttpResponse httpResponse(boolean ready, String message) {
     return new HttpResponse()
         .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "ready", ready,
-            "message", message))));
+        .setContent(
+            asJson(
+                ImmutableMap.of(
+                    "value",
+                    ImmutableMap.of(
+                        "ready", ready,
+                        "message", message))));
   }
 }

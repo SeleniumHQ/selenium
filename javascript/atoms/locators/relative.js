@@ -22,6 +22,7 @@ goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.math.Rect');
 
 
 /**
@@ -149,7 +150,7 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
   }
 
   if (!distance) {
-    distance = 100;
+    distance = 50;
   }
 
   /**
@@ -166,49 +167,9 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
     var rect1 = bot.dom.getClientRect(element);
     var rect2 = bot.dom.getClientRect(compareTo);
 
-    // Ascii art time!
-    //
-    //    +---+
-    //    | 1 |
-    //    +---+     +---+
-    //              | 2 |
-    //              +---+
-    //
-    // As you can see, the right hand side of 1 is "left of" the left-most
-    // edge of 2. The top edge of 2 is at the same level as the bottom
-    // edge of 1. This means that 1 is "above" 2, and 2 is "below" one.
+    var rect1_bigger = new goog.math.Rect(rect1.left-distance,rect1.top-distance,rect1.width+distance*2,rect1.height+distance*2);
 
-    // Distance from left edge to right edge
-    var leftDistance = Math.abs(rect1.left - (rect2.left + rect2.width));
-
-    // Distance from right edge to left edge
-    var rightDistance = Math.abs((rect1.left + rect1.width) - rect2.left);
-
-    // Distance from top to bottom
-    var topDistance = Math.abs(rect1.top - (rect2.top + rect2.height));
-
-    // Distance from bottom to top
-    var bottomDistance = Math.abs((rect1.top + rect1.height) - rect2.top);
-
-    var horizontallyClose = leftDistance <= distance || rightDistance <= distance;
-    var verticallyClose = topDistance <= distance || bottomDistance <= distance;
-
-    if (horizontallyClose && verticallyClose) {
-      return true;
-    }
-
-    // Distance from centre points
-    var x1 = rect1.left + (rect1.width / 2);
-    var y1 = rect1.top + (rect1.height / 2);
-
-    var x2 = rect2.left + (rect2.width / 2);
-    var y2 = rect2.top + (rect2.height / 2);
-
-    var xDistance = Math.abs(x1 - x2);
-    var yDistance = Math.abs(y1 - y2);
-
-    var dist = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-    return dist <= distance;
+    return rect1_bigger.intersects(rect2);
   };
 
   return func;

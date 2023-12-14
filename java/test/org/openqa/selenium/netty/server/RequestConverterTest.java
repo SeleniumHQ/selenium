@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.netty.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -27,9 +30,6 @@ import io.netty.handler.codec.http.HttpVersion;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class RequestConverterTest {
 
   @Test
@@ -38,8 +38,8 @@ class RequestConverterTest {
 
     EmbeddedChannel channel = new EmbeddedChannel(converter);
 
-    FullHttpRequest httpRequest = new DefaultFullHttpRequest(
-      HttpVersion.HTTP_1_1, HttpMethod.GET, "/cheese");
+    FullHttpRequest httpRequest =
+        new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/cheese");
     httpRequest.headers().add("How-Good", "Delicious");
 
     assertThat(channel.writeInbound(httpRequest)).isTrue();
@@ -55,13 +55,12 @@ class RequestConverterTest {
 
     EmbeddedChannel channel = new EmbeddedChannel(converter);
 
-    FullHttpRequest httpRequest = new DefaultFullHttpRequest(
-      HttpVersion.HTTP_1_1, HttpMethod.PATCH, "/cheese");
+    FullHttpRequest httpRequest =
+        new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.PATCH, "/cheese");
 
     assertThat(channel.writeInbound(httpRequest)).isFalse();
     FullHttpResponse res = channel.readOutbound();
 
     assertThat(res.status()).isEqualTo(HttpResponseStatus.METHOD_NOT_ALLOWED);
   }
-
 }

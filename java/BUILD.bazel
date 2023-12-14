@@ -17,9 +17,7 @@ java_plugin(
     processor_class = "com.google.auto.service.processor.AutoServiceProcessor",
     visibility = ["//visibility:private"],
     deps = [
-        artifact("com.google.auto:auto-common"),
         artifact("com.google.auto.service:auto-service"),
-        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -32,7 +30,6 @@ java_library(
         "//java:__subpackages__",
     ],
     exports = [
-        artifact("com.google.auto.service:auto-service"),
         artifact("com.google.auto.service:auto-service-annotations"),
     ],
 )

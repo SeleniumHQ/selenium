@@ -26,12 +26,14 @@ module Selenium
     module Support
       class CDPClientGenerator
         # Input JSON files are generated from PDL tasks.
-        TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
+        DOMAIN_TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
+        LOADER_TEMPLATE_PATH = File.expand_path('cdp/loader.rb.erb', __dir__)
 
         RESERVED_KEYWORDS = %w[end].freeze
 
         def call(output_dir:, version:, **opts)
-          @template = ERB.new(File.read(TEMPLATE_PATH))
+          @domain_template = ERB.new(File.read(DOMAIN_TEMPLATE_PATH))
+          @loader_template = ERB.new(File.read(LOADER_TEMPLATE_PATH))
           @output_dir = output_dir
           @loader_path = opts.delete(:loader_path) || "#{@output_dir}.rb"
           @version = version
@@ -48,13 +50,13 @@ module Selenium
 
           FileUtils.mkdir_p(@output_dir)
 
-          browser_protocol[:domains].each { |domain| process_domain(domain) }
-          js_protocol[:domains].each { |domain| process_domain(domain) }
-          require_file
+          all_domains = browser_protocol[:domains] + js_protocol[:domains]
+          all_domains.each { |domain| process_domain(domain) }
+          process_loader(all_domains)
         end
 
         def process_domain(domain)
-          result = @template.result_with_hash(domain: domain, version: @version.upcase, h: self)
+          result = @domain_template.result_with_hash(domain: domain, version: @version.upcase, h: self)
           filename = File.join(@output_dir, "#{snake_case(domain[:domain])}.rb")
           File.write(filename, remove_empty_lines(result))
         end
@@ -86,13 +88,9 @@ module Selenium
           string.split("\n").grep_v(/^\s+$/).join("\n")
         end
 
-        def require_file
-          # rubocop:disable Lint/InterpolationCheck
-          dynamic_location = '#{File.dirname(File.absolute_path(__FILE__))}'
-          # rubocop:enable Lint/InterpolationCheck
-
-          require_all = "Dir.glob(\"#{dynamic_location}/#{@version}/*\", &method(:require))"
-          File.write(@loader_path, require_all)
+        def process_loader(domains)
+          result = @loader_template.result_with_hash(domains: domains, version: @version.upcase, h: self)
+          File.write(@loader_path, remove_empty_lines(result))
         end
       end
     end

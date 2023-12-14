@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.net;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -27,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 
 public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider {
   // Cache the list of interfaces between instances. This is mostly used
@@ -35,7 +34,6 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   // Caching the result of getNetworkInterfaces saves 2 seconds, which is
   // significant when running the tests.
   private final List<NetworkInterface> cachedInterfaces;
-
 
   @Override
   public Iterable<NetworkInterface> getNetworkInterfaces() {
@@ -115,5 +113,4 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
       throw new WebDriverException(e);
     }
   }
-
 }

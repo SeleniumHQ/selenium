@@ -25,7 +25,7 @@ module Selenium
           if response.is_a? String
             super(response)
           else
-            super("status code #{response.code}")
+            super("status code #{response.code}; payload #{response.payload}")
           end
         end
       end # ServerError

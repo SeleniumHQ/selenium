@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.devtools.idealized;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.target.model.SessionID;
-import org.openqa.selenium.internal.Require;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.internal.Require;
 
 public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
 
@@ -43,8 +42,11 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     devtools.send(disableRuntime());
     devtools.send(disablePage());
 
-    pinnedScripts.forEach((sessionID, scriptIdMap) -> scriptIdMap.values()
-      .forEach(id -> removeScriptToEvaluateOnNewDocument(id.getActualId())));
+    pinnedScripts.forEach(
+        (sessionID, scriptIdMap) ->
+            scriptIdMap
+                .values()
+                .forEach(id -> removeScriptToEvaluateOnNewDocument(id.getActualId())));
 
     pinnedScripts.clear();
   }
@@ -73,7 +75,8 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     SCRIPTID id = devtools.send(addScriptToEvaluateOnNewDocument(script));
     ScriptId scriptId = new ScriptId(id);
 
-    Map<String, ScriptId> scripts = pinnedScripts.getOrDefault(devtools.getCdpSession(), new HashMap<>());
+    Map<String, ScriptId> scripts =
+        pinnedScripts.getOrDefault(devtools.getCdpSession(), new HashMap<>());
     scripts.put(script, scriptId);
     pinnedScripts.put(devtools.getCdpSession(), scripts);
 
@@ -86,12 +89,11 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     devtools.send(enableRuntime());
 
     devtools.addListener(
-      bindingCalledEvent(),
-      event -> {
-        String payload = extractPayload(event);
-        listener.accept(payload);
-      }
-    );
+        bindingCalledEvent(),
+        event -> {
+          String payload = extractPayload(event);
+          listener.accept(payload);
+        });
   }
 
   public void addJsBinding(String scriptName) {

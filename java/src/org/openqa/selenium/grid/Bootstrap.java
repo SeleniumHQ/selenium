@@ -106,19 +106,22 @@ public class Bootstrap {
       }
     }
 
-    URL[] jarUrls = jars.stream()
-      .map(file -> {
-        try {
-          return file.toURI().toURL();
-        } catch (MalformedURLException e) {
-          LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
-          throw new UncheckedIOException(e);
-        }
-      })
-      .toArray(URL[]::new);
+    URL[] jarUrls =
+        jars.stream()
+            .map(
+                file -> {
+                  try {
+                    return file.toURI().toURL();
+                  } catch (MalformedURLException e) {
+                    LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
+                    throw new UncheckedIOException(e);
+                  }
+                })
+            .toArray(URL[]::new);
 
-    return AccessController.doPrivileged((PrivilegedAction<URLClassLoader>) () ->
-      new URLClassLoader(jarUrls, Bootstrap.class.getClassLoader()));
+    return AccessController.doPrivileged(
+        (PrivilegedAction<URLClassLoader>)
+            () -> new URLClassLoader(jarUrls, Bootstrap.class.getClassLoader()));
   }
 
   private static class PossessiveClassLoader extends ClassLoader {

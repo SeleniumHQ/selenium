@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 import java.util.logging.Level;
 
 /**
- * <a href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
- *   Log levels</a> defined by ChromeDriver
+ * <a
+ * href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
+ * Log levels</a> defined by ChromeDriver
  */
 public enum ChromiumDriverLogLevel {
   ALL,
@@ -34,17 +33,16 @@ public enum ChromiumDriverLogLevel {
   SEVERE,
   OFF;
 
-  private static final Map<Level, ChromiumDriverLogLevel> logLevelToChromeLevelMap
-    = new ImmutableMap.Builder<Level, ChromiumDriverLogLevel>()
-    .put(Level.ALL, ALL)
-    .put(Level.FINEST, DEBUG)
-    .put(Level.FINER, DEBUG)
-    .put(Level.FINE, DEBUG)
-    .put(Level.INFO, INFO)
-    .put(Level.WARNING, WARNING)
-    .put(Level.SEVERE, SEVERE)
-    .put(Level.OFF, OFF)
-    .build();
+  private static final Map<Level, ChromiumDriverLogLevel> logLevelToChromeLevelMap =
+      Map.of(
+          Level.ALL, ALL,
+          Level.FINEST, DEBUG,
+          Level.FINER, DEBUG,
+          Level.FINE, DEBUG,
+          Level.INFO, INFO,
+          Level.WARNING, WARNING,
+          Level.SEVERE, SEVERE,
+          Level.OFF, OFF);
 
   @Override
   public String toString() {

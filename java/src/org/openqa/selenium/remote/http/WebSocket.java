@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.util.logging.Level.WARNING;
+
 import java.io.Closeable;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.WARNING;
-
 public interface WebSocket extends Closeable {
+  Logger LOG = Logger.getLogger(WebSocket.class.getName());
 
   WebSocket send(Message message);
 
@@ -63,8 +64,11 @@ public interface WebSocket extends Closeable {
     }
 
     default void onError(Throwable cause) {
-      Logger.getLogger(WebSocket.class.getName()).log(WARNING, cause.getMessage(), cause);
+      String message = cause.getMessage();
+      if (message == null && cause.getCause() != null) {
+        message = cause.getCause().getMessage();
+      }
+      LOG.log(WARNING, message, cause);
     }
   }
-
 }

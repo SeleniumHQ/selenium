@@ -17,17 +17,23 @@
 
 package org.openqa.selenium.devtools;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 public class ConverterFunctions {
 
   public static <X> Function<JsonInput, X> map(final String keyName, Type typeOfX) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Type to convert to", typeOfX);
+
+    return map(keyName, input -> input.read(typeOfX));
+  }
+
+  public static <X> Function<JsonInput, X> map(final String keyName, Function<JsonInput, X> read) {
+    Require.nonNull("Key name", keyName);
+    Require.nonNull("Read callback", read);
 
     return input -> {
       X value = null;
@@ -36,7 +42,7 @@ public class ConverterFunctions {
       while (input.hasNext()) {
         String name = input.nextName();
         if (keyName.equals(name)) {
-          value = input.read(typeOfX);
+          value = read.apply(input);
         } else {
           input.skipValue();
         }
@@ -44,6 +50,16 @@ public class ConverterFunctions {
       input.endObject();
 
       return value;
+    };
+  }
+
+  public static Function<JsonInput, Void> empty() {
+    return input -> {
+      // expects an empty object
+      input.beginObject();
+      input.endObject();
+
+      return null;
     };
   }
 }

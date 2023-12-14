@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import java.net.URI;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
@@ -31,17 +39,8 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
-public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Message>,
-  Optional<Consumer<Message>>> {
+public class ProxyWebsocketsIntoGrid
+    implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
   private static final Logger LOG = Logger.getLogger(ProxyWebsocketsIntoGrid.class.getName());
   private final HttpClient.Factory clientFactory;
@@ -63,10 +62,12 @@ public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Mess
     }
 
     try {
-      Session session = sessions.get(sessionId.get());
+      URI sessionUri = sessions.getUri(sessionId.get());
 
-      HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(session.getUri()));
-      WebSocket upstream = client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
+      HttpClient client =
+          clientFactory.createClient(ClientConfig.defaultConfig().baseUri(sessionUri));
+      WebSocket upstream =
+          client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
 
       return Optional.of(upstream::send);
 

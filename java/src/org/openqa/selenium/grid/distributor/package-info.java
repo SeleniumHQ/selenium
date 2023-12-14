@@ -15,19 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 /**
- * The {@link org.openqa.selenium.grid.distributor.Distributor} is responsible
- * for assigning new calls to Create Session to a
- * {@link org.openqa.selenium.grid.node.Node}. It's possible that the first
- * attempt to create a session fails for any number of reasons, and so a
- * well-behaved implementation will continue trying additional nodes until
- * either a session starts or nothing is successful.
- * <p>
- * To complicate matters, local ends may send a session request that is one of
- * two different dialects (presumably in the future there may be more. *sigh*)
- * and care must be taken to ensure that dialects match, or that a converter
- * of some sort is added. The Node may be the part of the system responsible
- * for adding this converter.
+ * The {@link org.openqa.selenium.grid.distributor.Distributor} is responsible for assigning new
+ * calls to Create Session to a {@link org.openqa.selenium.grid.node.Node}. It's possible that the
+ * first attempt to create a session fails for any number of reasons, and so a well-behaved
+ * implementation will continue trying additional nodes until either a session starts or nothing is
+ * successful.
+ *
+ * <p>To complicate matters, local ends may send a session request that is one of two different
+ * dialects (presumably in the future there may be more. *sigh*) and care must be taken to ensure
+ * that dialects match, or that a converter of some sort is added. The Node may be the part of the
+ * system responsible for adding this converter.
  */
 package org.openqa.selenium.grid.distributor;

@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class IsContainerPresent {
   private final HttpHandler client;
@@ -36,9 +36,10 @@ class IsContainerPresent {
   public boolean apply(ContainerId id) {
     Require.nonNull("Container id", id);
 
-    HttpResponse res = client.execute(
-      new HttpRequest(GET, String.format("/v%s/containers/%s/json", DOCKER_API_VERSION, id))
-        .addHeader("Content-Type", "text/plain"));
+    HttpResponse res =
+        client.execute(
+            new HttpRequest(GET, String.format("/v%s/containers/%s/json", DOCKER_API_VERSION, id))
+                .addHeader("Content-Type", "text/plain"));
 
     return res.isSuccessful();
   }

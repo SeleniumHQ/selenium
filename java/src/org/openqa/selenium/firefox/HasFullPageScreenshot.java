@@ -20,9 +20,7 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.OutputType;
 
-/**
- * Used by classes to indicate that they can take a full page screenshot.
- */
+/** Used by classes to indicate that they can take a full page screenshot. */
 @Beta
 public interface HasFullPageScreenshot {
 

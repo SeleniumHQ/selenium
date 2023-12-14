@@ -18,9 +18,6 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteStreams;
-import org.openqa.selenium.internal.Require;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import org.openqa.selenium.internal.Require;
 
 public class JarFileResource implements Resource {
 
@@ -75,7 +73,8 @@ public class JarFileResource implements Resource {
     }
 
     if (from.length() < 2) {
-      throw new IllegalArgumentException("From string must have something following the slash: " + from);
+      throw new IllegalArgumentException(
+          "From string must have something following the slash: " + from);
     }
 
     return from.substring(1);
@@ -96,12 +95,12 @@ public class JarFileResource implements Resource {
     int count = prefix.split("/").length + 1;
 
     return jarFile.stream()
-      .filter(e -> e.getName().startsWith(prefix))
-      .filter(e -> !e.getName().equals(entryName))
-      .filter(e -> !e.getName().equals(prefix))
-      .filter(e -> e.getName().split("/").length == count)
-      .map(e -> new JarFileResource(jarFile, e.getName(), prefix))
-      .collect(ImmutableSet.toImmutableSet());
+        .filter(e -> e.getName().startsWith(prefix))
+        .filter(e -> !e.getName().equals(entryName))
+        .filter(e -> !e.getName().equals(prefix))
+        .filter(e -> e.getName().split("/").length == count)
+        .map(e -> new JarFileResource(jarFile, e.getName(), prefix))
+        .collect(ImmutableSet.toImmutableSet());
   }
 
   @Override
@@ -112,8 +111,8 @@ public class JarFileResource implements Resource {
     }
 
     try (InputStream is = jarFile.getInputStream(entry);
-         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-      ByteStreams.copy(is, bos);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+      is.transferTo(bos);
       return Optional.of(bos.toByteArray());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

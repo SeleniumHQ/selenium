@@ -19,7 +19,7 @@ package org.openqa.selenium.bidi.log;
 public class FilterBy {
 
   private final LogLevel level;
-  
+
   private FilterBy(LogLevel logLevel) {
     this.level = logLevel;
   }
@@ -31,5 +31,4 @@ public class FilterBy {
   public LogLevel getLevel() {
     return level;
   }
-
 }

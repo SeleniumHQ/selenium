@@ -17,15 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
@@ -35,9 +26,16 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import java.util.Random;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class FrameSwitchingTest extends JupiterTestBase {
 
@@ -172,7 +170,7 @@ class FrameSwitchingTest extends JupiterTestBase {
     WebElement frame = driver.findElement(By.tagName("frameset"));
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame(frame));
+        .isThrownBy(() -> driver.switchTo().frame(frame));
   }
 
   @Test
@@ -183,13 +181,13 @@ class FrameSwitchingTest extends JupiterTestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText()).isEqualTo("2");
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame("third"));
+        .isThrownBy(() -> driver.switchTo().frame("third"));
 
     driver.switchTo().defaultContent();
     driver.switchTo().frame("third");
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame("second"));
+        .isThrownBy(() -> driver.switchTo().frame("second"));
 
     driver.switchTo().defaultContent();
     driver.switchTo().frame("second");
@@ -210,7 +208,7 @@ class FrameSwitchingTest extends JupiterTestBase {
     driver.switchTo().frame("fourth");
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame("second"));
+        .isThrownBy(() -> driver.switchTo().frame("second"));
   }
 
   @Test
@@ -218,7 +216,7 @@ class FrameSwitchingTest extends JupiterTestBase {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame("Nothing here"));
+        .isThrownBy(() -> driver.switchTo().frame("Nothing here"));
   }
 
   @Test
@@ -226,7 +224,7 @@ class FrameSwitchingTest extends JupiterTestBase {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(NoSuchFrameException.class)
-      .isThrownBy(() -> driver.switchTo().frame(27));
+        .isThrownBy(() -> driver.switchTo().frame(27));
   }
 
   @Test
@@ -242,8 +240,15 @@ class FrameSwitchingTest extends JupiterTestBase {
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
-    driver.switchTo().frame("fourth").switchTo().frame("child1")
-      .switchTo().parentFrame().switchTo().frame("child2");
+    driver
+        .switchTo()
+        .frame("fourth")
+        .switchTo()
+        .frame("child1")
+        .switchTo()
+        .parentFrame()
+        .switchTo()
+        .frame("child2");
     assertThat(driver.findElement(By.id("pageNumber")).getText()).isEqualTo("11");
   }
 
@@ -343,17 +348,14 @@ class FrameSwitchingTest extends JupiterTestBase {
   @Test
   void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
-    driver.switchTo().frame("sixth")
-      .switchTo().frame("iframe1");
+    driver.switchTo().frame("sixth").switchTo().frame("iframe1");
 
     // This should replace frame "iframe1" inside frame "sixth" ...
     driver.findElement(By.id("submitButton")).click();
     // driver should still be focused on frame "iframe1" inside frame "sixth" ...
     assertThat(getTextOfGreetingElement()).isEqualTo("Success!");
     // Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
-    driver.switchTo().defaultContent()
-      .switchTo().frame("sixth")
-      .switchTo().frame("iframe1");
+    driver.switchTo().defaultContent().switchTo().frame("sixth").switchTo().frame("iframe1");
     assertThat(driver.findElement(By.id("greeting")).getText()).isEqualTo("Success!");
   }
 
@@ -451,7 +453,6 @@ class FrameSwitchingTest extends JupiterTestBase {
   @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
   @NotYetImplemented(value = EDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
@@ -460,7 +461,7 @@ class FrameSwitchingTest extends JupiterTestBase {
     driver.findElement(By.id("killIframe")).click();
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-      .isThrownBy(() -> driver.findElement(By.id("killIframe")));
+        .isThrownBy(() -> driver.findElement(By.id("killIframe")));
   }
 
   @Test
@@ -496,7 +497,8 @@ class FrameSwitchingTest extends JupiterTestBase {
         input.sendKeys("rand" + random.nextInt());
         submit.click();
       } finally {
-        String url = (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
+        String url =
+            (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
         // IE6 and Chrome add "?"-symbol to the end of the URL
         if (url.endsWith("?")) {
           url = url.substring(0, url.length() - 1);

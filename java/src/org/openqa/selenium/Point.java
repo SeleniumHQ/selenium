@@ -19,9 +19,7 @@ package org.openqa.selenium;
 
 import java.util.Objects;
 
-/**
- * A copy of java.awt.Point, to remove dependency on awt.
- */
+/** A copy of java.awt.Point, to remove dependency on awt. */
 public class Point {
   public int x;
   public int y;
@@ -56,15 +54,6 @@ public class Point {
   @Override
   public int hashCode() {
     return Objects.hash(x, y);
-  }
-
-  /**
-   * @deprecated Use {{@link #moveBy(int, int)} instead}
-   */
-  @Deprecated
-  public void move(int newX, int newY) {
-    x = newX;
-    y = newY;
   }
 
   @Override

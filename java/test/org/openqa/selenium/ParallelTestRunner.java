@@ -20,15 +20,13 @@ package org.openqa.selenium;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utility class for concurrency tests.
- */
+/** Utility class for concurrency tests. */
 public class ParallelTestRunner {
   public interface Worker {
     void run();
   }
 
-  private static class WorkerThread extends Thread {  // Thread safety reviewed
+  private static class WorkerThread extends Thread { // Thread safety reviewed
     private final Worker _worker;
     private volatile Throwable _throwable;
 

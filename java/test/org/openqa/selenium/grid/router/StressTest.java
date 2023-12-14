@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,23 +48,10 @@ import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.StringReader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.assertj.core.api.Assertions.assertThat;
-
 class StressTest {
 
   private final ExecutorService executor =
-    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+      Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
   private final List<TearDownFixture> tearDowns = new LinkedList<>();
   private Server<?> server;
   private Browser browser;
@@ -62,27 +61,26 @@ class StressTest {
   public void setupServers() {
     browser = Objects.requireNonNull(Browser.detect());
 
-    Deployment deployment = DeploymentTypes.DISTRIBUTED.start(
-      browser.getCapabilities(),
-      new TomlConfig(new StringReader(
-        "[node]\n" +
-        "selenium-manager = true\n" +
-        "driver-implementation = " + browser.displayName())));
+    Deployment deployment =
+        DeploymentTypes.DISTRIBUTED.start(
+            browser.getCapabilities(),
+            new TomlConfig(
+                new StringReader("[node]\n" + "driver-implementation = " + browser.displayName())));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
 
-    appServer = new NettyServer(
-      new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
-      req -> {
-        try {
-          Thread.sleep(2000);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-        return new HttpResponse()
-          .setContent(Contents.string("<h1>Cheese</h1>", UTF_8));
-      });
+    appServer =
+        new NettyServer(
+            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
+            req -> {
+              try {
+                Thread.sleep(2000);
+              } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+              }
+              return new HttpResponse().setContent(Contents.string("<h1>Cheese</h1>", UTF_8));
+            });
 
     tearDowns.add(() -> appServer.stop());
     appServer.start();
@@ -103,23 +101,25 @@ class StressTest {
       CompletableFuture<Object> future = new CompletableFuture<>();
       futures[i] = future;
 
-      executor.submit(() -> {
-        try {
-          WebDriver driver = RemoteWebDriver.builder()
-            .oneOf(browser.getCapabilities())
-            .address(server.getUrl())
-            .build();
+      executor.submit(
+          () -> {
+            try {
+              WebDriver driver =
+                  RemoteWebDriver.builder()
+                      .oneOf(browser.getCapabilities())
+                      .address(server.getUrl())
+                      .build();
 
-          driver.get(appServer.getUrl().toString());
-          driver.findElement(By.tagName("body"));
+              driver.get(appServer.getUrl().toString());
+              driver.findElement(By.tagName("body"));
 
-          // And now quit
-          driver.quit();
-          future.complete(true);
-        } catch (Exception e) {
-          future.completeExceptionally(e);
-        }
-      });
+              // And now quit
+              driver.quit();
+              future.complete(true);
+            } catch (Exception e) {
+              future.completeExceptionally(e);
+            }
+          });
     }
 
     CompletableFuture.allOf(futures).get(4, MINUTES);

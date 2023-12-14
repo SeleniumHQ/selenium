@@ -29,7 +29,7 @@ jobs:
     with:
       name: Lint
       cache-key: rb-lint
-      run: bazel run //rb:lint
+      run: bazel test //rb:lint
 
   unit-tests:
     name: Unit Tests
@@ -39,15 +39,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 2.7.6
+          - ruby-version: 3.0.6
             os: ubuntu
-          - ruby-version: 2.7.6
+          - ruby-version: 3.0.6
             os: windows
-          - ruby-version: 3.2.0
+          - ruby-version: 3.0.6
+            os: macos
+          - ruby-version: 3.2.2
             os: ubuntu
-          - ruby-version: jruby-9.4.0.0
+          - ruby-version: jruby-9.4.5.0
             os: ubuntu
-          - ruby-version: truffleruby-22.3.0
+          - ruby-version: truffleruby-23.1.1
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
@@ -67,12 +69,20 @@ jobs:
           - chrome
           - edge
           - firefox
+          - safari
         os:
           - ubuntu
           - windows
+          - macos
         exclude:
           - browser: edge
             os: ubuntu
+          - browser: edge
+            os: macos
+          - browser: safari
+            os: ubuntu
+          - browser: safari
+            os: windows
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -92,21 +102,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-        os:
-          - ubuntu
-          - windows
-        exclude:
+        include:
           - browser: edge
+            os: windows
+          - browser: chrome
             os: ubuntu
+          - browser: firefox
+            os: ubuntu
+          - browser: safari
+            os: macos
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
       cache-key: rb-remote-${{ matrix.browser }}-test
       os: ${{ matrix.os }}
+      java-version: 11
       run: >
         bazel test
         --define browser=${{ matrix.browser }}

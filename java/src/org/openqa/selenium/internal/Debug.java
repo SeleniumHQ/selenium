@@ -20,18 +20,15 @@ package org.openqa.selenium.internal;
 import java.lang.management.ManagementFactory;
 import java.util.logging.Level;
 
-/**
- * Used to provide information about whether or not Selenium is running
- * under debug mode.
- */
+/** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
 
-  private static boolean IS_DEBUG;
+  private static final boolean IS_DEBUG;
+
   static {
-    boolean debugFlag = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-      .map(str -> str.contains("-agentlib:jdwp"))
-      .reduce(Boolean::logicalOr)
-      .orElse(false);
+    boolean debugFlag =
+        ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+            .anyMatch(str -> str.contains("-agentlib:jdwp"));
     boolean simpleProperty = Boolean.getBoolean("selenium.debug");
     boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
 

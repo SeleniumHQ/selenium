@@ -17,19 +17,17 @@
 
 package org.openqa.selenium.print;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.print.PageSize;
-
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PageSizeTest {
 
   // Defaults assertion
-  private static final double HEIGHT = 21.59;
-  private static final double WIDTH = 27.94;
+  private static final double HEIGHT = 27.94;
+  private static final double WIDTH = 21.59;
 
   @Test
   void setsDefaultHeightWidth() {

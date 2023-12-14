@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import com.google.auto.service.AutoService;
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.service.DriverFinder;
-
-import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class SafariDriverInfo implements WebDriverInfo {
@@ -51,10 +50,7 @@ public class SafariDriverInfo implements WebDriverInfo {
       return true;
     }
 
-    return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari:"))
-      .reduce(Boolean::logicalOr)
-      .orElse(false);
+    return capabilities.asMap().keySet().stream().anyMatch(key -> key.startsWith("safari:"));
   }
 
   @Override
@@ -70,8 +66,12 @@ public class SafariDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      DriverFinder.getPath(SafariDriverService.createDefaultService());
-      return true;
+      if (Platform.getCurrent().is(Platform.MAC)) {
+        DriverFinder.getPath(
+            SafariDriverService.createDefaultService(), getCanonicalCapabilities());
+        return true;
+      }
+      return false;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
@@ -79,7 +79,16 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isPresent() {
-    return SafariDriverService.isPresent();
+    try {
+      if (Platform.getCurrent().is(Platform.MAC)) {
+        DriverFinder.getPath(
+            SafariDriverService.createDefaultService(), getCanonicalCapabilities(), true);
+        return true;
+      }
+      return false;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
   }
 
   @Override
@@ -89,7 +98,7 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

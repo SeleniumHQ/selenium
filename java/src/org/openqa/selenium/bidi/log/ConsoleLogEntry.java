@@ -19,28 +19,29 @@ package org.openqa.selenium.bidi.log;
 
 import static java.util.Collections.unmodifiableMap;
 
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
-
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
+// @see <a
+// href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class ConsoleLogEntry extends GenericLogEntry {
 
   private final String method;
   private final String realm;
   private final List<Object> args;
 
-  public ConsoleLogEntry(LogLevel level,
-                         String text,
-                         long timestamp,
-                         String type,
-                         String method,
-                         String realm,
-                         List<Object> args,
-                         StackTrace stackTrace) {
+  public ConsoleLogEntry(
+      LogLevel level,
+      String text,
+      long timestamp,
+      String type,
+      String method,
+      String realm,
+      List<Object> args,
+      StackTrace stackTrace) {
     super(level, text, timestamp, type, stackTrace);
     this.method = method;
     this.realm = realm;
@@ -97,8 +98,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
           break;
 
         case "args":
-          args = input.read(new TypeToken<List<Object>>() {
-          }.getType());
+          args = input.read(new TypeToken<List<Object>>() {}.getType());
           break;
 
         case "stackTrace":

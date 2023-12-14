@@ -17,10 +17,9 @@
 // </copyright>
 
 using System;
-using System.Globalization;
-using System.Text;
-using OpenQA.Selenium.Internal;
+using System.IO;
 using OpenQA.Selenium.Chromium;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Edge
 {
@@ -31,8 +30,6 @@ namespace OpenQA.Selenium.Edge
     {
         private const string MSEdgeDriverServiceFileName = "msedgedriver";
 
-        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
         /// </summary>
@@ -40,8 +37,14 @@ namespace OpenQA.Selenium.Edge
         /// <param name="executableFileName">The file name of the EdgeDriver executable.</param>
         /// <param name="port">The port on which the EdgeDriver executable should listen.</param>
         private EdgeDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, executableFileName, port, MicrosoftWebDriverDownloadUrl)
+            : base(executablePath, executableFileName, port)
         {
+        }
+
+        /// <inheritdoc />
+        protected override DriverOptions GetDefaultDriverOptions()
+        {
+            return new EdgeOptions();
         }
 
         /// <summary>
@@ -59,9 +62,19 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName),
-                                                                                MicrosoftWebDriverDownloadUrl);
-            return CreateDefaultService(serviceDirectory);
+            return new EdgeDriverService(null, null, PortUtilities.FindFreePort());
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService.
+        /// </summary>
+        /// <param name="options">Browser options used to find the correct MSEdgeDriver binary.</param>
+        /// <returns>A EdgeDriverService that implements default settings.</returns>
+        [Obsolete("CreateDefaultService() now evaluates options in Driver constructor")]
+        public static EdgeDriverService CreateDefaultService(EdgeOptions options)
+        {
+            string fullServicePath = DriverFinder.FullPath(options);
+            return CreateDefaultService(Path.GetDirectoryName(fullServicePath), Path.GetFileName(fullServicePath));
         }
 
         /// <summary>
@@ -71,6 +84,11 @@ namespace OpenQA.Selenium.Edge
         /// <returns>An EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath)
         {
+            if (File.Exists(driverPath))
+            {
+                driverPath = Path.GetDirectoryName(driverPath);
+            }
+
             return CreateDefaultService(driverPath, ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName));
         }
 

@@ -108,6 +108,9 @@ namespace OpenQA.Selenium.Interactions
             return new WheelScrollInteraction(this, null, origin, xOffset, yOffset, deltaX, deltaY, duration);
         }
 
+        /// <summary>
+        /// Object representing the scroll origin of a scroll operation.
+        /// </summary>
         public class ScrollOrigin
         {
             private IWebElement element;
@@ -115,24 +118,36 @@ namespace OpenQA.Selenium.Interactions
             private int xOffset = 0;
             private int yOffset = 0;
 
+            /// <summary>
+            /// Gets or sets the element for the scroll origin.
+            /// </summary>
             public IWebElement Element
             {
                 get { return this.element; }
                 set { this.element = value; }
             }
 
+            /// <summary>
+            /// Gets or sets a value indicating whether the viewport should be used as the origin.
+            /// </summary>
             public bool Viewport
             {
                 get { return this.viewport; }
                 set { this.viewport = value; }
             }
 
+            /// <summary>
+            /// Gets or sets the horizontal offset of the scroll origin.
+            /// </summary>
             public int XOffset
             {
                 get { return this.xOffset; }
                 set { this.xOffset = value; }
             }
 
+            /// <summary>
+            /// Gets or sets the vertical offset of the scroll origin.
+            /// </summary>
             public int YOffset
             {
                 get { return this.yOffset; }
@@ -152,7 +167,7 @@ namespace OpenQA.Selenium.Interactions
             private CoordinateOrigin origin = CoordinateOrigin.Viewport;
 
             public WheelScrollInteraction(InputDevice sourceDevice, IWebElement target, CoordinateOrigin origin, int x, int y, int deltaX, int deltaY, TimeSpan duration)
-                :base(sourceDevice)
+                : base(sourceDevice)
             {
                 if (target != null)
                 {

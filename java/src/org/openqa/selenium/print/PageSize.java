@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.print;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class PageSize {
 
@@ -25,19 +27,28 @@ public class PageSize {
 
   public PageSize() {
     // Initialize with defaults. A4 paper size defaults in cms.
-    this.height = 21.59;
-    this.width = 27.94;
+    this.height = 27.94;
+    this.width = 21.59;
   }
 
   public PageSize(double height, double width) {
     this.height = height;
     this.width = width;
   }
+
   public double getHeight() {
     return height;
   }
 
   public double getWidth() {
     return width;
+  }
+
+  public Map<String, Object> toMap() {
+    final Map<String, Object> options = new HashMap<>(7);
+    options.put("height", getHeight());
+    options.put("width", getWidth());
+
+    return options;
   }
 }

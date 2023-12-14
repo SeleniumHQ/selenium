@@ -8,9 +8,6 @@ java_selenium_test_suite(
     browsers = [
         "chrome",
     ],
-    tags = [
-        "selenium-remote",
-    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid",

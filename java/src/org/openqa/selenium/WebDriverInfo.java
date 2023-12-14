@@ -34,19 +34,19 @@ public interface WebDriverInfo {
   /**
    * Describes the smallest set of {@link Capabilities} that could be used to create an instance of
    * this {@link WebDriver} implementation.
-   * <p>
-   * Note, this set does not need to be exhaustive: the only requirement is that if
-   * {@link #isAvailable()} returns {@code true}, the returned {@link Capabilities} can be passed to
-   * {@link #createDriver(Capabilities)} and a session will be created.
    *
-   * @return The smallest set of {@link Capabilities} required to create an instance of this
-   *   {@link WebDriver} implementation.
+   * <p>Note, this set does not need to be exhaustive: the only requirement is that if {@link
+   * #isAvailable()} returns {@code true}, the returned {@link Capabilities} can be passed to {@link
+   * #createDriver(Capabilities)} and a session will be created.
+   *
+   * @return The smallest set of {@link Capabilities} required to create an instance of this {@link
+   *     WebDriver} implementation.
    */
   Capabilities getCanonicalCapabilities();
 
   /**
-   * @return Whether a call to {@link #createDriver(Capabilities)} would succeed if given
-   * {@code capabilities}.
+   * @return Whether a call to {@link #createDriver(Capabilities)} would succeed if given {@code
+   *     capabilities}.
    */
   boolean isSupporting(Capabilities capabilities);
 
@@ -71,8 +71,8 @@ public interface WebDriverInfo {
   boolean isAvailable();
 
   /**
-   * Checks whether the browser driver is already present on the host machine. Different from
-   * {@link #isAvailable()} which uses Selenium Manager to obtain the driver when not present.
+   * Checks whether the browser driver is already present on the host machine. Different from {@link
+   * #isAvailable()} which uses Selenium Manager to obtain the driver when not present.
    *
    * @return Whether the browser driver is present on the host machine.
    */
@@ -82,8 +82,8 @@ public interface WebDriverInfo {
    * Some browsers require all the resources of the current system in order to run (for example,
    * Safari on iOS) and so do not support multiple simultaneous sessions on the same system. Other
    * browsers can create isolated state for each new {@link WebDriver} instance.
-   * <p>
-   * The count of simultaneous sessions is typically 1, some multiple of the available number of
+   *
+   * <p>The count of simultaneous sessions is typically 1, some multiple of the available number of
    * cores, or {@link Integer#MAX_VALUE} if the number is unbounded or no-one cares.
    */
   int getMaximumSimultaneousSessions();

@@ -37,9 +37,9 @@ namespace OpenQA.Selenium.DevTools
         // added to this dictionary.
         private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
         {
-            { 110, typeof(V110.V110Domains) },
-            { 109, typeof(V109.V109Domains) },
-            { 108, typeof(V108.V108Domains) },
+            { 118, typeof(V118.V118Domains) },
+            { 120, typeof(V120.V120Domains) },
+            { 119, typeof(V119.V119Domains) },
             { 85, typeof(V85.V85Domains) }
         };
 
@@ -127,8 +127,7 @@ namespace OpenQA.Selenium.DevTools
                 }
             }
 
-            // TODO: Return a no-op implementation or throw exception.
-            return null;
+            throw new WebDriverException($"DevTools version is not in the supported range. Desired version={desiredVersion}, range={versionRange}. Supported versions: {string.Join(", ", supportedVersions)}");
         }
     }
 }

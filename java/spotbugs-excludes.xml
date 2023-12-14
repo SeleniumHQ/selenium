@@ -25,10 +25,6 @@
   </Match>
 
   <Match>
-    <Package name="^com.thoughtworks.selenium\S*"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.ImmutableCapabilities"/>
     <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS"/>
   </Match>
@@ -150,8 +146,23 @@
   </Match>
 
   <Match>
+    <Class name="org.openqa.selenium.remote.http.jdk.JdkHttpClient"/>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
     <Class name="org.openqa.selenium.safari.SafariDriverService"/>
     <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.support.locators.RelativeLocator$RelativeBy" />
+    <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.json.JsonOutputTest$1PrivatelyMappable" />
+    <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
   </Match>
 
   <Match>
@@ -167,6 +178,11 @@
   <Match>
     <Class name="org.openqa.selenium.remote.internal.HttpClientTestBase"/>
     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.json.JsonOutputTest"/>
+    <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
   </Match>
 
   <Match>

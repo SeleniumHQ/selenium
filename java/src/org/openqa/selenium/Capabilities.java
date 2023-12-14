@@ -25,9 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-/**
- * Describes a series of key/value pairs that encapsulate aspects of a browser.
- */
+/** Describes a series of key/value pairs that encapsulate aspects of a browser. */
 public interface Capabilities extends Serializable {
 
   default String getBrowserName() {
@@ -35,28 +33,28 @@ public interface Capabilities extends Serializable {
   }
 
   default Platform getPlatformName() {
-    return Stream.of("platform", "platformName")
-      .map(this::getCapability)
-      .filter(Objects::nonNull)
-      .map(cap -> {
-        if (cap instanceof Platform) {
-          return (Platform) cap;
-        }
+    return Stream.of("platformName")
+        .map(this::getCapability)
+        .filter(Objects::nonNull)
+        .map(
+            cap -> {
+              if (cap instanceof Platform) {
+                return (Platform) cap;
+              }
 
-        try {
-          return Platform.fromString((String.valueOf(cap)));
-        } catch (WebDriverException e) {
-          return null;
-        }
-      })
-      .filter(Objects::nonNull)
-      .findFirst()
-      .orElse(null);
+              try {
+                return Platform.fromString((String.valueOf(cap)));
+              } catch (WebDriverException e) {
+                return null;
+              }
+            })
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
   }
 
   default String getBrowserVersion() {
-    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
-      Optional.ofNullable(getCapability("version")).orElse("")));
+    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(""));
   }
 
   /**
@@ -73,22 +71,20 @@ public interface Capabilities extends Serializable {
 
   /**
    * @param capabilityName The capability to check.
-   * @return Whether or not the value is not null and not false.
+   * @return Whether the value is not null and not false.
    * @see org.openqa.selenium.remote.CapabilityType
    */
   default boolean is(String capabilityName) {
     Object cap = getCapability(capabilityName);
     if (cap == null) {
-      // If it's not set explicitly, javascriptEnabled is true.
-      return "javascriptEnabled".equals(capabilityName);
+      return false;
     }
     return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
   }
 
   /**
-   * Merge two {@link Capabilities} together and return the union of the two as a new
-   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
-   * {@code this}.
+   * Merge two {@link Capabilities} together and return the union of the two as a new {@link
+   * Capabilities} instance. Capabilities from {@code other} will override those in {@code this}.
    */
   default Capabilities merge(Capabilities other) {
     return new ImmutableCapabilities(new MutableCapabilities(this).merge(other));

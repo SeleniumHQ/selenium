@@ -127,18 +127,9 @@
 
 'use strict'
 
-const io = require('./io')
 const { Browser } = require('./lib/capabilities')
 const chromium = require('./chromium')
-const { driverLocation } = require('./common/seleniumManager')
-
-/**
- * Name of the ChromeDriver executable.
- * @type {string}
- * @const
- */
-const CHROMEDRIVER_EXE =
-  process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
+const CHROME_CAPABILITY_KEY = 'goog:chromeOptions'
 
 /** @type {remote.DriverService} */
 
@@ -157,30 +148,7 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously()
-
-    if (!exe) {
-      console.log(
-        ` The ChromeDriver could not be found on the current PATH, trying Selenium Manager`
-      )
-
-      try {
-        exe = driverLocation(Browser.CHROME)
-      } catch (err) {
-        console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
-      }
-    }
-
-    if (!exe) {
-      throw Error(
-        `The ChromeDriver could not be found on the current PATH.
-      Please download the latest version of the ChromeDriver
-      from http://chromedriver.storage.googleapis.com/index.html
-      and ensure it can be found on your PATH.`
-      )
-    }
-
-    super(exe)
+    super(opt_exe)
   }
 }
 
@@ -252,7 +220,12 @@ class Driver extends chromium.Driver {
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
     return /** @type {!Driver} */ (
-      super.createSession(caps, opt_serviceExecutor)
+      super.createSession(
+        caps,
+        opt_serviceExecutor,
+        'goog',
+        CHROME_CAPABILITY_KEY
+      )
     )
   }
 
@@ -265,24 +238,12 @@ class Driver extends chromium.Driver {
   }
 }
 
-/**
- * _Synchronously_ attempts to locate the chromedriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(CHROMEDRIVER_EXE, true)
-}
-
-Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
+Options.prototype.CAPABILITY_KEY = CHROME_CAPABILITY_KEY
 Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
-Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
 module.exports = {
-  Driver: Driver,
+  Driver,
   Options,
   ServiceBuilder,
-  locateSynchronously,
 }

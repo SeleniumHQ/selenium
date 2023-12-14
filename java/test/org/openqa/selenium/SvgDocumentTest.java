@@ -18,18 +18,15 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 class SvgDocumentTest extends JupiterTestBase {
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testClickOnSvgElement() {
     driver.get(pages.svgTestPage);
@@ -41,14 +38,13 @@ class SvgDocumentTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testExecuteScriptInSvgDocument() {
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
     assertThat(rect.getAttribute("fill")).isEqualTo("blue");
-    ((JavascriptExecutor) driver).executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
+    ((JavascriptExecutor) driver)
+        .executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
     assertThat(rect.getAttribute("fill")).isEqualTo("yellow");
   }
-
 }

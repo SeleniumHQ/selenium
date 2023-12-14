@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import org.openqa.selenium.WebElement;
-
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.openqa.selenium.WebElement;
 
 /**
  * Reconstitutes {@link WebElement}s from their JSON representation. Will recursively convert Lists
@@ -43,24 +40,27 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
   public Object apply(Object result) {
     if (result instanceof Collection<?>) {
       Collection<?> results = (Collection<?>) result;
-      return Lists.newArrayList(Iterables.transform(results, this));
+      return results.stream().map(this).collect(Collectors.toList());
     }
 
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
       String elementKey = getElementKey(resultAsMap);
-		  if (null != elementKey) {
+      if (null != elementKey) {
         RemoteWebElement element = newRemoteWebElement();
         element.setId(String.valueOf(resultAsMap.get(elementKey)));
         return element;
       }
 
-		  String shadowKey = getShadowRootKey(resultAsMap);
-		  if (null != shadowKey) {
-		    return new ShadowRoot(driver, String.valueOf(resultAsMap.get(shadowKey)));
+      String shadowKey = getShadowRootKey(resultAsMap);
+      if (null != shadowKey) {
+        return new ShadowRoot(driver, String.valueOf(resultAsMap.get(shadowKey)));
       }
 
-		  return Maps.transformValues(resultAsMap, this);
+      // some values are converted to null, so we can not use Collectors.toMap here
+      Map<Object, Object> converted = new LinkedHashMap<>();
+      resultAsMap.forEach((k, v) -> converted.put(k, this.apply(v)));
+      return converted;
     }
 
     if (result instanceof RemoteWebElement) {
@@ -90,16 +90,16 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
   }
 
   private String getElementKey(Map<?, ?> resultAsMap) {
-		for (Dialect d : Dialect.values()) {
-			String elementKeyForDialect = d.getEncodedElementKey();
-			if (resultAsMap.containsKey(elementKeyForDialect)) {
-				return elementKeyForDialect;
-			}
-		}
-		return null;
-	}
+    for (Dialect d : Dialect.values()) {
+      String elementKeyForDialect = d.getEncodedElementKey();
+      if (resultAsMap.containsKey(elementKeyForDialect)) {
+        return elementKeyForDialect;
+      }
+    }
+    return null;
+  }
 
-	private String getShadowRootKey(Map<?, ?> resultAsMap) {
+  private String getShadowRootKey(Map<?, ?> resultAsMap) {
     for (Dialect d : Dialect.values()) {
       String shadowRootElementKey = d.getShadowRootElementKey();
       if (resultAsMap.containsKey(shadowRootElementKey)) {

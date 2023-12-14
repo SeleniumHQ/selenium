@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.docker;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.List;
+import org.openqa.selenium.internal.Require;
 
 public class ContainerLogs {
 
@@ -41,9 +40,6 @@ public class ContainerLogs {
 
   @Override
   public String toString() {
-    return "ContainerInfo{" +
-      "containerLogs=" + logLines.toString() +
-      ", id=" + id +
-      '}';
+    return "ContainerInfo{" + "containerLogs=" + logLines.toString() + ", id=" + id + '}';
   }
 }

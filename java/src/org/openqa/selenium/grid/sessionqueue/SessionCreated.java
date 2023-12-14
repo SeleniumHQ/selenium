@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
+import java.io.UncheckedIOException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Either;
@@ -27,12 +34,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class SessionCreated implements HttpHandler {
   private final Tracer tracer;
@@ -51,9 +52,14 @@ class SessionCreated implements HttpHandler {
       HTTP_REQUEST.accept(span, req);
 
       CreateSessionResponse response = Contents.fromJson(req, CreateSessionResponse.class);
-      queue.complete(requestId, Either.right(response));
 
-      HttpResponse res = new HttpResponse();
+      // 'complete' will return 'true' if the session has not timed out during the creation process:
+      // it's still a valid session as it can be used by the client
+      boolean isSessionValid = queue.complete(requestId, Either.right(response));
+
+      HttpResponse res =
+          new HttpResponse().setContent(asJson(singletonMap("value", isSessionValid)));
+
       HTTP_RESPONSE.accept(span, res);
       return res;
     }

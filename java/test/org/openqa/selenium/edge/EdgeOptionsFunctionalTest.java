@@ -20,6 +20,9 @@ package org.openqa.selenium.edge;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasCapabilities;
@@ -30,10 +33,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
 
 class EdgeOptionsFunctionalTest extends JupiterTestBase {
 
@@ -47,7 +46,8 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
     localDriver = new WebDriverBuilder().get(options);
 
     localDriver.get(pages.clickJacker);
-    Object userAgent = ((JavascriptExecutor) localDriver).executeScript("return window.navigator.userAgent");
+    Object userAgent =
+        ((JavascriptExecutor) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -68,7 +68,9 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
     localDriver = new WebDriverBuilder().get(options);
     System.out.println(((HasCapabilities) localDriver).getCapabilities());
 
-    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(
+            ((HasCapabilities) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS))
+        .isEqualTo(true);
   }
 
   @Test
@@ -92,8 +94,8 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
-    options.addEncodedExtensions(Base64.getEncoder().encodeToString(
-        Files.readAllBytes(InProject.locate(EXT_PATH))));
+    options.addEncodedExtensions(
+        Base64.getEncoder().encodeToString(Files.readAllBytes(InProject.locate(EXT_PATH))));
     localDriver = new WebDriverBuilder().get(options);
 
     localDriver.get(pages.echoPage);

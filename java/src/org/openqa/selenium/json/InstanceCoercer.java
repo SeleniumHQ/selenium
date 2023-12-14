@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import org.openqa.selenium.internal.Require;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,6 +31,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.openqa.selenium.internal.Require;
 
 class InstanceCoercer extends TypeCoercer<Object> {
 
@@ -100,7 +99,9 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {
     List<Field> fields = new LinkedList<>();
-    for (Class<?> current = constructor.getDeclaringClass(); current != Object.class; current = current.getSuperclass()) {
+    for (Class<?> current = constructor.getDeclaringClass();
+        current != Object.class;
+        current = current.getSuperclass()) {
       fields.addAll(Arrays.asList(current.getDeclaredFields()));
     }
 
@@ -134,15 +135,16 @@ class InstanceCoercer extends TypeCoercer<Object> {
                 SimplePropertyDescriptor::getName,
                 desc -> {
                   Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
-                  BiConsumer<Object, Object>writer = (instance, value) -> {
-                      Method method = desc.getWriteMethod();
-                      method.setAccessible(true);
-                      try {
-                        method.invoke(instance, value);
-                      } catch (ReflectiveOperationException e) {
-                        throw new JsonException(e);
-                      }
-                    };
+                  BiConsumer<Object, Object> writer =
+                      (instance, value) -> {
+                        Method method = desc.getWriteMethod();
+                        method.setAccessible(true);
+                        try {
+                          method.invoke(instance, value);
+                        } catch (ReflectiveOperationException e) {
+                          throw new JsonException(e);
+                        }
+                      };
                   return new TypeAndWriter(type, writer);
                 }));
   }
@@ -186,5 +188,4 @@ class InstanceCoercer extends TypeCoercer<Object> {
       this.writer = writer;
     }
   }
-
 }

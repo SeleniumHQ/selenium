@@ -46,10 +46,8 @@ public class EnumCoercer<T extends Enum> extends TypeCoercer<T> {
         }
       }
 
-      throw new JsonException(String.format(
-          "Unable to find matching enum value for %s in %s",
-          value,
-          aClass));
+      throw new JsonException(
+          String.format("Unable to find matching enum value for %s in %s", value, aClass));
     };
   }
 }

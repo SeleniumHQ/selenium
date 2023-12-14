@@ -41,6 +41,7 @@ const remote = require('../remote')
 const safari = require('../safari')
 const { Browser } = require('../lib/capabilities')
 const { Builder } = require('../index')
+const { getPath } = require('../common/driverFinder')
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
@@ -117,19 +118,24 @@ function getAvailableBrowsers() {
   info(`Searching for WebDriver executables installed on the current system...`)
 
   let targets = [
-    [chrome.locateSynchronously, Browser.CHROME],
-    [edge.locateSynchronously, Browser.EDGE],
-    [firefox.locateSynchronously, Browser.FIREFOX],
-    [ie.locateSynchronously, Browser.INTERNET_EXPLORER],
-    [safari.locateSynchronously, Browser.SAFARI],
+    [getPath(new chrome.Options()), Browser.CHROME],
+    [getPath(new edge.Options()), Browser.EDGE],
+    [getPath(new firefox.Options()), Browser.FIREFOX],
   ]
+  if (process.platform === 'win32') {
+    targets.push([getPath(new ie.Options()), Browser.INTERNET_EXPLORER])
+  }
+  if (process.platform === 'darwin') {
+    targets.push([getPath(new safari.Options()), Browser.SAFARI])
+  }
 
   let availableBrowsers = []
   for (let pair of targets) {
-    const fn = pair[0]
+    const driverPath = pair[0].driverPath
+    const browserPath = pair[0].browserPath
     const name = pair[1]
     const capabilities = pair[2]
-    if (fn()) {
+    if (driverPath.length > 0 && browserPath && browserPath.length > 0) {
       info(`... located ${name}`)
       availableBrowsers.push({ name, capabilities })
     }

@@ -17,26 +17,13 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.net.MediaType;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.http.UrlPath;
-
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import static com.google.common.net.MediaType.CACHE_MANIFEST_UTF_8;
 import static com.google.common.net.MediaType.CSS_UTF_8;
 import static com.google.common.net.MediaType.GIF;
 import static com.google.common.net.MediaType.HTML_UTF_8;
 import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static com.google.common.net.MediaType.JPEG;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static com.google.common.net.MediaType.OCTET_STREAM;
 import static com.google.common.net.MediaType.PLAIN_TEXT_UTF_8;
 import static com.google.common.net.MediaType.PNG;
@@ -50,6 +37,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.net.MediaType;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.UrlPath;
 
 public class ResourceHandler implements Routable {
 
@@ -76,9 +75,7 @@ public class ResourceHandler implements Routable {
       } catch (MalformedURLException ignore) {
         errorMessage = "Unable to find resource, invalid path in url.";
       }
-      return new HttpResponse()
-        .setStatus(HTTP_NOT_FOUND)
-        .setContent(utf8String(errorMessage));
+      return new HttpResponse().setStatus(HTTP_NOT_FOUND).setContent(utf8String(errorMessage));
     }
 
     Resource resource = result.get();
@@ -97,41 +94,39 @@ public class ResourceHandler implements Routable {
   private HttpResponse readDirectory(HttpRequest req, Resource resource) {
     if (!req.getUri().endsWith("/")) {
       String dest = UrlPath.relativeToContext(req, req.getUri() + "/");
-      return new HttpResponse()
-        .setStatus(HTTP_MOVED_TEMP)
-        .addHeader("Location", dest);
+      return new HttpResponse().setStatus(HTTP_MOVED_TEMP).addHeader("Location", dest);
     }
 
-    String links = resource.list().stream()
-      .map(res -> String.format("<li><a href=\"%s\">%s</a>", res.name(), res.name()))
-      .sorted()
-      .collect(Collectors.joining("\n", "<ul>\n", "</ul>\n"));
+    String links =
+        resource.list().stream()
+            .map(res -> String.format("<li><a href=\"%s\">%s</a>", res.name(), res.name()))
+            .sorted()
+            .collect(Collectors.joining("\n", "<ul>\n", "</ul>\n"));
 
-    String html = String.format(
-      "<html><title>Listing of %s</title><body><h1>%s</h1>%s",
-      resource.name(),
-      resource.name(),
-      links);
+    String html =
+        String.format(
+            "<html><title>Listing of %s</title><body><h1>%s</h1>%s",
+            resource.name(), resource.name(), links);
 
     return new HttpResponse()
-      .addHeader("Content-Type", HTML_UTF_8.toString())
-      .setContent(utf8String(html));
+        .addHeader("Content-Type", HTML_UTF_8.toString())
+        .setContent(utf8String(html));
   }
 
   private HttpResponse readFile(HttpRequest req, Resource resource) {
     Optional<byte[]> bytes = resource.read();
     if (bytes.isPresent()) {
       return new HttpResponse()
-        .addHeader("Content-Type", mediaType(req.getUri()))
-        .setContent(bytes(bytes.get()));
+          .addHeader("Content-Type", mediaType(req.getUri()))
+          .setContent(bytes(bytes.get()));
     }
     return get404(req);
   }
 
   private HttpResponse get404(HttpRequest req) {
     return new HttpResponse()
-      .setStatus(HTTP_NOT_FOUND)
-      .setContent(utf8String("Unable to read " + req.getUri()));
+        .setStatus(HTTP_NOT_FOUND)
+        .setContent(utf8String("Unable to read " + req.getUri()));
   }
 
   private String mediaType(String uri) {
@@ -164,6 +159,10 @@ public class ResourceHandler implements Routable {
 
       case "js":
         type = JAVASCRIPT_UTF_8;
+        break;
+
+      case "json":
+        type = JSON_UTF_8;
         break;
 
       case "md":

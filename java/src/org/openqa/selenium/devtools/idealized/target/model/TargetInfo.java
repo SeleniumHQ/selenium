@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.devtools.idealized.target.model;
 
+import java.util.Optional;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.idealized.browser.model.BrowserContextID;
 import org.openqa.selenium.json.JsonInput;
-
-import java.util.Optional;
 
 public class TargetInfo {
 
@@ -36,13 +35,13 @@ public class TargetInfo {
   private final Optional<BrowserContextID> browserContextId;
 
   public TargetInfo(
-    TargetID targetId,
-    String type,
-    String title,
-    String url,
-    Boolean attached,
-    Optional<TargetID> openerId,
-    Optional<BrowserContextID> browserContextId) {
+      TargetID targetId,
+      String type,
+      String title,
+      String url,
+      Boolean attached,
+      Optional<TargetID> openerId,
+      Optional<BrowserContextID> browserContextId) {
     this.targetId = java.util.Objects.requireNonNull(targetId, "targetId is required");
     this.type = java.util.Objects.requireNonNull(type, "type is required");
     this.title = java.util.Objects.requireNonNull(title, "title is required");
@@ -68,16 +67,12 @@ public class TargetInfo {
     return url;
   }
 
-  /**
-   * Whether the target has an attached client.
-   */
+  /** Whether the target has an attached client. */
   public Boolean getAttached() {
     return attached;
   }
 
-  /**
-   * Opener target Id
-   */
+  /** Opener target Id */
   public Optional<TargetID> getOpenerId() {
     return openerId;
   }
@@ -97,7 +92,7 @@ public class TargetInfo {
     Optional<BrowserContextID> browserContextId = Optional.empty();
     input.beginObject();
     while (input.hasNext()) {
-      switch(input.nextName()) {
+      switch (input.nextName()) {
         case "targetId":
           targetId = input.read(TargetID.class);
           break;

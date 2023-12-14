@@ -29,9 +29,8 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        :Returns: The location of the browser binary otherwise an empty string
-        """
+        """:Returns: The location of the browser binary otherwise an empty
+        string."""
         return self._binary_location
 
     @binary_location.setter
@@ -45,9 +44,7 @@ class Options(ArgOptions):
 
     @property
     def overlay_scrollbars_enabled(self):
-        """
-        :Returns: Whether overlay scrollbars should be enabled
-        """
+        """:Returns: Whether overlay scrollbars should be enabled."""
         return self._overlay_scrollbars_enabled
 
     @overlay_scrollbars_enabled.setter

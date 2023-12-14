@@ -17,27 +17,23 @@
 
 package org.openqa.selenium.remote.codec;
 
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.HttpHeaders.EXPIRES;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * A response codec usable as a base for both the JSON and W3C wire protocols.
@@ -49,25 +45,23 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
   private final Json json = new Json();
 
   /**
-   * Encodes the given response as a HTTP response message. This method is guaranteed not to throw.
+   * Encodes the given response as an HTTP response message. This method is guaranteed not to throw.
    *
    * @param response The response to encode.
    * @return The encoded response.
    */
   @Override
   public HttpResponse encode(Supplier<HttpResponse> factory, Response response) {
-    int status = response.getStatus() == ErrorCodes.SUCCESS
-                 ? HTTP_OK
-                 : HTTP_INTERNAL_ERROR;
+    int status = response.getStatus() == ErrorCodes.SUCCESS ? HTTP_OK : HTTP_INTERNAL_ERROR;
 
     byte[] data = json.toJson(getValueToEncode(response)).getBytes(UTF_8);
 
     HttpResponse httpResponse = factory.get();
     httpResponse.setStatus(status);
-    httpResponse.setHeader(CACHE_CONTROL, "no-cache");
-    httpResponse.setHeader(EXPIRES, "Thu, 01 Jan 1970 00:00:00 GMT");
-    httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+    httpResponse.setHeader(HttpHeader.CacheControl.getName(), "no-cache");
+    httpResponse.setHeader(HttpHeader.Expires.getName(), "Thu, 01 Jan 1970 00:00:00 GMT");
+    httpResponse.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
+    httpResponse.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
     httpResponse.setContent(bytes(data));
 
     return httpResponse;
@@ -77,14 +71,14 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
+    String contentType =
+        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
     String content = string(encodedResponse).trim();
     try {
       return reconstructValue(json.toType(content, Response.class));
     } catch (JsonException e) {
       if (contentType.startsWith("application/json")) {
-        throw new IllegalArgumentException(
-            "Cannot decode response content: " + content, e);
+        throw new IllegalArgumentException("Cannot decode response content: " + content, e);
       }
     } catch (ClassCastException e) {
       if (contentType.startsWith("application/json")) {
@@ -95,8 +89,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
           // being ignored. This is not an elegant solution.
           return new Response();
         }
-        throw new IllegalArgumentException(
-            "Cannot decode response content: " + content, e);
+        throw new IllegalArgumentException("Cannot decode response content: " + content, e);
       }
     }
 
@@ -126,8 +119,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       response.setState(errorCodes.toState(response.getStatus()));
     } else if (response.getStatus() == null && response.getState() != null) {
       response.setStatus(
-        errorCodes.toStatus(response.getState(),
-                            Optional.of(encodedResponse.getStatus())));
+          errorCodes.toStatus(response.getState(), Optional.of(encodedResponse.getStatus())));
     } else if (statusCode == 200) {
       response.setStatus(ErrorCodes.SUCCESS);
       response.setState(errorCodes.toState(ErrorCodes.SUCCESS));

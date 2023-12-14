@@ -17,9 +17,8 @@
 import typing
 from typing import List
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
-
-DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
 
 
 class Service(service.Service):
@@ -27,11 +26,12 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         host: typing.Optional[str] = None,
+        service_args: typing.Optional[typing.List[str]] = None,
         log_level: typing.Optional[str] = None,
-        log_file: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
@@ -42,21 +42,19 @@ class Service(service.Service):
          - host : IP address the service port is bound
          - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
            Default is "FATAL".
-         - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
+         - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
            Default is "stdout".
         """
-        self.service_args = []
+        self.service_args = service_args or []
         if host:
             self.service_args.append(f"--host={host}")
         if log_level:
             self.service_args.append(f"--log-level={log_level}")
-        if log_file:
-            self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(
-            executable_path,
+            executable_path=executable_path,
             port=port,
-            start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+            log_output=log_output,
             **kwargs,
         )
 

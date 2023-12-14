@@ -24,5 +24,4 @@ public class NoOpCdpInfo extends CdpInfo {
   public NoOpCdpInfo() {
     super(1, dt -> new NoOpDomains());
   }
-
 }

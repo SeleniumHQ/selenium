@@ -29,6 +29,12 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
+      it 'maps methods to classes' do
+        expect(driver.devtools.css).not_to be_nil
+        expect(driver.devtools.dom).not_to be_nil
+        expect(driver.devtools.dom_debugger).not_to be_nil
+      end
+
       it 'supports events', except: {browser: :firefox,
                                      reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         expect { |block|
@@ -176,6 +182,7 @@ module Selenium
               uri.path = '/devtools_request_interception_test/two.js'
               request.url = uri.to_s
             end
+            request.post_data = {foo: 'bar'}.to_json
             continue.call(request)
           end
           driver.navigate.to url_for('devToolsRequestInterceptionTest.html')

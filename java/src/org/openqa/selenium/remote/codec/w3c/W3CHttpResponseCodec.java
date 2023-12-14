@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
@@ -27,23 +25,25 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Throwables;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.JsonToWebElementConverter;
-
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.logging.Logger;
 
 /**
  * A response codec that adheres to the W3C WebDriver wire protocol.
@@ -67,7 +67,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   // * Get Named Cookie
   // I've not checked the actions apis yet
 
-  private static final Logger log = Logger.getLogger(W3CHttpResponseCodec.class.getName());
+  private static final Logger LOG = Logger.getLogger(W3CHttpResponseCodec.class.getName());
 
   private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
@@ -76,23 +76,25 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String content = string(encodedResponse).trim();
-    log.fine(String.format(
-      "Decoding response. Response code was: %d and content: %s",
-      encodedResponse.getStatus(),
-      content));
-    String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
+    LOG.log(
+        Level.FINER,
+        "Decoding response. Response code was: {0} and content: {1}",
+        new Object[] {encodedResponse.getStatus(), content});
+    String contentType =
+        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
 
     Response response = new Response();
 
     // Are we dealing with an error?
-    // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog text"}
+    // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog
+    // text"}
     if (!encodedResponse.isSuccessful()) {
-      log.fine("Processing an error");
+      LOG.fine("Processing an error");
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
-      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus() ||
-        HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
+      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()
+          || HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
@@ -118,8 +120,8 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
         response.setStatus(errorCodes.toStatus(error, Optional.of(encodedResponse.getStatus())));
 
         // For now, we'll inelegantly special case unhandled alerts.
-        if ("unexpected alert open".equals(error) &&
-            HTTP_INTERNAL_ERROR == encodedResponse.getStatus()) {
+        if ("unexpected alert open".equals(error)
+            && HTTP_INTERNAL_ERROR == encodedResponse.getStatus()) {
           String text = "";
           Object data = obj.get("data");
           if (data != null) {
@@ -169,11 +171,15 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       HashMap<Object, Object> exception = new HashMap<>();
       exception.put(
           "error",
-          response.getState() != null ?
-          response.getState() :
-          errorCodes.toState(response.getStatus()));
+          response.getState() != null
+              ? response.getState()
+              : errorCodes.toState(response.getStatus()));
       exception.put("message", ((WebDriverException) value).getMessage());
-      exception.put("stacktrace", Throwables.getStackTraceAsString((WebDriverException) value));
+      StringWriter stacktrace = new StringWriter();
+      try (PrintWriter printWriter = new PrintWriter(stacktrace)) {
+        ((WebDriverException) value).printStackTrace(printWriter);
+      }
+      exception.put("stacktrace", stacktrace.toString());
       if (value instanceof UnhandledAlertException) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("text", ((UnhandledAlertException) value).getAlertText());

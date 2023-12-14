@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.time.Clock;
+import java.time.Duration;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -24,19 +26,14 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.time.Clock;
-import java.time.Duration;
-
-/**
- * A specialization of {@link FluentWait} that uses WebDriver instances.
- */
+/** A specialization of {@link FluentWait} that uses WebDriver instances. */
 public class WebDriverWait extends FluentWait<WebDriver> {
   private final WebDriver driver;
 
   /**
-   * Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
-   * the 'until' condition, and immediately propagate all others.  You can add more to the ignore
-   * list by calling ignoring(exceptions to add).
+   * Wait will ignore instances of NotFoundException that are encountered (thrown) by default in the
+   * 'until' condition, and immediately propagate all others. You can add more to the ignore list by
+   * calling ignoring(exceptions to add).
    *
    * @param driver The WebDriver instance to pass to the expected conditions
    * @param timeout The timeout when an expectation is called
@@ -52,9 +49,9 @@ public class WebDriverWait extends FluentWait<WebDriver> {
   }
 
   /**
-   * Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
-   * the 'until' condition, and immediately propagate all others.  You can add more to the ignore
-   * list by calling ignoring(exceptions to add).
+   * Wait will ignore instances of NotFoundException that are encountered (thrown) by default in the
+   * 'until' condition, and immediately propagate all others. You can add more to the ignore list by
+   * calling ignoring(exceptions to add).
    *
    * @param driver The WebDriver instance to pass to the expected conditions
    * @param timeout The timeout in seconds when an expectation is called

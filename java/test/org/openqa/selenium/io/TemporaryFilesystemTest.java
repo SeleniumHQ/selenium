@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.io;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.io.File;
+import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Tag("UnitTests")
 class TemporaryFilesystemTest {
@@ -125,8 +124,7 @@ class TemporaryFilesystemTest {
     String otherTempDirPath = otherTempDir.getAbsolutePath();
 
     if (!otherTempDir.mkdirs()) {
-      throw new RuntimeException("Error creating other temporary directory: " +
-        otherTempDirPath);
+      throw new RuntimeException("Error creating other temporary directory: " + otherTempDirPath);
     }
 
     TemporaryFilesystem.setTemporaryDirectory(otherTempDir);

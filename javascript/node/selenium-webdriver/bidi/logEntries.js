@@ -18,64 +18,64 @@
 'use strict'
 
 class BaseLogEntry {
-  constructor (level, text, timeStamp, stackTrace) {
+  constructor(level, text, timeStamp, stackTrace) {
     this._level = level
     this._text = text
     this._timeStamp = timeStamp
     this._stackTrace = stackTrace
   }
 
-  get level () {
+  get level() {
     return this._level
   }
 
-  get text () {
+  get text() {
     return this._text
   }
 
-  get timeStamp () {
+  get timeStamp() {
     return this._timeStamp
   }
 
-  get stackTrace () {
+  get stackTrace() {
     return this._stackTrace
   }
 }
 
 class GenericLogEntry extends BaseLogEntry {
-  constructor (level, text, timeStamp, type, stackTrace) {
+  constructor(level, text, timeStamp, type, stackTrace) {
     super(level, text, timeStamp, stackTrace)
     this._type = type
   }
 
-  get type () {
+  get type() {
     return this._type
   }
 }
 
 class ConsoleLogEntry extends GenericLogEntry {
-  constructor (level, text, timeStamp, type, method, realm, args, stackTrace) {
+  constructor(level, text, timeStamp, type, method, realm, args, stackTrace) {
     super(level, text, timeStamp, type, stackTrace)
     this._method = method
     this._realm = realm
     this._args = args
   }
 
-  get method () {
+  get method() {
     return this._method
   }
 
-  get realm () {
+  get realm() {
     return this._realm
   }
 
-  get args () {
+  get args() {
     return this._args
   }
 }
 
 class JavascriptLogEntry extends GenericLogEntry {
-  constructor (level, text, timeStamp, type, stackTrace) {
+  constructor(level, text, timeStamp, type, stackTrace) {
     super(level, text, timeStamp, type, stackTrace)
   }
 }
@@ -83,5 +83,8 @@ class JavascriptLogEntry extends GenericLogEntry {
 // PUBLIC API
 
 module.exports = {
-  BaseLogEntry, GenericLogEntry, ConsoleLogEntry, JavascriptLogEntry,
+  BaseLogEntry,
+  GenericLogEntry,
+  ConsoleLogEntry,
+  JavascriptLogEntry,
 }

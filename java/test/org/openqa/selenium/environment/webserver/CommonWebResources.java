@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.build.InProject.locate;
+
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.grid.web.MergedResource;
 import org.openqa.selenium.grid.web.PathResource;
@@ -27,28 +31,24 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-
-import static org.openqa.selenium.build.InProject.locate;
-
 class CommonWebResources implements Routable {
 
   private final Routable delegate;
 
   public CommonWebResources() {
-    Resource resources = new MergedResource(new PathResource(locate("common/src/web")))
-      .alsoCheck(new PathResource(locate("javascript").getParent()).limit("javascript"))
-      .alsoCheck(new PathResource(locate("third_party/closure/goog").getParent()).limit("goog"))
-      .alsoCheck(new PathResource(locate("third_party/js").getParent()).limit("js"));
+    Resource resources =
+        new MergedResource(new PathResource(locate("common/src/web")))
+            .alsoCheck(new PathResource(locate("javascript").getParent()).limit("javascript"))
+            .alsoCheck(
+                new PathResource(locate("third_party/closure/goog").getParent()).limit("goog"))
+            .alsoCheck(new PathResource(locate("third_party/js").getParent()).limit("js"));
 
     Path runfiles = InProject.findRunfilesRoot();
     if (runfiles != null) {
       ResourceHandler handler = new ResourceHandler(new PathResource(runfiles));
-      delegate = Route.combine(
-        new ResourceHandler(resources),
-        Route.prefix("/filez").to(Route.combine(handler))
-      );
+      delegate =
+          Route.combine(
+              new ResourceHandler(resources), Route.prefix("/filez").to(Route.combine(handler)));
     } else {
       delegate = new ResourceHandler(resources);
     }

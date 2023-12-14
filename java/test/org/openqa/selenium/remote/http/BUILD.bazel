@@ -1,5 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 java_test_suite(
     name = "small-tests",
@@ -7,13 +8,12 @@ java_test_suite(
     srcs = glob(["*.java"]),
     javacopts = [
         "--release",
-        "11",
+        TOOLS_JAVA_VERSION,
     ],
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote/http",
-        "//java/src/org/openqa/selenium/remote/http/netty",
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),

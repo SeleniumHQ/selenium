@@ -25,5 +25,4 @@ public class ServerBindException extends UncheckedIOException {
   public ServerBindException(String message, IOException cause) {
     super(message, cause);
   }
-
 }

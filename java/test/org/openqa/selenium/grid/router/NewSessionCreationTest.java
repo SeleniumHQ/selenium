@@ -17,9 +17,20 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,18 +70,6 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class NewSessionCreationTest {
 
   private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
@@ -96,70 +95,80 @@ class NewSessionCreationTest {
   @Test
   void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(60),
-      registrationSecret,
-      5);
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(60),
+            registrationSecret,
+            5);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+    Distributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            clientFactory,
+            sessions,
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
 
-    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
-      .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
+    Routable router =
+        new Router(tracer, clientFactory, sessions, queue, distributor)
+            .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
-    server = new NettyServer(
-      new BaseServerOptions(new MapConfig(ImmutableMap.of())),
-      router,
-      new ProxyWebsocketsIntoGrid(clientFactory, sessions))
-      .start();
+    server =
+        new NettyServer(
+                new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+                router,
+                new ProxyWebsocketsIntoGrid(clientFactory, sessions))
+            .start();
 
     URI uri = server.getUrl().toURI();
-    Node node = LocalNode.builder(
-        tracer,
-        bus,
-        uri,
-        uri,
-        registrationSecret)
-      .add(
-        Browser.detect().getCapabilities(),
-        new TestSessionFactory(
-          (id, caps) ->
-            new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
-      .build();
+    Node node =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                Browser.detect().getCapabilities(),
+                new TestSessionFactory(
+                    (id, caps) ->
+                        new Session(
+                            id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
+            .build();
     distributor.add(node);
 
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
       // Attempt to create a session with an origin header but content type set
-      HttpResponse res = client.execute(
-        new HttpRequest(POST, "/session")
-          .addHeader("Content-Type", JSON_UTF_8)
-          .addHeader("Origin", "localhost")
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
-              "alwaysMatch", Browser.detect().getCapabilities())))));
+      HttpResponse res =
+          client.execute(
+              new HttpRequest(POST, "/session")
+                  .addHeader("Content-Type", JSON_UTF_8)
+                  .addHeader("Origin", "localhost")
+                  .setContent(
+                      Contents.asJson(
+                          ImmutableMap.of(
+                              "capabilities",
+                              ImmutableMap.of(
+                                  "alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
       // And now make sure the session is just fine
-      res = client.execute(
-        new HttpRequest(POST, "/session")
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
-              "alwaysMatch", Browser.detect().getCapabilities())))));
+      res =
+          client.execute(
+              new HttpRequest(POST, "/session")
+                  .addHeader("Content-Type", JSON_UTF_8)
+                  .setContent(
+                      Contents.asJson(
+                          ImmutableMap.of(
+                              "capabilities",
+                              ImmutableMap.of(
+                                  "alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.isSuccessful()).isTrue();
     }
@@ -174,49 +183,51 @@ class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(10),
-      registrationSecret,
-      5);
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(10),
+            registrationSecret,
+            5);
     handler.addHandler(queue);
 
     AtomicInteger count = new AtomicInteger();
 
     // First session creation attempt throws an error.
     // Does not reach second attempt.
-    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) -> {
-      if (count.get() == 0) {
-        count.incrementAndGet();
-        throw new SessionNotCreatedException("Expected the exception");
-      } else {
-        return new Session(
-          id,
-          nodeUri,
-          new ImmutableCapabilities(),
-          caps,
-          Instant.now());
-      }
-    });
+    TestSessionFactory sessionFactory =
+        new TestSessionFactory(
+            (id, caps) -> {
+              if (count.get() == 0) {
+                count.incrementAndGet();
+                throw new SessionNotCreatedException("Expected the exception");
+              } else {
+                return new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now());
+              }
+            });
 
-    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
-      .add(capabilities, sessionFactory).build();
+    LocalNode localNode =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(capabilities, sessionFactory)
+            .build();
     handler.addHandler(localNode);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(handler),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+    Distributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(handler),
+            sessions,
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -224,19 +235,13 @@ class NewSessionCreationTest {
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     handler.addHandler(router);
 
-    server = new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
-      handler);
+    server = new NettyServer(new BaseServerOptions(new MapConfig(ImmutableMap.of())), handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", capabilities))));
-
+    request.setContent(
+        asJson(ImmutableMap.of("capabilities", ImmutableMap.of("alwaysMatch", capabilities))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);
@@ -253,40 +258,41 @@ class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(5),
-      Duration.ofSeconds(60),
-      registrationSecret,
-      5);
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(5),
+            Duration.ofSeconds(60),
+            registrationSecret,
+            5);
     handler.addHandler(queue);
 
-    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
-      new Session(
-        id,
-        nodeUri,
-        new ImmutableCapabilities(),
-        caps,
-        Instant.now())
-    );
+    TestSessionFactory sessionFactory =
+        new TestSessionFactory(
+            (id, caps) ->
+                new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now()));
 
-    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
-      .add(capabilities, sessionFactory).build();
+    LocalNode localNode =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+            .add(capabilities, sessionFactory)
+            .build();
     handler.addHandler(localNode);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(handler),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      true,
-      Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+    Distributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(handler),
+            sessions,
+            queue,
+            new DefaultSlotSelector(),
+            registrationSecret,
+            Duration.ofMinutes(5),
+            true,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher());
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -294,19 +300,17 @@ class NewSessionCreationTest {
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     handler.addHandler(router);
 
-    server = new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
-      handler);
+    server = new NettyServer(new BaseServerOptions(new MapConfig(ImmutableMap.of())), handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
-
+    request.setContent(
+        asJson(
+            ImmutableMap.of(
+                "capabilities",
+                ImmutableMap.of(
+                    "alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);

@@ -18,10 +18,15 @@
 package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.Capabilities;
+import java.io.File;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ServiceLoader;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
@@ -38,14 +43,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.File;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ServiceLoader;
-
 public class LocalNodeFactory {
 
   public static Node create(Config config) {
@@ -60,80 +57,93 @@ public class LocalNodeFactory {
     HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
     Duration sessionTimeout = nodeOptions.getSessionTimeout();
-    LocalNode.Builder builder = LocalNode.builder(
-        tracer,
-        eventOptions.getEventBus(),
-        serverOptions.getExternalUri(),
-        nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-        secretOptions.getRegistrationSecret())
-      .maximumConcurrentSessions(nodeOptions.getMaxSessions())
-      .sessionTimeout(sessionTimeout)
-      .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
-      .enableCdp(nodeOptions.isCdpEnabled())
-      .enableBiDi(nodeOptions.isBiDiEnabled())
-      .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
-      .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
+    LocalNode.Builder builder =
+        LocalNode.builder(
+                tracer,
+                eventOptions.getEventBus(),
+                serverOptions.getExternalUri(),
+                nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
+                secretOptions.getRegistrationSecret())
+            .maximumConcurrentSessions(nodeOptions.getMaxSessions())
+            .sessionTimeout(sessionTimeout)
+            .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
+            .enableCdp(nodeOptions.isCdpEnabled())
+            .enableBiDi(nodeOptions.isBiDiEnabled())
+            .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
+            .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     nodeOptions
-      .getSessionFactories(
-        caps -> createSessionFactory(tracer, clientFactory, sessionTimeout, builders, caps))
-      .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+        .getSessionFactories(
+            caps ->
+                createSessionFactory(
+                    tracer,
+                    clientFactory,
+                    sessionTimeout,
+                    builders,
+                    caps,
+                    nodeOptions.getSlotMatcher()))
+        .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
-      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory, sessionTimeout)
-        .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+      new DockerOptions(config)
+          .getDockerSessionFactories(tracer, clientFactory, nodeOptions)
+          .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
     if (config.getAll("relay", "configs").isPresent()) {
-      new RelayOptions(config).getSessionFactories(tracer, clientFactory, sessionTimeout)
-        .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+      new RelayOptions(config)
+          .getSessionFactories(tracer, clientFactory, sessionTimeout)
+          .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
     return builder.build();
   }
 
   private static Collection<SessionFactory> createSessionFactory(
-    Tracer tracer,
-    HttpClient.Factory clientFactory,
-    Duration sessionTimeout,
-    List<DriverService.Builder<?, ?>> builders,
-    Capabilities stereotype) {
+      Tracer tracer,
+      HttpClient.Factory clientFactory,
+      Duration sessionTimeout,
+      List<DriverService.Builder<?, ?>> builders,
+      ImmutableCapabilities stereotype,
+      SlotMatcher slotMatcher) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
-    SlotMatcher slotMatcher = new DefaultSlotMatcher();
     String webDriverExecutablePath =
-      String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
+        String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
 
     builders.stream()
-      .filter(builder -> builder.score(stereotype) > 0)
-      .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
-      .ifPresent(builder -> {
-        DriverService.Builder<?, ?> driverServiceBuilder;
-        Class<?> clazz = builder.getClass();
-        try {
-          // We do this to give each Node slot its own instance of the DriverService.Builder.
-          // This is important because the Node processes many new session requests
-          // and the DriverService creation needs to be thread safe.
-          Object driverBuilder = clazz.newInstance();
-          driverServiceBuilder = ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
-          if (!webDriverExecutablePath.isEmpty()) {
-            driverServiceBuilder =
-              driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
-          }
-        } catch (InstantiationException | IllegalAccessException e) {
-          throw new IllegalArgumentException(String.format(
-            "Class %s could not be found or instantiated", clazz));
-        }
-        toReturn.add(new DriverServiceSessionFactory(
-          tracer,
-          clientFactory,
-          sessionTimeout,
-          stereotype,
-          capabilities -> slotMatcher.matches(stereotype, capabilities),
-          driverServiceBuilder));
-      });
+        .filter(builder -> builder.score(stereotype) > 0)
+        .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
+        .ifPresent(
+            builder -> {
+              DriverService.Builder<?, ?> driverServiceBuilder;
+              Class<?> clazz = builder.getClass();
+              try {
+                // We do this to give each Node slot its own instance of the DriverService.Builder.
+                // This is important because the Node processes many new session requests
+                // and the DriverService creation needs to be thread safe.
+                Object driverBuilder = clazz.newInstance();
+                driverServiceBuilder =
+                    ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
+                if (!webDriverExecutablePath.isEmpty()) {
+                  driverServiceBuilder =
+                      driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
+                }
+              } catch (InstantiationException | IllegalAccessException e) {
+                throw new IllegalArgumentException(
+                    String.format("Class %s could not be found or instantiated", clazz));
+              }
+              toReturn.add(
+                  new DriverServiceSessionFactory(
+                      tracer,
+                      clientFactory,
+                      sessionTimeout,
+                      stereotype,
+                      capabilities -> slotMatcher.matches(stereotype, capabilities),
+                      driverServiceBuilder));
+            });
 
     return toReturn.build();
   }

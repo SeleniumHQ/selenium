@@ -17,17 +17,15 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import com.google.auto.service.AutoService;
+import java.util.Optional;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
-
-import java.util.Optional;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class FakeWebDriverInfo implements WebDriverInfo {
@@ -74,7 +72,7 @@ public class FakeWebDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
 
     return Optional.of(new FakeWebDriver());
   }

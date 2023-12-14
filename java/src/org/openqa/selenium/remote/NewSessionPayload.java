@@ -17,16 +17,32 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
-import com.google.common.io.CharSource;
-import com.google.common.io.CharStreams;
-import com.google.common.io.FileBackedOutputStream;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.google.common.io.FileBackedOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -35,60 +51,39 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 public class NewSessionPayload implements Closeable {
 
-  private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
+  private static final Dialect DEFAULT_DIALECT = Dialect.W3C;
   private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;
-  private final ImmutableSet<Dialect> dialects;
+  private final Set<Dialect> dialects;
 
   private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
     // payload.
-    int threshold = (int) Math.min(
-      Integer.MAX_VALUE,
-      Math.min(
-        Runtime.getRuntime().freeMemory() / 5,
-        Runtime.getRuntime().maxMemory() / 10));
+    int threshold =
+        (int)
+            Math.min(
+                Integer.MAX_VALUE,
+                Math.min(
+                    Runtime.getRuntime().freeMemory() / 5, Runtime.getRuntime().maxMemory() / 10));
 
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
-      CharStreams.copy(source, writer);
+      source.transferTo(writer);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
 
-    ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
+    Set<Dialect> dialects = new LinkedHashSet<>();
     try {
-      if (getOss() != null) {
-        dialects.add(Dialect.OSS);
-      }
-      if (getAlwaysMatch() != null || getFirstMatches() != null) {
+      if (isW3C()) {
         dialects.add(Dialect.W3C);
       }
 
-      this.dialects = dialects.build();
+      this.dialects = Set.copyOf(dialects);
 
       validate();
     } catch (IOException e) {
@@ -100,16 +95,31 @@ public class NewSessionPayload implements Closeable {
     } catch (IOException e) {
       // Ignore
     }
-
   }
 
   public static NewSessionPayload create(Capabilities caps) {
+    Require.nonNull("Capabilities", caps);
+    return create(Collections.singleton(caps));
+  }
+
+  public static NewSessionPayload create(Collection<Capabilities> caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
-    return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
+    return create(
+        Map.of(
+            "capabilities",
+            Map.of(
+                "firstMatch",
+                caps.stream().map(Capabilities::asMap).collect(Collectors.toList()))));
   }
 
   public static NewSessionPayload create(Map<String, ?> source) {
+    // It is expected that the input to this method contains a properly formed
+    // "new session" request, and not just a random blob of data. Make sure
+    // this precondition is met before continuing.
+    Require.precondition(
+        source.containsKey("capabilities"), "New session payload must contain capabilities");
+
     String json = new Json().toJson(Require.nonNull("Payload", source));
     return new NewSessionPayload(new StringReader(json));
   }
@@ -121,12 +131,12 @@ public class NewSessionPayload implements Closeable {
   private void validate() throws IOException {
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     if (alwaysMatch == null) {
-      alwaysMatch = ImmutableMap.of();
+      alwaysMatch = Map.of();
     }
     Map<String, Object> always = alwaysMatch;
     Collection<Map<String, Object>> firsts = getFirstMatches();
     if (firsts == null) {
-      firsts = ImmutableList.of(ImmutableMap.of());
+      firsts = List.of(Map.of());
     }
 
     if (firsts.isEmpty()) {
@@ -134,56 +144,53 @@ public class NewSessionPayload implements Closeable {
     }
 
     firsts.stream()
-      .peek(map -> {
-        Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
-        if (!overlap.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Overlapping keys between w3c always and first match capabilities: " + overlap);
-        }
-      })
-      .map(first -> {
-        Map<String, Object> toReturn = new HashMap<>();
-        toReturn.putAll(always);
-        toReturn.putAll(first);
-        return toReturn;
-      })
-      .peek(map -> {
-        ImmutableSortedSet<String> nullKeys = map.entrySet().stream()
-          .filter(entry -> entry.getValue() == null)
-          .map(Map.Entry::getKey)
-          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-        if (!nullKeys.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Null values found in w3c capabilities. Keys are: " + nullKeys);
-        }
-      })
-      .peek(map -> {
-        ImmutableSortedSet<String> illegalKeys = map.keySet().stream()
-          .filter(ACCEPTED_W3C_PATTERNS.negate())
-          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-        if (!illegalKeys.isEmpty()) {
-          throw new IllegalArgumentException(
-            "Illegal key values seen in w3c capabilities: " + illegalKeys);
-        }
-      })
-      .forEach(map -> {});
+        .peek(
+            map -> {
+              Set<String> overlap = new HashSet<>(always.keySet());
+              overlap.removeIf((e) -> !map.keySet().contains(e));
+              if (!overlap.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Overlapping keys between w3c always and first match capabilities: " + overlap);
+              }
+            })
+        .map(
+            first -> {
+              Map<String, Object> toReturn = new HashMap<>();
+              toReturn.putAll(always);
+              toReturn.putAll(first);
+              return toReturn;
+            })
+        .peek(
+            map -> {
+              List<String> nullKeys =
+                  map.entrySet().stream()
+                      .filter(entry -> entry.getValue() == null)
+                      .map(Map.Entry::getKey)
+                      .sorted()
+                      .collect(Collectors.toList());
+              if (!nullKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Null values found in w3c capabilities. Keys are: " + nullKeys);
+              }
+            })
+        .peek(
+            map -> {
+              List<String> illegalKeys =
+                  map.keySet().stream()
+                      .filter(ACCEPTED_W3C_PATTERNS.negate())
+                      .sorted()
+                      .collect(Collectors.toList());
+              if (!illegalKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Illegal key values seen in w3c capabilities: " + illegalKeys);
+              }
+            })
+        .forEach(map -> {});
   }
 
   public void writeTo(Appendable appendable) throws IOException {
     try (JsonOutput json = new Json().newOutput(appendable)) {
       json.beginObject();
-
-      Map<String, Object> first = getOss();
-      if (first == null) {
-        first = stream().findFirst()
-          .orElse(new ImmutableCapabilities())
-          .asMap();
-      }
-      Map<String, Object> ossFirst = new HashMap<>(first);
-
-      // Write the first capability we get as the desired capability.
-      json.name("desiredCapabilities");
-      json.write(ossFirst);
 
       // Now for the w3c capabilities
       json.name("capabilities");
@@ -197,7 +204,7 @@ public class NewSessionPayload implements Closeable {
       getW3C().forEach(json::write);
       json.endArray();
 
-      json.endObject();  // Close "capabilities" object
+      json.endObject(); // Close "capabilities" object
 
       writeMetaData(json);
 
@@ -206,14 +213,16 @@ public class NewSessionPayload implements Closeable {
   }
 
   private void writeMetaData(JsonOutput out) throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
         switch (name) {
           case "capabilities":
+            // These fields were used by the (now defunct) JSON Wire Protocol, but we
+            // keep them here since we might see them from ancient clients.
           case "desiredCapabilities":
           case "requiredCapabilities":
             input.skipValue();
@@ -229,43 +238,30 @@ public class NewSessionPayload implements Closeable {
   }
 
   /**
-   * Stream the {@link Capabilities} encoded in the payload used to create this instance. The
-   * {@link Stream} will start with a {@link Capabilities} object matching the OSS capabilities, and
-   * will then expand each of the "{@code firstMatch}" and "{@code alwaysMatch}" contents as defined
-   * in the W3C WebDriver spec.
-   * <p>
-   * The OSS {@link Capabilities} are listed first because converting the OSS capabilities to the
-   * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
-   * the most compatible implementation.
+   * Stream the {@link Capabilities} encoded in the payload used to create this instance. The {@link
+   * Stream} will expand each of the "{@code firstMatch}" and "{@code alwaysMatch}" contents as
+   * defined in the W3C WebDriver spec.
    */
   public Stream<Capabilities> stream() {
     try {
-      // OSS first
-      Stream<Map<String, Object>> oss = Stream.of(getOss());
-
-      // And now W3C
-      Stream<Map<String, Object>> w3c = getW3C();
-
-      return Stream.concat(oss, w3c)
-        .filter(Objects::nonNull)
-        .distinct()
-        .map(ImmutableCapabilities::new);
+      return getW3C().filter(Objects::nonNull).distinct().map(ImmutableCapabilities::new);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
   public Set<Dialect> getDownstreamDialects() {
-    return dialects.isEmpty() ? ImmutableSet.of(DEFAULT_DIALECT) : dialects;
+    return dialects.isEmpty() ? Set.of(DEFAULT_DIALECT) : dialects;
   }
 
   public Map<String, Object> getMetadata() {
-    Set<String> ignoredMetadataKeys = ImmutableSet.of("capabilities", "desiredCapabilities");
+    Set<String> ignoredMetadataKeys =
+        Set.of("capabilities", "desiredCapabilities", "requiredCapabilities");
 
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
-      ImmutableMap.Builder<String, Object> toReturn = ImmutableMap.builder();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+        JsonInput input = json.newInput(reader)) {
+      Map<String, Object> toReturn = new LinkedHashMap<>();
 
       input.beginObject();
       while (input.hasNext()) {
@@ -284,7 +280,7 @@ public class NewSessionPayload implements Closeable {
       }
       input.endObject();
 
-      return toReturn.build();
+      return Map.copyOf(toReturn);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -299,63 +295,60 @@ public class NewSessionPayload implements Closeable {
     }
   }
 
-  private Map<String, Object> getOss() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
-      input.beginObject();
-      while (input.hasNext()) {
-        String name = input.nextName();
-        if ("desiredCapabilities".equals(name)) {
-          return input.read(MAP_TYPE);
-        } else {
-          input.skipValue();
-        }
-      }
-    }
-    return null;
-  }
-
   private Stream<Map<String, Object>> getW3C() throws IOException {
-    // If there's an OSS value, generate a stream of capabilities from that using the transforms,
-    // then add magic to generate each of the w3c capabilities. For the sake of simplicity, we're
-    // going to make the (probably wrong) assumption we can hold all of the firstMatch values and
-    // alwaysMatch value in memory at the same time.
-
-    Stream<Map<String, Object>> fromOss;
-    Map<String, Object> ossCapabilities = getOss();
-    if (ossCapabilities != null) {
-      fromOss = CapabilitiesUtils.makeW3CSafe(ossCapabilities);
-    } else {
-      fromOss = Stream.of();
-    }
+    // For the sake of simplicity, we're going to make the (probably wrong)
+    // assumption we can hold all of the firstMatch values and alwaysMatch
+    // value in memory at the same time.
 
     Stream<Map<String, Object>> fromW3c;
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     Collection<Map<String, Object>> firsts = getFirstMatches();
 
     if (alwaysMatch == null && firsts == null) {
-      fromW3c = Stream.of();  // No W3C capabilities.
+      fromW3c = Stream.of(); // No W3C capabilities.
     } else {
       if (alwaysMatch == null) {
-        alwaysMatch = ImmutableMap.of();
+        alwaysMatch = Map.of();
       }
       Map<String, Object> always = alwaysMatch; // Keep the compiler happy.
       if (firsts == null) {
-        firsts = ImmutableList.of(ImmutableMap.of());
+        firsts = List.of(Map.of());
       }
 
-      fromW3c = firsts.stream()
-        .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
+      fromW3c =
+          firsts.stream()
+              .map(
+                  first -> {
+                    Map<String, Object> merged = new LinkedHashMap<>(always);
+                    merged.putAll(first);
+                    return Map.copyOf(merged);
+                  });
     }
 
-    return Stream.concat(fromOss, fromW3c).distinct();
+    return fromW3c.distinct();
+  }
+
+  private boolean isW3C() throws IOException {
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+        JsonInput input = json.newInput(reader)) {
+      input.beginObject();
+      while (input.hasNext()) {
+        String name = input.nextName();
+        if ("capabilities".equals(name)) {
+          return true;
+        } else {
+          input.skipValue();
+        }
+      }
+    }
+    return false;
   }
 
   private Map<String, Object> getAlwaysMatch() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
@@ -375,13 +368,13 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return null;
+    return Map.of();
   }
 
   private Collection<Map<String, Object>> getFirstMatches() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
+        JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
         String name = input.nextName();
@@ -401,7 +394,7 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return null;
+    return List.of(Map.of());
   }
 
   @Override

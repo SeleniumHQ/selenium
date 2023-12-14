@@ -24,19 +24,18 @@
 const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const spawnSync = require('child_process').spawnSync
+const { Capability } = require('../lib/capabilities')
+const logging = require('../lib/logging')
 
-/**
- * currently supported browsers for selenium-manager
- * @type {string[]}
- */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+const log_ = logging.getLogger(logging.Type.DRIVER)
+let debugMessagePrinted = false
 
 /**
  * Determines the path of the correct Selenium Manager binary
  * @returns {string}
  */
-function getBinary() {
+function getBinary () {
   const directory = {
     darwin: 'macos',
     win32: 'windows',
@@ -47,10 +46,18 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  const filePath = path.join(__dirname, '..', '/bin', directory, file)
+  let seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+
+  const filePath = process.env.SE_MANAGER_PATH || path.join(
+    seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
-    throw new Error(`Unable to obtain Selenium Manager`)
+    throw new Error(`Unable to obtain Selenium Manager at ${filePath}`)
+  }
+
+  if (!debugMessagePrinted) {
+    log_.debug(`Selenium Manager binary found at ${filePath}`)
+    debugMessagePrinted = true // Set the flag to true after printing the debug message
   }
 
   return filePath
@@ -58,33 +65,91 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Browser|string} browser name to fetch the driver
- * @returns {string} path of the driver location
+ * @param {Capabilities} options browser options to fetch the driver
+ * @returns {{browserPath: string, driverPath: string}} path of the driver and
+ * browser location
  */
 
-function driverLocation(browser) {
-  if (!Browser.includes(browser.toLocaleString())) {
-    throw new Error(
-      `Unable to locate driver associated with browser name: ${browser}`
-    )
+function driverLocation (options) {
+  let args = ['--browser', options.getBrowserName(), '--language-binding',
+    'javascript', '--output', 'json']
+
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
+    args.push('--browser-version', options.getBrowserVersion())
   }
 
-  let args = [getBinary(), '--browser', browser]
-  let result
+  const vendorOptions =
+    options.get('goog:chromeOptions') ||
+    options.get('ms:edgeOptions') ||
+    options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== '') {
+    args.push('--browser-path', path.resolve(vendorOptions.binary))
+  }
 
+  const proxyOptions = options.getProxy()
+
+  // Check if proxyOptions exists and has properties
+  if (proxyOptions && Object.keys(proxyOptions).length > 0) {
+    const httpProxy = proxyOptions['httpProxy']
+    const sslProxy = proxyOptions['sslProxy']
+
+    if (httpProxy !== undefined) {
+      args.push('--proxy', httpProxy)
+    } else if (sslProxy !== undefined) {
+      args.push('--proxy', sslProxy)
+    }
+  }
+
+  const smBinary = getBinary()
+  const spawnResult = spawnSync(smBinary, args)
+  let output
+  if (spawnResult.status) {
+    let errorMessage
+    if (spawnResult.stderr.toString()) {
+      errorMessage = spawnResult.stderr.toString()
+    }
+    if (spawnResult.stdout.toString()) {
+      try {
+        output = JSON.parse(spawnResult.stdout.toString())
+        logOutput(output)
+        errorMessage = output.result.message
+      } catch (e) {
+        errorMessage = e.toString()
+      }
+    }
+    throw new Error(
+      `Error executing command for ${smBinary} with ${args}: ${errorMessage}`
+    )
+  }
   try {
-    result = execSync(args.join(' ')).toString()
+    output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
     throw new Error(
-      `Error executing command with ${args}\n${e.stdout.toString()}${e.stderr.toString()}`
+      `Error executing command for ${smBinary} with ${args}: ${e.toString()}`
     )
   }
 
-  if (!result.startsWith('INFO\t')) {
-    throw new Error(`Unsuccessful command executed: ${args}\n${result}`)
+  // Once driverPath is available, delete browserVersion from payload
+  if (output.result.driver_path) {
+    options.delete(Capability.BROWSER_VERSION)
   }
 
-  return result.replace('INFO\t', '').trim()
+  logOutput(output)
+  return {
+    driverPath: output.result.driver_path,
+    browserPath: output.result.browser_path,
+  }
+}
+
+function logOutput (output) {
+  for (const key in output.logs) {
+    if (output.logs[key].level === 'WARN') {
+      log_.warning(`${output.logs[key].message}`)
+    }
+    if (['DEBUG', 'INFO'].includes(output.logs[key].level)) {
+      log_.debug(`${output.logs[key].message}`)
+    }
+  }
 }
 
 // PUBLIC API

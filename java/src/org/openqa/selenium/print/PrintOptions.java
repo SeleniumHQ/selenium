@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.print;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 public class PrintOptions {
 
@@ -29,6 +29,7 @@ public class PrintOptions {
     LANDSCAPE("landscape");
 
     private final String serialFormat;
+
     Orientation(String serialFormat) {
       this.serialFormat = serialFormat;
     }
@@ -38,6 +39,7 @@ public class PrintOptions {
       return serialFormat;
     }
   }
+
   private Orientation orientation = Orientation.PORTRAIT;
   private double scale = 1.0;
   private boolean background = false;
@@ -58,15 +60,21 @@ public class PrintOptions {
     return this.pageRanges;
   }
 
-  public void setPageRanges(String firstRange, String ... ranges) {
+  public void setPageRanges(String firstRange, String... ranges) {
     Require.nonNull("pageRanges", firstRange);
-    this.pageRanges = new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
+    this.pageRanges =
+        new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
 
     this.pageRanges[0] = firstRange;
 
     for (int i = 1; i < ranges.length; i++) {
       this.pageRanges[i] = ranges[i - 1];
     }
+  }
+
+  public void setPageRanges(List<String> ranges) {
+    this.pageRanges = new String[ranges.size()];
+    this.pageRanges = ranges.toArray(this.pageRanges);
   }
 
   public void setBackground(boolean background) {
@@ -114,7 +122,7 @@ public class PrintOptions {
 
   public Map<String, Object> toMap() {
     final Map<String, Object> options = new HashMap<>(7);
-    options.put("page", getPageSize());
+    options.put("page", getPageSize().toMap());
     options.put("orientation", getOrientation().toString());
     options.put("scale", getScale());
     options.put("shrinkToFit", getShrinkToFit());
@@ -123,8 +131,8 @@ public class PrintOptions {
     if (effectivePageRanges != null) {
       options.put("pageRanges", effectivePageRanges);
     }
-    options.put("margin", getPageMargin());
+    options.put("margin", getPageMargin().toMap());
 
-   return options;
+    return options;
   }
 }

@@ -18,8 +18,8 @@
 package org.openqa.selenium.interactions;
 
 /**
- * Used as the basis of {@link Sequence}s for the W3C WebDriver spec
- * <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.
+ * Used as the basis of {@link Sequence}s for the W3C WebDriver spec <a
+ * href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.
  */
 public abstract class Interaction {
 

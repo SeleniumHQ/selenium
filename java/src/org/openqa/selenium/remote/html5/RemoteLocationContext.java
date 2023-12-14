@@ -17,14 +17,11 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
-
+import java.util.Map;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
-
-import java.util.Map;
 
 public class RemoteLocationContext implements LocationContext {
   private final ExecuteMethod executeMethod;
@@ -36,14 +33,15 @@ public class RemoteLocationContext implements LocationContext {
   @Override
   public Location location() {
     @SuppressWarnings("unchecked")
-    Map<String, Number> result = (Map<String, Number>) executeMethod.execute(
-        DriverCommand.GET_LOCATION, null);
+    Map<String, Number> result =
+        (Map<String, Number>) executeMethod.execute(DriverCommand.GET_LOCATION, null);
     if (result == null) {
       return null;
     }
-    return new Location(castToDouble(result.get("latitude")),
-                        castToDouble(result.get("longitude")),
-                        castToDouble(result.get("altitude")));
+    return new Location(
+        castToDouble(result.get("latitude")),
+        castToDouble(result.get("longitude")),
+        castToDouble(result.get("altitude")));
   }
 
   private Double castToDouble(Number number) {
@@ -57,8 +55,8 @@ public class RemoteLocationContext implements LocationContext {
   }
 
   @Override
-  public void setLocation (Location location) {
-    Map<String, Location> args = ImmutableMap.of("location", location);
+  public void setLocation(Location location) {
+    Map<String, Location> args = Map.of("location", location);
     executeMethod.execute(DriverCommand.SET_LOCATION, args);
   }
 }

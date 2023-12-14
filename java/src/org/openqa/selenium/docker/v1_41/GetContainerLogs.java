@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.internal.Require;
@@ -24,14 +31,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class GetContainerLogs {
 
@@ -46,11 +45,10 @@ class GetContainerLogs {
     Require.nonNull("Container id", id);
 
     String requestUrl =
-      String.format("/v%s/containers/%s/logs?stdout=true&stderr=true", DOCKER_API_VERSION, id);
+        String.format("/v%s/containers/%s/logs?stdout=true&stderr=true", DOCKER_API_VERSION, id);
 
-    HttpResponse res = client.execute(
-      new HttpRequest(GET, requestUrl)
-        .addHeader("Content-Type", "text/plain"));
+    HttpResponse res =
+        client.execute(new HttpRequest(GET, requestUrl).addHeader("Content-Type", "text/plain"));
     if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to inspect container " + id);
     }

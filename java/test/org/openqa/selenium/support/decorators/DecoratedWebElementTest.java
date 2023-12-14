@@ -26,8 +26,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
@@ -36,11 +40,6 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedWebElementTest {
@@ -162,9 +161,8 @@ class DecoratedWebElementTest {
     list.add(originalElement2);
     when(fixture.original.findElements(By.id("test"))).thenReturn(list);
 
-    List<WebElement>
-      decoratedElementList =
-      fixture.decoratedDriver.findElement(By.id("list")).findElements(By.id("test"));
+    List<WebElement> decoratedElementList =
+        fixture.decoratedDriver.findElement(By.id("list")).findElements(By.id("test"));
     assertThat(originalElement1).isNotSameAs(decoratedElementList.get(0));
     assertThat(originalElement2).isNotSameAs(decoratedElementList.get(1));
     verify(fixture.original, times(1)).findElements(By.id("test"));
@@ -191,7 +189,7 @@ class DecoratedWebElementTest {
 
     WebElement block = fixture.decoratedDriver.findElement(By.id("block"));
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> block.findElement(By.id("test")));
+        .isThrownBy(() -> block.findElement(By.id("test")));
   }
 
   @Test

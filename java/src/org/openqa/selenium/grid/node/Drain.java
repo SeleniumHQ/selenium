@@ -20,13 +20,12 @@ package org.openqa.selenium.grid.node;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 
+import java.io.UncheckedIOException;
+import java.util.Objects;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.UncheckedIOException;
-import java.util.Objects;
 
 public class Drain implements HttpHandler {
 

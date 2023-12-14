@@ -25,16 +25,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Tag("UnitTests")
 class ByChainedTest {
@@ -47,7 +46,7 @@ class ByChainedTest {
 
     ByChained by = new ByChained();
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> by.findElement(driver));
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -97,7 +96,7 @@ class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> by.findElement(driver));
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -165,7 +164,7 @@ class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> by.findElement(driver));
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -298,13 +297,13 @@ class ByChainedTest {
   @Test
   void testEquals() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")))
-      .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
+        .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
   }
 
   @Test
   void testToString() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")))
-      .hasToString("By.chained({By.id: cheese,By.name: photo})");
+        .hasToString("By.chained({By.id: cheese,By.name: photo})");
   }
 
   private interface AllDriver extends SearchContext {

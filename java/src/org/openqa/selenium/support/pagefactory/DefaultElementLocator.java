@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.lang.reflect.Field;
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
 /**
- * The default element locator, which will lazily locate an element or an element list on a page. This class is
- * designed for use with the {@link org.openqa.selenium.support.PageFactory} and understands the
- * annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
+ * The default element locator, which will lazily locate an element or an element list on a page.
+ * This class is designed for use with the {@link org.openqa.selenium.support.PageFactory} and
+ * understands the annotations {@link org.openqa.selenium.support.FindBy} and {@link
+ * org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
   private final SearchContext searchContext;
@@ -58,9 +58,7 @@ public class DefaultElementLocator implements ElementLocator {
     this.by = annotations.buildBy();
   }
 
-  /**
-   * Find the element.
-   */
+  /** Find the element. */
   @Override
   public WebElement findElement() {
     if (cachedElement != null && shouldCache()) {
@@ -75,9 +73,7 @@ public class DefaultElementLocator implements ElementLocator {
     return element;
   }
 
-  /**
-   * Find the element list.
-   */
+  /** Find the element list. */
   @Override
   public List<WebElement> findElements() {
     if (cachedElementList != null && shouldCache()) {

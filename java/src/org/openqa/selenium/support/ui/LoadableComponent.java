@@ -26,8 +26,7 @@ package org.openqa.selenium.support.ui;
  * new HypotheticalComponent().get();
  * </pre>
  *
- * <p>
- * After the {@link LoadableComponent#get()} method is called, the component will be loaded and
+ * <p>After the {@link LoadableComponent#get()} method is called, the component will be loaded and
  * ready for use. This is verified using Assert.assertTrue so expect to catch an Error rather than
  * an Exception when errors occur. *
  *
@@ -66,8 +65,7 @@ public abstract class LoadableComponent<T extends LoadableComponent<T>> {
    * checking and error reporting when loading a page, which in turn supports better error reporting
    * when a page fails to load.
    *
-   * <p>
-   * This behaviour makes it readily visible when a page has not been loaded successfully, and
+   * <p>This behaviour makes it readily visible when a page has not been loaded successfully, and
    * because an error and not an exception is thrown tests should fail as expected. By using Error,
    * we also allow the use of junit's "Assert.assert*" methods
    *

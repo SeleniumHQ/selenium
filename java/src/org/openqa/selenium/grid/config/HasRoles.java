@@ -28,5 +28,4 @@ public interface HasRoles {
    * @return
    */
   Set<Role> getRoles();
-
 }

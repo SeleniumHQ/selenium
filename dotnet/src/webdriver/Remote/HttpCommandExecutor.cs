@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -27,6 +28,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -49,6 +51,8 @@ namespace OpenQA.Selenium.Remote
         private IWebProxy proxy;
         private CommandInfoRepository commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
         private HttpClient client;
+
+        private static readonly ILogger _logger = Log.GetLogger<HttpCommandExecutor>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
@@ -79,7 +83,7 @@ namespace OpenQA.Selenium.Remote
                 addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
             }
 
-            this.userAgent = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
+            this.userAgent = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.ProductVersion, ResourceUtilities.PlatformFamily);
             this.remoteServerUri = addressOfRemoteServer;
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;
@@ -162,6 +166,8 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
             }
 
+            _logger.Debug($"Executing command: {commandToExecute}");
+
             HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
             if (info == null)
             {
@@ -177,15 +183,7 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                // Use TaskFactory to avoid deadlock in multithreaded implementations.
-                responseInfo = new TaskFactory(CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskContinuationOptions.None,
-                        TaskScheduler.Default)
-                    .StartNew(() => this.MakeHttpRequest(requestInfo))
-                    .Unwrap()
-                    .GetAwaiter()
-                    .GetResult();
+                responseInfo = Task.Run(async () => await this.MakeHttpRequest(requestInfo)).GetAwaiter().GetResult();
             }
             catch (HttpRequestException ex)
             {
@@ -199,6 +197,9 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
+
+            _logger.Debug($"Response: {toReturn}");
+
             return toReturn;
         }
 
@@ -278,10 +279,14 @@ namespace OpenQA.Selenium.Remote
                     requestMessage.Content.Headers.ContentType = contentTypeHeader;
                 }
 
-                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage))
+                _logger.Trace($">> {requestMessage}");
+
+                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage).ConfigureAwait(false))
                 {
+                    _logger.Trace($"<< {responseMessage}");
+
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
-                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
+                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
                     httpResponseInfo.StatusCode = responseMessage.StatusCode;
 

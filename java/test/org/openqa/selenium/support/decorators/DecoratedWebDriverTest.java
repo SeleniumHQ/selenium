@@ -27,8 +27,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -41,13 +47,6 @@ import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 @Tag("UnitTests")
 class DecoratedWebDriverTest {
 
@@ -58,13 +57,17 @@ class DecoratedWebDriverTest {
     WebDriver decorated;
 
     public Fixture() {
-      original = mock(WebDriver.class, withSettings()
-        .extraInterfaces(JavascriptExecutor.class, TakesScreenshot.class,
-                         Interactive.class, HasVirtualAuthenticator.class));
+      original =
+          mock(
+              WebDriver.class,
+              withSettings()
+                  .extraInterfaces(
+                      JavascriptExecutor.class, TakesScreenshot.class,
+                      Interactive.class, HasVirtualAuthenticator.class));
       originalAuth = mock(VirtualAuthenticator.class);
       decorated = new WebDriverDecorator().decorate(original);
       when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any()))
-        .thenReturn(originalAuth);
+          .thenReturn(originalAuth);
     }
   }
 
@@ -166,7 +169,7 @@ class DecoratedWebDriverTest {
     when(fixture.original.findElement(any())).thenThrow(NoSuchElementException.class);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> fixture.decorated.findElement(By.id("test")));
+        .isThrownBy(() -> fixture.decorated.findElement(By.id("test")));
   }
 
   @Test
@@ -241,8 +244,10 @@ class DecoratedWebDriverTest {
   @Test
   void executeScriptThatReturnsAnElement() {
     WebElement element = mock(WebElement.class);
-    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeScript("..."),
-                             element, WebElement::click);
+    verifyDecoratingFunction(
+        $ -> (WebElement) ((JavascriptExecutor) $).executeScript("..."),
+        element,
+        WebElement::click);
   }
 
   @Test
@@ -253,8 +258,10 @@ class DecoratedWebDriverTest {
   @Test
   void executeAsyncScriptThatReturnsAnElement() {
     WebElement element = mock(WebElement.class);
-    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeAsyncScript("..."),
-                             element, WebElement::click);
+    verifyDecoratingFunction(
+        $ -> (WebElement) ((JavascriptExecutor) $).executeAsyncScript("..."),
+        element,
+        WebElement::click);
   }
 
   @Test

@@ -20,11 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +28,10 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class ProfilesIni {
   private Map<String, File> profiles;
@@ -64,8 +63,7 @@ public class ProfilesIni {
       while (line != null) {
         if (line.startsWith("[Profile")) {
           File profile = newProfile(name, appData, path, isRelative);
-          if (profile != null)
-            toReturn.put(name, profile);
+          if (profile != null) toReturn.put(name, profile);
 
           name = null;
           path = null;
@@ -85,8 +83,7 @@ public class ProfilesIni {
       try {
         if (reader != null) {
           File profile = newProfile(name, appData, path, isRelative);
-          if (profile != null)
-            toReturn.put(name, profile);
+          if (profile != null) toReturn.put(name, profile);
 
           reader.close();
         }
@@ -137,8 +134,9 @@ public class ProfilesIni {
 
     } else if (os.is(MAC)) {
       appData =
-          new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
-                                        System.getenv("HOME")));
+          new File(
+              MessageFormat.format(
+                  "{0}/Library/Application Support/Firefox", System.getenv("HOME")));
 
     } else {
       appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
@@ -151,8 +149,10 @@ public class ProfilesIni {
     }
 
     if (!appData.isDirectory()) {
-      throw new WebDriverException("The discovered user firefox data directory " +
-          "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
+      throw new WebDriverException(
+          "The discovered user firefox data directory "
+              + "(which normally contains the profiles) isn't a directory: "
+              + appData.getAbsolutePath());
     }
 
     return appData;

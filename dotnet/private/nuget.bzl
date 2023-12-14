@@ -1,10 +1,9 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//dotnet/private:copy_files.bzl", "copy_files")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
-    "SUPPORTED_NET_FRAMEWORKS",
     "SUPPORTED_NET_STANDARD_VERSIONS",
 )
+load("//dotnet/private:copy_files.bzl", "copy_files")
 
 def _nuget_push_impl(ctx):
     args = [
@@ -60,7 +59,7 @@ def _get_relative_destination_file(src_file):
     src_file_dirs = src_file.dirname.split("/")
     framework_dir = src_file_dirs[-1]
     for src_file_dir in reversed(src_file_dirs):
-        if src_file_dir in SUPPORTED_NET_FRAMEWORKS or src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
+        if src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
             framework_dir = src_file_dir
             break
     return "{}/{}".format(framework_dir, src_file.basename)
@@ -72,9 +71,10 @@ def _stage_files_for_packaging(ctx, staging_dir):
         relative_dest_file = _get_relative_destination_file(src_file)
         src_list.append((src_file, relative_dest_file))
         if (ctx.attr.create_symbol_package):
-            symbol_file = dep.default_runfiles.files.to_list()[0]
-            relative_dest_symbol_file = _get_relative_destination_file(symbol_file)
-            src_list.append((symbol_file, relative_dest_symbol_file))
+            if (len(dep[DefaultInfo].default_runfiles.files.to_list()) > 0):
+                symbol_file = dep[DefaultInfo].default_runfiles.files.to_list()[0]
+                relative_dest_symbol_file = _get_relative_destination_file(symbol_file)
+                src_list.append((symbol_file, relative_dest_symbol_file))
 
     return copy_files(ctx, src_list, staging_dir, ctx.attr.is_windows)
 

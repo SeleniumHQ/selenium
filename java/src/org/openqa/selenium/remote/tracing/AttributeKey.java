@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.tracing;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 public enum AttributeKey {
-
   EXCEPTION_EVENT(SemanticAttributes.EXCEPTION_EVENT_NAME),
   EXCEPTION_TYPE(SemanticAttributes.EXCEPTION_TYPE.getKey()),
   EXCEPTION_MESSAGE(SemanticAttributes.EXCEPTION_MESSAGE.getKey()),
@@ -55,13 +54,13 @@ public enum AttributeKey {
   SESSION_CAPABILITIES("session.capabilities"),
   SESSION_URI("session.uri"),
 
-  DATABASE_STATEMENT (SemanticAttributes.DB_STATEMENT.getKey()),
-  DATABASE_OPERATION (SemanticAttributes.DB_OPERATION.getKey()),
-  DATABASE_USER (SemanticAttributes.DB_USER.getKey()),
-  DATABASE_CONNECTION_STRING (SemanticAttributes.DB_CONNECTION_STRING.getKey()),
+  DATABASE_STATEMENT(SemanticAttributes.DB_STATEMENT.getKey()),
+  DATABASE_OPERATION(SemanticAttributes.DB_OPERATION.getKey()),
+  DATABASE_USER(SemanticAttributes.DB_USER.getKey()),
+  DATABASE_CONNECTION_STRING(SemanticAttributes.DB_CONNECTION_STRING.getKey()),
   DATABASE_SYSTEM(SemanticAttributes.DB_SYSTEM.getKey()),
 
-  REQUEST_ID ("request.id");
+  REQUEST_ID("request.id");
 
   private final String key;
 

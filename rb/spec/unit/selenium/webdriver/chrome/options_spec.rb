@@ -179,30 +179,7 @@ module Selenium
           end
         end
 
-        describe '#headless!' do
-          it 'adds necessary command-line arguments' do
-            expect {
-              options.headless!
-            }.to have_deprecated(:headless)
-            expect(options.args).to eql(['--headless'])
-          end
-        end
-
         describe '#add_option' do
-          it 'adds an option with ordered pairs' do
-            expect {
-              options.add_option(:foo, 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
-          it 'adds an option with Hash' do
-            expect {
-              options.add_option(foo: 'bar')
-            }.to have_deprecated(:add_option)
-            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
-          end
-
           it 'adds vendor namespaced options with ordered pairs' do
             options.add_option('foo:bar', {bar: 'foo'})
             expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
@@ -266,23 +243,18 @@ module Selenium
           end
 
           it 'errors when unrecognized capability is passed' do
-            expect {
-              options.add_option(:foo, 'bar')
-            }.to have_deprecated(:add_option)
+            options.add_option(:foo, 'bar')
 
             expect {
               options.as_json
-            }.to output(/WARN Selenium These options are not w3c compliant/).to_stdout_from_any_process
+            }.to raise_error(Error::WebDriverError, 'These options are not w3c compliant: {:foo=>"bar"}')
           end
 
           it 'returns added options' do
-            expect {
-              options.add_option(:detach, true)
-            }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq('browserName' => 'chrome',
                                           'foo:bar' => {'foo' => 'bar'},
-                                          'goog:chromeOptions' => {'detach' => true})
+                                          'goog:chromeOptions' => {})
           end
 
           it 'converts profile' do

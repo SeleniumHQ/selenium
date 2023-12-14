@@ -17,9 +17,28 @@
 
 package org.openqa.selenium.grid.node.remote;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.IOException;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.RetrySessionRequestException;
@@ -48,27 +67,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class RemoteNode extends Node {
 
   public static final Json JSON = new Json();
@@ -89,8 +87,8 @@ public class RemoteNode extends Node {
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Require.nonNull("HTTP client factory", clientFactory)
-      .createClient(fromUri(externalUri));
+    this.client =
+        Require.nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
 
@@ -110,16 +108,18 @@ public class RemoteNode extends Node {
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return this.capabilities.stream()
-        .anyMatch(caps -> caps.getCapabilityNames().stream()
-            .allMatch(name -> Objects.equals(
-                caps.getCapability(name),
-                capabilities.getCapability(name))));
-
+        .anyMatch(
+            caps ->
+                caps.getCapabilityNames().stream()
+                    .allMatch(
+                        name ->
+                            Objects.equals(
+                                caps.getCapability(name), capabilities.getCapability(name))));
   }
 
   @Override
   public Either<WebDriverException, CreateSessionResponse> newSession(
-    CreateSessionRequest sessionRequest) {
+      CreateSessionRequest sessionRequest) {
     Require.nonNull("Capabilities for session", sessionRequest);
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
@@ -129,14 +129,15 @@ public class RemoteNode extends Node {
     HttpResponse httpResponse = client.with(addSecret).execute(req);
 
     Optional<Map<String, Object>> maybeResponse =
-      Optional.ofNullable(Values.get(httpResponse, Map.class));
+        Optional.ofNullable(Values.get(httpResponse, Map.class));
 
     if (maybeResponse.isPresent()) {
       Map<String, Object> response = maybeResponse.get();
 
       if (response.containsKey("sessionResponse")) {
         String rawResponse = JSON.toJson(response.get("sessionResponse"));
-        CreateSessionResponse sessionResponse = JSON.toType(rawResponse, CreateSessionResponse.class);
+        CreateSessionResponse sessionResponse =
+            JSON.toType(rawResponse, CreateSessionResponse.class);
         return Either.right(sessionResponse);
       } else {
         String rawException = JSON.toJson(response.get("exception"));
@@ -213,7 +214,7 @@ public class RemoteNode extends Node {
     HttpResponse res = client.execute(req);
 
     try (Reader reader = reader(res);
-         JsonInput in = JSON.newInput(reader)) {
+        JsonInput in = JSON.newInput(reader)) {
       in.beginObject();
 
       // Skip everything until we find "value"
@@ -253,7 +254,7 @@ public class RemoteNode extends Node {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    if(res.getStatus() == HTTP_OK) {
+    if (res.getStatus() == HTTP_OK) {
       draining = true;
     }
   }
@@ -261,9 +262,9 @@ public class RemoteNode extends Node {
   @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
-      "id", getId(),
-      "uri", externalUri,
-      "capabilities", capabilities);
+        "id", getId(),
+        "uri", externalUri,
+        "capabilities", capabilities);
   }
 
   private class RemoteCheck implements HealthCheck {
@@ -283,12 +284,11 @@ public class RemoteNode extends Node {
             return new Result(UP, externalUri + " is ok");
 
           default:
-            throw new IllegalStateException("Unknown node availability: " + status.getAvailability());
+            throw new IllegalStateException(
+                "Unknown node availability: " + status.getAvailability());
         }
       } catch (RuntimeException e) {
-        return new Result(
-            DOWN,
-            "Unable to determine node status: " + e.getMessage());
+        return new Result(DOWN, "Unable to determine node status: " + e.getMessage());
       }
     }
   }

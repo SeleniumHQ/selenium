@@ -1,0 +1,43 @@
+module Selenium
+  module WebDriver
+    module Support
+      class AbstractEventListener
+        def before_navigate_to: (untyped url, untyped driver) -> nil
+
+        def after_navigate_to: (untyped url, untyped driver) -> nil
+
+        def before_navigate_back: (untyped driver) -> nil
+
+        def after_navigate_back: (untyped driver) -> nil
+
+        def before_navigate_forward: (untyped driver) -> nil
+
+        def after_navigate_forward: (untyped driver) -> nil
+
+        def before_find: (untyped by, untyped what, untyped driver) -> nil
+
+        def after_find: (untyped by, untyped what, untyped driver) -> nil
+
+        def before_click: (untyped element, untyped driver) -> nil
+
+        def after_click: (untyped element, untyped driver) -> nil
+
+        def before_change_value_of: (untyped element, untyped driver) -> nil
+
+        def after_change_value_of: (untyped element, untyped driver) -> nil
+
+        def before_execute_script: (untyped script, untyped driver) -> nil
+
+        def after_execute_script: (untyped script, untyped driver) -> nil
+
+        def before_quit: (untyped driver) -> nil
+
+        def after_quit: (untyped driver) -> nil
+
+        def before_close: (untyped driver) -> nil
+
+        def after_close: (untyped driver) -> nil
+      end
+    end
+  end
+end

@@ -16,14 +16,15 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-#if !NET45 && !NET46 && !NET47
+using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
-#endif
-
 using System.Text;
 
 namespace OpenQA.Selenium
@@ -34,68 +35,95 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
-        private static string binary;
-        private static readonly List<string> KnownDrivers = new List<string>() {
-            "geckodriver",
-            "chromedriver",
-            "msedgedriver",
-            "IEDriverServer"
-        };
+        private static readonly ILogger _logger = Log.GetLogger(typeof(SeleniumManager));
+
+        private static readonly string BinaryFullPath = Environment.GetEnvironmentVariable("SE_MANAGER_PATH");
+
+        static SeleniumManager()
+        {
+
+            if (BinaryFullPath == null)
+            {
+                var currentDirectory = AppContext.BaseDirectory;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "windows", "selenium-manager.exe");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "linux", "selenium-manager");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    BinaryFullPath = Path.Combine(currentDirectory, "selenium-manager", "macos", "selenium-manager");
+                }
+                else
+                {
+                    throw new PlatformNotSupportedException(
+                        $"Selenium Manager doesn't support your runtime platform: {RuntimeInformation.OSDescription}");
+                }
+            }
+
+            if (!File.Exists(BinaryFullPath))
+            {
+                throw new WebDriverException($"Unable to locate or obtain Selenium Manager binary at {BinaryFullPath}");
+            }
+        }
 
         /// <summary>
         /// Determines the location of the correct driver.
         /// </summary>
-        /// <param name="driverName">Which driver the service needs.</param>
+        /// <param name="options">The correct path depends on which options are being used.</param>
         /// <returns>
         /// The location of the driver.
         /// </returns>
-        public static string DriverPath(string driverName)
+        public static string DriverPath(DriverOptions options)
         {
-            driverName = driverName.Replace(".exe", "");
-            if (!KnownDrivers.Contains(driverName))
+            StringBuilder argsBuilder = new StringBuilder();
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
+            argsBuilder.Append(" --language-binding csharp");
+            argsBuilder.Append(" --output json");
+
+            if (!string.IsNullOrEmpty(options.BrowserVersion))
             {
-                throw new WebDriverException("Unable to locate driver with name: " + driverName);
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
             }
-            var binaryFile = Binary;
-            if (binaryFile == null) return null;
 
-            var arguments = "--driver " + driverName;
-            return RunCommand(binaryFile, arguments);
-        }
-
-        /// <summary>
-        /// Gets the location of the correct Selenium Manager binary.
-        /// </summary>
-        private static string Binary
-        {
-            get
+            string browserBinary = options.BinaryLocation;
+            if (!string.IsNullOrEmpty(browserBinary))
             {
-                if (string.IsNullOrEmpty(binary))
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
+            }
+
+            if (options.Proxy != null)
+            {
+                if (options.Proxy.SslProxy != null)
                 {
-#if NET45 || NET46 || NET47
-                    binary = "selenium-manager/windows/selenium-manager.exe";
-#else
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        binary = "selenium-manager/windows/selenium-manager.exe";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        binary = "selenium-manager/linux/selenium-manager";
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    {
-                        binary = "selenium-manager/macos/selenium-manager";
-                    }
-                    else
-                    {
-                        throw new WebDriverException("Selenium Manager did not find supported operating system");
-                    }
-#endif
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.SslProxy);
                 }
-
-                return binary;
+                else if (options.Proxy.HttpProxy != null)
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --proxy \"{0}\"", options.Proxy.HttpProxy);
+                }
             }
+
+            Dictionary<string, object> output = RunCommand(BinaryFullPath, argsBuilder.ToString());
+
+            try
+            {
+                options.BinaryLocation = (string)output["browser_path"] == "" ? null : (string)output["browser_path"];
+                options.BrowserVersion = null;
+            }
+            catch (NotImplementedException)
+            {
+                // Cannot set Browser Location for this driver and that is ok
+            }
+
+            var driverPath = (string)output["driver_path"];
+
+            _logger.Trace($"Driver path: {driverPath}");
+
+            return driverPath;
         }
 
         /// <summary>
@@ -106,24 +134,28 @@ namespace OpenQA.Selenium
         /// <returns>
         /// the standard output of the execution.
         /// </returns>
-        private static string RunCommand(string fileName, string arguments)
+        private static Dictionary<string, object> RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
-            process.StartInfo.FileName = fileName;
+            process.StartInfo.FileName = BinaryFullPath;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
-            int processExitCode;
+            StringBuilder errorOutputBuilder = new StringBuilder();
 
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
+            DataReceivedEventHandler errorOutputHandler = (sender, e) => errorOutputBuilder.AppendLine(e.Data);
 
             try
             {
                 process.OutputDataReceived += outputHandler;
-                process.ErrorDataReceived += outputHandler;
+                process.ErrorDataReceived += errorOutputHandler;
 
                 process.Start();
 
@@ -131,6 +163,31 @@ namespace OpenQA.Selenium
                 process.BeginErrorReadLine();
 
                 process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
+
+                    var exceptionMessageBuilder = new StringBuilder($"Selenium Manager process exited abnormally with {process.ExitCode} code: {fileName} {arguments}");
+
+                    if (!string.IsNullOrWhiteSpace(errorOutputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.AppendLine("Error Output >>");
+                        exceptionMessageBuilder.Append(errorOutputBuilder);
+                        exceptionMessageBuilder.AppendLine("<<");
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(outputBuilder.ToString()))
+                    {
+                        exceptionMessageBuilder.AppendLine();
+                        exceptionMessageBuilder.AppendLine("Standard Output >>");
+                        exceptionMessageBuilder.Append(outputBuilder);
+                        exceptionMessageBuilder.AppendLine("<<");
+                    }
+
+                    throw new WebDriverException(exceptionMessageBuilder.ToString());
+                }
             }
             catch (Exception ex)
             {
@@ -138,19 +195,23 @@ namespace OpenQA.Selenium
             }
             finally
             {
-                processExitCode = process.ExitCode;
                 process.OutputDataReceived -= outputHandler;
-                process.ErrorDataReceived -= outputHandler;
+                process.ErrorDataReceived -= errorOutputHandler;
             }
 
             string output = outputBuilder.ToString().Trim();
-
-            if (processExitCode != 0)
+            Dictionary<string, object> result;
+            try
             {
-                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{output}");
+                Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());
+                result = deserializedOutput["result"] as Dictionary<string, object>;
+            }
+            catch (Exception ex)
+            {
+                throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
             }
 
-            return output.Replace("INFO\t", "");
+            return result;
         }
     }
 }

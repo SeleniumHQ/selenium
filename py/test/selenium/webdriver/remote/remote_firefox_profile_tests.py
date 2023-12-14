@@ -18,14 +18,6 @@
 import pytest
 
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-
-@pytest.fixture
-def capabilities():
-    capabilities = DesiredCapabilities.FIREFOX.copy()
-    capabilities["marionette"] = False
-    return capabilities
 
 
 @pytest.fixture

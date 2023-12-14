@@ -1,75 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-  </PropertyGroup>
-
   <PropertyGroup>
     <AssemblyTitle>Selenium WebDriver Support</AssemblyTitle>
-    <Description>Selenium WebDriver .NET Bindings support classes</Description>
+    <Description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains .NET support utilites and classes that users may find
+      useful in using Selenium WebDriver. These support classes are mainly intended
+      to spark ideas of what is possible with Selenium WebDriver, and may not be
+      entirely appropriate for production use.
+    </Description>
     <Company>Selenium Committers</Company>
     <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
-    <Version>4</Version>
+    <Version>4.0.0</Version>
     <PackageId>Selenium.Support</PackageId>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net46\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net46\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net48\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net48\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.1\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.1\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -83,8 +41,12 @@
     <None Remove="WebDriver.Support.ruleset" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CsprojIncludePath>..\webdriver</CsprojIncludePath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\webdriver\WebDriver.csproj" />
+    <ProjectReference Include="$(CsprojIncludePath)\WebDriver.csproj" />
   </ItemGroup>
 
 </Project>

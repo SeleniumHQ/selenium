@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import com.google.common.collect.ImmutableSet;
-import org.openqa.selenium.internal.Require;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.internal.Require;
 
 public class CdpVersionFinder {
   private static final Logger LOG = Logger.getLogger(CdpVersionFinder.class.getName());
@@ -41,8 +39,12 @@ public class CdpVersionFinder {
 
   public CdpVersionFinder() {
     this(
-      5,
-      StreamSupport.stream(ServiceLoader.load(CdpInfo.class, CdpVersionFinder.class.getClassLoader()).spliterator(), false).collect(Collectors.toSet()));
+        5,
+        StreamSupport.stream(
+                ServiceLoader.load(CdpInfo.class, CdpVersionFinder.class.getClassLoader())
+                    .spliterator(),
+                false)
+            .collect(Collectors.toSet()));
   }
 
   public CdpVersionFinder(int versionFudgeFactor, Collection<CdpInfo> infos) {
@@ -50,33 +52,33 @@ public class CdpVersionFinder {
 
     Require.nonNull("CDP versions", infos);
 
-    this.infos = ImmutableSet.copyOf(infos);
+    this.infos = Set.copyOf(infos);
   }
 
   /**
-   * Take the output of `/json/version` from a CDP-enabled tool and uses
-   * that information to find a match.
+   * Take the output of `/json/version` from a CDP-enabled tool and uses that information to find a
+   * match.
    */
   public Optional<CdpInfo> match(Map<String, Object> versionJson) {
     /* The json may look like:
-      {
-        "Browser": "Chrome/85.0.4183.69",
-        "Protocol-Version": "1.3",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.69 Safari/537.36",
-        "V8-Version": "8.5.210.19",
-        "WebKit-Version": "537.36 (@4554ea1a1171bd8d06951a4b7d9336afe6c59967)",
-        "webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/c0ef43a1-7bb0-48e3-9cec-d6bb048cb720"
-      }
+     {
+       "Browser": "Chrome/85.0.4183.69",
+       "Protocol-Version": "1.3",
+       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.69 Safari/537.36",
+       "V8-Version": "8.5.210.19",
+       "WebKit-Version": "537.36 (@4554ea1a1171bd8d06951a4b7d9336afe6c59967)",
+       "webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/c0ef43a1-7bb0-48e3-9cec-d6bb048cb720"
+     }
 
-      {
-        "Browser": "Edg/84.0.522.59",
-        "Protocol-Version": "1.3",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36 Edg/84.0.522.59",
-        "V8-Version": "8.4.371.23",
-        "WebKit-Version": "537.36 (@52ea6e40afcc988eef78d29d50f9077893fa1a12)",
-        "webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/c7922624-12e8-4301-8b08-fa446944c5cc"
-      }
-     */
+     {
+       "Browser": "Edg/84.0.522.59",
+       "Protocol-Version": "1.3",
+       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36 Edg/84.0.522.59",
+       "V8-Version": "8.4.371.23",
+       "WebKit-Version": "537.36 (@52ea6e40afcc988eef78d29d50f9077893fa1a12)",
+       "webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/c7922624-12e8-4301-8b08-fa446944c5cc"
+     }
+    */
     Require.nonNull("JSON", versionJson);
 
     // We are assured by MS and Google that the `Browser` major version
@@ -92,8 +94,8 @@ public class CdpVersionFinder {
   }
 
   /**
-   * Takes a `browserVersion` from a {@link org.openqa.selenium.Capabilities}
-   * instance and returns the matching CDP version.
+   * Takes a `browserVersion` from a {@link org.openqa.selenium.Capabilities} instance and returns
+   * the matching CDP version.
    */
   public Optional<CdpInfo> match(String browserVersion) {
     Require.nonNull("Browser version", browserVersion);
@@ -141,9 +143,12 @@ public class CdpVersionFinder {
     if (nearestMatch == null) {
       LOG.log(Level.WARNING, "Unable to find CDP implementation matching {0}", version);
     } else {
-      LOG.log(Level.WARNING,
-              "Unable to find an exact match for CDP version {0}, so returning the closest version found: {1}",
-              new Object[]{version, nearestMatch.getMajorVersion()});
+      LOG.log(
+          Level.WARNING,
+          "Unable to find an exact match for CDP version {0}, returning the closest version; "
+              + "found: {1}; "
+              + "Please update to a Selenium version that supports CDP version {0}",
+          new Object[] {version, nearestMatch.getMajorVersion()});
     }
 
     return Optional.ofNullable(nearestMatch);

@@ -19,18 +19,14 @@ package org.openqa.selenium.atoms;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
-import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
-
+import java.io.IOException;
+import org.htmlunit.corejs.javascript.Context;
+import org.htmlunit.corejs.javascript.ContextAction;
+import org.htmlunit.corejs.javascript.ContextFactory;
+import org.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
-/**
- * Sanity tests against the //javascript/webdriver/atoms:inputs target.
- */
+/** Sanity tests against the //javascript/webdriver/atoms:inputs target. */
 class InputAtomsTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/atoms_inputs.js";
@@ -38,43 +34,48 @@ class InputAtomsTest {
   @Test
   void exportsTheExpectedNames() throws IOException {
     final String source = JavaScriptLoader.loadResource(RESOURCE_PATH);
-    ContextFactory.getGlobal().call(new ContextAction<Object>() {
-      private ScriptableObject global;
+    ContextFactory.getGlobal()
+        .call(
+            new ContextAction<Object>() {
+              private ScriptableObject global;
 
-      @Override
-      public Object run(Context context) {
-        global = context.initStandardObjects();
+              @Override
+              public Object run(Context context) {
+                global = context.initStandardObjects();
 
-        // Check assumptions abut the global context, which the atoms assume is a DOM window.
-        assertThat(eval(context, "this.window=this;")).isEqualTo(global);
-        assertThat(eval(context, "this")).isEqualTo(global);
-        assertThat(eval(context, "window")).isEqualTo(global);
-        assertThat(eval(context, "this === window")).isEqualTo(true);
+                // Check assumptions abut the global context, which the atoms assume is a DOM
+                // window.
+                assertThat(eval(context, "this.window=this;")).isEqualTo(global);
+                assertThat(eval(context, "this")).isEqualTo(global);
+                assertThat(eval(context, "window")).isEqualTo(global);
+                assertThat(eval(context, "this === window")).isEqualTo(true);
 
-        eval(context, source, RESOURCE_PATH);
+                eval(context, source, RESOURCE_PATH);
 
-        assertFunction(context, "webdriver.atoms.inputs.sendKeys");
-        assertFunction(context, "webdriver.atoms.inputs.click");
-        assertFunction(context, "webdriver.atoms.inputs.mouseMove");
-        assertFunction(context, "webdriver.atoms.inputs.mouseButtonDown");
-        assertFunction(context, "webdriver.atoms.inputs.mouseButtonUp");
-        assertFunction(context, "webdriver.atoms.inputs.doubleClick");
-        assertFunction(context, "webdriver.atoms.inputs.rightClick");
+                assertFunction(context, "webdriver.atoms.inputs.sendKeys");
+                assertFunction(context, "webdriver.atoms.inputs.click");
+                assertFunction(context, "webdriver.atoms.inputs.mouseMove");
+                assertFunction(context, "webdriver.atoms.inputs.mouseButtonDown");
+                assertFunction(context, "webdriver.atoms.inputs.mouseButtonUp");
+                assertFunction(context, "webdriver.atoms.inputs.doubleClick");
+                assertFunction(context, "webdriver.atoms.inputs.rightClick");
 
-        return null;
-      }
+                return null;
+              }
 
-      private void assertFunction(Context context, String property) {
-        assertThat(eval(context, "typeof " + property)).describedAs(property).isEqualTo("function");
-      }
+              private void assertFunction(Context context, String property) {
+                assertThat(eval(context, "typeof " + property))
+                    .describedAs(property)
+                    .isEqualTo("function");
+              }
 
-      private Object eval(Context context, String script) {
-        return eval(context, script, "");
-      }
+              private Object eval(Context context, String script) {
+                return eval(context, script, "");
+              }
 
-      private Object eval(Context context, String script, String src) {
-        return context.evaluateString(global, script, src, 1, null);
-      }
-    });
+              private Object eval(Context context, String script, String src) {
+                return context.evaluateString(global, script, src, 1, null);
+              }
+            });
   }
 }

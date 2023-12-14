@@ -20,13 +20,12 @@ package org.openqa.selenium.json;
 import static java.util.Spliterator.IMMUTABLE;
 import static java.util.Spliterator.ORDERED;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.internal.Require;
 
 class JsonInputIterator implements Iterator<JsonInput> {
 
@@ -47,9 +46,8 @@ class JsonInputIterator implements Iterator<JsonInput> {
   }
 
   public Stream<JsonInput> asStream() {
-    Spliterator<JsonInput> spliterator = Spliterators.spliteratorUnknownSize(
-        this,
-        ORDERED & IMMUTABLE);
+    Spliterator<JsonInput> spliterator =
+        Spliterators.spliteratorUnknownSize(this, ORDERED & IMMUTABLE);
 
     return StreamSupport.stream(spliterator, false);
   }

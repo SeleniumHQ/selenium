@@ -43,7 +43,7 @@ module Selenium
 
         def for(browser, opts = {})
           case browser
-          when :chrome
+          when :chrome, :chrome_headless_shell
             Chrome::Driver.new(**opts)
           when :internet_explorer, :ie
             IE::Driver.new(**opts)
@@ -318,36 +318,6 @@ module Selenium
         end
       end
 
-      def process_options(options, capabilities)
-        if options && capabilities
-          msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
-          raise ArgumentError, msg
-        end
-
-        options ? options.as_json : deprecate_capabilities(capabilities)
-      end
-
-      def deprecate_capabilities(capabilities)
-        unless is_a?(Remote::Driver)
-          WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
-                                     ":options argument with an instance of #{self.class}",
-                                     id: :capabilities)
-        end
-        generate_capabilities(capabilities)
-      end
-
-      def generate_capabilities(capabilities)
-        Array(capabilities).map { |cap|
-          if cap.is_a? Symbol
-            cap = WebDriver::Options.send(cap)
-          elsif !cap.respond_to? :as_json
-            msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
-            raise ArgumentError, msg
-          end
-          cap.as_json
-        }.inject(:merge)
-      end
-
       def service_url(service)
         @service_manager = service.launch
         @service_manager.uri
@@ -359,7 +329,7 @@ module Selenium
 
       def add_extensions(browser)
         extensions = case browser
-                     when :chrome, :msedge
+                     when :chrome, :chrome_headless_shell, :msedge
                        Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS

@@ -19,6 +19,9 @@ package org.openqa.selenium.events.zeromq;
 
 import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.function.Consumer;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
@@ -31,13 +34,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.net.Urls;
 import org.zeromq.ZContext;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.function.Consumer;
-
-/**
- * An {@link EventBus} backed by ZeroMQ.
- */
+/** An {@link EventBus} backed by ZeroMQ. */
 public class ZeroMqEventBus {
 
   private static final String EVENTS_SECTION = "events";
@@ -46,7 +43,8 @@ public class ZeroMqEventBus {
     // Use the create method.
   }
 
-  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
+  public static EventBus create(
+      ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
     if (bind) {
       return new BoundZmqEventBus(context, publish, subscribe, secret);
     }
@@ -54,23 +52,37 @@ public class ZeroMqEventBus {
   }
 
   public static EventBus create(Config config) {
-    String publish = config.get(EVENTS_SECTION, "publish")
-      .orElseGet(() -> {
-        URI uri = config.get("node", "hub")
-          .map(Urls::from)
-          .orElseThrow(() -> new IllegalArgumentException(
-            "Unable to find address to publish events to."));
-        return mungeUri(uri, "tcp", 4442);
-      });
+    String publish =
+        config
+            .get(EVENTS_SECTION, "publish")
+            .orElseGet(
+                () -> {
+                  URI uri =
+                      config
+                          .get("node", "hub")
+                          .map(Urls::from)
+                          .orElseThrow(
+                              () ->
+                                  new IllegalArgumentException(
+                                      "Unable to find address to publish events to."));
+                  return mungeUri(uri, "tcp", 4442);
+                });
 
-    String subscribe = config.get(EVENTS_SECTION, "subscribe")
-      .orElseGet(() -> {
-        URI uri = config.get("node", "hub")
-          .map(Urls::from)
-          .orElseThrow(() -> new IllegalArgumentException(
-            "Unable to find address to subscribe for events from."));
-        return mungeUri(uri, "tcp", 4443);
-      });
+    String subscribe =
+        config
+            .get(EVENTS_SECTION, "subscribe")
+            .orElseGet(
+                () -> {
+                  URI uri =
+                      config
+                          .get("node", "hub")
+                          .map(Urls::from)
+                          .orElseThrow(
+                              () ->
+                                  new IllegalArgumentException(
+                                      "Unable to find address to subscribe for events from."));
+                  return mungeUri(uri, "tcp", 4443);
+                });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
 
@@ -81,15 +93,7 @@ public class ZeroMqEventBus {
 
   private static String mungeUri(URI base, String scheme, int port) {
     try {
-      return new URI(
-        scheme,
-        null,
-        base.getHost(),
-        port,
-        null,
-        null,
-        null)
-        .toString();
+      return new URI(scheme, null, base.getHost(), port, null, null, null).toString();
     } catch (URISyntaxException e) {
       throw new ConfigException("Unable to create URI from " + base);
     }

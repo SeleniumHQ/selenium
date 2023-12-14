@@ -9,24 +9,22 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used to automate web browser interaction from Python.
 
-+-----------+--------------------------------------------------------------------------------------+
-| **Home**: | https://selenium.dev                                                                 |
-+-----------+--------------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
-+-----------+--------------------------------------------------------------------------------------+
-| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                               |
-+-----------+--------------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.org/project/selenium/                                                   |
-+-----------+--------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on LiberaChat                                                  |
-+-----------+--------------------------------------------------------------------------------------+
++-----------------+--------------------------------------------------------------------------------------+
+| **Home**:       | https://selenium.dev                                                                 |
++-----------------+--------------------------------------------------------------------------------------+
+| **GitHub**:     | https://github.com/SeleniumHQ/Selenium                                               |
++-----------------+--------------------------------------------------------------------------------------+
+| **PyPI**:       | https://pypi.org/project/selenium/                                                   |
++-----------------+--------------------------------------------------------------------------------------+
+| **IRC/Slack**:  | `Selenium chat room <https://www.selenium.dev/support/#ChatRoom>`_                   |
++-----------------+--------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
 
 Supported Python Versions
 =========================
 
-* Python 3.7+
+* Python 3.8+
 
 Installing
 ==========
@@ -35,7 +33,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.8.2.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`, unarchive it, and run::
 
     python setup.py install
 
@@ -121,20 +119,15 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
     if __name__ == '__main__':
         unittest.main(verbosity=2)
 
-Selenium Server (optional)
+Selenium Grid (optional)
 ==========================
 
-For normal WebDriver scripts (non-Remote), the Java server is not needed.
+For local Selenium scripts, the Java server is not needed.
 
-However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
+To use Selenium remotely, you need to also run the Selenium grid.
+For information on running Selenium Grid: https://www.selenium.dev/documentation/grid/getting_started/
 
-Download the server separately, from: https://www.selenium.dev/downloads/
-
-Run the server from the command line::
-
-    java -jar selenium-server-4.6.0.jar
-
-Then run your Python client scripts.
+To use Remote WebDriver see: https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python
 
 Use The Source Luke!
 ====================
@@ -142,16 +135,15 @@ Use The Source Luke!
 View source code online:
 
 +-----------+------------------------------------------------------+
-| official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
+| Official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
-
 
 Contributing
 =============
 
  - Create a branch for your work
  - Ensure `tox` is installed (using a `virtualenv` is recommended)
- - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - `python3.8 -m venv .venv && . .venv/bin/activate && pip install tox`
  - After making changes, before committing execute `tox -e linting`
  - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
  - `flake8` requires manual fixes

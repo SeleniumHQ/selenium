@@ -65,7 +65,7 @@ def import_devtools(ver):
         versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
         latest = max(int(x[1:]) for x in versions)
         selenium_logger = logging.getLogger(__name__)
-        selenium_logger.debug(f"Falling back to loading `devtools`: v{latest}")
+        selenium_logger.debug("Falling back to loading `devtools`: v%s", latest)
         devtools = importlib.import_module(f"{base}{latest}")
         return devtools
 
@@ -147,8 +147,8 @@ class BrowserError(Exception):
     indicates that an error occurred."""
 
     def __init__(self, obj):
-        self.code = obj["code"]
-        self.message = obj["message"]
+        self.code = obj.get("code")
+        self.message = obj.get("message")
         self.detail = obj.get("data")
 
     def __str__(self):
@@ -265,7 +265,7 @@ class CdpBase:
         try:
             cmd, event = self.inflight_cmd.pop(cmd_id)
         except KeyError:
-            logger.warning(f"Got a message with a command ID that does not exist: {data}")
+            logger.warning("Got a message with a command ID that does not exist: %s", data)
             return
         if "error" in data:
             # If the server reported an error, convert it to an exception and do
@@ -275,8 +275,8 @@ class CdpBase:
             # Otherwise, continue the generator to parse the JSON result
             # into a CDP object.
             try:
-                response = cmd.send(data["result"])
-                raise InternalError("The command's generator function " "did not exit when expected!")
+                _ = cmd.send(data["result"])
+                raise InternalError("The command's generator function did not exit when expected!")
             except StopIteration as exit:
                 return_ = exit.value
             self.inflight_result[cmd_id] = return_
@@ -442,10 +442,21 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 try:
                     session = self.sessions[session_id]
                 except KeyError:
-                    raise BrowserError(f"Browser sent a message for an invalid session: {session_id!r}")
+                    raise BrowserError(
+                        {
+                            "code": -32700,
+                            "message": "Browser sent a message for an invalid session",
+                            "data": f"{session_id!r}",
+                        }
+                    )
                 session._handle_data(data)
             else:
                 self._handle_data(data)
+
+        for _, session in self.sessions.items():
+            for _, senders in session.channels.items():
+                for sender in senders:
+                    sender.close()
 
 
 @asynccontextmanager

@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -29,23 +27,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 public class SessionRequestCapability {
 
-  private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {
-  }.getType();
+  private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
   private final RequestId requestId;
   private final Set<Capabilities> desiredCapabilities;
 
-  public SessionRequestCapability(
-    RequestId requestId,
-    Set<Capabilities> desiredCapabilities) {
+  public SessionRequestCapability(RequestId requestId, Set<Capabilities> desiredCapabilities) {
     this.requestId = Require.nonNull("Request ID", requestId);
-    this.desiredCapabilities = unmodifiableSet(
-      new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
+    this.desiredCapabilities =
+        unmodifiableSet(new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
   }
 
   public RequestId getRequestId() {
@@ -59,9 +55,9 @@ public class SessionRequestCapability {
   @Override
   public String toString() {
     return new StringJoiner(", ", SessionRequestCapability.class.getSimpleName() + "[", "]")
-      .add("requestId=" + requestId)
-      .add("desiredCapabilities=" + desiredCapabilities)
-      .toString();
+        .add("requestId=" + requestId)
+        .add("desiredCapabilities=" + desiredCapabilities)
+        .toString();
   }
 
   @Override
@@ -71,8 +67,8 @@ public class SessionRequestCapability {
     }
     SessionRequestCapability that = (SessionRequestCapability) o;
 
-    return this.requestId.equals(that.requestId) &&
-      this.desiredCapabilities.equals(that.desiredCapabilities);
+    return this.requestId.equals(that.requestId)
+        && this.desiredCapabilities.equals(that.desiredCapabilities);
   }
 
   @Override

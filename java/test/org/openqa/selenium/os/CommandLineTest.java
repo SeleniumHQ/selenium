@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.os;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.build.BazelBuild;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 import static java.lang.System.getenv;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -40,11 +30,20 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
+
 class CommandLineTest {
 
   // ping can be found on every platform we support.
-  private final static String testExecutable = findExecutable(
-    "java/test/org/openqa/selenium/os/echo");
+  private static final String testExecutable =
+      findExecutable("java/test/org/openqa/selenium/os/echo");
 
   private final CommandLine commandLine = new CommandLine(testExecutable);
   private final OsProcess process = spyProcess(commandLine);
@@ -124,8 +123,9 @@ class CommandLineTest {
   @Test
   void canDetectSuccess() {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
-    CommandLine commandLine = new CommandLine(
-      testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
+    CommandLine commandLine =
+        new CommandLine(
+            testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
     assertThat(commandLine.getExitCode()).isZero();
     assertThat(commandLine.isSuccessful()).isTrue();
@@ -142,8 +142,9 @@ class CommandLineTest {
   void canUpdateLibraryPath() {
     assumeTrue(Platform.getCurrent().is(WINDOWS));
     commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
-    verify(process).setEnvironmentVariable(
-      getLibraryPathPropertyName(), String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
+    verify(process)
+        .setEnvironmentVariable(
+            getLibraryPathPropertyName(), String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
   }
 
   private OsProcess spyProcess(CommandLine commandLine) {

@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.devtools.v85;
 
-import com.google.common.collect.ImmutableList;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -30,11 +33,6 @@ import org.openqa.selenium.devtools.v85.runtime.model.ConsoleAPICalled;
 import org.openqa.selenium.devtools.v85.runtime.model.ExceptionDetails;
 import org.openqa.selenium.devtools.v85.runtime.model.ExceptionThrown;
 import org.openqa.selenium.devtools.v85.runtime.model.StackTrace;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 public class V85Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
@@ -66,51 +64,46 @@ public class V85Events extends Events<ConsoleAPICalled, ExceptionThrown> {
   protected ConsoleEvent toConsoleEvent(ConsoleAPICalled event) {
     long ts = event.getTimestamp().toJson().longValue();
 
-    List<Object> modifiedArgs = event.getArgs().stream()
-      .map(obj -> new RemoteObject(
-        obj.getType().toString(),
-        obj.getValue().orElse(null)))
-      .collect(ImmutableList.toImmutableList());
+    List<Object> modifiedArgs =
+        event.getArgs().stream()
+            .map(obj -> new RemoteObject(obj.getType().toString(), obj.getValue().orElse(null)))
+            .collect(Collectors.toUnmodifiableList());
 
     return new ConsoleEvent(
-      event.getType().toString(),
-      Instant.ofEpochMilli(ts),
-      modifiedArgs,
-      event.getArgs());
+        event.getType().toString(), Instant.ofEpochMilli(ts), modifiedArgs, event.getArgs());
   }
 
   @Override
   protected JavascriptException toJsException(ExceptionThrown event) {
     ExceptionDetails details = event.getExceptionDetails();
     Optional<StackTrace> maybeTrace = details.getStackTrace();
-    Optional<org.openqa.selenium.devtools.v85.runtime.model.RemoteObject>
-      maybeException = details.getException();
+    Optional<org.openqa.selenium.devtools.v85.runtime.model.RemoteObject> maybeException =
+        details.getException();
 
-    String message = maybeException
-      .flatMap(obj -> obj.getDescription().map(String::toString))
-      .orElseGet(details::getText);
+    String message =
+        maybeException
+            .flatMap(obj -> obj.getDescription().map(String::toString))
+            .orElseGet(details::getText);
 
     JavascriptException exception = new JavascriptException(message);
 
     if (!maybeTrace.isPresent()) {
-      StackTraceElement element = new StackTraceElement(
-        "unknown",
-        "unknown",
-        details.getUrl().orElse("unknown"),
-        details.getLineNumber());
-      exception.setStackTrace(new StackTraceElement[]{element});
+      StackTraceElement element =
+          new StackTraceElement(
+              "unknown", "unknown", details.getUrl().orElse("unknown"), details.getLineNumber());
+      exception.setStackTrace(new StackTraceElement[] {element});
       return exception;
     }
 
     StackTrace trace = maybeTrace.get();
 
-    exception.setStackTrace(trace.getCallFrames().stream()
-      .map(frame -> new StackTraceElement(
-        "",
-        frame.getFunctionName(),
-        frame.getUrl(),
-        frame.getLineNumber()))
-      .toArray(StackTraceElement[]::new));
+    exception.setStackTrace(
+        trace.getCallFrames().stream()
+            .map(
+                frame ->
+                    new StackTraceElement(
+                        "", frame.getFunctionName(), frame.getUrl(), frame.getLineNumber()))
+            .toArray(StackTraceElement[]::new));
 
     return exception;
   }

@@ -71,6 +71,11 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Stores the element associated with the target ID
+        /// </summary>
+        public IWebElement Element { get; internal set; }
+
+        /// <summary>
         /// Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>

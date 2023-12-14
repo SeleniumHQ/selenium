@@ -17,10 +17,9 @@
 import typing
 from typing import List
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
-
-DEFAULT_EXECUTABLE_PATH = "geckodriver"
 
 
 class Service(service.Service):
@@ -30,28 +29,25 @@ class Service(service.Service):
     :param executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
-    :param log_path: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler,
-        defaults to `geckodriver.log`.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
-        log_path: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         **kwargs,
     ) -> None:
-        # Todo: This is vastly inconsistent, requires a follow up to standardise.
-        file = log_path or "geckodriver.log"
-        log_file = open(file, "a+", encoding="utf-8")
         self.service_args = service_args or []
+
         super().__init__(
-            executable=executable_path,
+            executable_path=executable_path,
             port=port,
-            log_file=log_file,
+            log_output=log_output,
             env=env,
             **kwargs,
         )

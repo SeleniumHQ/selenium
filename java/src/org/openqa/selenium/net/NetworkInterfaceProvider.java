@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.net;
 
-
 /**
  * Provides information about the local network interfaces.
  *
- * Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
+ * <p>Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
  * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */
 public interface NetworkInterfaceProvider {

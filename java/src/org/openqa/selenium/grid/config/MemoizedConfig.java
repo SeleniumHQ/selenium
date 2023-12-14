@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import org.openqa.selenium.internal.Require;
 
 public class MemoizedConfig implements Config {
 
@@ -57,7 +56,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenOptions.computeIfAbsent(new Key(section, option), ignored -> delegate.getAll(section, option));
+    return seenOptions.computeIfAbsent(
+        new Key(section, option), ignored -> delegate.getAll(section, option));
   }
 
   @Override
@@ -65,7 +65,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenStrings.computeIfAbsent(new Key(section, option), ignored -> delegate.get(section, option));
+    return seenStrings.computeIfAbsent(
+        new Key(section, option), ignored -> delegate.get(section, option));
   }
 
   @Override
@@ -73,7 +74,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenInts.computeIfAbsent(new Key(section, option), ignored -> delegate.getInt(section, option));
+    return seenInts.computeIfAbsent(
+        new Key(section, option), ignored -> delegate.getInt(section, option));
   }
 
   @Override
@@ -81,7 +83,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenBools.computeIfAbsent(new Key(section, option), ignored -> delegate.getBool(section, option));
+    return seenBools.computeIfAbsent(
+        new Key(section, option), ignored -> delegate.getBool(section, option));
   }
 
   @Override
@@ -92,17 +95,18 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Default class name", defaultClassName);
 
     AtomicReference<Exception> thrown = new AtomicReference<>();
-    Object value = seenClasses.computeIfAbsent(
-      new Key(section, option, typeOfX.toGenericString(), defaultClassName),
-      ignored -> {
-        try {
-          String clazz = delegate.get(section, option).orElse(defaultClassName);
-          return ClassCreation.callCreateMethod(clazz, typeOfX, this);
-        } catch (Exception e) {
-          thrown.set(e);
-          return null;
-        }
-      });
+    Object value =
+        seenClasses.computeIfAbsent(
+            new Key(section, option, typeOfX.toGenericString(), defaultClassName),
+            ignored -> {
+              try {
+                String clazz = delegate.get(section, option).orElse(defaultClassName);
+                return ClassCreation.callCreateMethod(clazz, typeOfX, this);
+              } catch (Exception e) {
+                thrown.set(e);
+                return null;
+              }
+            });
 
     if (value != null) {
       return typeOfX.cast(value);
@@ -131,7 +135,6 @@ public class MemoizedConfig implements Config {
 
       return Arrays.equals(this.segments, that.segments);
     }
-
 
     @Override
     public int hashCode() {

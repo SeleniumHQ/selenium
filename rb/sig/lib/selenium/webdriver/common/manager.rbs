@@ -1,0 +1,39 @@
+module Selenium
+  module WebDriver
+    class Manager
+      attr_reader bridge: untyped
+
+      @timeouts: Timeouts
+
+      @window: Window
+
+      def initialize: (Remote::Bridge bridge) -> void
+
+      def add_cookie: (?Hash[Symbol, untyped] opts) -> untyped
+
+      def cookie_named: (String name) -> Hash[untyped, untyped]?
+
+      def delete_cookie: (String name) -> String
+
+      def delete_all_cookies: () -> untyped
+
+      def all_cookies: () -> Array[Hash[untyped, untyped]]
+
+      def timeouts: () -> Timeouts
+
+      def window: () -> Window
+
+      private
+
+      SECONDS_PER_DAY: ::Float
+
+      def datetime_at: (Integer int) -> Date
+
+      def seconds_from: (Time | DateTime | Numeric obj) -> (Time | Date | Numeric)
+
+      def strip_port: (String str) -> (Array[String] | nil)
+
+      def convert_cookie: (untyped cookie) -> { name: untyped, value: untyped, path: untyped, domain: untyped, expires: untyped, same_site: untyped, http_only: untyped, secure: untyped }
+    end
+  end
+end

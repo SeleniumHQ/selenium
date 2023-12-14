@@ -1,4 +1,3 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 AUGMENTER_SRCS = [
@@ -27,6 +26,8 @@ java_library(
             "*.java",
             "log/*.java",
             "browsingcontext/*.java",
+            "network/*.java",
+            "script/*.java",
         ],
         exclude = AUGMENTER_SRCS,
     ),
@@ -41,6 +42,5 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
-        artifact("com.google.guava:guava"),
     ],
 )

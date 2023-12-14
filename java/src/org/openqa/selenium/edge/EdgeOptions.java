@@ -16,17 +16,18 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
 
-import static org.openqa.selenium.remote.Browser.EDGE;
-
 /**
  * Class to manage options specific to {@link EdgeDriver}.
  *
  * <p>Example usage:
+ *
  * <pre><code>
  * EdgeOptions options = new EdgeOptions()
  * options.addExtensions(new File("/path/to/extension.crx"))
@@ -40,19 +41,30 @@ import static org.openqa.selenium.remote.Browser.EDGE;
  *     new URL("http://localhost:4444/"),
  *     new EdgeOptions());
  * </code></pre>
- *
  */
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
-  /**
-   * Key used to store a set of EdgeOptions in a {@link Capabilities}
-   * object.
-   */
+  /** Key used to store a set of EdgeOptions in a {@link Capabilities} object. */
   public static final String CAPABILITY = "ms:edgeOptions";
+
   public static final String LOGGING_PREFS = "ms:loggingPrefs";
+
+  public static final String WEBVIEW2_BROWSER_NAME = "webview2";
 
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, EDGE.browserName(), CAPABILITY);
+  }
+
+  /**
+   * Changes the browser name to 'webview2' to enable <a
+   * href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver">test
+   * automation of WebView2 apps with Microsoft Edge WebDriver </a>
+   *
+   * @param enable boolean flag to enable or disable the 'webview2' usage
+   */
+  public void useWebView(boolean enable) {
+    String browserName = enable ? WEBVIEW2_BROWSER_NAME : EDGE.browserName();
+    setCapability(CapabilityType.BROWSER_NAME, browserName);
   }
 
   @Override

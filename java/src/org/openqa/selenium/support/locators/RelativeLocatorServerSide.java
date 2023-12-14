@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.support.locators;
 
+import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -29,10 +32,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.locators.CustomLocator;
-
-import java.util.List;
-
-import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
 @AutoService(CustomLocator.class)
 public class RelativeLocatorServerSide implements CustomLocator {
@@ -64,7 +63,8 @@ public class RelativeLocatorServerSide implements CustomLocator {
         Object converted = new JsonToWebElementConverter((RemoteWebDriver) driver).apply(using);
 
         @SuppressWarnings("unchecked")
-        List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, ImmutableMap.of("relative", converted));
+        List<WebElement> elements =
+            (List<WebElement>) js.executeScript(FIND_ELEMENTS, Map.of("relative", converted));
         return elements;
       }
 

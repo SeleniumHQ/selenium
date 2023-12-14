@@ -17,29 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Status;
-import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -51,15 +28,34 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.AttributeMap;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
+
 class GridStatusHandler implements HttpHandler {
 
-  private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-      r -> {
-        Thread thread = new Thread(r, "Grid status executor");
-        thread.setDaemon(true);
-        return thread;
-      });
-
+  private static final ExecutorService EXECUTOR_SERVICE =
+      Executors.newCachedThreadPool(
+          r -> {
+            Thread thread = new Thread(r, "Grid status executor");
+            thread.setDaemon(true);
+            return thread;
+          });
 
   private final Tracer tracer;
   private final Distributor distributor;
@@ -73,9 +69,8 @@ class GridStatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
 
     try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                       EventAttribute.setValue(getClass().getName()));
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
@@ -87,13 +82,17 @@ class GridStatusHandler implements HttpHandler {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Error or timeout while getting Distributor "
-                                                 + "status: " + e.getMessage()));
-        HttpResponse response = new HttpResponse().setContent(asJson(
-          ImmutableMap.of("value", ImmutableMap.of(
-            "ready", false,
-            "message", "Unable to read distributor status."))));
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            "Error or timeout while getting Distributor " + "status: " + e.getMessage());
+        HttpResponse response =
+            new HttpResponse()
+                .setContent(
+                    asJson(
+                        ImmutableMap.of(
+                            "value",
+                            ImmutableMap.of(
+                                "ready", false, "message", "Unable to read distributor status."))));
 
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
@@ -104,14 +103,21 @@ class GridStatusHandler implements HttpHandler {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.ABORTED);
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Interruption while getting distributor status: "
-                                                 + e.getMessage()));
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            "Interruption while getting distributor status: " + e.getMessage());
 
-        HttpResponse response = new HttpResponse().setContent(asJson(
-          ImmutableMap.of("value", ImmutableMap.of(
-            "ready", false,
-            "message", "Reading distributor status was interrupted."))));
+        HttpResponse response =
+            new HttpResponse()
+                .setContent(
+                    asJson(
+                        ImmutableMap.of(
+                            "value",
+                            ImmutableMap.of(
+                                "ready",
+                                false,
+                                "message",
+                                "Reading distributor status was interrupted."))));
 
         HTTP_RESPONSE.accept(span, response);
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
@@ -121,34 +127,38 @@ class GridStatusHandler implements HttpHandler {
         return response;
       }
 
-      boolean ready = status.getNodes()
-        .stream()
-        .anyMatch(
-          nodeStatus -> UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
+      boolean ready =
+          status.getNodes().stream()
+              .anyMatch(
+                  nodeStatus ->
+                      UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
 
-      List<Map<String, Object>> nodeResults = status.getNodes().stream()
-        .map(node -> new ImmutableMap.Builder<String, Object>()
-          .put("id", node.getNodeId())
-          .put("uri", node.getExternalUri())
-          .put("maxSessions", node.getMaxSessionCount())
-          .put("osInfo", node.getOsInfo())
-          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
-          .put("availability", node.getAvailability())
-          .put("version", node.getVersion())
-          .put("slots", node.getSlots())
-          .build())
-        .collect(toList());
+      List<Map<String, Object>> nodeResults =
+          status.getNodes().stream()
+              .map(
+                  node ->
+                      new ImmutableMap.Builder<String, Object>()
+                          .put("id", node.getNodeId())
+                          .put("uri", node.getExternalUri())
+                          .put("maxSessions", node.getMaxSessionCount())
+                          .put("osInfo", node.getOsInfo())
+                          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
+                          .put("availability", node.getAvailability())
+                          .put("version", node.getVersion())
+                          .put("slots", node.getSlots())
+                          .build())
+              .collect(toList());
 
       ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
       value.put("ready", ready);
       value.put("message", ready ? "Selenium Grid ready." : "Selenium Grid not ready.");
       value.put("nodes", nodeResults);
 
-      HttpResponse res = new HttpResponse()
-        .setContent(asJson(ImmutableMap.of("value", value.build())));
+      HttpResponse res =
+          new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
       HTTP_RESPONSE_EVENT.accept(attributeMap, res);
-      attributeMap.put("grid.status", EventAttribute.setValue(ready));
+      attributeMap.put("grid.status", ready);
       span.setStatus(Status.OK);
       span.addEvent("Computed grid status", attributeMap);
       return res;

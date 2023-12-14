@@ -17,8 +17,19 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.List;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -37,25 +48,10 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.AttributeMap;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class RedisBackedSessionMap extends SessionMap {
 
@@ -82,12 +78,16 @@ public class RedisBackedSessionMap extends SessionMap {
     this.serverUri = serverUri;
     this.bus.addListener(SessionClosedEvent.listener(this::remove));
 
-    this.bus.addListener(NodeRemovedEvent.listener(nodeStatus -> nodeStatus.getSlots().stream()
-      .filter(slot -> slot.getSession() != null)
-      .map(slot -> slot.getSession().getId())
-      .forEach(this::remove)));
+    this.bus.addListener(
+        NodeRemovedEvent.listener(
+            nodeStatus ->
+                nodeStatus.getSlots().stream()
+                    .filter(slot -> slot.getSession() != null)
+                    .map(slot -> slot.getSession().getId())
+                    .forEach(this::remove)));
 
-    bus.addListener(NodeRestartedEvent.listener(nodeStatus -> this.removeByUri(nodeStatus.getExternalUri())));
+    bus.addListener(
+        NodeRestartedEvent.listener(nodeStatus -> this.removeByUri(nodeStatus.getExternalUri())));
   }
 
   public static SessionMap create(Config config) {
@@ -102,8 +102,11 @@ public class RedisBackedSessionMap extends SessionMap {
   public boolean add(Session session) {
     Require.nonNull("Session to add", session);
 
-    try (Span span = tracer.getCurrentContext().createSpan("MSET sessionUriKey <sessionUri> capabilitiesKey <capabilities> ")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    try (Span span =
+        tracer
+            .getCurrentContext()
+            .createSpan("MSET sessionUriKey <sessionUri> capabilitiesKey <capabilities> ")) {
+      AttributeMap attributeMap = tracer.createAttributeMap();
       SESSION_ID.accept(span, session.getId());
       SESSION_ID_EVENT.accept(attributeMap, session.getId());
       CAPABILITIES.accept(span, session.getCapabilities());
@@ -125,21 +128,21 @@ public class RedisBackedSessionMap extends SessionMap {
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
       span.setAttribute(REDIS_CAPABILITIES_VALUE, capabilitiesJson);
       span.setAttribute(DATABASE_OPERATION, "MSET");
-      attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
-      attributeMap.put(REDIS_URI_VALUE, EventAttribute.setValue(uriValue));
-      attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
-      attributeMap.put(REDIS_CAPABILITIES_VALUE, EventAttribute.setValue(capabilitiesJson));
-      attributeMap.put(REDIS_START_KEY, EventAttribute.setValue(startKey));
-      attributeMap.put(REDIS_START_VALUE, EventAttribute.setValue(startValue));
-      attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("MSET"));
+      attributeMap.put(REDIS_URI_KEY, uriKey);
+      attributeMap.put(REDIS_URI_VALUE, uriValue);
+      attributeMap.put(REDIS_CAPABILITIES_KEY, capabilitiesKey);
+      attributeMap.put(REDIS_CAPABILITIES_VALUE, capabilitiesJson);
+      attributeMap.put(REDIS_START_KEY, startKey);
+      attributeMap.put(REDIS_START_VALUE, startValue);
+      attributeMap.put(DATABASE_OPERATION, "MSET");
 
       span.addEvent("Inserted into the database", attributeMap);
       connection.mset(
-        ImmutableMap.of(
-          uriKey, uriValue,
-          stereotypeKey, stereotypeJson,
-          capabilitiesKey, capabilitiesJson,
-          startKey, startValue));
+          ImmutableMap.of(
+              uriKey, uriValue,
+              stereotypeKey, stereotypeJson,
+              capabilitiesKey, capabilitiesJson,
+              startKey, startValue));
 
       return true;
     }
@@ -150,18 +153,18 @@ public class RedisBackedSessionMap extends SessionMap {
     Require.nonNull("Session ID", id);
 
     try (Span span = tracer.getCurrentContext().createSpan("GET capabilitiesKey")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);
       setCommonSpanAttributes(span);
       setCommonEventAttributes(attributeMap);
       span.setAttribute(DATABASE_OPERATION, "GET");
-      attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("GET"));
+      attributeMap.put(DATABASE_OPERATION, "GET");
 
       URI uri = getUri(id);
 
-      attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey(id)));
-      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(uri.toString()));
+      attributeMap.put(REDIS_URI_KEY, uriKey(id));
+      attributeMap.put(AttributeKey.SESSION_URI.getKey(), uri.toString());
 
       String capabilitiesKey = capabilitiesKey(id);
       String rawCapabilities = connection.get(capabilitiesKey);
@@ -170,19 +173,21 @@ public class RedisBackedSessionMap extends SessionMap {
       String rawStereotype = connection.get(stereotypeKey);
 
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
-      attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
+      attributeMap.put(REDIS_CAPABILITIES_KEY, capabilitiesKey);
 
       if (rawCapabilities != null) {
         span.setAttribute(REDIS_CAPABILITIES_VALUE, rawCapabilities);
       }
 
-      Capabilities caps = rawCapabilities == null ?
-        new ImmutableCapabilities() :
-        JSON.toType(rawCapabilities, Capabilities.class);
+      Capabilities caps =
+          rawCapabilities == null
+              ? new ImmutableCapabilities()
+              : JSON.toType(rawCapabilities, Capabilities.class);
 
-      Capabilities stereotype = rawStereotype == null ?
-        new ImmutableCapabilities() :
-        JSON.toType(rawStereotype, Capabilities.class);
+      Capabilities stereotype =
+          rawStereotype == null
+              ? new ImmutableCapabilities()
+              : JSON.toType(rawStereotype, Capabilities.class);
 
       String rawStart = connection.get(startKey(id));
       Instant start = JSON.toType(rawStart, Instant.class);
@@ -200,13 +205,13 @@ public class RedisBackedSessionMap extends SessionMap {
     Require.nonNull("Session ID", id);
 
     try (Span span = tracer.getCurrentContext().createSpan("GET sessionURI")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);
       setCommonSpanAttributes(span);
       setCommonEventAttributes(attributeMap);
       span.setAttribute(DATABASE_OPERATION, "GET");
-      attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("GET"));
+      attributeMap.put(DATABASE_OPERATION, "GET");
 
       String uriKey = uriKey(id);
       List<KeyValue<String, String>> rawValues = connection.mget(uriKey);
@@ -214,23 +219,24 @@ public class RedisBackedSessionMap extends SessionMap {
       String rawUri = rawValues.get(0).getValueOrElse(null);
 
       span.setAttribute(REDIS_URI_KEY, uriKey);
-      attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
+      attributeMap.put(REDIS_URI_KEY, uriKey);
 
       if (rawUri == null) {
         NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Session URI does not exist in the database :" + exception.getMessage()));
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            "Session URI does not exist in the database :" + exception.getMessage());
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         throw exception;
       }
 
       span.setAttribute(REDIS_URI_VALUE, rawUri);
-      attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
-      attributeMap.put(REDIS_URI_VALUE, EventAttribute.setValue(rawUri));
+      attributeMap.put(REDIS_URI_KEY, uriKey);
+      attributeMap.put(REDIS_URI_VALUE, rawUri);
 
       try {
         return new URI(rawUri);
@@ -238,12 +244,14 @@ public class RedisBackedSessionMap extends SessionMap {
         span.setAttribute("error", true);
         span.setStatus(Status.INTERNAL);
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(rawUri));
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to convert session id to uri: " + e.getMessage()));
+        attributeMap.put(AttributeKey.SESSION_URI.getKey(), rawUri);
+        attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            "Unable to convert session id to uri: " + e.getMessage());
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-        throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
+        throw new NoSuchSessionException(
+            String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
       }
     }
   }
@@ -253,13 +261,13 @@ public class RedisBackedSessionMap extends SessionMap {
     Require.nonNull("Session ID", id);
 
     try (Span span = tracer.getCurrentContext().createSpan("DEL sessionUriKey capabilitiesKey")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      AttributeMap attributeMap = tracer.createAttributeMap();
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);
       setCommonSpanAttributes(span);
       setCommonEventAttributes(attributeMap);
       span.setAttribute(DATABASE_OPERATION, "DEL");
-      attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("DEL"));
+      attributeMap.put(DATABASE_OPERATION, "DEL");
 
       String uriKey = uriKey(id);
       String capabilitiesKey = capabilitiesKey(id);
@@ -268,9 +276,9 @@ public class RedisBackedSessionMap extends SessionMap {
       span.setAttribute(REDIS_URI_KEY, uriKey);
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
       span.setAttribute(REDIS_START_KEY, startKey);
-      attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
-      attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
-      attributeMap.put(REDIS_START_KEY, EventAttribute.setValue(startKey));
+      attributeMap.put(REDIS_URI_KEY, uriKey);
+      attributeMap.put(REDIS_CAPABILITIES_KEY, capabilitiesKey);
+      attributeMap.put(REDIS_START_KEY, startKey);
 
       span.addEvent("Deleted session from the database", attributeMap);
 
@@ -290,12 +298,14 @@ public class RedisBackedSessionMap extends SessionMap {
 
     List<KeyValue<String, String>> keyValues = connection.mget(keys);
     keyValues.stream()
-      .filter(entry -> entry.getValue().equals(uri.toString()))
-      .map(KeyValue::getKey)
-      .map(key -> {
-        String[] sessionKey = key.split(":");
-        return new SessionId(sessionKey[1]);
-      }).forEach(this::remove);
+        .filter(entry -> entry.getValue().equals(uri.toString()))
+        .map(KeyValue::getKey)
+        .map(
+            key -> {
+              String[] sessionKey = key.split(":");
+              return new SessionId(sessionKey[1]);
+            })
+        .forEach(this::remove);
   }
 
   @Override
@@ -332,16 +342,14 @@ public class RedisBackedSessionMap extends SessionMap {
     span.setAttribute(DATABASE_SYSTEM, "redis");
   }
 
-  private void setCommonEventAttributes(Map<String, EventAttributeValue> map) {
-    map.put(DATABASE_SYSTEM, EventAttribute.setValue("redis"));
+  private void setCommonEventAttributes(AttributeMap map) {
+    map.put(DATABASE_SYSTEM, "redis");
     if (serverUri != null) {
-      map.put(AttributeKey.DATABASE_CONNECTION_STRING.getKey(),
-              EventAttribute.setValue(serverUri.toString()));
+      map.put(AttributeKey.DATABASE_CONNECTION_STRING.getKey(), serverUri.toString());
     }
   }
 
   public GridRedisClient getRedisClient() {
     return connection;
   }
-
 }

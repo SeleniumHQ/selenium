@@ -16,6 +16,7 @@
 # under the License.
 import typing
 
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
@@ -26,31 +27,32 @@ class ChromiumService(service.Service):
     :param executable_path: install path of the executable.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
+    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param start_error_message: (Optional) Error message that forms part of the error when problems occur
-    launching the subprocess.
     """
 
     def __init__(
         self,
-        executable_path: str,
+        executable_path: str = None,
         port: int = 0,
         service_args: typing.Optional[typing.List[str]] = None,
-        log_path: typing.Optional[str] = None,
+        log_output: SubprocessStdAlias = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-        start_error_message: typing.Optional[str] = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
-        if log_path:
-            self.service_args.append(f"--log-path={log_path}")
+
+        if isinstance(log_output, str):
+            self.service_args.append(f"--log-path={log_output}")
+            self.log_output = None
+        else:
+            self.log_output = log_output
 
         super().__init__(
-            executable=executable_path,
+            executable_path=executable_path,
             port=port,
             env=env,
-            start_error_message=start_error_message,
+            log_output=self.log_output,
             **kwargs,
         )
 

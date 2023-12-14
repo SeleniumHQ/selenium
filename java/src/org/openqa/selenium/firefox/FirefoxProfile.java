@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.json.Json;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +26,11 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 
 public class FirefoxProfile {
 
@@ -50,8 +49,8 @@ public class FirefoxProfile {
 
   /**
    * Constructs a firefox profile from an existing profile directory.
-   * <p>
-   * Users who need this functionality should consider using a named profile.
+   *
+   * <p>Users who need this functionality should consider using a named profile.
    *
    * @param profileDir The profile directory to use as a model.
    */
@@ -85,10 +84,7 @@ public class FirefoxProfile {
       json = new Json().toType(json, String.class);
     }
 
-    return new FirefoxProfile(Zip.unzipToTempDir(
-      json,
-      "webdriver",
-      "duplicated"));
+    return new FirefoxProfile(Zip.unzipToTempDir(json, "webdriver", "duplicated"));
   }
 
   private boolean getBooleanPreference(Preferences prefs, String key, boolean defaultValue) {
@@ -106,7 +102,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof String) {
+    if (preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -114,7 +110,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof Integer) {
+    if (preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -122,7 +118,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof Boolean) {
+    if (preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -222,8 +218,8 @@ public class FirefoxProfile {
       prefs.setPreference("browser.startup.page", 1);
     }
 
-    try (Writer writer = new OutputStreamWriter(
-      new FileOutputStream(userPrefs), Charset.defaultCharset())) {
+    try (Writer writer =
+        new OutputStreamWriter(new FileOutputStream(userPrefs), Charset.defaultCharset())) {
       prefs.writeTo(writer);
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -270,7 +266,6 @@ public class FirefoxProfile {
    *
    * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
    */
-
   public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
     this.acceptUntrustedCerts = acceptUntrustedSsl;
   }
@@ -280,10 +275,10 @@ public class FirefoxProfile {
    * from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
    * to find out if the certificate has expired or does not match the host it was served for, but
    * hard to find out if the issuer of the certificate is untrusted.
-   * <p>
-   * By default, it is assumed that the certificates were not be issued from a trusted CA.
-   * <p>
-   * If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
+   *
+   * <p>By default, it is assumed that the certificates were not be issued from a trusted CA.
+   *
+   * <p>If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
    * issued by valid issuer, but has expired or is being served served for a different host (e.g.
    * production certificate served in a testing environment) set this to false.
    *
@@ -315,15 +310,15 @@ public class FirefoxProfile {
    * returned. Note that this profile directory is a temporary one and will be deleted when the JVM
    * exists (at the latest)
    *
-   * This method should be called immediately before starting to use the profile and should only be
-   * called once per instance of the {@link org.openqa.selenium.firefox.FirefoxDriver}.
+   * <p>This method should be called immediately before starting to use the profile and should only
+   * be called once per instance of the {@link org.openqa.selenium.firefox.FirefoxDriver}.
    *
    * @return The directory containing the profile.
    */
   public File layoutOnDisk() {
     try {
-      File profileDir = TemporaryFilesystem.getDefaultTmpFS()
-          .createTempDir("anonymous", "webdriver-profile");
+      File profileDir =
+          TemporaryFilesystem.getDefaultTmpFS().createTempDir("anonymous", "webdriver-profile");
       File userPrefs = new File(profileDir, "user.js");
 
       copyModel(model, profileDir);

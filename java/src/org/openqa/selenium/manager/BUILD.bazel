@@ -1,4 +1,3 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
@@ -7,6 +6,9 @@ java_export(
     name = "manager",
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-manager:%s" % SE_VERSION,
+    opens_to = [
+        "org.seleniumhq.selenium.json",
+    ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     resources = [
         ":manager-linux",
@@ -19,24 +21,24 @@ java_export(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
-        artifact("com.google.guava:guava"),
+        "//java/src/org/openqa/selenium/os",
     ],
 )
 
 copy_file(
     name = "manager-linux",
-    src = "//common/manager:linux/selenium-manager",
+    src = "//common/manager:selenium-manager-linux",
     out = "linux/selenium-manager",
 )
 
 copy_file(
-    name = "manager-windows",
-    src = "//common/manager:windows/selenium-manager.exe",
-    out = "windows/selenium-manager.exe",
+    name = "manager-macos",
+    src = "//common/manager:selenium-manager-macos",
+    out = "macos/selenium-manager",
 )
 
 copy_file(
-    name = "manager-macos",
-    src = "//common/manager:macos/selenium-manager",
-    out = "macos/selenium-manager",
+    name = "manager-windows",
+    src = "//common/manager:selenium-manager-windows",
+    out = "windows/selenium-manager.exe",
 )

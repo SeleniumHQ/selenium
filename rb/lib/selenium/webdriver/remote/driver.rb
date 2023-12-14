@@ -28,6 +28,7 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
+        include DriverExtensions::HasFileDownloads
 
         def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can not set :service object on #{self.class}" if service
@@ -36,6 +37,9 @@ module Selenium
           caps = process_options(options, capabilities)
           super(caps: caps, url: url, **opts)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
+          command_list = @bridge.command_list
+          @bridge.extend(WebDriver::Remote::Features)
+          @bridge.add_commands(command_list)
         end
 
         private
@@ -45,14 +49,32 @@ module Selenium
         end
 
         def devtools_version
-          capabilities['se:cdpVersion']&.split('.')&.first ||
-            raise(Error::WebDriverError, 'DevTools is not supported by the Remote Server')
+          cdp_version = capabilities['se:cdpVersion']&.split('.')&.first
+          raise Error::WebDriverError, 'DevTools is not supported by the Remote Server' unless cdp_version
+
+          Integer(cdp_version)
         end
 
         def process_options(options, capabilities)
-          raise ArgumentError, "#{self.class} needs :options to be set" if options.nil? && capabilities.nil?
+          if options && capabilities
+            msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
+            raise ArgumentError, msg
+          elsif options.nil? && capabilities.nil?
+            raise ArgumentError, "#{self.class} needs :options to be set"
+          end
+          options ? options.as_json : generate_capabilities(capabilities)
+        end
 
-          super(options, capabilities)
+        def generate_capabilities(capabilities)
+          Array(capabilities).map { |cap|
+            if cap.is_a? Symbol
+              cap = WebDriver::Options.send(cap)
+            elsif !cap.respond_to? :as_json
+              msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
+              raise ArgumentError, msg
+            end
+            cap.as_json
+          }.inject(:merge)
         end
       end # Driver
     end # Remote

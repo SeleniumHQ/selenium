@@ -109,7 +109,8 @@ module Selenium
                 expect(selected_options).to include(driver.find_element(css: 'option[value="onion gravy"]'))
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -137,7 +138,8 @@ module Selenium
                 expect(selected_options).to include(driver.find_element(css: 'option[value=ham]'))
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { multi_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -163,7 +165,8 @@ module Selenium
                 expect(selected_options).to include(driver.find_element(css: 'option[value=ham]'))
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   multi_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -197,7 +200,8 @@ module Selenium
                 expect(select.selected_options).to eq([expected_option])
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:text, 'Disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -223,7 +227,8 @@ module Selenium
                 expect(selected_options).to eq([driver.find_element(css: 'option[value="two"]')])
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect { single_disabled.select_by(:index, 1) }.to raise_exception(Error::UnsupportedOperationError)
               end
 
@@ -247,7 +252,8 @@ module Selenium
                 expect(selected_options).to eq([driver.find_element(css: 'option[value="two"]')])
               end
 
-              it 'errors when option disabled' do
+              it 'errors when option disabled',
+                 exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
                 expect {
                   single_disabled.select_by(:value, 'disabled')
                 }.to raise_exception(Error::UnsupportedOperationError)
@@ -345,7 +351,8 @@ module Selenium
             expect { select.select_all }.to raise_exception(Error::UnsupportedOperationError)
           end
 
-          it 'raises exception if select contains disabled options' do
+          it 'raises exception if select contains disabled options',
+             exclude: {browser: :safari, reason: 'Safari raises no exception with disabled'} do
             select = described_class.new(driver.find_element(name: 'multi_disabled'))
 
             expect { select.select_all }.to raise_exception(Error::UnsupportedOperationError)

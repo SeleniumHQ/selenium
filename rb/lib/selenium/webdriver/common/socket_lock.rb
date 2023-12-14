@@ -70,7 +70,7 @@ module Selenium
         @server.close_on_exec = true
         true
       rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => e
-        WebDriver.logger.debug("#{self}: #{e.message}")
+        WebDriver.logger.debug("#{self}: #{e.message}", id: :driver_service)
         false
       end
 

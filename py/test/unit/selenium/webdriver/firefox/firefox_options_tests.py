@@ -18,6 +18,7 @@
 import pytest
 
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -77,7 +78,7 @@ def test_set_proxy_isnt_in_moz_prefix(options):
     options.proxy = proxy
 
     caps = options.to_capabilities()
-    assert caps["proxy"]["proxyType"] == "MANUAL"
+    assert caps["proxy"]["proxyType"] == "manual"
     assert caps.get("moz:firefoxOptions") is None
 
 
@@ -132,7 +133,7 @@ def test_creates_capabilities(options):
     options._arguments = ["foo"]
     options._binary = FirefoxBinary("/bar")
     options._preferences = {"foo": "bar"}
-    options._proxy = Proxy({"proxyType": ProxyType.MANUAL})
+    options.proxy = Proxy({"proxyType": ProxyType.MANUAL})
     options._profile = profile
     options.log.level = "debug"
     caps = options.to_capabilities()
@@ -142,7 +143,7 @@ def test_creates_capabilities(options):
     assert opts["binary"] == "/bar"
     assert opts["prefs"]["foo"] == "bar"
     assert opts["profile"] == profile.encoded
-    assert caps["proxy"]["proxyType"] == ProxyType.MANUAL["string"]
+    assert caps["proxy"]["proxyType"] == "manual"
     assert opts["log"]["level"] == "debug"
 
 
@@ -150,7 +151,7 @@ def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
 
     caps = DesiredCapabilities.FIREFOX.copy()
-    caps.update({"pageLoadStrategy": "normal"})
+    caps.update({"pageLoadStrategy": PageLoadStrategy.normal})
     assert options._caps == caps
 
 
@@ -166,19 +167,19 @@ def test_raises_exception_with_invalid_page_load_strategy(options):
 
 
 def test_set_page_load_strategy(options):
-    options.page_load_strategy = "normal"
-    assert options._caps["pageLoadStrategy"] == "normal"
+    options.page_load_strategy = PageLoadStrategy.normal
+    assert options._caps["pageLoadStrategy"] == PageLoadStrategy.normal
 
 
 def test_get_page_load_strategy(options):
-    options._page_load_strategy = "normal"
-    assert options._caps["pageLoadStrategy"] == "normal"
+    options._page_load_strategy = PageLoadStrategy.normal
+    assert options._caps["pageLoadStrategy"] == PageLoadStrategy.normal
 
 
 def test_creates_capabilities_with_page_load_strategy(options):
-    options.page_load_strategy = "eager"
+    options.page_load_strategy = PageLoadStrategy.eager
     caps = options.to_capabilities()
-    assert caps["pageLoadStrategy"] == "eager"
+    assert caps["pageLoadStrategy"] == PageLoadStrategy.eager
 
 
 def test_enables_firefox_mobile(options):

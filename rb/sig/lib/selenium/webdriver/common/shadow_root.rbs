@@ -1,0 +1,33 @@
+module Selenium
+  module WebDriver
+    class ShadowRoot
+      @bridge: untyped
+
+      @id: untyped
+
+      ROOT_KEY: String
+
+      include SearchContext
+
+      def initialize: (untyped bridge, untyped id) -> void
+
+      def inspect: () -> untyped
+
+      def ==: (untyped other) -> untyped
+
+      alias eql? ==
+
+      def hash: () -> untyped
+
+      def ref: () -> ::Array[:shadow_root | untyped]
+
+      def to_json: () -> untyped
+
+      def as_json: () -> ::Hash[untyped, untyped]
+
+      private
+
+      attr_reader bridge: untyped
+    end
+  end
+end

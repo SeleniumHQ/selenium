@@ -17,35 +17,44 @@
 # specific language governing permissions and limitations
 # under the License.
 
-RSpec::Matchers.define :have_deprecated do |deprecation|
-  match do |actual|
-    # Suppresses logging output to stdout while ensuring that it is still happening
-    default_output = Selenium::WebDriver.logger.io
-    io = StringIO.new
-    Selenium::WebDriver.logger.output = io
+LEVELS = %w[warning info deprecated].freeze
 
-    actual.call
+LEVELS.each do |level|
+  RSpec::Matchers.define "have_#{level}" do |entry|
+    match do |actual|
+      # Suppresses logging output to stderr while ensuring that it is still happening
+      default_output = Selenium::WebDriver.logger.io
+      io = StringIO.new
+      Selenium::WebDriver.logger.output = io
 
-    Selenium::WebDriver.logger.output = default_output
-    @deprecations_found = (io.rewind && io.read).scan(/DEPRECATION\] \[:([^\]]*)\]/).flatten.map(&:to_sym)
-    expect(Array(deprecation).sort).to eq(@deprecations_found.sort)
-  end
+      begin
+        actual.call
+      rescue StandardError => e
+        raise e, 'Can not evaluate output when statement raises an exception'
+      ensure
+        Selenium::WebDriver.logger.output = default_output
+      end
 
-  failure_message do
-    but_message = if @deprecations_found.nil? || @deprecations_found.empty?
-                    'no deprecations were found'
-                  else
-                    "instead these deprecations were found: [#{@deprecations_found.join(', ')}]"
-                  end
-    "expected :#{deprecation} to have been deprecated, but #{but_message}"
-  end
+      @entries_found = (io.rewind && io.read).scan(/\[:([^\]]*)\]/).flatten.map(&:to_sym)
+      expect(Array(entry).sort).to eq(@entries_found.sort)
+    end
 
-  failure_message_when_negated do
-    but_message = "it was found among these deprecations: [#{@deprecations_found.join(', ')}]"
-    "expected :#{deprecation} not to have been deprecated, but #{but_message}"
-  end
+    failure_message do
+      but_message = if @entries_found.nil? || @entries_found.empty?
+                      "no #{entry} entries were reported"
+                    else
+                      "instead these entries were found: [#{@entries_found.join(', ')}]"
+                    end
+      "expected :#{entry} to have been logged, but #{but_message}"
+    end
 
-  def supports_block_expectations?
-    true
+    failure_message_when_negated do
+      but_message = "it was found among these entries: [#{@entries_found.join(', ')}]"
+      "expected :#{entry} not to have been logged, but #{but_message}"
+    end
+
+    def supports_block_expectations?
+      true
+    end
   end
 end

@@ -17,19 +17,17 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Comparator.naturalOrder;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static java.util.Comparator.naturalOrder;
-
 import org.openqa.selenium.internal.Require;
 
 public class ConcatenatingConfig implements Config {
@@ -42,13 +40,15 @@ public class ConcatenatingConfig implements Config {
     this.prefix = prefix == null || "".equals(prefix) ? "" : (prefix + separator);
     this.separator = separator;
 
-    this.values = Require.nonNull("Config values", values).entrySet().stream()
-        .peek(entry -> Require.nonNull("Key", entry.getKey()))
-        .peek(entry -> Require.nonNull("Value", entry.getValue()))
-        .map(entry -> new AbstractMap.SimpleImmutableEntry<>(
-            String.valueOf(entry.getKey()),
-            String.valueOf(entry.getValue())))
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    this.values =
+        Require.nonNull("Config values", values).entrySet().stream()
+            .peek(entry -> Require.nonNull("Key", entry.getKey()))
+            .peek(entry -> Require.nonNull("Value", entry.getValue()))
+            .map(
+                entry ->
+                    new AbstractMap.SimpleImmutableEntry<>(
+                        String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
+            .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -70,13 +70,13 @@ public class ConcatenatingConfig implements Config {
     String actualPrefix = prefix.toLowerCase(Locale.ENGLISH);
 
     return values.keySet().stream()
-      .filter(key -> key.toLowerCase(Locale.ENGLISH).startsWith(actualPrefix))
-      .filter(key -> key.length() > (actualPrefix.length() + 1))
-      .map(key -> key.substring(actualPrefix.length()))
-      .filter(key -> key.indexOf(separator) > -1)
-      .map(key -> key.substring(0, key.indexOf(separator)))
-      .map(key -> key.toLowerCase(Locale.ENGLISH))
-      .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .filter(key -> key.toLowerCase(Locale.ENGLISH).startsWith(actualPrefix))
+        .filter(key -> key.length() > (actualPrefix.length() + 1))
+        .map(key -> key.substring(actualPrefix.length()))
+        .filter(key -> key.indexOf(separator) > -1)
+        .map(key -> key.substring(0, key.indexOf(separator)))
+        .map(key -> key.toLowerCase(Locale.ENGLISH))
+        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
   }
 
   @Override
@@ -86,10 +86,10 @@ public class ConcatenatingConfig implements Config {
     String actualPrefix = String.format("%s%s_", prefix, section).toLowerCase(Locale.ENGLISH);
 
     return values.keySet().stream()
-      .filter(key -> key.toLowerCase(Locale.ENGLISH).startsWith(actualPrefix))
-      .filter(key -> key.length() > actualPrefix.length() + 1)
-      .map(key -> key.substring(actualPrefix.length()))
-      .map(key -> key.toLowerCase(Locale.ENGLISH))
-      .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .filter(key -> key.toLowerCase(Locale.ENGLISH).startsWith(actualPrefix))
+        .filter(key -> key.length() > actualPrefix.length() + 1)
+        .map(key -> key.substring(actualPrefix.length()))
+        .map(key -> key.toLowerCase(Locale.ENGLISH))
+        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
   }
 }

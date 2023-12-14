@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.events;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,26 +33,19 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.net.PortProber;
 import org.zeromq.ZContext;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-
 class ZeroMqLocalhostTest {
   private EventBus bus;
 
   @BeforeEach
   public void getBus() {
     Secret secret = new Secret("cheese");
-    bus = ZeroMqEventBus.create(
-      new ZContext(),
-      "tcp://localhost:" + PortProber.findFreePort(),
-      "tcp://localhost:" + PortProber.findFreePort(),
-      true,
-      secret);
+    bus =
+        ZeroMqEventBus.create(
+            new ZContext(),
+            "tcp://localhost:" + PortProber.findFreePort(),
+            "tcp://localhost:" + PortProber.findFreePort(),
+            true,
+            secret);
   }
 
   @AfterEach
@@ -71,7 +71,8 @@ class ZeroMqLocalhostTest {
   @Timeout(4)
   void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
-    bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
+    bus.addListener(
+        new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
     bus.fire(new Event(new EventName("cheese"), null));
 

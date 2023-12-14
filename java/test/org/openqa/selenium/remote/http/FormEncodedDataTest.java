@@ -17,12 +17,16 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -31,14 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class FormEncodedDataTest {
@@ -66,8 +64,8 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(
-      ImmutableMap.of("key", singletonList("value"), "foo", singletonList("bar")));
+    assertThat(data.get())
+        .isEqualTo(ImmutableMap.of("key", singletonList("value"), "foo", singletonList("bar")));
   }
 
   @Test
@@ -108,9 +106,10 @@ class FormEncodedDataTest {
 
   @Test
   void aSingleParameterNameIsEnough() {
-    HttpRequest request = new HttpRequest(GET, "/example")
-      .addHeader("Content-Type", MediaType.FORM_DATA.toString())
-      .setContent(bytes("param".getBytes()));
+    HttpRequest request =
+        new HttpRequest(GET, "/example")
+            .addHeader("Content-Type", MediaType.FORM_DATA.toString())
+            .setContent(bytes("param".getBytes()));
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
@@ -150,7 +149,7 @@ class FormEncodedDataTest {
     }
 
     return new HttpRequest(GET, "/foo")
-      .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-      .setContent(utf8String(content.toString()));
+        .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+        .setContent(utf8String(content.toString()));
   }
 }

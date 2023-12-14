@@ -17,11 +17,8 @@
 
 package org.openqa.selenium;
 
-/**
- * Used to indicate that a command used by the remote webdriver is unsupported.
- */
+/** Used to indicate that a command used by the remote webdriver is unsupported. */
 public class UnsupportedCommandException extends WebDriverException {
-
 
   public UnsupportedCommandException() {
     super();

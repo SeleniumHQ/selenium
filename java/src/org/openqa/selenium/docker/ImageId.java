@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.docker;
 
-import org.openqa.selenium.internal.Require;
-
 import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class ImageId {
 
