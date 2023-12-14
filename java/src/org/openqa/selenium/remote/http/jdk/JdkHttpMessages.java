@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http.jdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublisher;
@@ -31,6 +30,7 @@ import java.util.stream.StreamSupport;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -112,28 +112,17 @@ class JdkHttpMessages {
 
   /**
    * Some drivers do not support chunked transport, we ensure the http client is not using chunked
-   * transport. This is done by using a BodyPublisher with a known size, in best case without
-   * wasting memory by buffering the request.
+   * transport. This is done by using a BodyPublisher with a known size.
    *
    * @return a BodyPublisher with a known size
    */
   private BodyPublisher notChunkingBodyPublisher(HttpRequest req) {
-    String length = req.getHeader("content-length");
-
-    if (length == null) {
-      // read the data into a byte array to know the length
-      byte[] bytes = Contents.bytes(req.getContent());
-      if (bytes.length == 0) {
-        // Looks like we were given a request with no payload.
-        return BodyPublishers.noBody();
-      }
-      return BodyPublishers.ofByteArray(bytes);
-    }
+    Contents.Supplier content = req.getContent();
 
     // we know the length of the request and use it
-    BodyPublisher chunking = BodyPublishers.ofInputStream(req.getContent());
+    BodyPublisher chunking = BodyPublishers.ofInputStream(content);
 
-    return BodyPublishers.fromPublisher(chunking, Long.parseLong(length));
+    return BodyPublishers.fromPublisher(chunking, content.length());
   }
 
   public URI getRawUri(HttpRequest req) {
@@ -171,7 +160,7 @@ class JdkHttpMessages {
                     .forEach(value -> res.addHeader(name, value)));
     byte[] responseBody = response.body();
     if (responseBody != null) {
-      res.setContent(() -> new ByteArrayInputStream(responseBody));
+      res.setContent(Contents.bytes(responseBody));
     }
 
     return res;

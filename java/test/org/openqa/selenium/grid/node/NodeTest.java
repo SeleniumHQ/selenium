@@ -525,7 +525,7 @@ class NodeTest {
     String hello = "Hello, world!";
     String zip = Zip.zip(createTmpFile(hello));
     String payload = new Json().toJson(Collections.singletonMap("file", zip));
-    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    req.setContent(Contents.bytes(payload.getBytes()));
     node.execute(req);
 
     File baseDir = getTemporaryFilesystemBaseDir(local.getUploadsFilesystem(session.getId()));
@@ -553,7 +553,7 @@ class NodeTest {
     String zip = simulateFileDownload(session.getId(), hello);
 
     String payload = new Json().toJson(Collections.singletonMap("name", zip));
-    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    req.setContent(Contents.bytes(payload.getBytes()));
     HttpResponse rsp = node.execute(req);
     Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
     try {
@@ -592,7 +592,7 @@ class NodeTest {
     simulateFileDownload(session.getId(), "Goodbye, world!");
 
     String payload = new Json().toJson(Collections.singletonMap("name", zip));
-    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    req.setContent(Contents.bytes(payload.getBytes()));
     HttpResponse rsp = node.execute(req);
     Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
     try {
@@ -758,7 +758,7 @@ class NodeTest {
       HttpRequest req =
           new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
       String payload = new Json().toJson(Collections.singletonMap("my-file", "README.md"));
-      req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+      req.setContent(Contents.bytes(payload.getBytes()));
 
       String msg = "Please specify file to download in payload as {\"name\": \"fileToDownload\"}";
       assertThatThrownBy(() -> node.execute(req)).hasMessageContaining(msg);
@@ -780,7 +780,7 @@ class NodeTest {
       HttpRequest req =
           new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
       String payload = new Json().toJson(Collections.singletonMap("name", "README.md"));
-      req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+      req.setContent(Contents.bytes(payload.getBytes()));
 
       String msg = "Cannot find file [README.md] in directory";
       assertThatThrownBy(() -> node.execute(req)).hasMessageContaining(msg);
