@@ -12,9 +12,7 @@ jobs:
       name: Build
       cache-key: false
       os: windows
-      run: |
-        bazel build //dotnet/src/webdriver --stamp
-        bazel build //dotnet/src/support --stamp
+      run: bazel build //dotnet:all
 
   integration-tests:
     name: Browser Tests
