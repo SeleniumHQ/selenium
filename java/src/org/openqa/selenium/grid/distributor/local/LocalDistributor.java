@@ -459,6 +459,12 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
+      Node node = nodes.get(nodeId);
+
+      if (node instanceof RemoteNode) {
+        ((RemoteNode) node).close();
+      }
+
       nodes.remove(nodeId);
       model.remove(nodeId);
       allChecks.remove(nodeId);
