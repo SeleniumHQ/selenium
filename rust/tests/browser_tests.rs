@@ -47,6 +47,8 @@ fn browser_version_test(
         &browser_version,
         "--debug",
         "--avoid-browser-download",
+        "--language-binding",
+        "java",
     ])
     .assert()
     .success()
@@ -60,6 +62,7 @@ fn browser_version_test(
     if !browser_version.is_empty() && output.contains("cache") {
         assert!(output.contains(&driver_version));
     }
+    assert!(!output.contains("Error sending stats"));
 }
 
 #[rstest]

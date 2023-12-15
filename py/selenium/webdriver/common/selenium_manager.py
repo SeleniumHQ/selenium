@@ -122,6 +122,8 @@ class SeleniumManager:
         """
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
+        args.append("--language-binding")
+        args.append("python")
         args.append("--output")
         args.append("json")
 

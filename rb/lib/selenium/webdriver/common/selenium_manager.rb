@@ -112,6 +112,7 @@ module Selenium
         end
 
         def run(*command)
+          command += %w[--language-binding ruby]
           command += %w[--output json]
           command << '--debug' if WebDriver.logger.debug?
 

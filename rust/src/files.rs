@@ -35,6 +35,7 @@ use std::io::{BufReader, Cursor, Read};
 use std::path::{Path, PathBuf};
 use tar::Archive;
 use tempfile::Builder;
+use walkdir::{DirEntry, WalkDir};
 use zip::ZipArchive;
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
@@ -554,4 +555,37 @@ pub fn find_bytes(buffer: &[u8], bytes: &[u8]) -> Option<usize> {
     buffer
         .windows(bytes.len())
         .position(|window| window == bytes)
+}
+
+pub fn collect_files_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
+    filter: F,
+) -> Vec<PathBuf> {
+    WalkDir::new(cache_path)
+        .sort_by_file_name()
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| filter(entry))
+        .map(|entry| entry.path().to_owned())
+        .collect()
+}
+
+pub fn find_latest_from_cache<F: Fn(&DirEntry) -> bool>(
+    cache_path: &PathBuf,
+    filter: F,
+) -> Result<Option<PathBuf>, Error> {
+    let files_in_cache = collect_files_from_cache(cache_path, filter);
+    if !files_in_cache.is_empty() {
+        Ok(Some(files_in_cache.iter().last().unwrap().to_owned()))
+    } else {
+        Ok(None)
+    }
+}
+
+pub fn capitalize(s: &str) -> String {
+    let mut chars = s.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+    }
 }

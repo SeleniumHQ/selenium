@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
@@ -27,10 +25,12 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Throwables;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -42,6 +42,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 /**
@@ -79,7 +80,8 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
         Level.FINER,
         "Decoding response. Response code was: {0} and content: {1}",
         new Object[] {encodedResponse.getStatus(), content});
-    String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
+    String contentType =
+        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
 
     Response response = new Response();
 
@@ -173,7 +175,11 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
               ? response.getState()
               : errorCodes.toState(response.getStatus()));
       exception.put("message", ((WebDriverException) value).getMessage());
-      exception.put("stacktrace", Throwables.getStackTraceAsString((WebDriverException) value));
+      StringWriter stacktrace = new StringWriter();
+      try (PrintWriter printWriter = new PrintWriter(stacktrace)) {
+        ((WebDriverException) value).printStackTrace(printWriter);
+      }
+      exception.put("stacktrace", stacktrace.toString());
       if (value instanceof UnhandledAlertException) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("text", ((UnhandledAlertException) value).getAlertText());

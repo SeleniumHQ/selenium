@@ -1,4 +1,23 @@
-4.15.0 (unreleased)
+4.16.0 (unreleased)
+=========================
+
+Ruby:
+* Add RBS files to Ruby (#12844)
+* Convert binary locations for cygwin (#12618)
+* Allow Selenium Manager to work with Unix (#13161)
+* Extend RBS support for logger and log entry (#13192)
+* Update rules_ruby to the latest version (#13235)
+
+BiDi:
+  * Released selenium-devtools 0.120.0 (supports CDP v85, v118, v119, v120)
+
+Chrome:
+* Fix http proxy configuration for chrome (#13093)
+
+Firefox:
+* Delete 'lock' file in FF profile (#13090)
+
+4.15.0 (2023-11-01)
 =========================
 
 * Do not set browser binary in selenium manager if it is an empty string (#12738)

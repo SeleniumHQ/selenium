@@ -22,8 +22,6 @@ import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -92,7 +90,7 @@ public class RemoteWebDriverBuilder {
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
   private static final Set<String> ILLEGAL_METADATA_KEYS =
-      ImmutableSet.of("alwaysMatch", "capabilities", "desiredCapabilities", "firstMatch");
+      Set.of("alwaysMatch", "capabilities", "desiredCapabilities", "firstMatch");
   private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
   private final Map<String, Object> metadata = new TreeMap<>();
@@ -284,7 +282,7 @@ public class RemoteWebDriverBuilder {
     return this;
   }
 
-  @VisibleForTesting
+  /** visible for testing only */
   RemoteWebDriverBuilder connectingWith(Function<ClientConfig, HttpHandler> handlerFactory) {
     Require.nonNull("Handler factory", handlerFactory);
     this.handlerFactory = handlerFactory;
@@ -300,7 +298,7 @@ public class RemoteWebDriverBuilder {
     return this;
   }
 
-  @VisibleForTesting
+  /** visible for testing only */
   WebDriver getLocalDriver() {
     if (remoteHost != null || clientConfig.baseUri() != null || driverService != null) {
       return null;

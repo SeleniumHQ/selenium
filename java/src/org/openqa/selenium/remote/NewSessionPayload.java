@@ -21,17 +21,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
-import com.google.common.io.CharSource;
-import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -40,6 +33,10 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -61,7 +58,7 @@ public class NewSessionPayload implements Closeable {
 
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;
-  private final ImmutableSet<Dialect> dialects;
+  private final Set<Dialect> dialects;
 
   private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
@@ -75,18 +72,18 @@ public class NewSessionPayload implements Closeable {
 
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
-      CharStreams.copy(source, writer);
+      source.transferTo(writer);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
 
-    ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
+    Set<Dialect> dialects = new LinkedHashSet<>();
     try {
       if (isW3C()) {
         dialects.add(Dialect.W3C);
       }
 
-      this.dialects = dialects.build();
+      this.dialects = Set.copyOf(dialects);
 
       validate();
     } catch (IOException e) {
@@ -109,9 +106,9 @@ public class NewSessionPayload implements Closeable {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
     return create(
-        ImmutableMap.of(
+        Map.of(
             "capabilities",
-            ImmutableMap.of(
+            Map.of(
                 "firstMatch",
                 caps.stream().map(Capabilities::asMap).collect(Collectors.toList()))));
   }
@@ -134,12 +131,12 @@ public class NewSessionPayload implements Closeable {
   private void validate() throws IOException {
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     if (alwaysMatch == null) {
-      alwaysMatch = ImmutableMap.of();
+      alwaysMatch = Map.of();
     }
     Map<String, Object> always = alwaysMatch;
     Collection<Map<String, Object>> firsts = getFirstMatches();
     if (firsts == null) {
-      firsts = ImmutableList.of(ImmutableMap.of());
+      firsts = List.of(Map.of());
     }
 
     if (firsts.isEmpty()) {
@@ -149,7 +146,8 @@ public class NewSessionPayload implements Closeable {
     firsts.stream()
         .peek(
             map -> {
-              Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
+              Set<String> overlap = new HashSet<>(always.keySet());
+              overlap.removeIf((e) -> !map.keySet().contains(e));
               if (!overlap.isEmpty()) {
                 throw new IllegalArgumentException(
                     "Overlapping keys between w3c always and first match capabilities: " + overlap);
@@ -164,11 +162,12 @@ public class NewSessionPayload implements Closeable {
             })
         .peek(
             map -> {
-              ImmutableSortedSet<String> nullKeys =
+              List<String> nullKeys =
                   map.entrySet().stream()
                       .filter(entry -> entry.getValue() == null)
                       .map(Map.Entry::getKey)
-                      .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+                      .sorted()
+                      .collect(Collectors.toList());
               if (!nullKeys.isEmpty()) {
                 throw new IllegalArgumentException(
                     "Null values found in w3c capabilities. Keys are: " + nullKeys);
@@ -176,10 +175,11 @@ public class NewSessionPayload implements Closeable {
             })
         .peek(
             map -> {
-              ImmutableSortedSet<String> illegalKeys =
+              List<String> illegalKeys =
                   map.keySet().stream()
                       .filter(ACCEPTED_W3C_PATTERNS.negate())
-                      .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+                      .sorted()
+                      .collect(Collectors.toList());
               if (!illegalKeys.isEmpty()) {
                 throw new IllegalArgumentException(
                     "Illegal key values seen in w3c capabilities: " + illegalKeys);
@@ -213,8 +213,8 @@ public class NewSessionPayload implements Closeable {
   }
 
   private void writeMetaData(JsonOutput out) throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -251,17 +251,17 @@ public class NewSessionPayload implements Closeable {
   }
 
   public Set<Dialect> getDownstreamDialects() {
-    return dialects.isEmpty() ? ImmutableSet.of(DEFAULT_DIALECT) : dialects;
+    return dialects.isEmpty() ? Set.of(DEFAULT_DIALECT) : dialects;
   }
 
   public Map<String, Object> getMetadata() {
     Set<String> ignoredMetadataKeys =
-        ImmutableSet.of("capabilities", "desiredCapabilities", "requiredCapabilities");
+        Set.of("capabilities", "desiredCapabilities", "requiredCapabilities");
 
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
         JsonInput input = json.newInput(reader)) {
-      ImmutableMap.Builder<String, Object> toReturn = ImmutableMap.builder();
+      Map<String, Object> toReturn = new LinkedHashMap<>();
 
       input.beginObject();
       while (input.hasNext()) {
@@ -280,7 +280,7 @@ public class NewSessionPayload implements Closeable {
       }
       input.endObject();
 
-      return toReturn.build();
+      return Map.copyOf(toReturn);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -308,26 +308,29 @@ public class NewSessionPayload implements Closeable {
       fromW3c = Stream.of(); // No W3C capabilities.
     } else {
       if (alwaysMatch == null) {
-        alwaysMatch = ImmutableMap.of();
+        alwaysMatch = Map.of();
       }
       Map<String, Object> always = alwaysMatch; // Keep the compiler happy.
       if (firsts == null) {
-        firsts = ImmutableList.of(ImmutableMap.of());
+        firsts = List.of(Map.of());
       }
 
       fromW3c =
           firsts.stream()
               .map(
-                  first ->
-                      ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
+                  first -> {
+                    Map<String, Object> merged = new LinkedHashMap<>(always);
+                    merged.putAll(first);
+                    return Map.copyOf(merged);
+                  });
     }
 
     return fromW3c.distinct();
   }
 
   private boolean isW3C() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -343,8 +346,8 @@ public class NewSessionPayload implements Closeable {
   }
 
   private Map<String, Object> getAlwaysMatch() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -365,12 +368,12 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return ImmutableMap.of();
+    return Map.of();
   }
 
   private Collection<Map<String, Object>> getFirstMatches() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
+    try (Reader reader =
+            new InputStreamReader(backingStore.asByteSource().openBufferedStream(), UTF_8);
         JsonInput input = json.newInput(reader)) {
       input.beginObject();
       while (input.hasNext()) {
@@ -391,7 +394,7 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return ImmutableList.of(ImmutableMap.of());
+    return List.of(Map.of());
   }
 
   @Override
