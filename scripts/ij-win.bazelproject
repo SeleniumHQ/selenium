@@ -1,0 +1,13 @@
+directories:
+  .
+
+test_sources:
+  java/test
+  py/test
+
+derive_targets_from_directories: true
+
+additional_languages:
+  python
+
+java_language_level: 17
