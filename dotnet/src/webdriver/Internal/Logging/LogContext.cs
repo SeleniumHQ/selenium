@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Internal.Logging
 
         private readonly ILogContext _parentLogContext;
 
-        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, ILogHandlerList handlers)
+        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, IEnumerable<ILogHandler> handlers)
         {
             _level = level;
 
@@ -43,7 +43,10 @@ namespace OpenQA.Selenium.Internal.Logging
 
             _loggers = loggers;
 
-            Handlers = handlers ?? new LogHandlerList(this);
+            if (handlers is not null)
+            {
+                Handlers = new LogHandlerList(this, handlers);
+            }
         }
 
         public ILogContext CreateContext()
@@ -60,15 +63,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, minimumLevel))));
             }
 
-            var context = new LogContext(minimumLevel, this, loggers, null);
-
-            if (Handlers != null)
-            {
-                foreach (var handler in Handlers)
-                {
-                    context.Handlers.Add(handler);
-                }
-            }
+            var context = new LogContext(minimumLevel, this, loggers, Handlers);
 
             Log.CurrentContext = context;
 
