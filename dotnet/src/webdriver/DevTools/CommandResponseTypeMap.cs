@@ -29,22 +29,21 @@ namespace OpenQA.Selenium.DevTools
         private readonly IDictionary<Type, Type> commandResponseTypeDictionary = new Dictionary<Type, Type>();
 
         /// <summary>
-        /// Adds mapping to a response type for a specified command type.
+        /// Gets the command response type corresponding to the specified command type.
         /// </summary>
-        /// <param name="commandSettingsType">The type of command to add the mapping for.</param>
-        /// <param name="commandResponseType">The type of response object corresponding to the command.</param>
-        public void AddCommandResponseType(Type commandSettingsType, Type commandResponseType)
+        /// <typeparam name="T">The type of command for which to retrieve the response type.</typeparam>
+        /// <param name="commandResponseType">The returned response type.</param>
+        /// <returns><see langword="true"/> if the specified command type has a mapped response type; otherwise, <see langword="false"/>.</returns>
+        public bool TryGetCommandResponseType<T>(out Type commandResponseType)
+            where T : ICommand
         {
-            if (!commandResponseTypeDictionary.ContainsKey(commandSettingsType))
-            {
-                commandResponseTypeDictionary.Add(commandSettingsType, commandResponseType);
-            }
+            return commandResponseTypeDictionary.TryGetValue(typeof(T), out commandResponseType);
         }
 
         /// <summary>
         /// Gets the command response type corresponding to the specified command type.
         /// </summary>
-        /// <param name="command">The command for which to retrieve the response type.</param>
+        /// <param name="command">The type of command for which to retrieve the response type.</param>
         /// <param name="commandResponseType">The returned response type.</param>
         /// <returns><see langword="true"/> if the specified command type has a mapped response type; otherwise, <see langword="false"/>.</returns>
         public bool TryGetCommandResponseType(ICommand command, out Type commandResponseType)

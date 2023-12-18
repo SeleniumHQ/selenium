@@ -148,7 +148,7 @@ namespace OpenQA.Selenium.DevTools
                 return null;
             }
 
-            if (!this.domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType(command, out Type commandResponseType))
+            if (!this.domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType<TCommand>(out Type commandResponseType))
             {
                 throw new InvalidOperationException($"Type {command.GetType()} does not correspond to a known command response type.");
             }
