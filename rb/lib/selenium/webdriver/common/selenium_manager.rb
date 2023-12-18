@@ -41,8 +41,8 @@ module Selenium
 
           output = run(*command)
 
-          browser_path = output['browser_path']
-          driver_path = output['driver_path']
+          browser_path = Platform.cygwin? ? Platform.cygwin_path(output['browser_path']) : output['browser_path']
+          driver_path = Platform.cygwin? ? Platform.cygwin_path(output['driver_path']) : output['driver_path']
           Platform.assert_executable driver_path
 
           if options.respond_to?(:binary) && browser_path && !browser_path.empty?
@@ -83,7 +83,13 @@ module Selenium
                 "#{directory}/macos/selenium-manager"
               elsif Platform.linux?
                 "#{directory}/linux/selenium-manager"
+              elsif Platform.unix?
+                WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix; verify settings',
+                                      id: %i[selenium_manager unix_binary])
+                "#{directory}/linux/selenium-manager"
               end
+            rescue Error::WebDriverError => e
+              raise Error::WebDriverError, "Unable to obtain Selenium Manager binary for #{e.message}"
             end)
 
             validate_location(location)
@@ -106,6 +112,7 @@ module Selenium
         end
 
         def run(*command)
+          command += %w[--language-binding ruby]
           command += %w[--output json]
           command << '--debug' if WebDriver.logger.debug?
 

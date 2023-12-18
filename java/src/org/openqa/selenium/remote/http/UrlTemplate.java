@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -41,7 +41,7 @@ public class UrlTemplate {
     StringBuilder regex = new StringBuilder("^");
     Matcher groupNameMatcher = GROUP_NAME.matcher(template);
 
-    ImmutableList.Builder<String> groups = ImmutableList.builder();
+    List<String> groups = new ArrayList<>();
     int lastStart = 0;
     int lastGroup = 0;
 
@@ -67,7 +67,7 @@ public class UrlTemplate {
     // $ end of string
     regex.append('$');
 
-    List<String> allGroups = groups.build();
+    List<String> allGroups = List.copyOf(groups);
     // do we hit a fast path?
     switch (allGroups.size()) {
       case 0: // no groups, just .equals
@@ -118,12 +118,12 @@ public class UrlTemplate {
                 return null;
               }
 
-              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              Map<String, String> params = new LinkedHashMap<>();
               for (int i = 0; i < allGroups.size(); i++) {
                 params.put(allGroups.get(i), matcher.group(i + 1));
               }
 
-              return new Match(matchAgainst, params.build());
+              return new Match(matchAgainst, Map.copyOf(params));
             };
     }
   }
@@ -146,7 +146,7 @@ public class UrlTemplate {
 
     private Match(String url, Map<String, String> parameters) {
       this.url = url;
-      this.parameters = ImmutableMap.copyOf(parameters);
+      this.parameters = Map.copyOf(parameters);
     }
 
     public String getUrl() {

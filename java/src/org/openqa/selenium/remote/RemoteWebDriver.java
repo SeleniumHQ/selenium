@@ -22,8 +22,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -209,9 +207,7 @@ public class RemoteWebDriver
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
 
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-
-    Set<String> logTypesToInclude = builder.build();
+    Set<String> logTypesToInclude = Set.of();
 
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
     LocalLogs clientLogs =
@@ -597,7 +593,7 @@ public class RemoteWebDriver
   }
 
   protected Response execute(String command) {
-    return execute(command, ImmutableMap.of());
+    return execute(command, Map.of());
   }
 
   protected ExecuteMethod getExecuteMethod() {
@@ -625,7 +621,7 @@ public class RemoteWebDriver
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(
         DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
-        ImmutableMap.of("authenticatorId", authenticator.getId()));
+        Map.of("authenticatorId", authenticator.getId()));
   }
 
   /**
@@ -1218,18 +1214,17 @@ public class RemoteWebDriver
     public void addCredential(Credential credential) {
       execute(
           DriverCommand.ADD_CREDENTIAL,
-          new ImmutableMap.Builder<String, Object>()
-              .putAll(credential.toMap())
-              .put("authenticatorId", id)
-              .build());
+          Stream.concat(
+                  credential.toMap().entrySet().stream(),
+                  Stream.of(Map.entry("authenticatorId", id)))
+              .collect(Collectors.toUnmodifiableMap((e) -> e.getKey(), (e) -> e.getValue())));
     }
 
     @Override
     public List<Credential> getCredentials() {
       List<Map<String, Object>> response =
           (List<Map<String, Object>>)
-              execute(DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id))
-                  .getValue();
+              execute(DriverCommand.GET_CREDENTIALS, Map.of("authenticatorId", id)).getValue();
       return response.stream().map(Credential::fromMap).collect(Collectors.toList());
     }
 
@@ -1242,19 +1237,19 @@ public class RemoteWebDriver
     public void removeCredential(String credentialId) {
       execute(
           DriverCommand.REMOVE_CREDENTIAL,
-          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId));
+          Map.of("authenticatorId", id, "credentialId", credentialId));
     }
 
     @Override
     public void removeAllCredentials() {
-      execute(DriverCommand.REMOVE_ALL_CREDENTIALS, ImmutableMap.of("authenticatorId", id));
+      execute(DriverCommand.REMOVE_ALL_CREDENTIALS, Map.of("authenticatorId", id));
     }
 
     @Override
     public void setUserVerified(boolean verified) {
       execute(
           DriverCommand.SET_USER_VERIFIED,
-          ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
+          Map.of("authenticatorId", id, "isUserVerified", verified));
     }
   }
 }

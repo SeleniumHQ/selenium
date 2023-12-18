@@ -21,7 +21,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -415,7 +414,7 @@ public class DriverService implements Closeable {
      */
     @Beta
     public B withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
+      this.environment = Map.copyOf(environment);
       return (B) this;
     }
 

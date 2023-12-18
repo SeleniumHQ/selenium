@@ -96,4 +96,5 @@ class WindowRealmInfo extends RealmInfo {
 module.exports = {
   RealmInfo,
   RealmType,
+  WindowRealmInfo,
 }

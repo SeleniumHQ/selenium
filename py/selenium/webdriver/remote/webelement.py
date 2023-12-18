@@ -25,6 +25,7 @@ from base64 import b64decode
 from base64 import encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
+from typing import List
 
 from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import WebDriverException
@@ -415,7 +416,7 @@ class WebElement(BaseWebElement):
 
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
         """Find elements given a By strategy and locator.
 
         :Usage:

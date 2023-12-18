@@ -41,7 +41,7 @@ public class TerseFormatter extends Formatter {
    * Line separator string. This is the value of the line.separator property at the moment that the
    * TerseFormatter was created.
    */
-  private final String lineSeparator = System.getProperty("line.separator");
+  private final String lineSeparator = System.lineSeparator();
 
   /*
    * DGF - These have to be compile time constants to be used with switch
@@ -78,7 +78,12 @@ public class TerseFormatter extends Formatter {
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
     String[] parts = record.getSourceClassName().split("\\.");
-    buffer.append(" [" + parts[parts.length - 1] + "." + record.getSourceMethodName() + "]");
+    buffer
+        .append(" [")
+        .append(parts[parts.length - 1])
+        .append(".")
+        .append(record.getSourceMethodName())
+        .append("]");
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {

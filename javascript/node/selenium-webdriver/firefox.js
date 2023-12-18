@@ -300,21 +300,7 @@ class Options extends Capabilities {
   }
 
   /**
-   * @deprecated Use {@link Options#addArguments} instead.
-   * @example
-   * options.addArguments('-headless');
-   * @example
-   * Configures the geckodriver to start Firefox in headless mode.
-   *
-   * @return {!Options} A self reference.
-   */
-  headless() {
-    return this.addArguments('-headless')
-  }
-
-  /**
-   * Sets the initial window size when running in
-   * {@linkplain #headless headless} mode.
+   * Sets the initial window size
    *
    * @param {{width: number, height: number}} size The desired window size.
    * @return {!Options} A self reference.

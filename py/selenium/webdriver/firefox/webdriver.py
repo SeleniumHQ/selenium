@@ -42,7 +42,7 @@ class WebDriver(RemoteWebDriver):
         self,
         options: Options = None,
         service: Service = None,
-        keep_alive=True,
+        keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Firefox driver. Starts the service and
         then creates new instance of Firefox driver.
@@ -61,22 +61,27 @@ class WebDriver(RemoteWebDriver):
 
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
-            ignore_proxy=options._ignore_local_proxy,
             keep_alive=keep_alive,
+            ignore_proxy=options._ignore_local_proxy,
         )
-        super().__init__(command_executor=executor, options=options)
+
+        try:
+            super().__init__(command_executor=executor, options=options)
+        except Exception:
+            self.quit()
+            raise
 
         self._is_remote = False
 
     def quit(self) -> None:
-        """Quits the driver and close every associated window."""
+        """Closes the browser and shuts down the GeckoDriver executable."""
         try:
             super().quit()
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
-
-        self.service.stop()
+        finally:
+            self.service.stop()
 
     def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})

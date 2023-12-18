@@ -55,6 +55,9 @@ pub struct ManagerConfig {
     pub offline: bool,
     pub force_browser_download: bool,
     pub avoid_browser_download: bool,
+    pub language_binding: String,
+    pub selenium_version: String,
+    pub avoid_stats: bool,
 }
 
 impl ManagerConfig {
@@ -111,6 +114,9 @@ impl ManagerConfig {
             offline: BooleanKey("offline", false).get_value(),
             force_browser_download: BooleanKey("force-browser-download", false).get_value(),
             avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
+            language_binding: StringKey(vec!["language-binding"], "").get_value(),
+            selenium_version: StringKey(vec!["selenium-version"], "").get_value(),
+            avoid_stats: BooleanKey("avoid-stats", false).get_value(),
         }
     }
 }

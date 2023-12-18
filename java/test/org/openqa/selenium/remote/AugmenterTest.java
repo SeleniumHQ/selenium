@@ -378,8 +378,6 @@ class AugmenterTest {
 
   public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
 
-    private final int magicNumber = 3;
-
     @Override
     public Capabilities getCapabilities() {
       return new FirefoxOptions();
@@ -387,13 +385,11 @@ class AugmenterTest {
 
     @Override
     public int getMagicNumber() {
-      return magicNumber;
+      return 3;
     }
   }
 
   public static class WithFinals extends RemoteWebDriver {
-
-    public final String finalField = "FINAL";
 
     @Override
     public Capabilities getCapabilities() {
