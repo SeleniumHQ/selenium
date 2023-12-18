@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Represents a cookie returned to the driver by the browser.
     /// </summary>
-    public class ReturnedCookie : Cookie
+    internal class ReturnedCookie : Cookie
     {
 
         /// <summary>
