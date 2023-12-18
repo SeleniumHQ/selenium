@@ -29,6 +29,19 @@ namespace OpenQA.Selenium.DevTools
         private readonly IDictionary<Type, Type> commandResponseTypeDictionary = new Dictionary<Type, Type>();
 
         /// <summary>
+        /// Adds mapping to a response type for a specified command type.
+        /// </summary>
+        /// <param name="commandSettingsType">The type of command to add the mapping for.</param>
+        /// <param name="commandResponseType">The type of response object corresponding to the command.</param>
+        public void AddCommandResponseType(Type commandSettingsType, Type commandResponseType)
+        {
+            if (!commandResponseTypeDictionary.ContainsKey(commandSettingsType))
+            {
+                commandResponseTypeDictionary.Add(commandSettingsType, commandResponseType);
+            }
+        }
+
+        /// <summary>
         /// Gets the command response type corresponding to the specified command type.
         /// </summary>
         /// <typeparam name="T">The type of command for which to retrieve the response type.</typeparam>
