@@ -120,5 +120,23 @@ namespace OpenQA.Selenium.DevTools.V117
         {
             this.OnTargetDetached(new TargetDetachedEventArgs() { SessionId = e.SessionId, TargetId = e.TargetId });
         }
+
+        internal override ICommand CreateSetAutoAttachCommand(bool waitForDebuggerOnStart)
+        {
+            return new SetAutoAttachCommandSettings
+            {
+                AutoAttach = true,
+                Flatten = true,
+                WaitForDebuggerOnStart = waitForDebuggerOnStart
+            };
+        }
+
+        internal override ICommand CreateDiscoverTargetsCommand()
+        {
+            return new SetDiscoverTargetsCommandSettings
+            {
+                Discover = true
+            };
+        }
     }
 }
