@@ -141,8 +141,9 @@ public class RouterServer extends TemplateGridServerCommand {
         new GraphqlHandler(
             tracer, distributor, queue, serverOptions.getExternalUri(), getServerVersion());
 
-    String subPath = new RouterOptions(config).subPath();
-    Routable ui = new GridUiRoute(subPath);
+    RouterOptions routerOptions = new RouterOptions(config);
+    String subPath = routerOptions.subPath();
+
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
@@ -153,10 +154,19 @@ public class RouterServer extends TemplateGridServerCommand {
                 graphqlRoute(subPath, () -> graphqlHandler))
             .reduce(Route::combine)
             .get();
+
     if (!subPath.isEmpty()) {
       appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
     }
-    Routable route = Route.combine(ui, appendRoute);
+
+    Routable route;
+    if (routerOptions.disableUi()) {
+      LOG.info("Grid UI has been disabled.");
+      route = appendRoute;
+    } else {
+      Routable ui = new GridUiRoute(subPath);
+      route = combine(ui, appendRoute);
+    }
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {

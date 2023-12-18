@@ -327,9 +327,9 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "34296f8cad46ec10b7eea59f3399feabcfbc33935b7d8bec880ea0ecfadc23b5",
-    strip_prefix = "rules_ruby-9550503e1c1702375e87837d43eb137030edd28a",
-    url = "https://github.com/p0deje/rules_ruby/archive/9550503e1c1702375e87837d43eb137030edd28a.zip",
+    sha256 = "e3495d0129222572654cc5dd5c72c6c997513d65fb8649f43a860ab15334a1c2",
+    strip_prefix = "rules_ruby-0.4.1",
+    url = "https://github.com/bazel-contrib/rules_ruby/releases/download/v0.4.1/rules_ruby-v0.4.1.tar.gz",
 )
 
 load(
@@ -337,9 +337,8 @@ load(
     "rb_bundle",
     "rb_register_toolchains",
 )
-load("//rb:ruby_version.bzl", "RUBY_VERSION")
 
-rb_register_toolchains(version = RUBY_VERSION)
+rb_register_toolchains(version_file = "//:rb/.ruby-version")
 
 rb_bundle(
     name = "bundle",

@@ -71,6 +71,13 @@ public class HandlersForTests implements Routable {
             Route.matching(req -> req.getUri().startsWith("/utf8/"))
                 .to(() -> new Utf8Handler(webSrc, "/utf8/")),
             Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages)),
+            Route.get("/quitquitquit")
+                .to(
+                    () ->
+                        req -> {
+                          System.exit(0);
+                          return new HttpResponse();
+                        }),
             new CommonWebResources());
 
     delegate = Route.combine(route, Route.prefix("/common").to(route));

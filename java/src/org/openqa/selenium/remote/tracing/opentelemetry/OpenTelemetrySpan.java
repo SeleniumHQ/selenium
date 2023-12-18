@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Primitives;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
@@ -60,8 +58,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     Require.nonNull("Key", key);
     Require.nonNull("Value", value);
 
-    Class<? extends Number> unwrapped = Primitives.unwrap(value.getClass());
-    if (double.class.equals(unwrapped) || float.class.equals(unwrapped)) {
+    if (value instanceof Double || value instanceof Float) {
       span.setAttribute(key, value.doubleValue());
     } else {
       span.setAttribute(key, value.longValue());
@@ -95,23 +92,22 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   }
 
   private static final Map<Status.Kind, StatusCode> statuses =
-      new ImmutableMap.Builder<Status.Kind, StatusCode>()
-          .put(Status.Kind.ABORTED, StatusCode.ERROR)
-          .put(Status.Kind.CANCELLED, StatusCode.ERROR)
-          .put(Status.Kind.NOT_FOUND, StatusCode.ERROR)
-          .put(Status.Kind.OK, StatusCode.OK)
-          .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCode.ERROR)
-          .put(Status.Kind.UNKNOWN, StatusCode.ERROR)
-          .put(Status.Kind.INVALID_ARGUMENT, StatusCode.ERROR)
-          .put(Status.Kind.DEADLINE_EXCEEDED, StatusCode.ERROR)
-          .put(Status.Kind.ALREADY_EXISTS, StatusCode.ERROR)
-          .put(Status.Kind.PERMISSION_DENIED, StatusCode.ERROR)
-          .put(Status.Kind.OUT_OF_RANGE, StatusCode.ERROR)
-          .put(Status.Kind.UNIMPLEMENTED, StatusCode.ERROR)
-          .put(Status.Kind.INTERNAL, StatusCode.ERROR)
-          .put(Status.Kind.UNAVAILABLE, StatusCode.ERROR)
-          .put(Status.Kind.UNAUTHENTICATED, StatusCode.ERROR)
-          .build();
+      Map.ofEntries(
+          Map.entry(Status.Kind.ABORTED, StatusCode.ERROR),
+          Map.entry(Status.Kind.CANCELLED, StatusCode.ERROR),
+          Map.entry(Status.Kind.NOT_FOUND, StatusCode.ERROR),
+          Map.entry(Status.Kind.OK, StatusCode.OK),
+          Map.entry(Status.Kind.RESOURCE_EXHAUSTED, StatusCode.ERROR),
+          Map.entry(Status.Kind.UNKNOWN, StatusCode.ERROR),
+          Map.entry(Status.Kind.INVALID_ARGUMENT, StatusCode.ERROR),
+          Map.entry(Status.Kind.DEADLINE_EXCEEDED, StatusCode.ERROR),
+          Map.entry(Status.Kind.ALREADY_EXISTS, StatusCode.ERROR),
+          Map.entry(Status.Kind.PERMISSION_DENIED, StatusCode.ERROR),
+          Map.entry(Status.Kind.OUT_OF_RANGE, StatusCode.ERROR),
+          Map.entry(Status.Kind.UNIMPLEMENTED, StatusCode.ERROR),
+          Map.entry(Status.Kind.INTERNAL, StatusCode.ERROR),
+          Map.entry(Status.Kind.UNAVAILABLE, StatusCode.ERROR),
+          Map.entry(Status.Kind.UNAUTHENTICATED, StatusCode.ERROR));
 
   @Override
   public Span setStatus(Status status) {

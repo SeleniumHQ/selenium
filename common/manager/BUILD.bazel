@@ -24,12 +24,10 @@ alias(
     }),
 )
 
+# Rust does not compile properly on windows so just use what is in repo for now
 alias(
     name = "selenium-manager-windows",
-    actual = select({
-        "//common:stamp": "windows/selenium-manager.exe",
-        "//conditions:default": "//rust:selenium-manager-windows",
-    }),
+    actual = "windows/selenium-manager.exe",
 )
 
 exports_files(

@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.16" # don't forget to update rust/BUILD.bazel
+version = "0.4.17" # don't forget to update rust/BUILD.bazel
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -12,7 +12,7 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 """
 
 [dependencies]
-clap = { version = "4.4.8", features = ["derive"] }
+clap = { version = "4.4.8", features = ["derive", "cargo"] }
 log = "0.4.20"
 env_logger = "0.10.1"
 regex = "1.10.2"

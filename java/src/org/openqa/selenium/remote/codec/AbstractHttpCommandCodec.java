@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.remote.codec;
 
-import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_CREDENTIAL;
@@ -105,13 +102,13 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -119,6 +116,7 @@ import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -128,7 +126,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
 public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
-  private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
   private final ConcurrentHashMap<String, CommandSpec> nameToSpec = new ConcurrentHashMap<>();
@@ -280,13 +277,13 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       String content = json.toJson(parameters);
       byte[] data = content.getBytes(UTF_8);
 
-      request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+      request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
+      request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8.toString());
       request.setContent(bytes(data));
     }
 
     if (HttpMethod.GET == spec.method) {
-      request.setHeader(CACHE_CONTROL, "no-cache");
+      request.setHeader(HttpHeader.CacheControl.getName(), "no-cache");
     }
 
     return request;
@@ -296,9 +293,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
   @Override
   public Command decode(final HttpRequest encodedCommand) {
-    final String path =
-        Strings.isNullOrEmpty(encodedCommand.getUri()) ? "/" : encodedCommand.getUri();
-    final ImmutableList<String> parts = ImmutableList.copyOf(PATH_SPLITTER.split(path));
+    String path = encodedCommand.getUri();
+    if (path == null || path.isEmpty()) path = "/";
+    final List<String> parts =
+        Arrays.stream(path.split("/"))
+            .filter(e -> !e.isEmpty())
+            .collect(Collectors.toUnmodifiableList());
     int minPathLength = Integer.MAX_VALUE;
     CommandSpec spec = null;
     String name = null;
@@ -391,12 +391,15 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   protected static class CommandSpec {
     private final HttpMethod method;
     private final String path;
-    private final ImmutableList<String> pathSegments;
+    private final List<String> pathSegments;
 
     private CommandSpec(HttpMethod method, String path) {
       this.method = Require.nonNull("HTTP method", method);
       this.path = path;
-      this.pathSegments = ImmutableList.copyOf(PATH_SPLITTER.split(path));
+      this.pathSegments =
+          Arrays.stream(path.split("/"))
+              .filter(e -> !e.isEmpty())
+              .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -410,7 +413,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     @Override
     public int hashCode() {
-      return Objects.hashCode(method, path);
+      return Objects.hash(method, path);
     }
 
     /**
@@ -420,7 +423,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
      * @param parts The parsed request path segments.
      * @return Whether this instance matches the request.
      */
-    boolean isFor(HttpMethod method, ImmutableList<String> parts) {
+    boolean isFor(HttpMethod method, List<String> parts) {
       if (!this.method.equals(method)) {
         return false;
       }
@@ -440,7 +443,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       return true;
     }
 
-    void parsePathParameters(ImmutableList<String> parts, Map<String, Object> parameters) {
+    void parsePathParameters(List<String> parts, Map<String, Object> parameters) {
       for (int i = 0; i < parts.size(); ++i) {
         if (pathSegments.get(i).startsWith(":")) {
           parameters.put(pathSegments.get(i).substring(1), parts.get(i));

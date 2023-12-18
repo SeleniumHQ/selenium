@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.mobile;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.DriverCommand;
@@ -39,11 +38,11 @@ public class RemoteNetworkConnection implements NetworkConnection {
 
   @Override
   public ConnectionType setNetworkConnection(ConnectionType type) {
-    Map<String, ConnectionType> mode = ImmutableMap.of("type", type);
+    Map<String, ConnectionType> mode = Map.of("type", type);
     return new ConnectionType(
         ((Number)
                 executeMethod.execute(
-                    DriverCommand.SET_NETWORK_CONNECTION, ImmutableMap.of("parameters", mode)))
+                    DriverCommand.SET_NETWORK_CONNECTION, Map.of("parameters", mode)))
             .intValue());
   }
 }

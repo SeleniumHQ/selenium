@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class RemoteLocalStorage implements LocalStorage {
 
   @Override
   public String getItem(String key) {
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     return (String) executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_ITEM, args);
   }
 
@@ -50,14 +49,14 @@ public class RemoteLocalStorage implements LocalStorage {
 
   @Override
   public void setItem(String key, String value) {
-    Map<String, String> args = ImmutableMap.of("key", key, "value", value);
+    Map<String, String> args = Map.of("key", key, "value", value);
     executeMethod.execute(DriverCommand.SET_LOCAL_STORAGE_ITEM, args);
   }
 
   @Override
   public String removeItem(String key) {
     String value = getItem(key);
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     executeMethod.execute(DriverCommand.REMOVE_LOCAL_STORAGE_ITEM, args);
     return value;
   }

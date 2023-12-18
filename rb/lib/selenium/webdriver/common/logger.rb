@@ -103,7 +103,7 @@ module Selenium
       #
       # @param [Array, Symbol] ids
       #
-      def allow(ids)
+      def allow(*ids)
         @allowed += Array(ids).flatten
       end
 
@@ -181,7 +181,7 @@ module Selenium
       private
 
       def create_logger(name, level:)
-        logger = ::Logger.new($stdout)
+        logger = ::Logger.new($stderr)
         logger.progname = name
         logger.level = level
         logger.formatter = proc do |severity, time, progname, msg|

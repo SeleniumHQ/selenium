@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +74,7 @@ public class RemoteLogs implements Logs {
   }
 
   private LogEntries getRemoteEntries(String logType) {
-    Object raw = executeMethod.execute(DriverCommand.GET_LOG, ImmutableMap.of(TYPE_KEY, logType));
+    Object raw = executeMethod.execute(DriverCommand.GET_LOG, Map.of(TYPE_KEY, logType));
     if (!(raw instanceof List)) {
       throw new UnsupportedCommandException("malformed response to remote logs command");
     }
@@ -106,11 +105,11 @@ public class RemoteLogs implements Logs {
     Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     @SuppressWarnings("unchecked")
     List<String> rawList = (List<String>) raw;
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
+    Set<String> builder = new LinkedHashSet<>();
     for (String logType : rawList) {
       builder.add(logType);
     }
     builder.addAll(getAvailableLocalLogs());
-    return builder.build();
+    return Set.copyOf(builder);
   }
 }

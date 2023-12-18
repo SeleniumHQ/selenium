@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -57,7 +56,7 @@ public class RemoteLocationContext implements LocationContext {
 
   @Override
   public void setLocation(Location location) {
-    Map<String, Location> args = ImmutableMap.of("location", location);
+    Map<String, Location> args = Map.of("location", location);
     executeMethod.execute(DriverCommand.SET_LOCATION, args);
   }
 }
