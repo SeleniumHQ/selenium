@@ -78,7 +78,12 @@ public class TerseFormatter extends Formatter {
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
     String[] parts = record.getSourceClassName().split("\\.");
-    buffer.append(" [").append(parts[parts.length - 1]).append(".").append(record.getSourceMethodName()).append("]");
+    buffer
+        .append(" [")
+        .append(parts[parts.length - 1])
+        .append(".")
+        .append(record.getSourceMethodName())
+        .append("]");
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {
