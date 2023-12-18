@@ -19,6 +19,9 @@ package org.openqa.selenium.bidi.network;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,31 +30,29 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.bidi.Network;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.Pages;
 
-class NetworkEventsTest {
+class NetworkEventsTest extends JupiterTestBase {
 
   private String page;
   private AppServer server;
-  private FirefoxDriver driver;
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-
     server = new NettyAppServer();
     server.start();
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canListenToBeforeRequestSentEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -71,6 +72,9 @@ class NetworkEventsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canListenToResponseStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -92,6 +96,9 @@ class NetworkEventsTest {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   void canListenToResponseCompletedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -109,6 +116,30 @@ class NetworkEventsTest {
       assertThat(response.getResponseData().getHeaders().size()).isGreaterThanOrEqualTo(1);
       assertThat(response.getResponseData().getUrl()).contains("/bidi/logEntryAdded.html");
       assertThat(response.getResponseData().getStatus()).isEqualTo(200L);
+    }
+  }
+
+  @Test
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
+  void canListenToResponseCompletedEventWithCookie()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (Network network = new Network(driver)) {
+      CompletableFuture<BeforeRequestSent> future = new CompletableFuture<>();
+
+      driver.get(new Pages(server).blankPage);
+      driver.manage().addCookie(new Cookie("foo", "bar"));
+      network.onBeforeRequestSent(future::complete);
+      driver.navigate().refresh();
+
+      BeforeRequestSent requestSent = future.get(5, TimeUnit.SECONDS);
+      String windowHandle = driver.getWindowHandle();
+      assertThat(requestSent.getBrowsingContextId()).isEqualTo(windowHandle);
+      assertThat(requestSent.getRequest().getCookies().size()).isEqualTo(1);
+      assertThat(requestSent.getRequest().getCookies().get(0).getName()).isEqualTo("foo");
+      assertThat(requestSent.getRequest().getCookies().get(0).getValue().getValue())
+          .isEqualTo("bar");
     }
   }
 
