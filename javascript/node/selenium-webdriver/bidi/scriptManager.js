@@ -21,8 +21,10 @@ const {
   EvaluateResultException,
   ExceptionDetails,
 } = require('./evaluateResult')
-const { RealmInfo } = require('./realmInfo')
+const { Message } = require('./scriptTypes')
+const { RealmInfo, RealmType, WindowRealmInfo } = require('./realmInfo')
 const { RemoteValue } = require('./protocolValue')
+const { Source } = require('./scriptTypes')
 const { WebDriverError } = require('../lib/error')
 
 class ScriptManager {
@@ -347,6 +349,55 @@ class ScriptManager {
     }
     let response = await this.bidi.send(command)
     return this.realmInfoMapper(response.result.realms)
+  }
+
+  async onMessage(callback) {
+    await this.subscribeAndHandleEvent('script.message', callback)
+  }
+
+  async onRealmCreated(callback) {
+    await this.subscribeAndHandleEvent('script.realmCreated', callback)
+  }
+
+  async subscribeAndHandleEvent(eventType, callback) {
+    if (this._browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this._browsingContextIds)
+    } else {
+      await this.bidi.subscribe(eventType)
+    }
+    await this._on(callback)
+  }
+
+  async _on(callback) {
+    this.ws = await this.bidi.socket
+    this.ws.on('message', (event) => {
+      const { params } = JSON.parse(Buffer.from(event.toString()))
+      if (params) {
+        let response = null
+        if ('channel' in params) {
+          response = new Message(
+            params.channel,
+            new RemoteValue(params.data),
+            new Source(params.source)
+          )
+        } else if ('realm' in params) {
+          if (params.type === RealmType.WINDOW) {
+            response = new WindowRealmInfo(
+              params.realm,
+              params.origin,
+              params.type,
+              params.context,
+              params.sandbox
+            )
+          } else if (params.realm !== null && params.type !== null) {
+            response = new RealmInfo(params.realm, params.origin, params.type)
+          } else if (params.realm !== null) {
+            response = params.realm
+          }
+        }
+        callback(response)
+      }
+    })
   }
 }
 
