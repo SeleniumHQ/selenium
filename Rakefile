@@ -475,13 +475,6 @@ end
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/src/org/openqa/selenium:client-combined'
 
-namespace :safari do
-  desc 'Build the SafariDriver java client'
-  task build: [
-    '//java/src/org/openqa/selenium/safari'
-  ]
-end
-
 task :authors do
   puts 'Generating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
@@ -517,21 +510,17 @@ namespace :side do
     '//javascript/atoms/fragments:find-element'
   ] do
     # TODO: move directly to IDE's directory once the repositories are merged
-    baseDir = 'build/javascript/atoms'
-    mkdir_p baseDir
+    mkdir_p 'build/javascript/atoms'
 
-    [
-      Rake::Task['//javascript/atoms/fragments:find-element'].out
-    ].each do |atom|
-      name = File.basename(atom)
+    atom = 'bazel-bin/javascript/atoms/fragments/find-element.js'
+    name = File.basename(atom)
 
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), 'w') do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << 'module.exports = '
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
+    puts "Generating #{atom} as #{name}"
+    File.open(File.join(baseDir, name), 'w') do |f|
+      f << "// GENERATED CODE - DO NOT EDIT\n"
+      f << 'module.exports = '
+      f << IO.read(atom).strip
+      f << ";\n"
     end
   end
 end
@@ -544,22 +533,15 @@ namespace :node do
   ]
 
   task atoms: atom_list do
-    baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
-    mkdir_p baseDir
+    base_dir = 'javascript/node/selenium-webdriver/lib/atoms'
+    mkdir_p base_dir
 
-    puts 'rake outs are below'
-    p rake_outs = [
-      Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
-      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out,
-      Rake::Task['//javascript/atoms/fragments:find-elements'].out
-    ]
-
-    rake_outs.each do |atom|
-      puts "atom is #{atom}\n"
+    ['bazel-bin/javascript/atoms/fragments/is-displayed.js',
+      'bazel-bin/javascript/webdriver/atoms/get-attribute.js',
+      'bazel-bin/javascript/atoms/fragments/find-elements.js'].each do |atom|
       name = File.basename(atom)
-
       puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), 'w') do |f|
+      File.open(File.join(base_dir, name), 'w') do |f|
         f << "// GENERATED CODE - DO NOT EDIT\n"
         f << 'module.exports = '
         f << IO.read(atom).strip
@@ -590,51 +572,24 @@ namespace :node do
 end
 
 namespace :py do
-  task prep: [
-    '//javascript/atoms/fragments:is-displayed',
-    '//javascript/webdriver/atoms:get-attribute',
-    '//third_party/js/selenium:webdriver_xpi'
-  ] do
-    py_home = 'py/'
-    remote_py_home = py_home + 'selenium/webdriver/remote/'
-    firefox_py_home = py_home + 'selenium/webdriver/firefox/'
+  task :update do
+    Bazel.execute('build', [], '//py:selenium')
 
-    if SeleniumRake::Checks.windows?
-      remote_py_home = remote_py_home.gsub(/\//, '\\')
-      firefox_py_home = firefox_py_home .gsub(/\//, '\\')
-    end
-
-    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home + 'isDisplayed.js', verbose: true
-    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home + 'getAttribute.js', verbose: true
-
-    cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, verbose: true
-    cp 'third_party/js/selenium/webdriver.json', firefox_py_home + 'webdriver_prefs.json', verbose: true
-    cp 'LICENSE', py_home + 'LICENSE', verbose: true
+    FileUtils.rm_r("py/selenium/webdriver/common/devtools/", force: true)
+    FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
   bazel :unit do
     Bazel.execute('test', [], '//py:unit')
   end
 
-  task docs: :prep do
+  task docs: :update do
     sh 'tox -c py/tox.ini -e docs', verbose: true
   end
 
-  task install: :prep do
-    Dir.chdir('py') do
-      sh py_exe + ' setup.py install', verbose: true
-    end
-  end
-
-  %w[chrome ff marionette ie edge remote_firefox safari].each do |browser|
-    browser_data = SeleniumRake::Browsers::BROWSERS[browser]
-    deps = browser_data[:deps] || []
-    deps += [:prep]
-    driver = browser_data[:driver]
-
-    task "#{browser}_test" => deps do
-      tox_test driver
-    end
+  task :install do
+    Bazel.execute('build', [], '//py:selenium-wheel')
+    sh 'pip install bazel-bin/py/selenium-*.whl'
   end
 end
 
