@@ -38,7 +38,9 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
   private final Clock clock;
   private final Duration timeOut;
 
-  /** @deprecated Use {@link #SlowLoadableComponent(Clock, Duration)} instead. */
+  /**
+   * @deprecated Use {@link #SlowLoadableComponent(Clock, Duration)} instead.
+   */
   @Deprecated
   public SlowLoadableComponent(Clock clock, int timeOutInSeconds) {
     this(clock, Duration.ofSeconds(timeOutInSeconds));
