@@ -81,10 +81,10 @@ public class Connection implements Closeable {
     this.client = client;
     // If WebDriver close() is called, it closes the session if it is the last browsing context.
     // It also closes the WebSocket from the remote end.
-    // If WebDriver quit() is called, it also tried to close an already closed websocket and that
+    // If WebDriver quit() is called, it also tries to close an already closed websocket and that
     // causes errors.
     // Ideally, such errors should not prevent freeing up resources.
-    // This measure is need until "session.end" from BiDi is implemented by the browsers.
+    // This measure is needed until "session.end" from BiDi is implemented by the browsers.
     if (!underlyingSocketClosed.get()) {
       socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
     }
