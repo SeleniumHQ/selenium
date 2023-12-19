@@ -74,6 +74,12 @@ def pytest_addoption(parser):
         dest="headless",
         help="Allow tests to run in headless",
     )
+    parser.addoption(
+        "--use-lan-ip",
+        action="store_true",
+        dest="use_lan_ip",
+        help="Whether to start test server with lan ip instead of localhost",
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -287,8 +293,10 @@ def server(request):
 
 
 @pytest.fixture(autouse=True, scope="session")
-def webserver():
-    webserver = SimpleWebServer(host=get_lan_ip())
+def webserver(request):
+    host = get_lan_ip() if request.config.getoption("use_lan_ip") else "0.0.0.0"
+
+    webserver = SimpleWebServer(host=host)
     webserver.start()
     yield webserver
     webserver.stop()
