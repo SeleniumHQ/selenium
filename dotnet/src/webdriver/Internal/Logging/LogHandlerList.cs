@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Internal.Logging
@@ -29,6 +30,12 @@ namespace OpenQA.Selenium.Internal.Logging
         private readonly ILogContext _logContext;
 
         public LogHandlerList(ILogContext logContext)
+        {
+            _logContext = logContext;
+        }
+
+        public LogHandlerList(ILogContext logContext, IEnumerable<ILogHandler> handlers)
+            : base(handlers)
         {
             _logContext = logContext;
         }
