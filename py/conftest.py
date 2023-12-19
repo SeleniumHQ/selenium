@@ -92,10 +92,8 @@ driver_instance = None
 def driver(request):
     kwargs = {}
 
-    try:
-        driver_class = request.param.capitalize()
-    except AttributeError:
-        raise Exception("This test requires a --driver to be specified.")
+    # browser can be changed with `--driver=firefox` as an argument or in pytest.ini
+    driver_class = request.param.capitalize() if request.param else "Chrome"
 
     # skip tests if not available on the platform
     _platform = platform.system()
