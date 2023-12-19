@@ -36,11 +36,19 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     extends LoadableComponent<T> {
 
   private final Clock clock;
-  private final Duration timeOutInSeconds;
+  private final Duration timeOut;
 
-  public SlowLoadableComponent(java.time.Clock clock, int timeOutInSeconds) {
+  /**
+   * @deprecated Use {@link #SlowLoadableComponent(Clock, Duration)} instead.
+   */
+  @Deprecated
+  public SlowLoadableComponent(Clock clock, int timeOutInSeconds) {
+    this(clock, Duration.ofSeconds(timeOutInSeconds));
+  }
+
+  public SlowLoadableComponent(Clock clock, Duration timeOut) {
     this.clock = clock;
-    this.timeOutInSeconds = Duration.ofSeconds(timeOutInSeconds);
+    this.timeOut = timeOut;
   }
 
   @Override
@@ -53,7 +61,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
       load();
     }
 
-    Instant end = clock.instant().plus(timeOutInSeconds);
+    Instant end = clock.instant().plus(timeOut);
 
     while (clock.instant().isBefore(end)) {
       try {

@@ -35,7 +35,9 @@ namespace OpenQA.Selenium.Internal.Logging
 
         private readonly ILogContext _parentLogContext;
 
-        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, ILogHandlerList handlers)
+        private readonly Lazy<LogHandlerList> _lazyLogHandlerList;
+
+        public LogContext(LogEventLevel level, ILogContext parentLogContext, ConcurrentDictionary<Type, ILogger> loggers, IEnumerable<ILogHandler> handlers)
         {
             _level = level;
 
@@ -43,7 +45,14 @@ namespace OpenQA.Selenium.Internal.Logging
 
             _loggers = loggers;
 
-            Handlers = handlers ?? new LogHandlerList(this);
+            if (handlers is not null)
+            {
+                _lazyLogHandlerList = new Lazy<LogHandlerList>(() => new LogHandlerList(this, handlers));
+            }
+            else
+            {
+                _lazyLogHandlerList = new Lazy<LogHandlerList>(() => new LogHandlerList(this));
+            }
         }
 
         public ILogContext CreateContext()
@@ -60,15 +69,7 @@ namespace OpenQA.Selenium.Internal.Logging
                 loggers = new ConcurrentDictionary<Type, ILogger>(_loggers.Select(l => new KeyValuePair<Type, ILogger>(l.Key, new Logger(l.Value.Issuer, minimumLevel))));
             }
 
-            var context = new LogContext(minimumLevel, this, loggers, null);
-
-            if (Handlers != null)
-            {
-                foreach (var handler in Handlers)
-                {
-                    context.Handlers.Add(handler);
-                }
-            }
+            var context = new LogContext(minimumLevel, this, loggers, Handlers);
 
             Log.CurrentContext = context;
 
@@ -130,7 +131,7 @@ namespace OpenQA.Selenium.Internal.Logging
             return this;
         }
 
-        public ILogHandlerList Handlers { get; }
+        public ILogHandlerList Handlers => _lazyLogHandlerList.Value;
 
         public void Dispose()
         {

@@ -253,10 +253,10 @@ fn main() {
                 );
                 flush_and_exit(OK, log, Some(err));
             } else if selenium_manager.is_offline() {
-                log.warn(err.to_string());
+                log.warn(&err);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                log.error(err.to_string());
+                log.error(&err);
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });
@@ -269,7 +269,7 @@ fn log_driver_and_browser_path(
     receiver: &Receiver<String>,
 ) {
     if let Ok(err) = receiver.try_recv() {
-        log.warn(err.to_string());
+        log.warn(err);
     }
     if driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
