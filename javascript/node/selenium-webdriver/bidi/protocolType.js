@@ -42,6 +42,7 @@ const NonPrimitiveType = {
   OBJECT: 'object',
   REGULAR_EXPRESSION: 'regexp',
   SET: 'set',
+  CHANNEL: 'channel',
 
   findByName(name) {
     return (

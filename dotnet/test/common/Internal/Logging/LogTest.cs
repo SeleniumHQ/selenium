@@ -120,6 +120,14 @@ namespace OpenQA.Selenium.Internal.Logging
         }
 
         [Test]
+        public void ShouldCreateContextWithNullLogHandlers()
+        {
+            var context = new LogContext(LogEventLevel.Info, null, null, handlers: null);
+
+            Assert.That(context.Handlers, Is.Empty);
+        }
+
+        [Test]
         public void ContextShouldChangeLevel()
         {
             Log.SetLevel(LogEventLevel.Info);

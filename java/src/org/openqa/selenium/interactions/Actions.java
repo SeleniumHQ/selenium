@@ -22,6 +22,7 @@ import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -582,6 +583,10 @@ public class Actions {
     sequences.put(source, sequence);
 
     return sequence;
+  }
+
+  public Collection<Sequence> getSequences() {
+    return sequences.values();
   }
 
   private static class BuiltAction implements Action {
