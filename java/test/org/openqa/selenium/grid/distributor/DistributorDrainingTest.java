@@ -152,7 +152,7 @@ public class DistributorDrainingTest extends DistributorTestBase {
         .until(
             d -> {
               Set<NodeStatus> nodes = d.getStatus().getNodes();
-              return nodes.size() == 0;
+              return nodes.isEmpty();
             });
   }
 
